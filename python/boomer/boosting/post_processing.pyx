@@ -9,7 +9,7 @@ from libcpp.memory cimport make_shared
 
 cdef class ConstantShrinkage(PostProcessor):
     """
-    A wrapper for the C++ class `ConstantShrinkageImpl`.
+    A wrapper for the C++ class `ConstantShrinkage`.
     """
 
     def __cinit__(self, float64 shrinkage = 0.3):
