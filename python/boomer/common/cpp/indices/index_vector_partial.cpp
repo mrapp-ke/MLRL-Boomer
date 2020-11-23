@@ -1,5 +1,6 @@
 #include "index_vector_partial.h"
-#include "../head_refinement.h"
+#include "../head_refinement/head_refinement.h"
+#include "../head_refinement/head_refinement_factory.h"
 #include "../statistics.h"
 #include "../thresholds.h"
 
