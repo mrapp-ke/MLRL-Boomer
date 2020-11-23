@@ -37,6 +37,8 @@ sources = [
     'boomer/common/cpp/sampling/label_sampling_random.cpp',
     'boomer/common/cpp/sampling/weight_vector_dense.cpp',
     'boomer/common/cpp/sampling/weight_vector_equal.cpp',
+    'boomer/common/cpp/head_refinement/head_refinement_full.cpp',
+    'boomer/common/cpp/head_refinement/head_refinement_single.cpp',
     'boomer/common/cpp/predictions.cpp',
     'boomer/common/cpp/rules.cpp',
     'boomer/common/cpp/post_processing.cpp',
@@ -45,7 +47,6 @@ sources = [
     'boomer/common/cpp/thresholds.cpp',
     'boomer/common/cpp/thresholds_exact.cpp',
     'boomer/common/cpp/thresholds_approximate.cpp',
-    'boomer/common/cpp/head_refinement.cpp',
     'boomer/common/cpp/rule_refinement.cpp',
     'boomer/common/cpp/pruning.cpp',
     'boomer/common/cpp/binning.cpp',
@@ -63,9 +64,9 @@ sources = [
     'boomer/boosting/cpp/rule_evaluation_label_wise.cpp',
     'boomer/boosting/cpp/rule_evaluation_example_wise.cpp',
     'boomer/boosting/cpp/post_processing.cpp',
+    'boomer/seco/cpp/head_refinement/head_refinement_partial.cpp',
     'boomer/seco/cpp/heuristics.cpp',
     'boomer/seco/cpp/lift_functions.cpp',
-    'boomer/seco/cpp/head_refinement.cpp',
     'boomer/seco/cpp/statistics_label_wise.cpp',
     'boomer/seco/cpp/rule_evaluation_label_wise.cpp'
 ]
