@@ -38,6 +38,7 @@ sources = [
     'boomer/common/cpp/sampling/weight_vector_dense.cpp',
     'boomer/common/cpp/sampling/weight_vector_equal.cpp',
     'boomer/common/cpp/stopping/stopping_criterion_size.cpp',
+    'boomer/common/cpp/stopping/stopping_criterion_time.cpp',
     'boomer/common/cpp/head_refinement/head_refinement_full.cpp',
     'boomer/common/cpp/head_refinement/head_refinement_single.cpp',
     'boomer/common/cpp/post_processing/post_processor_no.cpp',
