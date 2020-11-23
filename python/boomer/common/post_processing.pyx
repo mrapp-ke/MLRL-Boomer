@@ -15,7 +15,7 @@ cdef class PostProcessor:
 
 cdef class NoPostProcessor(PostProcessor):
     """
-    A wrapper for the C++ class `NoPostProcessorImpl`.
+    A wrapper for the C++ class `NoPostProcessor`.
     """
 
     def __cinit__(self):
