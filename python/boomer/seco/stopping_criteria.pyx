@@ -2,25 +2,19 @@
 @author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides classes that implement different stopping criteria for separate-and-conquer algorithms.
+Provides wrappers for classes that implement different stopping criteria for separate-and-conquer algorithms.
 """
-from boomer.seco.statistics cimport ICoverageStatistics
+from libcpp.memory cimport shared_ptr, make_shared
 
 
-cdef class UncoveredLabelsCriterion(StoppingCriterion):
+cdef class CoverageStoppingCriterion(StoppingCriterion):
     """
-    A stopping criterion that stops when the sum of the weight matrix stored by `ICoverageStatistics` is smaller than or
-    equal to a certain threshold.
+    A wrapper for the C++ class `CoverageStoppingCriterion`.
     """
 
     def __cinit__(self, float64 threshold):
         """
         :param threshold: The threshold
         """
-        self.threshold = threshold
-
-    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules):
-        cdef ICoverageStatistics* coverage_statistics = <ICoverageStatistics*>statistics
-        cdef float64 sum_uncovered_labels = coverage_statistics.getSumOfUncoveredLabels()
-        cdef float64 threshold = self.threshold
-        return sum_uncovered_labels > threshold
+        self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[CoverageStoppingCriterionImpl](
+            threshold)
