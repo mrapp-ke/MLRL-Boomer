@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/post_processing.h"
+#include "../../../common/cpp/post_processing/post_processor.h"
 
 
 namespace boosting {
@@ -14,7 +14,7 @@ namespace boosting {
     /**
      * Post-processes the predictions of rules by shrinking their weights by a constant shrinkage parameter.
      */
-    class ConstantShrinkageImpl : public IPostProcessor {
+    class ConstantShrinkage : public IPostProcessor {
 
         private:
 
@@ -25,7 +25,7 @@ namespace boosting {
             /**
              * @param shrinkage The shrinkage parameter. Must be in (0, 1).
              */
-            ConstantShrinkageImpl(float64 shrinkage);
+            ConstantShrinkage(float64 shrinkage);
 
             void postProcess(AbstractPrediction& prediction) const override;
 

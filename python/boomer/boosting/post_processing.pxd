@@ -4,9 +4,9 @@ from boomer.common.post_processing cimport PostProcessor, IPostProcessor
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/post_processing.h" namespace "boosting" nogil:
+cdef extern from "cpp/post_processing/shrinkage_constant.h" namespace "boosting" nogil:
 
-    cdef cppclass ConstantShrinkageImpl(IPostProcessor):
+    cdef cppclass ConstantShrinkageImpl"boosting::ConstantShrinkage"(IPostProcessor):
 
         # Constructors:
 
