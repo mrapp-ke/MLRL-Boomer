@@ -1,11 +1,9 @@
 /**
- * Provides classes that implement different strategies for finding the heads of rules.
- *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "statistics.h"
+#include "../statistics.h"
 
 
 /**
@@ -71,62 +69,5 @@ class IHeadRefinement {
          */
         virtual const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
                                                                bool accumulated) const = 0;
-
-};
-
-/**
- * Defines an interface for all factories that allow to create instances of the type `IHeadRefinement`.
- */
-class IHeadRefinementFactory {
-
-    public:
-
-        virtual ~IHeadRefinementFactory() { };
-
-        /**
-         * Creates and returns a new object of type `IHeadRefinement` that allows to find the best head considering all
-         * available labels.
-         *
-         * @param labelIndices  A reference to an object of type `FullIndexVector` that provides access to the indices
-         *                      of the labels that should be considered
-         * @return              An unique pointer to an object of type `IHeadRefinement` that has been created
-         */
-        virtual std::unique_ptr<IHeadRefinement> create(const FullIndexVector& labelIndices) const = 0;
-
-        /**
-         * Creates and returns a new object of type `IHeadRefinement` that allows to find the best head considering only
-         * a subset of the available labels.
-         *
-         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-         *                      indices of the labels that should be considered
-         * @return              An unique pointer to an object of type `IHeadRefinement` that has been created
-         */
-        virtual std::unique_ptr<IHeadRefinement> create(const PartialIndexVector& labelIndices) const = 0;
-
-};
-
-/**
- * Allows to create instances of the class `SingleLabelHeadRefinementImpl`.
- */
-class SingleLabelHeadRefinementFactoryImpl : public IHeadRefinementFactory {
-
-    public:
-
-        std::unique_ptr<IHeadRefinement> create(const FullIndexVector& labelIndices) const override;
-
-        std::unique_ptr<IHeadRefinement> create(const PartialIndexVector& labelIndices) const override;
-
-};
-
-/**
- * Allows to create instances of the class `FullHeadRefinementImpl`.
- */
-class FullHeadRefinementFactoryImpl : public IHeadRefinementFactory {
-
-    public:
-
-        std::unique_ptr<IHeadRefinement> create(const FullIndexVector& labelIndices) const override;
-
-        std::unique_ptr<IHeadRefinement> create(const PartialIndexVector& labelIndices) const override;
 
 };

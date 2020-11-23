@@ -15,7 +15,7 @@ cdef class HeadRefinementFactory:
 
 cdef class SingleLabelHeadRefinementFactory(HeadRefinementFactory):
     """
-    A wrapper for the C++ class `SingleLabelHeadRefinementFactoryImpl`.
+    A wrapper for the C++ class `SingleLabelHeadRefinementFactory`.
     """
 
     def __cinit__(self):
@@ -24,7 +24,7 @@ cdef class SingleLabelHeadRefinementFactory(HeadRefinementFactory):
 
 cdef class FullHeadRefinementFactory(HeadRefinementFactory):
     """
-    A wrapper for the C++ class `FullHeadRefinementFactoryImpl`.
+    A wrapper for the C++ class `FullHeadRefinementFactory`.
     """
 
     def __cinit__(self):
