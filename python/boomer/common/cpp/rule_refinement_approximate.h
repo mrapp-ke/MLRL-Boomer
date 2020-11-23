@@ -7,8 +7,9 @@
  */
 #pragma once
 
-#include "data/vector_bin.h"
 #include "rule_refinement.h"
+#include "data/vector_bin.h"
+#include "head_refinement/head_refinement.h"
 
 
 /**
