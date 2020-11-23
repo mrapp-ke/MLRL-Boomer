@@ -6,9 +6,8 @@
  */
 #pragma once
 
-#include "data/vector_bin.h"
 #include "thresholds.h"
-#include "head_refinement.h"
+#include "data/vector_bin.h"
 #include <unordered_map>
 
 
