@@ -12,7 +12,7 @@ from boomer.seco.head_refinement import PartialHeadRefinementFactory, LiftFuncti
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
 from boomer.seco.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
 from boomer.seco.statistics_label_wise import LabelWiseStatisticsProviderFactory
-from boomer.seco.stopping_criteria import UncoveredLabelsCriterion
+from boomer.seco.stopping_criteria import CoverageStoppingCriterion
 
 from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
 from boomer.common.rule_learners import MLRuleLearner, SparsePolicy
@@ -175,7 +175,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner):
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
-        stopping_criteria.append(UncoveredLabelsCriterion(0))
+        stopping_criteria.append(CoverageStoppingCriterion(0))
         num_threads = create_num_threads(self.num_threads)
         return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                        default_rule_head_refinement_factory, head_refinement_factory, stopping_criteria,
