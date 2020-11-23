@@ -2,17 +2,18 @@
 
 
 TimeStoppingCriterion::TimeStoppingCriterion(uint32 timeLimit)
-    : timeLimit_(timeLimit), startTime_(0) {
+    : timeLimit_(timeLimit), startTime_(nullptr) {
 
 }
 
 bool TimeStoppingCriterion::shouldContinue(const IStatistics& statistics, uint32 numRules) {
-    time_t currentTime;
-
-    if (startTime_ == 0) {
-        startTime_ = time(currentTime);
+    if (startTime_ == nullptr) {
+        time(startTime_);
         return true;
+    } else {
+        time_t currentTime;
+        time(&currentTime);
+        return difftime(currentTime, *startTime_) < timeLimit_;
     }
 
-    return difftime(currentTime, startTime_) < timeLimit_;
 }

@@ -16,7 +16,7 @@ class TimeStoppingCriterion : public IStoppingCriterion {
 
         uint32 timeLimit_;
 
-        time_t startTime_;
+        time_t* startTime_;
 
     public:
 
