@@ -65,8 +65,8 @@ sources = [
     'boomer/boosting/cpp/rule_evaluation_example_wise.cpp',
     'boomer/boosting/cpp/post_processing.cpp',
     'boomer/seco/cpp/head_refinement/head_refinement_partial.cpp',
+    'boomer/seco/cpp/head_refinement/lift_function_peak.cpp',
     'boomer/seco/cpp/heuristics.cpp',
-    'boomer/seco/cpp/lift_functions.cpp',
     'boomer/seco/cpp/statistics_label_wise.cpp',
     'boomer/seco/cpp/rule_evaluation_label_wise.cpp'
 ]
