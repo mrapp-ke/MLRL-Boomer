@@ -1,33 +1,47 @@
 from boomer.common._types cimport uint32
 from boomer.common.statistics cimport IStatistics
 
+from libcpp cimport bool
+from libcpp.memory cimport shared_ptr
+
+
+cdef extern from "cpp/stopping/stopping_criterion.h" nogil:
+
+    cdef cppclass IStoppingCriterion:
+
+        # Functions:
+
+        bool shouldContinue(const IStatistics& statistics, uint32 numRules)
+
+
+cdef extern from "cpp/stopping/stopping_criterion_size.h" nogil:
+
+    cdef cppclass SizeStoppingCriterionImpl"SizeStoppingCriterion"(IStoppingCriterion):
+
+        # Constructors:
+
+        SizeStoppingCriterionImpl(uint32 maxRules) except +
+
+
+cdef extern from "cpp/stopping/stopping_criterion_time.h" nogil:
+
+    cdef cppclass TimeStoppingCriterionImpl"TimeStoppingCriterion"(IStoppingCriterion):
+
+        # Constructors:
+
+        TimeStoppingCriterionImpl(uint32 timeLimit) except +
+
 
 cdef class StoppingCriterion:
 
-    # Functions:
+    # Attributes:
 
-    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules)
+    cdef shared_ptr[IStoppingCriterion] stopping_criterion_ptr
 
 
 cdef class SizeStoppingCriterion(StoppingCriterion):
-
-    # Attributes:
-
-    cdef readonly uint32 max_rules
-
-    # Functions:
-
-    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules)
+    pass
 
 
 cdef class TimeStoppingCriterion(StoppingCriterion):
-
-    # Attributes:
-
-    cdef readonly uint32 time_limit
-
-    cdef long start_time
-
-    # Functions:
-
-    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules)
+    pass
