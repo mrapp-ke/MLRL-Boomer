@@ -9,11 +9,13 @@ from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.statistics cimport StatisticsProvider, IStatistics
 from boomer.common.thresholds cimport AbstractThresholds
-from boomer.common.stopping_criteria cimport StoppingCriterion
+from boomer.common.stopping_criteria cimport IStoppingCriterion, StoppingCriterion
 from boomer.common.sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG
 from boomer.common.head_refinement cimport IHeadRefinementFactory
 
 from libcpp.memory cimport shared_ptr, unique_ptr, make_unique
+
+from cython.operator cimport dereference
 
 
 cdef class SequentialRuleInduction:
@@ -171,9 +173,12 @@ cdef inline bint __should_continue(list stopping_criteria, IStatistics* statisti
     :return:                    True, if additional rules should be induced, False otherwise
     """
     cdef StoppingCriterion stopping_criterion
+    cdef IStoppingCriterion* stopping_criterion_ptr
 
     for stopping_criterion in stopping_criteria:
-        if not stopping_criterion.should_continue(statistics, num_rules):
+        stopping_criterion_ptr = stopping_criterion.stopping_criterion_ptr.get()
+
+        if not stopping_criterion_ptr.shouldContinue(dereference(statistics), num_rules):
             return False
 
     return True
