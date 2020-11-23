@@ -1,10 +1,11 @@
 /**
+ * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
 #include "../../../common/cpp/head_refinement/head_refinement_factory.h"
-#include "../lift_functions.h"
+#include "lift_function.h"
 
 
 namespace seco {

@@ -3,36 +3,48 @@ from boomer.common._types cimport float64
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/heuristics.h" namespace "seco" nogil:
+cdef extern from "cpp/heuristics/heuristic.h" namespace "seco" nogil:
 
     cdef cppclass IHeuristic:
         pass
 
 
-    cdef cppclass PrecisionImpl(IHeuristic):
+cdef extern from "cpp/heuristics/heuristic_precision.h" namespace "seco" nogil:
+
+    cdef cppclass PrecisionImpl"seco::Precision"(IHeuristic):
         pass
 
 
-    cdef cppclass RecallImpl(IHeuristic):
+cdef extern from "cpp/heuristics/heuristic_recall.h" namespace "seco" nogil:
+
+    cdef cppclass RecallImpl"seco::Recall"(IHeuristic):
         pass
 
 
-    cdef cppclass WRAImpl(IHeuristic):
+cdef extern from "cpp/heuristics/heuristic_wra.h" namespace "seco" nogil:
+
+    cdef cppclass WRAImpl"seco::WRA"(IHeuristic):
         pass
 
 
-    cdef cppclass HammingLossImpl(IHeuristic):
+cdef extern from "cpp/heuristics/heuristic_hamming_loss.h" namespace "seco" nogil:
+
+    cdef cppclass HammingLossImpl"seco::HammingLoss"(IHeuristic):
         pass
 
 
-    cdef cppclass FMeasureImpl(IHeuristic):
+cdef extern from "cpp/heuristics/heuristic_f_measure.h" namespace "seco" nogil:
+
+    cdef cppclass FMeasureImpl"seco::FMeasure"(IHeuristic):
 
         # Constructors:
 
         FMeasureImpl(float64 beta) except +
 
 
-    cdef cppclass MEstimateImpl(IHeuristic):
+cdef extern from "cpp/heuristics/heuristic_m_estimate.h" namespace "seco" nogil:
+
+    cdef cppclass MEstimateImpl"seco::MEstimate"(IHeuristic):
 
         # Constructors:
 
