@@ -1,14 +1,14 @@
-#include "post_processing.h"
+#include "shrinkage_constant.h"
 
 using namespace boosting;
 
 
-ConstantShrinkageImpl::ConstantShrinkageImpl(float64 shrinkage)
+ConstantShrinkage::ConstantShrinkage(float64 shrinkage)
     : shrinkage_(shrinkage) {
 
 }
 
-void ConstantShrinkageImpl::postProcess(AbstractPrediction& prediction) const {
+void ConstantShrinkage::postProcess(AbstractPrediction& prediction) const {
     uint32 numElements = prediction.getNumElements();
     AbstractPrediction::score_iterator iterator = prediction.scores_begin();
 

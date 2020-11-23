@@ -3,7 +3,7 @@ from boomer.common._predictions cimport AbstractPrediction
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/post_processing.h" nogil:
+cdef extern from "cpp/post_processing/post_processor.h" nogil:
 
     cdef cppclass IPostProcessor:
 
@@ -12,7 +12,9 @@ cdef extern from "cpp/post_processing.h" nogil:
         void postProcess(AbstractPrediction& prediction)
 
 
-    cdef cppclass NoPostProcessorImpl(IPostProcessor):
+cdef extern from "cpp/post_processing/post_processor_no.h" nogil:
+
+    cdef cppclass NoPostProcessorImpl"NoPostProcessor"(IPostProcessor):
         pass
 
 
