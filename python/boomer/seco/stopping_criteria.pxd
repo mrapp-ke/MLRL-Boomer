@@ -1,14 +1,15 @@
-from boomer.common._types cimport uint32, float64
-from boomer.common.statistics cimport IStatistics
-from boomer.common.stopping_criteria cimport StoppingCriterion
+from boomer.common._types cimport float64
+from boomer.common.stopping_criteria cimport IStoppingCriterion, StoppingCriterion
 
 
-cdef class UncoveredLabelsCriterion(StoppingCriterion):
+cdef extern from "cpp/stopping/stopping_criterion_coverage.h" nogil:
 
-    # Attributes:
+    cdef cppclass CoverageStoppingCriterionImpl"seco::CoverageStoppingCriterion"(IStoppingCriterion):
 
-    cdef readonly float64 threshold
+        # Constructors:
 
-    # Functions:
+        CoverageStoppingCriterionImpl(float64 threshold) except +
 
-    cdef bint should_continue(self, IStatistics* statistics, uint32 num_rules)
+
+cdef class CoverageStoppingCriterion(StoppingCriterion):
+    pass
