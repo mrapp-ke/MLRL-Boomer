@@ -1,4 +1,4 @@
-#include "head_refinement.h"
+#include "head_refinement_partial.h"
 
 using namespace seco;
 
@@ -134,15 +134,15 @@ class PartialHeadRefinement : public IHeadRefinement {
 
 };
 
-PartialHeadRefinementFactoryImpl::PartialHeadRefinementFactoryImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr)
+PartialHeadRefinementFactory::PartialHeadRefinementFactory(std::shared_ptr<ILiftFunction> liftFunctionPtr)
     : liftFunctionPtr_(liftFunctionPtr) {
 
 }
 
-std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const FullIndexVector& labelIndices) const {
+std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create(const FullIndexVector& labelIndices) const {
     return std::make_unique<PartialHeadRefinement<FullIndexVector>>(labelIndices, liftFunctionPtr_);
 }
 
-std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactoryImpl::create(const PartialIndexVector& labelIndices) const {
+std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create(const PartialIndexVector& labelIndices) const {
     return std::make_unique<PartialHeadRefinement<PartialIndexVector>>(labelIndices, liftFunctionPtr_);
 }

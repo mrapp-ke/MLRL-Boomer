@@ -6,7 +6,7 @@ from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/head_refinement.h" nogil:
+cdef extern from "cpp/head_refinement/head_refinement.h" nogil:
 
     cdef cppclass IHeadRefinement:
 
@@ -17,6 +17,8 @@ cdef extern from "cpp/head_refinement.h" nogil:
         unique_ptr[AbstractEvaluatedPrediction] pollHead()
 
 
+cdef extern from "cpp/head_refinement/head_refinement_factory.h" nogil:
+
     cdef cppclass IHeadRefinementFactory:
 
         unique_ptr[IHeadRefinement] create(const FullIndexVector& labelIndices)
@@ -24,11 +26,15 @@ cdef extern from "cpp/head_refinement.h" nogil:
         unique_ptr[IHeadRefinement] create(const PartialIndexVector& labelIndices)
 
 
-    cdef cppclass SingleLabelHeadRefinementFactoryImpl(IHeadRefinementFactory):
+cdef extern from "cpp/head_refinement/head_refinement_single.h" nogil:
+
+    cdef cppclass SingleLabelHeadRefinementFactoryImpl"SingleLabelHeadRefinementFactory"(IHeadRefinementFactory):
         pass
 
 
-    cdef cppclass FullHeadRefinementFactoryImpl(IHeadRefinementFactory):
+cdef extern from "cpp/head_refinement/head_refinement_full.h" nogil:
+
+    cdef cppclass FullHeadRefinementFactoryImpl"FullHeadRefinementFactory"(IHeadRefinementFactory):
         pass
 
 
