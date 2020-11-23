@@ -1,13 +1,10 @@
 /**
- * Provides classes that implement different strategies for finding the heads of rules.
- *
- * @author Jakob Steeg (jakob.steeg@gmail.com)
- * @author Michael Rapp (mrapp@ke.tu-darmstadt)
+ * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "../../common/cpp/head_refinement.h"
-#include "lift_functions.h"
+#include "../../../common/cpp/head_refinement/head_refinement_factory.h"
+#include "../lift_functions.h"
 
 
 namespace seco {
@@ -15,7 +12,7 @@ namespace seco {
     /**
      * Allows to create instances of the class `PartialHeadRefinementImpl`.
      */
-    class PartialHeadRefinementFactoryImpl : public IHeadRefinementFactory {
+    class PartialHeadRefinementFactory : public IHeadRefinementFactory {
 
         private:
 
@@ -27,7 +24,7 @@ namespace seco {
              * @param liftFunctionPtr A shared pointer to an object of type `ILiftFunction` that should affect the
              *                        quality scores of rules, depending on how many labels they predict
              */
-            PartialHeadRefinementFactoryImpl(std::shared_ptr<ILiftFunction> liftFunctionPtr);
+            PartialHeadRefinementFactory(std::shared_ptr<ILiftFunction> liftFunctionPtr);
 
             std::unique_ptr<IHeadRefinement> create(const FullIndexVector& labelIndices) const override;
 

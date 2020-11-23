@@ -1,12 +1,24 @@
 from boomer.common._types cimport uint32, float32
 from boomer.common._indices cimport IIndexVector
-from boomer.common._random cimport RNG
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/sub_sampling.h" nogil:
+cdef extern from "cpp/sampling/random.h" nogil:
+
+    cdef cppclass RNG:
+
+        # Constructors:
+
+        RNG(uint32 randomState) except +
+
+        # Functions:
+
+        uint32 random(uint32 min, uint32 max)
+
+
+cdef extern from "cpp/sampling/weight_vector.h" nogil:
 
     cdef cppclass IWeightVector:
 
@@ -19,6 +31,8 @@ cdef extern from "cpp/sub_sampling.h" nogil:
         uint32 getWeight(uint32 pos)
 
 
+cdef extern from "cpp/sampling/instance_sampling.h" nogil:
+
     cdef cppclass IInstanceSubSampling:
 
         # Functions:
@@ -26,23 +40,31 @@ cdef extern from "cpp/sub_sampling.h" nogil:
         unique_ptr[IWeightVector] subSample(uint32 numExamples, RNG& rng)
 
 
-    cdef cppclass BaggingImpl(IInstanceSubSampling):
+cdef extern from "cpp/sampling/instance_sampling_bagging.h" nogil:
+
+    cdef cppclass BaggingImpl"Bagging"(IInstanceSubSampling):
 
         # Constructors:
 
         BaggingImpl(float32 sampleSize) except +
 
 
-    cdef cppclass RandomInstanceSubsetSelectionImpl(IInstanceSubSampling):
+cdef extern from "cpp/sampling/instance_sampling_random.h" nogil:
+
+    cdef cppclass RandomInstanceSubsetSelectionImpl"RandomInstanceSubsetSelection"(IInstanceSubSampling):
 
         # Constructors:
 
         RandomInstanceSubsetSelectionImpl(float32 sampleSize)
 
 
-    cdef cppclass NoInstanceSubSamplingImpl(IInstanceSubSampling):
+cdef extern from "cpp/sampling/instance_sampling_no.h" nogil:
+
+    cdef cppclass NoInstanceSubSamplingImpl"NoInstanceSubSampling"(IInstanceSubSampling):
         pass
 
+
+cdef extern from "cpp/sampling/feature_sampling.h" nogil:
 
     cdef cppclass IFeatureSubSampling:
 
@@ -51,16 +73,22 @@ cdef extern from "cpp/sub_sampling.h" nogil:
         unique_ptr[IIndexVector] subSample(uint32 numFeatures, RNG& rng)
 
 
-    cdef cppclass RandomFeatureSubsetSelectionImpl(IFeatureSubSampling):
+cdef extern from "cpp/sampling/feature_sampling_random.h" nogil:
+
+    cdef cppclass RandomFeatureSubsetSelectionImpl"RandomFeatureSubsetSelection"(IFeatureSubSampling):
 
         # Constructors:
 
         RandomFeatureSubsetSelectionImpl(float32 sampleSize) except +
 
 
-    cdef cppclass NoFeatureSubSamplingImpl(IFeatureSubSampling):
+cdef extern from "cpp/sampling/feature_sampling_no.h" nogil:
+
+    cdef cppclass NoFeatureSubSamplingImpl"NoFeatureSubSampling"(IFeatureSubSampling):
         pass
 
+
+cdef extern from "cpp/sampling/label_sampling.h" nogil:
 
     cdef cppclass ILabelSubSampling:
 
@@ -69,14 +97,18 @@ cdef extern from "cpp/sub_sampling.h" nogil:
         unique_ptr[IIndexVector] subSample(uint32 numLabels, RNG& rng)
 
 
-    cdef cppclass RandomLabelSubsetSelectionImpl(ILabelSubSampling):
+cdef extern from "cpp/sampling/label_sampling_random.h" nogil:
+
+    cdef cppclass RandomLabelSubsetSelectionImpl"RandomLabelSubsetSelection"(ILabelSubSampling):
 
         # Constructors:
 
         RandomLabelSubsetSelectionImpl(uint32 numSamples)
 
 
-    cdef cppclass NoLabelSubSamplingImpl(ILabelSubSampling):
+cdef extern from "cpp/sampling/label_sampling_no.h" nogil:
+
+    cdef cppclass NoLabelSubSamplingImpl"NoLabelSubSampling"(ILabelSubSampling):
         pass
 
 
