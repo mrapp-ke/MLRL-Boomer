@@ -7,7 +7,7 @@ Provides wrappers for classes that implement different stopping criteria for sep
 from libcpp.memory cimport shared_ptr, make_shared
 
 
-cdef class UncoveredLabelsCriterion(StoppingCriterion):
+cdef class CoverageStoppingCriterion(StoppingCriterion):
     """
     A wrapper for the C++ class `CoverageStoppingCriterion`.
     """
