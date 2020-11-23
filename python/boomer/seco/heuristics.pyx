@@ -16,7 +16,7 @@ cdef class Heuristic:
 
 cdef class Precision(Heuristic):
     """
-    A wrapper for the C++ class `PrecisionImpl`.
+    A wrapper for the C++ class `Precision`.
     """
 
     def __cinit__(self):
@@ -25,7 +25,7 @@ cdef class Precision(Heuristic):
 
 cdef class Recall(Heuristic):
     """
-    A wrapper for the C++ class `RecallImpl`.
+    A wrapper for the C++ class `Recall`.
     """
 
     def __cinit__(self):
@@ -34,7 +34,7 @@ cdef class Recall(Heuristic):
 
 cdef class WRA(Heuristic):
     """
-    A wrapper for the C++ class `WRAImpl`.
+    A wrapper for the C++ class `WRA`.
     """
 
     def __cinit__(self):
@@ -43,7 +43,7 @@ cdef class WRA(Heuristic):
 
 cdef class HammingLoss(Heuristic):
     """
-    A wrapper for the C++ class `HammingLossImpl`.
+    A wrapper for the C++ class `HammingLoss`.
     """
 
     def __cinit__(self):
@@ -52,7 +52,7 @@ cdef class HammingLoss(Heuristic):
 
 cdef class FMeasure(Heuristic):
     """
-    A wrapper for the C++ class `FMeasureImpl`.
+    A wrapper for the C++ class `FMeasure`.
     """
 
     def __cinit__(self, float64 beta = 0.5):
@@ -64,7 +64,7 @@ cdef class FMeasure(Heuristic):
 
 cdef class MEstimate(Heuristic):
     """
-    A wrapper for the C++ class `MEstimateImpl`.
+    A wrapper for the C++ class `MEstimate`.
     """
 
     def __cinit__(self, float64 m = 22.466):
