@@ -7,6 +7,7 @@
 
 #include "input/feature_matrix.h"
 #include "input/nominal_feature_mask.h"
+#include "head_refinement/head_refinement_factory.h"
 #include "sampling/weight_vector.h"
 #include "rule_refinement.h"
 #include "statistics.h"
