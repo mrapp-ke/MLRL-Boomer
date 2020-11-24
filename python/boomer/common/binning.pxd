@@ -11,20 +11,20 @@ cdef extern from "cpp/binning/feature_binning.h" nogil:
 
 cdef extern from "cpp/binning/feature_binning_equal_frequency.h" nogil:
 
-    cdef cppclass EqualFrequencyBinningImpl"EqualFrequencyBinning"(IFeatureBinning):
+    cdef cppclass EqualFrequencyFeatureBinningImpl"EqualFrequencyFeatureBinning"(IFeatureBinning):
 
         # Constructors:
 
-        EqualFrequencyBinningImpl(float32 binRatio) except +
+        EqualFrequencyFeatureBinningImpl(float32 binRatio) except +
 
 
 cdef extern from "cpp/binning/feature_binning_equal_width.h" nogil:
 
-    cdef cppclass EqualWidthBinningImpl"EqualWidthBinning"(IFeatureBinning):
+    cdef cppclass EqualWidthFeatureBinningImpl"EqualWidthFeatureBinning"(IFeatureBinning):
 
         # Constructors:
 
-        EqualWidthBinningImpl(float32 binRatio) except +
+        EqualWidthFeatureBinningImpl(float32 binRatio) except +
 
 
 cdef class Binning:
@@ -34,9 +34,9 @@ cdef class Binning:
     cdef shared_ptr[IFeatureBinning] binning_ptr
 
 
-cdef class EqualFrequencyBinning(Binning):
+cdef class EqualFrequencyFeatureBinning(Binning):
     pass
 
 
-cdef class EqualWidthBinning(Binning):
+cdef class EqualWidthFeatureBinning(Binning):
     pass

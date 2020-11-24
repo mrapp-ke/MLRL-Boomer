@@ -3,12 +3,12 @@
 #include <cmath>
 
 
-EqualWidthBinning::EqualWidthBinning(float32 binRatio)
+EqualWidthFeatureBinning::EqualWidthFeatureBinning(float32 binRatio)
     : binRatio_(binRatio) {
 
 }
 
-IFeatureBinning::FeatureInfo EqualWidthBinning::getFeatureInfo(FeatureVector& featureVector) const {
+IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
     FeatureInfo featureInfo;
     uint32 numElements = featureVector.getNumElements();
 
@@ -45,8 +45,8 @@ IFeatureBinning::FeatureInfo EqualWidthBinning::getFeatureInfo(FeatureVector& fe
     return featureInfo;
 }
 
-void EqualWidthBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                   IBinningObserver<float32>& observer) const {
+void EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
+                                          IBinningObserver<float32>& observer) const {
     uint32 numBins = featureInfo.numBins;
     float32 min = featureInfo.minValue;
     float32 max = featureInfo.maxValue;

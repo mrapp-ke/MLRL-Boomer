@@ -2,12 +2,12 @@
 #include <cmath>
 
 
-EqualFrequencyBinning::EqualFrequencyBinning(float32 binRatio)
+EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio)
     : binRatio_(binRatio) {
 
 }
 
-IFeatureBinning::FeatureInfo EqualFrequencyBinning::getFeatureInfo(FeatureVector& featureVector) const {
+IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
     FeatureInfo featureInfo;
     uint32 numElements = featureVector.getNumElements();
 
@@ -34,8 +34,8 @@ IFeatureBinning::FeatureInfo EqualFrequencyBinning::getFeatureInfo(FeatureVector
     return featureInfo;
 }
 
-void EqualFrequencyBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                       IBinningObserver<float32>& observer) const {
+void EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
+                                              IBinningObserver<float32>& observer) const {
     uint32 numBins = featureInfo.numBins;
     //Defining length of the list, because we'll use it at least four times
     uint32 length = featureVector.getNumElements();

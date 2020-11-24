@@ -7,19 +7,19 @@ cdef class Binning:
     """
     pass
 
-cdef class EqualFrequencyBinning(Binning):
+cdef class EqualFrequencyFeatureBinning(Binning):
     """
-    A wrapper for the C++ class `EqualFrequencyBinning`.
-    """
-
-    def __cinit__(self, float32 bin_ratio):
-        self.binning_ptr = <shared_ptr[IFeatureBinning]>make_shared[EqualFrequencyBinningImpl](bin_ratio)
-
-
-cdef class EqualWidthBinning(Binning):
-    """
-    A wrapper for the C++ class `EqualWidthBinning`.
+    A wrapper for the C++ class `EqualFrequencyFeatureBinning`.
     """
 
     def __cinit__(self, float32 bin_ratio):
-        self.binning_ptr = <shared_ptr[IFeatureBinning]>make_shared[EqualWidthBinningImpl](bin_ratio)
+        self.binning_ptr = <shared_ptr[IFeatureBinning]>make_shared[EqualFrequencyFeatureBinningImpl](bin_ratio)
+
+
+cdef class EqualWidthFeatureBinning(Binning):
+    """
+    A wrapper for the C++ class `EqualWidthFeatureBinning`.
+    """
+
+    def __cinit__(self, float32 bin_ratio):
+        self.binning_ptr = <shared_ptr[IFeatureBinning]>make_shared[EqualWidthFeatureBinningImpl](bin_ratio)
