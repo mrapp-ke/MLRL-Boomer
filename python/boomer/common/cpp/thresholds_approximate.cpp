@@ -37,10 +37,11 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
     for(intp r = start; r < end; r++) {
         for (BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++) {
             BinVector::Example example = *it;
-            if(wasEmpty){
+            coverageMaskIterator[example.index] = numConditions;
+
+            if (wasEmpty) {
                 filteredVector->addExample(r, example);
             }
-            coverageMaskIterator[example.index] = numConditions;
         }
 
         filteredIterator[i].numExamples = iterator[r].numExamples;
@@ -143,7 +144,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
             auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry<BinVector>()).first;
             BinVector* binVector = cacheFilteredIterator->second.vectorPtr.get();
 
-            if(binVector == nullptr){
+            if (binVector == nullptr) {
                 thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
             }
 
