@@ -36,7 +36,7 @@ IBinning::FeatureInfo EqualFrequencyBinningImpl::getFeatureInfo(FeatureVector& f
 }
 
 void EqualFrequencyBinningImpl::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                           IBinningObserver& observer) const {
+                                           IBinningObserver<float32>& observer) const {
     uint32 numBins = featureInfo.numBins;
     //Defining length of the list, because we'll use it at least four times
     uint32 length = featureVector.getNumElements();
@@ -54,7 +54,7 @@ void EqualFrequencyBinningImpl::createBins(FeatureInfo featureInfo, const Featur
         //set last value to the current one for the next iteration
         previousValue = currentValue;
         //notify observer
-        observer.onBinUpdate(binIndex, iterator[i]);
+        observer.onBinUpdate(binIndex, iterator[i].index, currentValue);
     }
 }
 
@@ -101,7 +101,7 @@ IBinning::FeatureInfo EqualWidthBinningImpl::getFeatureInfo(FeatureVector& featu
 }
 
 void EqualWidthBinningImpl::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                       IBinningObserver& observer) const {
+                                       IBinningObserver<float32>& observer) const {
     uint32 numBins = featureInfo.numBins;
     float32 min = featureInfo.minValue;
     float32 max = featureInfo.maxValue;
@@ -120,6 +120,6 @@ void EqualWidthBinningImpl::createBins(FeatureInfo featureInfo, const FeatureVec
             binIndex = numBins - 1;
         }
         //notify observer
-        observer.onBinUpdate(binIndex, iterator[i]);
+        observer.onBinUpdate(binIndex, iterator[i].index, currentValue);
     }
 }
