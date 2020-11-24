@@ -66,7 +66,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
          * are retrieved from the cache. Otherwise, they are computed by fetching the feature values from the feature
          * matrix and applying a binning method.
          */
-        class Callback : public IBinningObserver, public IRuleRefinementCallback<BinVector> {
+        class Callback : public IBinningObserver<float32>, public IRuleRefinementCallback<BinVector> {
 
             private:
 
@@ -110,25 +110,24 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                     return std::make_unique<Result>(*binCacheEntry.histogramPtr, *binCacheEntry.binVectorPtr);
                 }
 
-                void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) override {
+                void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
                     BinVector::iterator binIterator = currentBinVector_->begin();
                     binIterator[binIndex].numExamples += 1;
-                    float32 currentValue = entry.value;
 
-                    if (currentValue < binIterator[binIndex].minValue) {
-                        binIterator[binIndex].minValue = currentValue;
+                    if (value < binIterator[binIndex].minValue) {
+                        binIterator[binIndex].minValue = value;
                     }
 
-                    if (binIterator[binIndex].maxValue < currentValue) {
-                        binIterator[binIndex].maxValue = currentValue;
+                    if (binIterator[binIndex].maxValue < value) {
+                        binIterator[binIndex].maxValue = value;
                     }
 
                     IndexedValue<float32> example;
-                    example.index = entry.index;
-                    example.value = entry.value;
+                    example.index = originalIndex;
+                    example.value = value;
                     currentBinVector_->addExample(binIndex, example);
 
-                    histogramBuilderPtr_->onBinUpdate(binIndex, entry);
+                    histogramBuilderPtr_->onBinUpdate(binIndex, originalIndex, value);
                 }
 
         };
