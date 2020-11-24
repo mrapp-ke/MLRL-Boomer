@@ -10,7 +10,7 @@
 /**
  * Assigns feature values to bins in a way such that each bin contains approximately the same number of values.
  */
-class EqualFrequencyBinning : public IFeatureBinning {
+class EqualFrequencyFeatureBinning : public IFeatureBinning {
 
     private:
 
@@ -22,7 +22,7 @@ class EqualFrequencyBinning : public IFeatureBinning {
          * @param binRatio A percentage that specifies how many bins should be used to assign the values in an array to,
          *                 e.g., if 100 values are available, 0.5 means that `ceil(0.5 * 100) = 50` bins should be used
          */
-        EqualFrequencyBinning(float32 binRatio);
+        EqualFrequencyFeatureBinning(float32 binRatio);
 
         FeatureInfo getFeatureInfo(FeatureVector& featureVector) const override;
 
