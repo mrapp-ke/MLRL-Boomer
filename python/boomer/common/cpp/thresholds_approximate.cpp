@@ -138,6 +138,12 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
         std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices, uint32 featureIndex) {
             thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
             cacheFiltered_.emplace(featureIndex, FilteredCacheEntry<BinVector>()).first;
+            auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry<BinVector>()).first;
+            BinVector* binVector = cacheFilteredIterator->second.vectorPtr.get();
+
+            if(binVector == nullptr){
+                thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
+            }
 
             std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
             std::unique_ptr<IHeadRefinement> headRefinementPtr =
