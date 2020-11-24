@@ -5,7 +5,7 @@ from libcpp cimport bool
 from libcpp.list cimport list as double_linked_list
 
 
-cdef extern from "cpp/rules.h" nogil:
+cdef extern from "cpp/model/condition.h" nogil:
 
     cdef enum Comparator:
         LEQ
@@ -23,6 +23,8 @@ cdef extern from "cpp/rules.h" nogil:
         bool covered
         uint32 coveredWeights
 
+
+cdef extern from "cpp/model/condition_list.h" nogil:
 
     cdef cppclass ConditionList:
 
