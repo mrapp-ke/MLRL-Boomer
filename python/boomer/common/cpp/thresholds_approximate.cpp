@@ -8,12 +8,14 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
                                        CoverageMask& coverageMask) {
     uint32 numTotalElements = vector.getNumElements();
     uint32 numElements = covered ? conditionEnd : (numTotalElements > conditionEnd ? numTotalElements - conditionEnd : 0);
+    bool wasEmpty = false;
 
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
 
     if (filteredVector == nullptr) {
         cacheEntry.vectorPtr = std::make_unique<BinVector>(numElements);
         filteredVector = cacheEntry.vectorPtr.get();
+        wasEmpty = true;
     }
 
     typename BinVector::const_iterator iterator = vector.cbegin();
@@ -33,10 +35,12 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
     }
 
     for(intp r = start; r < end; r++) {
-        for (BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++) {
-            BinVector::Example example = *it;
-            filteredVector->addExample(r, example);
-            coverageMaskIterator[example.index] = numConditions;
+        if(wasEmpty){
+            for (BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++) {
+                BinVector::Example example = *it;
+                filteredVector->addExample(r, example);
+                coverageMaskIterator[example.index] = numConditions;
+            }
         }
 
         filteredIterator[i].numExamples = iterator[r].numExamples;
