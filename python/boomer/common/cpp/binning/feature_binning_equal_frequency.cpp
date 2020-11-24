@@ -7,7 +7,7 @@ EqualFrequencyBinning::EqualFrequencyBinning(float32 binRatio)
 
 }
 
-IBinning::FeatureInfo EqualFrequencyBinning::getFeatureInfo(FeatureVector& featureVector) const {
+IFeatureBinning::FeatureInfo EqualFrequencyBinning::getFeatureInfo(FeatureVector& featureVector) const {
     FeatureInfo featureInfo;
     uint32 numElements = featureVector.getNumElements();
 

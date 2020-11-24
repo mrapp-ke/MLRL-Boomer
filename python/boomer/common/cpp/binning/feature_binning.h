@@ -9,9 +9,9 @@
 
 
 /**
- * Defines an interface for methods that assign floating point values to bins.
+ * Defines an interface for methods that assign feature values to bins.
  */
-class IBinning {
+class IFeatureBinning {
 
     public:
 
@@ -25,7 +25,7 @@ class IBinning {
             float32 maxValue;
         };
 
-        virtual ~IBinning() { };
+        virtual ~IFeatureBinning() { };
 
         /**
          * Retrieves and returns information about the values in a given `FeatureVector` that is required to apply the

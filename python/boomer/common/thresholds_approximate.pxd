@@ -1,4 +1,4 @@
-from boomer.common.binning cimport Binning, IBinning
+from boomer.common.binning cimport Binning, IFeatureBinning
 from boomer.common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory
 from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureMask, INominalFeatureMask
 from boomer.common.statistics cimport StatisticsProvider, IStatistics
@@ -17,7 +17,7 @@ cdef extern from "cpp/thresholds_approximate.h" nogil:
                               shared_ptr[INominalFeatureMask] nominalFeatureMaskPtr,
                               shared_ptr[IStatistics] statisticsPtr,
                               shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
-                              shared_ptr[IBinning] binningPtr) except +
+                              shared_ptr[IFeatureBinning] binningPtr) except +
 
 
 cdef class ApproximateThresholdsFactory(ThresholdsFactory):

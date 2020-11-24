@@ -8,9 +8,9 @@
 
 
 /**
- * Assigns floating point values to bins in a way such that each bin contains values from equally sized value ranges.
+ * Assigns feature values to bins in a way such that each bin contains values from equally sized value ranges.
  */
-class EqualWidthBinning : public IBinning {
+class EqualWidthBinning : public IFeatureBinning {
 
     private:
 
