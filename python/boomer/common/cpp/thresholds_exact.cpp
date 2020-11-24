@@ -27,7 +27,7 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
     bool ascending = conditionEnd < conditionPrevious;
     intp direction = ascending ? 1 : -1;
     intp start = conditionEnd + direction;
-    uint32 numSteps = abs(start - conditionPrevious);
+    uint32 numSteps = std::abs(start - conditionPrevious);
 
     // Traverse the examples in ascending (or descending) order until we encounter an example that is contained in the
     // current sub-sample...
@@ -83,7 +83,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
                                        IStatistics& statistics, const IWeightVector& weights) {
     // Determine the number of elements in the filtered vector...
     uint32 numTotalElements = vector.getNumElements();
-    uint32 distance = abs(conditionStart - conditionEnd);
+    uint32 distance = std::abs(conditionStart - conditionEnd);
     uint32 numElements = covered ? distance : (numTotalElements > distance ? numTotalElements - distance : 0);
 
     // Create a new vector that will contain the filtered elements, if necessary...
@@ -383,7 +383,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
             // `refinement.end`, which represents the position that separates the covered from the uncovered examples.
             // However, when taking into account the examples with zero weights, this position may differ from the
             // current value of `refinement.end` and therefore must be adjusted...
-            if (weights_.hasZeroWeights() && abs(refinement.previous - refinement.end) > 1) {
+            if (weights_.hasZeroWeights() && std::abs(refinement.previous - refinement.end) > 1) {
                 refinement.end = adjustSplit(*featureVector, refinement.end, refinement.previous, refinement.threshold);
             }
 
