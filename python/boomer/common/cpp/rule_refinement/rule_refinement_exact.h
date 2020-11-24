@@ -7,7 +7,8 @@
 #pragma once
 
 #include "rule_refinement.h"
-#include "head_refinement/head_refinement.h"
+#include "rule_refinement_callback.h"
+#include "../head_refinement/head_refinement.h"
 #include <cmath>
 
 
