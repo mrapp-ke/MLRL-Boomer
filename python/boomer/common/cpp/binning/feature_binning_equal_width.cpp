@@ -35,7 +35,7 @@ IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVec
             }
         }
 
-        featureInfo.numBins = ceil(numDistinctValues * binRatio_);
+        featureInfo.numBins = std::ceil(numDistinctValues * binRatio_);
         featureInfo.minValue = minValue;
         featureInfo.maxValue = maxValue;
     } else {
@@ -59,7 +59,7 @@ void EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo, const Feature
 
     for (uint32 i = 0; i < length; i++) {
         float32 currentValue = iterator[i].value;
-        uint32 binIndex = (uint32) floor((currentValue - min) / spanPerBin);
+        uint32 binIndex = (uint32) std::floor((currentValue - min) / spanPerBin);
         //in some cases the calculated index can exceed the last bin, in which case we want the example in the last bin
         if (binIndex >= numBins) {
             binIndex = numBins - 1;
