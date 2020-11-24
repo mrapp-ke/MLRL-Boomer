@@ -426,7 +426,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             } else {
                 // If the condition separates an examples with feature value < 0 from an example with feature value > 0
                 refinementPtr->threshold =
-                    previousThresholdNegative + (fabs(previousThreshold - previousThresholdNegative) / 2.0);
+                    previousThresholdNegative + (std::fabs(previousThreshold - previousThresholdNegative) / 2.0);
             }
         }
 
@@ -450,7 +450,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             } else {
                 // If the condition separates an examples with feature value < 0 from an example with feature value > 0
                 refinementPtr->threshold =
-                    previousThresholdNegative + (fabs(previousThreshold - previousThresholdNegative) / 2.0);
+                    previousThresholdNegative + (std::fabs(previousThreshold - previousThresholdNegative) / 2.0);
             }
         }
     }

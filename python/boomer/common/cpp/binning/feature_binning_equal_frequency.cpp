@@ -26,7 +26,7 @@ IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(Featur
             }
         }
 
-        featureInfo.numBins = ceil(numDistinctValues * binRatio_);
+        featureInfo.numBins = std::ceil(numDistinctValues * binRatio_);
     } else {
         featureInfo.numBins = 0;
     }
@@ -40,7 +40,7 @@ void EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo, const Fea
     //Defining length of the list, because we'll use it at least four times
     uint32 length = featureVector.getNumElements();
     FeatureVector::const_iterator iterator = featureVector.cbegin();
-    uint32 numElementsPerBin = (uint32) ceil((float) length / (float) numBins);
+    uint32 numElementsPerBin = (uint32) std::ceil((float) length / (float) numBins);
     //looping over bins
     uint32 binIndex = 0;  //Has to be initialized for the first iteration
     float32 previousValue = 0.0;  //Has to be initialized for the first iteration
