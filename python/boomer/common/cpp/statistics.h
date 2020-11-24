@@ -8,9 +8,9 @@
 
 #include "indices/index_vector_full.h"
 #include "indices/index_vector_partial.h"
+#include "binning/binning_observer.h"
 #include "rule_evaluation.h"
 #include "predictions.h"
-#include "binning.h"
 #include <memory>
 
 
