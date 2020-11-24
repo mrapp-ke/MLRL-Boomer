@@ -3,36 +3,40 @@ from boomer.common._types cimport float32
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/binning.h" nogil:
+cdef extern from "cpp/binning/feature_binning.h" nogil:
 
-    cdef cppclass IBinning:
+    cdef cppclass IFeatureBinning:
         pass
 
 
-    cdef cppclass EqualFrequencyBinningImpl(IBinning):
+cdef extern from "cpp/binning/feature_binning_equal_frequency.h" nogil:
+
+    cdef cppclass EqualFrequencyFeatureBinningImpl"EqualFrequencyFeatureBinning"(IFeatureBinning):
 
         # Constructors:
 
-        EqualFrequencyBinningImpl(float32 binRatio) except +
+        EqualFrequencyFeatureBinningImpl(float32 binRatio) except +
 
 
-    cdef cppclass EqualWidthBinningImpl(IBinning):
+cdef extern from "cpp/binning/feature_binning_equal_width.h" nogil:
+
+    cdef cppclass EqualWidthFeatureBinningImpl"EqualWidthFeatureBinning"(IFeatureBinning):
 
         # Constructors:
 
-        EqualWidthBinningImpl(float32 binRatio) except +
+        EqualWidthFeatureBinningImpl(float32 binRatio) except +
 
 
-cdef class Binning:
+cdef class FeatureBinning:
 
     # Attributes:
 
-    cdef shared_ptr[IBinning] binning_ptr
+    cdef shared_ptr[IFeatureBinning] binning_ptr
 
 
-cdef class EqualFrequencyBinning(Binning):
+cdef class EqualFrequencyFeatureBinning(FeatureBinning):
     pass
 
 
-cdef class EqualWidthBinning(Binning):
+cdef class EqualWidthFeatureBinning(FeatureBinning):
     pass

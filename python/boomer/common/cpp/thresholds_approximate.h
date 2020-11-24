@@ -8,6 +8,7 @@
 
 #include "thresholds.h"
 #include "data/vector_bin.h"
+#include "binning/feature_binning.h"
 #include <unordered_map>
 
 
@@ -30,7 +31,7 @@ class ApproximateThresholds : public AbstractThresholds {
             std::unique_ptr<BinVector> binVectorPtr;
         };
 
-        std::shared_ptr<IBinning> binningPtr_;
+        std::shared_ptr<IFeatureBinning> binningPtr_;
 
         std::unordered_map<uint32, BinCacheEntry> cache_;
 
@@ -46,14 +47,14 @@ class ApproximateThresholds : public AbstractThresholds {
          * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
          *                                  to create instances of the class that should be used to find the heads of
          *                                  rules
-         * @param binningPtr                A shared pointer to an object of type `IBinning` that implements the binning
-         *                                  method to be used
+         * @param binningPtr                A shared pointer to an object of type `IFeatureBinning` that implements the
+         *                                  binning method to be used
          */
         ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                               std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                               std::shared_ptr<IStatistics> statisticsPtr,
                               std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                              std::shared_ptr<IBinning> binningPtr);
+                              std::shared_ptr<IFeatureBinning> binningPtr);
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
 
