@@ -11,7 +11,7 @@ from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "cpp/rule_refinement.h" nogil:
+cdef extern from "cpp/rule_refinement/rule_refinement.h" nogil:
 
     cdef cppclass Refinement:
 
