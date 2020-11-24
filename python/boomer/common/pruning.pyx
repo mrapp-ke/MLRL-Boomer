@@ -15,7 +15,7 @@ cdef class Pruning:
 
 cdef class NoPruning(Pruning):
     """
-    A wrapper for the C++ class `NoPruningImpl`.
+    A wrapper for the C++ class `NoPruning`.
     """
 
     def __cinit__(self):
@@ -24,7 +24,7 @@ cdef class NoPruning(Pruning):
 
 cdef class IREP(Pruning):
     """
-    A wrapper for the C++ class `IREPImpl`.
+    A wrapper for the C++ class `IREP`.
     """
 
     def __cinit__(self):

@@ -1,13 +1,8 @@
-#include "pruning.h"
+#include "pruning_irep.h"
 
 
-std::unique_ptr<CoverageMask> NoPruningImpl::prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
-                                                   const AbstractPrediction& head) const {
-    return nullptr;
-}
-
-std::unique_ptr<CoverageMask> IREPImpl::prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
-                                              const AbstractPrediction& head) const {
+std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
+                                          const AbstractPrediction& head) const {
     ConditionList::size_type numConditions = conditions.getNumConditions();
     std::unique_ptr<CoverageMask> bestCoverageMaskPtr;
 
