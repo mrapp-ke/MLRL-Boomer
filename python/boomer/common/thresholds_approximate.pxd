@@ -1,4 +1,4 @@
-from boomer.common.binning cimport Binning, IFeatureBinning
+from boomer.common.binning cimport FeatureBinning, IFeatureBinning
 from boomer.common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory
 from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureMask, INominalFeatureMask
 from boomer.common.statistics cimport StatisticsProvider, IStatistics
@@ -24,7 +24,7 @@ cdef class ApproximateThresholdsFactory(ThresholdsFactory):
 
     # Attributes:
 
-    cdef Binning binning
+    cdef FeatureBinning binning
 
     # Functions:
 
