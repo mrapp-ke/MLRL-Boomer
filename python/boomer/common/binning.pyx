@@ -9,7 +9,7 @@ cdef class Binning:
 
 cdef class EqualFrequencyBinning(Binning):
     """
-    A wrapper for the C++ class `EqualFrequencyBinningImpl`.
+    A wrapper for the C++ class `EqualFrequencyBinning`.
     """
 
     def __cinit__(self, float32 bin_ratio):
@@ -18,7 +18,7 @@ cdef class EqualFrequencyBinning(Binning):
 
 cdef class EqualWidthBinning(Binning):
     """
-    A wrapper for the C++ class `EqualWidthBinningImpl`.
+    A wrapper for the C++ class `EqualWidthBinning`.
     """
 
     def __cinit__(self, float32 bin_ratio):

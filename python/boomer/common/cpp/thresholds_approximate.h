@@ -8,6 +8,7 @@
 
 #include "thresholds.h"
 #include "data/vector_bin.h"
+#include "binning/feature_binning.h"
 #include <unordered_map>
 
 

@@ -1,4 +1,5 @@
 #include "head_refinement_partial.h"
+#include "../../../common/cpp/data/vector_sparse_array.h"
 
 using namespace seco;
 
