@@ -97,7 +97,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                         std::unique_ptr<FeatureVector> featureVectorPtr;
                         thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
                                                                                             featureVectorPtr);
-                        IBinning::FeatureInfo featureInfo =
+                        IFeatureBinning::FeatureInfo featureInfo =
                             thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
                         uint32 numBins = featureInfo.numBins;
                         binCacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins));
@@ -224,7 +224,7 @@ ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> fea
                                              std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                                              std::shared_ptr<IStatistics> statisticsPtr,
                                              std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                                             std::shared_ptr<IBinning> binningPtr)
+                                             std::shared_ptr<IFeatureBinning> binningPtr)
     : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr),
       binningPtr_(binningPtr) {
 
