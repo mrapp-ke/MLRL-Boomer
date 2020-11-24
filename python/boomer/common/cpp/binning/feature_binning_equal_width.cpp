@@ -8,7 +8,7 @@ EqualWidthBinning::EqualWidthBinning(float32 binRatio)
 
 }
 
-IBinning::FeatureInfo EqualWidthBinning::getFeatureInfo(FeatureVector& featureVector) const {
+IFeatureBinning::FeatureInfo EqualWidthBinning::getFeatureInfo(FeatureVector& featureVector) const {
     FeatureInfo featureInfo;
     uint32 numElements = featureVector.getNumElements();
 

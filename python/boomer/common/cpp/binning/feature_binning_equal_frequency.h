@@ -8,9 +8,9 @@
 
 
 /**
- * Assigns floating point values to bins in a way such that each bin contains approximately the same number of values.
+ * Assigns feature values to bins in a way such that each bin contains approximately the same number of values.
  */
-class EqualFrequencyBinning : public IBinning {
+class EqualFrequencyBinning : public IFeatureBinning {
 
     private:
 

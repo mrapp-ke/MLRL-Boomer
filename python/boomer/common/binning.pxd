@@ -5,13 +5,13 @@ from libcpp.memory cimport shared_ptr
 
 cdef extern from "cpp/binning/feature_binning.h" nogil:
 
-    cdef cppclass IBinning:
+    cdef cppclass IFeatureBinning:
         pass
 
 
 cdef extern from "cpp/binning/feature_binning_equal_frequency.h" nogil:
 
-    cdef cppclass EqualFrequencyBinningImpl"EqualFrequencyBinning"(IBinning):
+    cdef cppclass EqualFrequencyBinningImpl"EqualFrequencyBinning"(IFeatureBinning):
 
         # Constructors:
 
@@ -20,7 +20,7 @@ cdef extern from "cpp/binning/feature_binning_equal_frequency.h" nogil:
 
 cdef extern from "cpp/binning/feature_binning_equal_width.h" nogil:
 
-    cdef cppclass EqualWidthBinningImpl"EqualWidthBinning"(IBinning):
+    cdef cppclass EqualWidthBinningImpl"EqualWidthBinning"(IFeatureBinning):
 
         # Constructors:
 
@@ -31,7 +31,7 @@ cdef class Binning:
 
     # Attributes:
 
-    cdef shared_ptr[IBinning] binning_ptr
+    cdef shared_ptr[IFeatureBinning] binning_ptr
 
 
 cdef class EqualFrequencyBinning(Binning):
