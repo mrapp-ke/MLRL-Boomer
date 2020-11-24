@@ -11,7 +11,7 @@ cdef class ApproximateThresholdsFactory(ThresholdsFactory):
     A factory that allows to create instances of the class `ApproximateThresholds`.
     """
 
-    def __cinit__(self, Binning binning):
+    def __cinit__(self, FeatureBinning binning):
         self.binning = binning
 
     cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureMask nominal_feature_mask,

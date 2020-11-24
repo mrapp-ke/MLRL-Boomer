@@ -12,7 +12,7 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-from boomer.common.binning import EqualWidthBinning, EqualFrequencyBinning
+from boomer.common.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
 from boomer.common.input_data import DenseFeatureMatrix, CscFeatureMatrix
 from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix
 from boomer.common.input_data import DokNominalFeatureMask
@@ -172,14 +172,14 @@ def create_thresholds_factory(feature_binning: str) -> ThresholdsFactory:
     if feature_binning is None:
         return ExactThresholdsFactory()
     else:
-        prefix, args = parse_prefix_and_dict(feature_binning,
-                                             [BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH])
+        prefix, args = parse_prefix_and_dict(feature_binning, [BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH])
+
         if prefix == BINNING_EQUAL_FREQUENCY:
             bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-            return ApproximateThresholdsFactory(EqualFrequencyBinning(bin_ratio))
+            return ApproximateThresholdsFactory(EqualFrequencyFeatureBinning(bin_ratio))
         elif prefix == BINNING_EQUAL_WIDTH:
             bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-            return ApproximateThresholdsFactory(EqualWidthBinning(bin_ratio))
+            return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio))
         raise ValueError('Invalid value given for parameter \'feature_binning\': ' + str(feature_binning))
 
 
