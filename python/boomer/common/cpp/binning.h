@@ -11,7 +11,10 @@
 
 /**
  * Defines an interface to be implemented by classes that should be notified when values are assigned to bins.
+ *
+ * @tparam T The type of the values that are assigned to bins
  */
+template<class T>
 class IBinningObserver {
 
     public:
@@ -21,11 +24,11 @@ class IBinningObserver {
         /**
          * Notifies the observer that a value has been assigned to a certain bin.
          *
-         * @param binIndex  The index of the bin, the value is assigned to
-         * @param entry     A reference to a struct of type `FeatureVector::Entry` that contains the value and its index
-         *                  in the original array
+         * @param binIndex      The index of the bin, the value is assigned to
+         * @param originalIndex The original index of the value
+         * @param value         The value
          */
-        virtual void onBinUpdate(uint32 binIndex, const FeatureVector::Entry& entry) = 0;
+        virtual void onBinUpdate(uint32 binIndex, uint32 originalIndex, T value) = 0;
 
 };
 
@@ -71,7 +74,7 @@ class IBinning {
          *                      value is assigned to a bin
          */
         virtual void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                IBinningObserver& observer) const = 0;
+                                IBinningObserver<float32>& observer) const = 0;
 
 };
 
@@ -95,7 +98,7 @@ class EqualFrequencyBinningImpl : public IBinning {
         FeatureInfo getFeatureInfo(FeatureVector& featureVector) const override;
 
         void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                        IBinningObserver& observer) const override;
+                        IBinningObserver<float32>& observer) const override;
 
 };
 
@@ -119,6 +122,6 @@ class EqualWidthBinningImpl : public IBinning {
         FeatureInfo getFeatureInfo(FeatureVector& featureVector) const override;
 
         void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                        IBinningObserver& observer) const override;
+                        IBinningObserver<float32>& observer) const override;
 
 };
