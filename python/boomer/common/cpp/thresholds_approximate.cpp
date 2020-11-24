@@ -35,12 +35,12 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
     }
 
     for(intp r = start; r < end; r++) {
-        if(wasEmpty){
-            for (BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++) {
-                BinVector::Example example = *it;
+        for (BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++) {
+            BinVector::Example example = *it;
+            if(wasEmpty){
                 filteredVector->addExample(r, example);
-                coverageMaskIterator[example.index] = numConditions;
             }
+            coverageMaskIterator[example.index] = numConditions;
         }
 
         filteredIterator[i].numExamples = iterator[r].numExamples;
