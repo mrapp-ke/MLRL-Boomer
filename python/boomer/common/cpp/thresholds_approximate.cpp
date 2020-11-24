@@ -46,11 +46,13 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                         std::unique_ptr<FeatureVector> featureVectorPtr;
                         thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
                                                                                             featureVectorPtr);
-                        uint32 numBins = thresholdsSubset_.thresholds_.binningPtr_->getNumBins(*featureVectorPtr);
-                        binCacheEntry.binVectorPtr =  std::move(std::make_unique<BinVector>(numBins));
+                        IBinning::FeatureInfo featureInfo =
+                            thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
+                        uint32 numBins = featureInfo.numBins;
+                        binCacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins));
                         histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
                         currentBinVector_ = binCacheEntry.binVectorPtr.get();
-                        thresholdsSubset_.thresholds_.binningPtr_->createBins(numBins, *featureVectorPtr, *this);
+                        thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo, *featureVectorPtr, *this);
                         binCacheEntry.histogramPtr = std::move(histogramBuilderPtr_->build());
                     }
 

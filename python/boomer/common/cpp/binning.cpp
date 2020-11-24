@@ -1,5 +1,6 @@
 #include "binning.h"
 #include <cmath>
+#include <unordered_set>
 
 
 EqualFrequencyBinningImpl::EqualFrequencyBinningImpl(float32 binRatio)
@@ -7,18 +8,40 @@ EqualFrequencyBinningImpl::EqualFrequencyBinningImpl(float32 binRatio)
 
 }
 
-uint32 EqualFrequencyBinningImpl::getNumBins(const FeatureVector& featureVector) const {
-    return ceil(featureVector.getNumElements() * binRatio_);
+IBinning::FeatureInfo EqualFrequencyBinningImpl::getFeatureInfo(FeatureVector& featureVector) const {
+    FeatureInfo featureInfo;
+    uint32 numElements = featureVector.getNumElements();
+
+    if (numElements > 0) {
+        featureVector.sortByValues();
+        FeatureVector::const_iterator iterator = featureVector.cbegin();
+        float32 previousValue = iterator[0].value;
+        uint32 numDistinctValues = 1;
+
+        for (uint32 i = 1; i < numElements; i++) {
+            float32 value = iterator[i].value;
+
+            if (previousValue != value) {
+                numDistinctValues++;
+                previousValue = value;
+            }
+        }
+
+        featureInfo.numBins = ceil(numDistinctValues * binRatio_);
+    } else {
+        featureInfo.numBins = 0;
+    }
+
+    return featureInfo;
 }
 
-void EqualFrequencyBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector,
+void EqualFrequencyBinningImpl::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
                                            IBinningObserver& observer) const {
+    uint32 numBins = featureInfo.numBins;
     //Defining length of the list, because we'll use it at least four times
     uint32 length = featureVector.getNumElements();
-    //Sorting the array
-    featureVector.sortByValues();
     FeatureVector::const_iterator iterator = featureVector.cbegin();
-    uint32 numElementsPerBin = (intp) ceil((float) length / (float) numBins);
+    uint32 numElementsPerBin = (uint32) ceil((float) length / (float) numBins);
     //looping over bins
     uint32 binIndex = 0;  //Has to be initialized for the first iteration
     float32 previousValue = 0.0;  //Has to be initialized for the first iteration
@@ -40,30 +63,54 @@ EqualWidthBinningImpl::EqualWidthBinningImpl(float32 binRatio)
 
 }
 
-uint32 EqualWidthBinningImpl::getNumBins(const FeatureVector& featureVector) const {
-    return ceil(featureVector.getNumElements() * binRatio_);
+IBinning::FeatureInfo EqualWidthBinningImpl::getFeatureInfo(FeatureVector& featureVector) const {
+    FeatureInfo featureInfo;
+    uint32 numElements = featureVector.getNumElements();
+
+    if (numElements > 0) {
+        FeatureVector::const_iterator iterator = featureVector.cbegin();
+        float32 minValue = iterator[0].value;
+        float32 maxValue = minValue;
+        uint32 numDistinctValues = 1;
+        std::unordered_set<float32> distinctValues;
+
+        for (uint32 i = 1; i < numElements; i++) {
+            float32 value = iterator[i].value;
+
+            if (distinctValues.insert(value).second) {
+                numDistinctValues++;
+
+                if (value < minValue) {
+                    minValue = value;
+                }
+
+                if (maxValue < value) {
+                    maxValue = value;
+                }
+            }
+        }
+
+        featureInfo.numBins = ceil(numDistinctValues * binRatio_);
+        featureInfo.minValue = minValue;
+        featureInfo.maxValue = maxValue;
+    } else {
+        featureInfo.numBins = 0;
+    }
+
+    return featureInfo;
 }
 
-void EqualWidthBinningImpl::createBins(uint32 numBins, FeatureVector& featureVector, IBinningObserver& observer) const {
+void EqualWidthBinningImpl::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
+                                       IBinningObserver& observer) const {
+    uint32 numBins = featureInfo.numBins;
+    float32 min = featureInfo.minValue;
+    float32 max = featureInfo.maxValue;
     //Defining length of the list, because we'll use it at least four times
     uint32 length = featureVector.getNumElements();
-    //defining minimal and maximum values
-    FeatureVector::const_iterator iterator = featureVector.cbegin();
-    float32 min = iterator[0].value;
-    float32 max = min;
-    for (uint32 i = 1; i < length; i++) {
-        float32 currentValue = iterator[i].value;
-
-        if (currentValue < min) {
-            min = currentValue;
-        }
-
-        if (max < currentValue) {
-            max = currentValue;
-        }
-    }
     //w stands for width and determines the span of values for a bin
     float32 spanPerBin = (max - min) / numBins;
+
+    FeatureVector::const_iterator iterator = featureVector.cbegin();
 
     for (uint32 i = 0; i < length; i++) {
         float32 currentValue = iterator[i].value;
