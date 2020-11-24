@@ -27,16 +27,16 @@ cdef extern from "cpp/binning/feature_binning_equal_width.h" nogil:
         EqualWidthFeatureBinningImpl(float32 binRatio) except +
 
 
-cdef class Binning:
+cdef class FeatureBinning:
 
     # Attributes:
 
     cdef shared_ptr[IFeatureBinning] binning_ptr
 
 
-cdef class EqualFrequencyFeatureBinning(Binning):
+cdef class EqualFrequencyFeatureBinning(FeatureBinning):
     pass
 
 
-cdef class EqualWidthFeatureBinning(Binning):
+cdef class EqualWidthFeatureBinning(FeatureBinning):
     pass
