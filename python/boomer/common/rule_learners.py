@@ -172,8 +172,8 @@ def create_thresholds_factory(feature_binning: str) -> ThresholdsFactory:
     if feature_binning is None:
         return ExactThresholdsFactory()
     else:
-        prefix, args = parse_prefix_and_dict(feature_binning,
-                                             [BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH])
+        prefix, args = parse_prefix_and_dict(feature_binning, [BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH])
+
         if prefix == BINNING_EQUAL_FREQUENCY:
             bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
             return ApproximateThresholdsFactory(EqualFrequencyFeatureBinning(bin_ratio))
