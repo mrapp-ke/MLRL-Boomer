@@ -1,13 +1,14 @@
 from libcpp.memory cimport make_shared
 
 
-cdef class Binning:
+cdef class FeatureBinning:
     """
     A wrapper for the pure virtual C++ class `IFeatureBinning`.
     """
     pass
 
-cdef class EqualFrequencyFeatureBinning(Binning):
+
+cdef class EqualFrequencyFeatureBinning(FeatureBinning):
     """
     A wrapper for the C++ class `EqualFrequencyFeatureBinning`.
     """
@@ -16,7 +17,7 @@ cdef class EqualFrequencyFeatureBinning(Binning):
         self.binning_ptr = <shared_ptr[IFeatureBinning]>make_shared[EqualFrequencyFeatureBinningImpl](bin_ratio)
 
 
-cdef class EqualWidthFeatureBinning(Binning):
+cdef class EqualWidthFeatureBinning(FeatureBinning):
     """
     A wrapper for the C++ class `EqualWidthFeatureBinning`.
     """
