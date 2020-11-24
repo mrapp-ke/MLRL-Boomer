@@ -1,10 +1,61 @@
+#include "thresholds_common.h"
 #include "thresholds_approximate.h"
 #include "rule_refinement_approximate.h"
 
 
+static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
+                                       intp conditionEnd, bool covered, uint32 numConditions,
+                                       CoverageMask& coverageMask) {
+    uint32 numTotalElements = vector.getNumElements();
+    uint32 numElements = covered ? conditionEnd : (numTotalElements > conditionEnd ? numTotalElements - conditionEnd : 0);
+    bool wasEmpty = false;
+
+    BinVector* filteredVector = cacheEntry.vectorPtr.get();
+
+    if (filteredVector == nullptr) {
+        cacheEntry.vectorPtr = std::make_unique<BinVector>(numElements);
+        filteredVector = cacheEntry.vectorPtr.get();
+        wasEmpty = true;
+    }
+
+    typename BinVector::const_iterator iterator = vector.cbegin();
+    BinVector::iterator filteredIterator = filteredVector->begin();
+    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+
+    coverageMask.target = numConditions;
+    intp start, end;
+    uint32 i = 0;
+
+    if (covered) {
+        start = 0;
+        end = conditionEnd;
+    } else {
+        start = conditionEnd;
+        end = numTotalElements;
+    }
+
+    for(intp r = start; r < end; r++) {
+        for (BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++) {
+            BinVector::Example example = *it;
+            coverageMaskIterator[example.index] = numConditions;
+
+            if (wasEmpty) {
+                filteredVector->addExample(r, example);
+            }
+        }
+
+        filteredIterator[i].numExamples = iterator[r].numExamples;
+        filteredIterator[i].minValue = iterator[r].minValue;
+        filteredIterator[i].maxValue = iterator[r].maxValue;
+        i++;
+    }
+
+    filteredVector->setNumElements(numElements);
+    cacheEntry.numConditions = numConditions;
+}
+
 /**
- * Provides access to a subset of the thresholds that are stored by an instance of the class
- * `ApproximateThresholds`.
+ * Provides access to a subset of the thresholds that are stored by an instance of the class `ApproximateThresholds`.
  */
 class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
@@ -84,9 +135,21 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
         ApproximateThresholds& thresholds_;
 
+        CoverageMask coverageMask_;
+
+        uint32 numModifications_;
+
+        std::unordered_map<uint32, FilteredCacheEntry<BinVector>> cacheFiltered_;
+
         template<class T>
         std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices, uint32 featureIndex) {
-            thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
+            auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry<BinVector>()).first;
+            BinVector* binVector = cacheFilteredIterator->second.vectorPtr.get();
+
+            if (binVector == nullptr) {
+                thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
+            }
+
             std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
             std::unique_ptr<IHeadRefinement> headRefinementPtr =
                 thresholds_.headRefinementFactoryPtr_->create(labelIndices);
@@ -100,8 +163,8 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
          * @param thresholds A reference to an object of type `ApproximateThresholds` that stores the thresholds
          */
         ThresholdsSubset(ApproximateThresholds& thresholds)
-            : thresholds_(thresholds) {
-
+            : thresholds_(thresholds), coverageMask_(CoverageMask(thresholds.getNumExamples())) {
+            numModifications_ = 0;
         }
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
@@ -115,7 +178,21 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
         }
 
         void filterThresholds(Refinement& refinement) override {
+            numModifications_++;
 
+            uint32 featureIndex = refinement.featureIndex;
+            auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
+            FilteredCacheEntry<BinVector>& cacheEntry = cacheFilteredIterator->second;
+            BinVector* binVector = cacheEntry.vectorPtr.get();
+
+            if (binVector == nullptr) {
+                auto cacheIterator = thresholds_.cache_.find(featureIndex);
+                BinCacheEntry& binCacheEntry = cacheIterator->second;
+                binVector = binCacheEntry.binVectorPtr.get();
+            }
+
+            filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
+                                coverageMask_);
         }
 
         void filterThresholds(const Condition& condition) override {
@@ -127,7 +204,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
         }
 
         const CoverageMask& getCoverageMask() const {
-
+            return coverageMask_;
         }
 
         float64 evaluateOutOfSample(const CoverageMask& coverageMask, const AbstractPrediction& head) const override {
