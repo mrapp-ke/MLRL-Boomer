@@ -46,6 +46,8 @@ sources = [
     'boomer/common/cpp/pruning/pruning_irep.cpp',
     'boomer/common/cpp/pruning/pruning_no.cpp',
     'boomer/common/cpp/rule_refinement/rule_refinement.cpp',
+    'boomer/common/cpp/rule_refinement/rule_refinement_exact.cpp',
+    'boomer/common/cpp/rule_refinement/rule_refinement_approximate.cpp',
     'boomer/common/cpp/binning/feature_binning_equal_frequency.cpp',
     'boomer/common/cpp/binning/feature_binning_equal_width.cpp',
     'boomer/common/cpp/predictions.cpp',
