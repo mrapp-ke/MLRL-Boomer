@@ -5,8 +5,8 @@
  */
 #pragma once
 
+#include "model/condition.h"
 #include "predictions.h"
-#include "rules.h"
 #include <memory>
 
 
