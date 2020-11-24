@@ -221,7 +221,7 @@ class IStatistics : virtual public IHistogram {
          * Defines an interface for all classes that allow to build histograms by aggregating the statistics that
          * correspond to the same bins.
          */
-        class IHistogramBuilder : public IBinningObserver {
+        class IHistogramBuilder : public IBinningObserver<float32> {
 
             public:
 
