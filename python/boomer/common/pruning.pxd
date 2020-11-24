@@ -5,7 +5,7 @@ from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/pruning.h" nogil:
+cdef extern from "cpp/pruning/pruning.h" nogil:
 
     cdef cppclass IPruning:
 
@@ -15,11 +15,15 @@ cdef extern from "cpp/pruning.h" nogil:
                                        const AbstractPrediction& head)
 
 
-    cdef cppclass NoPruningImpl(IPruning):
+cdef extern from "cpp/pruning/pruning_no.h" nogil:
+
+    cdef cppclass NoPruningImpl"NoPruning"(IPruning):
         pass
 
 
-    cdef cppclass IREPImpl(IPruning):
+cdef extern from "cpp/pruning/pruning_irep.h" nogil:
+
+    cdef cppclass IREPImpl"IREP"(IPruning):
         pass
 
 
