@@ -463,3 +463,6 @@ template<class T>
 std::unique_ptr<Refinement> ExactRuleRefinement<T>::pollRefinement() {
     return std::move(refinementPtr_);
 }
+
+template class ExactRuleRefinement<FullIndexVector>;
+template class ExactRuleRefinement<PartialIndexVector>;
