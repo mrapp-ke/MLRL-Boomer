@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "../model/condition_list.h"
 #include "../thresholds.h"
 
 
