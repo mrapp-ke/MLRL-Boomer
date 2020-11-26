@@ -1,4 +1,5 @@
 #include "head_refinement_single.h"
+#include "prediction_partial.h"
 
 
 /**

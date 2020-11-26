@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "../statistics.h"
+#include "../statistics/histogram.h"
 #include <memory>
 #include <utility>
 

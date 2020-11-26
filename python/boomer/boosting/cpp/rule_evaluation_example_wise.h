@@ -8,8 +8,8 @@
 
 #include "../../common/cpp/rule_evaluation.h"
 #include "data/vector_dense_example_wise.h"
-#include "blas.h"
-#include "lapack.h"
+#include "math/blas.h"
+#include "math/lapack.h"
 #include <memory>
 
 

@@ -1,5 +1,5 @@
 #include "rule_evaluation_example_wise.h"
-#include "linalg.h"
+#include "math/math.h"
 #include <cstdlib>
 
 using namespace boosting;
