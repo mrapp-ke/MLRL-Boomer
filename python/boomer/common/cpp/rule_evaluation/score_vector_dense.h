@@ -68,7 +68,7 @@ class DenseScoreVector : virtual public IScoreVector {
          */
         float64 overallQualityScore;
 
-        const AbstractEvaluatedPrediction& processScores(const AbstractEvaluatedPrediction* bestHead,
+        const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
                                                          IScoreProcessor& scoreProcessor) const override;
 
 };

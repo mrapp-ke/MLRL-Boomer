@@ -56,7 +56,7 @@ class DenseLabelWiseScoreVector : public DenseScoreVector, virtual public ILabel
          */
         quality_score_const_iterator quality_scores_cend() const;
 
-        const AbstractEvaluatedPrediction& processScores(const AbstractEvaluatedPrediction* bestHead,
+        const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
                                                          ILabelWiseScoreProcessor& scoreProcessor) const override;
 
 };

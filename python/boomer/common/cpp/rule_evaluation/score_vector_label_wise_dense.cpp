@@ -23,7 +23,7 @@ DenseLabelWiseScoreVector::quality_score_const_iterator DenseLabelWiseScoreVecto
     return qualityScoreVector_.cend();
 }
 
-const AbstractEvaluatedPrediction& DenseLabelWiseScoreVector::processScores(
+const AbstractEvaluatedPrediction* DenseLabelWiseScoreVector::processScores(
         const AbstractEvaluatedPrediction* bestHead, ILabelWiseScoreProcessor& scoreProcessor) const {
     return scoreProcessor.processScores(bestHead, *this);
 }
