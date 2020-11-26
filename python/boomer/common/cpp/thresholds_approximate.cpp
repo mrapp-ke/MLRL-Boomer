@@ -54,6 +54,11 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
     cacheEntry.numConditions = numConditions;
 }
 
+static inline void filterAnyVector(){
+    //TODO: in this branch
+}
+
+
 /**
  * Provides access to a subset of the thresholds that are stored by an instance of the class `ApproximateThresholds`.
  */
@@ -90,6 +95,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                 }
 
                 std::unique_ptr<Result> get() override {
+                //TODO: in this Branch
                     auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                     BinCacheEntry& binCacheEntry = cacheIterator->second;
 
