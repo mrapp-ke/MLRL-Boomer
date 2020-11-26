@@ -8,7 +8,6 @@
 #pragma once
 
 #include "../../common/cpp/input/label_matrix.h"
-#include "../../common/cpp/statistics.h"
 #include "rule_evaluation_label_wise.h"
 #include "statistics.h"
 #include <memory>

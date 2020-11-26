@@ -2,6 +2,7 @@
 #include "data/matrix_dense_numeric.h"
 #include "data/matrix_dense_label_wise.h"
 #include "data/vector_dense_label_wise.h"
+#include "../../common/cpp/statistics/statistics_subset_decomposable.h"
 #include <memory>
 
 using namespace boosting;
