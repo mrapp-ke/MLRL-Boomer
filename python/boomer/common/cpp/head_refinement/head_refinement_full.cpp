@@ -1,4 +1,6 @@
 #include "head_refinement_full.h"
+#include "prediction_full.h"
+#include "prediction_partial.h"
 
 
 /**
