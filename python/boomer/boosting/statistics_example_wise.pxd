@@ -7,7 +7,7 @@ from boomer.boosting.rule_evaluation_example_wise cimport ExampleWiseRuleEvaluat
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/statistics_example_wise.h" namespace "boosting" nogil:
+cdef extern from "cpp/statistics/statistics_example_wise.h" namespace "boosting" nogil:
 
     cdef cppclass IExampleWiseStatistics(IStatistics):
 
@@ -23,7 +23,7 @@ cdef extern from "cpp/statistics_example_wise.h" namespace "boosting" nogil:
         unique_ptr[IExampleWiseStatistics] create()
 
 
-    cdef cppclass DenseExampleWiseStatisticsFactoryImpl(IExampleWiseStatisticsFactory):
+    cdef cppclass DenseExampleWiseStatisticsFactoryImpl"boosting::DenseExampleWiseStatisticsFactory"(IExampleWiseStatisticsFactory):
 
         # Constructors:
 
