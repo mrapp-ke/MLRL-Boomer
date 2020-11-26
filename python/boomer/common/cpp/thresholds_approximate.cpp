@@ -54,8 +54,11 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void filterAnyVector(){
+static inline void filterAnyVector(const BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
+                                   uint32 numConditions, const CoverageMask& coverageMask){
     //TODO: in this branch
+    uint32 maxElements = vector.getNumElements();
+    BinVector* filteredVector = cacheEntryAdded.vectorPtr.get();
 }
 
 
