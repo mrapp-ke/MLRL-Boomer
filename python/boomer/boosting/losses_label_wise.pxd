@@ -1,17 +1,21 @@
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/losses_label_wise.h" namespace "boosting" nogil:
+cdef extern from "cpp/losses/loss_label_wise.h" namespace "boosting" nogil:
 
     cdef cppclass ILabelWiseLoss:
         pass
 
 
-    cdef cppclass LabelWiseLogisticLossImpl(ILabelWiseLoss):
+cdef extern from "cpp/losses/loss_label_wise_logistic.h" namespace "boosting" nogil:
+
+    cdef cppclass LabelWiseLogisticLossImpl"boosting::LabelWiseLogisticLoss"(ILabelWiseLoss):
         pass
 
 
-    cdef cppclass LabelWiseSquaredErrorLossImpl(ILabelWiseLoss):
+cdef extern from "cpp/losses/loss_label_wise_squared_error.h" namespace "boosting" nogil:
+
+    cdef cppclass LabelWiseSquaredErrorLossImpl"boosting::LabelWiseSquaredErrorLoss"(ILabelWiseLoss):
         pass
 
 

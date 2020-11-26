@@ -15,7 +15,7 @@ cdef class LabelWiseLoss:
 
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     """
-    A wrapper for the C++ class `LabelWiseLogisticLossImpl`.
+    A wrapper for the C++ class `LabelWiseLogisticLoss`.
     """
 
     def __cinit__(self):
@@ -24,7 +24,7 @@ cdef class LabelWiseLogisticLoss(LabelWiseLoss):
 
 cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
     """
-    A wrapper for the C++ class `LabelWiseSquaredErrorLossImpl`.
+    A wrapper for the C++ class `LabelWiseSquaredErrorLoss`.
     """
 
     def __cinit__(self):

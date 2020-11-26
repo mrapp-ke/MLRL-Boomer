@@ -15,7 +15,7 @@ cdef class ExampleWiseLoss:
 
 cdef class ExampleWiseLogisticLoss(ExampleWiseLoss):
     """
-    A wrapper for the C++ class `ExampleWiseLogisticLossImpl`.
+    A wrapper for the C++ class `ExampleWiseLogisticLoss`.
     """
 
     def __cinit__(self):

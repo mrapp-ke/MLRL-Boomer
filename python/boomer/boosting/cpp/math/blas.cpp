@@ -1,5 +1,7 @@
 #include "blas.h"
 
+using namespace boosting;
+
 
 Blas::Blas(ddot_t ddotFunction, dspmv_t dspmvFunction)
     : ddotFunction_(ddotFunction), dspmvFunction_(dspmvFunction) {

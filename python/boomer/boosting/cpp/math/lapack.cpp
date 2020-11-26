@@ -2,6 +2,8 @@
 #include <string>
 #include <stdexcept>
 
+using namespace boosting;
+
 
 Lapack::Lapack(dsysv_t dsysvFunction)
     : dsysvFunction_(dsysvFunction) {

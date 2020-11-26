@@ -6,7 +6,7 @@ from boomer.seco.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFacto
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/statistics_label_wise.h" namespace "seco" nogil:
+cdef extern from "cpp/statistics/statistics_label_wise.h" namespace "seco" nogil:
 
     cdef cppclass ILabelWiseStatistics(ICoverageStatistics):
 
@@ -22,7 +22,7 @@ cdef extern from "cpp/statistics_label_wise.h" namespace "seco" nogil:
         unique_ptr[ILabelWiseStatistics] create()
 
 
-    cdef cppclass DenseLabelWiseStatisticsFactoryImpl(ILabelWiseStatisticsFactory):
+    cdef cppclass DenseLabelWiseStatisticsFactoryImpl"seco::DenseLabelWiseStatisticsFactory"(ILabelWiseStatisticsFactory):
 
         # Constructors:
 
