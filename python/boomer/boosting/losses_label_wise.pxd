@@ -19,7 +19,9 @@ cdef extern from "cpp/losses/loss_label_wise_squared_error.h" namespace "boostin
         pass
 
 
-    cdef cppclass LabelWiseSquaredHingeLossImpl(ILabelWiseLoss):
+cdef extern from "cpp/losses/loss_label_wise_squared_hinge.h" namespace "boosting" nogil:
+
+    cdef cppclass LabelWiseSquaredHingeLossImpl"boosting::LabelWiseSquaredHingeLoss"(ILabelWiseLoss):
         pass
 
 
