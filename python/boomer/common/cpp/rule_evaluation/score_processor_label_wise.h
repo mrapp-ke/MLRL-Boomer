@@ -27,10 +27,10 @@ class ILabelWiseScoreProcessor {
          *                      head that has been created so far
          * @param scoreVector   A reference to an object of type `DenseLabelWiseScoreVector` that stores the scores to
          *                      be processed
-         * @return              A reference to an object of type `AbstractEvaluatedPrediction` that represents the head
-         *                      of a rule
+         * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
+         *                      null pointer if no object has been created
          */
-        virtual const AbstractEvaluatedPrediction& processScores(const AbstractEvaluatedPrediction* bestHead,
+        virtual const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
                                                                  const DenseLabelWiseScoreVector& scoreVector) = 0;
 
 };

@@ -27,9 +27,10 @@ class ILabelWiseScoreVector : virtual public IScoreVector {
          *                       head that has been created so far
          * @param scoreProcessor A reference to an object of type `ILabelWiseScoreProcessor`, the scores should be
          *                       passed to
-         * @return               A reference to an object of type `AbstractEvaluatedPrediction` that has been created
+         * @return               A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
+         *                       null pointer if no object has been created
          */
-        virtual const AbstractEvaluatedPrediction& processScores(const AbstractEvaluatedPrediction* bestHead,
+        virtual const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
                                                                  ILabelWiseScoreProcessor& scoreProcessor) const = 0;
 
 };
