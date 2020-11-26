@@ -58,7 +58,19 @@ static inline void filterAnyVector(const BinVector& vector, FilteredCacheEntry<B
                                    uint32 numConditions, const CoverageMask& coverageMask){
     //TODO: in this branch
     uint32 maxElements = vector.getNumElements();
-    BinVector* filteredVector = cacheEntryAdded.vectorPtr.get();
+    BinVector* filteredVector = cacheEntry.vectorPtr.get();
+
+    if (filteredVector == nullptr) {
+        cacheEntry.vectorPtr = std::make_unique<BinVector>(maxElements);
+        filteredVector = cacheEntry.vectorPtr.get();
+    }
+
+    for(uint32 r = 0; r < maxElements; r++){
+        for (BinVector::example_const_iterator it = filteredVector->examples_cbegin(r);
+             it != filteredVector->examples_cend(r); it++){
+
+        }
+    }
 }
 
 
