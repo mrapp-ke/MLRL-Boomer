@@ -7,9 +7,9 @@
  */
 #pragma once
 
-#include "../../common/cpp/input/label_matrix.h"
-#include "rule_evaluation_label_wise.h"
-#include "statistics.h"
+#include "statistics_coverage.h"
+#include "../rule_evaluation_label_wise.h"
+#include "../../../common/cpp/input/label_matrix.h"
 #include <memory>
 
 
@@ -56,9 +56,9 @@ namespace seco {
     };
 
     /**
-     * A factory that allows to create new instances of the class `DenseLabelWiseStatisticsImpl`.
+     * A factory that allows to create new instances of the class `DenseLabelWiseStatistics`.
      */
-    class DenseLabelWiseStatisticsFactoryImpl : public ILabelWiseStatisticsFactory {
+    class DenseLabelWiseStatisticsFactory : public ILabelWiseStatisticsFactory {
 
         private:
 
@@ -76,9 +76,8 @@ namespace seco {
              * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
              *                                  provides random access to the labels of the training examples
              */
-            DenseLabelWiseStatisticsFactoryImpl(
-                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
+            DenseLabelWiseStatisticsFactory(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                                            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
             std::unique_ptr<ILabelWiseStatistics> create() const override;
 
