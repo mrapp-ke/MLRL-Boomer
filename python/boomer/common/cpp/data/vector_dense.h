@@ -20,6 +20,8 @@ class DenseVector {
 
         uint32 numElements_;
 
+        uint32 maxCapacity_;
+
     public:
 
         /**
@@ -77,9 +79,10 @@ class DenseVector {
         /**
          * Sets the number of elements in the vector.
          *
-         * @param numElements The number of elements to be set
+         * @param numElements   The number of elements to be set
+         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
-        void setNumElements(uint32 numElements);
+        void setNumElements(uint32 numElements, bool freeMemory);
 
         /**
          * Returns the value of the element at a specific position.

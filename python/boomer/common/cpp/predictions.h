@@ -73,9 +73,10 @@ class AbstractPrediction : public IIndexVector {
         /**
          * Sets the number of labels for which the rule predict.
          *
-         * @param The number of labels to be set
+         * @param numElements   The number of labels to be set
+         * @param freeMemory    True, if unused memory should be freed if possible, false otherwise
          */
-        virtual void setNumElements(uint32 numElements);
+        virtual void setNumElements(uint32 numElements, bool freeMemory);
 
         uint32 getNumElements() const override;
 
@@ -133,7 +134,7 @@ class FullPrediction : public AbstractEvaluatedPrediction {
          */
         index_const_iterator indices_cend() const;
 
-        void setNumElements(uint32 numElements) override;
+        void setNumElements(uint32 numElements, bool freeMemory) override;
 
         bool isPartial() const override;
 
@@ -198,7 +199,7 @@ class PartialPrediction : public AbstractEvaluatedPrediction {
          */
         index_const_iterator indices_cend() const;
 
-        void setNumElements(uint32 numElements) override;
+        void setNumElements(uint32 numElements, bool freeMemory) override;
 
         bool isPartial() const override;
 
