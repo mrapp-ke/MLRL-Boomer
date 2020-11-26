@@ -8,8 +8,8 @@
 #pragma once
 
 #include "../../../common/cpp/statistics/statistics.h"
+#include "../losses/loss_example_wise.h"
 #include "../rule_evaluation_example_wise.h"
-#include "../losses_example_wise.h"
 
 
 namespace boosting {
