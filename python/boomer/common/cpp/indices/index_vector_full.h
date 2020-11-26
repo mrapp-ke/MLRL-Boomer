@@ -64,9 +64,10 @@ class FullIndexVector : public IIndexVector {
         /**
          * Sets the number of indices.
          *
-         * @param numElements The number of indices to be set
+         * @param numElements   The number of indices to be set
+         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
-        void setNumElements(uint32 numElements);
+        void setNumElements(uint32 numElements, bool freeMemory);
 
         uint32 getNumElements() const override;
 

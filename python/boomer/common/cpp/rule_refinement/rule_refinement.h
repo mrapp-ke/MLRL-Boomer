@@ -4,7 +4,7 @@
 #pragma once
 
 #include "../model/condition.h"
-#include "../predictions.h"
+#include "../head_refinement/prediction_evaluated.h"
 #include <memory>
 
 

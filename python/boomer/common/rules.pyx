@@ -4,7 +4,7 @@
 Provides model classes that are used to build rule-based models.
 """
 from boomer.common._arrays cimport array_uint32, array_float32, array_float64, c_matrix_uint8, c_matrix_float64
-from boomer.common._predictions cimport PartialPrediction
+from boomer.common.head_refinement cimport PartialPrediction
 
 from cython.operator cimport dereference, postincrement
 
