@@ -50,7 +50,7 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
         i++;
     }
 
-    filteredVector->setNumElements(numElements);
+    filteredVector->setNumElements(numElements, true);
     cacheEntry.numConditions = numConditions;
 }
 

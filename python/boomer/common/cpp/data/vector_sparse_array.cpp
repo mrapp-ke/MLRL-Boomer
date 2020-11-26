@@ -5,7 +5,7 @@
 
 template<class T>
 SparseArrayVector<T>::SparseArrayVector(uint32 numElements)
-    : array_((Entry*) malloc(numElements * sizeof(Entry))), numElements_(numElements) {
+    : array_((Entry*) malloc(numElements * sizeof(Entry))), numElements_(numElements), maxCapacity_(numElements) {
 
 }
 
@@ -20,11 +20,18 @@ uint32 SparseArrayVector<T>::getNumElements() const {
 }
 
 template<class T>
-void SparseArrayVector<T>::setNumElements(uint32 numElements) {
-    if (numElements != numElements_) {
-        numElements_ = numElements;
+void SparseArrayVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
+    if (numElements < maxCapacity_) {
+        if (freeMemory) {
+            array_ = (Entry*) realloc(array_, numElements * sizeof(Entry));
+            maxCapacity_ = numElements;
+        }
+    } else if (numElements > maxCapacity_) {
         array_ = (Entry*) realloc(array_, numElements * sizeof(Entry));
+        maxCapacity_ = numElements;
     }
+
+    numElements_ = numElements;
 }
 
 template<class T>
