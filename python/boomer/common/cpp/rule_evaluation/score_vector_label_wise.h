@@ -14,7 +14,7 @@ class ILabelWiseScoreProcessor;
  * as corresponding quality scores that assess the quality of the predictions for individual labels and an overall
  * quality score that assesses the overall quality of the rule.
  */
-class ILabelWiseScoreVector : public IScoreVector {
+class ILabelWiseScoreVector : virtual public IScoreVector {
 
     public:
 
