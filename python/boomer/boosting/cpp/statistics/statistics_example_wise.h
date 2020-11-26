@@ -7,9 +7,9 @@
  */
 #pragma once
 
-#include "../../common/cpp/statistics/statistics.h"
-#include "rule_evaluation_example_wise.h"
-#include "losses_example_wise.h"
+#include "../../../common/cpp/statistics/statistics.h"
+#include "../rule_evaluation_example_wise.h"
+#include "../losses_example_wise.h"
 
 
 namespace boosting {
@@ -55,9 +55,9 @@ namespace boosting {
     };
 
     /**
-     * A factory that allows to create new instances of the class `DenseExampleWiseStatisticsImpl`.
+     * A factory that allows to create new instances of the class `ExampleWiseStatistics`.
      */
-    class DenseExampleWiseStatisticsFactoryImpl : public IExampleWiseStatisticsFactory {
+    class DenseExampleWiseStatisticsFactory : public IExampleWiseStatisticsFactory {
 
         private:
 
@@ -78,7 +78,7 @@ namespace boosting {
              * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
              *                                  provides random access to the labels of the training examples
              */
-            DenseExampleWiseStatisticsFactoryImpl(
+            DenseExampleWiseStatisticsFactory(
                     std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                     std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                     std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
