@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "../predictions.h"
+#include "../head_refinement/prediction.h"
 
 
 /**
