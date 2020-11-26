@@ -21,11 +21,15 @@ class ILabelWiseScoreVector : virtual public IScoreVector {
         virtual ~ILabelWiseScoreVector() { };
 
         /**
-         * Passes the scores to an `ILabelWiseScoreProcessor`.
+         * Passes the scores to an `ILabelWiseScoreProcessor` in order to convert into the head of a rule.
          *
+         * @param bestHead       A reference to an object of type `AbstractEvaluatedPrediction`, representing the best
+         *                       head that has been created so far
          * @param scoreProcessor A reference to an object of type `ILabelWiseScoreProcessor`, the scores should be
          *                       passed to
+         * @return               A reference to an object of type `AbstractEvaluatedPrediction` that has been created
          */
-        virtual void processScores(ILabelWiseScoreProcessor& scoreProcessor) const = 0;
+        virtual const AbstractEvaluatedPrediction& processScores(const AbstractEvaluatedPrediction* bestHead,
+                                                                 ILabelWiseScoreProcessor& scoreProcessor) const = 0;
 
 };

@@ -27,6 +27,7 @@ uint32 DenseScoreVector::getNumElements() const {
     return predictedScoreVector_.getNumElements();
 }
 
-void DenseScoreVector::processScores(IScoreProcessor& scoreProcessor) const {
-    scoreProcessor.processScores(*this);
+const AbstractEvaluatedPrediction& DenseScoreVector::processScores(const AbstractEvaluatedPrediction* bestHead,
+                                                                   IScoreProcessor& scoreProcessor) const {
+    return scoreProcessor.processScores(bestHead, *this);
 }
