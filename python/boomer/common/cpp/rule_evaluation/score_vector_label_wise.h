@@ -21,7 +21,7 @@ class ILabelWiseScoreVector : virtual public IScoreVector {
         virtual ~ILabelWiseScoreVector() { };
 
         /**
-         * Passes the scores to an `ILabelWiseScoreProcessor` in order to convert into the head of a rule.
+         * Passes the scores to an `ILabelWiseScoreProcessor` in order to convert them into the head of a rule.
          *
          * @param bestHead       A reference to an object of type `AbstractEvaluatedPrediction`, representing the best
          *                       head that has been created so far

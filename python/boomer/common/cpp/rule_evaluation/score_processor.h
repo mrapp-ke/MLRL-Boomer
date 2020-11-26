@@ -20,7 +20,8 @@ class IScoreProcessor {
         virtual ~IScoreProcessor() { };
 
         /**
-         * Processes the scores that are stored by a `DenseScoreVector`.
+         * Processes the scores that are stored by a `DenseScoreVector` in order to convert them into the head of a
+         * rule.
          *
          * @param bestHead      A pointer to an object of type `AbstractEvaluatedPrediction` that represents the best
          *                      head that has been created so far

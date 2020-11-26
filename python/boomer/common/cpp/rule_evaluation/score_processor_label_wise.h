@@ -20,7 +20,8 @@ class ILabelWiseScoreProcessor {
         virtual ~ILabelWiseScoreProcessor() { };
 
         /**
-         * Processes the scores that are stored by a `DenseLabelWiseScoreVector`.
+         * Processes the scores that are stored by a `DenseLabelWiseScoreVector` in order to convert them into the head
+         * of a rule.
          *
          * @param bestHead      A pointer to an object of type `AbstractEvaluatedPrediction` that represents the best
          *                      head that has been created so far
