@@ -1,5 +1,6 @@
 #include "head_refinement_partial.h"
 #include "../../../common/cpp/data/vector_sparse_array.h"
+#include "../../../common/cpp/head_refinement/prediction_partial.h"
 
 using namespace seco;
 

@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "../statistics.h"
+#include "prediction_evaluated.h"
+#include "../statistics/statistics_subset.h"
 
 
 /**

@@ -1,5 +1,4 @@
-#include "losses_label_wise.h"
-#include <cmath>
+#include "loss_label_wise_common.h"
 
 using namespace boosting;
 
@@ -39,23 +38,6 @@ void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex, const
         this->updateGradientAndHessian(&gradientIterator[labelIndex], &hessianIterator[labelIndex], trueLabel,
                                        predictedScore);
     }
-}
-
-void LabelWiseLogisticLossImpl::updateGradientAndHessian(DenseVector<float64>::iterator gradient,
-                                                         DenseVector<float64>::iterator hessian, bool trueLabel,
-                                                         float64 predictedScore) const {
-    float64 expectedScore = trueLabel ? 1 : -1;
-    float64 exponential = exp(expectedScore * predictedScore);
-    *gradient = -expectedScore / (1 + exponential);
-    *hessian = (pow(expectedScore, 2) * exponential) / pow(1 + exponential, 2);
-}
-
-void LabelWiseSquaredErrorLossImpl::updateGradientAndHessian(DenseVector<float64>::iterator gradient,
-                                                             DenseVector<float64>::iterator hessian, bool trueLabel,
-                                                             float64 predictedScore) const {
-    float64 expectedScore = trueLabel ? 1 : -1;
-    *gradient = (2 * predictedScore) - (2 * expectedScore);
-    *hessian = 2;
 }
 
 void LabelWiseSquaredErrorLossImpl::updateGradientAndHessian(DenseVector<float64>::iterator gradient,
