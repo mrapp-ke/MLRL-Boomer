@@ -7,9 +7,9 @@
  */
 #pragma once
 
-#include "../../common/cpp/statistics.h"
-#include "rule_evaluation_label_wise.h"
-#include "losses_label_wise.h"
+#include "../../../common/cpp/statistics/statistics.h"
+#include "../rule_evaluation_label_wise.h"
+#include "../losses_label_wise.h"
 
 
 namespace boosting {
@@ -55,9 +55,9 @@ namespace boosting {
     };
 
     /**
-     * A factory that allows to create new instances of the class `DenseLabelWiseStatisticsImpl`.
+     * A factory that allows to create new instances of the class `LabelWiseStatistics`.
      */
-    class DenseLabelWiseStatisticsFactoryImpl : public ILabelWiseStatisticsFactory {
+    class DenseLabelWiseStatisticsFactory : public ILabelWiseStatisticsFactory {
 
         private:
 
@@ -78,10 +78,9 @@ namespace boosting {
              * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
              *                                  provides random access to the labels of the training examples
              */
-            DenseLabelWiseStatisticsFactoryImpl(
-                std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
-                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
+            DenseLabelWiseStatisticsFactory(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
+                                            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                                            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
 
             std::unique_ptr<ILabelWiseStatistics> create() const override;
 
