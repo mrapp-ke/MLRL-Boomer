@@ -1,13 +1,11 @@
 /**
- * Implements different differentiable loss functions that are applied example-wise.
- *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "../../common/cpp/input/label_matrix.h"
-#include "data/matrix_dense_numeric.h"
-#include "data/matrix_dense_example_wise.h"
+#include "../../../common/cpp/input/label_matrix.h"
+#include "../data/matrix_dense_numeric.h"
+#include "../data/matrix_dense_example_wise.h"
 
 
 namespace boosting {
@@ -34,19 +32,6 @@ namespace boosting {
             virtual void updateExampleWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                                      const DenseNumericMatrix<float64>& scoreMatrix,
                                                      DenseExampleWiseStatisticMatrix& statisticMatrix) const = 0;
-
-    };
-
-    /**
-     * A multi-label variant of the logistic loss that is applied example-wise.
-     */
-    class ExampleWiseLogisticLossImpl : public IExampleWiseLoss {
-
-        public:
-
-            void updateExampleWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                             const DenseNumericMatrix<float64>& scoreMatrix,
-                                             DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
 
     };
 
