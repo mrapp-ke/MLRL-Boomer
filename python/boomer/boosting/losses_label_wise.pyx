@@ -33,7 +33,7 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
 
 cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
     """
-    A wrapper for the C++ class `LabelWiseSquaredHingeLossImpl`.
+    A wrapper for the C++ class `LabelWiseSquaredHingeLoss`.
     """
 
     def __cinit__(self):
