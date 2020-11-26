@@ -7,7 +7,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/statistics.h"
+#include "../../common/cpp/statistics/statistics.h"
 
 
 namespace seco {

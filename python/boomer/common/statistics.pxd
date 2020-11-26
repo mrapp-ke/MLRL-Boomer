@@ -5,15 +5,13 @@ from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/statistics.h" nogil:
+cdef extern from "cpp/statistics/statistics_subset.h" nogil:
 
     cdef cppclass IStatisticsSubset:
         pass
 
 
-    cdef cppclass AbstractDecomposableStatisticsSubset(IStatisticsSubset):
-        pass
-
+cdef extern from "cpp/statistics/statistics.h" nogil:
 
     cdef cppclass IStatistics:
 

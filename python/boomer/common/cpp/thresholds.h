@@ -10,7 +10,7 @@
 #include "head_refinement/head_refinement_factory.h"
 #include "rule_refinement/rule_refinement.h"
 #include "sampling/weight_vector.h"
-#include "statistics.h"
+#include "statistics/statistics.h"
 
 
 /**

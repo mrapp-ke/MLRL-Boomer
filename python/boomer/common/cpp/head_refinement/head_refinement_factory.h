@@ -4,6 +4,8 @@
 #pragma once
 
 #include "head_refinement.h"
+#include "../indices/index_vector_full.h"
+#include "../indices/index_vector_partial.h"
 
 
 /**

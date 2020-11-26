@@ -1,7 +1,7 @@
 #include "prediction_partial.h"
 #include "head_refinement.h"
 #include "../rule_refinement/rule_refinement.h"
-#include "../statistics.h"
+#include "../statistics/statistics.h"
 
 
 PartialPrediction::PartialPrediction(uint32 numElements)

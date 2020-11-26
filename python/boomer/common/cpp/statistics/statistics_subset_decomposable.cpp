@@ -1,4 +1,4 @@
-#include "statistics.h"
+#include "statistics_subset_decomposable.h"
 
 
 const EvaluatedPrediction& AbstractDecomposableStatisticsSubset::calculateExampleWisePrediction(bool uncovered,

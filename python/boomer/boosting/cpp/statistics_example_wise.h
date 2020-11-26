@@ -7,7 +7,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/statistics.h"
+#include "../../common/cpp/statistics/statistics.h"
 #include "rule_evaluation_example_wise.h"
 #include "losses_example_wise.h"
 
