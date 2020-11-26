@@ -33,7 +33,7 @@ namespace boosting {
              * @return                  A reference to an object of type `DenseLabelWiseScoreVector` that stores the
              *                          predicted scores and quality scores
              */
-            virtual const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
+            virtual const DenseLabelWiseScoreVector& calculateLabelWiseScores(
                 const DenseLabelWiseStatisticVector& statisticVector) = 0;
 
     };

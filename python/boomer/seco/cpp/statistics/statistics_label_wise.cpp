@@ -161,14 +161,13 @@ class LabelWiseStatistics : public ILabelWiseStatistics {
                     }
                 }
 
-                const DenseLabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
-                                                                              bool accumulated) override {
+                const DenseLabelWiseScoreVector& calculateLabelWiseScores(bool uncovered, bool accumulated) override {
                     float64* confusionMatricesCovered =
                         accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(statistics_.minorityLabels_,
-                                                                            statistics_.confusionMatricesTotal_,
-                                                                            confusionMatricesSubset_,
-                                                                            confusionMatricesCovered, uncovered);
+                    return ruleEvaluationPtr_->calculateLabelWiseScores(statistics_.minorityLabels_,
+                                                                        statistics_.confusionMatricesTotal_,
+                                                                        confusionMatricesSubset_,
+                                                                        confusionMatricesCovered, uncovered);
                 }
 
         };

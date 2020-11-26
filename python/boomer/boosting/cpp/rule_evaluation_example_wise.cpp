@@ -34,13 +34,13 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
 
         std::shared_ptr<Lapack> lapackPtr_;
 
-        virtual void calculateLabelWisePrediction(const DenseExampleWiseStatisticVector& statisticVector,
-                                                  DenseLabelWiseScoreVector& scoreVector) = 0;
+        virtual void calculateLabelWiseScores(const DenseExampleWiseStatisticVector& statisticVector,
+                                              DenseLabelWiseScoreVector& scoreVector) = 0;
 
-        virtual void calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
-                                                    DenseScoreVector& scoreVector, int dsysvLwork,
-                                                    float64* dsysvTmpArray1, int* dsysvTmpArray2,
-                                                    double* dsysvTmpArray3, float64* dspmvTmpArray) = 0;
+        virtual void calculateExampleWiseScores(DenseExampleWiseStatisticVector& statisticVector,
+                                                DenseScoreVector& scoreVector, int dsysvLwork, float64* dsysvTmpArray1,
+                                                int* dsysvTmpArray2, double* dsysvTmpArray3,
+                                                float64* dspmvTmpArray) = 0;
 
     public:
 
@@ -65,18 +65,17 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             free(dspmvTmpArray_);
         }
 
-        const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
+        const DenseLabelWiseScoreVector& calculateLabelWiseScores(
                 const DenseExampleWiseStatisticVector& statisticVector) override {
             if (labelWiseScoreVector_ == nullptr) {
                 labelWiseScoreVector_ = new DenseLabelWiseScoreVector(numPredictions_);
             }
 
-            this->calculateLabelWisePrediction(statisticVector, *labelWiseScoreVector_);
+            this->calculateLabelWiseScores(statisticVector, *labelWiseScoreVector_);
             return *labelWiseScoreVector_;
         }
 
-        const DenseScoreVector& calculateExampleWisePrediction(
-                DenseExampleWiseStatisticVector& statisticVector) override {
+        const DenseScoreVector& calculateExampleWiseScores(DenseExampleWiseStatisticVector& statisticVector) override {
             if (scoreVector_ == nullptr) {
                 scoreVector_ = new DenseScoreVector(numPredictions_);
                 dsysvTmpArray1_ = (float64*) malloc(numPredictions_ * numPredictions_ * sizeof(float64));
@@ -88,8 +87,8 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
                 dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
             }
 
-            this->calculateExampleWisePrediction(statisticVector, *scoreVector_, dsysvLwork_, dsysvTmpArray1_,
-                                                 dsysvTmpArray2_, dsysvTmpArray3_, dspmvTmpArray_);
+            this->calculateExampleWiseScores(statisticVector, *scoreVector_, dsysvLwork_, dsysvTmpArray1_,
+                                             dsysvTmpArray2_, dsysvTmpArray3_, dspmvTmpArray_);
             return *scoreVector_;
         }
 
@@ -109,8 +108,8 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
 
     protected:
 
-        void calculateLabelWisePrediction(const DenseExampleWiseStatisticVector& statisticVector,
-                                          DenseLabelWiseScoreVector& scoreVector) override {
+        void calculateLabelWiseScores(const DenseExampleWiseStatisticVector& statisticVector,
+                                      DenseLabelWiseScoreVector& scoreVector) override {
             DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                 statisticVector.gradients_cbegin();
             uint32 numPredictions = scoreVector.getNumElements();
@@ -140,10 +139,9 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
             scoreVector.overallQualityScore = overallQualityScore;
         }
 
-        void calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
-                                            DenseScoreVector& scoreVector, int dsysvLwork, float64* dsysvTmpArray1,
-                                            int* dsysvTmpArray2, double* dsysvTmpArray3,
-                                            float64* dspmvTmpArray) override {
+        void calculateExampleWiseScores(DenseExampleWiseStatisticVector& statisticVector, DenseScoreVector& scoreVector,
+                                        int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
+                                        double* dsysvTmpArray3, float64* dspmvTmpArray) override {
             DenseExampleWiseStatisticVector::gradient_iterator gradientIterator = statisticVector.gradients_begin();
             DenseExampleWiseStatisticVector::hessian_iterator hessianIterator = statisticVector.hessians_begin();
             uint32 numPredictions = scoreVector.getNumElements();

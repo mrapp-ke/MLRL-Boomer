@@ -32,8 +32,7 @@ class FullHeadRefinement : public IHeadRefinement {
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
-            const DenseScoreVector& scoreVector = statisticsSubset.calculateExampleWisePrediction(uncovered,
-                                                                                                  accumulated);
+            const DenseScoreVector& scoreVector = statisticsSubset.calculateExampleWiseScores(uncovered, accumulated);
             float64 overallQualityScore = scoreVector.overallQualityScore;
 
             // The quality score must be better than that of `bestHead`...
@@ -75,9 +74,9 @@ class FullHeadRefinement : public IHeadRefinement {
             return std::move(headPtr_);
         }
 
-        const DenseScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                    bool accumulated) const override {
-            return statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
+        const DenseScoreVector& calculateScores(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                bool accumulated) const override {
+            return statisticsSubset.calculateExampleWiseScores(uncovered, accumulated);
         }
 
 };

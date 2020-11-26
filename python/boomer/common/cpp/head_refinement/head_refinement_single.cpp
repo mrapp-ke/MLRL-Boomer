@@ -31,8 +31,8 @@ class SingleLabelHeadRefinement : public IHeadRefinement {
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
-            const DenseLabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWisePrediction(uncovered,
-                                                                                                         accumulated);
+            const DenseLabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWiseScores(uncovered,
+                                                                                                     accumulated);
             uint32 numPredictions = scoreVector.getNumElements();
             DenseLabelWiseScoreVector::quality_score_const_iterator qualityScoreIterator =
                 scoreVector.quality_scores_cbegin();
@@ -72,9 +72,9 @@ class SingleLabelHeadRefinement : public IHeadRefinement {
             return std::move(headPtr_);
         }
 
-        const DenseScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                    bool accumulated) const override {
-            return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
+        const DenseScoreVector& calculateScores(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                bool accumulated) const override {
+            return statisticsSubset.calculateLabelWiseScores(uncovered, accumulated);
         }
 
 };

@@ -36,7 +36,7 @@ namespace boosting {
              * @param return            A reference to an object of type `DenseLabelWiseScoreVector` that stores the
              *                          predicted scores and quality scores
              */
-            virtual const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
+            virtual const DenseLabelWiseScoreVector& calculateLabelWiseScores(
                 const DenseExampleWiseStatisticVector& statisticVector) = 0;
 
             /**
@@ -48,7 +48,7 @@ namespace boosting {
              * @param prediction        A reference to an object of type `DenseScoreVector` that should be used to store
              *                          the predicted scores and quality score
              */
-            virtual const DenseScoreVector& calculateExampleWisePrediction(
+            virtual const DenseScoreVector& calculateExampleWiseScores(
                 DenseExampleWiseStatisticVector& statisticVector) = 0;
 
     };

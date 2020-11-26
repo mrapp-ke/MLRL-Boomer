@@ -28,7 +28,7 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
         }
 
-        const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
+        const DenseLabelWiseScoreVector& calculateLabelWiseScores(
                 const DenseLabelWiseStatisticVector& statisticVector) override {
             DenseLabelWiseStatisticVector::gradient_const_iterator gradientIterator =
                 statisticVector.gradients_cbegin();

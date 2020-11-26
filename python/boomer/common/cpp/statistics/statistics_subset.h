@@ -53,8 +53,8 @@ class IStatisticsSubset {
          *
          * This function is supposed to reset the internal state of the subset to the state when the subset was created
          * via the function `Statistics#createSubset`. When calling this function, the current state must not be purged
-         * entirely, but it must be cached and made available for use by the functions `calculateExampleWisePrediction`
-         * and `calculateLabelWisePrediction` (if the function argument `accumulated` is set accordingly).
+         * entirely, but it must be cached and made available for use by the functions `calculateExampleWiseScores` and
+         * `calculateLabelWiseScores` (if the function argument `accumulated` is set accordingly).
          *
          * This function may be invoked multiple times with one or several calls to `addToSubset` in between, which is
          * supposed to update the previously cached state by accumulating the current one, i.e., the accumulated cached
@@ -94,7 +94,7 @@ class IStatisticsSubset {
          *                      be predicted by the rule for each considered label, as well as the corresponding
          *                      quality scores
          */
-        virtual const DenseLabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const DenseLabelWiseScoreVector& calculateLabelWiseScores(bool uncovered, bool accumulated) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -112,7 +112,7 @@ class IStatisticsSubset {
          * The calculated scores correspond to the subset of labels that have been provided when creating the subset via
          * the function `Statistics#createSubset`. The score to be predicted for an individual label is calculated with
          * respect to the predictions for the other labels. In the decomposable case, i.e., if the labels are considered
-         * independently of each other, this function is equivalent to the function `calculateLabelWisePrediction`. In
+         * independently of each other, this function is equivalent to the function `calculateLabelWiseScores`. In
          * addition to the scores, an overall quality score, which assesses the quality of the predictions for all
          * labels in terms of a single score, is returned.
          *
@@ -128,6 +128,6 @@ class IStatisticsSubset {
          * @return              A reference to an object of type `DenseScoreVector` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as an overall quality score
          */
-        virtual const DenseScoreVector& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const DenseScoreVector& calculateExampleWiseScores(bool uncovered, bool accumulated) = 0;
 
 };

@@ -68,7 +68,7 @@ class IHeadRefinement {
          * @return                  A reference to an object of type `DenseScoreVector` that stores the optimal scores
          *                          to be predicted by the rule, as well as its overall quality score
          */
-        virtual const DenseScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                            bool accumulated) const = 0;
+        virtual const DenseScoreVector& calculateScores(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                        bool accumulated) const = 0;
 
 };

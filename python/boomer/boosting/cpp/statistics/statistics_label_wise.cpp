@@ -113,8 +113,7 @@ class LabelWiseHistogram : virtual public IHistogram {
                     sumVector_.setAllToZero();
                 }
 
-                const DenseLabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
-                                                                              bool accumulated) override {
+                const DenseLabelWiseScoreVector& calculateLabelWiseScores(bool uncovered, bool accumulated) override {
                     const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
@@ -123,10 +122,10 @@ class LabelWiseHistogram : virtual public IHistogram {
                                               labelIndices_, sumsOfStatistics.gradients_cbegin(),
                                               sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
                                               sumsOfStatistics.hessians_cend());
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpVector_);
+                        return ruleEvaluationPtr_->calculateLabelWiseScores(tmpVector_);
                     }
 
-                    return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics);
+                    return ruleEvaluationPtr_->calculateLabelWiseScores(sumsOfStatistics);
                 }
 
         };

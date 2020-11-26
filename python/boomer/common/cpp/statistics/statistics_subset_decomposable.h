@@ -16,6 +16,6 @@ class AbstractDecomposableStatisticsSubset : public IStatisticsSubset {
 
     public:
 
-        const DenseScoreVector& calculateExampleWisePrediction(bool uncovered, bool accumulated) override;
+        const DenseScoreVector& calculateExampleWiseScores(bool uncovered, bool accumulated) override;
 
 };
