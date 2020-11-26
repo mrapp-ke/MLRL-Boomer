@@ -96,24 +96,32 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
 
                 std::unique_ptr<Result> get() override {
                 //TODO: in this Branch
+                    auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
+                    FilteredCacheEntry<BinVector>& cacheEntry = cacheFilteredIterator->second;
+
                     auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                     BinCacheEntry& binCacheEntry = cacheIterator->second;
 
-                    if (binCacheEntry.binVectorPtr.get() == nullptr) {
-                        std::unique_ptr<FeatureVector> featureVectorPtr;
-                        thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
+                    if(cacheEntry.vectorPtr.get() == nullptr){
+
+                        if (binCacheEntry.binVectorPtr.get() == nullptr) {
+                            std::unique_ptr<FeatureVector> featureVectorPtr;
+                            thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
                                                                                             featureVectorPtr);
-                        IFeatureBinning::FeatureInfo featureInfo =
-                            thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
-                        uint32 numBins = featureInfo.numBins;
-                        binCacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins));
-                        histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
-                        currentBinVector_ = binCacheEntry.binVectorPtr.get();
-                        thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo, *featureVectorPtr, *this);
-                        binCacheEntry.histogramPtr = std::move(histogramBuilderPtr_->build());
+                            IFeatureBinning::FeatureInfo featureInfo =
+                                thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
+                            uint32 numBins = featureInfo.numBins;
+                            binCacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins));
+                            histogramBuilderPtr_ = thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
+                            currentBinVector_ = binCacheEntry.binVectorPtr.get();
+                            thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo, *featureVectorPtr, *this);
+                            binCacheEntry.histogramPtr = std::move(histogramBuilderPtr_->build());
+                        }
+                        cacheEntry.vectorPtr = std::move(binCacheEntry.binVectorPtr);
+                        return std::make_unique<Result>(*binCacheEntry.histogramPtr, *binCacheEntry.binVectorPtr);
                     }
 
-                    return std::make_unique<Result>(*binCacheEntry.histogramPtr, *binCacheEntry.binVectorPtr);
+                    return std::make_unique<Result>(*binCacheEntry.histogramPtr, *cacheEntry.vectorPtr);
                 }
 
                 void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
