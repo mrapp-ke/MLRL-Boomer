@@ -42,5 +42,5 @@ void CscFeatureMatrix::fetchFeatureVector(uint32 featureIndex, std::unique_ptr<F
         }
     }
 
-    featureVectorPtr->setNumElements(i);
+    featureVectorPtr->setNumElements(i, true);
 }

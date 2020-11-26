@@ -14,8 +14,8 @@ uint32 AbstractPrediction::getNumElements() const {
     return predictedScoreVector_.getNumElements();
 }
 
-void AbstractPrediction::setNumElements(uint32 numElements) {
-    predictedScoreVector_.setNumElements(numElements);
+void AbstractPrediction::setNumElements(uint32 numElements, bool freeMemory) {
+    predictedScoreVector_.setNumElements(numElements, freeMemory);
 }
 
 AbstractPrediction::score_iterator AbstractPrediction::scores_begin() {
@@ -52,9 +52,9 @@ FullPrediction::index_const_iterator FullPrediction::indices_cend() const {
     return indexVector_.cend();
 }
 
-void FullPrediction::setNumElements(uint32 numElements) {
-    AbstractPrediction::setNumElements(numElements);
-    indexVector_.setNumElements(numElements);
+void FullPrediction::setNumElements(uint32 numElements, bool freeMemory) {
+    AbstractPrediction::setNumElements(numElements, freeMemory);
+    indexVector_.setNumElements(numElements, freeMemory);
 }
 
 bool FullPrediction::isPartial() const {
@@ -103,9 +103,9 @@ PartialPrediction::index_const_iterator PartialPrediction::indices_cend() const 
     return indexVector_.cend();
 }
 
-void PartialPrediction::setNumElements(uint32 numElements) {
-    AbstractPrediction::setNumElements(numElements);
-    indexVector_.setNumElements(numElements);
+void PartialPrediction::setNumElements(uint32 numElements, bool freeMemory) {
+    AbstractPrediction::setNumElements(numElements, freeMemory);
+    indexVector_.setNumElements(numElements, freeMemory);
 }
 
 bool PartialPrediction::isPartial() const {
