@@ -21,6 +21,6 @@ class ILabelWiseScoreProcessor {
          * @param scoreVector A reference to an object of type `DenseLabelWiseScoreVector` that stores the scores to be
          *                    processed
          */
-        void processScores(const DenseLabelWiseScoreVector& scoreVector);
+        virtual void processScores(const DenseLabelWiseScoreVector& scoreVector) = 0;
 
 };

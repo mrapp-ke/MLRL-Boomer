@@ -20,6 +20,6 @@ class IScoreProcessor {
          *
          * @param scoreVector A reference to an object of type `DenseScoreVector` that stores the scores to be processed
          */
-        void processScores(const DenseScoreVector& scoreVector);
+        virtual void processScores(const DenseScoreVector& scoreVector) = 0;
 
 };
