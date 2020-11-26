@@ -63,11 +63,6 @@ class DenseScoreVector : virtual public IScoreVector {
          */
         uint32 getNumElements() const;
 
-        /**
-         * A score that assesses the overall quality of the prediction.
-         */
-        float64 overallQualityScore;
-
         const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
                                                          IScoreProcessor& scoreProcessor) const override;
 
