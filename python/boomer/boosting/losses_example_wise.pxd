@@ -1,13 +1,15 @@
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/losses_example_wise.h" namespace "boosting" nogil:
+cdef extern from "cpp/losses/loss_example_wise.h" namespace "boosting" nogil:
 
     cdef cppclass IExampleWiseLoss:
         pass
 
 
-    cdef cppclass ExampleWiseLogisticLossImpl(IExampleWiseLoss):
+cdef extern from "cpp/losses/loss_example_wise_logistic.h" namespace "boosting" nogil:
+
+    cdef cppclass ExampleWiseLogisticLossImpl"boosting::ExampleWiseLogisticLoss"(IExampleWiseLoss):
         pass
 
 
