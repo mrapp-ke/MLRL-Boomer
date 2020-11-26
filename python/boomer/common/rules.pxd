@@ -1,5 +1,5 @@
 from boomer.common._types cimport uint8, uint32, intp, float32, float64
-from boomer.common._predictions cimport AbstractPrediction
+from boomer.common.head_refinement cimport AbstractPrediction
 
 from libcpp cimport bool
 from libcpp.list cimport list as double_linked_list
