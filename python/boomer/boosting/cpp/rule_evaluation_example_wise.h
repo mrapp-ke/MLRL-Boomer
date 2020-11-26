@@ -89,7 +89,7 @@ namespace boosting {
     /**
      * Allows to create instances of the class `RegularizedExampleWiseRuleEvaluation`.
      */
-    class RegularizedExampleWiseRuleEvaluationFactoryImpl : public IExampleWiseRuleEvaluationFactory {
+    class RegularizedExampleWiseRuleEvaluationFactory : public IExampleWiseRuleEvaluationFactory {
 
         private:
 
@@ -109,9 +109,8 @@ namespace boosting {
              * @param lapackPtr              A shared pointer to an object of type `Lapack` that allows to execute
              *                               different LAPACK routines
              */
-            RegularizedExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
-                                                            std::shared_ptr<Blas> blasPtr,
-                                                            std::shared_ptr<Lapack> lapackPtr);
+            RegularizedExampleWiseRuleEvaluationFactory(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
+                                                        std::shared_ptr<Lapack> lapackPtr);
 
             std::unique_ptr<IExampleWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
 

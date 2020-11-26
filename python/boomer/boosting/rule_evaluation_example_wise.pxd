@@ -11,7 +11,8 @@ cdef extern from "cpp/rule_evaluation_example_wise.h" namespace "boosting" nogil
         pass
 
 
-    cdef cppclass RegularizedExampleWiseRuleEvaluationFactoryImpl(IExampleWiseRuleEvaluationFactory):
+    cdef cppclass RegularizedExampleWiseRuleEvaluationFactoryImpl"boosting::RegularizedExampleWiseRuleEvaluationFactory"(
+            IExampleWiseRuleEvaluationFactory):
 
         # Constructors:
 

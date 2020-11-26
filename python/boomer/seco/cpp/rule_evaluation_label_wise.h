@@ -94,7 +94,7 @@ namespace seco {
     /**
      * Allows to create instances of the class `RegularizedLabelWiseRuleEvaluation`.
      */
-    class HeuristicLabelWiseRuleEvaluationFactoryImpl : public ILabelWiseRuleEvaluationFactory {
+    class HeuristicLabelWiseRuleEvaluationFactory : public ILabelWiseRuleEvaluationFactory {
 
         private:
 
@@ -110,7 +110,7 @@ namespace seco {
              * @param predictMajority   True, if for each label the majority label should be predicted, false, if the
              *                          minority label should be predicted
              */
-            HeuristicLabelWiseRuleEvaluationFactoryImpl(std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
+            HeuristicLabelWiseRuleEvaluationFactory(std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
 
             std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
 

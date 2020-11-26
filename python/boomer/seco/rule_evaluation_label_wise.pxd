@@ -10,7 +10,8 @@ cdef extern from "cpp/rule_evaluation_label_wise.h" namespace "seco" nogil:
         pass
 
 
-    cdef cppclass HeuristicLabelWiseRuleEvaluationFactoryImpl(ILabelWiseRuleEvaluationFactory):
+    cdef cppclass HeuristicLabelWiseRuleEvaluationFactoryImpl"seco::HeuristicLabelWiseRuleEvaluationFactory"(
+            ILabelWiseRuleEvaluationFactory):
 
         # Constructors:
 
