@@ -38,7 +38,7 @@ uint32 FullIndexVector::getNumElements() const {
     return numElements_;
 }
 
-void FullIndexVector::setNumElements(uint32 numElements) {
+void FullIndexVector::setNumElements(uint32 numElements, bool freeMemory) {
     numElements_ = numElements;
 }
 

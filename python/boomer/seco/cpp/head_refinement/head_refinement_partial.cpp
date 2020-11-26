@@ -95,7 +95,7 @@ class PartialHeadRefinement : public IHeadRefinement {
                 if (headPtr_.get() == nullptr) {
                     headPtr_ = std::make_unique<PartialPrediction>(bestNumPredictions);
                 } else if (headPtr_->getNumElements() != bestNumPredictions) {
-                    headPtr_->setNumElements(bestNumPredictions);
+                    headPtr_->setNumElements(bestNumPredictions, false);
                 }
 
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();

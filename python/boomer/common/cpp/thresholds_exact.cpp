@@ -191,7 +191,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         }
     }
 
-    filteredVector->setNumElements(numElements);
+    filteredVector->setNumElements(numElements, true);
     cacheEntry.numConditions = numConditions;
 }
 
@@ -242,7 +242,7 @@ static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEnt
         }
     }
 
-    filteredVector->setNumElements(i);
+    filteredVector->setNumElements(i, true);
     cacheEntry.numConditions = numConditions;
 }
 

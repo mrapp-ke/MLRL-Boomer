@@ -18,8 +18,8 @@ uint32 PartialIndexVector::getNumElements() const {
     return vector_.getNumElements();
 }
 
-void PartialIndexVector::setNumElements(uint32 numElements) {
-    vector_.setNumElements(numElements);
+void PartialIndexVector::setNumElements(uint32 numElements, bool freeMemory) {
+    vector_.setNumElements(numElements, freeMemory);
 }
 
 uint32 PartialIndexVector::getIndex(uint32 pos) const {
