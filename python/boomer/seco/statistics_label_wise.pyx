@@ -27,7 +27,7 @@ cdef class LabelWiseStatisticsFactory:
 
 cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
     """
-    A wrapper for the C++ class `DenseLabelWiseStatisticsFactoryImpl`.
+    A wrapper for the C++ class `DenseLabelWiseStatisticsFactory`.
     """
 
     def __cinit__(self, LabelWiseRuleEvaluationFactory rule_evaluation_factory, RandomAccessLabelMatrix label_matrix):
