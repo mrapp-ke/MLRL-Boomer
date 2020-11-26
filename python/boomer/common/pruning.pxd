@@ -1,4 +1,4 @@
-from boomer.common._predictions cimport AbstractPrediction
+from boomer.common.head_refinement cimport AbstractPrediction
 from boomer.common.rules cimport Condition, ConditionList
 from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
 

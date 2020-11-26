@@ -1,4 +1,4 @@
-from boomer.common._predictions cimport AbstractPrediction
+from boomer.common.head_refinement cimport AbstractPrediction
 
 from libcpp.memory cimport shared_ptr
 
