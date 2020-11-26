@@ -1,13 +1,13 @@
-#include "losses_example_wise.h"
+#include "loss_example_wise_logistic.h"
 #include <cmath>
 
 using namespace boosting;
 
 
-void ExampleWiseLogisticLossImpl::updateExampleWiseStatistics(uint32 exampleIndex,
-                                                              const IRandomAccessLabelMatrix& labelMatrix,
-                                                              const DenseNumericMatrix<float64>& scoreMatrix,
-                                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const {
+void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
+                                                          const IRandomAccessLabelMatrix& labelMatrix,
+                                                          const DenseNumericMatrix<float64>& scoreMatrix,
+                                                          DenseExampleWiseStatisticMatrix& statisticMatrix) const {
     DenseExampleWiseStatisticMatrix::gradient_iterator gradientIterator =
         statisticMatrix.gradients_row_begin(exampleIndex);
     DenseExampleWiseStatisticMatrix::hessian_iterator hessianIterator =
@@ -20,7 +20,7 @@ void ExampleWiseLogisticLossImpl::updateExampleWiseStatistics(uint32 exampleInde
         uint8 trueLabel = labelMatrix.getValue(exampleIndex, c);
         float64 expectedScore = trueLabel ? 1 : -1;
         float64 predictedScore = scoreIterator[c];
-        float64 exponential = exp(-expectedScore * predictedScore);
+        float64 exponential = std::exp(-expectedScore * predictedScore);
         gradientIterator[c] = exponential;  // Temporarily store the exponential in the existing output array
         sumOfExponentials += exponential;
     }
@@ -40,7 +40,7 @@ void ExampleWiseLogisticLossImpl::updateExampleWiseStatistics(uint32 exampleInde
             trueLabel = labelMatrix.getValue(exampleIndex, c2);
             float64 expectedScore2 = trueLabel ? 1 : -1;
             float64 predictedScore2 = scoreIterator[c2];
-            tmp = exp((-expectedScore2 * predictedScore2) - (expectedScore * predictedScore));
+            tmp = std::exp((-expectedScore2 * predictedScore2) - (expectedScore * predictedScore));
             tmp *= -expectedScore2 * expectedScore;
             tmp /= sumOfExponentialsPow;
             hessianIterator[i] = tmp;
