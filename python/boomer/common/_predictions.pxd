@@ -9,7 +9,7 @@ from boomer.common.statistics cimport IStatistics
 from libcpp cimport bool
 
 
-cdef extern from "cpp/predictions.h" nogil:
+cdef extern from "cpp/head_refinement/prediction.h" nogil:
 
     cdef cppclass AbstractPrediction:
 
@@ -28,9 +28,13 @@ cdef extern from "cpp/predictions.h" nogil:
         void apply(IStatistics& statistics, uint32 statisticIndex)
 
 
+cdef extern from "cpp/head_refinement/prediction_evaluated.h" nogil:
+
     cdef cppclass AbstractEvaluatedPrediction(AbstractPrediction):
         pass
 
+
+cdef extern from "cpp/head_refinement/prediction_partial.h" nogil:
 
     cdef cppclass PartialPrediction(AbstractEvaluatedPrediction):
 
