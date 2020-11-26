@@ -21,7 +21,7 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
         bool predictMajority_;
 
-        LabelWiseEvaluatedPrediction prediction_;
+        DenseLabelWiseScoreVector prediction_;
 
     public:
 
@@ -36,17 +36,17 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
         HeuristicLabelWiseRuleEvaluation(const T& labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
                                          bool predictMajority)
             : labelIndices_(labelIndices), heuristicPtr_(heuristicPtr), predictMajority_(predictMajority),
-              prediction_(LabelWiseEvaluatedPrediction(labelIndices.getNumElements())) {
+              prediction_(DenseLabelWiseScoreVector(labelIndices.getNumElements())) {
 
         }
 
-        const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+        const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
                 const uint8* minorityLabels, const float64* confusionMatricesTotal,
                 const float64* confusionMatricesSubset, const float64* confusionMatricesCovered,
                 bool uncovered) override {
             uint32 numPredictions = prediction_.getNumElements();
-            LabelWiseEvaluatedPrediction::score_iterator scoreIterator = prediction_.scores_begin();
-            LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator =
+            DenseLabelWiseScoreVector::score_iterator scoreIterator = prediction_.scores_begin();
+            DenseLabelWiseScoreVector::quality_score_iterator qualityScoreIterator =
                 prediction_.quality_scores_begin();
             float64 overallQualityScore = 0;
             typename T::const_iterator indexIterator = labelIndices_.cbegin();

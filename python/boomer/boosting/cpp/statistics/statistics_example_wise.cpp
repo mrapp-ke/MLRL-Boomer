@@ -111,8 +111,8 @@ class ExampleWiseHistogram : virtual public IHistogram {
                     sumVector_.setAllToZero();
                 }
 
-                const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered,
-                                                                                 bool accumulated) override {
+                const DenseLabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
+                                                                              bool accumulated) override {
                     const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {
@@ -127,7 +127,7 @@ class ExampleWiseHistogram : virtual public IHistogram {
                     return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics);
                 }
 
-                const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) override {
+                const DenseScoreVector& calculateExampleWisePrediction(bool uncovered, bool accumulated) override {
                     StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {

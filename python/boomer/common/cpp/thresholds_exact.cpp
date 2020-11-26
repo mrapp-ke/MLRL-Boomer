@@ -442,8 +442,8 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
 
             std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(
                 *thresholds_.headRefinementFactoryPtr_);
-            const EvaluatedPrediction& prediction = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false,
-                                                                                           false);
+            const DenseScoreVector& prediction = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false,
+                                                                                        false);
             return prediction.overallQualityScore;
         }
 
@@ -460,9 +460,9 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
 
             std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(
                 *thresholds_.headRefinementFactoryPtr_);
-            const EvaluatedPrediction& prediction = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false,
-                                                                                           false);
-            const EvaluatedPrediction::score_const_iterator updatedIterator = prediction.scores_cbegin();
+            const DenseScoreVector& prediction = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false,
+                                                                                        false);
+            const DenseScoreVector::score_const_iterator updatedIterator = prediction.scores_cbegin();
             AbstractPrediction::score_iterator iterator = head.scores_begin();
             uint32 numElements = head.getNumElements();
 

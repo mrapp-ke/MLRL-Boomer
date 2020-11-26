@@ -57,7 +57,6 @@ sources = [
     'boomer/common/cpp/rule_refinement/rule_refinement_approximate.cpp',
     'boomer/common/cpp/binning/feature_binning_equal_frequency.cpp',
     'boomer/common/cpp/binning/feature_binning_equal_width.cpp',
-    'boomer/common/cpp/rule_evaluation.cpp',
     'boomer/common/cpp/thresholds.cpp',
     'boomer/common/cpp/thresholds_exact.cpp',
     'boomer/common/cpp/thresholds_approximate.cpp',
