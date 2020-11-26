@@ -26,7 +26,7 @@ cdef class ExampleWiseStatisticsFactory:
 
 cdef class DenseExampleWiseStatisticsFactory(ExampleWiseStatisticsFactory):
     """
-    A wrapper for the C++ class `DenseExampleWiseStatisticsFactoryImpl`.
+    A wrapper for the C++ class `DenseExampleWiseStatisticsFactory`.
     """
 
     def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluationFactory rule_evaluation_factory,
