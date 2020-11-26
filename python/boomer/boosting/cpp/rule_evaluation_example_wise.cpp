@@ -16,9 +16,9 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
 
         uint32 numPredictions_;
 
-        DenseScoreVector* prediction_;
+        DenseScoreVector* scoreVector_;
 
-        DenseLabelWiseScoreVector* labelWisePrediction_;
+        DenseLabelWiseScoreVector* labelWiseScoreVector_;
 
         int dsysvLwork_;
 
@@ -35,10 +35,10 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
         std::shared_ptr<Lapack> lapackPtr_;
 
         virtual void calculateLabelWisePrediction(const DenseExampleWiseStatisticVector& statisticVector,
-                                                  DenseLabelWiseScoreVector& prediction) = 0;
+                                                  DenseLabelWiseScoreVector& scoreVector) = 0;
 
         virtual void calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
-                                                    DenseScoreVector& prediction, int dsysvLwork,
+                                                    DenseScoreVector& scoreVector, int dsysvLwork,
                                                     float64* dsysvTmpArray1, int* dsysvTmpArray2,
                                                     double* dsysvTmpArray3, float64* dspmvTmpArray) = 0;
 
@@ -50,15 +50,15 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
          * @param numPredictions    The number of labels for which the rules may predict
          */
         AbstractExampleWiseRuleEvaluation(std::shared_ptr<Lapack> lapackPtr, uint32 numPredictions)
-            : numPredictions_(numPredictions), prediction_(nullptr), labelWisePrediction_(nullptr),
+            : numPredictions_(numPredictions), scoreVector_(nullptr), labelWiseScoreVector_(nullptr),
               dsysvTmpArray1_(nullptr), dsysvTmpArray2_(nullptr), dsysvTmpArray3_(nullptr), dspmvTmpArray_(nullptr),
               lapackPtr_(lapackPtr) {
 
         }
 
         ~AbstractExampleWiseRuleEvaluation() {
-            delete prediction_;
-            delete labelWisePrediction_;
+            delete scoreVector_;
+            delete labelWiseScoreVector_;
             free(dsysvTmpArray1_);
             free(dsysvTmpArray2_);
             free(dsysvTmpArray3_);
@@ -67,18 +67,18 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
 
         const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseExampleWiseStatisticVector& statisticVector) override {
-            if (labelWisePrediction_ == nullptr) {
-                labelWisePrediction_ = new DenseLabelWiseScoreVector(numPredictions_);
+            if (labelWiseScoreVector_ == nullptr) {
+                labelWiseScoreVector_ = new DenseLabelWiseScoreVector(numPredictions_);
             }
 
-            this->calculateLabelWisePrediction(statisticVector, *labelWisePrediction_);
-            return *labelWisePrediction_;
+            this->calculateLabelWisePrediction(statisticVector, *labelWiseScoreVector_);
+            return *labelWiseScoreVector_;
         }
 
         const DenseScoreVector& calculateExampleWisePrediction(
                 DenseExampleWiseStatisticVector& statisticVector) override {
-            if (prediction_ == nullptr) {
-                prediction_ = new DenseScoreVector(numPredictions_);
+            if (scoreVector_ == nullptr) {
+                scoreVector_ = new DenseScoreVector(numPredictions_);
                 dsysvTmpArray1_ = (float64*) malloc(numPredictions_ * numPredictions_ * sizeof(float64));
                 dsysvTmpArray2_ = (int*) malloc(numPredictions_ * sizeof(int));
                 dspmvTmpArray_ = (float64*) malloc(numPredictions_ * sizeof(float64));
@@ -88,9 +88,9 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
                 dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
             }
 
-            this->calculateExampleWisePrediction(statisticVector, *prediction_, dsysvLwork_, dsysvTmpArray1_,
+            this->calculateExampleWisePrediction(statisticVector, *scoreVector_, dsysvLwork_, dsysvTmpArray1_,
                                                  dsysvTmpArray2_, dsysvTmpArray3_, dspmvTmpArray_);
-            return *prediction_;
+            return *scoreVector_;
         }
 
 };
@@ -110,12 +110,12 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
     protected:
 
         void calculateLabelWisePrediction(const DenseExampleWiseStatisticVector& statisticVector,
-                                          DenseLabelWiseScoreVector& prediction) override {
+                                          DenseLabelWiseScoreVector& scoreVector) override {
             DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                 statisticVector.gradients_cbegin();
-            uint32 numPredictions = prediction.getNumElements();
-            DenseLabelWiseScoreVector::score_iterator scoreIterator = prediction.scores_begin();
-            DenseLabelWiseScoreVector::quality_score_iterator qualityScoreIterator = prediction.quality_scores_begin();
+            uint32 numPredictions = scoreVector.getNumElements();
+            DenseLabelWiseScoreVector::score_iterator scoreIterator = scoreVector.scores_begin();
+            DenseLabelWiseScoreVector::quality_score_iterator qualityScoreIterator = scoreVector.quality_scores_begin();
             float64 overallQualityScore = 0;
 
             // For each label, calculate the score to be predicted, as well as a quality score...
@@ -137,17 +137,17 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
 
             // Add the L2 regularization term to the overall quality score...
             overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
-            prediction.overallQualityScore = overallQualityScore;
+            scoreVector.overallQualityScore = overallQualityScore;
         }
 
         void calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
-                                            DenseScoreVector& prediction, int dsysvLwork, float64* dsysvTmpArray1,
+                                            DenseScoreVector& scoreVector, int dsysvLwork, float64* dsysvTmpArray1,
                                             int* dsysvTmpArray2, double* dsysvTmpArray3,
                                             float64* dspmvTmpArray) override {
             DenseExampleWiseStatisticVector::gradient_iterator gradientIterator = statisticVector.gradients_begin();
             DenseExampleWiseStatisticVector::hessian_iterator hessianIterator = statisticVector.hessians_begin();
-            uint32 numPredictions = prediction.getNumElements();
-            DenseScoreVector::score_iterator scoreIterator = prediction.scores_begin();
+            uint32 numPredictions = scoreVector.getNumElements();
+            DenseScoreVector::score_iterator scoreIterator = scoreVector.scores_begin();
 
             // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
             lapackPtr_->dsysv(hessianIterator, gradientIterator, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3,
@@ -160,7 +160,7 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
 
             // Add the L2 regularization term to the overall quality score...
             overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
-            prediction.overallQualityScore = overallQualityScore;
+            scoreVector.overallQualityScore = overallQualityScore;
         }
 
     public:

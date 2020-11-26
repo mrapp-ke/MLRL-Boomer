@@ -21,7 +21,7 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
         bool predictMajority_;
 
-        DenseLabelWiseScoreVector prediction_;
+        DenseLabelWiseScoreVector scoreVector_;
 
     public:
 
@@ -36,7 +36,7 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
         HeuristicLabelWiseRuleEvaluation(const T& labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
                                          bool predictMajority)
             : labelIndices_(labelIndices), heuristicPtr_(heuristicPtr), predictMajority_(predictMajority),
-              prediction_(DenseLabelWiseScoreVector(labelIndices.getNumElements())) {
+              scoreVector_(DenseLabelWiseScoreVector(labelIndices.getNumElements())) {
 
         }
 
@@ -44,10 +44,10 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
                 const uint8* minorityLabels, const float64* confusionMatricesTotal,
                 const float64* confusionMatricesSubset, const float64* confusionMatricesCovered,
                 bool uncovered) override {
-            uint32 numPredictions = prediction_.getNumElements();
-            DenseLabelWiseScoreVector::score_iterator scoreIterator = prediction_.scores_begin();
+            uint32 numPredictions = scoreVector_.getNumElements();
+            DenseLabelWiseScoreVector::score_iterator scoreIterator = scoreVector_.scores_begin();
             DenseLabelWiseScoreVector::quality_score_iterator qualityScoreIterator =
-                prediction_.quality_scores_begin();
+                scoreVector_.quality_scores_begin();
             float64 overallQualityScore = 0;
             typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
@@ -91,8 +91,8 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
             }
 
             overallQualityScore /= numPredictions;
-            prediction_.overallQualityScore = overallQualityScore;
-            return prediction_;
+            scoreVector_.overallQualityScore = overallQualityScore;
+            return scoreVector_;
         }
 
 };

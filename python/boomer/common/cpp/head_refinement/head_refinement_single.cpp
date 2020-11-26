@@ -31,11 +31,11 @@ class SingleLabelHeadRefinement : public IHeadRefinement {
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
-            const DenseLabelWiseScoreVector& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
-                                                                                                        accumulated);
-            uint32 numPredictions = prediction.getNumElements();
+            const DenseLabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWisePrediction(uncovered,
+                                                                                                         accumulated);
+            uint32 numPredictions = scoreVector.getNumElements();
             DenseLabelWiseScoreVector::quality_score_const_iterator qualityScoreIterator =
-                prediction.quality_scores_cbegin();
+                scoreVector.quality_scores_cbegin();
             uint32 bestC = 0;
             float64 bestQualityScore = qualityScoreIterator[bestC];
 
@@ -50,7 +50,7 @@ class SingleLabelHeadRefinement : public IHeadRefinement {
 
             // The quality score must be better than that of `bestHead`...
             if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
-                DenseLabelWiseScoreVector::score_const_iterator scoreIterator = prediction.scores_cbegin();
+                DenseLabelWiseScoreVector::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
                 if (headPtr_.get() == nullptr) {
