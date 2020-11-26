@@ -12,7 +12,7 @@ DenseVector<T>::DenseVector(uint32 numElements)
 template<class T>
 DenseVector<T>::DenseVector(uint32 numElements, bool init)
     : array_((T*) (init ? calloc(numElements, sizeof(T)) : malloc(numElements * sizeof(T)))),
-      numElements_(numElements) {
+      numElements_(numElements), maxCapacity_(numElements) {
 
 }
 
@@ -52,11 +52,18 @@ typename DenseVector<T>::const_iterator DenseVector<T>::cend() const {
 }
 
 template<class T>
-void DenseVector<T>::setNumElements(uint32 numElements) {
-    if (numElements != numElements_) {
-        numElements_ = numElements;
+void DenseVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
+    if (numElements < maxCapacity_) {
+        if (freeMemory) {
+            array_ = (T*) realloc(array_, numElements * sizeof(T));
+            maxCapacity_ = numElements;
+        }
+    } else if (numElements > maxCapacity_) {
         array_ = (T*) realloc(array_, numElements * sizeof(T));
+        maxCapacity_ = numElements;
     }
+
+    numElements_ = numElements;
 }
 
 template class DenseVector<uint32>;

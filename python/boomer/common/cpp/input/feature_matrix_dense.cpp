@@ -38,5 +38,5 @@ void DenseFeatureMatrix::fetchFeatureVector(uint32 featureIndex,
         }
     }
 
-    featureVectorPtr->setNumElements(i);
+    featureVectorPtr->setNumElements(i, true);
 }
