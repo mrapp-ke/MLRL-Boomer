@@ -107,10 +107,8 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
     public:
 
         /**
-         * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
-         *                          the labels that should be considered when searching for the best head
-         * @param liftFunctionPtr   A shared pointer to an object of type `ILiftFunction` that should affect the quality
-         *                          scores of rules, depending on how many labels they predict
+         * @param liftFunctionPtr A shared pointer to an object of type `ILiftFunction` that should affect the quality
+         *                        scores of rules, depending on how many labels they predict
          */
         PartialHeadRefinement(std::shared_ptr<ILiftFunction> liftFunctionPtr)
             : liftFunctionPtr_(liftFunctionPtr) {
