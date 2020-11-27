@@ -85,6 +85,13 @@ class DenseScoreVector : virtual public IScoreVector {
          */
         uint32 getNumElements() const;
 
+        /**
+         * Returns whether the rule may only predict for a subset of the available labels, or not.
+         *
+         * @return True, if the rule may only predict for a subset of the available labels, false otherwise
+         */
+        bool isPartial() const;
+
         void updatePrediction(AbstractPrediction& prediction) const override;
 
         const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,

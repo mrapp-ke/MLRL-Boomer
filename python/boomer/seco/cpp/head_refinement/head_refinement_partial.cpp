@@ -22,33 +22,27 @@ static inline std::unique_ptr<SparseArrayVector<float64>> argsort(const float64*
 
 /**
  * Allows to find the best head that predicts for one or several labels depending on a lift function.
- *
- * @tparam T The type of the vector that provides access to the indices of the labels that are considered when searching
- *           for the best head
  */
-template<class T>
 class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProcessor {
 
     private:
-
-        const T& labelIndices_;
 
         std::shared_ptr<ILiftFunction> liftFunctionPtr_;
 
         std::unique_ptr<PartialPrediction> headPtr_;
 
-        template<class T2>
+        template<class T>
         const AbstractEvaluatedPrediction* processScoresInternally(const AbstractEvaluatedPrediction* bestHead,
-                                                                   const T2 scoreVector) {
+                                                                   const T scoreVector) {
             uint32 numPredictions = scoreVector.getNumElements();
-            typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
-            typename T2::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
+            typename T::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
+            typename T::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
             std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr;
             float64 sumOfQualityScores = 0;
             uint32 bestNumPredictions = 0;
             float64 bestQualityScore = 0;
 
-            if (labelIndices_.isPartial()) {
+            if (scoreVector.isPartial()) {
                 for (uint32 c = 0; c < numPredictions; c++) {
                     sumOfQualityScores += 1 - qualityScoreIterator[c];
                 }
@@ -84,11 +78,11 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
                     headPtr_->setNumElements(bestNumPredictions, false);
                 }
 
-                typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                typename T::index_const_iterator indexIterator = scoreVector.indices_cbegin();
                 PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
                 PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
 
-                if (labelIndices_.isPartial()) {
+                if (scoreVector.isPartial()) {
                     for (uint32 c = 0; c < bestNumPredictions; c++) {
                         headIndexIterator[c] = indexIterator[c];
                         headScoreIterator[c] = scoreIterator[c];
@@ -118,8 +112,8 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
          * @param liftFunctionPtr   A shared pointer to an object of type `ILiftFunction` that should affect the quality
          *                          scores of rules, depending on how many labels they predict
          */
-        PartialHeadRefinement(const T& labelIndices, std::shared_ptr<ILiftFunction> liftFunctionPtr)
-            : labelIndices_(labelIndices), liftFunctionPtr_(liftFunctionPtr) {
+        PartialHeadRefinement(std::shared_ptr<ILiftFunction> liftFunctionPtr)
+            : liftFunctionPtr_(liftFunctionPtr) {
 
         }
 
@@ -159,10 +153,6 @@ PartialHeadRefinementFactory::PartialHeadRefinementFactory(std::shared_ptr<ILift
 
 }
 
-std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create(const FullIndexVector& labelIndices) const {
-    return std::make_unique<PartialHeadRefinement<FullIndexVector>>(labelIndices, liftFunctionPtr_);
-}
-
-std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create(const PartialIndexVector& labelIndices) const {
-    return std::make_unique<PartialHeadRefinement<PartialIndexVector>>(labelIndices, liftFunctionPtr_);
+std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create() const {
+    return std::make_unique<PartialHeadRefinement>(liftFunctionPtr_);
 }

@@ -150,8 +150,7 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
             }
 
             std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-            std::unique_ptr<IHeadRefinement> headRefinementPtr =
-                thresholds_.headRefinementFactoryPtr_->create(labelIndices);
+            std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create();
             return std::make_unique<ApproximateRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
                                                                   featureIndex, std::move(callbackPtr));
         }

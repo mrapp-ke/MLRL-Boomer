@@ -69,8 +69,6 @@ class PartialPrediction : public AbstractEvaluatedPrediction {
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;
 
-        std::unique_ptr<IHeadRefinement> createHeadRefinement(const IHeadRefinementFactory& factory) const override;
-
         void apply(IStatistics& statistics, uint32 statisticIndex) const override;
 
 };

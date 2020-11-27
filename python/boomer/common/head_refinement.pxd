@@ -1,5 +1,4 @@
 from boomer.common._types cimport uint32, float64
-from boomer.common._indices cimport FullIndexVector, PartialIndexVector
 from boomer.common.statistics cimport IStatistics, IStatisticsSubset
 
 from libcpp cimport bool
@@ -59,9 +58,7 @@ cdef extern from "cpp/head_refinement/head_refinement_factory.h" nogil:
 
     cdef cppclass IHeadRefinementFactory:
 
-        unique_ptr[IHeadRefinement] create(const FullIndexVector& labelIndices)
-
-        unique_ptr[IHeadRefinement] create(const PartialIndexVector& labelIndices)
+        unique_ptr[IHeadRefinement] create()
 
 
 cdef extern from "cpp/head_refinement/head_refinement_single.h" nogil:

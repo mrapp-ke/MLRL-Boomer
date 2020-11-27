@@ -1,5 +1,4 @@
 #include "prediction_partial.h"
-#include "head_refinement.h"
 #include "../rule_refinement/rule_refinement.h"
 #include "../statistics/statistics.h"
 
@@ -45,10 +44,6 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction::createSubset(const IHistog
 std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                                          uint32 featureIndex) const {
     return indexVector_.createRuleRefinement(thresholdsSubset, featureIndex);
-}
-
-std::unique_ptr<IHeadRefinement> PartialPrediction::createHeadRefinement(const IHeadRefinementFactory& factory) const {
-    return indexVector_.createHeadRefinement(factory);
 }
 
 void PartialPrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {

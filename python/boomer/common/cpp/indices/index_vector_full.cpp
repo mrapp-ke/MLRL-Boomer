@@ -1,6 +1,4 @@
 #include "index_vector_full.h"
-#include "../head_refinement/head_refinement.h"
-#include "../head_refinement/head_refinement_factory.h"
 #include "../statistics/histogram.h"
 #include "../thresholds.h"
 
@@ -61,8 +59,4 @@ std::unique_ptr<IStatisticsSubset> FullIndexVector::createSubset(const IHistogra
 std::unique_ptr<IRuleRefinement> FullIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                                         uint32 featureIndex) const {
     return thresholdsSubset.createRuleRefinement(*this, featureIndex);
-}
-
-std::unique_ptr<IHeadRefinement> FullIndexVector::createHeadRefinement(const IHeadRefinementFactory& factory) const {
-    return factory.create(*this);
 }

@@ -332,8 +332,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
         }
 
         bool nominal = thresholds_.nominalFeatureMaskPtr_->isNominal(featureIndex);
-        std::unique_ptr<IHeadRefinement> headRefinementPtr =
-            thresholds_.headRefinementFactoryPtr_->create(labelIndices);
+        std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create();
         std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
         return std::make_unique<ExactRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices, weights_,
                                                         sumOfWeights_, featureIndex, nominal, std::move(callbackPtr));
@@ -440,8 +439,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
                 }
             }
 
-            std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(
-                *thresholds_.headRefinementFactoryPtr_);
+            std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create();
             const IScoreVector& scoreVector = headRefinementPtr->calculateScores(*statisticsSubsetPtr, false, false);
             return scoreVector.overallQualityScore;
         }
@@ -457,8 +455,7 @@ class ExactThresholds::ThresholdsSubset : public IThresholdsSubset {
                 }
             }
 
-            std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(
-                *thresholds_.headRefinementFactoryPtr_);
+            std::unique_ptr<IHeadRefinement> headRefinementPtr = thresholds_.headRefinementFactoryPtr_->create();
             const IScoreVector& scoreVector = headRefinementPtr->calculateScores(*statisticsSubsetPtr, false, false);
             scoreVector.updatePrediction(head);
         }

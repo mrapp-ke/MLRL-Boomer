@@ -13,8 +13,6 @@ class SingleLabelHeadRefinementFactory : public IHeadRefinementFactory {
 
     public:
 
-        std::unique_ptr<IHeadRefinement> create(const FullIndexVector& labelIndices) const override;
-
-        std::unique_ptr<IHeadRefinement> create(const PartialIndexVector& labelIndices) const override;
+        std::unique_ptr<IHeadRefinement> create() const override;
 
 };
