@@ -54,7 +54,7 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void filterAnyVector(const BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
+static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
                                    uint32 numConditions, const CoverageMask& coverageMask){
     //TODO: in this branch
     uint32 maxElements = vector.getNumElements();
@@ -65,10 +65,19 @@ static inline void filterAnyVector(const BinVector& vector, FilteredCacheEntry<B
         filteredVector = cacheEntry.vectorPtr.get();
     }
 
-    for(uint32 r = 0; r < maxElements; r++){
-        for (BinVector::example_const_iterator it = filteredVector->examples_cbegin(r);
-             it != filteredVector->examples_cend(r); it++){
+    typename BinVector::const_iterator iterator = vector.cbegin();
+    BinVector::iterator filteredIterator = filteredVector->begin();
 
+    BinVector result(maxElements);
+
+    for(intp r = 0; r < maxElements; r++) {
+        for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++){
+            BinVector::Example example = *it;
+            uint32 index = example.index;
+
+            if (coverageMask.isCovered(index)) {
+
+            }
         }
     }
 }
