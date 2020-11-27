@@ -25,6 +25,13 @@ class IScoreVector {
         float64 overallQualityScore;
 
         /**
+         * Sets the scores of a specific prediction to the scores that are stored in this vector.
+         *
+         * @param prediction A reference to an object of type `AbstractPrediction` that should be updated
+         */
+        virtual void updatePrediction(AbstractPrediction& prediction) const = 0;
+
+        /**
          * Passes the scores to an `IScoreProcessor` in order to convert them into the head of a rule.
          *
          * @param bestHead       A reference to an object of type `AbstractEvaluatedPrediction`, representing the best
