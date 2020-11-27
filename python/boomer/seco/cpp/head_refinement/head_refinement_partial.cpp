@@ -140,8 +140,8 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
             return std::move(headPtr_);
         }
 
-        const DenseScoreVector& calculateScores(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                bool accumulated) const override {
+        const IScoreVector& calculateScores(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                            bool accumulated) const override {
             return statisticsSubset.calculateLabelWiseScores(uncovered, accumulated);
         }
 

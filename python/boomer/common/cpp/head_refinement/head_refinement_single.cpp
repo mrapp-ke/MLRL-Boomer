@@ -83,8 +83,8 @@ class SingleLabelHeadRefinement : public IHeadRefinement, public ILabelWiseScore
             return std::move(headPtr_);
         }
 
-        const DenseScoreVector& calculateScores(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                bool accumulated) const override {
+        const IScoreVector& calculateScores(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                            bool accumulated) const override {
             return statisticsSubset.calculateLabelWiseScores(uncovered, accumulated);
         }
 

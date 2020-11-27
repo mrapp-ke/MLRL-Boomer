@@ -86,8 +86,8 @@ class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
             return std::move(headPtr_);
         }
 
-        const DenseScoreVector& calculateScores(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                bool accumulated) const override {
+        const IScoreVector& calculateScores(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                            bool accumulated) const override {
             return statisticsSubset.calculateExampleWiseScores(uncovered, accumulated);
         }
 
