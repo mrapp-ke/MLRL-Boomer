@@ -16,13 +16,11 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
     private:
 
-        const T& labelIndices_;
-
         std::shared_ptr<IHeuristic> heuristicPtr_;
 
         bool predictMajority_;
 
-        DenseLabelWiseScoreVector scoreVector_;
+        DenseLabelWiseScoreVector<T> scoreVector_;
 
     public:
 
@@ -36,8 +34,8 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
          */
         HeuristicLabelWiseRuleEvaluation(const T& labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
                                          bool predictMajority)
-            : labelIndices_(labelIndices), heuristicPtr_(heuristicPtr), predictMajority_(predictMajority),
-              scoreVector_(DenseLabelWiseScoreVector(labelIndices.getNumElements())) {
+            : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority),
+              scoreVector_(DenseLabelWiseScoreVector<T>(labelIndices)) {
 
         }
 
@@ -47,11 +45,11 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
                                                               const float64* confusionMatricesCovered,
                                                               bool uncovered) override {
             uint32 numPredictions = scoreVector_.getNumElements();
-            DenseLabelWiseScoreVector::score_iterator scoreIterator = scoreVector_.scores_begin();
-            DenseLabelWiseScoreVector::quality_score_iterator qualityScoreIterator =
+            typename DenseLabelWiseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
+            typename DenseLabelWiseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
+            typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
                 scoreVector_.quality_scores_begin();
             float64 overallQualityScore = 0;
-            typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
             for (uint32 c = 0; c < numPredictions; c++) {
                 uint32 l = indexIterator[c];

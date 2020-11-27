@@ -4,6 +4,8 @@
 #pragma once
 
 #include "score_vector_label_wise_dense.h"
+#include "../indices/index_vector_full.h"
+#include "../indices/index_vector_partial.h"
 
 // Forward declarations
 class AbstractEvaluatedPrediction;
@@ -20,17 +22,33 @@ class ILabelWiseScoreProcessor {
         virtual ~ILabelWiseScoreProcessor() { };
 
         /**
-         * Processes the scores that are stored by a `DenseLabelWiseScoreVector` in order to convert them into the head
-         * of a rule.
+         * Processes the scores that are stored by a `DenseLabelWiseScoreVector<FullIndexVector>` in order to convert
+         * them into the head of a rule.
          *
          * @param bestHead      A pointer to an object of type `AbstractEvaluatedPrediction` that represents the best
          *                      head that has been created so far
-         * @param scoreVector   A reference to an object of type `DenseLabelWiseScoreVector` that stores the scores to
-         *                      be processed
+         * @param scoreVector   A reference to an object of type `DenseLabelWiseScoreVector<FullIndexVector>` that
+         *                      stores the scores to be processed
          * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
          *                      null pointer if no object has been created
          */
-        virtual const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
-                                                                 const DenseLabelWiseScoreVector& scoreVector) = 0;
+        virtual const AbstractEvaluatedPrediction* processScores(
+            const AbstractEvaluatedPrediction* bestHead,
+            const DenseLabelWiseScoreVector<FullIndexVector>& scoreVector) = 0;
+
+        /**
+         * Processes the scores that are stored by a `DenseLabelWiseScoreVector<PartialIndexVector>` in order to convert
+         * them into the head of a rule.
+         *
+         * @param bestHead      A pointer to an object of type `AbstractEvaluatedPrediction` that represents the best
+         *                      head that has been created so far
+         * @param scoreVector   A reference to an object of type `DenseLabelWiseScoreVector<PartialIndexVector>` that
+         *                      stores the scores to be processed
+         * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
+         *                      null pointer if no object has been created
+         */
+        virtual const AbstractEvaluatedPrediction* processScores(
+            const AbstractEvaluatedPrediction* bestHead,
+            const DenseLabelWiseScoreVector<PartialIndexVector>& scoreVector) = 0;
 
 };

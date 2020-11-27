@@ -11,16 +11,19 @@ using namespace boosting;
  * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
  * quality scores, based on the gradients and Hessians that have been calculated according to a loss function that is
  * applied example-wise.
+ *
+ * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
  */
+template<class T>
 class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
 
     private:
 
-        uint32 numPredictions_;
+        const T& labelIndices_;
 
-        DenseScoreVector* scoreVector_;
+        DenseScoreVector<T>* scoreVector_;
 
-        DenseLabelWiseScoreVector* labelWiseScoreVector_;
+        DenseLabelWiseScoreVector<T>* labelWiseScoreVector_;
 
         int dsysvLwork_;
 
@@ -37,11 +40,11 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
         std::shared_ptr<Lapack> lapackPtr_;
 
         virtual void calculateLabelWiseScores(const DenseExampleWiseStatisticVector& statisticVector,
-                                              DenseLabelWiseScoreVector& scoreVector) = 0;
+                                              DenseLabelWiseScoreVector<T>& scoreVector) = 0;
 
         virtual void calculateExampleWiseScores(DenseExampleWiseStatisticVector& statisticVector,
-                                                DenseScoreVector& scoreVector, int dsysvLwork, float64* dsysvTmpArray1,
-                                                int* dsysvTmpArray2, double* dsysvTmpArray3,
+                                                DenseScoreVector<T>& scoreVector, int dsysvLwork,
+                                                float64* dsysvTmpArray1, int* dsysvTmpArray2, double* dsysvTmpArray3,
                                                 float64* dspmvTmpArray) = 0;
 
     public:
@@ -49,10 +52,11 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
         /**
          * @param lapackPtr         A shared pointer to an object of type `Lapack` that allows to execute different
          *                          LAPACK routines
-         * @param numPredictions    The number of labels for which the rules may predict
+         * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
+         *                          the labels for which the rules may predict
          */
-        AbstractExampleWiseRuleEvaluation(std::shared_ptr<Lapack> lapackPtr, uint32 numPredictions)
-            : numPredictions_(numPredictions), scoreVector_(nullptr), labelWiseScoreVector_(nullptr),
+        AbstractExampleWiseRuleEvaluation(std::shared_ptr<Lapack> lapackPtr, const T& labelIndices)
+            : labelIndices_(labelIndices), scoreVector_(nullptr), labelWiseScoreVector_(nullptr),
               dsysvTmpArray1_(nullptr), dsysvTmpArray2_(nullptr), dsysvTmpArray3_(nullptr), dspmvTmpArray_(nullptr),
               lapackPtr_(lapackPtr) {
 
@@ -70,7 +74,7 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
         const ILabelWiseScoreVector& calculateLabelWiseScores(
                 const DenseExampleWiseStatisticVector& statisticVector) override {
             if (labelWiseScoreVector_ == nullptr) {
-                labelWiseScoreVector_ = new DenseLabelWiseScoreVector(numPredictions_);
+                labelWiseScoreVector_ = new DenseLabelWiseScoreVector<T>(labelIndices_);
             }
 
             this->calculateLabelWiseScores(statisticVector, *labelWiseScoreVector_);
@@ -79,13 +83,14 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
 
         const IScoreVector& calculateExampleWiseScores(DenseExampleWiseStatisticVector& statisticVector) override {
             if (scoreVector_ == nullptr) {
-                scoreVector_ = new DenseScoreVector(numPredictions_);
-                dsysvTmpArray1_ = (float64*) malloc(numPredictions_ * numPredictions_ * sizeof(float64));
-                dsysvTmpArray2_ = (int*) malloc(numPredictions_ * sizeof(int));
-                dspmvTmpArray_ = (float64*) malloc(numPredictions_ * sizeof(float64));
+                scoreVector_ = new DenseScoreVector<T>(labelIndices_);
+                uint32 numPredictions = labelIndices_.getNumElements();
+                dsysvTmpArray1_ = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
+                dsysvTmpArray2_ = (int*) malloc(numPredictions * sizeof(int));
+                dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
 
                 // Query the optimal "lwork" parameter to be used by LAPACK's DSYSV routine...
-                dsysvLwork_ = lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_, numPredictions_);
+                dsysvLwork_ = lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_, numPredictions);
                 dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
             }
 
@@ -99,8 +104,11 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
 /**
  * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
  * Hessians that have been calculated according to a loss function that is applied example wise using L2 regularization.
+ *
+ * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
  */
-class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluation {
+template<class T>
+class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluation<T> {
 
     private:
 
@@ -111,12 +119,13 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
     protected:
 
         void calculateLabelWiseScores(const DenseExampleWiseStatisticVector& statisticVector,
-                                      DenseLabelWiseScoreVector& scoreVector) override {
+                                      DenseLabelWiseScoreVector<T>& scoreVector) override {
             DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                 statisticVector.gradients_cbegin();
             uint32 numPredictions = scoreVector.getNumElements();
-            DenseLabelWiseScoreVector::score_iterator scoreIterator = scoreVector.scores_begin();
-            DenseLabelWiseScoreVector::quality_score_iterator qualityScoreIterator = scoreVector.quality_scores_begin();
+            typename DenseLabelWiseScoreVector<T>::score_iterator scoreIterator = scoreVector.scores_begin();
+            typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
+                scoreVector.quality_scores_begin();
             float64 overallQualityScore = 0;
 
             // For each label, calculate the score to be predicted, as well as a quality score...
@@ -141,17 +150,17 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
             scoreVector.overallQualityScore = overallQualityScore;
         }
 
-        void calculateExampleWiseScores(DenseExampleWiseStatisticVector& statisticVector, DenseScoreVector& scoreVector,
-                                        int dsysvLwork, float64* dsysvTmpArray1, int* dsysvTmpArray2,
-                                        double* dsysvTmpArray3, float64* dspmvTmpArray) override {
+        void calculateExampleWiseScores(DenseExampleWiseStatisticVector& statisticVector,
+                                        DenseScoreVector<T>& scoreVector, int dsysvLwork, float64* dsysvTmpArray1,
+                                        int* dsysvTmpArray2, double* dsysvTmpArray3, float64* dspmvTmpArray) override {
             DenseExampleWiseStatisticVector::gradient_iterator gradientIterator = statisticVector.gradients_begin();
             DenseExampleWiseStatisticVector::hessian_iterator hessianIterator = statisticVector.hessians_begin();
             uint32 numPredictions = scoreVector.getNumElements();
-            DenseScoreVector::score_iterator scoreIterator = scoreVector.scores_begin();
+            typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector.scores_begin();
 
             // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-            lapackPtr_->dsysv(hessianIterator, gradientIterator, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3,
-                              scoreIterator, numPredictions, dsysvLwork, l2RegularizationWeight_);
+            this->lapackPtr_->dsysv(hessianIterator, gradientIterator, dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3,
+                                    scoreIterator, numPredictions, dsysvLwork, l2RegularizationWeight_);
 
             // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
             float64 overallQualityScore = blasPtr_->ddot(scoreIterator, gradientIterator, numPredictions);
@@ -176,7 +185,7 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
          */
         RegularizedExampleWiseRuleEvaluation(uint32 numPredictions, float64 l2RegularizationWeight,
                                              std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
-            : AbstractExampleWiseRuleEvaluation(lapackPtr, numPredictions),
+            : AbstractExampleWiseRuleEvaluation<T>(lapackPtr, numPredictions),
               l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr) {
 
         }
@@ -191,12 +200,14 @@ RegularizedExampleWiseRuleEvaluationFactory::RegularizedExampleWiseRuleEvaluatio
 
 std::unique_ptr<IExampleWiseRuleEvaluation> RegularizedExampleWiseRuleEvaluationFactory::create(
         const FullIndexVector& indexVector) const {
-    return std::make_unique<RegularizedExampleWiseRuleEvaluation>(indexVector.getNumElements(), l2RegularizationWeight_,
-                                                                  blasPtr_, lapackPtr_);
+    return std::make_unique<RegularizedExampleWiseRuleEvaluation<FullIndexVector>>(indexVector.getNumElements(),
+                                                                                   l2RegularizationWeight_, blasPtr_,
+                                                                                   lapackPtr_);
 }
 
 std::unique_ptr<IExampleWiseRuleEvaluation> RegularizedExampleWiseRuleEvaluationFactory::create(
         const PartialIndexVector& indexVector) const {
-    return std::make_unique<RegularizedExampleWiseRuleEvaluation>(indexVector.getNumElements(), l2RegularizationWeight_,
-                                                                  blasPtr_, lapackPtr_);
+    return std::make_unique<RegularizedExampleWiseRuleEvaluation<PartialIndexVector>>(indexVector.getNumElements(),
+                                                                                      l2RegularizationWeight_, blasPtr_,
+                                                                                      lapackPtr_);
 }
