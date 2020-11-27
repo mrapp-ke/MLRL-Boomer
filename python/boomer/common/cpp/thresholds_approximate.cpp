@@ -65,10 +65,9 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
         filteredVector = cacheEntry.vectorPtr.get();
     }
 
-    typename BinVector::const_iterator iterator = vector.cbegin();
-    BinVector::iterator filteredIterator = filteredVector->begin();
+    std::unique_ptr<BinVector> result = std::make_unique<BinVector>(maxElements);
 
-    BinVector result(maxElements);
+    typename BinVector::const_iterator copyIterator = result->begin();
 
     for(intp r = 0; r < maxElements; r++) {
         for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++){
@@ -76,7 +75,16 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
             uint32 index = example.index;
 
             if (coverageMask.isCovered(index)) {
+                float32 value = example.value;
+                if (value < copyIterator[index].minValue) {
+                        copyIterator[index].minValue = value;
+                }
 
+                if (copyIterator[index].maxValue < value) {
+                    copyIterator[index].maxValue = value;
+                }
+                copyIterator[index].numExamples += 1;
+                result->addExample(r, example); //Nicht ganz sicher
             }
         }
     }
