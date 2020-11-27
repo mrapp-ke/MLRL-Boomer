@@ -9,7 +9,7 @@
 
 #include "../../common/cpp/indices/index_vector_full.h"
 #include "../../common/cpp/indices/index_vector_partial.h"
-#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
+#include "../../common/cpp/rule_evaluation/score_vector_label_wise.h"
 #include "heuristics/heuristic.h"
 #include <memory>
 
@@ -50,11 +50,11 @@ namespace seco {
              * @param return                    A reference to an object of type `DenseLabelWiseScoreVector` that stores
              *                                  the predicted scores and quality scores
              */
-            virtual const DenseLabelWiseScoreVector& calculateLabelWiseScores(const uint8* minorityLabels,
-                                                                              const float64* confusionMatricesTotal,
-                                                                              const float64* confusionMatricesSubset,
-                                                                              const float64* confusionMatricesCovered,
-                                                                              bool uncovered) = 0;
+            virtual const ILabelWiseScoreVector& calculateLabelWiseScores(const uint8* minorityLabels,
+                                                                          const float64* confusionMatricesTotal,
+                                                                          const float64* confusionMatricesSubset,
+                                                                          const float64* confusionMatricesCovered,
+                                                                          bool uncovered) = 0;
 
     };
 

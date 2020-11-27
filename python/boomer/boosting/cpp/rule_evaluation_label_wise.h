@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
+#include "../../common/cpp/rule_evaluation/score_vector_label_wise.h"
 #include "data/vector_dense_label_wise.h"
 #include <memory>
 
@@ -30,10 +30,10 @@ namespace boosting {
              *
              * @param statisticVector   A reference to an object of type `DenseLabelWiseStatisticVector` that stores the
              *                          gradients and Hessians
-             * @return                  A reference to an object of type `DenseLabelWiseScoreVector` that stores the
+             * @return                  A reference to an object of type `ILabelWiseScoreVector` that stores the
              *                          predicted scores and quality scores
              */
-            virtual const DenseLabelWiseScoreVector& calculateLabelWiseScores(
+            virtual const ILabelWiseScoreVector& calculateLabelWiseScores(
                 const DenseLabelWiseStatisticVector& statisticVector) = 0;
 
     };

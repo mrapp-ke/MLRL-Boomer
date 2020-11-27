@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "../rule_evaluation/score_vector_dense.h"
-#include "../rule_evaluation/score_vector_label_wise_dense.h"
+#include "../rule_evaluation/score_vector.h"
+#include "../rule_evaluation/score_vector_label_wise.h"
 
 
 /**
@@ -94,7 +94,7 @@ class IStatisticsSubset {
          *                      be predicted by the rule for each considered label, as well as the corresponding
          *                      quality scores
          */
-        virtual const DenseLabelWiseScoreVector& calculateLabelWiseScores(bool uncovered, bool accumulated) = 0;
+        virtual const ILabelWiseScoreVector& calculateLabelWiseScores(bool uncovered, bool accumulated) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -128,6 +128,6 @@ class IStatisticsSubset {
          * @return              A reference to an object of type `DenseScoreVector` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as an overall quality score
          */
-        virtual const DenseScoreVector& calculateExampleWiseScores(bool uncovered, bool accumulated) = 0;
+        virtual const IScoreVector& calculateExampleWiseScores(bool uncovered, bool accumulated) = 0;
 
 };

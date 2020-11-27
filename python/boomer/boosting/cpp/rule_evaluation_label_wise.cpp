@@ -1,5 +1,6 @@
 #include "rule_evaluation_label_wise.h"
 #include "math/math.h"
+#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 
 using namespace boosting;
 
@@ -28,7 +29,7 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
         }
 
-        const DenseLabelWiseScoreVector& calculateLabelWiseScores(
+        const ILabelWiseScoreVector& calculateLabelWiseScores(
                 const DenseLabelWiseStatisticVector& statisticVector) override {
             DenseLabelWiseStatisticVector::gradient_const_iterator gradientIterator =
                 statisticVector.gradients_cbegin();

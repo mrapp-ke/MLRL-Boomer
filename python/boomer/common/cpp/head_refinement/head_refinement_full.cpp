@@ -78,7 +78,7 @@ class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
-            const DenseScoreVector& scoreVector = statisticsSubset.calculateExampleWiseScores(uncovered, accumulated);
+            const IScoreVector& scoreVector = statisticsSubset.calculateExampleWiseScores(uncovered, accumulated);
             return scoreVector.processScores(bestHead, *this);
         }
 

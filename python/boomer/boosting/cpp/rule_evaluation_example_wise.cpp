@@ -1,5 +1,7 @@
 #include "rule_evaluation_example_wise.h"
 #include "math/math.h"
+#include "../../common/cpp/rule_evaluation/score_vector_dense.h"
+#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 #include <cstdlib>
 
 using namespace boosting;
@@ -65,7 +67,7 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             free(dspmvTmpArray_);
         }
 
-        const DenseLabelWiseScoreVector& calculateLabelWiseScores(
+        const ILabelWiseScoreVector& calculateLabelWiseScores(
                 const DenseExampleWiseStatisticVector& statisticVector) override {
             if (labelWiseScoreVector_ == nullptr) {
                 labelWiseScoreVector_ = new DenseLabelWiseScoreVector(numPredictions_);
@@ -75,7 +77,7 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             return *labelWiseScoreVector_;
         }
 
-        const DenseScoreVector& calculateExampleWiseScores(DenseExampleWiseStatisticVector& statisticVector) override {
+        const IScoreVector& calculateExampleWiseScores(DenseExampleWiseStatisticVector& statisticVector) override {
             if (scoreVector_ == nullptr) {
                 scoreVector_ = new DenseScoreVector(numPredictions_);
                 dsysvTmpArray1_ = (float64*) malloc(numPredictions_ * numPredictions_ * sizeof(float64));

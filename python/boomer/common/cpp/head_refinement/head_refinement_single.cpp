@@ -74,8 +74,8 @@ class SingleLabelHeadRefinement : public IHeadRefinement, public ILabelWiseScore
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
-            const DenseLabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWiseScores(uncovered,
-                                                                                                     accumulated);
+            const ILabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWiseScores(uncovered,
+                                                                                                 accumulated);
             return scoreVector.processScores(bestHead, *this);
         }
 

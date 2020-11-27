@@ -113,7 +113,7 @@ class LabelWiseHistogram : virtual public IHistogram {
                     sumVector_.setAllToZero();
                 }
 
-                const DenseLabelWiseScoreVector& calculateLabelWiseScores(bool uncovered, bool accumulated) override {
+                const ILabelWiseScoreVector& calculateLabelWiseScores(bool uncovered, bool accumulated) override {
                     const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                     if (uncovered) {

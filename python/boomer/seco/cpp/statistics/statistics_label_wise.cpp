@@ -161,7 +161,7 @@ class LabelWiseStatistics : public ILabelWiseStatistics {
                     }
                 }
 
-                const DenseLabelWiseScoreVector& calculateLabelWiseScores(bool uncovered, bool accumulated) override {
+                const ILabelWiseScoreVector& calculateLabelWiseScores(bool uncovered, bool accumulated) override {
                     float64* confusionMatricesCovered =
                         accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
                     return ruleEvaluationPtr_->calculateLabelWiseScores(statistics_.minorityLabels_,
