@@ -59,6 +59,14 @@ class AbstractPrediction : public IIndexVector {
         score_const_iterator scores_cend() const;
 
         /**
+         * Sets the predicted scores in another vector to this vector.
+         *
+         * @param begin A `score_const_iterator` to the beginning of the predicted scores
+         * @param end   A `score_const_iterator` to the end of the predicted scores
+         */
+        void set(score_const_iterator begin, score_const_iterator end);
+
+        /**
          * Updates the given statistics by applying this prediction.
          *
          * @param statistics        A reference to an object of type `IStatistics` to be updated
