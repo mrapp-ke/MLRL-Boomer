@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "score_vector.h"
 #include "../data/vector_dense.h"
 
 
@@ -10,7 +11,7 @@
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as an overall quality
  * score that asses the overall quality of the rule, in a C-contiguous array.
  */
-class DenseScoreVector {
+class DenseScoreVector : virtual public IScoreVector {
 
     private:
 
@@ -62,9 +63,6 @@ class DenseScoreVector {
          */
         uint32 getNumElements() const;
 
-        /**
-         * A score that assesses the overall quality of the predicted scores.
-         */
-        float64 overallQualityScore;
+        void updatePrediction(AbstractPrediction& prediction) const override;
 
 };
