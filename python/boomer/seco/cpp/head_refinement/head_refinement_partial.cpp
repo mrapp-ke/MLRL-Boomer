@@ -52,12 +52,12 @@ class PartialHeadRefinement : public IHeadRefinement {
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
-            const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
-                                                                                                           accumulated);
-            uint32 numPredictions = prediction.getNumElements();
-            LabelWiseEvaluatedPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
-            LabelWiseEvaluatedPrediction::quality_score_const_iterator qualityScoreIterator =
-                prediction.quality_scores_cbegin();
+            const DenseLabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWisePrediction(uncovered,
+                                                                                                         accumulated);
+            uint32 numPredictions = scoreVector.getNumElements();
+            DenseLabelWiseScoreVector::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
+            DenseLabelWiseScoreVector::quality_score_const_iterator qualityScoreIterator =
+                scoreVector.quality_scores_cbegin();
             std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr;
             float64 sumOfQualityScores = 0;
             uint32 bestNumPredictions = 0;
@@ -129,8 +129,8 @@ class PartialHeadRefinement : public IHeadRefinement {
             return std::move(headPtr_);
         }
 
-        const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                       bool accumulated) const override {
+        const DenseScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                    bool accumulated) const override {
             return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
         }
 

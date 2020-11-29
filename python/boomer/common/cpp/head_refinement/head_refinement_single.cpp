@@ -31,11 +31,11 @@ class SingleLabelHeadRefinement : public IHeadRefinement {
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
-            const LabelWiseEvaluatedPrediction& prediction = statisticsSubset.calculateLabelWisePrediction(uncovered,
-                                                                                                           accumulated);
-            uint32 numPredictions = prediction.getNumElements();
-            LabelWiseEvaluatedPrediction::quality_score_const_iterator qualityScoreIterator =
-                prediction.quality_scores_cbegin();
+            const DenseLabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWisePrediction(uncovered,
+                                                                                                         accumulated);
+            uint32 numPredictions = scoreVector.getNumElements();
+            DenseLabelWiseScoreVector::quality_score_const_iterator qualityScoreIterator =
+                scoreVector.quality_scores_cbegin();
             uint32 bestC = 0;
             float64 bestQualityScore = qualityScoreIterator[bestC];
 
@@ -50,7 +50,7 @@ class SingleLabelHeadRefinement : public IHeadRefinement {
 
             // The quality score must be better than that of `bestHead`...
             if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
-                LabelWiseEvaluatedPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
+                DenseLabelWiseScoreVector::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
                 if (headPtr_.get() == nullptr) {
@@ -72,8 +72,8 @@ class SingleLabelHeadRefinement : public IHeadRefinement {
             return std::move(headPtr_);
         }
 
-        const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                       bool accumulated) const override {
+        const DenseScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                    bool accumulated) const override {
             return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
         }
 

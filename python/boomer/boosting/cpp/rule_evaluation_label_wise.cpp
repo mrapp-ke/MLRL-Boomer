@@ -14,7 +14,7 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
         float64 l2RegularizationWeight_;
 
-        LabelWiseEvaluatedPrediction prediction_;
+        DenseLabelWiseScoreVector scoreVector_;
 
     public:
 
@@ -24,21 +24,19 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
          *                                  scores to be predicted by rules
          */
         RegularizedLabelWiseRuleEvaluation(uint32 numPredictions, float64 l2RegularizationWeight)
-            : l2RegularizationWeight_(l2RegularizationWeight),
-              prediction_(LabelWiseEvaluatedPrediction(numPredictions)) {
+            : l2RegularizationWeight_(l2RegularizationWeight), scoreVector_(DenseLabelWiseScoreVector(numPredictions)) {
 
         }
 
-        const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+        const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseLabelWiseStatisticVector& statisticVector) override {
             DenseLabelWiseStatisticVector::gradient_const_iterator gradientIterator =
                 statisticVector.gradients_cbegin();
             DenseLabelWiseStatisticVector::hessian_const_iterator hessianIterator =
                 statisticVector.hessians_cbegin();
-            uint32 numPredictions = prediction_.getNumElements();
-            LabelWiseEvaluatedPrediction::score_iterator scoreIterator = prediction_.scores_begin();
-            LabelWiseEvaluatedPrediction::quality_score_iterator qualityScoreIterator =
-                prediction_.quality_scores_begin();
+            uint32 numPredictions = scoreVector_.getNumElements();
+            DenseLabelWiseScoreVector::score_iterator scoreIterator = scoreVector_.scores_begin();
+            DenseLabelWiseScoreVector::quality_score_iterator qualityScoreIterator = scoreVector_.quality_scores_begin();
             float64 overallQualityScore = 0;
 
             // For each label, calculate a score to be predicted, as well as a corresponding quality score...
@@ -60,8 +58,8 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
             // Add the L2 regularization term to the overall quality score...
             overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
-            prediction_.overallQualityScore = overallQualityScore;
-            return prediction_;
+            scoreVector_.overallQualityScore = overallQualityScore;
+            return scoreVector_;
         }
 
 };
