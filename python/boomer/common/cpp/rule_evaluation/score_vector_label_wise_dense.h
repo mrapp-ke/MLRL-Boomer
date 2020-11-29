@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "score_vector_label_wise.h"
 #include "score_vector_dense.h"
 
 
@@ -10,7 +11,7 @@
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as corresponding quality
  * scores that assess the quality of individual scores, in C-contiguous arrays.
  */
-class DenseLabelWiseScoreVector : public DenseScoreVector {
+class DenseLabelWiseScoreVector : public DenseScoreVector, virtual public ILabelWiseScoreVector {
 
     private:
 
