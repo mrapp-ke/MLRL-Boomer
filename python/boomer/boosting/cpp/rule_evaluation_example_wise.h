@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/rule_evaluation.h"
+#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 #include "data/vector_dense_example_wise.h"
 #include "math/blas.h"
 #include "math/lapack.h"
@@ -28,28 +28,26 @@ namespace boosting {
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
-             * label-wise sums of gradients and Hessians that are covered by the rule. The predicted scores and quality
-             * scores are stored in a given object of type `LabelWiseEvaluatedPrediction`.
+             * label-wise sums of gradients and Hessians that are covered by the rule.
              *
              * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores
              *                          the gradients and Hessians
-             * @param return            A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the
+             * @param return            A reference to an object of type `DenseLabelWiseScoreVector` that stores the
              *                          predicted scores and quality scores
              */
-            virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+            virtual const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseExampleWiseStatisticVector& statisticVector) = 0;
 
             /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
-             * of gradients and Hessians that are covered by the rule. The predicted scores and quality scores are
-             * stored in a given object of type `EvaluatedPrediction`.
+             * of gradients and Hessians that are covered by the rule.
              *
              * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores
              *                          the gradients and Hessians
-             * @param prediction        A reference to an object of type `EvaluatedPrediction` that should be used to
-             *                          store the predicted scores and quality score
+             * @param prediction        A reference to an object of type `DenseScoreVector` that should be used to store
+             *                          the predicted scores and quality score
              */
-            virtual const EvaluatedPrediction& calculateExampleWisePrediction(
+            virtual const DenseScoreVector& calculateExampleWisePrediction(
                 DenseExampleWiseStatisticVector& statisticVector) = 0;
 
     };
