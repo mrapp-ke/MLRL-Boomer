@@ -1,4 +1,5 @@
 #include "score_vector_dense.h"
+#include "../head_refinement/prediction.h"
 
 
 DenseScoreVector::DenseScoreVector(uint32 numElements)
@@ -24,4 +25,8 @@ DenseScoreVector::score_const_iterator DenseScoreVector::scores_cend() const {
 
 uint32 DenseScoreVector::getNumElements() const {
     return predictedScoreVector_.getNumElements();
+}
+
+void DenseScoreVector::updatePrediction(AbstractPrediction& prediction) const {
+    prediction.set(predictedScoreVector_.cbegin(), predictedScoreVector_.cend());
 }
