@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "../rule_evaluation.h"
+#include "../rule_evaluation/score_vector_label_wise_dense.h"
 
 
 /**
@@ -89,11 +89,11 @@ class IStatisticsSubset {
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
-         * @return              A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the scores
-         *                      to be predicted by the rule for each considered label, as well as the corresponding
+         * @return              A reference to an object of type `DenseLabelWiseScoreVector` that stores the scores to
+         *                      be predicted by the rule for each considered label, as well as the corresponding
          *                      quality scores
          */
-        virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const DenseLabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
@@ -124,9 +124,9 @@ class IStatisticsSubset {
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
-         * @return              A reference to an object of type `EvaluatedPrediction` that stores the scores to be
+         * @return              A reference to an object of type `DenseScoreVector` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as an overall quality score
          */
-        virtual const EvaluatedPrediction& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const DenseScoreVector& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
 
 };
