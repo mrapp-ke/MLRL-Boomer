@@ -65,10 +65,10 @@ class IHeadRefinement {
          * @param accumulated       False, if the rule covers all examples that have been added since the
          *                          `IStatisticsSubset` has been reset for the last time, True, if the rule covers all
          *                          examples that have been added so far
-         * @return                  A reference to an object of type `EvaluatedPrediction` that stores the optimal
-         *                          scores to be predicted by the rule, as well as its overall quality score
+         * @return                  A reference to an object of type `DenseScoreVector` that stores the optimal scores
+         *                          to be predicted by the rule, as well as its overall quality score
          */
-        virtual const EvaluatedPrediction& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                               bool accumulated) const = 0;
+        virtual const DenseScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                            bool accumulated) const = 0;
 
 };
