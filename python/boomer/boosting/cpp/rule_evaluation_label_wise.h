@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "../../common/cpp/rule_evaluation.h"
+#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 #include "data/vector_dense_label_wise.h"
 #include <memory>
 
@@ -26,15 +26,14 @@ namespace boosting {
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
-             * label-wise sums of gradients and Hessians that are covered by the rule. The predicted scores and quality
-             * scores are stored in a given object of type `LabelWiseEvaluatedPrediction`.
+             * label-wise sums of gradients and Hessians that are covered by the rule.
              *
              * @param statisticVector   A reference to an object of type `DenseLabelWiseStatisticVector` that stores the
              *                          gradients and Hessians
-             * @return                  A reference to an object of type `LabelWiseEvaluatedPrediction` that stores the
+             * @return                  A reference to an object of type `DenseLabelWiseScoreVector` that stores the
              *                          predicted scores and quality scores
              */
-            virtual const LabelWiseEvaluatedPrediction& calculateLabelWisePrediction(
+            virtual const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseLabelWiseStatisticVector& statisticVector) = 0;
 
     };
