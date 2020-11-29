@@ -1,6 +1,7 @@
 #include "head_refinement_full.h"
 #include "prediction_full.h"
 #include "prediction_partial.h"
+#include "../rule_evaluation/score_processor.h"
 
 
 /**
@@ -10,7 +11,7 @@
  *           for the best head
  */
 template<class T>
-class FullHeadRefinement : public IHeadRefinement {
+class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
 
     private:
 
@@ -18,28 +19,15 @@ class FullHeadRefinement : public IHeadRefinement {
 
         std::unique_ptr<AbstractEvaluatedPrediction> headPtr_;
 
-    public:
-
-        /**
-         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
-         *                     labels that should be considered when searching for the best head
-         */
-        FullHeadRefinement(const T& labelIndices)
-            : labelIndices_(labelIndices) {
-
-        }
-
-        const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
-                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                    bool accumulated) override {
-            const DenseScoreVector& scoreVector = statisticsSubset.calculateExampleWisePrediction(uncovered,
-                                                                                                  accumulated);
+        template<class T2>
+        const AbstractEvaluatedPrediction* processScoresInternally(const AbstractEvaluatedPrediction* bestHead,
+                                                                   const T2& scoreVector) {
             float64 overallQualityScore = scoreVector.overallQualityScore;
 
             // The quality score must be better than that of `bestHead`...
             if (bestHead == nullptr || overallQualityScore < bestHead->overallQualityScore) {
                 uint32 numPredictions = scoreVector.getNumElements();
-                DenseScoreVector::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
+                typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
 
                 if (headPtr_.get() == nullptr) {
                     if (labelIndices_.isPartial()) {
@@ -69,6 +57,30 @@ class FullHeadRefinement : public IHeadRefinement {
             }
 
             return nullptr;
+        }
+
+    public:
+
+        /**
+         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
+         *                     labels that should be considered when searching for the best head
+         */
+        FullHeadRefinement(const T& labelIndices)
+            : labelIndices_(labelIndices) {
+
+        }
+
+        const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
+                                                         const DenseScoreVector& scoreVector) override {
+            return processScoresInternally<DenseScoreVector>(bestHead, scoreVector);
+        }
+
+        const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                    bool accumulated) override {
+            const DenseScoreVector& scoreVector = statisticsSubset.calculateExampleWisePrediction(uncovered,
+                                                                                                  accumulated);
+            return this->processScores(bestHead, scoreVector);
         }
 
         std::unique_ptr<AbstractEvaluatedPrediction> pollHead() override {
