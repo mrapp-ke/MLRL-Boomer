@@ -4,6 +4,8 @@
 #pragma once
 
 #include "rule_evaluation_example_wise.h"
+#include "../../../common/cpp/indices/index_vector_full.h"
+#include "../../../common/cpp/indices/index_vector_partial.h"
 #include <memory>
 
 
