@@ -6,7 +6,8 @@
  */
 #pragma once
 
-#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
+#include "../../common/cpp/rule_evaluation/score_vector.h"
+#include "../../common/cpp/rule_evaluation/score_vector_label_wise.h"
 #include "data/vector_dense_example_wise.h"
 #include "math/blas.h"
 #include "math/lapack.h"
