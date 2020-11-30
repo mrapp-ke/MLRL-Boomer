@@ -6,7 +6,8 @@
  */
 #pragma once
 
-#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
+#include "../../common/cpp/rule_evaluation/score_vector.h"
+#include "../../common/cpp/rule_evaluation/score_vector_label_wise.h"
 #include "data/vector_dense_example_wise.h"
 #include "math/blas.h"
 #include "math/lapack.h"
@@ -32,10 +33,10 @@ namespace boosting {
              *
              * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores
              *                          the gradients and Hessians
-             * @param return            A reference to an object of type `DenseLabelWiseScoreVector` that stores the
+             * @param return            A reference to an object of type `ILabelWiseScoreVector` that stores the
              *                          predicted scores and quality scores
              */
-            virtual const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
+            virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseExampleWiseStatisticVector& statisticVector) = 0;
 
             /**
@@ -44,10 +45,10 @@ namespace boosting {
              *
              * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores
              *                          the gradients and Hessians
-             * @param prediction        A reference to an object of type `DenseScoreVector` that should be used to store
-             *                          the predicted scores and quality score
+             * @param prediction        A reference to an object of type `IScoreVector` that should be used to store the
+             *                          predicted scores and quality score
              */
-            virtual const DenseScoreVector& calculateExampleWisePrediction(
+            virtual const IScoreVector& calculateExampleWisePrediction(
                 DenseExampleWiseStatisticVector& statisticVector) = 0;
 
     };
