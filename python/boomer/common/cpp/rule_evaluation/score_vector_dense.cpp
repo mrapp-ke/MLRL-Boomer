@@ -1,4 +1,5 @@
 #include "score_vector_dense.h"
+#include "score_processor.h"
 #include "../head_refinement/prediction.h"
 
 
@@ -29,4 +30,9 @@ uint32 DenseScoreVector::getNumElements() const {
 
 void DenseScoreVector::updatePrediction(AbstractPrediction& prediction) const {
     prediction.set(predictedScoreVector_.cbegin(), predictedScoreVector_.cend());
+}
+
+const AbstractEvaluatedPrediction* DenseScoreVector::processScores(const AbstractEvaluatedPrediction* bestHead,
+                                                                   IScoreProcessor& scoreProcessor) const {
+    return scoreProcessor.processScores(bestHead, *this);
 }
