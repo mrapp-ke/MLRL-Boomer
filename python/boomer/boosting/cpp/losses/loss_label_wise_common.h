@@ -36,13 +36,41 @@ namespace boosting {
                                            const DenseNumericMatrix<float64>& scoreMatrix,
                                            FullIndexVector::const_iterator labelIndicesBegin,
                                            FullIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override;
+                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override {
+                DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
+                    statisticMatrix.gradients_row_begin(exampleIndex);
+                DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
+                    statisticMatrix.hessians_row_begin(exampleIndex);
+                DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+                uint32 numLabels = labelMatrix.getNumLabels();
+
+                for (uint32 i = 0; i < numLabels; i++) {
+                    bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+                    float64 predictedScore = scoreIterator[i];
+                    this->updateGradientAndHessian(&gradientIterator[i], &hessianIterator[i], trueLabel,
+                                                   predictedScore);
+                }
+            }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                            const DenseNumericMatrix<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override;
+                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override {
+                DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
+                    statisticMatrix.gradients_row_begin(exampleIndex);
+                DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
+                    statisticMatrix.hessians_row_begin(exampleIndex);
+                DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+
+                for (auto indexIterator = labelIndicesBegin; indexIterator != labelIndicesEnd; indexIterator++) {
+                    uint32 labelIndex = *indexIterator;
+                    bool trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
+                    float64 predictedScore = scoreIterator[labelIndex];
+                    this->updateGradientAndHessian(&gradientIterator[labelIndex], &hessianIterator[labelIndex],
+                                                   trueLabel, predictedScore);
+                }
+            }
 
     };
 
