@@ -9,7 +9,7 @@
 
 #include "../../../common/cpp/statistics/statistics.h"
 #include "../losses/loss_label_wise.h"
-#include "../rule_evaluation/rule_evaluation_factory_label_wise.h"
+#include "../rule_evaluation/rule_evaluation_label_wise.h"
 
 
 namespace boosting {
