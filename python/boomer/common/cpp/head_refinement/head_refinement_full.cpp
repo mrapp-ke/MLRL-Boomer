@@ -80,7 +80,7 @@ class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
                                                     bool accumulated) override {
             const DenseScoreVector& scoreVector = statisticsSubset.calculateExampleWisePrediction(uncovered,
                                                                                                   accumulated);
-            return this->processScores(bestHead, scoreVector);
+            return scoreVector.processScores(bestHead, *this);
         }
 
         std::unique_ptr<AbstractEvaluatedPrediction> pollHead() override {
