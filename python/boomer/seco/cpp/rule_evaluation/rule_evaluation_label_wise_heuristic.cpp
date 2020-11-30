@@ -1,6 +1,6 @@
-#include "rule_evaluation_label_wise.h"
-#include "confusion_matrices.h"
-#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
+#include "rule_evaluation_label_wise_heuristic.h"
+#include "../heuristics/confusion_matrices.h"
+#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 
 using namespace seco;
 
@@ -97,19 +97,19 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
 };
 
-HeuristicLabelWiseRuleEvaluationFactoryImpl::HeuristicLabelWiseRuleEvaluationFactoryImpl(
+HeuristicLabelWiseRuleEvaluationFactory::HeuristicLabelWiseRuleEvaluationFactory(
         std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority)
     : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority) {
 
 }
 
-std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactoryImpl::create(
+std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
         const FullIndexVector& indexVector) const {
     return std::make_unique<HeuristicLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, heuristicPtr_,
                                                                                predictMajority_);
 }
 
-std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactoryImpl::create(
+std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
         const PartialIndexVector& indexVector) const {
     return std::make_unique<HeuristicLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector, heuristicPtr_,
                                                                                   predictMajority_);
