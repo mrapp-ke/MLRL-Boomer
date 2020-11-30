@@ -76,7 +76,7 @@ class SingleLabelHeadRefinement : public IHeadRefinement, public ILabelWiseScore
                                                     bool accumulated) override {
             const DenseLabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                          accumulated);
-            return this->processScores(bestHead, scoreVector);
+            return scoreVector.processScores(bestHead, *this);
         }
 
         std::unique_ptr<AbstractEvaluatedPrediction> pollHead() override {
