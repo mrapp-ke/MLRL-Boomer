@@ -131,8 +131,8 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
-            const DenseLabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWisePrediction(uncovered,
-                                                                                                         accumulated);
+            const ILabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWisePrediction(uncovered,
+                                                                                                     accumulated);
             return scoreVector.processScores(bestHead, *this);
         }
 
@@ -140,8 +140,8 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
             return std::move(headPtr_);
         }
 
-        const DenseScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                    bool accumulated) const override {
+        const IScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                bool accumulated) const override {
             return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
         }
 

@@ -1,5 +1,6 @@
 #include "rule_evaluation_label_wise.h"
 #include "confusion_matrices.h"
+#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 
 using namespace seco;
 
@@ -40,11 +41,11 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
         }
 
-        const DenseLabelWiseScoreVector& calculateLabelWisePrediction(const uint8* minorityLabels,
-                                                                      const float64* confusionMatricesTotal,
-                                                                      const float64* confusionMatricesSubset,
-                                                                      const float64* confusionMatricesCovered,
-                                                                      bool uncovered) override {
+        const ILabelWiseScoreVector& calculateLabelWisePrediction(const uint8* minorityLabels,
+                                                                  const float64* confusionMatricesTotal,
+                                                                  const float64* confusionMatricesSubset,
+                                                                  const float64* confusionMatricesCovered,
+                                                                  bool uncovered) override {
             uint32 numPredictions = scoreVector_.getNumElements();
             DenseLabelWiseScoreVector::score_iterator scoreIterator = scoreVector_.scores_begin();
             DenseLabelWiseScoreVector::quality_score_iterator qualityScoreIterator =
