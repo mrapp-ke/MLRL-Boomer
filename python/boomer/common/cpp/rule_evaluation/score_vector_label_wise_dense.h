@@ -10,8 +10,11 @@
 /**
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as corresponding quality
  * scores that assess the quality of individual scores, in C-contiguous arrays.
+ *
+ * @tparam The type of the vector that provides access to the indices of the labels for which the rule may predict
  */
-class DenseLabelWiseScoreVector : public DenseScoreVector, virtual public ILabelWiseScoreVector {
+template<class T>
+class DenseLabelWiseScoreVector : public DenseScoreVector<T>, virtual public ILabelWiseScoreVector {
 
     private:
 
@@ -20,9 +23,10 @@ class DenseLabelWiseScoreVector : public DenseScoreVector, virtual public ILabel
     public:
 
         /**
-         * @param numElements The number of labels for which the rule may predict
+         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
+         *                     labels for which the rule may predict
          */
-        DenseLabelWiseScoreVector(uint32 numElements);
+        DenseLabelWiseScoreVector(const T& labelIndices);
 
         typedef DenseVector<float64>::iterator quality_score_iterator;
 

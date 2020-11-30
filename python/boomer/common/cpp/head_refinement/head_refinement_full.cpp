@@ -70,9 +70,16 @@ class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
 
         }
 
-        const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
-                                                         const DenseScoreVector& scoreVector) override {
-            return processScoresInternally<DenseScoreVector>(bestHead, scoreVector);
+        const AbstractEvaluatedPrediction* processScores(
+                const AbstractEvaluatedPrediction* bestHead,
+                const DenseScoreVector<FullIndexVector>& scoreVector) override {
+            return processScoresInternally<DenseScoreVector<FullIndexVector>>(bestHead, scoreVector);
+        }
+
+        const AbstractEvaluatedPrediction* processScores(
+                const AbstractEvaluatedPrediction* bestHead,
+                const DenseScoreVector<PartialIndexVector>& scoreVector) override {
+            return processScoresInternally<DenseScoreVector<PartialIndexVector>>(bestHead, scoreVector);
         }
 
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,

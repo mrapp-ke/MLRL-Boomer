@@ -2,28 +2,37 @@
 #include "score_processor_label_wise.h"
 
 
-DenseLabelWiseScoreVector::DenseLabelWiseScoreVector(uint32 numElements)
-    : DenseScoreVector(numElements), qualityScoreVector_(DenseVector<float64>(numElements)) {
+template<class T>
+DenseLabelWiseScoreVector<T>::DenseLabelWiseScoreVector(const T& labelIndices)
+    : DenseScoreVector<T>(labelIndices), qualityScoreVector_(DenseVector<float64>(labelIndices.getNumElements())) {
 
 }
 
-DenseLabelWiseScoreVector::quality_score_iterator DenseLabelWiseScoreVector::quality_scores_begin() {
+template<class T>
+typename DenseLabelWiseScoreVector<T>::quality_score_iterator DenseLabelWiseScoreVector<T>::quality_scores_begin() {
     return qualityScoreVector_.begin();
 }
 
-DenseLabelWiseScoreVector::quality_score_iterator DenseLabelWiseScoreVector::quality_scores_end() {
+template<class T>
+typename DenseLabelWiseScoreVector<T>::quality_score_iterator DenseLabelWiseScoreVector<T>::quality_scores_end() {
     return qualityScoreVector_.end();
 }
 
-DenseLabelWiseScoreVector::quality_score_const_iterator DenseLabelWiseScoreVector::quality_scores_cbegin() const {
+template<class T>
+typename DenseLabelWiseScoreVector<T>::quality_score_const_iterator DenseLabelWiseScoreVector<T>::quality_scores_cbegin() const {
     return qualityScoreVector_.cbegin();
 }
 
-DenseLabelWiseScoreVector::quality_score_const_iterator DenseLabelWiseScoreVector::quality_scores_cend() const {
+template<class T>
+typename DenseLabelWiseScoreVector<T>::quality_score_const_iterator DenseLabelWiseScoreVector<T>::quality_scores_cend() const {
     return qualityScoreVector_.cend();
 }
 
-const AbstractEvaluatedPrediction* DenseLabelWiseScoreVector::processScores(
+template<class T>
+const AbstractEvaluatedPrediction* DenseLabelWiseScoreVector<T>::processScores(
         const AbstractEvaluatedPrediction* bestHead, ILabelWiseScoreProcessor& scoreProcessor) const {
     return scoreProcessor.processScores(bestHead, *this);
 }
+
+template class DenseLabelWiseScoreVector<PartialIndexVector>;
+template class DenseLabelWiseScoreVector<FullIndexVector>;
