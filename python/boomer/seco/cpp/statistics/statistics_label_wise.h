@@ -8,7 +8,7 @@
 #pragma once
 
 #include "statistics_coverage.h"
-#include "../rule_evaluation/rule_evaluation_factory_label_wise.h"
+#include "../rule_evaluation/rule_evaluation_label_wise.h"
 #include "../../../common/cpp/input/label_matrix.h"
 #include <memory>
 
