@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "rule_evaluation_factory_example_wise.h"
+#include "rule_evaluation_example_wise.h"
 #include "../math/blas.h"
 #include "../math/lapack.h"
 
