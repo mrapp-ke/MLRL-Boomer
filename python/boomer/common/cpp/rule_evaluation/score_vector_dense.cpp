@@ -1,38 +1,61 @@
 #include "score_vector_dense.h"
 #include "score_processor.h"
 #include "../head_refinement/prediction.h"
+#include "../indices/index_vector_full.h"
+#include "../indices/index_vector_partial.h"
 
 
-DenseScoreVector::DenseScoreVector(uint32 numElements)
-    : predictedScoreVector_(DenseVector<float64>(numElements)) {
+template<class T>
+DenseScoreVector<T>::DenseScoreVector(const T& labelIndices)
+    : labelIndices_(labelIndices), predictedScoreVector_(DenseVector<float64>(labelIndices.getNumElements())) {
 
 }
 
-DenseScoreVector::score_iterator DenseScoreVector::scores_begin() {
+template<class T>
+typename DenseScoreVector<T>::index_const_iterator DenseScoreVector<T>::indices_cbegin() const {
+    return labelIndices_.cbegin();
+}
+
+template<class T>
+typename DenseScoreVector<T>::index_const_iterator DenseScoreVector<T>::indices_cend() const {
+    return labelIndices_.cend();
+}
+
+template<class T>
+typename DenseScoreVector<T>::score_iterator DenseScoreVector<T>::scores_begin() {
     return predictedScoreVector_.begin();
 }
 
-DenseScoreVector::score_iterator DenseScoreVector::scores_end() {
+template<class T>
+typename DenseScoreVector<T>::score_iterator DenseScoreVector<T>::scores_end() {
     return predictedScoreVector_.end();
 }
 
-DenseScoreVector::score_const_iterator DenseScoreVector::scores_cbegin() const {
+template<class T>
+typename DenseScoreVector<T>::score_const_iterator DenseScoreVector<T>::scores_cbegin() const {
     return predictedScoreVector_.cbegin();
 }
 
-DenseScoreVector::score_const_iterator DenseScoreVector::scores_cend() const {
+template<class T>
+typename DenseScoreVector<T>::score_const_iterator DenseScoreVector<T>::scores_cend() const {
     return predictedScoreVector_.cend();
 }
 
-uint32 DenseScoreVector::getNumElements() const {
+template<class T>
+uint32 DenseScoreVector<T>::getNumElements() const {
     return predictedScoreVector_.getNumElements();
 }
 
-void DenseScoreVector::updatePrediction(AbstractPrediction& prediction) const {
+template<class T>
+void DenseScoreVector<T>::updatePrediction(AbstractPrediction& prediction) const {
     prediction.set(predictedScoreVector_.cbegin(), predictedScoreVector_.cend());
 }
 
-const AbstractEvaluatedPrediction* DenseScoreVector::processScores(const AbstractEvaluatedPrediction* bestHead,
-                                                                   IScoreProcessor& scoreProcessor) const {
+template<class T>
+const AbstractEvaluatedPrediction* DenseScoreVector<T>::processScores(const AbstractEvaluatedPrediction* bestHead,
+                                                                      IScoreProcessor& scoreProcessor) const {
     return scoreProcessor.processScores(bestHead, *this);
 }
+
+template class DenseScoreVector<PartialIndexVector>;
+template class DenseScoreVector<FullIndexVector>;
