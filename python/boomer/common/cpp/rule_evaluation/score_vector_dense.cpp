@@ -47,6 +47,11 @@ uint32 DenseScoreVector<T>::getNumElements() const {
 }
 
 template<class T>
+bool DenseScoreVector<T>::isPartial() const {
+    return labelIndices_.isPartial();
+}
+
+template<class T>
 void DenseScoreVector<T>::updatePrediction(AbstractPrediction& prediction) const {
     prediction.set(predictedScoreVector_.cbegin(), predictedScoreVector_.cend());
 }
