@@ -22,7 +22,10 @@ cdef extern from "cpp/statistics/statistics_label_wise.h" namespace "boosting" n
         unique_ptr[ILabelWiseStatistics] create()
 
 
-    cdef cppclass DenseLabelWiseStatisticsFactoryImpl"boosting::DenseLabelWiseStatisticsFactory"(ILabelWiseStatisticsFactory):
+cdef extern from "cpp/statistics/statistics_label_wise_dense.h" namespace "boosting" nogil:
+
+    cdef cppclass DenseLabelWiseStatisticsFactoryImpl"boosting::DenseLabelWiseStatisticsFactory"(
+            ILabelWiseStatisticsFactory):
 
         # Constructors:
 

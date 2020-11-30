@@ -1,4 +1,4 @@
-#include "statistics_example_wise.h"
+#include "statistics_example_wise_dense.h"
 #include "../data/matrix_dense_numeric.h"
 #include "../data/matrix_dense_example_wise.h"
 #include "../data/vector_dense_example_wise.h"
