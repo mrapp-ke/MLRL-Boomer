@@ -38,7 +38,7 @@ class SingleLabelHeadRefinement : public IHeadRefinement, public ILabelWiseScore
             // The quality score must be better than that of `bestHead`...
             if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
                 typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
-                typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                typename T2::index_const_iterator indexIterator = scoreVector.indices_cbegin();
 
                 if (headPtr_.get() == nullptr) {
                     headPtr_ = std::make_unique<PartialPrediction>(1);
