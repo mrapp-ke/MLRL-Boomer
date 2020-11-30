@@ -9,7 +9,7 @@
 
 #include "../../common/cpp/indices/index_vector_full.h"
 #include "../../common/cpp/indices/index_vector_partial.h"
-#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
+#include "../../common/cpp/rule_evaluation/score_vector_label_wise.h"
 #include "heuristics/heuristic.h"
 #include <memory>
 
@@ -47,12 +47,14 @@ namespace seco {
              * @param uncovered                 False, if the confusion matrices in `confusion_matrices_covered`
              *                                  correspond to the examples that are covered by rule, True, if they
              *                                  correspond to the examples that are not covered by the rule
-             * @param return                    A reference to an object of type `DenseLabelWiseScoreVector` that stores
-             *                                  the predicted scores and quality scores
+             * @param return                    A reference to an object of type `ILabelWiseScoreVector` that stores the
+             *                                  predicted scores and quality scores
              */
-            virtual const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
-                const uint8* minorityLabels, const float64* confusionMatricesTotal,
-                const float64* confusionMatricesSubset, const float64* confusionMatricesCovered, bool uncovered) = 0;
+            virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(const uint8* minorityLabels,
+                                                                              const float64* confusionMatricesTotal,
+                                                                              const float64* confusionMatricesSubset,
+                                                                              const float64* confusionMatricesCovered,
+                                                                              bool uncovered) = 0;
 
     };
 
