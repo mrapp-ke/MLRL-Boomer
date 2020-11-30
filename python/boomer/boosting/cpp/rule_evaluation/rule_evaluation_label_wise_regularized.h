@@ -1,12 +1,9 @@
 /**
- * Implements classes for calculating the predictions of rules, as well as corresponding quality scores, based on the
- * gradients and Hessians that have been calculated according to a loss function that is applied label-wise.
- *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "rule_evaluation/rule_evaluation_factory_label_wise.h"
+#include "rule_evaluation_factory_label_wise.h"
 
 
 namespace boosting {
