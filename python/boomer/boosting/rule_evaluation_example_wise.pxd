@@ -13,7 +13,8 @@ cdef extern from "cpp/rule_evaluation/rule_evaluation_factory_example_wise.h" na
 
 cdef extern from "cpp/rule_evaluation/rule_evaluation_example_wise_regularized.h" namespace "boosting" nogil:
 
-    cdef cppclass RegularizedExampleWiseRuleEvaluationFactoryImpl(IExampleWiseRuleEvaluationFactory):
+    cdef cppclass RegularizedExampleWiseRuleEvaluationFactoryImpl"boosting::RegularizedExampleWiseRuleEvaluationFactory"(
+            IExampleWiseRuleEvaluationFactory):
 
         # Constructors:
 

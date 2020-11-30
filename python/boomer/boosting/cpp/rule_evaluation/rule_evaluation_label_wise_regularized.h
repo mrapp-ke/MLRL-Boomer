@@ -11,7 +11,7 @@ namespace boosting {
     /**
      * Allows to create instances of the class `RegularizedLabelWiseRuleEvaluation`.
      */
-    class RegularizedLabelWiseRuleEvaluationFactoryImpl : public ILabelWiseRuleEvaluationFactory {
+    class RegularizedLabelWiseRuleEvaluationFactory : public ILabelWiseRuleEvaluationFactory {
 
         private:
 
@@ -23,7 +23,7 @@ namespace boosting {
              * @param l2RegularizationWeight The weight of the L2 regularization that is applied for calculating the
              *                               scores to be predicted by rules
              */
-            RegularizedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight);
+            RegularizedLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight);
 
             std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
 
