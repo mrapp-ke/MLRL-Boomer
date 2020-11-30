@@ -78,8 +78,7 @@ class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
-            const DenseScoreVector& scoreVector = statisticsSubset.calculateExampleWisePrediction(uncovered,
-                                                                                                  accumulated);
+            const IScoreVector& scoreVector = statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
             return scoreVector.processScores(bestHead, *this);
         }
 
@@ -87,8 +86,8 @@ class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
             return std::move(headPtr_);
         }
 
-        const DenseScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                    bool accumulated) const override {
+        const IScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                bool accumulated) const override {
             return statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
         }
 

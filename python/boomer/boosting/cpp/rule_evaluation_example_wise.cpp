@@ -65,7 +65,7 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             free(dspmvTmpArray_);
         }
 
-        const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
+        const ILabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseExampleWiseStatisticVector& statisticVector) override {
             if (labelWiseScoreVector_ == nullptr) {
                 labelWiseScoreVector_ = new DenseLabelWiseScoreVector(numPredictions_);
@@ -75,8 +75,7 @@ class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
             return *labelWiseScoreVector_;
         }
 
-        const DenseScoreVector& calculateExampleWisePrediction(
-                DenseExampleWiseStatisticVector& statisticVector) override {
+        const IScoreVector& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
             if (scoreVector_ == nullptr) {
                 scoreVector_ = new DenseScoreVector(numPredictions_);
                 dsysvTmpArray1_ = (float64*) malloc(numPredictions_ * numPredictions_ * sizeof(float64));
