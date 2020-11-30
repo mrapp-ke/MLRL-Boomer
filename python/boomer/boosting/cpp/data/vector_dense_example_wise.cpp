@@ -1,5 +1,5 @@
 #include "vector_dense_example_wise.h"
-#include "triangular_number.h"
+#include "../math/math.h"
 #include <cstdlib>
 
 using namespace boosting;
