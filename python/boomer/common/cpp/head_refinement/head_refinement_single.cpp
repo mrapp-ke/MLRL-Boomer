@@ -5,24 +5,18 @@
 
 /**
  * Allows to find the best single-label head that predicts for a single label.
- *
- * @tparam T The type of the vector that provides access to the indices of the labels that are considered when searching
- *           for the best head
  */
-template<class T>
 class SingleLabelHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProcessor {
 
     private:
 
-        const T& labelIndices_;
-
         std::unique_ptr<PartialPrediction> headPtr_;
 
-        template<class T2>
+        template<class T>
         const AbstractEvaluatedPrediction* processScoresInternally(const AbstractEvaluatedPrediction* bestHead,
-                                                                   const T2& scoreVector) {
+                                                                   const T& scoreVector) {
             uint32 numPredictions = scoreVector.getNumElements();
-            typename T2::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
+            typename T::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
             uint32 bestC = 0;
             float64 bestQualityScore = qualityScoreIterator[bestC];
 
@@ -37,8 +31,8 @@ class SingleLabelHeadRefinement : public IHeadRefinement, public ILabelWiseScore
 
             // The quality score must be better than that of `bestHead`...
             if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
-                typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
-                typename T2::index_const_iterator indexIterator = scoreVector.indices_cbegin();
+                typename T::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
+                typename T::index_const_iterator indexIterator = scoreVector.indices_cbegin();
 
                 if (headPtr_.get() == nullptr) {
                     headPtr_ = std::make_unique<PartialPrediction>(1);
@@ -56,15 +50,6 @@ class SingleLabelHeadRefinement : public IHeadRefinement, public ILabelWiseScore
         }
 
     public:
-
-        /**
-         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
-         *                     labels that should be considered when searching for the best head
-         */
-        SingleLabelHeadRefinement(const T& labelIndices)
-            : labelIndices_(labelIndices) {
-
-        }
 
         const AbstractEvaluatedPrediction* processScores(
                 const AbstractEvaluatedPrediction* bestHead,
@@ -97,12 +82,11 @@ class SingleLabelHeadRefinement : public IHeadRefinement, public ILabelWiseScore
 
 };
 
-std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactory::create(
-        const FullIndexVector& labelIndices) const {
-    return std::make_unique<SingleLabelHeadRefinement<FullIndexVector>>(labelIndices);
+std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactory::create(const FullIndexVector& labelIndices) const {
+    return std::make_unique<SingleLabelHeadRefinement>();
 }
 
 std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactory::create(
         const PartialIndexVector& labelIndices) const {
-    return std::make_unique<SingleLabelHeadRefinement<PartialIndexVector>>(labelIndices);
+    return std::make_unique<SingleLabelHeadRefinement>();
 }
