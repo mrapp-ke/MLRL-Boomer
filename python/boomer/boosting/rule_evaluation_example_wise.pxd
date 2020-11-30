@@ -5,11 +5,13 @@ from boomer.boosting._lapack cimport Lapack
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/rule_evaluation_example_wise.h" namespace "boosting" nogil:
+cdef extern from "cpp/rule_evaluation/rule_evaluation_factory_example_wise.h" namespace "boosting" nogil:
 
     cdef cppclass IExampleWiseRuleEvaluationFactory:
         pass
 
+
+cdef extern from "cpp/rule_evaluation/rule_evaluation_example_wise_regularized.h" namespace "boosting" nogil:
 
     cdef cppclass RegularizedExampleWiseRuleEvaluationFactoryImpl(IExampleWiseRuleEvaluationFactory):
 

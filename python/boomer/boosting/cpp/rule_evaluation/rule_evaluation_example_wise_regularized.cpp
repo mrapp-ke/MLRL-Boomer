@@ -1,6 +1,6 @@
-#include "rule_evaluation_example_wise.h"
-#include "rule_evaluation/rule_evaluation_example_wise_common.h"
-#include "math/math.h"
+#include "rule_evaluation_example_wise_regularized.h"
+#include "rule_evaluation_example_wise_common.h"
+#include "../math/math.h"
 
 using namespace boosting;
 
