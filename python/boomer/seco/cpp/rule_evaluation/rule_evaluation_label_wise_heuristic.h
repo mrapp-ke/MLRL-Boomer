@@ -1,14 +1,11 @@
 /**
- * Implements classes for calculating the predictions of rules, as well as corresponding quality scores, based on
- * confusion matrices that have been computed for each label individually.
- *
  * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "rule_evaluation/rule_evaluation_factory_label_wise.h"
-#include "heuristics/heuristic.h"
+#include "rule_evaluation_factory_label_wise.h"
+#include "../heuristics/heuristic.h"
 
 
 namespace seco {
