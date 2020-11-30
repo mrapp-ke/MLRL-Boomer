@@ -19,7 +19,7 @@ cdef class LabelWiseRuleEvaluationFactory:
 
 cdef class HeuristicLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     """
-    A wrapper for the C++ class `HeuristicLabelWiseRuleEvaluationFactoryImpl`.
+    A wrapper for the C++ class `HeuristicLabelWiseRuleEvaluationFactory`.
     """
 
     def __cinit__(self, Heuristic heuristic, bint predictMajority = False):
