@@ -86,7 +86,7 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
                     headPtr_->setNumElements(bestNumPredictions, false);
                 }
 
-                typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                typename T2::index_const_iterator indexIterator = scoreVector.indices_cbegin();
                 PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
                 PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
 
