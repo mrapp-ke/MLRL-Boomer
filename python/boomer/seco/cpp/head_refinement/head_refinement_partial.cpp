@@ -33,6 +33,8 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
 
         const T& labelIndices_;
 
+        bool keepLabels_;
+
         std::shared_ptr<ILiftFunction> liftFunctionPtr_;
 
         std::unique_ptr<PartialPrediction> headPtr_;
@@ -48,7 +50,7 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
             uint32 bestNumPredictions = 0;
             float64 bestQualityScore = 0;
 
-            if (labelIndices_.isPartial()) {
+            if (keepLabels_) {
                 for (uint32 c = 0; c < numPredictions; c++) {
                     sumOfQualityScores += 1 - qualityScoreIterator[c];
                 }
@@ -88,7 +90,7 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
                 PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
                 PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
 
-                if (labelIndices_.isPartial()) {
+                if (keepLabels_) {
                     for (uint32 c = 0; c < bestNumPredictions; c++) {
                         headIndexIterator[c] = indexIterator[c];
                         headScoreIterator[c] = scoreIterator[c];
@@ -119,7 +121,7 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
          *                          scores of rules, depending on how many labels they predict
          */
         PartialHeadRefinement(const T& labelIndices, std::shared_ptr<ILiftFunction> liftFunctionPtr)
-            : labelIndices_(labelIndices), liftFunctionPtr_(liftFunctionPtr) {
+            : labelIndices_(labelIndices), keepLabels_(labelIndices.isPartial()), liftFunctionPtr_(liftFunctionPtr) {
 
         }
 
