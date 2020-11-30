@@ -6,32 +6,26 @@
 
 /**
  * Allows to find the best multi-label head that predicts for all labels.
- *
- * @tparam T The type of the vector that provides access to the indices of the labels that are considered when searching
- *           for the best head
  */
-template<class T>
 class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
 
     private:
 
-        const T& labelIndices_;
-
         std::unique_ptr<AbstractEvaluatedPrediction> headPtr_;
 
-        template<class T2>
+        template<class T>
         const AbstractEvaluatedPrediction* processScoresInternally(const AbstractEvaluatedPrediction* bestHead,
-                                                                   const T2& scoreVector) {
+                                                                   const T& scoreVector) {
             float64 overallQualityScore = scoreVector.overallQualityScore;
 
             // The quality score must be better than that of `bestHead`...
             if (bestHead == nullptr || overallQualityScore < bestHead->overallQualityScore) {
                 uint32 numPredictions = scoreVector.getNumElements();
-                typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
+                typename T::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
 
                 if (headPtr_.get() == nullptr) {
                     if (scoreVector.isPartial()) {
-                        typename T2::index_const_iterator indexIterator = scoreVector.indices_cbegin();
+                        typename T::index_const_iterator indexIterator = scoreVector.indices_cbegin();
                         std::unique_ptr<PartialPrediction> headPtr =
                             std::make_unique<PartialPrediction>(numPredictions);
                         PartialPrediction::index_iterator headIndexIterator = headPtr->indices_begin();
@@ -60,15 +54,6 @@ class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
         }
 
     public:
-
-        /**
-         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
-         *                     labels that should be considered when searching for the best head
-         */
-        FullHeadRefinement(const T& labelIndices)
-            : labelIndices_(labelIndices) {
-
-        }
 
         const AbstractEvaluatedPrediction* processScores(
                 const AbstractEvaluatedPrediction* bestHead,
@@ -101,9 +86,9 @@ class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
 };
 
 std::unique_ptr<IHeadRefinement> FullHeadRefinementFactory::create(const FullIndexVector& labelIndices) const {
-    return std::make_unique<FullHeadRefinement<FullIndexVector>>(labelIndices);
+    return std::make_unique<FullHeadRefinement>();
 }
 
 std::unique_ptr<IHeadRefinement> FullHeadRefinementFactory::create(const PartialIndexVector& labelIndices) const {
-    return std::make_unique<FullHeadRefinement<PartialIndexVector>>(labelIndices);
+    return std::make_unique<FullHeadRefinement>();
 }
