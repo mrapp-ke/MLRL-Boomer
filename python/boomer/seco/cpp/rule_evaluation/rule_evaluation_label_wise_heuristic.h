@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "rule_evaluation_factory_label_wise.h"
+#include "rule_evaluation_label_wise.h"
 #include "../heuristics/heuristic.h"
 
 
