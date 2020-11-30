@@ -1,6 +1,7 @@
 #include "head_refinement_partial.h"
 #include "../../../common/cpp/data/vector_sparse_array.h"
 #include "../../../common/cpp/head_refinement/prediction_partial.h"
+#include "../../../common/cpp/rule_evaluation/score_processor_label_wise.h"
 
 using namespace seco;
 
@@ -26,44 +27,28 @@ static inline std::unique_ptr<SparseArrayVector<float64>> argsort(const float64*
  *           for the best head
  */
 template<class T>
-class PartialHeadRefinement : public IHeadRefinement {
+class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProcessor {
 
     private:
 
-        const T& labelIndices_;
+        bool keepLabels_;
 
         std::shared_ptr<ILiftFunction> liftFunctionPtr_;
 
         std::unique_ptr<PartialPrediction> headPtr_;
 
-    public:
-
-        /**
-         * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
-         *                          the labels that should be considered when searching for the best head
-         * @param liftFunctionPtr   A shared pointer to an object of type `ILiftFunction` that should affect the quality
-         *                          scores of rules, depending on how many labels they predict
-         */
-        PartialHeadRefinement(const T& labelIndices, std::shared_ptr<ILiftFunction> liftFunctionPtr)
-            : labelIndices_(labelIndices), liftFunctionPtr_(liftFunctionPtr) {
-
-        }
-
-        const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
-                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                    bool accumulated) override {
-            const DenseLabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWisePrediction(uncovered,
-                                                                                                         accumulated);
+        template<class T2>
+        const AbstractEvaluatedPrediction* processScoresInternally(const AbstractEvaluatedPrediction* bestHead,
+                                                                   const T2& scoreVector) {
             uint32 numPredictions = scoreVector.getNumElements();
-            DenseLabelWiseScoreVector::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
-            DenseLabelWiseScoreVector::quality_score_const_iterator qualityScoreIterator =
-                scoreVector.quality_scores_cbegin();
+            typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
+            typename T2::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
             std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr;
             float64 sumOfQualityScores = 0;
             uint32 bestNumPredictions = 0;
             float64 bestQualityScore = 0;
 
-            if (labelIndices_.isPartial()) {
+            if (keepLabels_) {
                 for (uint32 c = 0; c < numPredictions; c++) {
                     sumOfQualityScores += 1 - qualityScoreIterator[c];
                 }
@@ -99,11 +84,11 @@ class PartialHeadRefinement : public IHeadRefinement {
                     headPtr_->setNumElements(bestNumPredictions, false);
                 }
 
-                typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                typename T2::index_const_iterator indexIterator = scoreVector.indices_cbegin();
                 PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
                 PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
 
-                if (labelIndices_.isPartial()) {
+                if (keepLabels_) {
                     for (uint32 c = 0; c < bestNumPredictions; c++) {
                         headIndexIterator[c] = indexIterator[c];
                         headScoreIterator[c] = scoreIterator[c];
@@ -125,12 +110,45 @@ class PartialHeadRefinement : public IHeadRefinement {
             return nullptr;
         }
 
+    public:
+
+        /**
+         * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
+         *                          the labels that should be considered when searching for the best head
+         * @param liftFunctionPtr   A shared pointer to an object of type `ILiftFunction` that should affect the quality
+         *                          scores of rules, depending on how many labels they predict
+         */
+        PartialHeadRefinement(const T& labelIndices, std::shared_ptr<ILiftFunction> liftFunctionPtr)
+            : keepLabels_(labelIndices.isPartial()), liftFunctionPtr_(liftFunctionPtr) {
+
+        }
+
+        const AbstractEvaluatedPrediction* processScores(
+                const AbstractEvaluatedPrediction* bestHead,
+                const DenseLabelWiseScoreVector<FullIndexVector>& scoreVector) override {
+            return processScoresInternally<DenseLabelWiseScoreVector<FullIndexVector>>(bestHead, scoreVector);
+        }
+
+        const AbstractEvaluatedPrediction* processScores(
+                const AbstractEvaluatedPrediction* bestHead,
+                const DenseLabelWiseScoreVector<PartialIndexVector>& scoreVector) override {
+            return processScoresInternally<DenseLabelWiseScoreVector<PartialIndexVector>>(bestHead, scoreVector);
+        }
+
+        const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                    bool accumulated) override {
+            const ILabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWisePrediction(uncovered,
+                                                                                                     accumulated);
+            return scoreVector.processScores(bestHead, *this);
+        }
+
         std::unique_ptr<AbstractEvaluatedPrediction> pollHead() override {
             return std::move(headPtr_);
         }
 
-        const DenseScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                    bool accumulated) const override {
+        const IScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                bool accumulated) const override {
             return statisticsSubset.calculateLabelWisePrediction(uncovered, accumulated);
         }
 
