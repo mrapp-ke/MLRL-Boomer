@@ -31,8 +31,6 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
 
     private:
 
-        const T& labelIndices_;
-
         bool keepLabels_;
 
         std::shared_ptr<ILiftFunction> liftFunctionPtr_;
@@ -121,7 +119,7 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
          *                          scores of rules, depending on how many labels they predict
          */
         PartialHeadRefinement(const T& labelIndices, std::shared_ptr<ILiftFunction> liftFunctionPtr)
-            : labelIndices_(labelIndices), keepLabels_(labelIndices.isPartial()), liftFunctionPtr_(liftFunctionPtr) {
+            : keepLabels_(labelIndices.isPartial()), liftFunctionPtr_(liftFunctionPtr) {
 
         }
 
