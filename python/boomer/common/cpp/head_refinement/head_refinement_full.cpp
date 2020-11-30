@@ -30,8 +30,8 @@ class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
                 typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
 
                 if (headPtr_.get() == nullptr) {
-                    if (labelIndices_.isPartial()) {
-                        typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                    if (scoreVector.isPartial()) {
+                        typename T2::index_const_iterator indexIterator = scoreVector.indices_cbegin();
                         std::unique_ptr<PartialPrediction> headPtr =
                             std::make_unique<PartialPrediction>(numPredictions);
                         PartialPrediction::index_iterator headIndexIterator = headPtr->indices_begin();
