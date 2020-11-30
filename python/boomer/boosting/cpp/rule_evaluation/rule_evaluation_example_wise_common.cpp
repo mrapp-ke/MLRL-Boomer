@@ -1,4 +1,6 @@
 #include "rule_evaluation_example_wise_common.h"
+#include "../../../common/cpp/indices/index_vector_full.h"
+#include "../../../common/cpp/indices/index_vector_partial.h"
 #include <cstdlib>
 
 using namespace boosting;
@@ -52,3 +54,6 @@ const IScoreVector& AbstractExampleWiseRuleEvaluation<T>::calculateExampleWisePr
                                          dsysvTmpArray3_, dspmvTmpArray_);
     return *scoreVector_;
 }
+
+template class AbstractExampleWiseRuleEvaluation<FullIndexVector>;
+template class AbstractExampleWiseRuleEvaluation<PartialIndexVector>;
