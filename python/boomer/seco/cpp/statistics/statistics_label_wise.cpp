@@ -1,5 +1,5 @@
 #include "statistics_label_wise.h"
-#include "../confusion_matrices.h"
+#include "../heuristics/confusion_matrices.h"
 #include "../../../common/cpp/statistics/statistics_subset_decomposable.h"
 #include <cstdlib>
 
