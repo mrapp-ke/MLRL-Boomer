@@ -1,6 +1,7 @@
 #include "thresholds_common.h"
 #include "thresholds_approximate.h"
 #include "rule_refinement/rule_refinement_approximate.h"
+#include <limits>
 
 
 static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
@@ -59,35 +60,54 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
     //TODO: in this branch
     uint32 maxElements = vector.getNumElements();
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
+    bool wasEmpty = false;
 
     if (filteredVector == nullptr) {
-        cacheEntry.vectorPtr = std::make_unique<BinVector>(maxElements);
+        cacheEntry.vectorPtr = std::make_unique<BinVector>(maxElements); //TODO: müsste eigentlich nicht vorinitialisiert werden
         filteredVector = cacheEntry.vectorPtr.get();
+        wasEmpty = true;
     }
 
-    std::unique_ptr<BinVector> result = std::make_unique<BinVector>(maxElements);
+    //typename BinVector::const_iterator iterator = vector.cbegin();
+    typename BinVector::iterator filteredIterator = filteredVector->begin();
+    uint32 i = 0;
 
-    typename BinVector::const_iterator copyIterator = result->begin();
-
-    for(intp r = 0; r < maxElements; r++) {
-        for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++){
+    for(uint32 r = 0; r < maxElements; r++) {
+        float32 maxValue = std::numeric_limits<float32>::min();
+        float32 minValue = std::numeric_limits<float32>::max();
+        uint32 numExamples = 0;
+        BinVector::example_const_iterator before = vector.examples_cbefore_begin(r);
+        for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); ){
             BinVector::Example example = *it;
             uint32 index = example.index;
 
             if (coverageMask.isCovered(index)) {
                 float32 value = example.value;
-                if (value < copyIterator[index].minValue) {
-                        copyIterator[index].minValue = value;
+                if (value < minValue) {
+                        minValue = value;
                 }
-
-                if (copyIterator[index].maxValue < value) {
-                    copyIterator[index].maxValue = value;
+                if (maxValue < value) {
+                    maxValue = value;
                 }
-                copyIterator[index].numExamples += 1;
-                result->addExample(r, example);
+                numExamples++;
+                if(wasEmpty){
+                    filteredVector->addExample(i, example);
+                }
+                before = it;
+                ++it;
+            } else if(!wasEmpty) {
+                it = filteredVector->examples_erase_after(r, before);
             }
         }
+        if(numExamples > 0){
+            filteredIterator[i].minValue = minValue;
+            filteredIterator[i].maxValue = maxValue;
+            filteredIterator[i].numExamples = numExamples;
+            i++;
+        }
     }
+    filteredVector->setNumElements(i);
+    cacheEntry.numConditions = numConditions;
 }
 
 
@@ -152,7 +172,13 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
                             binCacheEntry.histogramPtr = std::move(histogramBuilderPtr_->build());
                         }
                     }
-                    //TODO: Logik von exact z 300ff
+
+                    uint32 numConditions = thresholdsSubset_.numModifications_;
+
+                    if (numConditions > cacheEntry.numConditions) {
+                        filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_);
+                        binVector = cacheEntry.vectorPtr.get();
+                    }
                     //TODO: Hier wird das original Histogram zurück gegeben, es muss aber ein neues erstellt werden
                     return std::make_unique<Result>(*binCacheEntry.histogramPtr, *binVector);
                 }
@@ -209,8 +235,8 @@ class ApproximateThresholds::ThresholdsSubset : public IThresholdsSubset {
          * @param thresholds A reference to an object of type `ApproximateThresholds` that stores the thresholds
          */
         ThresholdsSubset(ApproximateThresholds& thresholds)
-            : thresholds_(thresholds), coverageMask_(CoverageMask(thresholds.getNumExamples())) {
-            numModifications_ = 0;
+            : thresholds_(thresholds), coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
+
         }
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,

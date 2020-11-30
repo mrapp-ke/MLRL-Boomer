@@ -32,6 +32,7 @@ class BinVector : public DenseVector<Bin> {
         BinVector(uint32 numElements);
 
         typedef std::forward_list<Example>::const_iterator example_const_iterator;
+        typedef std::forward_list<Example>::iterator example_iterator;
 
         /**
          * Returns an `example_const_iterator` to the beginning of the examples in a certain bin.
@@ -49,6 +50,10 @@ class BinVector : public DenseVector<Bin> {
          */
         example_const_iterator examples_cend(uint32 binIndex);
 
+        example_const_iterator examples_cbefore_begin(uint32 binIndex);
+
+        example_iterator examples_erase_after(uint32 binIndex, example_const_iterator before);
+
         /**
          * Adds a new example to a certain bin.
          *
@@ -56,10 +61,5 @@ class BinVector : public DenseVector<Bin> {
          * @param example   The example to be added
          */
         void addExample(uint32 binIndex, Example example);
-
-        /**
-         * Removes all examples, regardless of the bins they belong to.
-         */
-        void clearAllExamples();
 
 };
