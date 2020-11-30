@@ -71,18 +71,17 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
 };
 
-RegularizedLabelWiseRuleEvaluationFactoryImpl::RegularizedLabelWiseRuleEvaluationFactoryImpl(
-        float64 l2RegularizationWeight)
+RegularizedLabelWiseRuleEvaluationFactory::RegularizedLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight)
     : l2RegularizationWeight_(l2RegularizationWeight) {
 
 }
 
-std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactoryImpl::create(
+std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactory::create(
         const FullIndexVector& indexVector) const {
     return std::make_unique<RegularizedLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, l2RegularizationWeight_);
 }
 
-std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactoryImpl::create(
+std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactory::create(
         const PartialIndexVector& indexVector) const {
     return std::make_unique<RegularizedLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                     l2RegularizationWeight_);

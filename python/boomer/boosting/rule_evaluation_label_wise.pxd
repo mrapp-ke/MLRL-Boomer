@@ -11,7 +11,8 @@ cdef extern from "cpp/rule_evaluation/rule_evaluation_factory_label_wise.h" name
 
 cdef extern from "cpp/rule_evaluation/rule_evaluation_label_wise_regularized.h" namespace "boosting" nogil:
 
-    cdef cppclass RegularizedLabelWiseRuleEvaluationFactoryImpl(ILabelWiseRuleEvaluationFactory):
+    cdef cppclass RegularizedLabelWiseRuleEvaluationFactoryImpl"boosting::RegularizedLabelWiseRuleEvaluationFactory"(
+            ILabelWiseRuleEvaluationFactory):
 
         # Constructors:
 
