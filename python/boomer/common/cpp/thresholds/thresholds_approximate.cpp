@@ -233,10 +233,15 @@ std::unique_ptr<IThresholdsSubset> ApproximateThresholds::createSubset(const IWe
     return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this);
 }
 
+ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::shared_ptr<IFeatureBinning> binningPtr)
+    : binningPtr_(binningPtr) {
+
+}
+
 std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(
         std::shared_ptr<IFeatureMatrix> featureMatrixPtr, std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
         std::shared_ptr<IStatistics> statisticsPtr,
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const {
     return std::make_unique<ApproximateThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr,
-                                                   headRefinementFactoryPtr)
+                                                   headRefinementFactoryPtr, binningPtr_)
 }
