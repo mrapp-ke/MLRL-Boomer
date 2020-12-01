@@ -76,6 +76,7 @@ sources = [
     'boomer/boosting/cpp/rule_evaluation/rule_evaluation_label_wise_binning.cpp',
     'boomer/boosting/cpp/statistics/statistics_label_wise_dense.cpp',
     'boomer/boosting/cpp/statistics/statistics_example_wise_dense.cpp',
+    'boomer/boosting/cpp/binning/label_binning_equal_width.cpp',
     'boomer/seco/cpp/head_refinement/head_refinement_partial.cpp',
     'boomer/seco/cpp/head_refinement/lift_function_peak.cpp',
     'boomer/seco/cpp/heuristics/heuristic_f_measure.cpp',
