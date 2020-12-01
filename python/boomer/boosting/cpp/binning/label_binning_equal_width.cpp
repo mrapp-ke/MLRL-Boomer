@@ -2,6 +2,8 @@
 #include <cmath>
 #include <limits>
 
+using namespace boosting;
+
 
 template<class T>
 void EqualWidthLabelBinning<T>::createBins(uint32 numPositiveBins, uint32 numNegativeBins, const T& statisticVector,
