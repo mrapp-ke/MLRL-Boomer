@@ -57,9 +57,8 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
-                                   uint32 numConditions, const CoverageMask& coverageMask){
-    //TODO: in this branch
+static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry, uint32 numConditions,
+                                   const CoverageMask& coverageMask) {
     uint32 maxElements = vector.getNumElements();
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
     bool wasEmpty = false;
@@ -78,35 +77,41 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
         float32 minValue = std::numeric_limits<float32>::max();
         uint32 numExamples = 0;
         BinVector::example_const_iterator before = vector.examples_cbefore_begin(r);
-        for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); ){
+
+        for (BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r);) {
             BinVector::Example example = *it;
             uint32 index = example.index;
 
             if (coverageMask.isCovered(index)) {
                 float32 value = example.value;
+
                 if (value < minValue) {
-                        minValue = value;
+                    minValue = value;
                 }
+
                 if (maxValue < value) {
                     maxValue = value;
                 }
-                numExamples++;
-                if(wasEmpty){
+
+                if (wasEmpty) {
                     filteredVector->addExample(i, example);
                 }
+
+                numExamples++;
                 before = it;
                 ++it;
-            } else if(!wasEmpty) {
+            } else if (!wasEmpty) {
                 it = filteredVector->examples_erase_after(r, before);
             }
         }
-        if(numExamples > 0){
+        if (numExamples > 0) {
             filteredIterator[i].minValue = minValue;
             filteredIterator[i].maxValue = maxValue;
             filteredIterator[i].numExamples = numExamples;
             i++;
         }
     }
+
     filteredVector->setNumElements(i, true);
     cacheEntry.numConditions = numConditions;
 }
@@ -157,7 +162,6 @@ class ApproximateThresholds : public AbstractThresholds {
                         }
 
                         std::unique_ptr<Result> get() override {
-                        //TODO: in this Branch
                             auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
                             FilteredCacheEntry<BinVector>& cacheEntry = cacheFilteredIterator->second;
                             BinVector* binVector = cacheEntry.vectorPtr.get();
@@ -166,8 +170,9 @@ class ApproximateThresholds : public AbstractThresholds {
                             auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                             BinCacheEntry& binCacheEntry = cacheIterator->second;
 
-                            if(binVector == nullptr){
+                            if (binVector == nullptr) {
                                 binVector = binCacheEntry.binVectorPtr.get();
+
                                 if (binVector == nullptr) {
                                     std::unique_ptr<FeatureVector> featureVectorPtr;
                                     thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
