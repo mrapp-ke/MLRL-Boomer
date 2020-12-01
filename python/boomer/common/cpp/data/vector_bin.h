@@ -20,9 +20,11 @@ class BinVector : public DenseVector<Bin> {
 
         typedef IndexedValue<float32> Example;
 
+        typedef std::forward_list<Example> ExampleList;
+
     private:
 
-        std::unordered_map<uint32, std::forward_list<Example>> examplesPerBin_;
+        std::unordered_map<uint32, ExampleList> examplesPerBin_;
 
     public:
 
@@ -37,35 +39,12 @@ class BinVector : public DenseVector<Bin> {
          */
         BinVector(uint32 numElements, bool init);
 
-        typedef std::forward_list<Example>::const_iterator example_const_iterator;
-        typedef std::forward_list<Example>::iterator example_iterator;
-
         /**
-         * Returns an `example_const_iterator` to the beginning of the examples in a certain bin.
+         * Returns the list that stores the examples that correspond to a specific bin.
          *
          * @param binIndex  The index of the bin
-         * @return          An `example_const_iterator` to the beginning
+         * @return          A reference to an object of type `ExampleList` that stores the examples in the bin
          */
-        example_const_iterator examples_cbegin(uint32 binIndex);
-
-        /**
-         * Returns an `example_const_iterator` to the end of the examples in a certain bin.
-         *
-         * @param binIndex  The index of the bin
-         * @return          An `example_const_iterator` to the end
-         */
-        example_const_iterator examples_cend(uint32 binIndex);
-
-        example_const_iterator examples_cbefore_begin(uint32 binIndex);
-
-        example_iterator examples_erase_after(uint32 binIndex, example_const_iterator before);
-
-        /**
-         * Adds a new example to a certain bin.
-         *
-         * @param binIndex  The index of the bin
-         * @param example   The example to be added
-         */
-        void addExample(uint32 binIndex, Example example);
+        ExampleList& getExamples(uint32 binIndex);
 
 };
