@@ -2,7 +2,7 @@
 #include "../head_refinement/head_refinement.h"
 #include "../head_refinement/head_refinement_factory.h"
 #include "../statistics/histogram.h"
-#include "../thresholds.h"
+#include "../thresholds/thresholds_subset.h"
 
 
 PartialIndexVector::PartialIndexVector(uint32 numElements)

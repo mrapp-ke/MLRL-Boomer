@@ -14,9 +14,8 @@ cdef class ApproximateThresholdsFactory(ThresholdsFactory):
     def __cinit__(self, FeatureBinning binning):
         self.binning = binning
 
-    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureMask nominal_feature_mask,
-                                    StatisticsProvider statistics_provider,
-                                    HeadRefinementFactory head_refinement_factory):
+    cdef IThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureMask nominal_feature_mask,
+                             StatisticsProvider statistics_provider, HeadRefinementFactory head_refinement_factory):
         return new ApproximateThresholds(feature_matrix.feature_matrix_ptr,
                                          nominal_feature_mask.nominal_feature_mask_ptr,
                                          statistics_provider.statistics_ptr,

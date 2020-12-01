@@ -8,11 +8,13 @@ from boomer.common.sampling cimport IWeightVector
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "cpp/thresholds.h" nogil:
+cdef extern from "cpp/thresholds/coverage_mask.h" nogil:
 
     cdef cppclass CoverageMask:
         pass
 
+
+cdef extern from "cpp/thresholds/thresholds_subset.h" nogil:
 
     cdef cppclass IThresholdsSubset:
 
@@ -27,9 +29,13 @@ cdef extern from "cpp/thresholds.h" nogil:
         void applyPrediction(AbstractPrediction& prediction)
 
 
-    cdef cppclass AbstractThresholds:
+cdef extern from "cpp/thresholds/thresholds.h" nogil:
+
+    cdef cppclass IThresholds:
 
         # Functions:
+
+        unique_ptr[IThresholdsSubset] createSubset(const IWeightVector& weights)
 
         uint32 getNumExamples()
 
@@ -37,13 +43,10 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         uint32 getNumLabels()
 
-        unique_ptr[IThresholdsSubset] createSubset(const IWeightVector& weights)
-
 
 cdef class ThresholdsFactory:
 
     # Functions:
 
-    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureMask nominal_feature_mask,
-                                    StatisticsProvider statistic_provider,
-                                    HeadRefinementFactory head_refinement_factory)
+    cdef IThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureMask nominal_feature_mask,
+                             StatisticsProvider statistic_provider, HeadRefinementFactory head_refinement_factory)

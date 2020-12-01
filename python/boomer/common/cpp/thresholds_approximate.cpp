@@ -1,4 +1,3 @@
-#include "thresholds_common.h"
 #include "thresholds_approximate.h"
 #include "rule_refinement/rule_refinement_approximate.h"
 
