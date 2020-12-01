@@ -7,7 +7,7 @@ from boomer.common.thresholds cimport ThresholdsFactory, IThresholds
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/thresholds_approximate.h" nogil:
+cdef extern from "cpp/thresholds/thresholds_approximate.h" nogil:
 
     cdef cppclass ApproximateThresholds(IThresholds):
 
