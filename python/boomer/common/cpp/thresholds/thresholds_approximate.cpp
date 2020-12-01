@@ -70,7 +70,6 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
         wasEmpty = true;
     }
 
-    //typename BinVector::const_iterator iterator = vector.cbegin();
     typename BinVector::iterator filteredIterator = filteredVector->begin();
     uint32 i = 0;
 
@@ -108,7 +107,7 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
             i++;
         }
     }
-    filteredVector->setNumElements(i);
+    filteredVector->setNumElements(i, true);
     cacheEntry.numConditions = numConditions;
 }
 
@@ -179,6 +178,7 @@ class ApproximateThresholds : public AbstractThresholds {
                                     binCacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins));
                                     histogramBuilderPtr_ =
                                         thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
+                                    binVector = binCacheEntry.binVectorPtr.get();
                                     currentBinVector_ = binVector;
                                     thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo,
                                                                                           *featureVectorPtr, *this);
