@@ -1,5 +1,5 @@
 #include "thresholds_approximate.h"
-#include "rule_refinement/rule_refinement_approximate.h"
+#include "../rule_refinement/rule_refinement_approximate.h"
 
 
 static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
