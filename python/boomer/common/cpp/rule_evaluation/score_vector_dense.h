@@ -79,9 +79,9 @@ class DenseScoreVector : virtual public IScoreVector {
         score_const_iterator scores_cend() const;
 
         /**
-         * Returns the number of labels for which the rule predicts.
+         * Returns the number of labels for which the rule may predict.
          *
-         * @return The number of labels for which the rule predict
+         * @return The number of labels
          */
         uint32 getNumElements() const;
 
