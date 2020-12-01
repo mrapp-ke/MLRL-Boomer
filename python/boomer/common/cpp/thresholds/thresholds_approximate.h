@@ -66,7 +66,17 @@ class ApproximateThresholds : public AbstractThresholds {
  */
 class ApproximateThresholdsFactory : public IThresholdsFactory {
 
+    private:
+
+        std::shared_ptr<IFeatureBinning> binningPtr_;
+
     public:
+
+        /**
+         * @param binningPtr A shared pointer to an object of type `IFeatureBinning` that implements the binning method
+         *                   to be used
+         */
+        ApproximateThresholdsFactory(std::shared_ptr<IFeatureBinning> binningPtr);
 
         std::unique_ptr<IThresholds> create(
             std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
