@@ -63,7 +63,7 @@ class IIndexVector {
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to create
          *                          the instance
          * @param featureIndex      The index of the feature that should be considered when searching for the refinement
-         * @return                  An unique pointer to an object of type `IHeadRefinement` that has been created
+         * @return                  An unique pointer to an object of type `IRuleRefinement` that has been created
          */
         virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                                       uint32 featureIndex) const = 0;

@@ -1,8 +1,8 @@
 #include "index_vector_partial.h"
 #include "../head_refinement/head_refinement.h"
 #include "../head_refinement/head_refinement_factory.h"
-#include "../statistics.h"
-#include "../thresholds.h"
+#include "../statistics/histogram.h"
+#include "../thresholds/thresholds_subset.h"
 
 
 PartialIndexVector::PartialIndexVector(uint32 numElements)
@@ -18,8 +18,8 @@ uint32 PartialIndexVector::getNumElements() const {
     return vector_.getNumElements();
 }
 
-void PartialIndexVector::setNumElements(uint32 numElements) {
-    vector_.setNumElements(numElements);
+void PartialIndexVector::setNumElements(uint32 numElements, bool freeMemory) {
+    vector_.setNumElements(numElements, freeMemory);
 }
 
 uint32 PartialIndexVector::getIndex(uint32 pos) const {
