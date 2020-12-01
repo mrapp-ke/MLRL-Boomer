@@ -1,13 +1,12 @@
 /**
- * Implements classes for calculating the predictions of rules, as well as corresponding quality scores, based on the
- * gradients and Hessians that have been calculated according to a loss function that is applied label-wise.
- *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
-#include "data/vector_dense_label_wise.h"
+#include "../../../common/cpp/rule_evaluation/score_vector_label_wise.h"
+#include "../../../common/cpp/indices/index_vector_full.h"
+#include "../../../common/cpp/indices/index_vector_partial.h"
+#include "../data/vector_dense_label_wise.h"
 #include <memory>
 
 
@@ -30,10 +29,10 @@ namespace boosting {
              *
              * @param statisticVector   A reference to an object of type `DenseLabelWiseStatisticVector` that stores the
              *                          gradients and Hessians
-             * @return                  A reference to an object of type `DenseLabelWiseScoreVector` that stores the
+             * @return                  A reference to an object of type `ILabelWiseScoreVector` that stores the
              *                          predicted scores and quality scores
              */
-            virtual const DenseLabelWiseScoreVector& calculateLabelWisePrediction(
+            virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseLabelWiseStatisticVector& statisticVector) = 0;
 
     };
@@ -69,29 +68,6 @@ namespace boosting {
              */
             virtual std::unique_ptr<ILabelWiseRuleEvaluation> create(const PartialIndexVector& indexVector) const = 0;
 
-
-    };
-
-    /**
-     * Allows to create instances of the class `RegularizedLabelWiseRuleEvaluation`.
-     */
-    class RegularizedLabelWiseRuleEvaluationFactoryImpl : public ILabelWiseRuleEvaluationFactory {
-
-        private:
-
-            float64 l2RegularizationWeight_;
-
-        public:
-
-            /**
-             * @param l2RegularizationWeight The weight of the L2 regularization that is applied for calculating the
-             *                               scores to be predicted by rules
-             */
-            RegularizedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight);
-
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
-
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const PartialIndexVector& indexVector) const override;
 
     };
 

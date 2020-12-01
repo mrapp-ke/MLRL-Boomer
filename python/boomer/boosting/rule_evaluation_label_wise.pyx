@@ -16,7 +16,7 @@ cdef class LabelWiseRuleEvaluationFactory:
 
 cdef class RegularizedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     """
-    A wrapper for the C++ class `RegularizedLabelWiseRuleEvaluationFactoryImpl`.
+    A wrapper for the C++ class `RegularizedLabelWiseRuleEvaluationFactory`.
     """
 
     def __cinit__(self, float64 l2_regularization_weight):

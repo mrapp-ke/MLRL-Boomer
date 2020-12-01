@@ -4,7 +4,7 @@
 #pragma once
 
 #include "../model/condition_list.h"
-#include "../thresholds.h"
+#include "../thresholds/thresholds_subset.h"
 
 
 /**

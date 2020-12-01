@@ -23,7 +23,10 @@ cdef extern from "cpp/statistics/statistics_example_wise.h" namespace "boosting"
         unique_ptr[IExampleWiseStatistics] create()
 
 
-    cdef cppclass DenseExampleWiseStatisticsFactoryImpl"boosting::DenseExampleWiseStatisticsFactory"(IExampleWiseStatisticsFactory):
+cdef extern from "cpp/statistics/statistics_example_wise_dense.h" namespace "boosting" nogil:
+
+    cdef cppclass DenseExampleWiseStatisticsFactoryImpl"boosting::DenseExampleWiseStatisticsFactory"(
+            IExampleWiseStatisticsFactory):
 
         # Constructors:
 
