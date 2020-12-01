@@ -243,5 +243,5 @@ std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(
         std::shared_ptr<IStatistics> statisticsPtr,
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const {
     return std::make_unique<ApproximateThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr,
-                                                   headRefinementFactoryPtr, binningPtr_)
+                                                   headRefinementFactoryPtr, binningPtr_);
 }
