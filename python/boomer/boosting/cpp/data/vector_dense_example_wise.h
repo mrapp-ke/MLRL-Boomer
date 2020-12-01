@@ -30,6 +30,31 @@ namespace boosting {
         public:
 
             /**
+             * Allows to iterate the Hessians on the diagonal.
+             */
+            class HessianDiagonalIterator {
+
+                private:
+
+                    const DenseExampleWiseStatisticVector& vector_;
+
+                    uint32 index_;
+
+                public:
+
+                    HessianDiagonalIterator(const DenseExampleWiseStatisticVector& vector, uint32 index);
+
+                    float64 operator[](uint32 index) const;
+
+                    float64 operator*() const;
+
+                    HessianDiagonalIterator& operator++(int n);
+
+                    bool operator!=(const HessianDiagonalIterator& rhs) const;
+
+            };
+
+            /**
              * @param numGradients The number of gradients in the vector
              */
             DenseExampleWiseStatisticVector(uint32 numGradients);
@@ -55,6 +80,8 @@ namespace boosting {
             typedef float64* hessian_iterator;
 
             typedef const float64* hessian_const_iterator;
+
+            typedef HessianDiagonalIterator hessian_diagonal_const_iterator;
 
             /**
              * Returns a `gradient_iterator` to the beginning of the gradients.
@@ -113,13 +140,18 @@ namespace boosting {
             hessian_const_iterator hessians_cend() const;
 
             /**
-             * Returns a Hessian on the diagonal of the Hessian matrix that corresponds to the label at a specific
-             * position.
+             * Returns a `hessian_diagonal_const_iterator` to the beginning of the Hessians on the diagonal.
              *
-             * @param row   The position
-             * @return      The Hessian that corresponds to the given position
+             * @return A `hessian_diagonal_const_iterator` to the beginning
              */
-            float64 hessian_diagonal(uint32 pos) const;
+            hessian_diagonal_const_iterator hessians_diagonal_cbegin() const;
+
+            /**
+             * Returns a `hessian_diagonal_const_iterator` to the end of the Hessians on the diagonal.
+             *
+             * @return A `hessian_diagonal_const_iterator` to the end
+             */
+            hessian_diagonal_const_iterator hessians_diagonal_cend() const;
 
             /**
              * Returns the number of gradients in the vector.
