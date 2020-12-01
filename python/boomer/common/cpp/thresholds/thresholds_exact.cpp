@@ -358,10 +358,9 @@ class ExactThresholds : public AbstractThresholds {
                  *                      weights of the individual training examples
                  */
                 ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
-                    : thresholds_(thresholds), weights_(weights),
-                      coverageMask_(CoverageMask(thresholds.getNumExamples())) {
-                    sumOfWeights_ = weights.getSumOfWeights();
-                    numModifications_ = 0;
+                    : thresholds_(thresholds), weights_(weights), sumOfWeights_(weights.getSumOfWeights()),
+                      coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
+
                 }
 
                 std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
