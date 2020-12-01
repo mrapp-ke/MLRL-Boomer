@@ -6,7 +6,7 @@ from boomer.boosting.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationF
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/statistics_label_wise.h" namespace "boosting" nogil:
+cdef extern from "cpp/statistics/statistics_label_wise.h" namespace "boosting" nogil:
 
     cdef cppclass ILabelWiseStatistics(IStatistics):
 
@@ -22,7 +22,10 @@ cdef extern from "cpp/statistics_label_wise.h" namespace "boosting" nogil:
         unique_ptr[ILabelWiseStatistics] create()
 
 
-    cdef cppclass DenseLabelWiseStatisticsFactoryImpl(ILabelWiseStatisticsFactory):
+cdef extern from "cpp/statistics/statistics_label_wise_dense.h" namespace "boosting" nogil:
+
+    cdef cppclass DenseLabelWiseStatisticsFactoryImpl"boosting::DenseLabelWiseStatisticsFactory"(
+            ILabelWiseStatisticsFactory):
 
         # Constructors:
 

@@ -20,7 +20,7 @@ cdef class ExampleWiseRuleEvaluation:
 
 cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
     """
-    A wrapper for the C++ class `RegularizedExampleWiseRuleEvaluationFactoryImpl`.
+    A wrapper for the C++ class `RegularizedExampleWiseRuleEvaluationFactory`.
     """
 
     def __cinit__(self, float64 l2_regularization_weight):

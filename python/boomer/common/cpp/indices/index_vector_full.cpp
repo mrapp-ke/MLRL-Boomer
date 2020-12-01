@@ -1,8 +1,8 @@
 #include "index_vector_full.h"
 #include "../head_refinement/head_refinement.h"
 #include "../head_refinement/head_refinement_factory.h"
-#include "../statistics.h"
-#include "../thresholds.h"
+#include "../statistics/histogram.h"
+#include "../thresholds/thresholds_subset.h"
 
 
 FullIndexVector::Iterator::Iterator(uint32 index) {
@@ -38,7 +38,7 @@ uint32 FullIndexVector::getNumElements() const {
     return numElements_;
 }
 
-void FullIndexVector::setNumElements(uint32 numElements) {
+void FullIndexVector::setNumElements(uint32 numElements, bool freeMemory) {
     numElements_ = numElements;
 }
 

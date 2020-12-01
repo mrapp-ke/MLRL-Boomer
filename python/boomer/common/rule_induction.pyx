@@ -5,8 +5,7 @@ Provides classes that implement algorithms for inducing individual classificatio
 """
 from boomer.common._types cimport float32
 from boomer.common._indices cimport IIndexVector, FullIndexVector
-from boomer.common._predictions cimport AbstractEvaluatedPrediction
-from boomer.common.head_refinement cimport IHeadRefinement
+from boomer.common.head_refinement cimport IHeadRefinement, AbstractEvaluatedPrediction
 from boomer.common.rules cimport Condition, Comparator, ConditionList
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport IStatistics, IStatisticsSubset
@@ -40,7 +39,7 @@ cdef class RuleInduction:
         """
         pass
 
-    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
+    cdef bint induce_rule(self, IThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
                           IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
@@ -48,7 +47,7 @@ cdef class RuleInduction:
         """
         Induces a new classification rule.
 
-        :param thresholds:              A pointer to an object of type `AbstractThresholds` that provides access to the
+        :param thresholds:              A pointer to an object of type `IThresholds` that provides access to the
                                         thresholds that may be used by the conditions of rules
         :param nominal_feature_mask:    A pointer to an object of type `INominalFeatureMask` that provides access to the
                                         information whether individual features are nominal or not
@@ -120,7 +119,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         else:
             statistics_provider.switch_rule_evaluation()
 
-    cdef bint induce_rule(self, AbstractThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
+    cdef bint induce_rule(self, IThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
                           IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,

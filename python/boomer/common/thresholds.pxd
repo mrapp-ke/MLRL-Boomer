@@ -1,19 +1,20 @@
 from boomer.common._types cimport uint32
-from boomer.common._predictions cimport AbstractPrediction
-from boomer.common.head_refinement cimport HeadRefinementFactory
-from boomer.common.input_data cimport FeatureMatrix, NominalFeatureMask
+from boomer.common.head_refinement cimport IHeadRefinementFactory, AbstractPrediction
+from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.rule_refinement cimport Refinement
-from boomer.common.statistics cimport StatisticsProvider
+from boomer.common.statistics cimport IStatistics
 from boomer.common.sampling cimport IWeightVector
 
-from libcpp.memory cimport unique_ptr
+from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/thresholds.h" nogil:
+cdef extern from "cpp/thresholds/coverage_mask.h" nogil:
 
     cdef cppclass CoverageMask:
         pass
 
+
+cdef extern from "cpp/thresholds/thresholds_subset.h" nogil:
 
     cdef cppclass IThresholdsSubset:
 
@@ -28,9 +29,13 @@ cdef extern from "cpp/thresholds.h" nogil:
         void applyPrediction(AbstractPrediction& prediction)
 
 
-    cdef cppclass AbstractThresholds:
+cdef extern from "cpp/thresholds/thresholds.h" nogil:
+
+    cdef cppclass IThresholds:
 
         # Functions:
+
+        unique_ptr[IThresholdsSubset] createSubset(const IWeightVector& weights)
 
         uint32 getNumExamples()
 
@@ -38,13 +43,21 @@ cdef extern from "cpp/thresholds.h" nogil:
 
         uint32 getNumLabels()
 
-        unique_ptr[IThresholdsSubset] createSubset(const IWeightVector& weights)
+
+cdef extern from "cpp/thresholds/thresholds_factory.h" nogil:
+
+    cdef cppclass IThresholdsFactory:
+
+        # Functions:
+
+        unique_ptr[IThresholds] create(shared_ptr[IFeatureMatrix] featureMatrixPtr,
+                                       shared_ptr[INominalFeatureMask] nominalFeatureMaskPtr,
+                                       shared_ptr[IStatistics] statisticsPtr,
+                                       shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr)
 
 
 cdef class ThresholdsFactory:
 
-    # Functions:
+    # Attributes:
 
-    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureMask nominal_feature_mask,
-                                    StatisticsProvider statistic_provider,
-                                    HeadRefinementFactory head_refinement_factory)
+    cdef shared_ptr[IThresholdsFactory] thresholds_factory_ptr
