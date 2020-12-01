@@ -30,6 +30,6 @@ class ILabelBinning {
          *                          label is assigned to a bin
          */
         virtual void createBins(uint32 numPositiveBins, uint32 numNegativeBins, const T& statisticVector,
-                                IBinningObserver<float64> observer) const = 0;
+                                IBinningObserver<float64>& observer) const = 0;
 
 };
