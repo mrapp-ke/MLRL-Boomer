@@ -1,5 +1,5 @@
-#include "statistics_label_wise.h"
-#include "../confusion_matrices.h"
+#include "statistics_label_wise_dense.h"
+#include "../heuristics/confusion_matrices.h"
 #include "../../../common/cpp/statistics/statistics_subset_decomposable.h"
 #include <cstdlib>
 
@@ -161,8 +161,7 @@ class LabelWiseStatistics : public ILabelWiseStatistics {
                     }
                 }
 
-                const DenseLabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
-                                                                              bool accumulated) override {
+                const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered, bool accumulated) override {
                     float64* confusionMatricesCovered =
                         accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
                     return ruleEvaluationPtr_->calculateLabelWisePrediction(statistics_.minorityLabels_,

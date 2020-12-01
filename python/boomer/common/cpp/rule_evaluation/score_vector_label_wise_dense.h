@@ -3,14 +3,18 @@
  */
 #pragma once
 
+#include "score_vector_label_wise.h"
 #include "score_vector_dense.h"
 
 
 /**
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as corresponding quality
  * scores that assess the quality of individual scores, in C-contiguous arrays.
+ *
+ * @tparam The type of the vector that provides access to the indices of the labels for which the rule may predict
  */
-class DenseLabelWiseScoreVector : public DenseScoreVector {
+template<class T>
+class DenseLabelWiseScoreVector : public DenseScoreVector<T>, virtual public ILabelWiseScoreVector {
 
     private:
 
@@ -19,9 +23,10 @@ class DenseLabelWiseScoreVector : public DenseScoreVector {
     public:
 
         /**
-         * @param numElements The number of labels for which the rule may predict
+         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
+         *                     labels for which the rule may predict
          */
-        DenseLabelWiseScoreVector(uint32 numElements);
+        DenseLabelWiseScoreVector(const T& labelIndices);
 
         typedef DenseVector<float64>::iterator quality_score_iterator;
 
@@ -54,5 +59,8 @@ class DenseLabelWiseScoreVector : public DenseScoreVector {
          * @return A `quality_score_const_iterator` to the end
          */
         quality_score_const_iterator quality_scores_cend() const;
+
+        const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
+                                                         ILabelWiseScoreProcessor& scoreProcessor) const override;
 
 };

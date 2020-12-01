@@ -7,6 +7,16 @@
 namespace boosting {
 
     /**
+     * Calculates and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
+     *
+     * @param n A scalar of type `uint32`, representing the order of the triangular number
+     * @return  A scalar of type `uint32`, representing the n-th triangular number
+     */
+    static inline uint32 triangularNumber(uint32 n) {
+        return (n * (n + 1)) / 2;
+    }
+
+    /**
      * Computes and returns the square of the L2 norm of a specific array, i.e. the sum of the squares of its elements.
      * To obtain the actual L2 norm, the square-root of the result provided by this function must be computed.
      *

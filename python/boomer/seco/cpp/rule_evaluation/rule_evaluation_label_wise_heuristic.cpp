@@ -1,5 +1,6 @@
-#include "rule_evaluation_label_wise.h"
-#include "confusion_matrices.h"
+#include "rule_evaluation_label_wise_heuristic.h"
+#include "../heuristics/confusion_matrices.h"
+#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 
 using namespace seco;
 
@@ -15,13 +16,11 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
     private:
 
-        const T& labelIndices_;
-
         std::shared_ptr<IHeuristic> heuristicPtr_;
 
         bool predictMajority_;
 
-        DenseLabelWiseScoreVector scoreVector_;
+        DenseLabelWiseScoreVector<T> scoreVector_;
 
     public:
 
@@ -35,22 +34,22 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
          */
         HeuristicLabelWiseRuleEvaluation(const T& labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
                                          bool predictMajority)
-            : labelIndices_(labelIndices), heuristicPtr_(heuristicPtr), predictMajority_(predictMajority),
-              scoreVector_(DenseLabelWiseScoreVector(labelIndices.getNumElements())) {
+            : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority),
+              scoreVector_(DenseLabelWiseScoreVector<T>(labelIndices)) {
 
         }
 
-        const DenseLabelWiseScoreVector& calculateLabelWisePrediction(const uint8* minorityLabels,
-                                                                      const float64* confusionMatricesTotal,
-                                                                      const float64* confusionMatricesSubset,
-                                                                      const float64* confusionMatricesCovered,
-                                                                      bool uncovered) override {
+        const ILabelWiseScoreVector& calculateLabelWisePrediction(const uint8* minorityLabels,
+                                                                  const float64* confusionMatricesTotal,
+                                                                  const float64* confusionMatricesSubset,
+                                                                  const float64* confusionMatricesCovered,
+                                                                  bool uncovered) override {
             uint32 numPredictions = scoreVector_.getNumElements();
-            DenseLabelWiseScoreVector::score_iterator scoreIterator = scoreVector_.scores_begin();
-            DenseLabelWiseScoreVector::quality_score_iterator qualityScoreIterator =
+            typename DenseLabelWiseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
+            typename DenseLabelWiseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
+            typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
                 scoreVector_.quality_scores_begin();
             float64 overallQualityScore = 0;
-            typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
             for (uint32 c = 0; c < numPredictions; c++) {
                 uint32 l = indexIterator[c];
@@ -98,19 +97,19 @@ class HeuristicLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
 };
 
-HeuristicLabelWiseRuleEvaluationFactoryImpl::HeuristicLabelWiseRuleEvaluationFactoryImpl(
+HeuristicLabelWiseRuleEvaluationFactory::HeuristicLabelWiseRuleEvaluationFactory(
         std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority)
     : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority) {
 
 }
 
-std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactoryImpl::create(
+std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
         const FullIndexVector& indexVector) const {
     return std::make_unique<HeuristicLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, heuristicPtr_,
                                                                                predictMajority_);
 }
 
-std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactoryImpl::create(
+std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
         const PartialIndexVector& indexVector) const {
     return std::make_unique<HeuristicLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector, heuristicPtr_,
                                                                                   predictMajority_);
