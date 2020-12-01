@@ -232,3 +232,11 @@ ApproximateThresholds::ApproximateThresholds(std::shared_ptr<IFeatureMatrix> fea
 std::unique_ptr<IThresholdsSubset> ApproximateThresholds::createSubset(const IWeightVector& weights) {
     return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this);
 }
+
+std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(
+        std::shared_ptr<IFeatureMatrix> featureMatrixPtr, std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
+        std::shared_ptr<IStatistics> statisticsPtr,
+        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const {
+    return std::make_unique<ApproximateThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr,
+                                                   headRefinementFactoryPtr)
+}

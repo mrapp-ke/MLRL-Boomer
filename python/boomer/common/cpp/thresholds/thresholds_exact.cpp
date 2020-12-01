@@ -495,3 +495,11 @@ std::unique_ptr<IThresholdsSubset> ExactThresholds::createSubset(const IWeightVe
 
     return std::make_unique<ExactThresholds::ThresholdsSubset>(*this, weights);
 }
+
+std::unique_ptr<IThresholds> ExactThresholdsFactory::create(
+        std::shared_ptr<IFeatureMatrix> featureMatrixPtr, std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
+        std::shared_ptr<IStatistics> statisticsPtr,
+        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const {
+    return std::make_unique<ExactThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr,
+                                             headRefinementFactoryPtr)
+}
