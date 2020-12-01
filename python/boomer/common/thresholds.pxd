@@ -1,8 +1,8 @@
 from boomer.common._types cimport uint32
-from boomer.common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory, AbstractPrediction
-from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureMask, INominalFeatureMask
+from boomer.common.head_refinement cimport IHeadRefinementFactory, AbstractPrediction
+from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.rule_refinement cimport Refinement
-from boomer.common.statistics cimport StatisticsProvider, IStatistics
+from boomer.common.statistics cimport IStatistics
 from boomer.common.sampling cimport IWeightVector
 
 from libcpp.memory cimport unique_ptr, shared_ptr
@@ -58,7 +58,6 @@ cdef extern from "cpp/thresholds/thresholds_factory.h" nogil:
 
 cdef class ThresholdsFactory:
 
-    # Functions:
+    # Attributes:
 
-    cdef IThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureMask nominal_feature_mask,
-                             StatisticsProvider statistic_provider, HeadRefinementFactory head_refinement_factory)
+    cdef shared_ptr[IThresholdsFactory] thresholds_factory_ptr

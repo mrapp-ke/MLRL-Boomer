@@ -1,32 +1,17 @@
-from boomer.common.binning cimport FeatureBinning, IFeatureBinning
-from boomer.common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory
-from boomer.common.input_data cimport FeatureMatrix, IFeatureMatrix, NominalFeatureMask, INominalFeatureMask
-from boomer.common.statistics cimport StatisticsProvider, IStatistics
-from boomer.common.thresholds cimport ThresholdsFactory, IThresholds
+from boomer.common.binning cimport IFeatureBinning
+from boomer.common.thresholds cimport ThresholdsFactory, IThresholdsFactory
 
 from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/thresholds/thresholds_approximate.h" nogil:
 
-    cdef cppclass ApproximateThresholds(IThresholds):
+    cdef cppclass ApproximateThresholdsFactoryImpl"ApproximateThresholdsFactory"(IThresholdsFactory):
 
         # Constructors:
 
-        ApproximateThresholds(shared_ptr[IFeatureMatrix] featureMatrixPtr,
-                              shared_ptr[INominalFeatureMask] nominalFeatureMaskPtr,
-                              shared_ptr[IStatistics] statisticsPtr,
-                              shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
-                              shared_ptr[IFeatureBinning] binningPtr) except +
+        ApproximateThresholdsFactory(shared_ptr[IFeatureBinning] binningPtr) except +
 
 
 cdef class ApproximateThresholdsFactory(ThresholdsFactory):
-
-    # Attributes:
-
-    cdef FeatureBinning binning
-
-    # Functions:
-
-    cdef IThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureMask nominal_feature_mask,
-                             StatisticsProvider statistic_provider, HeadRefinementFactory head_refinement_factory)
+    pass
