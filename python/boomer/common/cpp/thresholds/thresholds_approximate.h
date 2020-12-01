@@ -6,6 +6,7 @@
  */
 #pragma once
 
+#include "thresholds_factory.h"
 #include "thresholds_common.h"
 #include "../data/vector_bin.h"
 #include "../binning/feature_binning.h"
@@ -57,5 +58,19 @@ class ApproximateThresholds : public AbstractThresholds {
                               std::shared_ptr<IFeatureBinning> binningPtr);
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override;
+
+};
+
+/**
+ * A factory that allows to create instances of the type `ApproximateThresholds`.
+ */
+class ApproximateThresholdsFactory : public IThresholdsFactory {
+
+    public:
+
+        std::unique_ptr<IThresholds> create(
+            std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+            std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr, std::shared_ptr<IStatistics> statisticsPtr,
+            std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const override;
 
 };
