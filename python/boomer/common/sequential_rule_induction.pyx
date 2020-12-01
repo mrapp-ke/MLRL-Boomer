@@ -8,7 +8,7 @@ from boomer.common.rules cimport Rule, RuleList
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.statistics cimport StatisticsProvider, IStatistics
-from boomer.common.thresholds cimport AbstractThresholds
+from boomer.common.thresholds cimport IThresholds
 from boomer.common.stopping_criteria cimport IStoppingCriterion, StoppingCriterion
 from boomer.common.sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG
 from boomer.common.head_refinement cimport IHeadRefinementFactory
@@ -140,7 +140,7 @@ cdef class SequentialRuleInduction:
         cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr = instance_sub_sampling.instance_sub_sampling_ptr
         cdef shared_ptr[IPruning] pruning_ptr = pruning.pruning_ptr
         cdef shared_ptr[IPostProcessor] post_processor_ptr = post_processor.post_processor_ptr
-        cdef unique_ptr[AbstractThresholds] thresholds_ptr
+        cdef unique_ptr[IThresholds] thresholds_ptr
         thresholds_ptr.reset(thresholds_factory.create(feature_matrix, nominal_feature_mask, statistics_provider,
                                                        head_refinement_factory))
 

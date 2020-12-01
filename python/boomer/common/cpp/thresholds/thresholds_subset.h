@@ -1,80 +1,16 @@
 /**
- * Implements classes that provide access to the thresholds that may be used by the conditions of rules.
- *
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "input/feature_matrix.h"
-#include "input/nominal_feature_mask.h"
-#include "head_refinement/head_refinement_factory.h"
-#include "rule_refinement/rule_refinement.h"
-#include "sampling/weight_vector.h"
-#include "statistics/statistics.h"
+#include "coverage_mask.h"
+#include "../indices/index_vector_full.h"
+#include "../indices/index_vector_partial.h"
+#include "../rule_refinement/rule_refinement.h"
+#include "../head_refinement/prediction.h"
+#include "../model/condition.h"
+#include <memory>
 
-
-/**
- * Allows to keep track of the elements, e.g. examples or bins, that are covered by a rule as the rule is refined. For
- * each element, an integer is stored in a C-contiguous array that may be updated when the rule is refined. The elements
- * that correspond to a number that is equal to the "target" are considered to be covered.
- */
-class CoverageMask {
-
-    private:
-
-        uint32* array_;
-
-        uint32 numElements_;
-
-    public:
-
-        /**
-         * @param numElements The number of elements
-         */
-        CoverageMask(uint32 numElements);
-
-        /**
-         * @param coverageMask A reference to an object of type `CoverageMask` to be copied
-         */
-        CoverageMask(const CoverageMask& coverageMask);
-
-        ~CoverageMask();
-
-        typedef uint32* iterator;
-
-        /**
-         * Returns an `iterator` to the beginning of the mask.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin();
-
-        /**
-         * Returns an `iterator` to the end of the mask.
-         *
-         * @return An `iterator` to the end
-         */
-        iterator end();
-
-        /**
-         * Resets the mask by setting all elements and the "target" to zero.
-         */
-        void reset();
-
-        /**
-         * Returns whether the element at a specific element it covered or not.
-         *
-         * @param pos   The position of the element to be checked
-         * @return      True, if the element at the given position is covered, false otherwise
-         */
-        bool isCovered(uint32 pos) const;
-
-        /**
-         * The "target" that corresponds to the elements that are considered to be covered.
-         */
-        uint32 target;
-
-};
 
 /**
  * Defines an interface for all classes that provide access a subset of thresholds that may be used by the conditions of
@@ -184,71 +120,5 @@ class IThresholdsSubset {
          *                   applied
          */
         virtual void applyPrediction(const AbstractPrediction& prediction) = 0;
-
-};
-
-/**
- * An abstract base class for all classes that provide access to thresholds that may be used by the first condition of a
- * rule that currently has an empty body and therefore covers the entire instance space.
- */
-class AbstractThresholds {
-
-    protected:
-
-        std::shared_ptr<IFeatureMatrix> featureMatrixPtr_;
-
-        std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr_;
-
-        std::shared_ptr<IStatistics> statisticsPtr_;
-
-        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr_;
-
-    public:
-
-        /**
-         * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
-         *                                  to the feature values of the training examples
-         * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
-         *                                  access to the information whether individual features are nominal or not
-         * @param statisticsPtr             A shared pointer to an object of type `IStatistics` that provides access to
-         *                                  statistics about the labels of the training examples
-         * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
-         *                                  to create instances of the class that should be used to find the heads of
-         *                                  rules
-         */
-        AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                           std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                           std::shared_ptr<IStatistics> statisticsPtr,
-                           std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
-
-        /**
-         * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
-         *
-         * @param weights   A reference to an object of type `IWeightVector` that provides access to the weights of the
-         *                  individual training examples
-         * @return          An unique pointer to an object of type `IThresholdsSubset` that has been created
-         */
-        virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) = 0;
-
-        /**
-         * Returns the number of available examples.
-         *
-         * @return The number of examples
-         */
-        uint32 getNumExamples() const;
-
-        /**
-         * Returns the number of available features.
-         *
-         * @return The number of features
-         */
-        uint32 getNumFeatures() const;
-
-        /**
-         * Returns the number of available labels.
-         *
-         * @return The number of labels
-         */
-        uint32 getNumLabels() const;
 
 };
