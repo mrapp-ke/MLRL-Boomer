@@ -31,6 +31,12 @@ class BinVector : public DenseVector<Bin> {
          */
         BinVector(uint32 numElements);
 
+        /**
+         * @param numElements   The number of bins in the vector
+         * @param init          True, if all bins in the vector should be value-initialized, false otherwise
+         */
+        BinVector(uint32 numElements, bool init);
+
         typedef std::forward_list<Example>::const_iterator example_const_iterator;
         typedef std::forward_list<Example>::iterator example_iterator;
 

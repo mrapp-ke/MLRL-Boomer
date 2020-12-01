@@ -2,7 +2,12 @@
 
 
 BinVector::BinVector(uint32 numElements)
-    : DenseVector<Bin>(numElements, true) {
+    : BinVector(numElements, false) {
+
+}
+
+BinVector::BinVector(uint32 numElements, bool init)
+    : DenseVector<Bin>(numElements, init) {
 
 }
 

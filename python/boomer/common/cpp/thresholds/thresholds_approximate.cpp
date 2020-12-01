@@ -64,7 +64,7 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
     bool wasEmpty = false;
 
     if (filteredVector == nullptr) {
-        cacheEntry.vectorPtr = std::make_unique<BinVector>(maxElements); //TODO: müsste eigentlich nicht vorinitialisiert werden
+        cacheEntry.vectorPtr = std::make_unique<BinVector>(maxElements);
         filteredVector = cacheEntry.vectorPtr.get();
         wasEmpty = true;
     }
@@ -180,7 +180,7 @@ class ApproximateThresholds : public AbstractThresholds {
                                     IFeatureBinning::FeatureInfo featureInfo =
                                         thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
-                                    binCacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins));
+                                    binCacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins, true));
                                     histogramBuilderPtr_ =
                                         thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
                                     binVector = binCacheEntry.binVectorPtr.get();
