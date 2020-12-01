@@ -5,6 +5,31 @@
 using namespace boosting;
 
 
+DenseExampleWiseStatisticVector::HessianDiagonalIterator::HessianDiagonalIterator(
+        const DenseExampleWiseStatisticVector& vector, uint32 index)
+    : vector_(vector), index_(index) {
+
+}
+
+float64 DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator[](uint32 index) const {
+    return vector_.hessians_[triangularNumber(index + 1) - 1];
+}
+
+float64 DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator*() const {
+    return vector_.hessians_[triangularNumber(index_ + 1) - 1];
+}
+
+DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator++(
+        int n) {
+    index_++;
+    return *this;
+}
+
+bool DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator!=(
+        const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
+    return index_ != rhs.index_;
+}
+
 DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients)
     : DenseExampleWiseStatisticVector(numGradients, false) {
 
@@ -65,8 +90,12 @@ DenseExampleWiseStatisticVector::hessian_const_iterator DenseExampleWiseStatisti
     return &hessians_[numHessians_];
 }
 
-float64 DenseExampleWiseStatisticVector::hessian_diagonal(uint32 pos) const {
-    return hessians_[triangularNumber(pos + 1) - 1];
+DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator DenseExampleWiseStatisticVector::hessians_diagonal_cbegin() const  {
+    return DenseExampleWiseStatisticVector::HessianDiagonalIterator(*this, 0);
+}
+
+DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator DenseExampleWiseStatisticVector::hessians_diagonal_cend() const  {
+    return DenseExampleWiseStatisticVector::HessianDiagonalIterator(*this, numGradients_);
 }
 
 uint32 DenseExampleWiseStatisticVector::getNumElements() const {
