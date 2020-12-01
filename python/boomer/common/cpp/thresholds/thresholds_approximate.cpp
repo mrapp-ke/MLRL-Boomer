@@ -3,6 +3,7 @@
 #include "../data/vector_bin.h"
 #include "../rule_refinement/rule_refinement_approximate.h"
 #include <unordered_map>
+#include <limits>
 
 
 static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
@@ -56,6 +57,61 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
     cacheEntry.numConditions = numConditions;
 }
 
+static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
+                                   uint32 numConditions, const CoverageMask& coverageMask){
+    //TODO: in this branch
+    uint32 maxElements = vector.getNumElements();
+    BinVector* filteredVector = cacheEntry.vectorPtr.get();
+    bool wasEmpty = false;
+
+    if (filteredVector == nullptr) {
+        cacheEntry.vectorPtr = std::make_unique<BinVector>(maxElements); //TODO: müsste eigentlich nicht vorinitialisiert werden
+        filteredVector = cacheEntry.vectorPtr.get();
+        wasEmpty = true;
+    }
+
+    //typename BinVector::const_iterator iterator = vector.cbegin();
+    typename BinVector::iterator filteredIterator = filteredVector->begin();
+    uint32 i = 0;
+
+    for(uint32 r = 0; r < maxElements; r++) {
+        float32 maxValue = std::numeric_limits<float32>::min();
+        float32 minValue = std::numeric_limits<float32>::max();
+        uint32 numExamples = 0;
+        BinVector::example_const_iterator before = vector.examples_cbefore_begin(r);
+        for(BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); ){
+            BinVector::Example example = *it;
+            uint32 index = example.index;
+
+            if (coverageMask.isCovered(index)) {
+                float32 value = example.value;
+                if (value < minValue) {
+                        minValue = value;
+                }
+                if (maxValue < value) {
+                    maxValue = value;
+                }
+                numExamples++;
+                if(wasEmpty){
+                    filteredVector->addExample(i, example);
+                }
+                before = it;
+                ++it;
+            } else if(!wasEmpty) {
+                it = filteredVector->examples_erase_after(r, before);
+            }
+        }
+        if(numExamples > 0){
+            filteredIterator[i].minValue = minValue;
+            filteredIterator[i].maxValue = maxValue;
+            filteredIterator[i].numExamples = numExamples;
+            i++;
+        }
+    }
+    filteredVector->setNumElements(i);
+    cacheEntry.numConditions = numConditions;
+}
+
 /**
  * Provides access to the thresholds that result from applying a binning method to the feature values of the training
  * examples.
@@ -102,26 +158,42 @@ class ApproximateThresholds : public AbstractThresholds {
                         }
 
                         std::unique_ptr<Result> get() override {
+                        //TODO: in this Branch
+                            auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
+                            FilteredCacheEntry<BinVector>& cacheEntry = cacheFilteredIterator->second;
+                            BinVector* binVector = cacheEntry.vectorPtr.get();
+
+                            //TODO: Wenn Histogramme richtig erstellt werden kommt das in den If-Block
                             auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                             BinCacheEntry& binCacheEntry = cacheIterator->second;
 
-                            if (binCacheEntry.binVectorPtr.get() == nullptr) {
-                                std::unique_ptr<FeatureVector> featureVectorPtr;
-                                thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
+                            if(binVector == nullptr){
+                                binVector = binCacheEntry.binVectorPtr.get();
+                                if (binVector == nullptr) {
+                                    std::unique_ptr<FeatureVector> featureVectorPtr;
+                                    thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
                                                                                                     featureVectorPtr);
-                                IFeatureBinning::FeatureInfo featureInfo =
-                                    thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
-                                uint32 numBins = featureInfo.numBins;
-                                binCacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins));
-                                histogramBuilderPtr_ =
-                                    thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
-                                currentBinVector_ = binCacheEntry.binVectorPtr.get();
-                                thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo, *featureVectorPtr,
-                                                                                      *this);
-                                binCacheEntry.histogramPtr = std::move(histogramBuilderPtr_->build());
+                                    IFeatureBinning::FeatureInfo featureInfo =
+                                        thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
+                                    uint32 numBins = featureInfo.numBins;
+                                    binCacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins));
+                                    histogramBuilderPtr_ =
+                                        thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
+                                    currentBinVector_ = binVector;
+                                    thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo,
+                                                                                          *featureVectorPtr, *this);
+                                    binCacheEntry.histogramPtr = std::move(histogramBuilderPtr_->build());
+                                }
                             }
 
-                            return std::make_unique<Result>(*binCacheEntry.histogramPtr, *binCacheEntry.binVectorPtr);
+                            uint32 numConditions = thresholdsSubset_.numModifications_;
+
+                            if (numConditions > cacheEntry.numConditions) {
+                                filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_);
+                                binVector = cacheEntry.vectorPtr.get();
+                            }
+                            //TODO: Hier wird das original Histogram zurück gegeben, es muss aber ein neues erstellt werden
+                            return std::make_unique<Result>(*binCacheEntry.histogramPtr, *binVector);
                         }
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
@@ -178,8 +250,9 @@ class ApproximateThresholds : public AbstractThresholds {
                  * @param thresholds A reference to an object of type `ApproximateThresholds` that stores the thresholds
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds)
-                    : thresholds_(thresholds), coverageMask_(CoverageMask(thresholds.getNumExamples())) {
-                    numModifications_ = 0;
+                    : thresholds_(thresholds), coverageMask_(CoverageMask(thresholds.getNumExamples())),
+                      numModifications_(0) {
+
                 }
 
                 std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
