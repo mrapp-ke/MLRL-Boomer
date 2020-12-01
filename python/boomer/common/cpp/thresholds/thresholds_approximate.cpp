@@ -99,7 +99,7 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
 
                 numExamples++;
                 before = it;
-                ++it;
+                it++;
             } else if (!wasEmpty) {
                 it = filteredVector->examples_erase_after(r, before);
             }
