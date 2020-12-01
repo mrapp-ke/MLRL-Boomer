@@ -11,7 +11,7 @@
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as corresponding quality
  * scores that assess the quality of individual scores, in C-contiguous arrays.
  *
- * @tparam The type of the vector that provides access to the indices of the labels for which the rule may predict
+ * @tparam T The type of the vector that provides access to the indices of the labels for which the rule may predict
  */
 template<class T>
 class DenseLabelWiseScoreVector : public DenseScoreVector<T>, virtual public ILabelWiseScoreVector {
