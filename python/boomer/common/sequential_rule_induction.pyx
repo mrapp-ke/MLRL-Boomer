@@ -8,7 +8,7 @@ from boomer.common.rules cimport Rule, RuleList
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.statistics cimport StatisticsProvider, IStatistics
-from boomer.common.thresholds cimport AbstractThresholds
+from boomer.common.thresholds cimport IThresholds
 from boomer.common.stopping_criteria cimport IStoppingCriterion, StoppingCriterion
 from boomer.common.sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG
 from boomer.common.head_refinement cimport IHeadRefinementFactory
@@ -133,6 +133,7 @@ cdef class SequentialRuleInduction:
         rule_induction.induce_default_rule(statistics_provider, head_refinement_factory_ptr.get(), model_builder)
 
         # Induce the remaining rules...
+        head_refinement_factory_ptr = head_refinement_factory.head_refinement_factory_ptr
         cdef shared_ptr[IFeatureMatrix] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
         cdef shared_ptr[INominalFeatureMask] nominal_feature_mask_ptr = nominal_feature_mask.nominal_feature_mask_ptr
         cdef shared_ptr[ILabelSubSampling] label_sub_sampling_ptr = label_sub_sampling.label_sub_sampling_ptr
@@ -140,9 +141,8 @@ cdef class SequentialRuleInduction:
         cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr = instance_sub_sampling.instance_sub_sampling_ptr
         cdef shared_ptr[IPruning] pruning_ptr = pruning.pruning_ptr
         cdef shared_ptr[IPostProcessor] post_processor_ptr = post_processor.post_processor_ptr
-        cdef unique_ptr[AbstractThresholds] thresholds_ptr
-        thresholds_ptr.reset(thresholds_factory.create(feature_matrix, nominal_feature_mask, statistics_provider,
-                                                       head_refinement_factory))
+        cdef unique_ptr[IThresholds] thresholds_ptr = thresholds_factory.thresholds_factory_ptr.get().create(
+            feature_matrix_ptr, nominal_feature_mask_ptr, statistics_provider.statistics_ptr, head_refinement_factory_ptr)
 
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
             success = rule_induction.induce_rule(thresholds_ptr.get(), nominal_feature_mask_ptr.get(),

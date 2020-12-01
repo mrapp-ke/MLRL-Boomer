@@ -4,21 +4,16 @@
 Provides Cython wrappers for classes that provide access to approximate thresholds that may be used by the conditions of
 rules.
 """
+from boomer.common.binning cimport FeatureBinning
+
+from libcpp.memory cimport make_shared
 
 
 cdef class ApproximateThresholdsFactory(ThresholdsFactory):
     """
-    A factory that allows to create instances of the class `ApproximateThresholds`.
+    A wrapper for the C++ class `ApproximateThresholdsFactory`.
     """
 
     def __cinit__(self, FeatureBinning binning):
-        self.binning = binning
-
-    cdef AbstractThresholds* create(self, FeatureMatrix feature_matrix, NominalFeatureMask nominal_feature_mask,
-                                    StatisticsProvider statistics_provider,
-                                    HeadRefinementFactory head_refinement_factory):
-        return new ApproximateThresholds(feature_matrix.feature_matrix_ptr,
-                                         nominal_feature_mask.nominal_feature_mask_ptr,
-                                         statistics_provider.statistics_ptr,
-                                         head_refinement_factory.head_refinement_factory_ptr, self.binning.binning_ptr)
-
+        self.thresholds_factory_ptr = <shared_ptr[IThresholdsFactory]>make_shared[ApproximateThresholdsFactoryImpl](
+            binning.binning_ptr)
