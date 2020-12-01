@@ -37,13 +37,16 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
         end = numTotalElements;
     }
 
-    for(intp r = start; r < end; r++) {
-        for (BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r); it++) {
+    for (intp r = start; r < end; r++) {
+        BinVector::ExampleList& examples = vector.getExamples(r);
+        BinVector::ExampleList& filteredExamples = filteredVector->getExamples(r);
+
+        for (BinVector::ExampleList::const_iterator it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
             coverageMaskIterator[example.index] = numConditions;
 
             if (wasEmpty) {
-                filteredVector->addExample(r, example);
+                filteredExamples.push_front(example);
             }
         }
 
@@ -76,9 +79,11 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
         float32 maxValue = std::numeric_limits<float32>::min();
         float32 minValue = std::numeric_limits<float32>::max();
         uint32 numExamples = 0;
-        BinVector::example_const_iterator before = vector.examples_cbefore_begin(r);
+        BinVector::ExampleList& examples = vector.getExamples(r);
+        BinVector::ExampleList& filteredExamples = filteredVector->getExamples(r);
+        BinVector::ExampleList::const_iterator before = examples.cbefore_begin();
 
-        for (BinVector::example_const_iterator it = vector.examples_cbegin(r); it != vector.examples_cend(r);) {
+        for (BinVector::ExampleList::const_iterator it = examples.cbegin(); it != examples.cend();) {
             BinVector::Example example = *it;
             uint32 index = example.index;
 
@@ -94,14 +99,14 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
                 }
 
                 if (wasEmpty) {
-                    filteredVector->addExample(i, example);
+                    filteredExamples.push_front(example);
                 }
 
                 numExamples++;
                 before = it;
                 it++;
             } else if (!wasEmpty) {
-                it = filteredVector->examples_erase_after(r, before);
+                it = filteredExamples.erase_after(before);
             }
         }
         if (numExamples > 0) {
@@ -216,7 +221,8 @@ class ApproximateThresholds : public AbstractThresholds {
                             IndexedValue<float32> example;
                             example.index = originalIndex;
                             example.value = value;
-                            currentBinVector_->addExample(binIndex, example);
+                            BinVector::ExampleList& examples = currentBinVector_->getExamples(binIndex);
+                            examples.push_front(example);
 
                             histogramBuilderPtr_->onBinUpdate(binIndex, originalIndex, value);
                         }
