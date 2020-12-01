@@ -501,5 +501,5 @@ std::unique_ptr<IThresholds> ExactThresholdsFactory::create(
         std::shared_ptr<IStatistics> statisticsPtr,
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const {
     return std::make_unique<ExactThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr,
-                                             headRefinementFactoryPtr)
+                                             headRefinementFactoryPtr);
 }
