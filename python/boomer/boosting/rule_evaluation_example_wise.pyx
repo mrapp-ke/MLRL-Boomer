@@ -36,7 +36,7 @@ cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluation
 
 cdef class BinningExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
     """
-    A wrapper for the C++ class `BinningExampleWiseRuleEvaluationFactoryImpl`.
+    A wrapper for the C++ class `BinningExampleWiseRuleEvaluationFactory`.
     """
 
     def __cinit__(self, float64 l2_regularization_weight, uint32 num_positive_bins, uint32 num_negative_bins):
