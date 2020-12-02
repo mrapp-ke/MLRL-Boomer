@@ -4,6 +4,7 @@
 #pragma once
 
 #include "../data/vector_dense.h"
+#include "../data/vector_binned_dense.h"
 #include "../indices/index_vector.h"
 
 // Forward declarations
@@ -65,6 +66,14 @@ class AbstractPrediction : public IIndexVector {
          * @param end   A `score_const_iterator` to the end of the predicted scores
          */
         void set(score_const_iterator begin, score_const_iterator end);
+
+        /**
+         * Sets the predicted scores in another vector to this vector.
+         *
+         * @param begin A `DenseBinnedVector<float64>::const_iterator` to the beginning of the predicted scores
+         * @param end   A `DenseBinnedVector<float64>::const_iterator` to the end of the predicted scores
+         */
+        void set(DenseBinnedVector<float64>::const_iterator begin, DenseBinnedVector<float64>::const_iterator end);
 
         /**
          * Updates the given statistics by applying this prediction.
