@@ -1,0 +1,133 @@
+/**
+ * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ */
+#pragma once
+
+#include "types.h"
+
+
+/**
+ * An one-dimensional vector that provides random access to a fixed number of elements, corresponding to bins, stored in
+ * a C-contiguous array.
+ *
+ * @tparam T The type of the data that is stored in the vector
+ */
+template<class T>
+class DenseBinnedVector {
+
+    private:
+
+        uint32* binIndices_;
+
+        T* array_;
+
+        uint32 numElements_;
+
+        uint32 numBins_;
+
+    public:
+
+        /**
+         * Allows to iterate all elements in the vector.
+         */
+        class Iterator {
+
+            private:
+
+                const DenseBinnedVector<T>& vector_;
+
+                uint32 index_;
+
+            public:
+
+                Iterator(const DenseBinnedVector<T>& vector, uint32 index);
+
+                uint32 operator[](uint32 index) const;
+
+                uint32 operator*() const;
+
+                Iterator& operator++(int n);
+
+                bool operator!=(const Iterator& rhs) const;
+
+        };
+
+        /**
+         * @param numElements   The number of elements in the vector
+         * @param numBins       The number of bins
+         */
+        DenseBinnedVector(uint32 numElements, uint32 numBins);
+
+        ~DenseBinnedVector();
+
+        typedef T* binned_iterator;
+
+        typedef const T* binned_const_iterator;
+
+        typedef Iterator const_iterator;
+
+        /**
+         * Returns a `const_iterator` to the beginning of the vector.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
+
+        /**
+         * Returns a `binned_iterator` to the beginning of the elements that correspond to the bins.
+         *
+         * @return A `binned_iterator` to the beginning
+         */
+        binned_iterator binned_begin();
+
+        /**
+         * Returns a `binned_iterator` to the end of the elements that correspond to the bins.
+         *
+         * @return A `binned_iterator` to the end
+         */
+        binned_iterator binned_end();
+
+        /**
+         * Returns a `binned_const_iterator` to the beginning of the elements that correspond to the bins.
+         *
+         * @return A `binned_const_iterator` to the beginning
+         */
+        binned_const_iterator binned_cbegin() const;
+
+        /**
+         * Returns a `binned_const_iterator` to the end of the elements that correspond to the bins.
+         *
+         * @return A `binned_const_iterator` to the end
+         */
+        binned_const_iterator binned_cend() const;
+
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements in the vector
+         */
+        uint32 getNumElements() const;
+
+        /**
+         * Returns the number of bins.
+         *
+         * @return The number of bins
+         */
+        uint32 getNumBins() const;
+
+        /**
+         * Returns the value of the element at a specific position.
+         *
+         * @param pos   The position of the element. Must be in [0, getNumElements())
+         * @return      The value of the given element
+         */
+        T getValue(uint32 pos) const;
+
+};
