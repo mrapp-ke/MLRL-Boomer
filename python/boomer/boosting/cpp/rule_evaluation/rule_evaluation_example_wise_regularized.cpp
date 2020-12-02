@@ -1,20 +1,22 @@
 #include "rule_evaluation_example_wise_regularized.h"
 #include "rule_evaluation_example_wise_common.h"
+#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 #include "../math/math.h"
 
 using namespace boosting;
 
 
 /**
- * Copies the Hessians that are stored by a `DenseExampleWiseStatisticVector` to a coefficient matrix that may be passed
- * to LAPACK's DSYSV routine.
+ * Copies the Hessians that are stored by a vector to a coefficient matrix that may be passed to LAPACK's DSYSV routine.
  *
- * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores the Hessians
+ * @tparam StatisticVector  The type of the vector that stores the Hessians
+ * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the Hessians
  * @param output            A pointer to an array of type `float64`, shape `(n, n)`, the Hessians should be copied to
  * @param n                 The number of rows and columns in the coefficient matrix
  */
-static inline void copyCoefficients(const DenseExampleWiseStatisticVector& statisticVector, float64* output, uint32 n) {
-    DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
+template<class StatisticVector>
+static inline void copyCoefficients(const StatisticVector& statisticVector, float64* output, uint32 n) {
+    typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
 
     for (uint32 c = 0; c < n; c++) {
         uint32 offset = c * n;
@@ -41,15 +43,17 @@ static inline void addRegularizationWeight(float64* output, uint32 n, float64 l2
 }
 
 /**
- * Copies the gradients that are stored by a `DenseExampleWiseStatisticVector` to a vector of ordinates that may be
- * passed to LAPACK's DSYSV routine.
+ * Copies the gradients that are stored by a vector to a vector of ordinates that may be passed to LAPACK's DSYSV
+ * routine.
  *
- * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores the gradients
+ * @tparam StatisticVector  The type of the vector that stores the gradients
+ * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the gradients
  * @param output            A pointer to an array of type `float64`, shape `(n)`, the gradients should be copied to
  * @param n                 The number of ordinates
  */
-static inline void copyOrdinates(const DenseExampleWiseStatisticVector& statisticVector, float64* output, uint32 n) {
-    DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+template<class StatisticVector>
+static inline void copyOrdinates(const StatisticVector& statisticVector, float64* output, uint32 n) {
+    typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
 
     for (uint32 i = 0; i < n; i++) {
         float64 gradient = *gradientIterator;
@@ -73,10 +77,12 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
 
         std::shared_ptr<Blas> blasPtr_;
 
-    protected:
+        DenseScoreVector<T>* scoreVector_;
+
+        DenseLabelWiseScoreVector<T>* labelWiseScoreVector_;
 
         void calculateLabelWisePrediction(const DenseExampleWiseStatisticVector& statisticVector,
-                                          DenseLabelWiseScoreVector<T>& scoreVector) override {
+                                          DenseLabelWiseScoreVector<T>& scoreVector) {
             DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                 statisticVector.gradients_cbegin();
             DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
@@ -112,7 +118,7 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
         void calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
                                             DenseScoreVector<T>& scoreVector, int dsysvLwork, float64* dsysvTmpArray1,
                                             int* dsysvTmpArray2, double* dsysvTmpArray3,
-                                            float64* dspmvTmpArray) override {
+                                            float64* dspmvTmpArray) {
             uint32 numPredictions = scoreVector.getNumElements();
             typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector.scores_begin();
 
@@ -149,8 +155,33 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
         RegularizedExampleWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight,
                                              std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
             : AbstractExampleWiseRuleEvaluation<T>(labelIndices, lapackPtr),
-              l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr) {
+              l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr), scoreVector_(nullptr),
+              labelWiseScoreVector_(nullptr) {
 
+        }
+
+        const ILabelWiseScoreVector& calculateLabelWisePrediction(
+                const DenseExampleWiseStatisticVector& statisticVector) override {
+            if (labelWiseScoreVector_ == nullptr) {
+                labelWiseScoreVector_ = new DenseLabelWiseScoreVector<T>(this->labelIndices_);
+            }
+
+            this->calculateLabelWisePrediction(statisticVector, *labelWiseScoreVector_);
+            return *labelWiseScoreVector_;
+        }
+
+        const IScoreVector& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
+            uint32 numPredictions = this->labelIndices_.getNumElements();
+
+            if (scoreVector_ == nullptr) {
+                scoreVector_ = new DenseScoreVector<T>(this->labelIndices_);
+                this->initializeTmpArrays(numPredictions);
+            }
+
+            this->calculateExampleWisePrediction(statisticVector, *scoreVector_, this->dsysvLwork_,
+                                                 this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_,
+                                                 this->dspmvTmpArray_);
+            return *scoreVector_;
         }
 
 };
