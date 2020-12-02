@@ -51,6 +51,7 @@ sources = [
     'boomer/common/cpp/pruning/pruning_irep.cpp',
     'boomer/common/cpp/pruning/pruning_no.cpp',
     'boomer/common/cpp/rule_evaluation/score_vector_dense.cpp',
+    'boomer/common/cpp/rule_evaluation/score_vector_binned_dense.cpp',
     'boomer/common/cpp/rule_evaluation/score_vector_label_wise_dense.cpp',
     'boomer/common/cpp/rule_refinement/rule_refinement.cpp',
     'boomer/common/cpp/rule_refinement/rule_refinement_exact.cpp',
