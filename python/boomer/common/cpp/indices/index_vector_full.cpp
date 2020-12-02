@@ -5,8 +5,9 @@
 #include "../thresholds/thresholds_subset.h"
 
 
-FullIndexVector::Iterator::Iterator(uint32 index) {
-    index_ = index;
+FullIndexVector::Iterator::Iterator(uint32 index)
+    : index_(index) {
+
 }
 
 uint32 FullIndexVector::Iterator::operator[](uint32 index) const {
