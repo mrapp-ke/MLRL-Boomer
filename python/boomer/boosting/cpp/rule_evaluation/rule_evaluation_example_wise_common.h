@@ -6,8 +6,8 @@
 #include "rule_evaluation_example_wise.h"
 #include "../math/lapack.h"
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
-
 #include <cstdlib>
+
 
 namespace boosting {
 
