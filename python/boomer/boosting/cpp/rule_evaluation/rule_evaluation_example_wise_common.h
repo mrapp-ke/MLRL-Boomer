@@ -4,12 +4,32 @@
 #pragma once
 
 #include "rule_evaluation_example_wise.h"
+#include "../math/blas.h"
 #include "../math/lapack.h"
-#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
+#include "../math/math.h"
 #include <cstdlib>
 
 
 namespace boosting {
+
+    static inline float64 calculateExampleWisePredictionInternally(uint32 numPredictions, float64* scores,
+                                                                   float64* gradients, float64* hessians,
+                                                                   float64 l2RegularizationWeight, Blas& blas,
+                                                                   Lapack& lapack, int dsysvLwork,
+                                                                   float64* dsysvTmpArray1, int* dsysvTmpArray2,
+                                                                   double* dsysvTmpArray3, float64* dspmvTmpArray) {
+        // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
+        lapack.dsysv(dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, scores, numPredictions, dsysvLwork);
+
+        // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
+        float64 overallQualityScore = blas.ddot(scores, gradients, numPredictions);
+        blas.dspmv(hessians, scores, dspmvTmpArray, numPredictions);
+        overallQualityScore += 0.5 * blas.ddot(scores, dspmvTmpArray, numPredictions);
+
+        // Add the L2 regularization term to the overall quality score...
+        overallQualityScore += 0.5 * l2RegularizationWeight * l2NormPow<float64*>(scores, numPredictions);
+        return overallQualityScore;
+    }
 
     /**
      * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
@@ -21,13 +41,11 @@ namespace boosting {
     template<class T>
     class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
 
-        private:
+        protected:
 
             const T& labelIndices_;
 
-            DenseScoreVector<T>* scoreVector_;
-
-            DenseLabelWiseScoreVector<T>* labelWiseScoreVector_;
+            std::shared_ptr<Lapack> lapackPtr_;
 
             int dsysvLwork_;
 
@@ -39,17 +57,15 @@ namespace boosting {
 
             float64* dspmvTmpArray_;
 
-        protected:
+            void initializeTmpArrays(uint32 numPredictions) {
+                dsysvTmpArray1_ = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
+                dsysvTmpArray2_ = (int*) malloc(numPredictions * sizeof(int));
+                dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
 
-            std::shared_ptr<Lapack> lapackPtr_;
-
-            virtual void calculateLabelWisePrediction(const DenseExampleWiseStatisticVector& statisticVector,
-                                                      DenseLabelWiseScoreVector<T>& scoreVector) = 0;
-
-            virtual void calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
-                                                        DenseScoreVector<T>& scoreVector, int dsysvLwork,
-                                                        float64* dsysvTmpArray1, int* dsysvTmpArray2,
-                                                        double* dsysvTmpArray3, float64* dspmvTmpArray) = 0;
+                // Query the optimal "lwork" parameter to be used by LAPACK's DSYSV routine...
+                dsysvLwork_ = lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_, numPredictions);
+                dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
+            }
 
         public:
 
@@ -60,48 +76,16 @@ namespace boosting {
              *                      LAPACK routines
              */
             AbstractExampleWiseRuleEvaluation(const T& labelIndices, std::shared_ptr<Lapack> lapackPtr)
-                : labelIndices_(labelIndices), scoreVector_(nullptr), labelWiseScoreVector_(nullptr),
-                  dsysvTmpArray1_(nullptr), dsysvTmpArray2_(nullptr), dsysvTmpArray3_(nullptr), dspmvTmpArray_(nullptr),
-                  lapackPtr_(lapackPtr) {
+                : labelIndices_(labelIndices), lapackPtr_(lapackPtr), dsysvTmpArray1_(nullptr),
+                  dsysvTmpArray2_(nullptr), dsysvTmpArray3_(nullptr), dspmvTmpArray_(nullptr) {
 
             }
 
             ~AbstractExampleWiseRuleEvaluation() {
-                delete scoreVector_;
-                delete labelWiseScoreVector_;
                 free(dsysvTmpArray1_);
                 free(dsysvTmpArray2_);
                 free(dsysvTmpArray3_);
                 free(dspmvTmpArray_);
-            }
-
-            const ILabelWiseScoreVector& calculateLabelWisePrediction(
-                    const DenseExampleWiseStatisticVector& statisticVector) override {
-                if (labelWiseScoreVector_ == nullptr) {
-                    labelWiseScoreVector_ = new DenseLabelWiseScoreVector<T>(labelIndices_);
-                }
-
-                this->calculateLabelWisePrediction(statisticVector, *labelWiseScoreVector_);
-                return *labelWiseScoreVector_;
-            }
-
-            const IScoreVector& calculateExampleWisePrediction(
-                    DenseExampleWiseStatisticVector& statisticVector) override {
-                if (scoreVector_ == nullptr) {
-                    scoreVector_ = new DenseScoreVector<T>(labelIndices_);
-                    uint32 numPredictions = labelIndices_.getNumElements();
-                    dsysvTmpArray1_ = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
-                    dsysvTmpArray2_ = (int*) malloc(numPredictions * sizeof(int));
-                    dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
-
-                    // Query the optimal "lwork" parameter to be used by LAPACK's DSYSV routine...
-                    dsysvLwork_ = lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_, numPredictions);
-                    dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
-                }
-
-                this->calculateExampleWisePrediction(statisticVector, *scoreVector_, dsysvLwork_, dsysvTmpArray1_,
-                                                     dsysvTmpArray2_, dsysvTmpArray3_, dspmvTmpArray_);
-                return *scoreVector_;
             }
 
     };
