@@ -1,5 +1,6 @@
 #include "rule_evaluation_example_wise_regularized.h"
 #include "rule_evaluation_example_wise_common.h"
+#include "rule_evaluation_label_wise_common.h"
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 #include "../math/math.h"
 
@@ -62,64 +63,6 @@ static inline void copyOrdinates(const StatisticVector& statisticVector, float64
     }
 }
 
-template<class StatisticVector, class ScoreVector>
-static inline void calculateLabelWisePredictionInternally(const StatisticVector& statisticVector,
-                                                          ScoreVector& scoreVector, float64 l2RegularizationWeight) {
-    typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-    typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
-        statisticVector.hessians_diagonal_cbegin();
-    uint32 numPredictions = scoreVector.getNumElements();
-    typename ScoreVector::score_iterator scoreIterator = scoreVector.scores_begin();
-    typename ScoreVector::quality_score_iterator qualityScoreIterator = scoreVector.quality_scores_begin();
-    float64 overallQualityScore = 0;
-
-    // For each label, calculate the score to be predicted, as well as a quality score...
-    for (uint32 c = 0; c < numPredictions; c++) {
-        float64 sumOfGradients = gradientIterator[c];
-        float64 sumOfHessians = hessianIterator[c];
-
-        // Calculate the score to be predicted for the current label...
-        float64 score = sumOfHessians + l2RegularizationWeight;
-        score = score != 0 ? -sumOfGradients / score : 0;
-        scoreIterator[c] = score;
-
-        // Calculate the quality score for the current label...
-        float64 scorePow = score * score;
-        score = (sumOfGradients * score) + (0.5 * scorePow * sumOfHessians);
-        qualityScoreIterator[c] = score + (0.5 * l2RegularizationWeight * scorePow);
-        overallQualityScore += score;
-    }
-
-    // Add the L2 regularization term to the overall quality score...
-    overallQualityScore += 0.5 * l2RegularizationWeight * l2NormPow(scoreIterator, numPredictions);
-    scoreVector.overallQualityScore = overallQualityScore;
-}
-
-template<class StatisticVector, class ScoreVector>
-static inline void calculateExampleWisePredictionInternally(StatisticVector& statisticVector, ScoreVector& scoreVector,
-                                                            float64 l2RegularizationWeight, Blas& blas, Lapack& lapack,
-                                                            int dsysvLwork, float64* dsysvTmpArray1,
-                                                            int* dsysvTmpArray2, double* dsysvTmpArray3,
-                                                            float64* dspmvTmpArray) {
-    uint32 numPredictions = scoreVector.getNumElements();
-    typename ScoreVector::score_iterator scoreIterator = scoreVector.scores_begin();
-
-    // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-    copyCoefficients<StatisticVector>(statisticVector, dsysvTmpArray1, numPredictions);
-    addRegularizationWeight(dsysvTmpArray1, numPredictions, l2RegularizationWeight);
-    copyOrdinates<StatisticVector>(statisticVector, scoreIterator, numPredictions);
-    lapack.dsysv(dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, scoreIterator, numPredictions, dsysvLwork);
-
-    // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-    float64 overallQualityScore = blas.ddot(scoreIterator, statisticVector.gradients_begin(), numPredictions);
-    blas.dspmv(statisticVector.hessians_begin(), scoreIterator, dspmvTmpArray, numPredictions);
-    overallQualityScore += 0.5 * blas.ddot(scoreIterator, dspmvTmpArray, numPredictions);
-
-    // Add the L2 regularization term to the overall quality score...
-    overallQualityScore += 0.5 * l2RegularizationWeight * l2NormPow(scoreIterator, numPredictions);
-    scoreVector.overallQualityScore = overallQualityScore;
-}
-
 /**
  * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
  * Hessians that have been calculated according to a loss function that is applied example wise using L2 regularization.
@@ -164,20 +107,29 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
                 labelWiseScoreVector_ = new DenseLabelWiseScoreVector<T>(this->labelIndices_);
             }
 
-            calculateLabelWisePredictionInternally<DenseExampleWiseStatisticVector, DenseLabelWiseScoreVector<T>>(
-                statisticVector, *labelWiseScoreVector_, l2RegularizationWeight_);
+            calculateLabelWisePredictionInternally<DenseLabelWiseScoreVector<T>,
+                                                   DenseExampleWiseStatisticVector::gradient_const_iterator,
+                                                   DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>(
+                *labelWiseScoreVector_, statisticVector.gradients_cbegin(), statisticVector.hessians_diagonal_cbegin(),
+                l2RegularizationWeight_);
             return *labelWiseScoreVector_;
         }
 
         const IScoreVector& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
+            uint32 numPredictions = this->labelIndices_.getNumElements();
+
             if (scoreVector_ == nullptr) {
                 scoreVector_ = new DenseScoreVector<T>(this->labelIndices_);
-                uint32 numPredictions = this->labelIndices_.getNumElements();
                 this->initializeTmpArrays(numPredictions);
             }
 
-            calculateExampleWisePredictionInternally<DenseExampleWiseStatisticVector, DenseScoreVector<T>>(
-                statisticVector, *scoreVector_, l2RegularizationWeight_, *blasPtr_, *this->lapackPtr_,
+            DenseExampleWiseStatisticVector::gradient_iterator gradientIterator = statisticVector.gradients_begin();
+            DenseExampleWiseStatisticVector::hessian_iterator hessianIterator = statisticVector.hessians_begin();
+            copyCoefficients<DenseExampleWiseStatisticVector>(statisticVector, this->dsysvTmpArray1_, numPredictions);
+            addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
+            copyOrdinates<DenseExampleWiseStatisticVector>(statisticVector, gradientIterator, numPredictions);
+            calculateExampleWisePredictionInternally<DenseScoreVector<T>>(
+                *scoreVector_, gradientIterator, hessianIterator, l2RegularizationWeight_, *blasPtr_, *this->lapackPtr_,
                 this->dsysvLwork_, this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_,
                 this->dspmvTmpArray_);
             return *scoreVector_;
