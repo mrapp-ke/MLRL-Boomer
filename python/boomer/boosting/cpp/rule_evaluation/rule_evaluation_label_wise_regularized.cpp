@@ -1,6 +1,6 @@
 #include "rule_evaluation_label_wise_regularized.h"
+#include "rule_evaluation_label_wise_common.h"
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
-#include "../math/math.h"
 
 using namespace boosting;
 
@@ -36,36 +36,13 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
         const ILabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseLabelWiseStatisticVector& statisticVector) override {
-            DenseLabelWiseStatisticVector::gradient_const_iterator gradientIterator =
-                statisticVector.gradients_cbegin();
-            DenseLabelWiseStatisticVector::hessian_const_iterator hessianIterator =
-                statisticVector.hessians_cbegin();
-            uint32 numPredictions = scoreVector_.getNumElements();
-            typename DenseLabelWiseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
-            typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
-                scoreVector_.quality_scores_begin();
-            float64 overallQualityScore = 0;
-
-            // For each label, calculate a score to be predicted, as well as a corresponding quality score...
-            for (uint32 c = 0; c < numPredictions; c++) {
-                float64 sumOfGradients = gradientIterator[c];
-                float64 sumOfHessians =  hessianIterator[c];
-
-                // Calculate the score to be predicted for the current label...
-                float64 score = sumOfHessians + l2RegularizationWeight_;
-                score = score != 0 ? -sumOfGradients / score : 0;
-                scoreIterator[c] = score;
-
-                // Calculate the quality score for the current label...
-                float64 scorePow = score * score;
-                score = (sumOfGradients * score) + (0.5 * scorePow * sumOfHessians);
-                qualityScoreIterator[c] = score + (0.5 * l2RegularizationWeight_ * scorePow);
-                overallQualityScore += score;
-            }
-
-            // Add the L2 regularization term to the overall quality score...
-            overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
-            scoreVector_.overallQualityScore = overallQualityScore;
+            scoreVector_.overallQualityScore = calculateLabelWisePredictionInternally<
+                    typename DenseLabelWiseScoreVector<T>::score_iterator,
+                    typename DenseLabelWiseScoreVector<T>::quality_score_iterator,
+                    DenseLabelWiseStatisticVector::gradient_const_iterator,
+                    DenseLabelWiseStatisticVector::hessian_const_iterator>(
+                scoreVector_.getNumElements(), scoreVector_.scores_begin(), scoreVector_.quality_scores_begin(),
+                statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(), l2RegularizationWeight_);
             return scoreVector_;
         }
 
