@@ -97,8 +97,45 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
         RegularizedExampleWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight,
                                              std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
             : AbstractExampleWiseRuleEvaluation<T>(labelIndices, lapackPtr),
-              l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr) {
+              l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr), scoreVector_(nullptr),
+              labelWiseScoreVector_(nullptr) {
 
+        }
+
+        const ILabelWiseScoreVector& calculateLabelWisePrediction(
+                const DenseExampleWiseStatisticVector& statisticVector) override {
+            if (labelWiseScoreVector_ == nullptr) {
+                labelWiseScoreVector_ = new DenseLabelWiseScoreVector<T>(this->labelIndices_);
+            }
+
+            labelWiseScoreVector_->overallQualityScore = calculateLabelWisePredictionInternally<
+                    typename DenseLabelWiseScoreVector<T>::score_iterator,
+                    typename DenseLabelWiseScoreVector<T>::quality_score_iterator,
+                    DenseExampleWiseStatisticVector::gradient_const_iterator,
+                    DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>(
+                labelWiseScoreVector_->getNumElements(), labelWiseScoreVector_->scores_begin(),
+                labelWiseScoreVector_->quality_scores_begin(), statisticVector.gradients_cbegin(),
+                statisticVector.hessians_diagonal_cbegin(), l2RegularizationWeight_);
+            return *labelWiseScoreVector_;
+        }
+
+        const IScoreVector& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
+            uint32 numPredictions = this->labelIndices_.getNumElements();
+
+            if (scoreVector_ == nullptr) {
+                scoreVector_ = new DenseScoreVector<T>(this->labelIndices_);
+                this->initializeTmpArrays(numPredictions);
+            }
+
+            typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_->scores_begin();
+            copyCoefficients<DenseExampleWiseStatisticVector>(statisticVector, this->dsysvTmpArray1_, numPredictions);
+            addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
+            copyOrdinates<DenseExampleWiseStatisticVector>(statisticVector, scoreIterator, numPredictions);
+            scoreVector_->overallQualityScore = calculateExampleWisePredictionInternally(
+                numPredictions, scoreIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
+                l2RegularizationWeight_, *blasPtr_, *this->lapackPtr_, this->dsysvLwork_, this->dsysvTmpArray1_,
+                this->dsysvTmpArray2_, this->dsysvTmpArray3_, this->dspmvTmpArray_);
+            return *scoreVector_;
         }
 
         const ILabelWiseScoreVector& calculateLabelWisePrediction(

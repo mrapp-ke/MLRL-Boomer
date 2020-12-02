@@ -8,20 +8,18 @@
 
 namespace boosting {
 
-    template<class ScoreVector, class GradientIterator, class HessianIterator>
-    static inline void calculateLabelWisePredictionInternally(ScoreVector& scoreVector,
-                                                              GradientIterator gradientIterator,
-                                                              HessianIterator hessianIterator,
-                                                              float64 l2RegularizationWeight) {
-        uint32 numPredictions = scoreVector.getNumElements();
-        typename ScoreVector::score_iterator scoreIterator = scoreVector.scores_begin();
-        typename ScoreVector::quality_score_iterator qualityScoreIterator = scoreVector.quality_scores_begin();
+    template<class ScoreIterator, class QualityScoreIterator, class GradientIterator, class HessianIterator>
+    static inline float64 calculateLabelWisePredictionInternally(uint32 numPredictions, ScoreIterator scoreIterator,
+                                                                 QualityScoreIterator qualityScoreIterator,
+                                                                 GradientIterator gradientIterator,
+                                                                 HessianIterator hessianIterator,
+                                                                 float64 l2RegularizationWeight) {
         float64 overallQualityScore = 0;
 
         // For each label, calculate a score to be predicted, as well as a corresponding quality score...
         for (uint32 c = 0; c < numPredictions; c++) {
             float64 sumOfGradients = gradientIterator[c];
-            float64 sumOfHessians =  hessianIterator[c];
+            float64 sumOfHessians = hessianIterator[c];
 
             // Calculate the score to be predicted for the current label...
             float64 score = sumOfHessians + l2RegularizationWeight;
@@ -36,8 +34,8 @@ namespace boosting {
         }
 
         // Add the L2 regularization term to the overall quality score...
-        overallQualityScore += 0.5 * l2RegularizationWeight * l2NormPow(scoreIterator, numPredictions);
-        scoreVector.overallQualityScore = overallQualityScore;
+        overallQualityScore += 0.5 * l2RegularizationWeight * l2NormPow<ScoreIterator>(scoreIterator, numPredictions);
+        return overallQualityScore;
     }
 
 }
