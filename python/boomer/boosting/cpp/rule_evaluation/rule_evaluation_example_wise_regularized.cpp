@@ -1,20 +1,23 @@
 #include "rule_evaluation_example_wise_regularized.h"
 #include "rule_evaluation_example_wise_common.h"
+#include "rule_evaluation_label_wise_common.h"
+#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 #include "../math/math.h"
 
 using namespace boosting;
 
 
 /**
- * Copies the Hessians that are stored by a `DenseExampleWiseStatisticVector` to a coefficient matrix that may be passed
- * to LAPACK's DSYSV routine.
+ * Copies the Hessians that are stored by a vector to a coefficient matrix that may be passed to LAPACK's DSYSV routine.
  *
- * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores the Hessians
+ * @tparam StatisticVector  The type of the vector that stores the Hessians
+ * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the Hessians
  * @param output            A pointer to an array of type `float64`, shape `(n, n)`, the Hessians should be copied to
  * @param n                 The number of rows and columns in the coefficient matrix
  */
-static inline void copyCoefficients(const DenseExampleWiseStatisticVector& statisticVector, float64* output, uint32 n) {
-    DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
+template<class StatisticVector>
+static inline void copyCoefficients(const StatisticVector& statisticVector, float64* output, uint32 n) {
+    typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
 
     for (uint32 c = 0; c < n; c++) {
         uint32 offset = c * n;
@@ -41,15 +44,17 @@ static inline void addRegularizationWeight(float64* output, uint32 n, float64 l2
 }
 
 /**
- * Copies the gradients that are stored by a `DenseExampleWiseStatisticVector` to a vector of ordinates that may be
- * passed to LAPACK's DSYSV routine.
+ * Copies the gradients that are stored by a vector to a vector of ordinates that may be passed to LAPACK's DSYSV
+ * routine.
  *
- * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores the gradients
+ * @tparam StatisticVector  The type of the vector that stores the gradients
+ * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the gradients
  * @param output            A pointer to an array of type `float64`, shape `(n)`, the gradients should be copied to
  * @param n                 The number of ordinates
  */
-static inline void copyOrdinates(const DenseExampleWiseStatisticVector& statisticVector, float64* output, uint32 n) {
-    DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+template<class StatisticVector>
+static inline void copyOrdinates(const StatisticVector& statisticVector, float64* output, uint32 n) {
+    typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
 
     for (uint32 i = 0; i < n; i++) {
         float64 gradient = *gradientIterator;
@@ -73,66 +78,9 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
 
         std::shared_ptr<Blas> blasPtr_;
 
-    protected:
+        DenseScoreVector<T>* scoreVector_;
 
-        void calculateLabelWisePrediction(const DenseExampleWiseStatisticVector& statisticVector,
-                                          DenseLabelWiseScoreVector<T>& scoreVector) override {
-            DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
-                statisticVector.gradients_cbegin();
-            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                statisticVector.hessians_diagonal_cbegin();
-            uint32 numPredictions = scoreVector.getNumElements();
-            typename DenseLabelWiseScoreVector<T>::score_iterator scoreIterator = scoreVector.scores_begin();
-            typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
-                scoreVector.quality_scores_begin();
-            float64 overallQualityScore = 0;
-
-            // For each label, calculate the score to be predicted, as well as a quality score...
-            for (uint32 c = 0; c < numPredictions; c++) {
-                float64 sumOfGradients = gradientIterator[c];
-                float64 sumOfHessians = hessianIterator[c];
-
-                // Calculate the score to be predicted for the current label...
-                float64 score = sumOfHessians + l2RegularizationWeight_;
-                score = score != 0 ? -sumOfGradients / score : 0;
-                scoreIterator[c] = score;
-
-                // Calculate the quality score for the current label...
-                float64 scorePow = score * score;
-                score = (sumOfGradients * score) + (0.5 * scorePow * sumOfHessians);
-                qualityScoreIterator[c] = score + (0.5 * l2RegularizationWeight_ * scorePow);
-                overallQualityScore += score;
-            }
-
-            // Add the L2 regularization term to the overall quality score...
-            overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
-            scoreVector.overallQualityScore = overallQualityScore;
-        }
-
-        void calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
-                                            DenseScoreVector<T>& scoreVector, int dsysvLwork, float64* dsysvTmpArray1,
-                                            int* dsysvTmpArray2, double* dsysvTmpArray3,
-                                            float64* dspmvTmpArray) override {
-            uint32 numPredictions = scoreVector.getNumElements();
-            typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector.scores_begin();
-
-            // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-            copyCoefficients(statisticVector, dsysvTmpArray1, numPredictions);
-            addRegularizationWeight(dsysvTmpArray1, numPredictions, l2RegularizationWeight_);
-            copyOrdinates(statisticVector, scoreIterator, numPredictions);
-            this->lapackPtr_->dsysv(dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, scoreIterator, numPredictions,
-                                    dsysvLwork);
-
-            // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-            float64 overallQualityScore = blasPtr_->ddot(scoreIterator, statisticVector.gradients_begin(),
-                                                         numPredictions);
-            blasPtr_->dspmv(statisticVector.hessians_begin(), scoreIterator, dspmvTmpArray, numPredictions);
-            overallQualityScore += 0.5 * blasPtr_->ddot(scoreIterator, dspmvTmpArray, numPredictions);
-
-            // Add the L2 regularization term to the overall quality score...
-            overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
-            scoreVector.overallQualityScore = overallQualityScore;
-        }
+        DenseLabelWiseScoreVector<T>* labelWiseScoreVector_;
 
     public:
 
@@ -149,8 +97,45 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
         RegularizedExampleWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight,
                                              std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
             : AbstractExampleWiseRuleEvaluation<T>(labelIndices, lapackPtr),
-              l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr) {
+              l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr), scoreVector_(nullptr),
+              labelWiseScoreVector_(nullptr) {
 
+        }
+
+        const ILabelWiseScoreVector& calculateLabelWisePrediction(
+                const DenseExampleWiseStatisticVector& statisticVector) override {
+            if (labelWiseScoreVector_ == nullptr) {
+                labelWiseScoreVector_ = new DenseLabelWiseScoreVector<T>(this->labelIndices_);
+            }
+
+            labelWiseScoreVector_->overallQualityScore = calculateLabelWisePredictionInternally<
+                    typename DenseLabelWiseScoreVector<T>::score_iterator,
+                    typename DenseLabelWiseScoreVector<T>::quality_score_iterator,
+                    DenseExampleWiseStatisticVector::gradient_const_iterator,
+                    DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>(
+                labelWiseScoreVector_->getNumElements(), labelWiseScoreVector_->scores_begin(),
+                labelWiseScoreVector_->quality_scores_begin(), statisticVector.gradients_cbegin(),
+                statisticVector.hessians_diagonal_cbegin(), l2RegularizationWeight_);
+            return *labelWiseScoreVector_;
+        }
+
+        const IScoreVector& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
+            uint32 numPredictions = this->labelIndices_.getNumElements();
+
+            if (scoreVector_ == nullptr) {
+                scoreVector_ = new DenseScoreVector<T>(this->labelIndices_);
+                this->initializeTmpArrays(numPredictions);
+            }
+
+            typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_->scores_begin();
+            copyCoefficients<DenseExampleWiseStatisticVector>(statisticVector, this->dsysvTmpArray1_, numPredictions);
+            addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
+            copyOrdinates<DenseExampleWiseStatisticVector>(statisticVector, scoreIterator, numPredictions);
+            scoreVector_->overallQualityScore = calculateExampleWisePredictionInternally(
+                numPredictions, scoreIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
+                l2RegularizationWeight_, *blasPtr_, *this->lapackPtr_, this->dsysvLwork_, this->dsysvTmpArray1_,
+                this->dsysvTmpArray2_, this->dsysvTmpArray3_, this->dspmvTmpArray_);
+            return *scoreVector_;
         }
 
 };
