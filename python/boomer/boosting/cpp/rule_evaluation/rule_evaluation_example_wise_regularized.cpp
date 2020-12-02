@@ -82,31 +82,6 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
 
         DenseLabelWiseScoreVector<T>* labelWiseScoreVector_;
 
-        void calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
-                                            DenseScoreVector<T>& scoreVector, int dsysvLwork, float64* dsysvTmpArray1,
-                                            int* dsysvTmpArray2, double* dsysvTmpArray3,
-                                            float64* dspmvTmpArray) {
-            uint32 numPredictions = scoreVector.getNumElements();
-            typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector.scores_begin();
-
-            // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-            copyCoefficients(statisticVector, dsysvTmpArray1, numPredictions);
-            addRegularizationWeight(dsysvTmpArray1, numPredictions, l2RegularizationWeight_);
-            copyOrdinates(statisticVector, scoreIterator, numPredictions);
-            this->lapackPtr_->dsysv(dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, scoreIterator, numPredictions,
-                                    dsysvLwork);
-
-            // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-            float64 overallQualityScore = blasPtr_->ddot(scoreIterator, statisticVector.gradients_begin(),
-                                                         numPredictions);
-            blasPtr_->dspmv(statisticVector.hessians_begin(), scoreIterator, dspmvTmpArray, numPredictions);
-            overallQualityScore += 0.5 * blasPtr_->ddot(scoreIterator, dspmvTmpArray, numPredictions);
-
-            // Add the L2 regularization term to the overall quality score...
-            overallQualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
-            scoreVector.overallQualityScore = overallQualityScore;
-        }
-
     public:
 
         /**
@@ -152,9 +127,14 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
                 this->initializeTmpArrays(numPredictions);
             }
 
-            this->calculateExampleWisePrediction(statisticVector, *scoreVector_, this->dsysvLwork_,
-                                                 this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_,
-                                                 this->dspmvTmpArray_);
+            typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_->scores_begin();
+            copyCoefficients<DenseExampleWiseStatisticVector>(statisticVector, this->dsysvTmpArray1_, numPredictions);
+            addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
+            copyOrdinates<DenseExampleWiseStatisticVector>(statisticVector, scoreIterator, numPredictions);
+            scoreVector_->overallQualityScore = calculateExampleWisePredictionInternally(
+                numPredictions, scoreIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
+                l2RegularizationWeight_, *blasPtr_, *this->lapackPtr_, this->dsysvLwork_, this->dsysvTmpArray1_,
+                this->dsysvTmpArray2_, this->dsysvTmpArray3_, this->dspmvTmpArray_);
             return *scoreVector_;
         }
 
