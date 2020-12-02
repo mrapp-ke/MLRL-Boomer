@@ -79,6 +79,8 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
                                           DenseLabelWiseScoreVector<T>& scoreVector) override {
             DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                 statisticVector.gradients_cbegin();
+            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
+                statisticVector.hessians_diagonal_cbegin();
             uint32 numPredictions = scoreVector.getNumElements();
             typename DenseLabelWiseScoreVector<T>::score_iterator scoreIterator = scoreVector.scores_begin();
             typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
@@ -88,7 +90,7 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
             // For each label, calculate the score to be predicted, as well as a quality score...
             for (uint32 c = 0; c < numPredictions; c++) {
                 float64 sumOfGradients = gradientIterator[c];
-                float64 sumOfHessians = statisticVector.hessian_diagonal(c);
+                float64 sumOfHessians = hessianIterator[c];
 
                 // Calculate the score to be predicted for the current label...
                 float64 score = sumOfHessians + l2RegularizationWeight_;
