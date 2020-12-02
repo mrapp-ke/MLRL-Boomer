@@ -16,6 +16,7 @@ sources = [
     'boomer/common/cpp/data/matrix_dense.cpp',
     'boomer/common/cpp/data/matrix_dok_binary.cpp',
     'boomer/common/cpp/data/vector_bin.cpp',
+    'boomer/common/cpp/data/vector_binned_dense.cpp',
     'boomer/common/cpp/data/vector_dense.cpp',
     'boomer/common/cpp/data/vector_dok_binary.cpp',
     'boomer/common/cpp/data/vector_sparse_array.cpp',
