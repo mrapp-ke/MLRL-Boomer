@@ -36,10 +36,10 @@ class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
         const ILabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseLabelWiseStatisticVector& statisticVector) override {
-            calculateLabelWisePredictionInternally<DenseLabelWiseStatisticVector::gradient_const_iterator,
-                                                   DenseLabelWiseStatisticVector::hessian_const_iterator,
-                                                   DenseLabelWiseScoreVector<T>>(
-                statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(), scoreVector_,
+            calculateLabelWisePredictionInternally<DenseLabelWiseScoreVector<T>,
+                                                   DenseLabelWiseStatisticVector::gradient_const_iterator,
+                                                   DenseLabelWiseStatisticVector::hessian_const_iterator>(
+                scoreVector_, statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
                 l2RegularizationWeight_);
             return scoreVector_;
         }

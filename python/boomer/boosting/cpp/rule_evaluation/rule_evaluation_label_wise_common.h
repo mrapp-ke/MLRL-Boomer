@@ -8,9 +8,10 @@
 
 namespace boosting {
 
-    template<class GradientIterator, class HessianIterator, class ScoreVector>
-    static inline void calculateLabelWisePredictionInternally(GradientIterator gradientIterator,
-                                                              HessianIterator hessianIterator, ScoreVector& scoreVector,
+    template<class ScoreVector, class GradientIterator, class HessianIterator>
+    static inline void calculateLabelWisePredictionInternally(ScoreVector& scoreVector,
+                                                              GradientIterator gradientIterator,
+                                                              HessianIterator hessianIterator,
                                                               float64 l2RegularizationWeight) {
         uint32 numPredictions = scoreVector.getNumElements();
         typename ScoreVector::score_iterator scoreIterator = scoreVector.scores_begin();
