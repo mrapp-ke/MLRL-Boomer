@@ -1,5 +1,6 @@
 #include "rule_evaluation_example_wise_binning.h"
 #include "rule_evaluation_example_wise_common.h"
+#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 
 using namespace boosting;
 
@@ -24,19 +25,9 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
         std::shared_ptr<Blas> blasPtr_;
 
-    protected:
+        DenseScoreVector<T>* scoreVector_;
 
-        void calculateLabelWisePrediction(const DenseExampleWiseStatisticVector& statisticVector,
-                                          DenseLabelWiseScoreVector<T>& scoreVector) override {
-            // TODO
-        }
-
-        void calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector,
-                                            DenseScoreVector<T>& scoreVector, int dsysvLwork, float64* dsysvTmpArray1,
-                                            int* dsysvTmpArray2, double* dsysvTmpArray3,
-                                            float64* dspmvTmpArray) override {
-            // TODO
-        }
+        DenseLabelWiseScoreVector<T>* labelWiseScoreVector_;
 
     public:
 
@@ -59,6 +50,26 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
               l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
               numNegativeBins_(numNegativeBins), blasPtr_(blasPtr) {
 
+        }
+
+        const ILabelWiseScoreVector& calculateLabelWisePrediction(
+                const DenseExampleWiseStatisticVector& statisticVector) override {
+            if (labelWiseScoreVector_ == nullptr) {
+                labelWiseScoreVector_ = new DenseLabelWiseScoreVector<T>(this->labelIndices_);
+            }
+
+            // TODO
+            return *labelWiseScoreVector_;
+        }
+
+        const IScoreVector& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
+            if (scoreVector_ == nullptr) {
+                scoreVector_ = new DenseScoreVector<T>(this->labelIndices_);
+                this->initializeTmpArrays(numPositiveBins_ + numNegativeBins_);
+            }
+
+            // TODO
+            return *scoreVector_;
         }
 
 };
