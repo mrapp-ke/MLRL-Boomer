@@ -4,11 +4,35 @@
 #pragma once
 
 #include "rule_evaluation_example_wise.h"
+#include "../math/blas.h"
 #include "../math/lapack.h"
+#include "../math/math.h"
 #include <cstdlib>
 
 
 namespace boosting {
+
+    template<class ScoreVector>
+    static inline void calculateExampleWisePredictionInternally(ScoreVector& scoreVector, float64* gradients,
+                                                                float64* hessians, float64 l2RegularizationWeight,
+                                                                Blas& blas, Lapack& lapack, int dsysvLwork,
+                                                                float64* dsysvTmpArray1, int* dsysvTmpArray2,
+                                                                double* dsysvTmpArray3, float64* dspmvTmpArray) {
+        uint32 numPredictions = scoreVector.getNumElements();
+        typename ScoreVector::score_iterator scoreIterator = scoreVector.scores_begin();
+
+        // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
+        lapack.dsysv(dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, scoreIterator, numPredictions, dsysvLwork);
+
+        // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
+        float64 overallQualityScore = blas.ddot(scoreIterator, gradients, numPredictions);
+        blas.dspmv(hessians, scoreIterator, dspmvTmpArray, numPredictions);
+        overallQualityScore += 0.5 * blas.ddot(scoreIterator, dspmvTmpArray, numPredictions);
+
+        // Add the L2 regularization term to the overall quality score...
+        overallQualityScore += 0.5 * l2RegularizationWeight * l2NormPow(scoreIterator, numPredictions);
+        scoreVector.overallQualityScore = overallQualityScore;
+    }
 
     /**
      * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
