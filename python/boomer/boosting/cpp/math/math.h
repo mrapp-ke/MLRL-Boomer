@@ -1,6 +1,8 @@
 /**
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
+#pragma once
+
 #include "../../../common/cpp/data/types.h"
 
 
