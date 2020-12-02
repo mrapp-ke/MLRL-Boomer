@@ -9,9 +9,9 @@
 
 /**
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as an overall quality
- * score that asses the overall quality of the rule, in a C-contiguous array.
+ * score that assesses the overall quality of the rule, in a C-contiguous array.
  *
- * @tparam The type of the vector that provides access to the indices of the labels for which the rule may predict
+ * @tparam T The type of the vector that provides access to the indices of the labels for which the rule may predict
  */
 template<class T>
 class DenseScoreVector : virtual public IScoreVector {
