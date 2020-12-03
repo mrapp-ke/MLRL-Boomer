@@ -9,9 +9,9 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `BinningLabelWiseRuleEvaluation`.
+     * Allows to create instances of the class `BinningLabelWiseRuleEvaluation` that uses equal-width binning.
      */
-    class BinningLabelWiseRuleEvaluationFactory : public ILabelWiseRuleEvaluationFactory {
+    class EqualWidthBinningLabelWiseRuleEvaluationFactory : public ILabelWiseRuleEvaluationFactory {
 
         private:
 
@@ -31,8 +31,8 @@ namespace boosting {
              * @param numNegativeBins           The number of bins to be used for label that should be predicted
              *                                  negatively
              */
-            BinningLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight, uint32 numPositiveBins,
-                                                  uint32 numNegativeBins);
+            EqualWidthBinningLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight, uint32 numPositiveBins,
+                                                            uint32 numNegativeBins);
 
             std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
 

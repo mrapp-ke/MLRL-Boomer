@@ -45,21 +45,20 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
 
 };
 
-BinningLabelWiseRuleEvaluationFactory::BinningLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight,
-                                                                             uint32 numPositiveBins,
-                                                                             uint32 numNegativeBins)
+EqualWidthBinningLabelWiseRuleEvaluationFactory::EqualWidthBinningLabelWiseRuleEvaluationFactory(
+        float64 l2RegularizationWeight, uint32 numPositiveBins, uint32 numNegativeBins)
     : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
       numNegativeBins_(numNegativeBins) {
 
 }
 
-std::unique_ptr<ILabelWiseRuleEvaluation> BinningLabelWiseRuleEvaluationFactory::create(
+std::unique_ptr<ILabelWiseRuleEvaluation> EqualWidthBinningLabelWiseRuleEvaluationFactory::create(
         const FullIndexVector& indexVector) const {
     return std::make_unique<BinningLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, l2RegularizationWeight_,
                                                                              numPositiveBins_, numNegativeBins_);
 }
 
-std::unique_ptr<ILabelWiseRuleEvaluation> BinningLabelWiseRuleEvaluationFactory::create(
+std::unique_ptr<ILabelWiseRuleEvaluation> EqualWidthBinningLabelWiseRuleEvaluationFactory::create(
         const PartialIndexVector& indexVector) const {
     return std::make_unique<BinningLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector, l2RegularizationWeight_,
                                                                                 numPositiveBins_, numNegativeBins_);
