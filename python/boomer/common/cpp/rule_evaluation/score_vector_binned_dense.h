@@ -25,127 +25,127 @@ class DenseBinnedScoreVector : virtual public IScoreVector {
 
     public:
 
-    /**
-     * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
-     *                      the labels for which the rule may predict
-     * @param numBins       The number of bins
-     */
-    DenseBinnedScoreVector(const T& labelIndices, uint32 numBins);
+        /**
+         * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
+         *                      the labels for which the rule may predict
+         * @param numBins       The number of bins
+         */
+        DenseBinnedScoreVector(const T& labelIndices, uint32 numBins);
 
-    typedef typename T::const_iterator index_const_iterator;
+        typedef typename T::const_iterator index_const_iterator;
 
-    typedef DenseBinnedVector<float64>::const_iterator score_const_iterator;
+        typedef DenseBinnedVector<float64>::const_iterator score_const_iterator;
 
-    typedef DenseBinnedVector<float64>::index_binned_iterator index_binned_iterator;
+        typedef DenseBinnedVector<float64>::index_binned_iterator index_binned_iterator;
 
-    typedef DenseBinnedVector<float64>::index_binned_const_iterator index_binned_const_iterator;
+        typedef DenseBinnedVector<float64>::index_binned_const_iterator index_binned_const_iterator;
 
-    typedef DenseBinnedVector<float64>::binned_iterator score_binned_iterator;
+        typedef DenseBinnedVector<float64>::binned_iterator score_binned_iterator;
 
-    typedef DenseBinnedVector<float64>::binned_const_iterator score_binned_const_iterator;
+        typedef DenseBinnedVector<float64>::binned_const_iterator score_binned_const_iterator;
 
-    /**
-     * Returns an `index_const_iterator` to the beginning of the indices.
-     *
-     * @return An `index_const_iterator` to the beginning
-     */
-    index_const_iterator indices_cbegin() const;
+        /**
+         * Returns an `index_const_iterator` to the beginning of the indices.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator indices_cbegin() const;
 
-    /**
-     * Returns an `index_const_iterator` to the end of the indices.
-     *
-     * @return An `index_const_iterator` to the end
-     */
-    index_const_iterator indices_cend() const;
+        /**
+         * Returns an `index_const_iterator` to the end of the indices.
+         *
+         * @return An `index_const_iterator` to the end
+         */
+        index_const_iterator indices_cend() const;
 
-    /**
-     * Returns a `score_const_iterator` to the beginning of the predicted scores that correspond to the labels.
-     *
-     * @return A `score_const_iterator` to the beginning
-     */
-    score_const_iterator scores_cbegin() const;
+        /**
+         * Returns a `score_const_iterator` to the beginning of the predicted scores that correspond to the labels.
+         *
+         * @return A `score_const_iterator` to the beginning
+         */
+        score_const_iterator scores_cbegin() const;
 
-    /**
-     * Returns a `score_const_iterator` to the end of the predicted scores that correspond to the labels.
-     *
-     * @return A `score_const_iterator` to the end
-     */
-    score_const_iterator scores_cend() const;
+        /**
+         * Returns a `score_const_iterator` to the end of the predicted scores that correspond to the labels.
+         *
+         * @return A `score_const_iterator` to the end
+         */
+        score_const_iterator scores_cend() const;
 
-    /**
-     * Returns an `index_binned_iterator` to the beginning of the indices that correspond to the bins.
-     *
-     * @return An `index_binned_iterator` to the beginning
-     */
-    index_binned_iterator indices_binned_begin();
+        /**
+         * Returns an `index_binned_iterator` to the beginning of the indices that correspond to the bins.
+         *
+         * @return An `index_binned_iterator` to the beginning
+         */
+        index_binned_iterator indices_binned_begin();
 
-    /**
-     * Returns an `index_binned_iterator` to the end of the indices that correspond to the bins.
-     *
-     * @return An `index_binned_iterator` to the end
-     */
-    index_binned_iterator indices_binned_end();
+        /**
+         * Returns an `index_binned_iterator` to the end of the indices that correspond to the bins.
+         *
+         * @return An `index_binned_iterator` to the end
+         */
+        index_binned_iterator indices_binned_end();
 
-    /**
-     * Returns an `index_binned_const_iterator` to the beginning of the indices that correspond to the bins.
-     *
-     * @return An `index_binned_const_iterator` to the beginning
-     */
-    index_binned_const_iterator indices_binned_cbegin() const;
+        /**
+         * Returns an `index_binned_const_iterator` to the beginning of the indices that correspond to the bins.
+         *
+         * @return An `index_binned_const_iterator` to the beginning
+         */
+        index_binned_const_iterator indices_binned_cbegin() const;
 
-    /**
-     * Returns an `index_binned_const_iterator` to the end of the indices that correspond to the bins.
-     *
-     * @return An `index_binned_const_iterator` to the end
-     */
-    index_binned_const_iterator indices_binned_cend() const;
+        /**
+         * Returns an `index_binned_const_iterator` to the end of the indices that correspond to the bins.
+         *
+         * @return An `index_binned_const_iterator` to the end
+         */
+        index_binned_const_iterator indices_binned_cend() const;
 
-    /**
-     * Returns a `score_binned_iterator` to the beginning of the predicted scores that correspond to the bins.
-     *
-     * @return A `score_binned_iterator` to the beginning
-     */
-    score_binned_iterator scores_binned_begin();
+        /**
+         * Returns a `score_binned_iterator` to the beginning of the predicted scores that correspond to the bins.
+         *
+         * @return A `score_binned_iterator` to the beginning
+         */
+        score_binned_iterator scores_binned_begin();
 
-    /**
-     * Returns a `score_binned_iterator` to the end of the predicted scores that correspond to the bins.
-     *
-     * @return A `score_binned_iterator` to the end
-     */
-    score_binned_iterator scores_binned_end();
+        /**
+         * Returns a `score_binned_iterator` to the end of the predicted scores that correspond to the bins.
+         *
+         * @return A `score_binned_iterator` to the end
+         */
+        score_binned_iterator scores_binned_end();
 
-    /**
-     * Returns a `score_binned_const_iterator` to the beginning of the predicted scores that correspond to the
-     * bins.
-     *
-     * @return A `score_binned_const_iterator` to the beginning
-     */
-    score_binned_const_iterator scores_binned_cbegin() const;
+        /**
+         * Returns a `score_binned_const_iterator` to the beginning of the predicted scores that correspond to the
+         * bins.
+         *
+         * @return A `score_binned_const_iterator` to the beginning
+         */
+        score_binned_const_iterator scores_binned_cbegin() const;
 
-    /**
-     * Returns a `score_binned_const_iterator` to the end of the predicted scores that correspond to the bins.
-     *
-     * @return A `score_binned_const_iterator` to the end
-     */
-    score_binned_const_iterator scores_binned_cend() const;
+        /**
+         * Returns a `score_binned_const_iterator` to the end of the predicted scores that correspond to the bins.
+         *
+         * @return A `score_binned_const_iterator` to the end
+         */
+        score_binned_const_iterator scores_binned_cend() const;
 
-    /**
-     * Returns the number of labels for which the rule may predict.
-     *
-     * @return The number of labels
-     */
-    uint32 getNumElements() const;
+        /**
+         * Returns the number of labels for which the rule may predict.
+         *
+         * @return The number of labels
+         */
+        uint32 getNumElements() const;
 
-    /**
-     * Returns whether the rule may only predict for a subset of the available labels, or not.
-     *
-     * @return True, if the rule may only predict for a subset of the available labels, false otherwise
-     */
-    bool isPartial() const;
+        /**
+         * Returns whether the rule may only predict for a subset of the available labels, or not.
+         *
+         * @return True, if the rule may only predict for a subset of the available labels, false otherwise
+         */
+        bool isPartial() const;
 
-    void updatePrediction(AbstractPrediction& prediction) const override;
+        void updatePrediction(AbstractPrediction& prediction) const override;
 
-    const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
-                                                     IScoreProcessor& scoreProcessor) const override;
+        const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
+                                                         IScoreProcessor& scoreProcessor) const override;
 
 };
