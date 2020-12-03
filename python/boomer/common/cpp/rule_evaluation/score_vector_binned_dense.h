@@ -36,6 +36,10 @@ class DenseBinnedScoreVector : virtual public IScoreVector {
 
     typedef DenseBinnedVector<float64>::const_iterator score_const_iterator;
 
+    typedef DenseBinnedVector<float64>::index_binned_iterator index_binned_iterator;
+
+    typedef DenseBinnedVector<float64>::index_binned_const_iterator index_binned_const_iterator;
+
     typedef DenseBinnedVector<float64>::binned_iterator score_binned_iterator;
 
     typedef DenseBinnedVector<float64>::binned_const_iterator score_binned_const_iterator;
@@ -67,6 +71,34 @@ class DenseBinnedScoreVector : virtual public IScoreVector {
      * @return A `score_const_iterator` to the end
      */
     score_const_iterator scores_cend() const;
+
+    /**
+     * Returns an `index_binned_iterator` to the beginning of the indices that correspond to the bins.
+     *
+     * @return An `index_binned_iterator` to the beginning
+     */
+    index_binned_iterator indices_binned_begin();
+
+    /**
+     * Returns an `index_binned_iterator` to the end of the indices that correspond to the bins.
+     *
+     * @return An `index_binned_iterator` to the end
+     */
+    index_binned_iterator indices_binned_end();
+
+    /**
+     * Returns an `index_binned_const_iterator` to the beginning of the indices that correspond to the bins.
+     *
+     * @return An `index_binned_const_iterator` to the beginning
+     */
+    index_binned_const_iterator indices_binned_cbegin() const;
+
+    /**
+     * Returns an `index_binned_const_iterator` to the end of the indices that correspond to the bins.
+     *
+     * @return An `index_binned_const_iterator` to the end
+     */
+    index_binned_const_iterator indices_binned_cend() const;
 
     /**
      * Returns a `score_binned_iterator` to the beginning of the predicted scores that correspond to the bins.
