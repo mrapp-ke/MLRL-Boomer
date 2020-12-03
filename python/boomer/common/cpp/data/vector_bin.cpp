@@ -2,25 +2,15 @@
 
 
 BinVector::BinVector(uint32 numElements)
-    : DenseVector<Bin>(numElements, true) {
+    : BinVector(numElements, false) {
 
 }
 
-BinVector::example_const_iterator BinVector::examples_cbegin(uint32 binIndex) {
-    std::forward_list<Example>& examples = examplesPerBin_[binIndex];
-    return examples.cbegin();
+BinVector::BinVector(uint32 numElements, bool init)
+    : DenseVector<Bin>(numElements, init) {
+
 }
 
-BinVector::example_const_iterator BinVector::examples_cend(uint32 binIndex) {
-    std::forward_list<Example>& examples = examplesPerBin_[binIndex];
-    return examples.cend();
-}
-
-void BinVector::addExample(uint32 binIndex, Example example) {
-    std::forward_list<Example>& examples = examplesPerBin_[binIndex];
-    examples.push_front(example);
-}
-
-void BinVector::clearAllExamples() {
-    examplesPerBin_.clear();
+BinVector::ExampleList& BinVector::getExamples(uint32 binIndex) {
+    return examplesPerBin_[binIndex];
 }
