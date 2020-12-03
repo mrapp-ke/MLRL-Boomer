@@ -6,14 +6,16 @@
 using namespace seco;
 
 
-static inline std::unique_ptr<SparseArrayVector<float64>> argsort(const float64* a, uint32 numElements) {
-    std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr = std::make_unique<SparseArrayVector<float64>>(
-        numElements);
+template<class QualityScoreIterator>
+static inline std::unique_ptr<SparseArrayVector<float64>> argsort(QualityScoreIterator qualityScoreIterator,
+                                                                  uint32 numElements) {
+    std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr =
+        std::make_unique<SparseArrayVector<float64>>(numElements);
     SparseArrayVector<float64>::iterator iterator = sortedVectorPtr->begin();
 
     for (uint32 i = 0; i < numElements; i++) {
         iterator[i].index = i;
-        iterator[i].value = a[i];
+        iterator[i].value = qualityScoreIterator[i];
     }
 
     sortedVectorPtr->sortByValues();
@@ -57,7 +59,8 @@ class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProc
                     1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
                 bestNumPredictions = numPredictions;
             } else {
-                sortedVectorPtr = argsort(qualityScoreIterator, numPredictions);
+                sortedVectorPtr = argsort<typename T2::quality_score_const_iterator>(qualityScoreIterator,
+                                                                                     numPredictions);
                 SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
                 float64 maximumLift = liftFunctionPtr_->getMaxLift();
 
