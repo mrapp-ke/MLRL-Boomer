@@ -89,6 +89,7 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float64 value) override {
             tmpGradients_[binIndex] += value;
             tmpHessians_[binIndex] += currentStatisticVector_->hessians_cbegin()[originalIndex];
+            scoreVector_.indices_binned_begin()[originalIndex] = binIndex;
         }
 
 };
