@@ -50,27 +50,26 @@ void EqualWidthLabelBinning<T>::createBins(uint32 numPositiveBins, uint32 numNeg
     // Assign labels to bins...
     for (uint32 i = 0; i < numGradients; i++) {
         float64 gradient = gradientIterator[i];
-        uint32 binIndex;
 
         if (gradient > 0) {
             // Gradient is positive, i.e., label belongs to a negative bin...
-            binIndex = std::floor((gradient - minPositiveGradient) / spanPerNegativeBin);
+            uint32 binIndex = std::floor((gradient - minPositiveGradient) / spanPerNegativeBin);
 
             if (binIndex >= numNegativeBins) {
                 binIndex = numNegativeBins - 1;
             }
+
+            observer.onBinUpdate(binIndex, i, gradient);
         } else if (gradient < 0) {
             // Gradient is negative, i.e., label belongs to a positive bin...
-            binIndex = std::floor((gradient - minNegativeGradient) / spanPerPositiveBin);
+            uint32 binIndex = std::floor((gradient - minNegativeGradient) / spanPerPositiveBin);
 
             if (binIndex >= numPositiveBins) {
                 binIndex = numPositiveBins - 1;
             }
 
-            binIndex += numNegativeBins;
+            observer.onBinUpdate(numNegativeBins + binIndex, i, gradient);
         }
-
-        observer.onBinUpdate(binIndex, i, gradient);
     }
 }
 
