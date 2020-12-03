@@ -32,6 +32,26 @@ typename DenseBinnedScoreVector<T>::score_const_iterator DenseBinnedScoreVector<
 }
 
 template<class T>
+typename DenseBinnedScoreVector<T>::index_binned_iterator DenseBinnedScoreVector<T>::indices_binned_begin() {
+    return binnedVector_.indices_binned_begin();
+}
+
+template<class T>
+typename DenseBinnedScoreVector<T>::index_binned_iterator DenseBinnedScoreVector<T>::indices_binned_end() {
+    return binnedVector_.indices_binned_end();
+}
+
+template<class T>
+typename DenseBinnedScoreVector<T>::index_binned_const_iterator DenseBinnedScoreVector<T>::indices_binned_cbegin() const {
+    return binnedVector_.indices_binned_cbegin();
+}
+
+template<class T>
+typename DenseBinnedScoreVector<T>::index_binned_const_iterator DenseBinnedScoreVector<T>::indices_binned_cend() const {
+    return binnedVector_.indices_binned_cend();
+}
+
+template<class T>
 typename DenseBinnedScoreVector<T>::score_binned_iterator DenseBinnedScoreVector<T>::scores_binned_begin() {
     return binnedVector_.binned_begin();
 }
