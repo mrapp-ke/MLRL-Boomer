@@ -34,9 +34,9 @@ cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluation
             l2_regularization_weight, blas_ptr, lapack_ptr)
 
 
-cdef class BinningExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
+cdef class EqualWidthBinningExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
     """
-    A wrapper for the C++ class `BinningExampleWiseRuleEvaluationFactory`.
+    A wrapper for the C++ class `EqualWidthBinningExampleWiseRuleEvaluationFactory`.
     """
 
     def __cinit__(self, float64 l2_regularization_weight, uint32 num_positive_bins, uint32 num_negative_bins):
@@ -48,5 +48,5 @@ cdef class BinningExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFact
         """
         cdef shared_ptr[Blas] blas_ptr = <shared_ptr[Blas]>move(init_blas())
         cdef shared_ptr[Lapack] lapack_ptr = <shared_ptr[Lapack]>move(init_lapack())
-        self.rule_evaluation_factory_ptr = <shared_ptr[IExampleWiseRuleEvaluationFactory]>make_shared[BinningExampleWiseRuleEvaluationFactoryImpl](
+        self.rule_evaluation_factory_ptr = <shared_ptr[IExampleWiseRuleEvaluationFactory]>make_shared[EqualWidthBinningExampleWiseRuleEvaluationFactoryImpl](
             l2_regularization_weight, num_positive_bins, num_negative_bins, blas_ptr, lapack_ptr)

@@ -24,14 +24,14 @@ cdef extern from "cpp/rule_evaluation/rule_evaluation_example_wise_regularized.h
 
 cdef extern from "cpp/rule_evaluation/rule_evaluation_example_wise_binning.h" namespace "boosting" nogil:
 
-    cdef cppclass BinningExampleWiseRuleEvaluationFactoryImpl"boosting::BinningExampleWiseRuleEvaluationFactory"(
+    cdef cppclass EqualWidthBinningExampleWiseRuleEvaluationFactoryImpl"boosting::EqualWidthBinningExampleWiseRuleEvaluationFactory"(
             IExampleWiseRuleEvaluationFactory):
 
         # Constructors:
 
-        BinningExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, uint32 numPositiveBins,
-                                                    uint32 numNegativeBins, shared_ptr[Blas] blasPtr,
-                                                    shared_ptr[Lapack] lapackPtr) except +
+        EqualBinningExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, uint32 numPositiveBins,
+                                                         uint32 numNegativeBins, shared_ptr[Blas] blasPtr,
+                                                         shared_ptr[Lapack] lapackPtr) except +
 
 
 cdef class ExampleWiseRuleEvaluationFactory:
@@ -45,5 +45,5 @@ cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluation
     pass
 
 
-cdef class BinningExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
+cdef class EqualWidthBinningExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
     pass
