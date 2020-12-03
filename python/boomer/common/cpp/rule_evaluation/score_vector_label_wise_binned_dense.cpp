@@ -10,13 +10,13 @@ DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::QualityScoreIterator(
 }
 
 template<class T>
-uint32 DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator[](uint32 index) const {
+float64 DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator[](uint32 index) const {
     uint32 binIndex = vector_.indices_binned_cbegin()[index];
     return vector_.qualityScoreVector_.cbegin()[binIndex];
 }
 
 template<class T>
-uint32 DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator*() const {
+float64 DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator*() const {
     uint32 binIndex = vector_.indices_binned_cbegin()[index_];
     return vector_.qualityScoreVector_.cbegin()[binIndex];
 }

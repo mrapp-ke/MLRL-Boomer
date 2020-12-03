@@ -39,9 +39,9 @@ class DenseBinnedLabelWiseScoreVector : public DenseBinnedScoreVector<T>, virtua
 
                 QualityScoreIterator(const DenseBinnedLabelWiseScoreVector<T>& vector, uint32 index);
 
-                uint32 operator[](uint32 index) const;
+                float64 operator[](uint32 index) const;
 
-                uint32 operator*() const;
+                float64 operator*() const;
 
                 QualityScoreIterator& operator++(int n);
 
