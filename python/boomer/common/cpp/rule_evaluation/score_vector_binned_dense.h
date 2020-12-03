@@ -137,6 +137,13 @@ class DenseBinnedScoreVector : virtual public IScoreVector {
         uint32 getNumElements() const;
 
         /**
+         * Returns the number of bins.
+         *
+         * @return The number of bins
+         */
+        uint32 getNumBins() const;
+
+        /**
          * Returns whether the rule may only predict for a subset of the available labels, or not.
          *
          * @return True, if the rule may only predict for a subset of the available labels, false otherwise
