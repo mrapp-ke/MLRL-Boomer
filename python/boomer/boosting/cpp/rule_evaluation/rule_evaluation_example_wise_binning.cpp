@@ -74,7 +74,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
 };
 
-EqualWidthBinningExampleWiseRuleEvaluationFactory::BinningExampleWiseRuleEvaluationFactory(
+EqualWidthBinningExampleWiseRuleEvaluationFactory::EqualWidthBinningExampleWiseRuleEvaluationFactory(
         float64 l2RegularizationWeight, uint32 numPositiveBins, uint32 numNegativeBins, std::shared_ptr<Blas> blasPtr,
         std::shared_ptr<Lapack> lapackPtr)
     : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
