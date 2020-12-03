@@ -86,8 +86,8 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
         for (BinVector::ExampleList::const_iterator it = examples.cbegin(); it != examples.cend();) {
             BinVector::Example example = *it;
             uint32 index = example.index;
-            if (coverageMask.isCovered(index)) {
 
+            if (coverageMask.isCovered(index)) {
                 float32 value = example.value;
 
                 if (value < minValue) {
@@ -112,7 +112,7 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
             }
         }
 
-        if (numExamples > 0) {;
+        if (numExamples > 0) {
             filteredIterator[i].minValue = minValue;
             filteredIterator[i].maxValue = maxValue;
             filteredIterator[i].numExamples = numExamples;
@@ -180,6 +180,7 @@ class ApproximateThresholds : public AbstractThresholds {
 
                             if (binVector == nullptr) {
                                 binVector = binCacheEntry.binVectorPtr.get();
+
                                 if (binVector == nullptr) {
                                     std::unique_ptr<FeatureVector> featureVectorPtr;
                                     thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
@@ -199,6 +200,7 @@ class ApproximateThresholds : public AbstractThresholds {
                             }
 
                             uint32 numConditions = thresholdsSubset_.numModifications_;
+
                             if (numConditions > cacheEntry.numConditions) {
                                 filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_);
                                 binVector = cacheEntry.vectorPtr.get();
