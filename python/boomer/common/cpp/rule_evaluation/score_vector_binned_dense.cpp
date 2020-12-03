@@ -77,6 +77,11 @@ uint32 DenseBinnedScoreVector<T>::getNumElements() const {
 }
 
 template<class T>
+uint32 DenseBinnedScoreVector<T>::getNumBins() const {
+    return binnedVector_.getNumBins();
+}
+
+template<class T>
 bool DenseBinnedScoreVector<T>::isPartial() const {
     return labelIndices_.isPartial();
 }
