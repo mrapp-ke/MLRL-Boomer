@@ -60,6 +60,10 @@ class DenseBinnedVector {
 
         ~DenseBinnedVector();
 
+        typedef uint32* index_binned_iterator;
+
+        typedef const uint32* index_binned_const_iterator;
+
         typedef T* binned_iterator;
 
         typedef const T* binned_const_iterator;
@@ -79,6 +83,34 @@ class DenseBinnedVector {
          * @return A `const_iterator` to the end
          */
         const_iterator cend() const;
+
+        /**
+         * Returns an `index_binned_iterator` to the beginning of the indices that correspond to the bins.
+         *
+         * @return An `index_binned_iterator` to the beginning
+         */
+        index_binned_iterator indices_binned_begin();
+
+        /**
+         * Returns an `index_binned_iterator` to the end of the indices that correspond to the bins.
+         *
+         * @return An `index_binned_iterator` to the end
+         */
+        index_binned_iterator indices_binned_end();
+
+        /**
+         * Returns an `index_binned_const_iterator` to the beginning of the indices that correspond to the bins.
+         *
+         * @return An `index_binned_const_iterator` to the beginning
+         */
+        index_binned_const_iterator indices_binned_cbegin() const;
+
+        /**
+         * Returns an `index_binned_const_iterator` to the end of the indices that correspond to the bins.
+         *
+         * @return An `index_binned_const_iterator` to the end
+         */
+        index_binned_const_iterator indices_binned_cend() const;
 
         /**
          * Returns a `binned_iterator` to the beginning of the elements that correspond to the bins.
