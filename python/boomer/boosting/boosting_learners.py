@@ -8,7 +8,8 @@ Provides a scikit-learn implementations of boosting algorithms
 from boomer.boosting.losses_example_wise import ExampleWiseLogisticLoss
 from boomer.boosting.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
 from boomer.boosting.post_processing import ConstantShrinkage
-from boomer.boosting.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory
+from boomer.boosting.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory, \
+    EqualWidthBinningExampleWiseRuleEvaluationFactory
 from boomer.boosting.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory, \
     EqualWidthBinningLabelWiseRuleEvaluationFactory
 from boomer.boosting.statistics_example_wise import ExampleWiseStatisticsProviderFactory
@@ -220,7 +221,11 @@ class Boomer(MLRuleLearner):
             else:
                 return RegularizedLabelWiseRuleEvaluationFactory(l2_regularization_weight)
         else:
-            return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
+            if label_binning == LABEL_BINNING_EQUAL_WIDTH:
+                return EqualWidthBinningExampleWiseRuleEvaluationFactory(l2_regularization_weight, num_positive_bins,
+                                                                         num_negative_bins)
+            else:
+                return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
 
     def __create_label_binning(self, num_labels: int) -> (str, int, int):
         label_binning = self.label_binning
