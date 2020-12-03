@@ -55,6 +55,26 @@ typename DenseBinnedVector<T>::const_iterator DenseBinnedVector<T>::cend() const
 }
 
 template<class T>
+typename DenseBinnedVector<T>::index_binned_iterator DenseBinnedVector<T>::indices_binned_begin() {
+    return binIndices_;
+}
+
+template<class T>
+typename DenseBinnedVector<T>::index_binned_iterator DenseBinnedVector<T>::indices_binned_end() {
+    return &binIndices_[numBins_];
+}
+
+template<class T>
+typename DenseBinnedVector<T>::index_binned_const_iterator DenseBinnedVector<T>::indices_binned_cbegin() const {
+    return binIndices_;
+}
+
+template<class T>
+typename DenseBinnedVector<T>::index_binned_const_iterator DenseBinnedVector<T>::indices_binned_cend() const {
+    return &binIndices_[numBins_];
+}
+
+template<class T>
 typename DenseBinnedVector<T>::binned_iterator DenseBinnedVector<T>::binned_begin() {
     return array_;
 }
