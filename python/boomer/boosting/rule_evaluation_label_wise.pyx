@@ -28,9 +28,9 @@ cdef class RegularizedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFact
             l2_regularization_weight)
 
 
-cdef class BinningLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+cdef class EqualWidthBinningLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     """
-    A wrapper for the C++ class `BinningLabelWiseRuleEvaluationFactory`.
+    A wrapper for the C++ class `EqualWidthBinningLabelWiseRuleEvaluationFactory`.
     """
 
     def __cinit__(self, float64 l2_regularization_weight, uint32 num_positive_bins, uint32 num_negative_bins):
@@ -40,5 +40,5 @@ cdef class BinningLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory)
         :param num_positive_bins:           The number of bins to be used for labels that should be predicted positively
         :param num_negative_bins:           The number of bins to be used for labels that should be predicted negatively
         """
-        self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[BinningLabelWiseRuleEvaluationFactoryImpl](
+        self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[EqualWidthBinningLabelWiseRuleEvaluationFactoryImpl](
             l2_regularization_weight, num_positive_bins, num_negative_bins)
