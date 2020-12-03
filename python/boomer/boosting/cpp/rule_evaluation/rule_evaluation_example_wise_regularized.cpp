@@ -138,40 +138,6 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
             return *scoreVector_;
         }
 
-        const ILabelWiseScoreVector& calculateLabelWisePrediction(
-                const DenseExampleWiseStatisticVector& statisticVector) override {
-            if (labelWiseScoreVector_ == nullptr) {
-                labelWiseScoreVector_ = new DenseLabelWiseScoreVector<T>(this->labelIndices_);
-            }
-
-            calculateLabelWisePredictionInternally<DenseLabelWiseScoreVector<T>,
-                                                   DenseExampleWiseStatisticVector::gradient_const_iterator,
-                                                   DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>(
-                *labelWiseScoreVector_, statisticVector.gradients_cbegin(), statisticVector.hessians_diagonal_cbegin(),
-                l2RegularizationWeight_);
-            return *labelWiseScoreVector_;
-        }
-
-        const IScoreVector& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
-            uint32 numPredictions = this->labelIndices_.getNumElements();
-
-            if (scoreVector_ == nullptr) {
-                scoreVector_ = new DenseScoreVector<T>(this->labelIndices_);
-                this->initializeTmpArrays(numPredictions);
-            }
-
-            DenseExampleWiseStatisticVector::gradient_iterator gradientIterator = statisticVector.gradients_begin();
-            DenseExampleWiseStatisticVector::hessian_iterator hessianIterator = statisticVector.hessians_begin();
-            copyCoefficients<DenseExampleWiseStatisticVector>(statisticVector, this->dsysvTmpArray1_, numPredictions);
-            addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
-            copyOrdinates<DenseExampleWiseStatisticVector>(statisticVector, gradientIterator, numPredictions);
-            calculateExampleWisePredictionInternally<DenseScoreVector<T>>(
-                *scoreVector_, gradientIterator, hessianIterator, l2RegularizationWeight_, *blasPtr_, *this->lapackPtr_,
-                this->dsysvLwork_, this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_,
-                this->dspmvTmpArray_);
-            return *scoreVector_;
-        }
-
 };
 
 RegularizedExampleWiseRuleEvaluationFactory::RegularizedExampleWiseRuleEvaluationFactory(
