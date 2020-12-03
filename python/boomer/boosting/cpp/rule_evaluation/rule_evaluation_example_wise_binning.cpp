@@ -74,24 +74,22 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
 };
 
-BinningExampleWiseRuleEvaluationFactory::BinningExampleWiseRuleEvaluationFactory(float64 l2RegularizationWeight,
-                                                                                 uint32 numPositiveBins,
-                                                                                 uint32 numNegativeBins,
-                                                                                 std::shared_ptr<Blas> blasPtr,
-                                                                                 std::shared_ptr<Lapack> lapackPtr)
+EqualWidthBinningExampleWiseRuleEvaluationFactory::BinningExampleWiseRuleEvaluationFactory(
+        float64 l2RegularizationWeight, uint32 numPositiveBins, uint32 numNegativeBins, std::shared_ptr<Blas> blasPtr,
+        std::shared_ptr<Lapack> lapackPtr)
     : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
       numNegativeBins_(numNegativeBins), blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
 
 }
 
-std::unique_ptr<IExampleWiseRuleEvaluation> BinningExampleWiseRuleEvaluationFactory::create(
+std::unique_ptr<IExampleWiseRuleEvaluation> EqualWidthBinningExampleWiseRuleEvaluationFactory::create(
         const FullIndexVector& indexVector) const {
     return std::make_unique<BinningExampleWiseRuleEvaluation<FullIndexVector>>(indexVector, l2RegularizationWeight_,
                                                                                numPositiveBins_, numNegativeBins_,
                                                                                blasPtr_, lapackPtr_);
 }
 
-std::unique_ptr<IExampleWiseRuleEvaluation> BinningExampleWiseRuleEvaluationFactory::create(
+std::unique_ptr<IExampleWiseRuleEvaluation> EqualWidthBinningExampleWiseRuleEvaluationFactory::create(
         const PartialIndexVector& indexVector) const {
     return std::make_unique<BinningExampleWiseRuleEvaluation<PartialIndexVector>>(indexVector, l2RegularizationWeight_,
                                                                                   numPositiveBins_, numNegativeBins_,
