@@ -9,13 +9,13 @@ DenseBinnedVector<T>::Iterator::Iterator(const DenseBinnedVector<T>& vector, uin
 }
 
 template<class T>
-uint32 DenseBinnedVector<T>::Iterator::operator[](uint32 index) const {
+T DenseBinnedVector<T>::Iterator::operator[](uint32 index) const {
     uint32 binIndex = vector_.binIndices_[index];
     return vector_.array_[binIndex];
 }
 
 template<class T>
-uint32 DenseBinnedVector<T>::Iterator::operator*() const {
+T DenseBinnedVector<T>::Iterator::operator*() const {
     uint32 binIndex = vector_.binIndices_[index_];
     return vector_.array_[binIndex];
 }

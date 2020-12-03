@@ -42,9 +42,9 @@ class DenseBinnedVector {
 
                 Iterator(const DenseBinnedVector<T>& vector, uint32 index);
 
-                uint32 operator[](uint32 index) const;
+                T operator[](uint32 index) const;
 
-                uint32 operator*() const;
+                T operator*() const;
 
                 Iterator& operator++(int n);
 
