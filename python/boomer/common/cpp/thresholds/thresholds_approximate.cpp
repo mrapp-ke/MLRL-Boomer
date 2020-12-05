@@ -319,7 +319,13 @@ class ApproximateThresholds : public AbstractThresholds {
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
+                    uint32 numExamples = thresholds_.getNumExamples();
 
+                    for (uint32 r = 0; r < numExamples; r++) {
+                        if (coverageMask_.isCovered(r)) {
+                            prediction.apply(*thresholds_.statisticsPtr_, r);
+                        }
+                    }
                 }
 
         };
