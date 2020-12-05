@@ -1,5 +1,6 @@
 #include "label_binning_equal_width.h"
 #include "../data/vector_dense_label_wise.h"
+#include "../data/vector_dense_example_wise.h"
 #include <cmath>
 #include <limits>
 
@@ -74,3 +75,4 @@ void EqualWidthLabelBinning<T>::createBins(uint32 numPositiveBins, uint32 numNeg
 }
 
 template class EqualWidthLabelBinning<DenseLabelWiseStatisticVector>;
+template class EqualWidthLabelBinning<DenseExampleWiseStatisticVector>;
