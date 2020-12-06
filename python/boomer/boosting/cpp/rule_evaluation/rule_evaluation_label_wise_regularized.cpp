@@ -1,5 +1,5 @@
 #include "rule_evaluation_label_wise_regularized.h"
-#include "rule_evaluation_label_wise_common.h"
+#include "rule_evaluation_label_wise_regularized_common.h"
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 
 using namespace boosting;
