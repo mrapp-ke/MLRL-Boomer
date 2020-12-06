@@ -22,18 +22,46 @@ namespace boosting {
      * Computes and returns the square of the L2 norm of a specific vector, i.e. the sum of the squares of its elements.
      * To obtain the actual L2 norm, the square-root of the result provided by this function must be computed.
      *
-     * @tparam T        The type of the iterator that provides access to the elements in the vector
-     * @param iterator  An iterator of template type `T` that provides random access to the elements in the vector
+     * @tparam Iterator The type of the iterator that provides access to the elements in the vector
+     * @param iterator  An iterator of template type `Iterator` that provides random access to the elements in the
+     *                  vector
      * @param n         The number of elements in the vector
      * @return          The square of the L2 norm
     */
-    template<class T>
-    static inline float64 l2NormPow(const T iterator, uint32 n) {
+    template<class Iterator>
+    static inline float64 l2NormPow(Iterator iterator, uint32 n) {
         float64 result = 0;
 
         for (uint32 i = 0; i < n; i++) {
             float64 value = iterator[i];
             result += (value * value);
+        }
+
+        return result;
+    }
+
+    /**
+     * Computes and returns the square of the L2 norm of a specific vector, i.e. the sum of the squares of its elements,
+     * where each elements has a specific weight. To obtain the actual L2 norm, the square-root of the result provided
+     * by this function must be computed.
+     *
+     * @tparam Iterator         The type of the iterator that provides access to the elements in the vector
+     * @tparam WeightIterator   The type of the iterator that provides access to the weights of the elements
+     * @param iterator          An iterator of template type `Iterator` that provides random access to the elements in
+     *                          the vector
+     * @param weightIterator    An iterator of template type `WeightIterator` that provides random access to the weights
+     *                          of the elements
+     * @param n                 The number of elements in the vector
+     * @return                  The square of the L2 norm
+    */
+    template<class Iterator, class WeightIterator>
+    static inline float64 l2NormPow(Iterator iterator, WeightIterator weightIterator, uint32 n) {
+        float64 result = 0;
+
+        for (uint32 i = 0; i < n; i++) {
+            float64 value = iterator[i];
+            float64 weight = (float64) weightIterator[i];
+            result += ((value * value) * weight);
         }
 
         return result;
