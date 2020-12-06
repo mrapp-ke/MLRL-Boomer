@@ -14,10 +14,10 @@ void EqualWidthLabelBinning<T>::createBins(uint32 numPositiveBins, uint32 numNeg
     typename T::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
 
     // Find minimum and maximum among the positive gradients and negative gradients, respectively...
-    float64 minPositiveGradient = std::numeric_limits<float64>::max();
+    float64 minPositiveGradient = std::numeric_limits<float64>::infinity();
     float64 maxPositiveGradient = 0;
     float64 minNegativeGradient = 0;
-    float64 maxNegativeGradient = std::numeric_limits<float64>::min();
+    float64 maxNegativeGradient = -std::numeric_limits<float64>::infinity();
 
     for (uint32 i = 0; i < numGradients; i++) {
         float64 gradient = gradientIterator[i];
