@@ -101,7 +101,8 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
                                                                     statisticVector.gradients_begin(),
                                                                     statisticVector.hessians_begin(), *blasPtr_,
                                                                     this->dspmvTmpArray_);
-            qualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow<float64*>(scoreIterator, numPredictions);
+            qualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow<typename DenseScoreVector<T>::score_iterator>(
+                scoreIterator, numPredictions);
             scoreVector_->overallQualityScore = qualityScore;
             return *scoreVector_;
         }
