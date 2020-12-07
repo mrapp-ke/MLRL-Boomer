@@ -54,6 +54,14 @@ namespace boosting {
         }
     }
 
+
+    static inline float64 calculateExampleWiseQualityScore(uint32 numPredictions, float64* scores, float64* gradients,
+                                                           float64* hessians, Blas& blas, float64* dspmvTmpArray) {
+        float64 overallQualityScore = blas.ddot(scores, gradients, numPredictions);
+        blas.dspmv(hessians, scores, dspmvTmpArray, numPredictions);
+        return overallQualityScore + (0.5 * blas.ddot(scores, dspmvTmpArray, numPredictions));
+    }
+
     /**
      * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
      * quality scores, based on the gradients and Hessians that have been calculated according to a loss function that
