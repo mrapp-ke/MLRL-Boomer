@@ -1,5 +1,5 @@
 #include "rule_evaluation_example_wise_binning.h"
-#include "rule_evaluation_label_wise_regularized_common.h"
+#include "rule_evaluation_label_wise_binning_common.h"
 #include "rule_evaluation_example_wise_regularized_common.h"
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_binned_dense.h"
 #include "../binning/label_binning_equal_width.h"
@@ -38,6 +38,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                     float64 hessian =
                         ruleEvaluation_.currentStatisticVector_->hessians_diagonal_cbegin()[originalIndex];
                     ruleEvaluation_.tmpHessians_[binIndex] += hessian;
+                    ruleEvaluation_.numElementsPerBin_[binIndex] += 1;
                     ruleEvaluation_.labelWiseScoreVector_->indices_binned_begin()[originalIndex] = binIndex;
                 }
 
@@ -80,6 +81,8 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
         float64* tmpHessians_;
 
+        uint32* numElementsPerBin_;
+
         IBinningObserver<float64>* binningObserver_;
 
         const DenseExampleWiseStatisticVector* currentStatisticVector_;
@@ -108,7 +111,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
               l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
               numNegativeBins_(numNegativeBins), binningPtr_(std::move(binningPtr)), blasPtr_(blasPtr),
               scoreVector_(nullptr), labelWiseScoreVector_(nullptr), tmpGradients_(nullptr), tmpHessians_(nullptr),
-              binningObserver_(nullptr) {
+              numElementsPerBin_(nullptr), binningObserver_(nullptr) {
 
         }
 
@@ -117,6 +120,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             delete labelWiseScoreVector_;
             free(tmpGradients_);
             free(tmpHessians_);
+            free(numElementsPerBin_);
             delete binningObserver_;
         }
 
@@ -129,6 +133,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                 labelWiseScoreVector_ = new DenseBinnedLabelWiseScoreVector<T>(this->labelIndices_, numBins);
                 tmpGradients_ = (float64*) malloc(numBins * sizeof(float64));
                 tmpHessians_ = (float64*) malloc(numBins * sizeof(float64));
+                numElementsPerBin_ = (uint32*) malloc(numBins * sizeof(uint32));
                 binningObserver_ = new BinningExampleWiseRuleEvaluation<T>::LabelWiseBinningObserver(*this);
             } else {
                 numBins = labelWiseScoreVector_->getNumBins();
@@ -138,6 +143,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             for (uint32 i = 0; i < numBins; i++) {
                 tmpGradients_[i] = 0;
                 tmpHessians_[i] = 0;
+                numElementsPerBin_[i] = 0;
             }
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
@@ -147,9 +153,10 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             // Compute predictions and quality scores...
             labelWiseScoreVector_->overallQualityScore = calculateLabelWisePredictionInternally<
                     typename DenseBinnedLabelWiseScoreVector<T>::score_binned_iterator,
-                    typename DenseBinnedLabelWiseScoreVector<T>::quality_score_binned_iterator, float64*, float64*>(
+                    typename DenseBinnedLabelWiseScoreVector<T>::quality_score_binned_iterator, float64*, float64*,
+                    uint32*>(
                 numBins, labelWiseScoreVector_->scores_binned_begin(),
-                labelWiseScoreVector_->quality_scores_binned_begin(), tmpGradients_, tmpHessians_,
+                labelWiseScoreVector_->quality_scores_binned_begin(), tmpGradients_, tmpHessians_, numElementsPerBin_,
                 l2RegularizationWeight_);
             return *labelWiseScoreVector_;
         }
