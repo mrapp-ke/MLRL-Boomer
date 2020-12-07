@@ -9,30 +9,6 @@ using namespace boosting;
 
 
 /**
- * Copies the Hessians that are stored by a vector to a coefficient matrix that may be passed to LAPACK's DSYSV routine.
- *
- * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
- * @param hessianIterator   An iterator of template type `HessianIterator` that provides random access to the Hessians
- *                          that are stored in the vector
- * @param output            A pointer to an array of type `float64`, shape `(n, n)`, the Hessians should be copied to
- * @param n                 The number of rows and columns in the coefficient matrix
- */
-template<class HessianIterator>
-static inline void copyCoefficients(HessianIterator hessianIterator, float64* output, uint32 n) {
-    uint32 i = 0;
-
-    for (uint32 c = 0; c < n; c++) {
-        uint32 offset = c * n;
-
-        for (uint32 r = 0; r < c + 1; r++) {
-            float64 hessian = hessianIterator[i];
-            output[offset + r] = hessian;
-            i++;
-        }
-    }
-}
-
-/**
  * Adds a specific L2 regularization weight to the diagonal of a coefficient matrix.
  *
  * @param output                    A pointer to an array of type `float64`, shape `(n, n)` that stores the coefficients
@@ -42,24 +18,6 @@ static inline void copyCoefficients(HessianIterator hessianIterator, float64* ou
 static inline void addRegularizationWeight(float64* output, uint32 n, float64 l2RegularizationWeight) {
     for (uint32 i = 0; i < n; i++) {
         output[(i * n) + i] += l2RegularizationWeight;
-    }
-}
-
-/**
- * Copies the gradients that are stored by a vector to a vector of ordinates that may be passed to LAPACK's DSYSV
- * routine.
- *
- * @tparam GradientIterator The type of the iterator that provides access to the gradients
- * @param gradientIterator  An iterator of template type`GradientIterator` that provides random access to the gradients
- *                          that are stored in the vector
- * @param output            A pointer to an array of type `float64`, shape `(n)`, the gradients should be copied to
- * @param n                 The number of ordinates
- */
-template<class GradientIterator>
-static inline void copyOrdinates(GradientIterator gradientIterator, float64* output, uint32 n) {
-    for (uint32 i = 0; i < n; i++) {
-        float64 gradient = gradientIterator[i];
-        output[i] = -gradient;
     }
 }
 

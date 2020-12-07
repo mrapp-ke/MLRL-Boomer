@@ -11,6 +11,50 @@
 namespace boosting {
 
     /**
+     * Copies the Hessians that are stored by a vector to a coefficient matrix that may be passed to LAPACK's DSYSV
+     * routine.
+     *
+     * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
+     * @param hessianIterator   An iterator of template type `HessianIterator` that provides random access to the
+     *                          Hessians that are stored in the vector
+     * @param output            A pointer to an array of type `float64`, shape `(n, n)`, the Hessians should be copied
+     *                          to
+     * @param n                 The number of rows and columns in the coefficient matrix
+     */
+    template<class HessianIterator>
+    static inline void copyCoefficients(HessianIterator hessianIterator, float64* output, uint32 n) {
+        uint32 i = 0;
+
+        for (uint32 c = 0; c < n; c++) {
+            uint32 offset = c * n;
+
+            for (uint32 r = 0; r < c + 1; r++) {
+                float64 hessian = hessianIterator[i];
+                output[offset + r] = hessian;
+                i++;
+            }
+        }
+    }
+
+    /**
+     * Copies the gradients that are stored by a vector to a vector of ordinates that may be passed to LAPACK's DSYSV
+     * routine.
+     *
+     * @tparam GradientIterator The type of the iterator that provides access to the gradients
+     * @param gradientIterator  An iterator of template type`GradientIterator` that provides random access to the
+     *                          gradients that are stored in the vector
+     * @param output            A pointer to an array of type `float64`, shape `(n)`, the gradients should be copied to
+     * @param n                 The number of ordinates
+     */
+    template<class GradientIterator>
+    static inline void copyOrdinates(GradientIterator gradientIterator, float64* output, uint32 n) {
+        for (uint32 i = 0; i < n; i++) {
+            float64 gradient = gradientIterator[i];
+            output[i] = -gradient;
+        }
+    }
+
+    /**
      * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
      * quality scores, based on the gradients and Hessians that have been calculated according to a loss function that
      * is applied example-wise.
