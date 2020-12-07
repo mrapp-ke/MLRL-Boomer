@@ -4,32 +4,11 @@
 #pragma once
 
 #include "rule_evaluation_example_wise.h"
-#include "../math/blas.h"
 #include "../math/lapack.h"
-#include "../math/math.h"
 #include <cstdlib>
 
 
 namespace boosting {
-
-    static inline float64 calculateExampleWisePredictionInternally(uint32 numPredictions, float64* scores,
-                                                                   float64* gradients, float64* hessians,
-                                                                   float64 l2RegularizationWeight, Blas& blas,
-                                                                   Lapack& lapack, int dsysvLwork,
-                                                                   float64* dsysvTmpArray1, int* dsysvTmpArray2,
-                                                                   double* dsysvTmpArray3, float64* dspmvTmpArray) {
-        // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-        lapack.dsysv(dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, scores, numPredictions, dsysvLwork);
-
-        // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
-        float64 overallQualityScore = blas.ddot(scores, gradients, numPredictions);
-        blas.dspmv(hessians, scores, dspmvTmpArray, numPredictions);
-        overallQualityScore += 0.5 * blas.ddot(scores, dspmvTmpArray, numPredictions);
-
-        // Add the L2 regularization term to the overall quality score...
-        overallQualityScore += 0.5 * l2RegularizationWeight * l2NormPow<float64*>(scores, numPredictions);
-        return overallQualityScore;
-    }
 
     /**
      * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding

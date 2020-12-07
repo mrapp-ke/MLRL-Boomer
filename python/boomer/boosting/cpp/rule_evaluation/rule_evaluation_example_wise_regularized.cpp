@@ -1,7 +1,8 @@
 #include "rule_evaluation_example_wise_regularized.h"
-#include "rule_evaluation_example_wise_regularized_common.h"
+#include "rule_evaluation_example_wise_common.h"
 #include "rule_evaluation_label_wise_regularized_common.h"
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
+#include "../math/blas.h"
 #include "../math/math.h"
 
 using namespace boosting;
@@ -61,6 +62,25 @@ static inline void copyOrdinates(const StatisticVector& statisticVector, float64
         output[i] = -gradient;
         gradientIterator++;
     }
+}
+
+static inline float64 calculateExampleWisePredictionInternally(uint32 numPredictions, float64* scores,
+                                                               float64* gradients, float64* hessians,
+                                                               float64 l2RegularizationWeight, Blas& blas,
+                                                               Lapack& lapack, int dsysvLwork, float64* dsysvTmpArray1,
+                                                               int* dsysvTmpArray2, double* dsysvTmpArray3,
+                                                               float64* dspmvTmpArray) {
+    // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
+    lapack.dsysv(dsysvTmpArray1, dsysvTmpArray2, dsysvTmpArray3, scores, numPredictions, dsysvLwork);
+
+    // Calculate overall quality score as (gradients * scores) + (0.5 * (scores * (hessians * scores)))...
+    float64 overallQualityScore = blas.ddot(scores, gradients, numPredictions);
+    blas.dspmv(hessians, scores, dspmvTmpArray, numPredictions);
+    overallQualityScore += 0.5 * blas.ddot(scores, dspmvTmpArray, numPredictions);
+
+    // Add the L2 regularization term to the overall quality score...
+    overallQualityScore += 0.5 * l2RegularizationWeight * l2NormPow<float64*>(scores, numPredictions);
+    return overallQualityScore;
 }
 
 /**
