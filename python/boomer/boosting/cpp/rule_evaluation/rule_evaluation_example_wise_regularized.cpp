@@ -11,22 +11,23 @@ using namespace boosting;
 /**
  * Copies the Hessians that are stored by a vector to a coefficient matrix that may be passed to LAPACK's DSYSV routine.
  *
- * @tparam StatisticVector  The type of the vector that stores the Hessians
- * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the Hessians
+ * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
+ * @param hessianIterator   An iterator of template type `HessianIterator` that provides random access to the Hessians
+ *                          that are stored in the vector
  * @param output            A pointer to an array of type `float64`, shape `(n, n)`, the Hessians should be copied to
  * @param n                 The number of rows and columns in the coefficient matrix
  */
-template<class StatisticVector>
-static inline void copyCoefficients(const StatisticVector& statisticVector, float64* output, uint32 n) {
-    typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
+template<class HessianIterator>
+static inline void copyCoefficients(HessianIterator hessianIterator, float64* output, uint32 n) {
+    uint32 i = 0;
 
     for (uint32 c = 0; c < n; c++) {
         uint32 offset = c * n;
 
         for (uint32 r = 0; r < c + 1; r++) {
-            float64 hessian = *hessianIterator;
+            float64 hessian = hessianIterator[i];
             output[offset + r] = hessian;
-            hessianIterator++;
+            i++;
         }
     }
 }
@@ -48,19 +49,17 @@ static inline void addRegularizationWeight(float64* output, uint32 n, float64 l2
  * Copies the gradients that are stored by a vector to a vector of ordinates that may be passed to LAPACK's DSYSV
  * routine.
  *
- * @tparam StatisticVector  The type of the vector that stores the gradients
- * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the gradients
+ * @tparam GradientIterator The type of the iterator that provides access to the gradients
+ * @param gradientIterator  An iterator of template type`GradientIterator` that provides random access to the gradients
+ *                          that are stored in the vector
  * @param output            A pointer to an array of type `float64`, shape `(n)`, the gradients should be copied to
  * @param n                 The number of ordinates
  */
-template<class StatisticVector>
-static inline void copyOrdinates(const StatisticVector& statisticVector, float64* output, uint32 n) {
-    typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-
+template<class GradientIterator>
+static inline void copyOrdinates(GradientIterator gradientIterator, float64* output, uint32 n) {
     for (uint32 i = 0; i < n; i++) {
-        float64 gradient = *gradientIterator;
+        float64 gradient = gradientIterator[i];
         output[i] = -gradient;
-        gradientIterator++;
     }
 }
 
@@ -148,9 +147,11 @@ class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvalu
             }
 
             typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_->scores_begin();
-            copyCoefficients<DenseExampleWiseStatisticVector>(statisticVector, this->dsysvTmpArray1_, numPredictions);
+            copyCoefficients<DenseExampleWiseStatisticVector::hessian_const_iterator>(
+                statisticVector.hessians_cbegin(), this->dsysvTmpArray1_, numPredictions);
             addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
-            copyOrdinates<DenseExampleWiseStatisticVector>(statisticVector, scoreIterator, numPredictions);
+            copyOrdinates<DenseExampleWiseStatisticVector::gradient_const_iterator>(
+                statisticVector.gradients_cbegin(), scoreIterator, numPredictions);
             scoreVector_->overallQualityScore = calculateExampleWisePredictionInternally(
                 numPredictions, scoreIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
                 l2RegularizationWeight_, *blasPtr_, *this->lapackPtr_, this->dsysvLwork_, this->dsysvTmpArray1_,
