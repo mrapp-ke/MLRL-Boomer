@@ -1,5 +1,5 @@
 #include "rule_evaluation_label_wise_binning.h"
-#include "rule_evaluation_label_wise_common.h"
+#include "rule_evaluation_label_wise_binning_common.h"
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_binned_dense.h"
 #include "../binning/label_binning_equal_width.h"
 #include <cstdlib>
@@ -33,6 +33,8 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
 
         float64* tmpHessians_;
 
+        uint32* numElementsPerBin_;
+
         const DenseLabelWiseStatisticVector* currentStatisticVector_;
 
     public:
@@ -54,13 +56,15 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
               numNegativeBins_(numNegativeBins), binningPtr_(std::move(binningPtr)),
               scoreVector_(DenseBinnedLabelWiseScoreVector<T>(labelIndices, numPositiveBins + numNegativeBins)),
               tmpGradients_((float64*) malloc(scoreVector_.getNumBins() * sizeof(float64))),
-              tmpHessians_((float64*) malloc(scoreVector_.getNumBins() * sizeof(float64))) {
+              tmpHessians_((float64*) malloc(scoreVector_.getNumBins() * sizeof(float64))),
+              numElementsPerBin_((uint32*) malloc(scoreVector_.getNumBins() * sizeof(uint32))) {
 
         }
 
         ~BinningLabelWiseRuleEvaluation() {
             free(tmpGradients_);
             free(tmpHessians_);
+            free(numElementsPerBin_);
         }
 
         const ILabelWiseScoreVector& calculateLabelWisePrediction(
@@ -71,6 +75,7 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
             for (uint32 i = 0; i < numBins; i++) {
                 tmpGradients_[i] = 0;
                 tmpHessians_[i] = 0;
+                numElementsPerBin_[i] = 0;
             }
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
@@ -80,9 +85,10 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
             // Compute predictions and quality scores...
             scoreVector_.overallQualityScore = calculateLabelWisePredictionInternally<
                     typename DenseBinnedLabelWiseScoreVector<T>::score_binned_iterator,
-                    typename DenseBinnedLabelWiseScoreVector<T>::quality_score_binned_iterator, float64*, float64*>(
+                    typename DenseBinnedLabelWiseScoreVector<T>::quality_score_binned_iterator, float64*, float64*,
+                    uint32*>(
                 numBins, scoreVector_.scores_binned_begin(), scoreVector_.quality_scores_binned_begin(), tmpGradients_,
-                tmpHessians_, l2RegularizationWeight_);
+                tmpHessians_, numElementsPerBin_, l2RegularizationWeight_);
             return scoreVector_;
         }
 
@@ -90,6 +96,7 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
             tmpGradients_[binIndex] += value;
             float64 hessian = currentStatisticVector_->hessians_cbegin()[originalIndex];
             tmpHessians_[binIndex] += hessian;
+            numElementsPerBin_[binIndex] += 1;
             scoreVector_.indices_binned_begin()[originalIndex] = binIndex;
         }
 
