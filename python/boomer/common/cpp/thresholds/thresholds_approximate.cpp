@@ -124,6 +124,19 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
     cacheEntry.numConditions = numConditions;
 }
 
+static inline void updateHistogramBuilder(BinVector& vector, IHistogramBuilder& histogramBuilder) {
+    uint32 numBins = vector.getNumElements();
+
+    for (uint32 binIndex = 0; binIndex < numBins; binIndex++) {
+        BinVector::ExampleList& examples = vector.getExamples(binIndex);
+
+        for (auto it = examples.cbegin(); it != examples.cend(); it++) {
+            BinVector::Example example = *it;
+            histogramBuilderPtr_->onBinUpdate(binIndex, example.index, example.value);
+        }
+    }
+}
+
 /**
  * Provides access to the thresholds that result from applying a binning method to the feature values of the training
  * examples.
