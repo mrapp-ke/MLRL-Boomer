@@ -132,7 +132,7 @@ static inline void updateHistogramBuilder(BinVector& vector, IStatistics::IHisto
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
-            histogramBuilderPtr_->onBinUpdate(binIndex, example.index, example.value);
+            histogramBuilder.onBinUpdate(binIndex, example.index, example.value);
         }
     }
 }
