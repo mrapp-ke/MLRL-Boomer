@@ -166,8 +166,6 @@ class ApproximateThresholds : public AbstractThresholds {
 
                         uint32 featureIndex_;
 
-                        std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr_;
-
                         BinVector* currentBinVector_;
 
                     public:
@@ -194,20 +192,26 @@ class ApproximateThresholds : public AbstractThresholds {
                                 binVector = cacheEntry.binVectorPtr.get();
 
                                 if (binVector == nullptr) {
+                                    // Fetch feature vector...
                                     std::unique_ptr<FeatureVector> featureVectorPtr;
                                     thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
                                                                                                     featureVectorPtr);
+
+                                    // Apply binning method...
                                     IFeatureBinning::FeatureInfo featureInfo =
                                         thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
                                     cacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins, true));
-                                    histogramBuilderPtr_ =
-                                        thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
-                                    binVector = cacheEntry.binVectorPtr.get();
                                     currentBinVector_ = binVector;
                                     thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo,
                                                                                           *featureVectorPtr, *this);
-                                    cacheEntry.histogramPtr = std::move(histogramBuilderPtr_->build());
+
+                                    // Build histogram...
+                                    binVector = cacheEntry.binVectorPtr.get();
+                                    std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr =
+                                        thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
+                                    updateHistogramBuilder(*binVector, *histogramBuilderPtr);
+                                    cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
                                 }
                             }
 
@@ -239,8 +243,6 @@ class ApproximateThresholds : public AbstractThresholds {
                             example.value = value;
                             BinVector::ExampleList& examples = currentBinVector_->getExamples(binIndex);
                             examples.push_front(example);
-
-                            histogramBuilderPtr_->onBinUpdate(binIndex, originalIndex, value);
                         }
 
                 };
