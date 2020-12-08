@@ -174,7 +174,6 @@ class ApproximateThresholds : public AbstractThresholds {
                             FilteredCacheEntry<BinVector>& filteredCacheEntry = cacheFilteredIterator->second;
                             BinVector* binVector = filteredCacheEntry.vectorPtr.get();
 
-                            //TODO: Wenn Histogramme richtig erstellt werden kommt das in den If-Block
                             auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                             BinCacheEntry& cacheEntry = cacheIterator->second;
 
