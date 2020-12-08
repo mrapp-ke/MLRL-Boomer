@@ -205,8 +205,8 @@ class ApproximateThresholds : public AbstractThresholds {
                                 if (binVector == nullptr) {
                                     // Fetch feature vector...
                                     std::unique_ptr<FeatureVector> featureVectorPtr;
-                                    thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
-                                                                                                    featureVectorPtr);
+                                    thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(
+                                        featureIndex_, featureVectorPtr);
 
                                     // Apply binning method...
                                     IFeatureBinning::FeatureInfo featureInfo =
