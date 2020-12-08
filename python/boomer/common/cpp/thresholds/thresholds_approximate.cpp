@@ -7,11 +7,15 @@
 
 
 /**
- * An entry that is stored in the cache and contains unique pointers to a histogram and a vector that stores bins.
+ * An entry that is stored in the cache and contains unique pointers to a histogram and a vector that stores bins. The
+ * field `numUpdates` specifies how often the statistics were updated when the histogram was (re-)built for the last
+ * time. It may be used to check if the histogram is still valid or must be rebuilt.
  */
 struct BinCacheEntry {
+    BinCacheEntry() : numUpdates(0) { };
     std::unique_ptr<IHistogram> histogramPtr;
     std::unique_ptr<BinVector> binVectorPtr;
+    uint32 numUpdates;
 };
 
 static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
@@ -132,7 +136,8 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, BinCacheEntry& cacheEntry) {
+static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, BinCacheEntry& cacheEntry,
+                                  uint32 numUpdates) {
     uint32 numBins = vector.getNumElements();
     std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.buildHistogram(numBins);
 
@@ -146,6 +151,7 @@ static inline void buildHistogram(BinVector& vector, const IStatistics& statisti
     }
 
     cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
+    cacheEntry.numUpdates = numUpdates;
 }
 
 /**
@@ -231,9 +237,11 @@ class ApproximateThresholds : public AbstractThresholds {
 
                             // (Re-)Build histogram, if necessary...
                             IHistogram* histogram = cacheEntry.histogramPtr.get();
+                            uint32 numStatisticUpdates = thresholdsSubset_.thresholds_.numStatisticUpdates_;
 
                             if (histogram == nullptr) {
-                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry);
+                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry,
+                                               numStatisticUpdates);
                                 histogram = cacheEntry.histogramPtr.get();
                             }
 
@@ -348,6 +356,7 @@ class ApproximateThresholds : public AbstractThresholds {
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
+                    thresholds_.numStatisticUpdates_++;
                     uint32 numExamples = thresholds_.getNumExamples();
 
                     for (uint32 r = 0; r < numExamples; r++) {
@@ -362,6 +371,8 @@ class ApproximateThresholds : public AbstractThresholds {
         std::shared_ptr<IFeatureBinning> binningPtr_;
 
         std::unordered_map<uint32, BinCacheEntry> cache_;
+
+        uint32 numStatisticUpdates_;
 
     public:
 
@@ -384,7 +395,7 @@ class ApproximateThresholds : public AbstractThresholds {
                               std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                               std::shared_ptr<IFeatureBinning> binningPtr)
             : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr),
-              binningPtr_(binningPtr) {
+              binningPtr_(binningPtr), numStatisticUpdates_(0) {
 
         }
 
