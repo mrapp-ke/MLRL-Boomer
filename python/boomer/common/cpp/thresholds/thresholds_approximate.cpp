@@ -132,20 +132,20 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void buildHistogram(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder,
-                                  BinCacheEntry& cacheEntry) {
+static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, BinCacheEntry& cacheEntry) {
     uint32 numBins = vector.getNumElements();
+    std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.buildHistogram(numBins);
 
     for (uint32 binIndex = 0; binIndex < numBins; binIndex++) {
         BinVector::ExampleList& examples = vector.getExamples(binIndex);
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
-            histogramBuilder.onBinUpdate(binIndex, example.index, example.value);
+            histogramBuilderPtr->onBinUpdate(binIndex, example.index, example.value);
         }
     }
 
-    cacheEntry.histogramPtr = std::move(histogramBuilder.build());
+    cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
 }
 
 /**
@@ -233,11 +233,7 @@ class ApproximateThresholds : public AbstractThresholds {
                             IHistogram* histogram = cacheEntry.histogramPtr.get();
 
                             if (histogram == nullptr) {
-                                uint32 numBins = binVector->getNumElements();
-                                std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr =
-                                    thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
-                                buildHistogram(*binVector, *histogramBuilderPtr, cacheEntry);
-                                    cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
+                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry);
                                 histogram = cacheEntry.histogramPtr.get();
                             }
 
