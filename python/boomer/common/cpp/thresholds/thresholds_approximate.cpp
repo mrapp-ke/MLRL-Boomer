@@ -124,7 +124,7 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void updateHistogramBuilder(BinVector& vector, IHistogramBuilder& histogramBuilder) {
+static inline void updateHistogramBuilder(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder) {
     uint32 numBins = vector.getNumElements();
 
     for (uint32 binIndex = 0; binIndex < numBins; binIndex++) {
