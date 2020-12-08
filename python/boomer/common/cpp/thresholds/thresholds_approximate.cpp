@@ -76,8 +76,8 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
     uint32 i = 0;
 
     for(uint32 r = 0; r < maxElements; r++) {
-        float32 maxValue = std::numeric_limits<float32>::min();
-        float32 minValue = std::numeric_limits<float32>::max();
+        float32 maxValue = -std::numeric_limits<float32>::infinity();
+        float32 minValue = std::numeric_limits<float32>::infinity();
         uint32 numExamples = 0;
         BinVector::ExampleList& examples = vector.getExamples(r);
         BinVector::ExampleList& filteredExamples = filteredVector->getExamples(r);

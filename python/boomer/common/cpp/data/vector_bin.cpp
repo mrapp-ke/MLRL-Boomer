@@ -7,8 +7,14 @@ BinVector::BinVector(uint32 numElements)
 }
 
 BinVector::BinVector(uint32 numElements, bool init)
-    : DenseVector<Bin>(numElements, init) {
+    : DenseVector<Bin>(numElements, false) {
+    if (init) {
+        BinVector::iterator iterator = this->begin();
 
+        for (uint32 i = 0; i < numElements; i++) {
+            new (iterator + i) Bin();
+        }
+    }
 }
 
 BinVector::ExampleList& BinVector::getExamples(uint32 binIndex) {
