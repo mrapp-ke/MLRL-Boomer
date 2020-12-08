@@ -6,6 +6,14 @@
 #include <limits>
 
 
+/**
+ * An entry that is stored in the cache and contains unique pointers to a histogram and a vector that stores bins.
+ */
+struct BinCacheEntry {
+    std::unique_ptr<IHistogram> histogramPtr;
+    std::unique_ptr<BinVector> binVectorPtr;
+};
+
 static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
                                        intp conditionEnd, bool covered, uint32 numConditions,
                                        CoverageMask& coverageMask) {
@@ -124,7 +132,8 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void updateHistogramBuilder(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder) {
+static inline void buildHistogram(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder,
+                                  BinCacheEntry& cacheEntry) {
     uint32 numBins = vector.getNumElements();
 
     for (uint32 binIndex = 0; binIndex < numBins; binIndex++) {
@@ -135,6 +144,8 @@ static inline void updateHistogramBuilder(BinVector& vector, IStatistics::IHisto
             histogramBuilder.onBinUpdate(binIndex, example.index, example.value);
         }
     }
+
+    cacheEntry.histogramPtr = std::move(histogramBuilder.build());
 }
 
 /**
@@ -202,19 +213,14 @@ class ApproximateThresholds : public AbstractThresholds {
                                         thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
                                     cacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins, true));
+                                    binVector = cacheEntry.binVectorPtr.get();
                                     currentBinVector_ = binVector;
                                     thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo,
                                                                                           *featureVectorPtr, *this);
-
-                                    // Build histogram...
-                                    binVector = cacheEntry.binVectorPtr.get();
-                                    std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr =
-                                        thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
-                                    updateHistogramBuilder(*binVector, *histogramBuilderPtr);
-                                    cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
                                 }
                             }
 
+                            // Filter bins, if necessary...
                             uint32 numConditions = thresholdsSubset_.numModifications_;
 
                             if (numConditions > filteredCacheEntry.numConditions) {
@@ -222,8 +228,20 @@ class ApproximateThresholds : public AbstractThresholds {
                                                 thresholdsSubset_.coverageMask_);
                                 binVector = filteredCacheEntry.vectorPtr.get();
                             }
-                            //TODO: Hier wird das original Histogram zurück gegeben, es muss aber ein neues erstellt werden
-                            return std::make_unique<Result>(*cacheEntry.histogramPtr, *binVector);
+
+                            // (Re-)Build histogram, if necessary...
+                            IHistogram* histogram = cacheEntry.histogramPtr.get();
+
+                            if (histogram == nullptr) {
+                                uint32 numBins = binVector->getNumElements();
+                                std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr =
+                                    thresholdsSubset_.thresholds_.statisticsPtr_->buildHistogram(numBins);
+                                buildHistogram(*binVector, *histogramBuilderPtr, cacheEntry);
+                                    cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
+                                histogram = cacheEntry.histogramPtr.get();
+                            }
+
+                            return std::make_unique<Result>(*histogram, *binVector);
                         }
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
@@ -343,14 +361,6 @@ class ApproximateThresholds : public AbstractThresholds {
                     }
                 }
 
-        };
-
-        /**
-         * A wrapper for statistics and bins that is stored in the cache.
-         */
-        struct BinCacheEntry {
-            std::unique_ptr<IHistogram> histogramPtr;
-            std::unique_ptr<BinVector> binVectorPtr;
         };
 
         std::shared_ptr<IFeatureBinning> binningPtr_;
