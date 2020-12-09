@@ -22,10 +22,10 @@ LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector, uint
         labelInfo.minNegative = 0;
         labelInfo.maxNegative = -std::numeric_limits<float64>::infinity();
 
-        typename T::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+        typename T::gradient_const_iterator iterator = statisticVector.gradients_cbegin();
 
         for (uint32 i = 0; i < numStatistics; i++) {
-            float64 value = gradientIterator[i];
+            float64 value = iterator[i];
 
             if (value < 0) {
                 numNegative++;
