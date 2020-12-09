@@ -19,6 +19,8 @@ namespace boosting {
 
         public:
 
+            LabelInfo getLabelInfo(T& statisticVector, uint32 numPositiveBins, uint32 numNegativeBins) const override;
+
             void createBins(uint32 numPositiveBins, uint32 numNegativeBins, const T& statisticVector,
                             IBinningObserver<float64>& observer) const override;
 

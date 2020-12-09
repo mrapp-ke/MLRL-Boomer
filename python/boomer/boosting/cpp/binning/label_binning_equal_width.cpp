@@ -8,6 +8,60 @@ using namespace boosting;
 
 
 template<class T>
+LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(T& statisticVector, uint32 numPositiveBins,
+                                                  uint32 numNegativeBins) const {
+    LabelInfo labelInfo;
+    uint32 numStatistics = statisticVector.getNumElements();
+
+    if (numStatistics > 0) {
+        // Find minimum and maximum among the positive gradients and negative gradients, respectively...
+        uint32 numPositive = 0;
+        uint32 numNegative = 0;
+        labelInfo.minPositive = std::numeric_limits<float64>::infinity();
+        labelInfo.maxPositive = 0;
+        labelInfo.minNegative = 0;
+        labelInfo.maxNegative = -std::numeric_limits<float64>::infinity();
+
+        typename T::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+
+        for (uint32 i = 0; i < numStatistics; i++) {
+            float64 value = gradientIterator[i];
+
+            if (value < 0) {
+                numNegative++;
+
+                if (value < labelInfo.minNegative) {
+                    labelInfo.minNegative = value;
+                }
+
+                if (value > labelInfo.maxNegative) {
+                    labelInfo.maxNegative = value;
+                }
+            } else if (value > 0) {
+                numPositive++;
+
+                if (value < labelInfo.minPositive) {
+                    labelInfo.minPositive = value;
+                }
+
+                if (value > labelInfo.maxPositive) {
+                    labelInfo.maxPositive = value;
+                }
+            }
+        }
+
+        labelInfo.numPositiveBins = numPositive > 0 ? numNegativeBins : 0;
+        labelInfo.numNegativeBins = numNegative > 0 ? numPositiveBins : 0;
+    } else {
+        labelInfo.numPositiveBins = 0;
+        labelInfo.numNegativeBins = 0;
+    }
+
+    return labelInfo;
+
+}
+
+template<class T>
 void EqualWidthLabelBinning<T>::createBins(uint32 numPositiveBins, uint32 numNegativeBins, const T& statisticVector,
                                            IBinningObserver<float64>& observer) const {
     uint32 numGradients = statisticVector.getNumElements();
