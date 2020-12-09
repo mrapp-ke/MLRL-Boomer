@@ -34,7 +34,7 @@ bool DenseBinnedVector<T>::Iterator::operator!=(const DenseBinnedVector<T>::Iter
 template<class T>
 DenseBinnedVector<T>::DenseBinnedVector(uint32 numElements, uint32 numBins)
     : binIndices_((uint32*) malloc(numElements * sizeof(uint32))), array_((T*) malloc(numBins * sizeof(T))),
-      numElements_(numElements), numBins_(numBins) {
+      numElements_(numElements), numBins_(numBins), maxBinCapacity_(numBins) {
 
 }
 
@@ -102,6 +102,21 @@ uint32 DenseBinnedVector<T>::getNumElements() const {
 template<class T>
 uint32 DenseBinnedVector<T>::getNumBins() const {
     return numBins_;
+}
+
+template<class T>
+void DenseBinnedVector<T>::setNumBins(uint32 numBins, bool freeMemory) {
+    if (numBins < maxBinCapacity_) {
+        if (freeMemory) {
+            array_ = (T*) realloc(array_, numBins * sizeof(T));
+            maxBinCapacity_ = numBins;
+        }
+    } else if (numBins > maxBinCapacity_) {
+        array_ = (T*) realloc(array_, numBins * sizeof(T));
+        maxBinCapacity_ = numBins;
+    }
+
+    numBins_ = numBins;
 }
 
 template<class T>
