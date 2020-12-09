@@ -82,6 +82,11 @@ uint32 DenseBinnedScoreVector<T>::getNumBins() const {
 }
 
 template<class T>
+void DenseBinnedScoreVector<T>::setNumBins(uint32 numBins, bool freeMemory) {
+    binnedVector_.setNumBins(numBins, freeMemory);
+}
+
+template<class T>
 bool DenseBinnedScoreVector<T>::isPartial() const {
     return labelIndices_.isPartial();
 }
