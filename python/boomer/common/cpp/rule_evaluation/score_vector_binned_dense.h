@@ -144,6 +144,14 @@ class DenseBinnedScoreVector : virtual public IScoreVector {
         uint32 getNumBins() const;
 
         /**
+         * Sets the number of bins.
+         *
+         * @param numBins       The number of bins to be set
+         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
+         */
+        void setNumBins(uint32 numBins, bool freeMemory);
+
+        /**
          * Returns whether the rule may only predict for a subset of the available labels, or not.
          *
          * @return True, if the rule may only predict for a subset of the available labels, false otherwise
