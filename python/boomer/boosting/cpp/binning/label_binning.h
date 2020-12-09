@@ -51,7 +51,7 @@ namespace boosting {
              *                          Must be at least 1
              * @return                  A struct of `type `LabelInfo` that stores the information
              */
-            virtual LabelInfo getLabelInfo(T& statisticVector, uint32 numPositiveBins,
+            virtual LabelInfo getLabelInfo(const T& statisticVector, uint32 numPositiveBins,
                                            uint32 numNegativeBins) const = 0;
 
             /**
