@@ -25,6 +25,8 @@ class DenseBinnedVector {
 
         uint32 numBins_;
 
+        uint32 maxBinCapacity_;
+
     public:
 
         /**
@@ -153,6 +155,14 @@ class DenseBinnedVector {
          * @return The number of bins
          */
         uint32 getNumBins() const;
+
+        /**
+         * Sets the number of bins.
+         *
+         * @param numBins       The number of bins to be set
+         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
+         */
+        void setNumBins(uint32 numBins, bool freeMemory);
 
         /**
          * Returns the value of the element at a specific position.
