@@ -8,7 +8,7 @@ using namespace boosting;
 
 
 template<class T>
-LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(T& statisticVector, uint32 numPositiveBins,
+LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector, uint32 numPositiveBins,
                                                   uint32 numNegativeBins) const {
     LabelInfo labelInfo;
     uint32 numStatistics = statisticVector.getNumElements();
