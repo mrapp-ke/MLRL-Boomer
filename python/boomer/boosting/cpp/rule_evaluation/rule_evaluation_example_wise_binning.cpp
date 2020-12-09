@@ -223,6 +223,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
             currentStatisticVector_ = &statisticVector;
+            LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector, numPositiveBins_, numNegativeBins_);
             binningPtr_->createBins(numPositiveBins_, numNegativeBins_, statisticVector, *binningObserver_);
 
             // Compute predictions and quality scores...
@@ -267,6 +268,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
             std::cout << "createBins...\n";
             currentStatisticVector_ = &statisticVector;
+            LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector, numPositiveBins_, numNegativeBins_);
             binningPtr_->createBins(numPositiveBins_, numNegativeBins_, statisticVector, *binningObserver_);
             std::cout << "createBins...DONE\n";
 

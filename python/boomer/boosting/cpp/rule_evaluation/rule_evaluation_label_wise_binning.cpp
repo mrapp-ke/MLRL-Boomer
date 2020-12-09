@@ -80,6 +80,7 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
             currentStatisticVector_ = &statisticVector;
+            LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector, numPositiveBins_, numNegativeBins_);
             binningPtr_->createBins(numPositiveBins_, numNegativeBins_, statisticVector, *this);
 
             // Compute predictions and quality scores...
