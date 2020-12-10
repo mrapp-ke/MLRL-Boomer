@@ -137,9 +137,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
         float64 l2RegularizationWeight_;
 
-        uint32 numPositiveBins_;
-
-        uint32 numNegativeBins_;
+        uint32 maxBins_;
 
         std::unique_ptr<ILabelBinning<DenseExampleWiseStatisticVector>> binningPtr_;
 
@@ -164,12 +162,11 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
     public:
 
         /**
+         * @param labelIndices              A reference to an object of template type `T` that provides access to the
+         *                                  indices of the labels for which the rules may predict
          * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
          *                                  scores to be predicted by rules
-         * @param numPositiveBins           The number of bins to be used for labels that should be predicted
-         *                                  positively. Must be at least 1
-         * @param numNegativeBins           The number of bins to be used for labels that should be predicted
-         *                                  negatively. Must be at least 1
+         * @param maxBins                   The maximum number of bins to assign labels to
          * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be used
          *                                  to assign labels to bins
          * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
@@ -177,15 +174,13 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
          * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
          *                                  different LAPACK routines
          */
-        BinningExampleWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight, uint32 numPositiveBins,
-                                         uint32 numNegativeBins,
+        BinningExampleWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight, uint32 maxBins,
                                          std::unique_ptr<ILabelBinning<DenseExampleWiseStatisticVector>> binningPtr,
                                          std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
             : AbstractExampleWiseRuleEvaluation<T>(labelIndices, lapackPtr),
-              l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
-              numNegativeBins_(numNegativeBins), binningPtr_(std::move(binningPtr)), blasPtr_(blasPtr),
-              scoreVector_(nullptr), labelWiseScoreVector_(nullptr), tmpGradients_(nullptr), tmpHessians_(nullptr),
-              numElementsPerBin_(nullptr), mapping_(nullptr), binningObserver_(nullptr) {
+              l2RegularizationWeight_(l2RegularizationWeight), maxBins_(maxBins), binningPtr_(std::move(binningPtr)),
+              blasPtr_(blasPtr), scoreVector_(nullptr), labelWiseScoreVector_(nullptr), tmpGradients_(nullptr),
+              tmpHessians_(nullptr), numElementsPerBin_(nullptr), mapping_(nullptr), binningObserver_(nullptr) {
 
         }
 
@@ -201,18 +196,18 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
         const ILabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseExampleWiseStatisticVector& statisticVector) override {
-            uint32 numBins;
-
             if (labelWiseScoreVector_ == nullptr) {
-                numBins = numPositiveBins_ + numNegativeBins_;
-                labelWiseScoreVector_ = new DenseBinnedLabelWiseScoreVector<T>(this->labelIndices_, numBins);
-                tmpGradients_ = (float64*) malloc(numBins * sizeof(float64));
-                tmpHessians_ = (float64*) malloc(numBins * sizeof(float64));
-                numElementsPerBin_ = (uint32*) malloc(numBins * sizeof(uint32));
+                labelWiseScoreVector_ = new DenseBinnedLabelWiseScoreVector<T>(this->labelIndices_, maxBins_);
+                tmpGradients_ = (float64*) malloc(maxBins_ * sizeof(float64));
+                tmpHessians_ = (float64*) malloc(maxBins_ * sizeof(float64));
+                numElementsPerBin_ = (uint32*) malloc(maxBins_ * sizeof(uint32));
                 binningObserver_ = new BinningExampleWiseRuleEvaluation<T>::LabelWiseBinningObserver(*this);
-            } else {
-                numBins = labelWiseScoreVector_->getNumBins();
             }
+
+            // Obtain information about the bins to be used...
+            LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector);
+            uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
+            labelWiseScoreVector_->setNumBins(numBins, false);
 
             // Reset gradients and Hessians to zero...
             for (uint32 i = 0; i < numBins; i++) {
@@ -223,8 +218,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
             currentStatisticVector_ = &statisticVector;
-            LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector, numPositiveBins_, numNegativeBins_);
-            binningPtr_->createBins(numPositiveBins_, numNegativeBins_, statisticVector, *binningObserver_);
+            binningPtr_->createBins(labelInfo, statisticVector, *binningObserver_);
 
             // Compute predictions and quality scores...
             labelWiseScoreVector_->overallQualityScore = calculateLabelWisePredictionInternally<
@@ -238,20 +232,20 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
         }
 
         const IScoreVector& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
-            uint32 numBins;
-
             if (scoreVector_ == nullptr) {
-                numBins = numPositiveBins_ + numNegativeBins_;
-                scoreVector_ = new DenseBinnedScoreVector<T>(this->labelIndices_, numBins);
-                this->initializeTmpArrays(numBins);
-                tmpGradients_ = (float64*) malloc(numBins * sizeof(float64));
-                tmpHessians_ = (float64*) malloc(triangularNumber(numBins) * sizeof(float64));
-                numElementsPerBin_ = (uint32*) malloc(numBins * sizeof(uint32));
-                mapping_ = new Mapping<uint32>(numBins);
+                scoreVector_ = new DenseBinnedScoreVector<T>(this->labelIndices_, maxBins_);
+                this->initializeTmpArrays(maxBins_);
+                tmpGradients_ = (float64*) malloc(maxBins_ * sizeof(float64));
+                tmpHessians_ = (float64*) malloc(triangularNumber(maxBins_) * sizeof(float64));
+                numElementsPerBin_ = (uint32*) malloc(maxBins_ * sizeof(uint32));
+                mapping_ = new Mapping<uint32>(maxBins_);
                 binningObserver_ = new BinningExampleWiseRuleEvaluation<T>::ExampleWiseBinningObserver(*this);
-            } else {
-                numBins = scoreVector_->getNumBins();
             }
+
+            // Obtain information about the bins to be used...
+            LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector);
+            uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
+            scoreVector_->setNumBins(numBins, false);
 
             // Reset gradients and Hessians to zero...
             std::cout << "reset mapping...\n";
@@ -268,8 +262,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
             std::cout << "createBins...\n";
             currentStatisticVector_ = &statisticVector;
-            LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector, numPositiveBins_, numNegativeBins_);
-            binningPtr_->createBins(numPositiveBins_, numNegativeBins_, statisticVector, *binningObserver_);
+            binningPtr_->createBins(labelInfo, statisticVector, *binningObserver_);
             std::cout << "createBins...DONE\n";
 
             std::cout << "create binned Hessian matrix...\n";
@@ -305,7 +298,6 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                     }
 
                     std::cout << "\n";
-
                     tmpHessians_[offset + j] = sumOfHessians;
                 }
             }
@@ -390,29 +382,28 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 };
 
 EqualWidthBinningExampleWiseRuleEvaluationFactory::EqualWidthBinningExampleWiseRuleEvaluationFactory(
-        float64 l2RegularizationWeight, uint32 numPositiveBins, uint32 numNegativeBins, std::shared_ptr<Blas> blasPtr,
+        float64 l2RegularizationWeight, float32 binRatio, std::shared_ptr<Blas> blasPtr,
         std::shared_ptr<Lapack> lapackPtr)
-    : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
-      numNegativeBins_(numNegativeBins), blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
+    : l2RegularizationWeight_(l2RegularizationWeight), binRatio_(binRatio), blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
 
 }
 
 std::unique_ptr<IExampleWiseRuleEvaluation> EqualWidthBinningExampleWiseRuleEvaluationFactory::create(
         const FullIndexVector& indexVector) const {
     std::unique_ptr<ILabelBinning<DenseExampleWiseStatisticVector>> binningPtr =
-        std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector>>();
+        std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector>>(binRatio_);
+    uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
     return std::make_unique<BinningExampleWiseRuleEvaluation<FullIndexVector>>(indexVector, l2RegularizationWeight_,
-                                                                               numPositiveBins_, numNegativeBins_,
-                                                                               std::move(binningPtr), blasPtr_,
+                                                                               maxBins, std::move(binningPtr), blasPtr_,
                                                                                lapackPtr_);
 }
 
 std::unique_ptr<IExampleWiseRuleEvaluation> EqualWidthBinningExampleWiseRuleEvaluationFactory::create(
         const PartialIndexVector& indexVector) const {
     std::unique_ptr<ILabelBinning<DenseExampleWiseStatisticVector>> binningPtr =
-        std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector>>();
+        std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector>>(binRatio_);
+    uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
     return std::make_unique<BinningExampleWiseRuleEvaluation<PartialIndexVector>>(indexVector, l2RegularizationWeight_,
-                                                                                  numPositiveBins_, numNegativeBins_,
-                                                                                  std::move(binningPtr), blasPtr_,
-                                                                                  lapackPtr_);
+                                                                                  maxBins, std::move(binningPtr),
+                                                                                  blasPtr_, lapackPtr_);
 }

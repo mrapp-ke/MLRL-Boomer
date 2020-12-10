@@ -21,10 +21,6 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
 
         float64 l2RegularizationWeight_;
 
-        uint32 numPositiveBins_;
-
-        uint32 numNegativeBins_;
-
         std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr_;
 
         DenseBinnedLabelWiseScoreVector<T> scoreVector_;
@@ -40,24 +36,21 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
     public:
 
         /**
-         * @param numPositiveBins           The number of bins to be used for labels that should be predicted
-         *                                  positively. Must be at least 1
-         * @param numNegativeBins           The number of bins to be used for labels that should be predicted
-         *                                  negatively. Must be at least 1
+         * @param labelIndices              A reference to an object of template type `T` that provides access to the
+         *                                  indices of the labels for which rules may predict
          * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
          *                                  scores to be predicted by rules
+         * @param maxBins                   The maximum number of bins to assign labels to
          * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be used
          *                                  to assign labels to bins
          */
-        BinningLabelWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight, uint32 numPositiveBins,
-                                       uint32 numNegativeBins,
+        BinningLabelWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight, uint32 maxBins,
                                        std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr)
-            : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
-              numNegativeBins_(numNegativeBins), binningPtr_(std::move(binningPtr)),
-              scoreVector_(DenseBinnedLabelWiseScoreVector<T>(labelIndices, numPositiveBins + numNegativeBins)),
-              tmpGradients_((float64*) malloc(scoreVector_.getNumBins() * sizeof(float64))),
-              tmpHessians_((float64*) malloc(scoreVector_.getNumBins() * sizeof(float64))),
-              numElementsPerBin_((uint32*) malloc(scoreVector_.getNumBins() * sizeof(uint32))) {
+            : l2RegularizationWeight_(l2RegularizationWeight), binningPtr_(std::move(binningPtr)),
+              scoreVector_(DenseBinnedLabelWiseScoreVector<T>(labelIndices, maxBins)),
+              tmpGradients_((float64*) malloc(maxBins * sizeof(float64))),
+              tmpHessians_((float64*) malloc(maxBins * sizeof(float64))),
+              numElementsPerBin_((uint32*) malloc(maxBins * sizeof(uint32))) {
 
         }
 
@@ -69,9 +62,12 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
 
         const ILabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseLabelWiseStatisticVector& statisticVector) override {
-            // Reset gradients and Hessians to zero...
-            uint32 numBins = scoreVector_.getNumBins();
+            // Obtain information about the bins to be used...
+            LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector);
+            uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
+            scoreVector_.setNumBins(numBins, false);
 
+            // Reset gradients and Hessians to zero...
             for (uint32 i = 0; i < numBins; i++) {
                 tmpGradients_[i] = 0;
                 tmpHessians_[i] = 0;
@@ -80,8 +76,7 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
             currentStatisticVector_ = &statisticVector;
-            LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector, numPositiveBins_, numNegativeBins_);
-            binningPtr_->createBins(numPositiveBins_, numNegativeBins_, statisticVector, *this);
+            binningPtr_->createBins(labelInfo, statisticVector, *this);
 
             // Compute predictions and quality scores...
             scoreVector_.overallQualityScore = calculateLabelWisePredictionInternally<
@@ -104,26 +99,25 @@ class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public I
 };
 
 EqualWidthBinningLabelWiseRuleEvaluationFactory::EqualWidthBinningLabelWiseRuleEvaluationFactory(
-        float64 l2RegularizationWeight, uint32 numPositiveBins, uint32 numNegativeBins)
-    : l2RegularizationWeight_(l2RegularizationWeight), numPositiveBins_(numPositiveBins),
-      numNegativeBins_(numNegativeBins) {
+        float64 l2RegularizationWeight, float32 binRatio)
+    : l2RegularizationWeight_(l2RegularizationWeight), binRatio_(binRatio) {
 
 }
 
 std::unique_ptr<ILabelWiseRuleEvaluation> EqualWidthBinningLabelWiseRuleEvaluationFactory::create(
         const FullIndexVector& indexVector) const {
     std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr =
-        std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector>>();
+        std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector>>(binRatio_);
+    uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
     return std::make_unique<BinningLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, l2RegularizationWeight_,
-                                                                             numPositiveBins_, numNegativeBins_,
-                                                                             std::move(binningPtr));
+                                                                             maxBins, std::move(binningPtr));
 }
 
 std::unique_ptr<ILabelWiseRuleEvaluation> EqualWidthBinningLabelWiseRuleEvaluationFactory::create(
         const PartialIndexVector& indexVector) const {
     std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr =
-        std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector>>();
+        std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector>>(binRatio_);
+    uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
     return std::make_unique<BinningLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector, l2RegularizationWeight_,
-                                                                                numPositiveBins_, numNegativeBins_,
-                                                                                std::move(binningPtr));
+                                                                                maxBins, std::move(binningPtr));
 }

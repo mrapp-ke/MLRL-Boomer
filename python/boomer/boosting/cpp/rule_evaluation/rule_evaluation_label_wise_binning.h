@@ -17,22 +17,17 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            uint32 numPositiveBins_;
-
-            uint32 numNegativeBins_;
+            float32 binRatio_;
 
         public:
 
             /**
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param numPositiveBins           The number of bins to be used for labels that should be predicted
-             *                                  positively
-             * @param numNegativeBins           The number of bins to be used for label that should be predicted
-             *                                  negatively
+             * @param binRatio                  A percentage that specifies how many bins should be used to assign
+             *                                  labels to
              */
-            EqualWidthBinningLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight, uint32 numPositiveBins,
-                                                            uint32 numNegativeBins);
+            EqualWidthBinningLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight, float32 binRatio);
 
             std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
 

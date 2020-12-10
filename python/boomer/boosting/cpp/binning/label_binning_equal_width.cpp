@@ -8,8 +8,18 @@ using namespace boosting;
 
 
 template<class T>
-LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector, uint32 numPositiveBins,
-                                                  uint32 numNegativeBins) const {
+EqualWidthLabelBinning<T>::EqualWidthLabelBinning(float32 binRatio)
+    : binRatio_(binRatio) {
+
+}
+
+template<class T>
+uint32 EqualWidthLabelBinning<T>::getMaxBins(uint32 numLabels) const {
+    return std::ceil(binRatio_ * numLabels) + 1;
+}
+
+template<class T>
+LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector) const {
     LabelInfo labelInfo;
     uint32 numStatistics = statisticVector.getNumElements();
 
@@ -50,8 +60,8 @@ LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector, uint
             }
         }
 
-        labelInfo.numPositiveBins = numPositive > 0 ? numNegativeBins : 0;
-        labelInfo.numNegativeBins = numNegative > 0 ? numPositiveBins : 0;
+        labelInfo.numNegativeBins = std::ceil(binRatio_ * numPositive);
+        labelInfo.numPositiveBins = std::ceil(binRatio_ * numNegative);
     } else {
         labelInfo.numPositiveBins = 0;
         labelInfo.numNegativeBins = 0;
@@ -62,68 +72,43 @@ LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector, uint
 }
 
 template<class T>
-void EqualWidthLabelBinning<T>::createBins(uint32 numPositiveBins, uint32 numNegativeBins, const T& statisticVector,
+void EqualWidthLabelBinning<T>::createBins(LabelInfo labelInfo, const T& statisticVector,
                                            IBinningObserver<float64>& observer) const {
-    uint32 numGradients = statisticVector.getNumElements();
-    typename T::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+    uint32 numPositiveBins = labelInfo.numPositiveBins;
+    float64 minPositive = labelInfo.minPositive;
+    float64 maxPositive = labelInfo.maxPositive;
+    uint32 numNegativeBins = labelInfo.numNegativeBins;
+    float64 minNegative = labelInfo.minNegative;
+    float64 maxNegative = labelInfo.minNegative;
 
-    // Find minimum and maximum among the positive gradients and negative gradients, respectively...
-    float64 minPositiveGradient = std::numeric_limits<float64>::infinity();
-    float64 maxPositiveGradient = 0;
-    float64 minNegativeGradient = 0;
-    float64 maxNegativeGradient = -std::numeric_limits<float64>::infinity();
-
-    for (uint32 i = 0; i < numGradients; i++) {
-        float64 gradient = gradientIterator[i];
-
-        if (gradient < 0) {
-            // Gradient is negative...
-            if (gradient < minNegativeGradient) {
-                minNegativeGradient = gradient;
-            }
-
-            if (gradient > maxNegativeGradient) {
-                maxNegativeGradient = gradient;
-            }
-        } else if (gradient > 0) {
-            // Gradient is positive...
-            if (gradient < minPositiveGradient) {
-                minPositiveGradient = gradient;
-            }
-
-            if (gradient > maxPositiveGradient) {
-                maxPositiveGradient = gradient;
-            }
-        }
-    }
-
-    float64 spanPerPositiveBin =
-        minNegativeGradient < 0 ? (maxNegativeGradient - minNegativeGradient) / numPositiveBins : 0;
-    float64 spanPerNegativeBin =
-        maxPositiveGradient > 0 ? (maxPositiveGradient - minPositiveGradient) / numNegativeBins : 0;
+    float64 spanPerPositiveBin = minNegative < 0 ? (maxNegative - minNegative) / numPositiveBins : 0;
+    float64 spanPerNegativeBin = maxPositive > 0 ? (maxPositive - minPositive) / numNegativeBins : 0;
 
     // Assign labels to bins...
-    for (uint32 i = 0; i < numGradients; i++) {
-        float64 gradient = gradientIterator[i];
+    uint32 numStatistics = statisticVector.getNumElements();
+    typename T::gradient_const_iterator iterator = statisticVector.gradients_cbegin();
 
-        if (gradient > 0) {
+    for (uint32 i = 0; i < numStatistics; i++) {
+        float64 value = iterator[i];
+
+        if (value > 0) {
             // Gradient is positive, i.e., label belongs to a negative bin...
-            uint32 binIndex = std::floor((gradient - minPositiveGradient) / spanPerNegativeBin);
+            uint32 binIndex = std::floor((value - minPositive) / spanPerNegativeBin);
 
             if (binIndex >= numNegativeBins) {
                 binIndex = numNegativeBins - 1;
             }
 
-            observer.onBinUpdate(binIndex, i, gradient);
-        } else if (gradient < 0) {
+            observer.onBinUpdate(binIndex, i, value);
+        } else if (value < 0) {
             // Gradient is negative, i.e., label belongs to a positive bin...
-            uint32 binIndex = std::floor((gradient - minNegativeGradient) / spanPerPositiveBin);
+            uint32 binIndex = std::floor((value - minNegative) / spanPerPositiveBin);
 
             if (binIndex >= numPositiveBins) {
                 binIndex = numPositiveBins - 1;
             }
 
-            observer.onBinUpdate(numNegativeBins + binIndex, i, gradient);
+            observer.onBinUpdate(numNegativeBins + binIndex, i, value);
         }
     }
 }

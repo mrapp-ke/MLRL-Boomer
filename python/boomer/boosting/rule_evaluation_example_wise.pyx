@@ -39,14 +39,13 @@ cdef class EqualWidthBinningExampleWiseRuleEvaluationFactory(ExampleWiseRuleEval
     A wrapper for the C++ class `EqualWidthBinningExampleWiseRuleEvaluationFactory`.
     """
 
-    def __cinit__(self, float64 l2_regularization_weight, uint32 num_positive_bins, uint32 num_negative_bins):
+    def __cinit__(self, float64 l2_regularization_weight, float32 bin_ratio):
         """
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             scores to be predicted by rules
-        :param num_positive_bins:           The number of bins to be used for labels that should be predicted positively
-        :param num_negative_bins:           The number of bins to be used for labels that should be predicted negatively
+        :param bin_ratio:                   A percentage that specifies how many bins should be used to assign labels to
         """
         cdef shared_ptr[Blas] blas_ptr = <shared_ptr[Blas]>move(init_blas())
         cdef shared_ptr[Lapack] lapack_ptr = <shared_ptr[Lapack]>move(init_lapack())
         self.rule_evaluation_factory_ptr = <shared_ptr[IExampleWiseRuleEvaluationFactory]>make_shared[EqualWidthBinningExampleWiseRuleEvaluationFactoryImpl](
-            l2_regularization_weight, num_positive_bins, num_negative_bins, blas_ptr, lapack_ptr)
+            l2_regularization_weight, bin_ratio, blas_ptr, lapack_ptr)

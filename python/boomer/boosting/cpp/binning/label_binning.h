@@ -35,6 +35,15 @@ namespace boosting {
             virtual ~ILabelBinning() { };
 
             /**
+             * Returns an upper bound for the number of bins used by the binning method, given a specific number of
+             * labels for which rules may predict.
+             *
+             * @param numLabels The number of labels for which rules may predict
+             * @return          The maximum number of bins used by the binning method
+             */
+            virtual uint32 getMaxBins(uint32 numLabels) const = 0;
+
+            /**
              * Retrieves and returns information about the statistics for individual labels in a given vector that is
              * required to apply the binning method.
              *
@@ -45,28 +54,21 @@ namespace boosting {
              *
              * @param statisticVector   A reference to an object of template type `T` that provides access to the
              *                          statistics for individual labels
-             * @param numPositiveBins   The number of bins to be used for labels that should be predicted positively.
-             *                          Must be at least 1
-             * @param numNegativeBins   The number of bins to be used for labels that should be predicted negatively.
-             *                          Must be at least 1
              * @return                  A struct of `type `LabelInfo` that stores the information
              */
-            virtual LabelInfo getLabelInfo(const T& statisticVector, uint32 numPositiveBins,
-                                           uint32 numNegativeBins) const = 0;
+            virtual LabelInfo getLabelInfo(const T& statisticVector) const = 0;
 
             /**
              * Assigns the labels to bins, based on the corresponding gradients.
              *
-             * @param numPositiveBins   The number of bins to be used for labels that should be predicted positively.
-             *                          Must be at least 1
-             * @param numNegativeBins   The number of bins to be used for labels that should be predicted negatively.
-             *                          Must be at least 1
+             * @param labelInfo         A struct of type `LabelInfo` that stores information about the statistics in the
+             *                          given vector
              * @param statisticVector   A reference to an object of template type `T` that provides access to the
              *                          gradients
              * @param observer          A reference to an object of type `IBinningObserver` that should be notified when
              *                          a label is assigned to a bin
              */
-            virtual void createBins(uint32 numPositiveBins, uint32 numNegativeBins, const T& statisticVector,
+            virtual void createBins(LabelInfo labelInfo, const T& statisticVector,
                                     IBinningObserver<float64>& observer) const = 0;
 
     };
