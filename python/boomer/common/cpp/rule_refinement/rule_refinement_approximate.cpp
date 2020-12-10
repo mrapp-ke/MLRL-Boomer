@@ -33,23 +33,27 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     uint32 numCoveredExamples = 0;
 
     for (; r < numBins; r++) {
-        if (iterator[r].numExamples > 0){
-            statisticsSubsetPtr->addToSubset(r, 1);
-            previousR = r;
+        uint32 numExamples = iterator[r].numExamples;
+
+        if (numExamples > 0) {
             previousValue = iterator[r].maxValue;
-            numCoveredExamples = iterator[r].numExamples;
+            previousR = r;
+            numCoveredExamples += numExamples;
+            statisticsSubsetPtr->addToSubset(r, 1);
             break;
         }
     }
-    if (numCoveredExamples > 0){
-        for (r += 1; r < numBins; r++) {
+
+    if (numCoveredExamples > 0) {
+        for (r = r + 1; r < numBins; r++) {
             uint32 numExamples = iterator[r].numExamples;
 
             if (numExamples > 0) {
                 float32 currentValue = iterator[r].minValue;
 
                 const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
-                                                                                   false, false);
+                                                                                       false, false);
+
                 if (head != nullptr) {
                     bestHead = head;
                     refinementPtr->comparator = LEQ;
@@ -73,12 +77,13 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 }
 
                 previousValue = iterator[r].maxValue;
+                previousR = r;
                 numCoveredExamples += numExamples;
                 statisticsSubsetPtr->addToSubset(r, 1);
-                previousR = r;
             }
         }
     }
+
     refinementPtr->headPtr = headRefinementPtr_->pollHead();
     refinementPtr_ = std::move(refinementPtr);
 }
