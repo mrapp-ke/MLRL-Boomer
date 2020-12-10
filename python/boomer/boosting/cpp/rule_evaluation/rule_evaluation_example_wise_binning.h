@@ -19,9 +19,7 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            uint32 numPositiveBins_;
-
-            uint32 numNegativeBins_;
+            float32 binRatio_;
 
             std::shared_ptr<Blas> blasPtr_;
 
@@ -32,17 +30,15 @@ namespace boosting {
             /**
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param numPositiveBins           The number of bins to be used for labels that should be predicted
-             *                                  positively
-             * @param numNegativeBins           The number of bins to be used for labels that should be predicted
-             *                                  negatively
+             * @param binRatio                  A percentage that specifies how many bins should be used to assign
+             *                                  labels to
              * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
              *                                  different BLAS routines
              * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
-            EqualWidthBinningExampleWiseRuleEvaluationFactory(float64 l2RegularizationWeight, uint32 numPositiveBins,
-                                                              uint32 numNegativeBins, std::shared_ptr<Blas> blasPtr,
+            EqualWidthBinningExampleWiseRuleEvaluationFactory(float64 l2RegularizationWeight, float32 binRatio,
+                                                              std::shared_ptr<Blas> blasPtr,
                                                               std::shared_ptr<Lapack> lapackPtr);
 
             std::unique_ptr<IExampleWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;

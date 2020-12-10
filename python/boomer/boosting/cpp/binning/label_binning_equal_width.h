@@ -17,12 +17,23 @@ namespace boosting {
     template<class T>
     class EqualWidthLabelBinning : public ILabelBinning<T> {
 
+        private:
+
+            float32 binRatio_;
+
         public:
 
-            LabelInfo getLabelInfo(const T& statisticVector, uint32 numPositiveBins,
-                                   uint32 numNegativeBins) const override;
+            /**
+             * @param binRatio A percentage that specifies how many bins should be used to assign labels to, e.g., if
+             *                 100 labels are available, 0.5 means that `ceil(0.5 * 100) = 50` bins should be used
+             */
+            EqualWidthLabelBinning(float32 binRatio);
 
-            void createBins(uint32 numPositiveBins, uint32 numNegativeBins, const T& statisticVector,
+            uint32 getMaxBins(uint32 numLabels) const override;
+
+            LabelInfo getLabelInfo(const T& statisticVector) const override;
+
+            void createBins(LabelInfo labelInfo, const T& statisticVector,
                             IBinningObserver<float64>& observer) const override;
 
     };

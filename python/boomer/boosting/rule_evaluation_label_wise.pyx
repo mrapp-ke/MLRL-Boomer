@@ -33,12 +33,11 @@ cdef class EqualWidthBinningLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluati
     A wrapper for the C++ class `EqualWidthBinningLabelWiseRuleEvaluationFactory`.
     """
 
-    def __cinit__(self, float64 l2_regularization_weight, uint32 num_positive_bins, uint32 num_negative_bins):
+    def __cinit__(self, float64 l2_regularization_weight, float32 bin_ratio):
         """
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             scores to be predicted by rules
-        :param num_positive_bins:           The number of bins to be used for labels that should be predicted positively
-        :param num_negative_bins:           The number of bins to be used for labels that should be predicted negatively
+        :param bin_ratio:                   A percentage that specifies how many bins should be used to assign labels to
         """
         self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[EqualWidthBinningLabelWiseRuleEvaluationFactoryImpl](
-            l2_regularization_weight, num_positive_bins, num_negative_bins)
+            l2_regularization_weight, bin_ratio)

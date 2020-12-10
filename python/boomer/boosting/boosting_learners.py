@@ -24,11 +24,12 @@ from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
 
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
-    HEAD_REFINEMENT_SINGLE
+    HEAD_REFINEMENT_SINGLE, ARGUMENT_BIN_RATIO
 from boomer.common.rule_learners import MLRuleLearner, SparsePolicy
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    create_max_head_refinements, create_num_threads, create_thresholds_factory, parse_prefix_and_dict, get_int_argument
+    create_max_head_refinements, create_num_threads, create_thresholds_factory, parse_prefix_and_dict, \
+    get_float_argument
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -39,10 +40,6 @@ LOSS_LABEL_WISE_SQUARED_ERROR = 'label-wise-squared-error-loss'
 LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
 
 LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
-
-ARGUMENT_NUM_POSITIVE_BINS = 'num-positive-bins'
-
-ARGUMENT_NUM_NEGATIVE_BINS = 'num-negative-bins'
 
 
 class Boomer(MLRuleLearner):
@@ -180,8 +177,7 @@ class Boomer(MLRuleLearner):
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(loss_function)
         l2_regularization_weight = self.__create_l2_regularization_weight()
-        rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight,
-                                                                        num_labels)
+        rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
         num_threads = create_num_threads(self.num_threads)
         thresholds_factory = create_thresholds_factory(self.feature_binning)
@@ -211,42 +207,31 @@ class Boomer(MLRuleLearner):
             return ExampleWiseLogisticLoss()
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
-    def __create_rule_evaluation_factory(self, loss_function, l2_regularization_weight: float, num_labels: int):
-        label_binning, num_positive_bins, num_negative_bins = self.__create_label_binning(num_labels)
+    def __create_rule_evaluation_factory(self, loss_function, l2_regularization_weight: float):
+        label_binning, bin_ratio = self.__create_label_binning()
 
         if isinstance(loss_function, LabelWiseLoss):
             if label_binning == LABEL_BINNING_EQUAL_WIDTH:
-                return EqualWidthBinningLabelWiseRuleEvaluationFactory(l2_regularization_weight, num_positive_bins,
-                                                                       num_negative_bins)
+                return EqualWidthBinningLabelWiseRuleEvaluationFactory(l2_regularization_weight, bin_ratio)
             else:
                 return RegularizedLabelWiseRuleEvaluationFactory(l2_regularization_weight)
         else:
             if label_binning == LABEL_BINNING_EQUAL_WIDTH:
-                return EqualWidthBinningExampleWiseRuleEvaluationFactory(l2_regularization_weight, num_positive_bins,
-                                                                         num_negative_bins)
+                return EqualWidthBinningExampleWiseRuleEvaluationFactory(l2_regularization_weight, bin_ratio)
             else:
                 return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
 
-    def __create_label_binning(self, num_labels: int) -> (str, int, int):
+    def __create_label_binning(self) -> (str, float):
         label_binning = self.label_binning
 
         if label_binning is None:
-            return None, 0, 0
+            return None, 0
         else:
             prefix, args = parse_prefix_and_dict(label_binning, [LABEL_BINNING_EQUAL_WIDTH])
 
             if prefix == LABEL_BINNING_EQUAL_WIDTH:
-                num_positive_bins = get_int_argument(args, ARGUMENT_NUM_POSITIVE_BINS, 1, lambda x: x >= 1)
-                num_negative_bins = get_int_argument(args, ARGUMENT_NUM_NEGATIVE_BINS, 1, lambda x: x >= 1)
-
-                if num_positive_bins + num_negative_bins > num_labels:
-                    raise ValueError(
-                        'Invalid values given for int arguments \'' + ARGUMENT_NUM_POSITIVE_BINS + '\' and \''
-                        + ARGUMENT_NUM_NEGATIVE_BINS + '\': The sum of both arguments (' + str(num_positive_bins)
-                        + ' + ' + str(num_negative_bins) + ') must be less than the number of labels ('
-                        + str(num_labels) + ')')
-
-                return prefix, num_positive_bins, num_negative_bins
+                bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
+                return prefix, bin_ratio
             raise ValueError('Invalid value given for parameter \'label_binning\': ' + str(label_binning))
 
     def __create_statistics_provider_factory(self, loss_function, rule_evaluation_factory) -> StatisticsProviderFactory:
