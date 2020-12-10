@@ -28,54 +28,57 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     // Search for the first non-empty bin...
     uint32 r = 0;
+    uint32 previousR = 0;
+    float32 previousValue = 0;
+    uint32 numCoveredExamples = 0;
 
-    while (iterator[r].numExamples == 0 && r < numBins) {
-        r++;
-    }
-
-    statisticsSubsetPtr->addToSubset(r, 1);
-    uint32 previousR = r;
-    float32 previousValue = iterator[r].maxValue;
-    uint32 numCoveredExamples = iterator[r].numExamples;
-
-    for (r = r + 1; r < numBins; r++) {
-        uint32 numExamples = iterator[r].numExamples;
-
-        if (numExamples > 0) {
-            float32 currentValue = iterator[r].minValue;
-
-            const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
-                                                                                   false, false);
-
-            if (head != nullptr) {
-                bestHead = head;
-                refinementPtr->comparator = LEQ;
-                refinementPtr->threshold = (previousValue + currentValue) / 2.0;
-                refinementPtr->end = r;
-                refinementPtr->previous = previousR;
-                refinementPtr->coveredWeights = numCoveredExamples;
-                refinementPtr->covered = true;
-            }
-
-            head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
-
-            if (head != nullptr) {
-                bestHead = head;
-                refinementPtr->comparator = GR;
-                refinementPtr->threshold = (previousValue + currentValue) / 2.0;
-                refinementPtr->end = r;
-                refinementPtr->previous = previousR;
-                refinementPtr->coveredWeights = numCoveredExamples;
-                refinementPtr->covered = false;
-            }
-
-            previousValue = iterator[r].maxValue;
-            previousR = r;
-            numCoveredExamples += numExamples;
+    for (; r < numBins; r++) {
+        if (iterator[r].numExamples > 0){
             statisticsSubsetPtr->addToSubset(r, 1);
+            previousR = r;
+            previousValue = iterator[r].maxValue;
+            numCoveredExamples = iterator[r].numExamples;
+            break;
         }
     }
+    if (numCoveredExamples > 0){
+        for (r += 1; r < numBins; r++) {
+            uint32 numExamples = iterator[r].numExamples;
 
+            if (numExamples > 0) {
+                float32 currentValue = iterator[r].minValue;
+
+                const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
+                                                                                   false, false);
+                if (head != nullptr) {
+                    bestHead = head;
+                    refinementPtr->comparator = LEQ;
+                    refinementPtr->threshold = (previousValue + currentValue) / 2.0;
+                    refinementPtr->end = r;
+                    refinementPtr->previous = previousR;
+                    refinementPtr->coveredWeights = numCoveredExamples;
+                    refinementPtr->covered = true;
+                }
+
+                head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
+
+                if (head != nullptr) {
+                    bestHead = head;
+                    refinementPtr->comparator = GR;
+                    refinementPtr->threshold = (previousValue + currentValue) / 2.0;
+                    refinementPtr->end = r;
+                    refinementPtr->previous = previousR;
+                    refinementPtr->coveredWeights = numCoveredExamples;
+                    refinementPtr->covered = false;
+                }
+
+                previousValue = iterator[r].maxValue;
+                numCoveredExamples += numExamples;
+                statisticsSubsetPtr->addToSubset(r, 1);
+                previousR = r;
+            }
+        }
+    }
     refinementPtr->headPtr = headRefinementPtr_->pollHead();
     refinementPtr_ = std::move(refinementPtr);
 }
