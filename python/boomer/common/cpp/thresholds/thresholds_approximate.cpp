@@ -239,9 +239,9 @@ class ApproximateThresholds : public AbstractThresholds {
                             IHistogram* histogram = cacheEntry.histogramPtr.get();
                             uint32 numStatisticUpdates = thresholdsSubset_.thresholds_.numStatisticUpdates_;
 
-                            if (histogram == nullptr) {
-                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry,
-                                               numStatisticUpdates);
+                            if (histogram == nullptr || numStatisticUpdates > cacheEntry.numUpdates) {
+                                buildHistogram(*cacheEntry.binVectorPtr, *thresholdsSubset_.thresholds_.statisticsPtr_,
+                                               cacheEntry, numStatisticUpdates);
                                 histogram = cacheEntry.histogramPtr.get();
                             }
 
