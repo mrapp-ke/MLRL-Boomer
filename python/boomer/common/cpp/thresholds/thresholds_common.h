@@ -24,6 +24,53 @@ struct FilteredCacheEntry {
     uint32 numConditions;
 };
 
+static inline float64 evaluateOutOfSampleInternally(const IStatistics& statistics,
+                                                    const IHeadRefinementFactory& headRefinementFactory,
+                                                    const IWeightVector& weights, const CoverageMask& coverageMask,
+                                                    const AbstractPrediction& prediction) {
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
+    uint32 numStatistics = statistics.getNumStatistics();
+
+    for (uint32 i = 0; i < numStatistics; i++) {
+        if (weights.getWeight(i) == 0 && coverageMask.isCovered(i)) {
+            statisticsSubsetPtr->addToSubset(i, 1);
+        }
+    }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    return scoreVector.overallQualityScore;
+}
+
+static inline void recalculatePredictionInternally(const IStatistics& statistics,
+                                                   const IHeadRefinementFactory& headRefinementFactory,
+                                                   const CoverageMask& coverageMask, Refinement& refinement) {
+    AbstractPrediction& head = *refinement.headPtr;
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
+    uint32 numStatistics = statistics.getNumStatistics();
+
+    for (uint32 i = 0; i < numStatistics; i++) {
+        if (coverageMask.isCovered(i)) {
+            statisticsSubsetPtr->addToSubset(i, 1);
+        }
+    }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    scoreVector.updatePrediction(head);
+}
+
+static inline void updateStatisticsInternally(IStatistics& statistics, const CoverageMask& coverageMask,
+                                              const AbstractPrediction& prediction) {
+    uint32 numStatistics = statistics.getNumStatistics();
+
+    for (uint32 i = 0; i < numStatistics; i++) {
+        if (coverageMask.isCovered(i)) {
+            prediction.apply(statistics, i);
+        }
+    }
+}
+
 /**
  * An abstract base class for all classes that provide access to thresholds that may be used by the first condition of a
  * rule that currently has an empty body and therefore covers the entire instance space.

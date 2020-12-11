@@ -445,50 +445,18 @@ class ExactThresholds : public AbstractThresholds {
 
                 float64 evaluateOutOfSample(const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
-                    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-                        head.createSubset(*thresholds_.statisticsPtr_);
-                    uint32 numExamples = thresholds_.getNumExamples();
-
-                    for (uint32 r = 0; r < numExamples; r++) {
-                        if (weights_.getWeight(r) == 0 && coverageMask.isCovered(r)) {
-                            statisticsSubsetPtr->addToSubset(r, 1);
-                        }
-                    }
-
-                    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(
-                        *thresholds_.headRefinementFactoryPtr_);
-                    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr,
-                                                                                             false, false);
-                    return scoreVector.overallQualityScore;
+                    return evaluateOutOfSampleInternally(*thresholds_.statisticsPtr_, 
+                                                         *thresholds_.headRefinementFactoryPtr_, weights_, coverageMask,
+                                                         head);
                 }
 
                 void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
-                    AbstractPrediction& head = *refinement.headPtr;
-                    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-                        head.createSubset(*thresholds_.statisticsPtr_);
-                    uint32 numExamples = thresholds_.getNumExamples();
-
-                    for (uint32 r = 0; r < numExamples; r++) {
-                        if (coverageMask.isCovered(r)) {
-                            statisticsSubsetPtr->addToSubset(r, 1);
-                        }
-                    }
-
-                    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(
-                        *thresholds_.headRefinementFactoryPtr_);
-                    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr,
-                                                                                             false, false);
-                    scoreVector.updatePrediction(head);
+                    recalculatePredictionInternally(*thresholds_.statisticsPtr_, *thresholds_.headRefinementFactoryPtr_,
+                                                    coverageMask, refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
-                    uint32 numExamples = thresholds_.getNumExamples();
-
-                    for (uint32 r = 0; r < numExamples; r++) {
-                        if (coverageMask_.isCovered(r)) {
-                            prediction.apply(*thresholds_.statisticsPtr_, r);
-                        }
-                    }
+                    updateStatisticsInternally(*thresholds_.statisticsPtr_, coverageMask_, prediction);
                 }
 
         };
