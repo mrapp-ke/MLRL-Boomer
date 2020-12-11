@@ -5,7 +5,7 @@ import setuptools
 from Cython.Build import cythonize
 
 # True, if annotated Cython source files that highlight Python interactions should be created
-ANNOTATE = True
+ANNOTATE = False
 
 # True, if all Cython compiler optimizations should be disabled
 DEBUG = False
@@ -119,7 +119,7 @@ setuptools.setup(name='boomer',
                      'liac-arff>=2.5.0',
                      'requests>=2.25.0'
                  ],
-                 python_requires='>=3.8',
+                 python_requires='>=3.7',
                  ext_modules=cythonize(extensions, language_level='3', annotate=ANNOTATE,
                                        compiler_directives=compiler_directives),
                  include_dirs=[numpy.get_include()],
