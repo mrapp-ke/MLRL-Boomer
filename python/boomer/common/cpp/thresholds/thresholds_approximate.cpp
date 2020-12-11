@@ -271,6 +271,8 @@ class ApproximateThresholds : public AbstractThresholds {
 
                 ApproximateThresholds& thresholds_;
 
+                const IWeightVector& weights_;
+
                 CoverageMask coverageMask_;
 
                 uint32 numModifications_;
@@ -298,11 +300,13 @@ class ApproximateThresholds : public AbstractThresholds {
             public:
 
                 /**
-                 * @param thresholds A reference to an object of type `ApproximateThresholds` that stores the thresholds
+                 * @param thresholds    A reference to an object of type `ApproximateThresholds` that stores the 
+                 *                      thresholds
+                 * @param weights       TODO
                  */
-                ThresholdsSubset(ApproximateThresholds& thresholds)
-                    : thresholds_(thresholds), coverageMask_(CoverageMask(thresholds.getNumExamples())),
-                      numModifications_(0) {
+                ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
+                    : thresholds_(thresholds), weights_(weights), 
+                      coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
 
                 }
 
@@ -335,11 +339,13 @@ class ApproximateThresholds : public AbstractThresholds {
                 }
 
                 void filterThresholds(const Condition& condition) override {
-
+                    // TODO Implement
                 }
 
                 void resetThresholds() override {
-
+                    numModifications_ = 0;
+                    cacheFiltered_.clear();
+                    coverageMask_.reset();
                 }
 
                 const CoverageMask& getCoverageMask() const {
@@ -348,22 +354,19 @@ class ApproximateThresholds : public AbstractThresholds {
 
                 float64 evaluateOutOfSample(const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
-                    return 0;
+                    return evaluateOutOfSampleInternally(*thresholds_.statisticsPtr_, 
+                                                         *thresholds_.headRefinementFactoryPtr_, weights_, coverageMask,
+                                                         head);
                 }
 
                 void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
-
+                    recalculatePredictionInternally(*thresholds_.statisticsPtr_, *thresholds_.headRefinementFactoryPtr_,
+                                                    coverageMask, refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
                     thresholds_.numStatisticUpdates_++;
-                    uint32 numExamples = thresholds_.getNumExamples();
-
-                    for (uint32 r = 0; r < numExamples; r++) {
-                        if (coverageMask_.isCovered(r)) {
-                            prediction.apply(*thresholds_.statisticsPtr_, r);
-                        }
-                    }
+                    updateStatisticsInternally(*thresholds_.statisticsPtr_, coverageMask_, prediction);
                 }
 
         };
@@ -400,7 +403,7 @@ class ApproximateThresholds : public AbstractThresholds {
         }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
-            return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this);
+            return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this, weights);
         }
 
 };
