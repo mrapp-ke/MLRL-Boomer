@@ -5,7 +5,7 @@ import setuptools
 from Cython.Build import cythonize
 
 # True, if annotated Cython source files that highlight Python interactions should be created
-ANNOTATE = True
+ANNOTATE = False
 
 # True, if all Cython compiler optimizations should be disabled
 DEBUG = False
