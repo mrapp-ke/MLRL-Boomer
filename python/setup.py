@@ -8,7 +8,7 @@ from Cython.Build import cythonize
 ANNOTATE = True
 
 # True, if all Cython compiler optimizations should be disabled
-DEBUG = True
+DEBUG = False
 
 # The compiler/linker argument to enable OpenMP support
 sources = [
@@ -97,8 +97,8 @@ sources = [
 COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenmp'
 
 extensions = [
-    setuptools.Extension(name='*', sources=sources, language='c++', extra_compile_args=[COMPILE_FLAG_OPEN_MP, '-g'],
-                         extra_link_args=[COMPILE_FLAG_OPEN_MP, '-g'],
+    setuptools.Extension(name='*', sources=sources, language='c++', extra_compile_args=[COMPILE_FLAG_OPEN_MP],
+                         extra_link_args=[COMPILE_FLAG_OPEN_MP],
                          define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")])
 ]
 
@@ -123,12 +123,11 @@ setuptools.setup(name='boomer',
                      "Cython>=0.29.0",
                      'scikit-learn>=0.23.0',
                      'scikit-multilearn>=0.2.0',
-                     'liac-arff>=2.4.0',
-                     'requests>=2.23.0'
+                     'liac-arff>=2.5.0',
+                     'requests>=2.25.0'
                  ],
                  python_requires='>=3.8',
                  ext_modules=cythonize(extensions, language_level='3', annotate=ANNOTATE,
-                                       compiler_directives=compiler_directives,
-                                       gdb_debug=DEBUG),
+                                       compiler_directives=compiler_directives),
                  include_dirs=[numpy.get_include()],
                  zip_safe=False)

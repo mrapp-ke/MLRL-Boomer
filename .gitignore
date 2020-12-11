@@ -21,6 +21,9 @@ venv/
 # IntelliJ
 .idea/
 
+# Virtual Studio Code
+.vscode/
+
 # Experiments
 results/
 models/
