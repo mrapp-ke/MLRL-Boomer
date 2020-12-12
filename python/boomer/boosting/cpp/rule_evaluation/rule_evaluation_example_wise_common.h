@@ -81,7 +81,7 @@ namespace boosting {
 
             }
 
-            ~AbstractExampleWiseRuleEvaluation() {
+            virtual ~AbstractExampleWiseRuleEvaluation() {
                 free(dsysvTmpArray1_);
                 free(dsysvTmpArray2_);
                 free(dsysvTmpArray3_);
