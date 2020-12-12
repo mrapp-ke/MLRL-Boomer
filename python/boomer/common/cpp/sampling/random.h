@@ -12,7 +12,7 @@
  * Implements a fast random number generator using 32 bit XOR shifts (for details, see
  * http://www.jstatsoft.org/v08/i14/paper).
  */
-class RNG {
+class RNG final {
 
     private:
 

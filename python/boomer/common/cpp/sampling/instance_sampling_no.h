@@ -10,7 +10,7 @@
  * An implementation of the class `IInstanceSubSampling` that does not perform any sampling, but assigns equal weights
  * to all examples.
  */
-class NoInstanceSubSampling : public IInstanceSubSampling {
+class NoInstanceSubSampling final : public IInstanceSubSampling {
 
     public:
 

@@ -13,7 +13,7 @@ namespace seco {
      * A heuristic that measures the fraction of uncovered labels among all labels for which the rule's prediction is
      * (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
      */
-    class Recall : public IHeuristic {
+    class Recall final : public IHeuristic {
 
         public:
 

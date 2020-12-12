@@ -13,7 +13,7 @@ namespace seco {
     /**
      * Allows to create instances of the class `RegularizedLabelWiseRuleEvaluation`.
      */
-    class HeuristicLabelWiseRuleEvaluationFactory : public ILabelWiseRuleEvaluationFactory {
+    class HeuristicLabelWiseRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
 
         private:
 

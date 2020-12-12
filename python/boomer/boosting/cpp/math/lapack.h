@@ -16,7 +16,7 @@ namespace boosting {
     /**
      * A wrapper that allows to execute different LAPACK routines.
      */
-    class Lapack {
+    class Lapack final {
 
         private:
 

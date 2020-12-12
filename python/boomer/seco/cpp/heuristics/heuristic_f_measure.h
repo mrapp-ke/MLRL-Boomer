@@ -15,7 +15,7 @@ namespace seco {
      * weighed equally. If `beta = 0`, this heuristic is equivalent to the heuristic `Precision`. As `beta` approaches
      * infinity, this heuristic becomes equivalent to the heuristic `Recall`.
      */
-    class FMeasure : public IHeuristic {
+    class FMeasure final : public IHeuristic {
 
         private:
 
