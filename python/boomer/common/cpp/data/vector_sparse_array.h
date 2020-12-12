@@ -36,7 +36,7 @@ class SparseArrayVector {
          */
         SparseArrayVector(uint32 numElements);
 
-        ~SparseArrayVector();
+        virtual ~SparseArrayVector();
 
         typedef Entry* iterator;
 

@@ -10,7 +10,7 @@
 /**
  * A stopping criterion that ensures that a certain time limit is not exceeded.
  */
-class TimeStoppingCriterion : public IStoppingCriterion {
+class TimeStoppingCriterion final : public IStoppingCriterion {
 
     private:
 

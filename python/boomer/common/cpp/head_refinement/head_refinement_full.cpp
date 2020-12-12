@@ -7,7 +7,7 @@
 /**
  * Allows to find the best multi-label head that predicts for all labels.
  */
-class FullHeadRefinement : public IHeadRefinement, public IScoreProcessor {
+class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor {
 
     private:
 

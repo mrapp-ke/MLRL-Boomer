@@ -10,7 +10,7 @@
 /**
  * Assigns feature values to bins in a way such that each bin contains values from equally sized value ranges.
  */
-class EqualWidthFeatureBinning : public IFeatureBinning {
+class EqualWidthFeatureBinning final : public IFeatureBinning {
 
     private:
 

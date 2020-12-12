@@ -9,7 +9,7 @@
 /**
  * A stopping criterion that ensures that the number of induced rules does not exceed a certain maximum.
  */
-class SizeStoppingCriterion : public IStoppingCriterion {
+class SizeStoppingCriterion final : public IStoppingCriterion {
 
     private:
 

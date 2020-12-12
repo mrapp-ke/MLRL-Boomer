@@ -29,7 +29,7 @@ static inline std::unique_ptr<SparseArrayVector<float64>> argsort(QualityScoreIt
  *           for the best head
  */
 template<class T>
-class PartialHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProcessor {
+class PartialHeadRefinement final : public IHeadRefinement, public ILabelWiseScoreProcessor {
 
     private:
 

@@ -10,7 +10,7 @@
  * Implements column-wise access to the feature values of the training examples based on a sparse matrix in the
  * compressed sparse column (CSC) format.
  */
-class CscFeatureMatrix : public IFeatureMatrix {
+class CscFeatureMatrix final : public IFeatureMatrix {
 
     private:
 

@@ -13,7 +13,7 @@ namespace boosting {
     /**
      * A factory that allows to create new instances of the class `ExampleWiseStatistics`.
      */
-    class DenseExampleWiseStatisticsFactory : public IExampleWiseStatisticsFactory {
+    class DenseExampleWiseStatisticsFactory final : public IExampleWiseStatisticsFactory {
 
         private:
 

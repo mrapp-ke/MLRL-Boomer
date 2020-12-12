@@ -14,7 +14,7 @@
  * An one-dimensional vector that provides random access to a fixed number of bins stored in a C-contiguous array, as
  * well as to the indices and feature values of the examples that belong to the individual bins.
  */
-class BinVector : public DenseVector<Bin> {
+class BinVector final : public DenseVector<Bin> {
 
     public:
 

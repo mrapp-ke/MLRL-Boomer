@@ -9,7 +9,7 @@
 /**
  * Allows to create instances of the class `SingleLabelHeadRefinement`.
  */
-class SingleLabelHeadRefinementFactory : public IHeadRefinementFactory {
+class SingleLabelHeadRefinementFactory final : public IHeadRefinementFactory {
 
     public:
 

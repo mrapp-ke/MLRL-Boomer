@@ -15,7 +15,7 @@ namespace boosting {
      * stored. In a vector that stores `n` gradients `(n * (n + 1)) / 2` Hessians are stored. The Hessians can be viewed
      * as a symmetric Hessian matrix with `n` rows and columns.
      */
-    class DenseExampleWiseStatisticVector {
+    class DenseExampleWiseStatisticVector final {
 
         private:
 
@@ -32,7 +32,7 @@ namespace boosting {
             /**
              * Allows to iterate the Hessians on the diagonal.
              */
-            class HessianDiagonalIterator {
+            class HessianDiagonalIterator final {
 
                 private:
 

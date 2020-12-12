@@ -6,7 +6,7 @@
 /**
  * Allows to find the best single-label head that predicts for a single label.
  */
-class SingleLabelHeadRefinement : public IHeadRefinement, public ILabelWiseScoreProcessor {
+class SingleLabelHeadRefinement final : public IHeadRefinement, public ILabelWiseScoreProcessor {
 
     private:
 

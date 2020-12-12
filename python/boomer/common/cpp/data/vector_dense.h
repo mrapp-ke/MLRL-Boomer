@@ -35,7 +35,7 @@ class DenseVector {
          */
         DenseVector(uint32 numElements, bool init);
 
-        ~DenseVector();
+        virtual ~DenseVector();
 
         typedef T* iterator;
 

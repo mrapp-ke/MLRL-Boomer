@@ -9,7 +9,7 @@
 /**
  * Implements random access to the labels of the training examples based on a C-contiguous array.
  */
-class DenseLabelMatrix : public IRandomAccessLabelMatrix {
+class DenseLabelMatrix final : public IRandomAccessLabelMatrix {
 
     private:
 
