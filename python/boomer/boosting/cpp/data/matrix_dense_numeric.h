@@ -17,7 +17,7 @@ namespace boosting {
      * @tparam T The type of the numbers that are stored in the matrix
      */
     template<class T>
-    class DenseNumericMatrix : public DenseMatrix<T> {
+    class DenseNumericMatrix final : public DenseMatrix<T> {
 
         public:
 

@@ -24,7 +24,7 @@ class ExampleWiseHistogram : virtual public IHistogram {
          *           subset
          */
         template<class T>
-        class StatisticsSubset : public IStatisticsSubset {
+        class StatisticsSubset final : public IStatisticsSubset {
 
             private:
 
@@ -173,22 +173,22 @@ class ExampleWiseHistogram : virtual public IHistogram {
 
         }
 
-        uint32 getNumStatistics() const override {
+        uint32 getNumStatistics() const override final {
             return numStatistics_;
         }
 
-        uint32 getNumLabels() const override {
+        uint32 getNumLabels() const override final {
             return numLabels_;
         }
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
+        std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
             std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                 ruleEvaluationFactoryPtr_->create(labelIndices);
             return std::make_unique<StatisticsSubset<FullIndexVector>>(*this, std::move(ruleEvaluationPtr),
                                                                        labelIndices);
         }
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override {
+        std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override final {
             std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                 ruleEvaluationFactoryPtr_->create(labelIndices);
             return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr),
@@ -206,8 +206,8 @@ class ExampleWiseHistogram : virtual public IHistogram {
  * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
 template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>,
-                              virtual public IExampleWiseStatistics {
+class ExampleWiseStatistics final : public ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>,
+                                    virtual public IExampleWiseStatistics {
 
     private:
 
@@ -215,7 +215,7 @@ class ExampleWiseStatistics : public ExampleWiseHistogram<StatisticVector, Stati
          * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the class
          * `ExampleWiseStatistics`.
          */
-        class HistogramBuilder : public IHistogramBuilder {
+        class HistogramBuilder final : public IHistogramBuilder {
 
             private:
 

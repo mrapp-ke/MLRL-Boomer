@@ -13,7 +13,7 @@ namespace seco {
      * A stopping criterion that stops when the sum of the weights of the uncovered labels provided by
      * `ICoverageStatistics` is smaller than or equal to a certain threshold.
      */
-    class CoverageStoppingCriterion : public IStoppingCriterion {
+    class CoverageStoppingCriterion final : public IStoppingCriterion {
 
         private:
 

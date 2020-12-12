@@ -11,7 +11,7 @@
 /**
  * A list that stores conditions in the order they have been learned.
  */
-class ConditionList {
+class ConditionList final {
 
     private:
 

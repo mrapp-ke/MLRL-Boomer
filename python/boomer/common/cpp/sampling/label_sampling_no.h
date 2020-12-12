@@ -9,7 +9,7 @@
 /**
  * An implementation of the class `ILabelSubSampling` that does not perform any sampling, but includes all labels.
  */
-class NoLabelSubSampling : public ILabelSubSampling {
+class NoLabelSubSampling final : public ILabelSubSampling {
 
     public:
 

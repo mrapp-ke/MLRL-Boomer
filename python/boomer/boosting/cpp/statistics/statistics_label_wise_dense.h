@@ -13,7 +13,7 @@ namespace boosting {
     /**
      * A factory that allows to create new instances of the class `LabelWiseStatistics`.
      */
-    class DenseLabelWiseStatisticsFactory : public ILabelWiseStatisticsFactory {
+    class DenseLabelWiseStatisticsFactory final : public ILabelWiseStatisticsFactory {
 
         private:
 

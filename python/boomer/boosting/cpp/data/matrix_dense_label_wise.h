@@ -13,7 +13,7 @@ namespace boosting {
      * decomposable loss function in C-contiguous arrays. For each element of a certain row a single gradient and
      * Hessian is stored.
      */
-    class DenseLabelWiseStatisticMatrix {
+    class DenseLabelWiseStatisticMatrix final {
 
         private:
 
