@@ -12,7 +12,7 @@ using namespace boosting;
  * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
  */
 template<class T>
-class RegularizedLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation {
+class RegularizedLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
 
     private:
 

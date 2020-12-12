@@ -11,7 +11,7 @@
  * An one-dimensional sparse vector that stores the values of training examples for a certain feature, as well as the
  * indices of examples with missing feature values.
  */
-class FeatureVector : public SparseArrayVector<float32> {
+class FeatureVector final : public SparseArrayVector<float32> {
 
     private:
 

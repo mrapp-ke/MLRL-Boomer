@@ -9,7 +9,7 @@
 /**
  * An implementation of the class `IFeatureSubSampling` that does not perform any sampling, but includes all features.
  */
-class NoFeatureSubSampling : public IFeatureSubSampling {
+class NoFeatureSubSampling final : public IFeatureSubSampling {
 
     public:
 

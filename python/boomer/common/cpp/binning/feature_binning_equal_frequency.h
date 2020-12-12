@@ -10,7 +10,7 @@
 /**
  * Assigns feature values to bins in a way such that each bin contains approximately the same number of values.
  */
-class EqualFrequencyFeatureBinning : public IFeatureBinning {
+class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 
     private:
 
