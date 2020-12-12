@@ -19,7 +19,7 @@ namespace boosting {
     /**
      * A wrapper that allows to execute different BLAS routines.
      */
-    class Blas {
+    class Blas final {
 
         private:
 

@@ -250,14 +250,14 @@ static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEnt
 /**
  * Provides access to all thresholds that result from the feature values of the training examples.
  */
-class ExactThresholds : public AbstractThresholds {
+class ExactThresholds final : public AbstractThresholds {
 
     private:
 
         /**
          * Provides access to a subset of the thresholds that are stored by an instance of the class `ExactThresholds`.
          */
-        class ThresholdsSubset : public IThresholdsSubset {
+        class ThresholdsSubset final : public IThresholdsSubset {
 
             private:
 
@@ -265,7 +265,7 @@ class ExactThresholds : public AbstractThresholds {
              * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved from
              * the cache. Otherwise, they are fetched from the feature matrix.
              */
-            class Callback : public IRuleRefinementCallback<FeatureVector> {
+            class Callback final : public IRuleRefinementCallback<FeatureVector> {
 
                 private:
 

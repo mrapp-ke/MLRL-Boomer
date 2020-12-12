@@ -13,11 +13,11 @@
  * depending on which of the resulting rules improves the most over the quality score of the original rules as measured
  * on the prune set.
  */
-class IREP : virtual public IPruning {
+class IREP final : public IPruning {
 
     public:
 
-        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
-                                                    const AbstractPrediction& head) const override;
+        std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
+                                            const AbstractPrediction& head) const override;
 
 };

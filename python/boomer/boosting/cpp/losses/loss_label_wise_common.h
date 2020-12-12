@@ -36,7 +36,7 @@ namespace boosting {
                                            const DenseNumericMatrix<float64>& scoreMatrix,
                                            FullIndexVector::const_iterator labelIndicesBegin,
                                            FullIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override {
+                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override final {
                 DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
                     statisticMatrix.gradients_row_begin(exampleIndex);
                 DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
@@ -56,7 +56,7 @@ namespace boosting {
                                            const DenseNumericMatrix<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override {
+                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override final {
                 DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
                     statisticMatrix.gradients_row_begin(exampleIndex);
                 DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =

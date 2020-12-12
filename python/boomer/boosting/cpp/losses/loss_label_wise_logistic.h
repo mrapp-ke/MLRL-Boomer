@@ -11,7 +11,7 @@ namespace boosting {
     /**
      * A multi-label variant of the logistic loss that is applied label-wise.
      */
-    class LabelWiseLogisticLoss : public AbstractLabelWiseLoss {
+    class LabelWiseLogisticLoss final : public AbstractLabelWiseLoss {
 
         protected:
 
