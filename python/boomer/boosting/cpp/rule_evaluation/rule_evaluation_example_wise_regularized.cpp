@@ -28,7 +28,7 @@ static inline void addRegularizationWeight(float64* output, uint32 n, float64 l2
  * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
  */
 template<class T>
-class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluation<T> {
+class RegularizedExampleWiseRuleEvaluation final : public AbstractExampleWiseRuleEvaluation<T> {
 
     private:
 

@@ -10,7 +10,7 @@
  * Implements random instance subset selection for selecting a subset of the available training examples without
  * replacement.
  */
-class RandomInstanceSubsetSelection : public IInstanceSubSampling {
+class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
 
     private:
 

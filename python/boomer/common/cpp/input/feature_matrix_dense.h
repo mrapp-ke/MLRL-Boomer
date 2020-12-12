@@ -9,7 +9,7 @@
 /**
  * Implements column-wise access to the feature values of the training examples based on a C-contiguous array.
  */
-class DenseFeatureMatrix : public IFeatureMatrix {
+class DenseFeatureMatrix final : public IFeatureMatrix {
 
     private:
 

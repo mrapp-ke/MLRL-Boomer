@@ -12,7 +12,7 @@ namespace seco {
     /**
      * A heuristic that calculates as `1 - wra`, where `wra` corresponds to the weighted relative accuracy metric.
      */
-    class WRA : public IHeuristic {
+    class WRA final : public IHeuristic {
 
         public:
 

@@ -109,15 +109,15 @@ class AbstractThresholds : public IThresholds {
 
         }
 
-        uint32 getNumExamples() const override {
+        uint32 getNumExamples() const override final {
             return featureMatrixPtr_->getNumExamples();
         }
 
-        uint32 getNumFeatures() const override {
+        uint32 getNumFeatures() const override final {
             return featureMatrixPtr_->getNumFeatures();
         }
 
-        uint32 getNumLabels() const override {
+        uint32 getNumLabels() const override final {
             return statisticsPtr_->getNumLabels();
         }
 
