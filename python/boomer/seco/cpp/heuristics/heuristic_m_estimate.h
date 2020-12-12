@@ -15,7 +15,7 @@ namespace seco {
      * `Precision`. As `m` approaches infinity, the isometrics of this heuristic become equivalent to those of the
      * heuristic `WRA`.
      */
-    class MEstimate : public IHeuristic {
+    class MEstimate final : public IHeuristic {
 
         private:
 

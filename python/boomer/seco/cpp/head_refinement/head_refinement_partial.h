@@ -13,7 +13,7 @@ namespace seco {
     /**
      * Allows to create instances of the class `PartialHeadRefinementImpl`.
      */
-    class PartialHeadRefinementFactory : public IHeadRefinementFactory {
+    class PartialHeadRefinementFactory final : public IHeadRefinementFactory {
 
         private:
 

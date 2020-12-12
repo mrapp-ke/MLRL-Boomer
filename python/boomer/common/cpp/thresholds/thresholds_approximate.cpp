@@ -158,7 +158,7 @@ static inline void buildHistogram(BinVector& vector, const IStatistics& statisti
  * Provides access to the thresholds that result from applying a binning method to the feature values of the training
  * examples.
  */
-class ApproximateThresholds : public AbstractThresholds {
+class ApproximateThresholds final : public AbstractThresholds {
 
     private:
 
@@ -166,7 +166,7 @@ class ApproximateThresholds : public AbstractThresholds {
          * Provides access to a subset of the thresholds that are stored by an instance of the class
          * `ApproximateThresholds`.
          */
-        class ThresholdsSubset : public IThresholdsSubset {
+        class ThresholdsSubset final : public IThresholdsSubset {
 
             private:
 
@@ -175,7 +175,7 @@ class ApproximateThresholds : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback : public IBinningObserver<float32>, public IRuleRefinementCallback<BinVector> {
+                class Callback final : public IBinningObserver<float32>, public IRuleRefinementCallback<BinVector> {
 
                     private:
 

@@ -12,7 +12,7 @@ namespace seco {
     /**
      * A heuristic that measures the fraction of incorrectly predicted labels among all labels.
      */
-    class HammingLoss : public IHeuristic {
+    class HammingLoss final : public IHeuristic {
 
         public:
 

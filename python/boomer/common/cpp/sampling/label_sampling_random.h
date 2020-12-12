@@ -9,7 +9,7 @@
 /**
  * Implements random label subset selection for selecting a random subset of the available features without replacement.
  */
-class RandomLabelSubsetSelection : public ILabelSubSampling {
+class RandomLabelSubsetSelection final : public ILabelSubSampling {
 
     private:
 

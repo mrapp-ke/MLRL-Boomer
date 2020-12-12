@@ -9,7 +9,7 @@
 /**
  * Allows to create instances of the class `FullHeadRefinementImpl`.
  */
-class FullHeadRefinementFactory : public IHeadRefinementFactory {
+class FullHeadRefinementFactory final : public IHeadRefinementFactory {
 
     public:
 

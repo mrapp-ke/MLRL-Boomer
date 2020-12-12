@@ -24,7 +24,7 @@ static inline void setToZeros(T* a, uint32 numElements) {
  * Provides access to the elements of confusion matrices that are computed independently for each label using dense data
  * structures.
  */
-class LabelWiseStatistics : public ILabelWiseStatistics {
+class LabelWiseStatistics final : public ILabelWiseStatistics {
 
     private:
 
@@ -36,7 +36,7 @@ class LabelWiseStatistics : public ILabelWiseStatistics {
          *           subset
          */
         template<class T>
-        class StatisticsSubset : public AbstractDecomposableStatisticsSubset {
+        class StatisticsSubset final : public AbstractDecomposableStatisticsSubset {
 
             private:
 

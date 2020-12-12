@@ -11,7 +11,7 @@
 /**
  * Stores information about a potential refinement of a rule.
  */
-class Refinement : public Condition {
+class Refinement final : public Condition {
 
     public:
 
