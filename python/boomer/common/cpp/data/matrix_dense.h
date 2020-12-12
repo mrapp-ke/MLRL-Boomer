@@ -37,7 +37,7 @@ class DenseMatrix {
          */
         DenseMatrix(uint32 numRows, uint32 numCols, bool init);
 
-        ~DenseMatrix();
+        virtual ~DenseMatrix();
 
         typedef T* iterator;
 
