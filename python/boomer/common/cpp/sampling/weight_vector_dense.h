@@ -10,7 +10,7 @@
 /**
  * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
  */
-class DenseWeightVector : public IWeightVector {
+class DenseWeightVector final : public IWeightVector {
 
     private:
 

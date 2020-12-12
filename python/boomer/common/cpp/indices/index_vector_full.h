@@ -9,7 +9,7 @@
 /**
  * Provides random access to all indices within a continuous range [0, numIndices).
  */
-class FullIndexVector : public IIndexVector {
+class FullIndexVector final : public IIndexVector {
 
     private:
 
@@ -20,7 +20,7 @@ class FullIndexVector : public IIndexVector {
         /**
          * Allows to iterate the indices of a `FullIndexVector`.
          */
-        class Iterator {
+        class Iterator final {
 
             private:
 

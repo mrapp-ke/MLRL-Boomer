@@ -70,7 +70,7 @@ static inline void copyOrdinates(const StatisticVector& statisticVector, float64
  * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
  */
 template<class T>
-class RegularizedExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluation<T> {
+class RegularizedExampleWiseRuleEvaluation final : public AbstractExampleWiseRuleEvaluation<T> {
 
     private:
 

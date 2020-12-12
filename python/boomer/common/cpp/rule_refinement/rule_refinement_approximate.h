@@ -19,7 +19,7 @@
  *           allowed to predict
  */
 template<class T>
-class ApproximateRuleRefinement : public IRuleRefinement {
+class ApproximateRuleRefinement final : public IRuleRefinement {
 
     private:
 

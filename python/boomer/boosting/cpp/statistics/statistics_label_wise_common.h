@@ -25,7 +25,7 @@ class LabelWiseHistogram : virtual public IHistogram {
          *           subset
          */
         template<class T>
-        class StatisticsSubset : public AbstractDecomposableStatisticsSubset {
+        class StatisticsSubset final : public AbstractDecomposableStatisticsSubset {
 
             private:
 
@@ -158,22 +158,22 @@ class LabelWiseHistogram : virtual public IHistogram {
 
         }
 
-        uint32 getNumStatistics() const override {
+        uint32 getNumStatistics() const override final {
             return numStatistics_;
         }
 
-        uint32 getNumLabels() const override {
+        uint32 getNumLabels() const override final {
             return numLabels_;
         }
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
+        std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
             std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
                 ruleEvaluationFactoryPtr_->create(labelIndices);
             return std::make_unique<StatisticsSubset<FullIndexVector>>(*this, std::move(ruleEvaluationPtr),
                                                                        labelIndices);
         }
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override {
+        std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override final {
             std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
                 ruleEvaluationFactoryPtr_->create(labelIndices);
             return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr),
@@ -192,8 +192,8 @@ class LabelWiseHistogram : virtual public IHistogram {
  * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
 template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-class LabelWiseStatistics : public LabelWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>,
-                            virtual public ILabelWiseStatistics {
+class LabelWiseStatistics final : public LabelWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>,
+                                  virtual public ILabelWiseStatistics {
 
     private:
 
@@ -201,7 +201,7 @@ class LabelWiseStatistics : public LabelWiseHistogram<StatisticVector, Statistic
          * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the class
          * `LabelWiseStatistics`.
          */
-        class HistogramBuilder : public IHistogramBuilder {
+        class HistogramBuilder final : public IHistogramBuilder {
 
             private:
 

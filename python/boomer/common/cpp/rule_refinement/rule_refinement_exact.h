@@ -19,7 +19,7 @@
  *           allowed to predict
  */
 template<class T>
-class ExactRuleRefinement : public IRuleRefinement {
+class ExactRuleRefinement final : public IRuleRefinement {
 
     private:
 

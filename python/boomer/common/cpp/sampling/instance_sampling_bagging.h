@@ -10,7 +10,7 @@
  * Implements bootstrap aggregating (bagging) for selecting a subset of the available training examples with
  * replacement.
  */
-class Bagging : public IInstanceSubSampling {
+class Bagging final : public IInstanceSubSampling {
 
     private:
 

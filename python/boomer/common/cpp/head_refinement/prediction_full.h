@@ -13,7 +13,7 @@ class IHistogram;
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
  */
-class FullPrediction : public AbstractEvaluatedPrediction {
+class FullPrediction final : public AbstractEvaluatedPrediction {
 
     private:
 
