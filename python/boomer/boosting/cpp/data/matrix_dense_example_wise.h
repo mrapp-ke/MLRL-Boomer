@@ -144,6 +144,19 @@ namespace boosting {
             void addToRow(uint32 row, gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                           hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd);
 
+            /**
+             * Subtracts all gradients and Hessians in a vector from a specific row of this matrix.
+             *
+             * @param row               The row
+             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients in the vector
+             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients in the vector
+             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians in the vector
+             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians in the vector
+             */
+            void subtractFromRow(uint32 row, gradient_const_iterator gradientsBegin,
+                                 gradient_const_iterator gradientsEnd, hessian_const_iterator hessiansBegin,
+                                 hessian_const_iterator hessiansEnd);
+
     };
 
 }
