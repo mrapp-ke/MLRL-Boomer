@@ -5,7 +5,6 @@
 #pragma once
 
 #include "histogram.h"
-#include "../binning/binning_observer.h"
 #include "../head_refinement/prediction_full.h"
 #include "../head_refinement/prediction_partial.h"
 
@@ -23,11 +22,19 @@ class IStatistics : virtual public IImmutableStatistics {
          * Defines an interface for all classes that allow to build histograms by aggregating the statistics that
          * correspond to the same bins.
          */
-        class IHistogramBuilder : public IBinningObserver<float32> {
+        class IHistogramBuilder {
 
             public:
 
                 virtual ~IHistogramBuilder() { };
+
+                /**
+                 * Adds the statistics at a specific index to a specific bin.
+                 *
+                 * @param binIndex          The index of the bin
+                 * @param statisticIndex    The index of the statistics
+                 */
+                virtual void addToBin(uint32 binIndex, uint32 statisticIndex);
 
                 /**
                  * Creates and returns a new instance of the class `IHistogram` that stores the aggregated statistics.

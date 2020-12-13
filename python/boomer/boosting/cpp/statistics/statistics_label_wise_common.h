@@ -222,12 +222,12 @@ class LabelWiseStatistics final : public LabelWiseHistogram<StatisticVector, Sta
 
                 }
 
-                void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
+                void addToBin(uint32 binIndex, uint32 statisticIndex) override {
                     statisticMatrixPtr_->addToRow(binIndex,
-                                                  statistics_.statisticMatrixPtr_->gradients_row_cbegin(originalIndex),
-                                                  statistics_.statisticMatrixPtr_->gradients_row_cend(originalIndex),
-                                                  statistics_.statisticMatrixPtr_->hessians_row_cbegin(originalIndex),
-                                                  statistics_.statisticMatrixPtr_->hessians_row_cend(originalIndex));
+                                                  statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
+                                                  statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
+                                                  statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
+                                                  statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex));
                 }
 
                 std::unique_ptr<IHistogram> build() override {
