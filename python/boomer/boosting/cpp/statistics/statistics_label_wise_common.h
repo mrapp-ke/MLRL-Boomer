@@ -194,9 +194,15 @@ template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
 class LabelWiseHistogram : public AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
                            virtual public IHistogram {
 
+    private:
+
+        const StatisticMatrix& statisticMatrix_;
+
     public:
 
         /**
+         * @param statisticMatrix           A reference to an object of template type `StatisticMatrix` that stores the
+         *                                  original gradients and Hessians, the histogram was created from
          * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
          *                                  stores the gradients and Hessians
          * @param totalSumVectorPtr         An unique pointer to an object of template type `StatisticVector` that
@@ -205,11 +211,12 @@ class LabelWiseHistogram : public AbstractLabelWiseStatistics<StatisticVector, S
          *                                  that allows to create instances of the class that is used for calculating
          *                                  the predictions, as well as corresponding quality scores, of rules
          */
-        LabelWiseHistogram(std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+        LabelWiseHistogram(const StatisticMatrix& statisticMatrix, std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                            std::unique_ptr<StatisticVector> totalSumVectorPtr,
                            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
             : AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
-                  std::move(statisticMatrixPtr), std::move(totalSumVectorPtr), ruleEvaluationFactoryPtr) {
+                  std::move(statisticMatrixPtr), std::move(totalSumVectorPtr), ruleEvaluationFactoryPtr),
+              statisticMatrix_(statisticMatrix) {
 
         }
 
@@ -279,7 +286,7 @@ class LabelWiseStatistics final : public AbstractLabelWiseStatistics<StatisticVe
                     }
 
                     return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
-                        std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
+                        *statistics_.statisticMatrixPtr_, std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
                         statistics_.ruleEvaluationFactoryPtr_);
                 }
 
