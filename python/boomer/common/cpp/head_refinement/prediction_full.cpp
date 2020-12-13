@@ -30,8 +30,8 @@ uint32 FullPrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
-std::unique_ptr<IStatisticsSubset> FullPrediction::createSubset(const IHistogram& histogram) const {
-    return indexVector_.createSubset(histogram);
+std::unique_ptr<IStatisticsSubset> FullPrediction::createSubset(const IImmutableStatistics& statistics) const {
+    return indexVector_.createSubset(statistics);
 }
 
 std::unique_ptr<IRuleRefinement> FullPrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
