@@ -1,6 +1,6 @@
 #include "thresholds_approximate.h"
 #include "thresholds_common.h"
-#include "../data/vector_bin.h"
+#include "../binning/bin_vector.h"
 #include "../rule_refinement/rule_refinement_approximate.h"
 #include <unordered_map>
 #include <limits>
@@ -33,8 +33,8 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
         wasEmpty = true;
     }
 
-    typename BinVector::const_iterator iterator = vector.cbegin();
-    BinVector::iterator filteredIterator = filteredVector->begin();
+    BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
+    BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     coverageMask.target = numConditions;
@@ -62,9 +62,10 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
             }
         }
 
-        filteredIterator[i].numExamples = iterator[r].numExamples;
-        filteredIterator[i].minValue = iterator[r].minValue;
-        filteredIterator[i].maxValue = iterator[r].maxValue;
+        filteredBinIterator[i].index = binIterator[r].index;
+        filteredBinIterator[i].numExamples = binIterator[r].numExamples;
+        filteredBinIterator[i].minValue = binIterator[r].minValue;
+        filteredBinIterator[i].maxValue = binIterator[r].maxValue;
         i++;
     }
 
@@ -84,7 +85,8 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
         wasEmpty = true;
     }
 
-    typename BinVector::iterator filteredIterator = filteredVector->begin();
+    BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
+    BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
     uint32 i = 0;
 
     for(uint32 r = 0; r < maxElements; r++) {
@@ -125,9 +127,10 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
         }
 
         if (numExamples > 0) {
-            filteredIterator[i].minValue = minValue;
-            filteredIterator[i].maxValue = maxValue;
-            filteredIterator[i].numExamples = numExamples;
+            filteredBinIterator[i].index = binIterator[r].index;
+            filteredBinIterator[i].numExamples = numExamples;
+            filteredBinIterator[i].minValue = minValue;
+            filteredBinIterator[i].maxValue = maxValue;
             i++;
         }
     }
@@ -249,7 +252,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                         }
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
-                            BinVector::iterator binIterator = currentBinVector_->begin();
+                            BinVector::bin_iterator binIterator = currentBinVector_->bins_begin();
                             binIterator[binIndex].numExamples += 1;
 
                             if (value < binIterator[binIndex].minValue) {
@@ -302,7 +305,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                 /**
                  * @param thresholds    A reference to an object of type `ApproximateThresholds` that stores the 
                  *                      thresholds
-                 * @param weights       TODO
+                 * @param weights       A reference to an object of type `IWeightWeight` that provides access to the
+                 *                      weights of individual training examples
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
                     : thresholds_(thresholds), weights_(weights), 
