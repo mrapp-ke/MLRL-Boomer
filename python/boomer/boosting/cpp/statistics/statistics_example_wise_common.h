@@ -12,7 +12,7 @@ using namespace boosting;
  * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
 template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-class AbstractExampleWiseStatistics : virtual public IHistogram {
+class AbstractExampleWiseStatistics : virtual public IImmutableStatistics {
 
     private:
 
@@ -198,6 +198,39 @@ class AbstractExampleWiseStatistics : virtual public IHistogram {
 
 /**
  * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
+ * applied example-wise and are organized as a histogram.
+ *
+ * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
+ * @tparam StatisticMatrix  The type of the matrices that are used to store gradients and Hessians
+ * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
+ */
+template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
+class ExampleWiseHistogram : public AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
+                             virtual public IHistogram {
+
+    public:
+
+        /**
+         * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
+         *                                  stores the gradients and Hessians
+         * @param totalSumVectorPtr         An unique pointer to an object of template type `StatisticVector` that
+         *                                  stores the total sums of gradients and Hessians
+         * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory`,
+         *                                  to be used for calculating the predictions, as well as corresponding quality
+         *                                  scores, of rules
+         */
+        ExampleWiseHistogram(std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                             std::unique_ptr<StatisticVector> totalSumVectorPtr,
+                             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+            : AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
+                  std::move(statisticMatrixPtr), std::move(totalSumVectorPtr), ruleEvaluationFactoryPtr) {
+
+        }
+
+};
+
+/**
+ * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
  * applied example-wise and allows to update the gradients and Hessians after a new rule has been learned.
  *
  * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
@@ -255,7 +288,7 @@ class ExampleWiseStatistics final : public AbstractExampleWiseStatistics<Statist
                                            statisticMatrixPtr_->hessians_row_cend(i));
                 }
 
-                return std::make_unique<AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>>(
+                return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
                     std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
                     statistics_.ruleEvaluationFactoryPtr_);
             }
