@@ -81,7 +81,7 @@ class SparseArrayVector {
          * Sets the number of elements in the vector.
          *
          * @param numElements   The number of elements to be set
-         * @param freeMemory    True, if unused memory should be freed if possible, false otherwise
+         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
         void setNumElements(uint32 numElements, bool freeMemory);
 
