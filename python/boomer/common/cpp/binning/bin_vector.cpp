@@ -13,6 +13,7 @@ BinVector::BinVector(uint32 numElements, bool init)
 
         for (uint32 i = 0; i < numElements; i++) {
             new (iterator + i) Bin();
+            iterator[i].index = i;
         }
     }
 }

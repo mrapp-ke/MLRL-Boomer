@@ -62,6 +62,7 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
             }
         }
 
+        filteredBinIterator[i].index = binIterator[r].index;
         filteredBinIterator[i].numExamples = binIterator[r].numExamples;
         filteredBinIterator[i].minValue = binIterator[r].minValue;
         filteredBinIterator[i].maxValue = binIterator[r].maxValue;
@@ -84,6 +85,7 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
         wasEmpty = true;
     }
 
+    BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
     BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
     uint32 i = 0;
 
@@ -125,9 +127,10 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
         }
 
         if (numExamples > 0) {
+            filteredBinIterator[i].index = binIterator[r].index;
+            filteredBinIterator[i].numExamples = numExamples;
             filteredBinIterator[i].minValue = minValue;
             filteredBinIterator[i].maxValue = maxValue;
-            filteredBinIterator[i].numExamples = numExamples;
             i++;
         }
     }
