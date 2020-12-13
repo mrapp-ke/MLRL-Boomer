@@ -343,7 +343,7 @@ class ExampleWiseStatistics final : public ExampleWiseHistogram<StatisticVector,
             this->applyPredictionInternally<PartialPrediction>(statisticIndex, prediction);
         }
 
-        std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override {
+        std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const override {
             return std::make_unique<HistogramBuilder>(*this, numBins);
         }
 
