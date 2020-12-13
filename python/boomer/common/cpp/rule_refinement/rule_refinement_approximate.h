@@ -6,7 +6,7 @@
 
 #include "rule_refinement.h"
 #include "rule_refinement_callback.h"
-#include "../data/vector_bin.h"
+#include "../binning/bin_vector.h"
 #include "../head_refinement/head_refinement.h"
 
 
