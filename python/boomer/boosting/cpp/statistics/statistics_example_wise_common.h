@@ -208,9 +208,15 @@ template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
 class ExampleWiseHistogram : public AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
                              virtual public IHistogram {
 
+    private:
+
+        const StatisticMatrix& statisticMatrix_;
+
     public:
 
         /**
+         * @param statisticMatrix           A reference to an object of template type `StatisticMatrix` that stores the
+         *                                  original gradients and Hessians, the histogram was created from
          * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
          *                                  stores the gradients and Hessians
          * @param totalSumVectorPtr         An unique pointer to an object of template type `StatisticVector` that
@@ -219,11 +225,13 @@ class ExampleWiseHistogram : public AbstractExampleWiseStatistics<StatisticVecto
          *                                  to be used for calculating the predictions, as well as corresponding quality
          *                                  scores, of rules
          */
-        ExampleWiseHistogram(std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+        ExampleWiseHistogram(const StatisticMatrix& statisticMatrix,
+                             std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                              std::unique_ptr<StatisticVector> totalSumVectorPtr,
                              std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
             : AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
-                  std::move(statisticMatrixPtr), std::move(totalSumVectorPtr), ruleEvaluationFactoryPtr) {
+                  std::move(statisticMatrixPtr), std::move(totalSumVectorPtr), ruleEvaluationFactoryPtr),
+              statisticMatrix_(statisticMatrix) {
 
         }
 
@@ -293,7 +301,7 @@ class ExampleWiseStatistics final : public AbstractExampleWiseStatistics<Statist
                 }
 
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
-                    std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
+                    *statistics_.statisticMatrixPtr_, std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
                     statistics_.ruleEvaluationFactoryPtr_);
             }
 
