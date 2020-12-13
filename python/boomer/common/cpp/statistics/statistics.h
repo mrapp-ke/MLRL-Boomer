@@ -11,10 +11,11 @@
 
 
 /**
- * Defines an interface for all classes that inherit from `IHistogram`, but do also provide functions that allow to only
- * use a sub-sample of the available statistics, as well as to update the statistics after a new rule has been learned.
+ * Defines an interface for all classes that inherit from `IImmutableStatistics`, but do also provide functions that
+ * allow to only use a sub-sample of the available statistics, as well as to update the statistics after a new rule has
+ * been learned.
  */
-class IStatistics : virtual public IHistogram {
+class IStatistics : virtual public IImmutableStatistics {
 
     public:
 
