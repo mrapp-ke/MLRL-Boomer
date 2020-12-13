@@ -196,12 +196,12 @@ class LabelWiseHistogram : public AbstractLabelWiseStatistics<StatisticVector, S
 
     private:
 
-        const StatisticMatrix& statisticMatrix_;
+        const StatisticMatrix& originalStatisticMatrix_;
 
     public:
 
         /**
-         * @param statisticMatrix           A reference to an object of template type `StatisticMatrix` that stores the
+         * @param originalStatisticMatrix   A reference to an object of template type `StatisticMatrix` that stores the
          *                                  original gradients and Hessians, the histogram was created from
          * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
          *                                  stores the gradients and Hessians
@@ -211,17 +211,22 @@ class LabelWiseHistogram : public AbstractLabelWiseStatistics<StatisticVector, S
          *                                  that allows to create instances of the class that is used for calculating
          *                                  the predictions, as well as corresponding quality scores, of rules
          */
-        LabelWiseHistogram(const StatisticMatrix& statisticMatrix, std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+        LabelWiseHistogram(const StatisticMatrix& originalStatisticMatrix,
+                           std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                            std::unique_ptr<StatisticVector> totalSumVectorPtr,
                            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
             : AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
                   std::move(statisticMatrixPtr), std::move(totalSumVectorPtr), ruleEvaluationFactoryPtr),
-              statisticMatrix_(statisticMatrix) {
+              originalStatisticMatrix_(originalStatisticMatrix) {
 
         }
 
         void removeFromBin(uint32 binIndex, uint32 statisticIndex) override {
-            // TODO
+            this->statisticMatrixPtr_->subtractFromRow(binIndex,
+                                                       originalStatisticMatrix_.gradients_row_cbegin(statisticIndex),
+                                                       originalStatisticMatrix_.gradients_row_cend(statisticIndex),
+                                                       originalStatisticMatrix_.hessians_row_cbegin(statisticIndex),
+                                                       originalStatisticMatrix_.hessians_row_cend(statisticIndex));
         }
 
 };
