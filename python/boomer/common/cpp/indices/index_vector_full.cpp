@@ -1,7 +1,7 @@
 #include "index_vector_full.h"
 #include "../head_refinement/head_refinement.h"
 #include "../head_refinement/head_refinement_factory.h"
-#include "../statistics/histogram.h"
+#include "../statistics/statistics_immutable.h"
 #include "../thresholds/thresholds_subset.h"
 
 
@@ -55,8 +55,8 @@ FullIndexVector::const_iterator FullIndexVector::cend() const {
     return FullIndexVector::Iterator(numElements_);
 }
 
-std::unique_ptr<IStatisticsSubset> FullIndexVector::createSubset(const IHistogram& histogram) const {
-    return histogram.createSubset(*this);
+std::unique_ptr<IStatisticsSubset> FullIndexVector::createSubset(const IImmutableStatistics& statistics) const {
+    return statistics.createSubset(*this);
 }
 
 std::unique_ptr<IRuleRefinement> FullIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
