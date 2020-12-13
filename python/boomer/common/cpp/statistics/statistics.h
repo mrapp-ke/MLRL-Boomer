@@ -34,7 +34,7 @@ class IStatistics : virtual public IImmutableStatistics {
                  * @param binIndex          The index of the bin
                  * @param statisticIndex    The index of the statistics
                  */
-                virtual void addToBin(uint32 binIndex, uint32 statisticIndex);
+                virtual void addToBin(uint32 binIndex, uint32 statisticIndex) = 0;
 
                 /**
                  * Creates and returns a new instance of the class `IHistogram` that stores the aggregated statistics.
