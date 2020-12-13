@@ -213,6 +213,10 @@ class LabelWiseHistogram : public AbstractLabelWiseStatistics<StatisticVector, S
 
         }
 
+        void removeFromBin(uint32 binIndex, uint32 statisticIndex) override {
+            // TODO
+        }
+
 };
 
 /**

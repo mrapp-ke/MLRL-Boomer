@@ -227,6 +227,10 @@ class ExampleWiseHistogram : public AbstractExampleWiseStatistics<StatisticVecto
 
         }
 
+        void removeFromBin(uint32 binIndex, uint32 statisticIndex) override {
+            // TODO
+        }
+
 };
 
 /**
