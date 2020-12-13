@@ -302,7 +302,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                 /**
                  * @param thresholds    A reference to an object of type `ApproximateThresholds` that stores the 
                  *                      thresholds
-                 * @param weights       TODO
+                 * @param weights       A reference to an object of type `IWeightWeight` that provides access to the
+                 *                      weights of individual training examples
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
                     : thresholds_(thresholds), weights_(weights), 
