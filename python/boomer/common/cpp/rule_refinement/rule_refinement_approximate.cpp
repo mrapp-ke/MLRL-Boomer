@@ -20,7 +20,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     std::unique_ptr<IRuleRefinementCallback<BinVector>::Result> callbackResultPtr = callbackPtr_->get();
     const IHistogram& histogram = callbackResultPtr->first;
     const BinVector& binVector = callbackResultPtr->second;
-    BinVector::const_iterator iterator = binVector.cbegin();
+    BinVector::bin_const_iterator iterator = binVector.bins_cbegin();
     uint32 numBins = binVector.getNumElements();
 
     // Create a new, empty subset of the current statistics when processing a new feature...
