@@ -24,6 +24,8 @@ class DenseMappingVector {
 
         Entry** array_;
 
+        const Entry emptyEntry_;
+
         uint32 numElements_;
 
         uint32 maxCapacity_;
