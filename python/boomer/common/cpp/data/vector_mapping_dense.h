@@ -135,14 +135,6 @@ class DenseMappingVector {
         void setNumElements(uint32 numElements, bool freeMemory);
 
         /**
-         * Returns the element at a specific position.
-         *
-         * @param pos   The position of the element to be returned
-         * @return      A reference to an object of type `Entry` that corresponds to the given position
-         */
-        Entry& getEntry(uint32 pos);
-
-        /**
          * Removes all values that are associated with the elements in the vector.
          */
         void clear();
