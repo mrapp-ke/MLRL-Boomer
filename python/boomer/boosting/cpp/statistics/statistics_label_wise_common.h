@@ -5,21 +5,21 @@ using namespace boosting;
 
 
 /**
- * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
- * applied label-wise.
+ * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated according
+ * to a differentiable loss function that is applied label-wise.
  *
  * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
  * @tparam StatisticMatrix  The type of the matrices that are used to store gradients and Hessians
  * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
 template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-class LabelWiseHistogram : virtual public IHistogram {
+class AbstractLabelWiseStatistics : virtual public IImmutableStatistics {
 
     private:
 
         /**
          * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
-         * `LabelWiseHistogram`.
+         * `AbstractLabelWiseStatistics`.
          *
          * @tparam T The type of the vector that provides access to the indices of the labels that are included in the
          *           subset
@@ -29,7 +29,7 @@ class LabelWiseHistogram : virtual public IHistogram {
 
             private:
 
-                const LabelWiseHistogram& histogram_;
+                const AbstractLabelWiseStatistics& statistics_;
 
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
@@ -48,19 +48,19 @@ class LabelWiseHistogram : virtual public IHistogram {
             public:
 
                 /**
-                 * @param histogram         A reference to an object of type `LabelWiseHistogram` that stores the
-                 *                          gradients and Hessians
+                 * @param histogram         A reference to an object of type `AbstractLabelWiseStatistics` that stores
+                 *                          the gradients and Hessians
                  * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
                  *                          should be used to calculate the predictions, as well as corresponding
                  *                          quality scores, of rules
                  * @param labelIndices      A reference to an object of template type `T` that provides access to the
                  *                          indices of the labels that are included in the subset
                  */
-                StatisticsSubset(const LabelWiseHistogram& histogram,
+                StatisticsSubset(const AbstractLabelWiseStatistics& statistics,
                                  std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
-                    : histogram_(histogram), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
+                    : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                       labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
-                      totalSumVector_(histogram_.totalSumVectorPtr_.get()),
+                      totalSumVector_(statistics.totalSumVectorPtr_.get()),
                       tmpVector_(StatisticVector(labelIndices.getNumElements())) {
                     accumulatedSumVector_ = nullptr;
                     totalCoverableSumVector_ = nullptr;
@@ -81,17 +81,17 @@ class LabelWiseHistogram : virtual public IHistogram {
                     // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                     // weight) from the total sums of gradients and Hessians...
                     totalCoverableSumVector_->subtract(
-                        histogram_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
-                        histogram_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
-                        histogram_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                        histogram_.statisticMatrixPtr_->hessians_row_cend(statisticIndex), weight);
+                        statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
+                        statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
+                        statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
+                        statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex), weight);
                 }
 
                 void addToSubset(uint32 statisticIndex, uint32 weight) override {
-                    sumVector_.addToSubset(histogram_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
-                                           histogram_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
-                                           histogram_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                                           histogram_.statisticMatrixPtr_->hessians_row_cend(statisticIndex),
+                    sumVector_.addToSubset(statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
+                                           statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
+                                           statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
+                                           statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex),
                                            labelIndices_, weight);
                 }
 
@@ -149,9 +149,9 @@ class LabelWiseHistogram : virtual public IHistogram {
          *                                  that allows to create instances of the class that is used for calculating
          *                                  the predictions, as well as corresponding quality scores, of rules
          */
-        LabelWiseHistogram(std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
-                           std::unique_ptr<StatisticVector> totalSumVectorPtr,
-                           std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+        AbstractLabelWiseStatistics(std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                                    std::unique_ptr<StatisticVector> totalSumVectorPtr,
+                                    std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
             : numStatistics_(statisticMatrixPtr->getNumRows()), numLabels_(statisticMatrixPtr->getNumCols()),
               statisticMatrixPtr_(std::move(statisticMatrixPtr)), totalSumVectorPtr_(std::move(totalSumVectorPtr)),
               ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
@@ -182,6 +182,54 @@ class LabelWiseHistogram : virtual public IHistogram {
 
 };
 
+/**
+ * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
+ * applied label-wise and are organized as a histogram.
+ *
+ * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
+ * @tparam StatisticMatrix  The type of the matrices that are used to store gradients and Hessians
+ * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
+ */
+template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
+class LabelWiseHistogram : public AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
+                           virtual public IHistogram {
+
+    private:
+
+        const StatisticMatrix& originalStatisticMatrix_;
+
+    public:
+
+        /**
+         * @param originalStatisticMatrix   A reference to an object of template type `StatisticMatrix` that stores the
+         *                                  original gradients and Hessians, the histogram was created from
+         * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
+         *                                  stores the gradients and Hessians
+         * @param totalSumVectorPtr         An unique pointer to an object of template type `StatisticVector` that
+         *                                  stores the total sums of gradients and Hessians
+         * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`,
+         *                                  that allows to create instances of the class that is used for calculating
+         *                                  the predictions, as well as corresponding quality scores, of rules
+         */
+        LabelWiseHistogram(const StatisticMatrix& originalStatisticMatrix,
+                           std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                           std::unique_ptr<StatisticVector> totalSumVectorPtr,
+                           std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+            : AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
+                  std::move(statisticMatrixPtr), std::move(totalSumVectorPtr), ruleEvaluationFactoryPtr),
+              originalStatisticMatrix_(originalStatisticMatrix) {
+
+        }
+
+        void removeFromBin(uint32 binIndex, uint32 statisticIndex) override {
+            this->statisticMatrixPtr_->subtractFromRow(binIndex,
+                                                       originalStatisticMatrix_.gradients_row_cbegin(statisticIndex),
+                                                       originalStatisticMatrix_.gradients_row_cend(statisticIndex),
+                                                       originalStatisticMatrix_.hessians_row_cbegin(statisticIndex),
+                                                       originalStatisticMatrix_.hessians_row_cend(statisticIndex));
+        }
+
+};
 
 /**
  * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
@@ -192,7 +240,7 @@ class LabelWiseHistogram : virtual public IHistogram {
  * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
 template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-class LabelWiseStatistics final : public LabelWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>,
+class LabelWiseStatistics final : public AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
                                   virtual public ILabelWiseStatistics {
 
     private:
@@ -222,12 +270,12 @@ class LabelWiseStatistics final : public LabelWiseHistogram<StatisticVector, Sta
 
                 }
 
-                void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
+                void addToBin(uint32 binIndex, uint32 statisticIndex) override {
                     statisticMatrixPtr_->addToRow(binIndex,
-                                                  statistics_.statisticMatrixPtr_->gradients_row_cbegin(originalIndex),
-                                                  statistics_.statisticMatrixPtr_->gradients_row_cend(originalIndex),
-                                                  statistics_.statisticMatrixPtr_->hessians_row_cbegin(originalIndex),
-                                                  statistics_.statisticMatrixPtr_->hessians_row_cend(originalIndex));
+                                                  statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
+                                                  statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
+                                                  statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
+                                                  statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex));
                 }
 
                 std::unique_ptr<IHistogram> build() override {
@@ -243,7 +291,7 @@ class LabelWiseStatistics final : public LabelWiseHistogram<StatisticVector, Sta
                     }
 
                     return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
-                        std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
+                        *statistics_.statisticMatrixPtr_, std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
                         statistics_.ruleEvaluationFactoryPtr_);
                 }
 
@@ -287,7 +335,7 @@ class LabelWiseStatistics final : public LabelWiseHistogram<StatisticVector, Sta
                             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                             std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                             std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-            : LabelWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>(
+            : AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
                   std::move(statisticMatrixPtr), std::make_unique<StatisticVector>(statisticMatrixPtr->getNumCols()),
                   ruleEvaluationFactoryPtr),
               lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr),
@@ -330,7 +378,7 @@ class LabelWiseStatistics final : public LabelWiseHistogram<StatisticVector, Sta
             this->applyPredictionInternally<PartialPrediction>(statisticIndex, prediction);
         }
 
-        std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override {
+        std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const override {
             return std::make_unique<HistogramBuilder>(*this, numBins);
         }
 

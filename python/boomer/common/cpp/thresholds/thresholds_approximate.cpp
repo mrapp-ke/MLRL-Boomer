@@ -137,14 +137,14 @@ static inline void filterAnyVector(BinVector& vector, FilteredBinCacheEntry& cac
 
 static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry) {
     uint32 numBins = vector.getNumElements();
-    std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.buildHistogram(numBins);
+    std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
 
     for (uint32 binIndex = 0; binIndex < numBins; binIndex++) {
         BinVector::ExampleList& examples = vector.getExamples(binIndex);
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
-            histogramBuilderPtr->onBinUpdate(binIndex, example.index, example.value);
+            histogramBuilderPtr->addToBin(binIndex, example.index);
         }
     }
 

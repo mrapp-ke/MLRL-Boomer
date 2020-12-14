@@ -7,7 +7,7 @@
 #include "../indices/index_vector_full.h"
 
 // Forward declarations
-class IHistogram;
+class IImmutableStatistics;
 
 
 /**
@@ -48,7 +48,7 @@ class FullPrediction final : public AbstractEvaluatedPrediction {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const IHistogram& histogram) const override;
+        std::unique_ptr<IStatisticsSubset> createSubset(const IImmutableStatistics& statistics) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;

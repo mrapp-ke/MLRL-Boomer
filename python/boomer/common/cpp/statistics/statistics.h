@@ -5,16 +5,16 @@
 #pragma once
 
 #include "histogram.h"
-#include "../binning/binning_observer.h"
 #include "../head_refinement/prediction_full.h"
 #include "../head_refinement/prediction_partial.h"
 
 
 /**
- * Defines an interface for all classes that inherit from `IHistogram`, but do also provide functions that allow to only
- * use a sub-sample of the available statistics, as well as to update the statistics after a new rule has been learned.
+ * Defines an interface for all classes that inherit from `IImmutableStatistics`, but do also provide functions that
+ * allow to only use a sub-sample of the available statistics, as well as to update the statistics after a new rule has
+ * been learned.
  */
-class IStatistics : virtual public IHistogram {
+class IStatistics : virtual public IImmutableStatistics {
 
     public:
 
@@ -22,11 +22,19 @@ class IStatistics : virtual public IHistogram {
          * Defines an interface for all classes that allow to build histograms by aggregating the statistics that
          * correspond to the same bins.
          */
-        class IHistogramBuilder : public IBinningObserver<float32> {
+        class IHistogramBuilder {
 
             public:
 
                 virtual ~IHistogramBuilder() { };
+
+                /**
+                 * Adds the statistics at a specific index to a specific bin.
+                 *
+                 * @param binIndex          The index of the bin
+                 * @param statisticIndex    The index of the statistics
+                 */
+                virtual void addToBin(uint32 binIndex, uint32 statisticIndex) = 0;
 
                 /**
                  * Creates and returns a new instance of the class `IHistogram` that stores the aggregated statistics.
@@ -133,6 +141,6 @@ class IStatistics : virtual public IHistogram {
          *
          * @return An unique pointer to an object of type `IHistogramBuilder` that has been created
          */
-        virtual std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const = 0;
+        virtual std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const = 0;
 
 };
