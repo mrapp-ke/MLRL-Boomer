@@ -60,7 +60,7 @@ class DenseBinnedVector {
          */
         DenseBinnedVector(uint32 numElements, uint32 numBins);
 
-        ~DenseBinnedVector();
+        virtual ~DenseBinnedVector();
 
         typedef uint32* index_binned_iterator;
 
