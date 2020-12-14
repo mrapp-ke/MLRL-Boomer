@@ -254,11 +254,10 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector);
             uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
 
-            // Reset gradients and Hessians to zero...
+            // Reset mapping and the number of elements per bin...
             mapping_->clear();
 
             for (uint32 i = 0; i < numBins; i++) {
-                tmpGradients_[i] = 0;
                 numElementsPerBin_[i] = 0;
             }
 
