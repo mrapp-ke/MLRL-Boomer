@@ -9,7 +9,7 @@
 // Forward declarations
 class IRuleRefinement;
 class IThresholdsSubset;
-class IHistogram;
+class IImmutableStatistics;
 class IStatisticsSubset;
 class IHeadRefinement;
 class IHeadRefinementFactory;
@@ -51,10 +51,11 @@ class IIndexVector {
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
          * stored in this vector.
          *
-         * @param histogram A reference to an object of type `IHistogram` that should be used to create the subset
-         * @return          An unique pointer to an object of type `IStatisticsSubset` that has been created
+         * @param statistics    A reference to an object of type `IImmutableStatistics` that should be used to create
+         *                      the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const IHistogram& histogram) const = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const IImmutableStatistics& statistics) const = 0;
 
         /**
          * Creates and return a new instance of type `IRuleRefinement` that allows to search for the best refinement of
