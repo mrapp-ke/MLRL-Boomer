@@ -5,7 +5,6 @@
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_binned_dense.h"
 #include "../binning/label_binning_equal_width.h"
 #include "../math/blas.h"
-#include <forward_list>
 #include <cstdlib>
 #include <iostream>
 
