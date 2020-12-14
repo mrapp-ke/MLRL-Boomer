@@ -85,7 +85,7 @@ class DenseMappingVector {
          */
         DenseMappingVector(uint32 numElements);
 
-        ~DenseMappingVector();
+        virtual ~DenseMappingVector();
 
         typedef Iterator iterator;
 
