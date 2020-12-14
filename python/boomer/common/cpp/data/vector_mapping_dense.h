@@ -33,7 +33,7 @@ class DenseMappingVector {
         /**
          * An iterator that provides access to the elements in the vector.
          */
-        class Iterator {
+        class Iterator final {
 
             private:
 
@@ -58,7 +58,7 @@ class DenseMappingVector {
         /**
          * An iterator that provides read-only access to the elements in the vector.
          */
-        class ConstIterator {
+        class ConstIterator final {
 
             private:
 
