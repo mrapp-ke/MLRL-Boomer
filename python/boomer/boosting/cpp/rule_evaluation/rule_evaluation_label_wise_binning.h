@@ -11,7 +11,7 @@ namespace boosting {
     /**
      * Allows to create instances of the class `BinningLabelWiseRuleEvaluation` that uses equal-width binning.
      */
-    class EqualWidthBinningLabelWiseRuleEvaluationFactory : public ILabelWiseRuleEvaluationFactory {
+    class EqualWidthBinningLabelWiseRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
 
         private:
 

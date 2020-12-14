@@ -32,7 +32,7 @@ class DenseBinnedVector {
         /**
          * Allows to iterate all elements in the vector.
          */
-        class Iterator {
+        class Iterator final {
 
             private:
 
