@@ -136,11 +136,6 @@ void DenseMappingVector<T>::setNumElements(uint32 numElements, bool freeMemory) 
 }
 
 template<class T>
-typename DenseMappingVector<T>::Entry& DenseMappingVector<T>::getEntry(uint32 pos) {
-    return *array_[pos];
-}
-
-template<class T>
 void DenseMappingVector<T>::clear() {
     clearEntries<Entry>(array_, 0, numElements_);
 }
