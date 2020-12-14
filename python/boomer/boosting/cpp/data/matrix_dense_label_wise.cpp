@@ -78,3 +78,16 @@ void DenseLabelWiseStatisticMatrix::addToRow(uint32 row, gradient_const_iterator
         hessians_[index] += hessiansBegin[i];
     }
 }
+
+void DenseLabelWiseStatisticMatrix::subtractFromRow(uint32 row, gradient_const_iterator gradientsBegin,
+                                                    gradient_const_iterator gradientsEnd,
+                                                    hessian_const_iterator hessiansBegin,
+                                                    hessian_const_iterator hessiansEnd) {
+    uint32 offset = row * numCols_;
+
+    for (uint32 i = 0; i < numCols_; i++) {
+        uint32 index = offset + i;
+        gradients_[index] -= gradientsBegin[i];
+        hessians_[index] -= hessiansBegin[i];
+    }
+}

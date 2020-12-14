@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "../statistics/histogram.h"
+#include "../statistics/statistics_immutable.h"
 #include <memory>
 #include <utility>
 
@@ -21,7 +21,7 @@ class IRuleRefinementCallback {
 
         virtual ~IRuleRefinementCallback() { };
 
-        typedef std::pair<const IHistogram&, const T&> Result;
+        typedef std::pair<const IImmutableStatistics&, const T&> Result;
 
         /**
          * Invokes the callback and returns its result.

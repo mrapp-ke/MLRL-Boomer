@@ -369,7 +369,7 @@ class LabelWiseStatistics final : public ILabelWiseStatistics {
             }
         }
 
-        std::unique_ptr<IHistogramBuilder> buildHistogram(uint32 numBins) const override {
+        std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const override {
             //TODO Support creation of histograms
             std::unique_ptr<IHistogramBuilder> result;
             return result;
