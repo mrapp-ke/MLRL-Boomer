@@ -253,7 +253,6 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             // Obtain information about the bins to be used...
             LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector);
             uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
-            scoreVector_->setNumBins(numBins, false);
 
             // Reset gradients and Hessians to zero...
             mapping_->clear();
@@ -267,6 +266,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             currentStatisticVector_ = &statisticVector;
             binningPtr_->createBins(labelInfo, statisticVector, *binningObserver_);
             numBins = aggregateGradientsAndHessians(statisticVector, *mapping_, tmpGradients_, tmpHessians_, numBins);
+            scoreVector_->setNumBins(numBins, false);
 
             typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                 scoreVector_->scores_binned_begin();
