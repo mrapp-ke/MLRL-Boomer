@@ -117,14 +117,13 @@ class EvaluationResult:
         """
 
         if self.results is None:
-            self.results = [dict()] * num_folds
+            self.results = [{} for _ in range(num_folds)]
         elif len(self.results) != num_folds:
             raise AssertionError('Inconsistent number of total folds given')
 
         self.measures.add(name)
         values = self.results[fold]
         values[name] = score
-        self.results[fold] = values
 
     def get(self, name: str, fold: int) -> float:
         """
