@@ -11,23 +11,22 @@ using namespace boosting;
 
 
 static inline uint32 aggregateGradientsAndHessians(const DenseExampleWiseStatisticVector& statisticVector,
-                                                   const DenseMappingVector<uint32>& mapping, float64* gradients,
-                                                   float64* hessians, uint32 numBins) {
+                                                   const DenseMappingVector<uint32>& mapping, uint32* numElementsPerBin,
+                                                   float64* gradients, float64* hessians, uint32 numBins) {
     DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
     DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
     DenseMappingVector<uint32>::const_iterator mappingIterator = mapping.cbegin();
     uint32 n = 0;
 
     for (uint32 i = 0; i < numBins; i++) {
-        const DenseMappingVector<uint32>::Entry& bin1 = mappingIterator[i];
-        DenseMappingVector<uint32>::Entry::const_iterator it1 = bin1.cbegin();
-        DenseMappingVector<uint32>::Entry::const_iterator end1 = bin1.cend();
+        uint32 numElements = numElementsPerBin[i];
 
-        if (it1 != end1) {
-            float64 sumOfGradients = 0;
+        if (numElements > 0) {
+            const DenseMappingVector<uint32>::Entry& bin1 = mappingIterator[i];
             uint32 offset = triangularNumber(n);
+            float64 sumOfGradients = 0;
 
-            for (; it1 != end1; it1++) {
+            for (auto it1 = bin1.cbegin(); it1 != bin1.cend(); it1++) {
                 uint32 index1 = *it1;
                 sumOfGradients += gradientIterator[index1];
                 uint32 n2 = 0;
@@ -62,6 +61,7 @@ static inline uint32 aggregateGradientsAndHessians(const DenseExampleWiseStatist
             }
 
             gradients[n] = sumOfGradients;
+            numElementsPerBin[n] = numElements;
             n++;
         }
     }
@@ -264,7 +264,8 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
             currentStatisticVector_ = &statisticVector;
             binningPtr_->createBins(labelInfo, statisticVector, *binningObserver_);
-            numBins = aggregateGradientsAndHessians(statisticVector, *mapping_, tmpGradients_, tmpHessians_, numBins);
+            numBins = aggregateGradientsAndHessians(statisticVector, *mapping_, numElementsPerBin_, tmpGradients_,
+                                                    tmpHessians_, numBins);
             scoreVector_->setNumBins(numBins, false);
 
             typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
