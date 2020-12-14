@@ -8,19 +8,15 @@
 
 /**
  * An entry that is stored in the cache and contains unique pointers to a histogram and a vector that stores bins. The
- * field `numUpdates` specifies how often the statistics were updated when the histogram was (re-)built for the last
- * time. It may be used to check if the histogram is still valid or must be rebuilt.
+ * field `numConditions` specifies how many conditions the rule contained when the vector was updated for the last time.
+ * It may be used to check if the vector and histogram are still valid or must be updated.
  */
-struct BinCacheEntry {
-    BinCacheEntry() : numUpdates(0) { };
+struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
     std::unique_ptr<IHistogram> histogramPtr;
-    std::unique_ptr<BinVector> binVectorPtr;
-    uint32 numUpdates;
 };
 
-static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry,
-                                       intp conditionEnd, bool covered, uint32 numConditions,
-                                       CoverageMask& coverageMask) {
+static inline void filterCurrentVector(BinVector& vector, FilteredBinCacheEntry& cacheEntry, intp conditionEnd,
+                                       bool covered, uint32 numConditions, CoverageMask& coverageMask) {
     uint32 numTotalElements = vector.getNumElements();
     uint32 numElements = covered ? conditionEnd : (numTotalElements > conditionEnd ? numTotalElements - conditionEnd : 0);
     bool wasEmpty = false;
@@ -73,7 +69,7 @@ static inline void filterCurrentVector(BinVector& vector, FilteredCacheEntry<Bin
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVector>& cacheEntry, uint32 numConditions,
+static inline void filterAnyVector(BinVector& vector, FilteredBinCacheEntry& cacheEntry, uint32 numConditions,
                                    const CoverageMask& coverageMask) {
     uint32 maxElements = vector.getNumElements();
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
@@ -139,22 +135,20 @@ static inline void filterAnyVector(BinVector& vector, FilteredCacheEntry<BinVect
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, BinCacheEntry& cacheEntry,
-                                  uint32 numUpdates) {
+static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry) {
     uint32 numBins = vector.getNumElements();
-    std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.buildHistogram(numBins);
+    std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
 
     for (uint32 binIndex = 0; binIndex < numBins; binIndex++) {
         BinVector::ExampleList& examples = vector.getExamples(binIndex);
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
-            histogramBuilderPtr->onBinUpdate(binIndex, example.index, example.value);
+            histogramBuilderPtr->addToBin(binIndex, example.index);
         }
     }
 
     cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
-    cacheEntry.numUpdates = numUpdates;
 }
 
 /**
@@ -202,14 +196,13 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                         std::unique_ptr<Result> get() override {
                             auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
-                            FilteredCacheEntry<BinVector>& filteredCacheEntry = cacheFilteredIterator->second;
-                            BinVector* binVector = filteredCacheEntry.vectorPtr.get();
-
-                            auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
-                            BinCacheEntry& cacheEntry = cacheIterator->second;
+                            FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
+                            BinVector* binVector = cacheEntry.vectorPtr.get();
+                            IHistogram* histogram = cacheEntry.histogramPtr.get();
 
                             if (binVector == nullptr) {
-                                binVector = cacheEntry.binVectorPtr.get();
+                                auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
+                                binVector = cacheIterator->second.get();
 
                                 if (binVector == nullptr) {
                                     // Fetch feature vector...
@@ -221,31 +214,24 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     IFeatureBinning::FeatureInfo featureInfo =
                                         thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
-                                    cacheEntry.binVectorPtr = std::move(std::make_unique<BinVector>(numBins, true));
-                                    binVector = cacheEntry.binVectorPtr.get();
+                                    cacheIterator->second = std::move(std::make_unique<BinVector>(numBins, true));
+                                    binVector = cacheIterator->second.get();
                                     currentBinVector_ = binVector;
                                     thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo,
                                                                                           *featureVectorPtr, *this);
                                 }
+
+                                // Build histogram...
+                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry);
+                                histogram = cacheEntry.histogramPtr.get();
                             }
 
                             // Filter bins, if necessary...
                             uint32 numConditions = thresholdsSubset_.numModifications_;
 
-                            if (numConditions > filteredCacheEntry.numConditions) {
-                                filterAnyVector(*binVector, filteredCacheEntry, numConditions,
-                                                thresholdsSubset_.coverageMask_);
-                                binVector = filteredCacheEntry.vectorPtr.get();
-                            }
-
-                            // (Re-)Build histogram, if necessary...
-                            IHistogram* histogram = cacheEntry.histogramPtr.get();
-                            uint32 numStatisticUpdates = thresholdsSubset_.thresholds_.numStatisticUpdates_;
-
-                            if (histogram == nullptr || numStatisticUpdates > cacheEntry.numUpdates) {
-                                buildHistogram(*cacheEntry.binVectorPtr, *thresholdsSubset_.thresholds_.statisticsPtr_,
-                                               cacheEntry, numStatisticUpdates);
-                                histogram = cacheEntry.histogramPtr.get();
+                            if (numConditions > cacheEntry.numConditions) {
+                                filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_);
+                                binVector = cacheEntry.vectorPtr.get();
                             }
 
                             return std::make_unique<Result>(*histogram, *binVector);
@@ -280,17 +266,16 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 uint32 numModifications_;
 
-                std::unordered_map<uint32, FilteredCacheEntry<BinVector>> cacheFiltered_;
+                std::unordered_map<uint32, FilteredBinCacheEntry> cacheFiltered_;
 
                 template<class T>
                 std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
                                                                                  uint32 featureIndex) {
-                    auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex,
-                                                                        FilteredCacheEntry<BinVector>()).first;
+                    auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredBinCacheEntry()).first;
                     BinVector* binVector = cacheFilteredIterator->second.vectorPtr.get();
 
                     if (binVector == nullptr) {
-                        thresholds_.cache_.emplace(featureIndex, BinCacheEntry());
+                        thresholds_.cache_.emplace(featureIndex, std::unique_ptr<BinVector>());
                     }
 
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
@@ -329,13 +314,12 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                     uint32 featureIndex = refinement.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
-                    FilteredCacheEntry<BinVector>& cacheEntry = cacheFilteredIterator->second;
+                    FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
                     BinVector* binVector = cacheEntry.vectorPtr.get();
 
                     if (binVector == nullptr) {
                         auto cacheIterator = thresholds_.cache_.find(featureIndex);
-                        BinCacheEntry& binCacheEntry = cacheIterator->second;
-                        binVector = binCacheEntry.binVectorPtr.get();
+                        binVector = cacheIterator->second.get();
                     }
 
                     filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
@@ -369,7 +353,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
-                    thresholds_.numStatisticUpdates_++;
                     updateStatisticsInternally(*thresholds_.statisticsPtr_, coverageMask_, prediction);
                 }
 
@@ -377,9 +360,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
         std::shared_ptr<IFeatureBinning> binningPtr_;
 
-        std::unordered_map<uint32, BinCacheEntry> cache_;
-
-        uint32 numStatisticUpdates_;
+        std::unordered_map<uint32, std::unique_ptr<BinVector>> cache_;
 
     public:
 
@@ -402,7 +383,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                               std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                               std::shared_ptr<IFeatureBinning> binningPtr)
             : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr),
-              binningPtr_(binningPtr), numStatisticUpdates_(0) {
+              binningPtr_(binningPtr) {
 
         }
 
