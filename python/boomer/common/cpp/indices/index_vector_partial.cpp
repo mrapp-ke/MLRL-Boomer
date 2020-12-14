@@ -1,7 +1,7 @@
 #include "index_vector_partial.h"
 #include "../head_refinement/head_refinement.h"
 #include "../head_refinement/head_refinement_factory.h"
-#include "../statistics/histogram.h"
+#include "../statistics/statistics_immutable.h"
 #include "../thresholds/thresholds_subset.h"
 
 
@@ -42,8 +42,8 @@ PartialIndexVector::const_iterator PartialIndexVector::cend() const {
     return vector_.cend();
 }
 
-std::unique_ptr<IStatisticsSubset> PartialIndexVector::createSubset(const IHistogram& histogram) const {
-    return histogram.createSubset(*this);
+std::unique_ptr<IStatisticsSubset> PartialIndexVector::createSubset(const IImmutableStatistics& statistics) const {
+    return statistics.createSubset(*this);
 }
 
 std::unique_ptr<IRuleRefinement> PartialIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
