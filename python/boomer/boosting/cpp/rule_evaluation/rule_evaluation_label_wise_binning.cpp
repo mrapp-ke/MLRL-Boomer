@@ -15,7 +15,7 @@ using namespace boosting;
  * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
  */
 template<class T>
-class BinningLabelWiseRuleEvaluation : public ILabelWiseRuleEvaluation, public IBinningObserver<float64> {
+class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation, public IBinningObserver<float64> {
 
     private:
 

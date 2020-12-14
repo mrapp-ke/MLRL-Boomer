@@ -15,7 +15,7 @@ namespace boosting {
      * @tparam T The type of the vector that provides access to the gradients
      */
     template<class T>
-    class EqualWidthLabelBinning : public ILabelBinning<T> {
+    class EqualWidthLabelBinning final : public ILabelBinning<T> {
 
         private:
 

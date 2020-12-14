@@ -13,7 +13,7 @@ namespace boosting {
     /**
      * Allows to create instances of the class `BinningExampleWiseRuleEvaluation` that uses equal-width binning.
      */
-    class EqualWidthBinningExampleWiseRuleEvaluationFactory : public IExampleWiseRuleEvaluationFactory {
+    class EqualWidthBinningExampleWiseRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
 
         private:
 
