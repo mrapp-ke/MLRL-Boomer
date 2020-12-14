@@ -81,7 +81,7 @@ static inline uint32 aggregateGradientsAndHessians(const DenseExampleWiseStatist
 static inline void addRegularizationWeight(float64* output, uint32 n, const uint32* numElementsPerBin,
                                            float64 l2RegularizationWeight) {
     for (uint32 i = 0; i < n; i++) {
-        float64 weight = (float64) numElementsPerBin[i];
+        uint32 weight = numElementsPerBin[i];
         output[(i * n) + i] += (weight * l2RegularizationWeight);
     }
 }
