@@ -18,13 +18,13 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     // Invoke the callback...
     std::unique_ptr<IRuleRefinementCallback<BinVector>::Result> callbackResultPtr = callbackPtr_->get();
-    const IHistogram& histogram = callbackResultPtr->first;
+    const IImmutableStatistics& statistics = callbackResultPtr->first;
     const BinVector& binVector = callbackResultPtr->second;
     BinVector::bin_const_iterator iterator = binVector.bins_cbegin();
     uint32 numBins = binVector.getNumElements();
 
     // Create a new, empty subset of the current statistics when processing a new feature...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(histogram);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics);
 
     // Search for the first non-empty bin...
     uint32 r = 0;
