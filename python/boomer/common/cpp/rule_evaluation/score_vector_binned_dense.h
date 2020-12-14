@@ -158,9 +158,9 @@ class DenseBinnedScoreVector : virtual public IScoreVector {
          */
         bool isPartial() const;
 
-        void updatePrediction(AbstractPrediction& prediction) const override;
+        void updatePrediction(AbstractPrediction& prediction) const override final;
 
         const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
-                                                         IScoreProcessor& scoreProcessor) const override;
+                                                         IScoreProcessor& scoreProcessor) const override final;
 
 };
