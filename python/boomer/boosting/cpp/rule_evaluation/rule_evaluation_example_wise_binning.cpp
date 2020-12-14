@@ -6,7 +6,6 @@
 #include "../binning/label_binning_equal_width.h"
 #include "../math/blas.h"
 #include <cstdlib>
-#include <iostream>
 
 using namespace boosting;
 
@@ -53,13 +52,11 @@ static inline uint32 aggregateGradientsAndHessians(const DenseExampleWiseStatist
                                 c = index1;
                             }
 
-                            std::cout << "H_{" << r << ", " << c << "} + ";
                             sumOfHessians += hessianIterator[triangularNumber(c) + r];
                         }
 
                         hessians[offset + n2] = sumOfHessians;
                         n2++;
-                        std::cout << "\n";
                     }
                 }
             }
@@ -142,7 +139,6 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                     ruleEvaluation_.mapping_->begin()[binIndex].push_front(originalIndex);
                     ruleEvaluation_.numElementsPerBin_[binIndex] += 1;
                     ruleEvaluation_.scoreVector_->indices_binned_begin()[originalIndex] = binIndex;
-                    std::cout << originalIndex << " ==> " << binIndex <<  " (numElementsPerBin = " << ruleEvaluation_.numElementsPerBin_[binIndex] << ")\n";
                 }
 
         };
@@ -260,99 +256,34 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             scoreVector_->setNumBins(numBins, false);
 
             // Reset gradients and Hessians to zero...
-            std::cout << "reset mapping...\n";
             mapping_->clear();
-            std::cout << "reset mapping...DONE\n";
 
-            std::cout << "reset arrays to zero...\n";
             for (uint32 i = 0; i < numBins; i++) {
                 tmpGradients_[i] = 0;
                 numElementsPerBin_[i] = 0;
             }
-            std::cout << "reset arrays to zero...DONE\n";
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-            std::cout << "createBins...\n";
             currentStatisticVector_ = &statisticVector;
             binningPtr_->createBins(labelInfo, statisticVector, *binningObserver_);
-            std::cout << "createBins...DONE\n";
-
-            std::cout << "aggregate gradients and Hessians...\n";
             numBins = aggregateGradientsAndHessians(statisticVector, *mapping_, tmpGradients_, tmpHessians_, numBins);
-            std::cout << "aggregate gradients and Hessians...DONE (numBins = " << numBins << ")\n";
-
-            std::cout << "---------------------------------------------------------------------\n";
-            std::cout << "numElementsPerBin_:\n";
-            std::cout << "---------------------------------------------------------------------\n";
-            for (uint32 i = 0; i < numBins; i++) {
-                std::cout << i << " = " << numElementsPerBin_[i] << "\n";
-            }
-
-            std::cout << "---------------------------------------------------------------------\n";
-            std::cout << "tmpGradients_:\n";
-            std::cout << "---------------------------------------------------------------------\n";
-            for (uint32 i = 0; i < numBins; i++) {
-                std::cout << i << " = " << tmpGradients_[i] << "\n";
-            }
-
-            std::cout << "---------------------------------------------------------------------\n";
-            std::cout << "indices_binned:\n";
-            std::cout << "---------------------------------------------------------------------\n";
-            for (uint32 i = 0; i < scoreVector_->getNumElements(); i++) {
-                std::cout << i << " = " << scoreVector_->indices_binned_begin()[i] << "\n";
-            }
-
-            std::cout << "---------------------------------------------------------------------\n";
-            std::cout << "tmpHessians_:\n";
-            std::cout << "---------------------------------------------------------------------\n";
-            for (uint32 i = 0; i < triangularNumber(numBins); i++) {
-                std::cout << i << " = " << tmpHessians_[i] << "\n";
-            }
-
-            std::cout << "---------------------------------------------------------------------\n";
-            std::cout << "mapping_:\n";
-            std::cout << "---------------------------------------------------------------------\n";
-            for (uint32 i = 0; i < numBins; i++) {
-                const DenseMappingVector<uint32>::Entry& entry = mapping_->cbegin()[i];
-                std::cout << i << ": ";
-
-                for (auto it = entry.cbegin(); it != entry.cend(); it++) {
-                    std::cout << *it << ", ";
-                }
-
-                std::cout << "\n";
-            }
-
-            std::cout << "---------------------------------------------------------------------\n";
 
             typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                 scoreVector_->scores_binned_begin();
-            std::cout << "copyCoefficients...\n";
             copyCoefficients<float64*>(tmpHessians_, this->dsysvTmpArray1_, numBins);
-            std::cout << "copyCoefficients...DONE\n";
-            std::cout << "addRegularizationWeight...\n";
             addRegularizationWeight(this->dsysvTmpArray1_, numBins, numElementsPerBin_, l2RegularizationWeight_);
-            std::cout << "addRegularizationWeight...DONE\n";
-            std::cout << "copyOrdinates...\n";
             copyOrdinates<float64*>(tmpGradients_, scoreIterator, numBins);
-            std::cout << "copyOrdinates...DONE\n";
 
             // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-            std::cout << "dsysv...\n";
             this->lapackPtr_->dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
                                     numBins, this->dsysvLwork_);
-            std::cout << "dsysv...DONE\n";
 
             // Calculate the overall quality score...
-            std::cout << "calculateExampleWiseQualityScore...\n";
             float64 qualityScore = calculateExampleWiseQualityScore(numBins, scoreIterator, tmpGradients_, tmpHessians_,
                                                                     *blasPtr_, this->dspmvTmpArray_);
-            std::cout << "calculateExampleWiseQualityScore...DONE\n";
-            std::cout << "add regularization weight...\n";
             qualityScore += 0.5 * l2RegularizationWeight_ *
                             l2NormPow<typename DenseBinnedScoreVector<T>::score_binned_iterator, uint32*>(
                                 scoreIterator, numElementsPerBin_, numBins);
-            std::cout << "add regularization weight...DONE\n";
             scoreVector_->overallQualityScore = qualityScore;
             return *scoreVector_;
         }
