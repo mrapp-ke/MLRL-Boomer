@@ -1,6 +1,7 @@
 #include "rule_evaluation_example_wise_binning.h"
 #include "rule_evaluation_label_wise_binning_common.h"
 #include "rule_evaluation_example_wise_common.h"
+#include "../../../common/cpp/data/vector_mapping_dense.h"
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_binned_dense.h"
 #include "../binning/label_binning_equal_width.h"
 #include "../math/blas.h"
@@ -27,54 +28,6 @@ static inline void addRegularizationWeight(float64* output, uint32 n, const uint
         output[(i * n) + i] += (weight * l2RegularizationWeight);
     }
 }
-
-template<class T>
-class Mapping {
-
-    public:
-
-        typedef std::forward_list<T> Bin;
-
-    private:
-
-        uint32 numBins_;
-
-        Bin** bins_;
-
-    public:
-
-        Mapping(uint32 numBins)
-            : numBins_(numBins), bins_((Bin**) calloc(numBins, sizeof(Bin*))) {
-
-        }
-
-        ~Mapping() {
-            this->clear();
-            free(bins_);
-        }
-
-        Bin& get(uint32 pos) {
-            Bin** binPtr = &bins_[pos];
-
-            if (*binPtr == nullptr) {
-                *binPtr = new Bin();
-            }
-
-            return **binPtr;
-        }
-
-        void clear() {
-            for (uint32 i = 0; i < numBins_; i++) {
-                Bin** binPtr = &bins_[i];
-
-                if (*binPtr != nullptr) {
-                    delete *binPtr;
-                    *binPtr = nullptr;
-                }
-            }
-        }
-
-};
 
 /**
  * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
@@ -127,7 +80,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
                 void onBinUpdate(uint32 binIndex, uint32 originalIndex, float64 value) override {
                     ruleEvaluation_.tmpGradients_[binIndex] += value;
-                    ruleEvaluation_.mapping_->get(binIndex).push_front(originalIndex);
+                    ruleEvaluation_.mapping_->begin()[binIndex].push_front(originalIndex);
                     ruleEvaluation_.numElementsPerBin_[binIndex] += 1;
                     ruleEvaluation_.scoreVector_->indices_binned_begin()[originalIndex] = binIndex;
                     std::cout << originalIndex << " ==> " << binIndex <<  " (numElementsPerBin = " << ruleEvaluation_.numElementsPerBin_[binIndex] << ")\n";
@@ -153,7 +106,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
         uint32* numElementsPerBin_;
 
-        Mapping<uint32>* mapping_;
+        DenseMappingVector<uint32>* mapping_;
 
         IBinningObserver<float64>* binningObserver_;
 
@@ -238,7 +191,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                 tmpGradients_ = (float64*) malloc(maxBins_ * sizeof(float64));
                 tmpHessians_ = (float64*) malloc(triangularNumber(maxBins_) * sizeof(float64));
                 numElementsPerBin_ = (uint32*) malloc(maxBins_ * sizeof(uint32));
-                mapping_ = new Mapping<uint32>(maxBins_);
+                mapping_ = new DenseMappingVector<uint32>(maxBins_);
                 binningObserver_ = new BinningExampleWiseRuleEvaluation<T>::ExampleWiseBinningObserver(*this);
             }
 
@@ -273,13 +226,13 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
                 for (uint32 j = 0; j < i + 1; j++) {
                     float64 sumOfHessians = 0;
-                    Mapping<uint32>::Bin& bin1 = mapping_->get(i);
-                    Mapping<uint32>::Bin& bin2 = mapping_->get(j);
+                    const DenseMappingVector<uint32>::Entry& entry1 = mapping_->cbegin()[i];
+                    const DenseMappingVector<uint32>::Entry& entry2 = mapping_->cbegin()[j];
 
                     std::cout << "B_{" << i << "," << j << "}: ";
 
-                    for (auto it1 = bin1.cbegin(); it1 != bin1.cend(); it1++) {
-                        for (auto it2 = bin2.cbegin(); it2 != bin2.cend(); it2++) {
+                    for (auto it1 = entry1.cbegin(); it1 != entry1.cend(); it1++) {
+                        for (auto it2 = entry2.cbegin(); it2 != entry2.cend(); it2++) {
                             uint32 index1 = *it1;
                             uint32 index2 = *it2;
                             uint32 r, c;
@@ -335,10 +288,10 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             std::cout << "mapping_:\n";
             std::cout << "---------------------------------------------------------------------\n";
             for (uint32 i = 0; i < numBins; i++) {
-                Mapping<uint32>::Bin& bin = mapping_->get(i);
+                const DenseMappingVector<uint32>::Entry& entry = mapping_->cbegin()[i];
                 std::cout << i << ": ";
 
-                for (auto it = bin.cbegin(); it != bin.cend(); it++) {
+                for (auto it = entry.cbegin(); it != entry.cend(); it++) {
                     std::cout << *it << ", ";
                 }
 
