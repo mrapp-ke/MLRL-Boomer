@@ -12,6 +12,67 @@
 using namespace boosting;
 
 
+static inline uint32 aggregateGradientsAndHessians(const DenseExampleWiseStatisticVector& statisticVector,
+                                                   const DenseMappingVector<uint32>& mapping, float64* gradients,
+                                                   float64* hessians, uint32 numBins) {
+    DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+    DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
+    DenseMappingVector<uint32>::const_iterator mappingIterator = mapping.cbegin();
+    uint32 n = 0;
+
+    for (uint32 i = 0; i < numBins; i++) {
+        const DenseMappingVector<uint32>::Entry& bin1 = mappingIterator[i];
+        DenseMappingVector<uint32>::Entry::const_iterator it1 = bin1.cbegin();
+        DenseMappingVector<uint32>::Entry::const_iterator end1 = bin1.cend();
+
+        if (it1 != end1) {
+            float64 sumOfGradients = 0;
+            uint32 offset = triangularNumber(n);
+
+            for (; it1 != end1; it1++) {
+                uint32 index1 = *it1;
+                sumOfGradients += gradientIterator[index1];
+                uint32 n2 = 0;
+
+                for (uint32 j = 0; j < i + 1; j++) {
+                    const DenseMappingVector<uint32>::Entry& bin2 = mappingIterator[j];
+                    DenseMappingVector<uint32>::Entry::const_iterator it2 = bin2.cbegin();
+                    DenseMappingVector<uint32>::Entry::const_iterator end2 = bin2.cend();
+
+                    if (it2 != end2) {
+                        float64 sumOfHessians = 0;
+
+                        for (; it2 != end2; it2++) {
+                            uint32 index2 = *it2;
+                            uint32 r, c;
+
+                             if (index1 < index2) {
+                                r = index1;
+                                c = index2;
+                            } else {
+                                r = index2;
+                                c = index1;
+                            }
+
+                            std::cout << "H_{" << r << ", " << c << "} + ";
+                            sumOfHessians += hessianIterator[triangularNumber(c) + r];
+                        }
+
+                        hessians[offset + n2] = sumOfHessians;
+                        n2++;
+                        std::cout << "\n";
+                    }
+                }
+            }
+
+            gradients[n] = sumOfGradients;
+            n++;
+        }
+    }
+
+    return n;
+}
+
 /**
  * Adds a specific L2 regularization weight to the diagonal of a coefficient matrix.
  *
@@ -79,7 +140,6 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                 }
 
                 void onBinUpdate(uint32 binIndex, uint32 originalIndex, float64 value) override {
-                    ruleEvaluation_.tmpGradients_[binIndex] += value;
                     ruleEvaluation_.mapping_->begin()[binIndex].push_front(originalIndex);
                     ruleEvaluation_.numElementsPerBin_[binIndex] += 1;
                     ruleEvaluation_.scoreVector_->indices_binned_begin()[originalIndex] = binIndex;
@@ -218,43 +278,9 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             binningPtr_->createBins(labelInfo, statisticVector, *binningObserver_);
             std::cout << "createBins...DONE\n";
 
-            std::cout << "create binned Hessian matrix...\n";
-            DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
-
-            for (uint32 i = 0; i < numBins; i++) {
-                uint32 offset = triangularNumber(i);
-
-                for (uint32 j = 0; j < i + 1; j++) {
-                    float64 sumOfHessians = 0;
-                    const DenseMappingVector<uint32>::Entry& entry1 = mapping_->cbegin()[i];
-                    const DenseMappingVector<uint32>::Entry& entry2 = mapping_->cbegin()[j];
-
-                    std::cout << "B_{" << i << "," << j << "}: ";
-
-                    for (auto it1 = entry1.cbegin(); it1 != entry1.cend(); it1++) {
-                        for (auto it2 = entry2.cbegin(); it2 != entry2.cend(); it2++) {
-                            uint32 index1 = *it1;
-                            uint32 index2 = *it2;
-                            uint32 r, c;
-
-                            if (index1 < index2) {
-                                r = index1;
-                                c = index2;
-                            } else {
-                                r = index2;
-                                c = index1;
-                            }
-
-                            std::cout << "H_{" << r << ", " << c << "} + ";
-                            sumOfHessians += hessianIterator[triangularNumber(c) + r];
-                        }
-                    }
-
-                    std::cout << "\n";
-                    tmpHessians_[offset + j] = sumOfHessians;
-                }
-            }
-            std::cout << "create binned Hessian matrix...DONE\n";
+            std::cout << "aggregate gradients and Hessians...\n";
+            numBins = aggregateGradientsAndHessians(statisticVector, *mapping_, tmpGradients_, tmpHessians_, numBins);
+            std::cout << "aggregate gradients and Hessians...DONE (numBins = " << numBins << ")\n";
 
             std::cout << "---------------------------------------------------------------------\n";
             std::cout << "numElementsPerBin_:\n";
