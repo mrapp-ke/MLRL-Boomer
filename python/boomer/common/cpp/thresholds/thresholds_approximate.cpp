@@ -141,10 +141,11 @@ static inline void buildHistogram(BinVector& vector, const IStatistics& statisti
 
     for (uint32 binIndex = 0; binIndex < numBins; binIndex++) {
         BinVector::ExampleList& examples = vector.getExamples(binIndex);
+        uint32 originalIndex = vector[binIndex].index;
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
-            histogramBuilderPtr->addToBin(binIndex, example.index);
+            histogramBuilderPtr->addToBin(originalIndex, example.index);
         }
     }
 
