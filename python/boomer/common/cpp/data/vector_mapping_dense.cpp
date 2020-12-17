@@ -1,4 +1,5 @@
 #include "vector_mapping_dense.h"
+#include "indexed_value.h"
 #include <cstdlib>
 
 
@@ -164,4 +165,4 @@ void DenseMappingVector<T>::clear() {
     clearEntries<Entry>(array_, 0, numElements_);
 }
 
-template class DenseMappingVector<uint32>;
+template class DenseMappingVector<IndexedValue<float32>>;
