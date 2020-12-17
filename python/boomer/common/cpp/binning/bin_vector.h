@@ -105,14 +105,6 @@ class BinVector final {
         example_list_const_iterator examples_cend() const;
 
         /**
-         * Returns the list that stores the examples that correspond to a specific bin.
-         *
-         * @param binIndex  The index of the bin
-         * @return          A reference to an object of type `ExampleList` that stores the examples in the bin
-         */
-        ExampleList& getExamples(uint32 binIndex);
-
-        /**
          * Returns the number of elements in the vector.
          *
          * @return The number of elements in the vector

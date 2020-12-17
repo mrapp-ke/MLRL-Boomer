@@ -50,10 +50,6 @@ BinVector::example_list_const_iterator BinVector::examples_cend() const {
     return mapping_.cend();
 }
 
-BinVector::ExampleList& BinVector::getExamples(uint32 binIndex) {
-    return mapping_.begin()[binIndex];
-}
-
 uint32 BinVector::getNumElements() const {
     return vector_.getNumElements();
 }
