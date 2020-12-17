@@ -119,4 +119,10 @@ class BinVector final {
          */
         void setNumElements(uint32 numElements, bool freeMemory);
 
+
+        /**
+         *
+         */
+        void swapExamples(uint32 pos1, uint32 pos2);
+
 };

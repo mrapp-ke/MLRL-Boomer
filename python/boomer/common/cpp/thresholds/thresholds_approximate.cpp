@@ -15,7 +15,7 @@ struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
     std::unique_ptr<IHistogram> histogramPtr;
 };
 
-static inline void filterCurrentVector(BinVector& vector, FilteredBinCacheEntry& cacheEntry, intp conditionEnd,
+static inline void filterCurrentVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, intp conditionEnd,
                                        bool covered, uint32 numConditions, CoverageMask& coverageMask) {
     uint32 numTotalElements = vector.getNumElements();
     uint32 numElements = covered ? conditionEnd : (numTotalElements > conditionEnd ? numTotalElements - conditionEnd : 0);
@@ -49,15 +49,20 @@ static inline void filterCurrentVector(BinVector& vector, FilteredBinCacheEntry&
 
     for (intp r = start; r < end; r++) {
         const BinVector::ExampleList& examples = examplesIterator[r];
-        BinVector::ExampleList& filteredExamples = filteredExamplesIterator[r];
+        BinVector::ExampleList& filteredExamples = filteredExamplesIterator[i];
 
-        for (auto it = examples.cbegin(); it != examples.cend(); it++) {
-            const BinVector::Example example = *it;
-            coverageMaskIterator[example.index] = numConditions;
-
-            if (wasEmpty) {
+        if (wasEmpty) {
+            for (auto it = examples.cbegin(); it != examples.cend(); it++) {
+                const BinVector::Example example = *it;
+                coverageMaskIterator[example.index] = numConditions;
                 filteredExamples.push_front(example);
             }
+        } else {
+            for (auto it = examples.cbegin(); it != examples.cend(); it++) {
+                const BinVector::Example example = *it;
+                coverageMaskIterator[example.index] = numConditions;
+            }
+            filteredVector->swapExamples(i, r);
         }
 
         filteredBinIterator[i].index = binIterator[r].index;
@@ -71,7 +76,7 @@ static inline void filterCurrentVector(BinVector& vector, FilteredBinCacheEntry&
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void filterAnyVector(BinVector& vector, FilteredBinCacheEntry& cacheEntry, uint32 numConditions,
+static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, uint32 numConditions,
                                    const CoverageMask& coverageMask) {
     uint32 maxElements = vector.getNumElements();
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
@@ -95,7 +100,7 @@ static inline void filterAnyVector(BinVector& vector, FilteredBinCacheEntry& cac
         uint32 numExamples = 0;
         const BinVector::ExampleList& examples = exampleIterator[r];
         BinVector::ExampleList::const_iterator before = examples.cbefore_begin();
-        BinVector::ExampleList& filteredExamples = filteredExampleIterator[r];
+        BinVector::ExampleList& filteredExamples = filteredExampleIterator[i];
 
         for (auto it = examples.cbegin(); it != examples.cend();) {
             const BinVector::Example example = *it;
@@ -125,6 +130,10 @@ static inline void filterAnyVector(BinVector& vector, FilteredBinCacheEntry& cac
             } else {
                 it++;
             }
+        }
+
+        if(!wasEmpty){
+            filteredVector->swapExamples(i, r);
         }
 
         if (numExamples > 0) {

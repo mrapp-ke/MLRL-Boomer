@@ -58,3 +58,7 @@ void BinVector::setNumElements(uint32 numElements, bool freeMemory) {
     vector_.setNumElements(numElements, freeMemory);
     mapping_.setNumElements(numElements, freeMemory);
 }
+
+void BinVector::swapExamples(uint32 pos1, uint32 pos2){
+    mapping_.swap(pos1, pos2);
+}
