@@ -165,4 +165,14 @@ void DenseMappingVector<T>::clear() {
     clearEntries<Entry>(array_, 0, numElements_);
 }
 
+template<class T>
+void DenseMappingVector<T>::swap(uint32 pos1, uint32 pos2) {
+    if (pos1 != pos2) {
+        Entry* ptr1 = array_[pos1];
+        Entry* ptr2 = array_[pos2];
+        array_[pos1] = ptr2;
+        array_[pos2] = ptr1;
+    }
+}
+
 template class DenseMappingVector<IndexedValue<float32>>;
