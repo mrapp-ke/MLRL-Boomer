@@ -5,9 +5,8 @@
 
 #include "../data/indexed_value.h"
 #include "../data/vector_dense.h"
+#include "../data/vector_mapping_dense.h"
 #include "../data/bin.h"
-#include <unordered_map>
-#include <forward_list>
 
 
 /**
@@ -20,13 +19,11 @@ class BinVector final {
 
         typedef IndexedValue<float32> Example;
 
-        typedef std::forward_list<Example> ExampleList;
-
     private:
 
         DenseVector<Bin> vector_;
 
-        std::unordered_map<uint32, ExampleList> examplesPerBin_;
+        DenseMappingVector<Example> mapping_;
 
     public:
 
@@ -44,6 +41,12 @@ class BinVector final {
         typedef DenseVector<Bin>::iterator bin_iterator;
 
         typedef DenseVector<Bin>::const_iterator bin_const_iterator;
+
+        typedef DenseMappingVector<Example>::iterator example_list_iterator;
+
+        typedef DenseMappingVector<Example>::const_iterator example_list_const_iterator;
+
+        typedef DenseMappingVector<Example>::Entry ExampleList;
 
         /**
          * Returns a `bin_iterator` to the beginning of the bins.
@@ -72,6 +75,34 @@ class BinVector final {
          * @return A `bin_const_iterator` to the end
          */
         bin_const_iterator bins_cend() const;
+
+        /**
+         * Returns an `example_list_iterator` to the beginning of the examples.
+         *
+         * @return An `example_list_iterator` to the beginning
+         */
+        example_list_iterator examples_begin();
+
+        /**
+         * Returns an `example_list_iterator` to the end of the examples.
+         *
+         * @return An `example_list_iterator` to the end
+         */
+        example_list_iterator examples_end();
+
+        /**
+         * Returns an `example_list_const_iterator` to the beginning of the examples.
+         *
+         * @return An `example_list_const_iterator` to the beginning
+         */
+        example_list_const_iterator examples_cbegin() const;
+
+        /**
+         * Returns an `example_list_const_iterator` to the end of the examples.
+         *
+         * @return An `example_list_const_iterator` to the end
+         */
+        example_list_const_iterator examples_cend() const;
 
         /**
          * Returns the list that stores the examples that correspond to a specific bin.
