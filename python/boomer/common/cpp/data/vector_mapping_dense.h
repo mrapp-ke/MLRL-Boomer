@@ -147,6 +147,6 @@ class DenseMappingVector {
          * @param pos1  The position of the first element
          * @param pos2  The position of the second element
          */
-        void swap(uint32 pos1, pos2);
+        void swap(uint32 pos1, uint32 pos2);
 
 };
