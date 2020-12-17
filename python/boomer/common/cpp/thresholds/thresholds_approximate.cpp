@@ -30,9 +30,7 @@ static inline void filterCurrentVector(BinVector& vector, FilteredBinCacheEntry&
     }
 
     BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
-    BinVector::example_list_const_iterator examplesIterator = vector.examples_cbegin();
     BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
-    BinVector::example_list_iterator filteredExamplesIterator = filteredVector->examples_begin();
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     coverageMask.target = numConditions;
@@ -48,11 +46,11 @@ static inline void filterCurrentVector(BinVector& vector, FilteredBinCacheEntry&
     }
 
     for (intp r = start; r < end; r++) {
-        const BinVector::ExampleList& examples = examplesIterator[r];
-        BinVector::ExampleList& filteredExamples = filteredExamplesIterator[r];
+        BinVector::ExampleList& examples = vector.getExamples(r);
+        BinVector::ExampleList& filteredExamples = filteredVector->getExamples(r);
 
-        for (auto it = examples.cbegin(); it != examples.cend(); it++) {
-            const BinVector::Example example = *it;
+        for (BinVector::ExampleList::const_iterator it = examples.cbegin(); it != examples.cend(); it++) {
+            BinVector::Example example = *it;
             coverageMaskIterator[example.index] = numConditions;
 
             if (wasEmpty) {
@@ -84,21 +82,19 @@ static inline void filterAnyVector(BinVector& vector, FilteredBinCacheEntry& cac
     }
 
     BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
-    BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
     BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
-    BinVector::example_list_iterator filteredExampleIterator = filteredVector->examples_begin();
     uint32 i = 0;
 
     for(uint32 r = 0; r < maxElements; r++) {
         float32 maxValue = -std::numeric_limits<float32>::infinity();
         float32 minValue = std::numeric_limits<float32>::infinity();
         uint32 numExamples = 0;
-        const BinVector::ExampleList& examples = exampleIterator[r];
+        BinVector::ExampleList& examples = vector.getExamples(r);
+        BinVector::ExampleList& filteredExamples = filteredVector->getExamples(r);
         BinVector::ExampleList::const_iterator before = examples.cbefore_begin();
-        BinVector::ExampleList& filteredExamples = filteredExampleIterator[r];
 
-        for (auto it = examples.cbegin(); it != examples.cend();) {
-            const BinVector::Example example = *it;
+        for (BinVector::ExampleList::const_iterator it = examples.cbegin(); it != examples.cend();) {
+            BinVector::Example example = *it;
             uint32 index = example.index;
 
             if (coverageMask.isCovered(index)) {
@@ -144,10 +140,9 @@ static inline void buildHistogram(BinVector& vector, const IStatistics& statisti
     uint32 numBins = vector.getNumElements();
     std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
     BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
-    BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
 
     for (uint32 i = 0; i < numBins; i++) {
-        const BinVector::ExampleList& examples = exampleIterator[i];
+        BinVector::ExampleList& examples = vector.getExamples(i);
         uint32 binIndex = binIterator[i].index;
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
@@ -260,8 +255,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             IndexedValue<float32> example;
                             example.index = originalIndex;
                             example.value = value;
-                            BinVector::example_list_iterator exampleIterator = currentBinVector_->examples_begin();
-                            BinVector::ExampleList examples = exampleIterator[binIndex];
+                            BinVector::ExampleList& examples = currentBinVector_->getExamples(binIndex);
                             examples.push_front(example);
                         }
 

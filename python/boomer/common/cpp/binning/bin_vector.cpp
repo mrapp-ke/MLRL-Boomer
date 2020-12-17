@@ -7,7 +7,7 @@ BinVector::BinVector(uint32 numElements)
 }
 
 BinVector::BinVector(uint32 numElements, bool init)
-    : vector_(DenseVector<Bin>(numElements)), mapping_(DenseMappingVector<Example>(numElements)) {
+    : vector_(DenseVector<Bin>(numElements)) {
     if (init) {
         DenseVector<Bin>::iterator iterator = vector_.begin();
 
@@ -34,20 +34,8 @@ BinVector::bin_const_iterator BinVector::bins_cend() const {
     return vector_.cend();
 }
 
-BinVector::example_list_iterator BinVector::examples_begin() {
-    return mapping_.begin();
-}
-
-BinVector::example_list_iterator BinVector::examples_end() {
-    return mapping_.end();
-}
-
-BinVector::example_list_const_iterator BinVector::examples_cbegin() const {
-    return mapping_.cbegin();
-}
-
-BinVector::example_list_const_iterator BinVector::examples_cend() const {
-    return mapping_.cend();
+BinVector::ExampleList& BinVector::getExamples(uint32 binIndex) {
+    return examplesPerBin_[binIndex];
 }
 
 uint32 BinVector::getNumElements() const {
@@ -56,5 +44,4 @@ uint32 BinVector::getNumElements() const {
 
 void BinVector::setNumElements(uint32 numElements, bool freeMemory) {
     vector_.setNumElements(numElements, freeMemory);
-    mapping_.setNumElements(numElements, freeMemory);
 }
