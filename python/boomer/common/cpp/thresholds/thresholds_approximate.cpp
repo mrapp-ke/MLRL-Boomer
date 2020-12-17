@@ -117,6 +117,7 @@ static inline void filterAnyVector(BinVector& vector, FilteredBinCacheEntry& cac
                 it++;
             } else if (!wasEmpty) {
                 it = filteredExamples.erase_after(before);
+                cacheEntry.histogramPtr->removeFromBin(filteredBinIterator[r].index, index);
             } else {
                 it++;
             }
@@ -138,9 +139,11 @@ static inline void filterAnyVector(BinVector& vector, FilteredBinCacheEntry& cac
 static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry) {
     uint32 numBins = vector.getNumElements();
     std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
+    BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
 
-    for (uint32 binIndex = 0; binIndex < numBins; binIndex++) {
-        BinVector::ExampleList& examples = vector.getExamples(binIndex);
+    for (uint32 i = 0; i < numBins; i++) {
+        BinVector::ExampleList& examples = vector.getExamples(i);
+        uint32 binIndex = binIterator[i].index;
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
