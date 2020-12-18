@@ -270,7 +270,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             example.index = originalIndex;
                             example.value = value;
                             BinVector::example_list_iterator exampleIterator = currentBinVector_->examples_begin();
-                            BinVector::ExampleList examples = exampleIterator[binIndex];
+                            BinVector::ExampleList& examples = exampleIterator[binIndex];
                             examples.push_front(example);
                         }
 
