@@ -42,11 +42,12 @@ static inline float64 squaredLogisticFunction(float64 x) {
 void LabelWiseLogisticLoss::updateGradientAndHessian(DenseVector<float64>::iterator gradient,
                                                      DenseVector<float64>::iterator hessian, bool trueLabel,
                                                      float64 predictedScore) const {
-    // The gradient calculates as `-expectedScore / (1 + exp(expectedScore * predictedScore))`...
+    // The gradient calculates as `-expectedScore / (1 + exp(expectedScore * predictedScore))`, or as
+    // `1 / (1 + exp(-predictedScore)) - 1` if `trueLabel == true`, `1 / (1 + exp(-predictedScore))`, otherwise...
     float64 logistic = logisticFunction(predictedScore);
     *gradient = trueLabel ? logistic - 1.0 : logistic;
 
     // The Hessian calculates as `exp(expectedScore * predictedScore) / (1 + exp(expectedScore * predictedScore))^2`,
-    // or `1 / (1 + exp(expectedScore * predictedScore)) - 1 / (1 + exp(expectedScore * predictedScore))^2`
+    // or as `1 / (1 + exp(expectedScore * predictedScore)) - 1 / (1 + exp(expectedScore * predictedScore))^2`
     *hessian = logistic - squaredLogisticFunction(predictedScore);
 }
