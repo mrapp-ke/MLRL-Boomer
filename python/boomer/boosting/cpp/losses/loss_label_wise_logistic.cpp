@@ -47,6 +47,6 @@ void LabelWiseLogisticLoss::updateGradientAndHessian(DenseVector<float64>::itera
     *gradient = trueLabel ? logistic - 1.0 : logistic;
 
     // The Hessian calculates as `exp(expectedScore * predictedScore) / (1 + exp(expectedScore * predictedScore))^2`,
-    // or alternatively `1 / (1 + exp(expectedScore * predictedScore)) - 1 / (1 + exp(expectedScore * predictedScore)^2`
+    // or `1 / (1 + exp(expectedScore * predictedScore)) - 1 / (1 + exp(expectedScore * predictedScore))^2`
     *hessian = logistic - squaredLogisticFunction(predictedScore);
 }
