@@ -62,6 +62,7 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
                 const BinVector::Example example = *it;
                 coverageMaskIterator[example.index] = numConditions;
             }
+
             filteredVector->swapExamples(i, r);
         }
 
@@ -132,7 +133,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
             }
         }
 
-        if(!wasEmpty){
+        if (!wasEmpty) {
             filteredVector->swapExamples(i, r);
         }
 
