@@ -98,7 +98,10 @@ class BinVector final {
 
 
         /**
+         * Swaps the examples that correspond to the bin at a specific position with the examples of another bin.
          *
+         * @param pos1  The position of the first bin
+         * @param pos2  The position of the secon bin
          */
         void swapExamples(uint32 pos1, uint32 pos2);
 
