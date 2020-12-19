@@ -67,7 +67,7 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
         }
 
         filteredBinIterator[i].index = binIterator[r].index;
-        filteredBinIterator[i].numExamples = binIterator[r].numExamples;
+        filteredBinIterator[i].sumOfWeights = binIterator[r].sumOfWeights;
         filteredBinIterator[i].minValue = binIterator[r].minValue;
         filteredBinIterator[i].maxValue = binIterator[r].maxValue;
         i++;
@@ -98,7 +98,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     for(uint32 r = 0; r < maxElements; r++) {
         float32 maxValue = -std::numeric_limits<float32>::infinity();
         float32 minValue = std::numeric_limits<float32>::infinity();
-        uint32 numExamples = 0;
+        uint32 sumOfWeights = 0;
         const BinVector::ExampleList& examples = exampleIterator[r];
         BinVector::ExampleList::const_iterator before = examples.cbefore_begin();
         BinVector::ExampleList& filteredExamples = filteredExampleIterator[i];
@@ -122,7 +122,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                     filteredExamples.push_front(example);
                 }
 
-                numExamples++;
+                sumOfWeights += weights.getWeight(exampleIndex);
                 before = it;
                 it++;
             } else if (!wasEmpty) {
@@ -138,9 +138,9 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
             filteredVector->swapExamples(i, r);
         }
 
-        if (numExamples > 0) {
+        if (sumOfWeights > 0) {
             filteredBinIterator[i].index = binIterator[r].index;
-            filteredBinIterator[i].numExamples = numExamples;
+            filteredBinIterator[i].sumOfWeights = sumOfWeights;
             filteredBinIterator[i].minValue = minValue;
             filteredBinIterator[i].maxValue = maxValue;
             i++;
@@ -266,7 +266,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
                             BinVector::bin_iterator binIterator = currentBinVector_->bins_begin();
-                            binIterator[binIndex].numExamples += 1;
+                            binIterator[binIndex].sumOfWeights += thresholdsSubset_.weights_.getWeight(originalIndex);
 
                             if (value < binIterator[binIndex].minValue) {
                                 binIterator[binIndex].minValue = value;
