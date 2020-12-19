@@ -18,6 +18,7 @@ sources = [
     'boomer/common/cpp/data/vector_dense.cpp',
     'boomer/common/cpp/data/vector_dok_binary.cpp',
     'boomer/common/cpp/data/vector_sparse_array.cpp',
+    'boomer/common/cpp/data/vector_mapping_dense.cpp',
     'boomer/common/cpp/indices/index_vector_full.cpp',
     'boomer/common/cpp/indices/index_vector_partial.cpp',
     'boomer/common/cpp/input/feature_matrix_csc.cpp',
