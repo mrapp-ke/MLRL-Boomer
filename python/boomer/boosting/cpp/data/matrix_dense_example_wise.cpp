@@ -71,33 +71,33 @@ uint32 DenseExampleWiseStatisticMatrix::getNumCols() const {
 void DenseExampleWiseStatisticMatrix::addToRow(uint32 row, gradient_const_iterator gradientsBegin,
                                                gradient_const_iterator gradientsEnd,
                                                hessian_const_iterator hessiansBegin,
-                                               hessian_const_iterator hessiansEnd, float64 weight) {
+                                               hessian_const_iterator hessiansEnd) {
     uint32 offset = row * numGradients_;
 
     for (uint32 i = 0; i < numGradients_; i++) {
-        gradients_[offset + i] += (gradientsBegin[i] * weight);
+        gradients_[offset + i] += gradientsBegin[i];
     }
 
     offset = row * numHessians_;
 
     for (uint32 i = 0; i < numHessians_; i++) {
-        hessians_[offset + i] += (hessiansBegin[i] * weight);
+        hessians_[offset + i] += hessiansBegin[i];
     }
 }
 
 void DenseExampleWiseStatisticMatrix::subtractFromRow(uint32 row, gradient_const_iterator gradientsBegin,
                                                       gradient_const_iterator gradientsEnd,
                                                       hessian_const_iterator hessiansBegin,
-                                                      hessian_const_iterator hessiansEnd, float64 weight) {
+                                                      hessian_const_iterator hessiansEnd) {
     uint32 offset = row * numGradients_;
 
     for (uint32 i = 0; i < numGradients_; i++) {
-        gradients_[offset + i] -= (gradientsBegin[i] * weight);
+        gradients_[offset + i] -= gradientsBegin[i];
     }
 
     offset = row * numHessians_;
 
     for (uint32 i = 0; i < numHessians_; i++) {
-        hessians_[offset + i] -= (hessiansBegin[i] * weight);
+        hessians_[offset + i] -= hessiansBegin[i];
     }
 }
