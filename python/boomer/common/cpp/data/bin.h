@@ -11,10 +11,10 @@
  *  A struct that stores information about the examples that are contained by a bin.
  */
 struct Bin {
-    Bin() : numExamples(0), minValue(std::numeric_limits<float32>::infinity()),
+    Bin() : sumOfWeights(0), minValue(std::numeric_limits<float32>::infinity()),
             maxValue(-std::numeric_limits<float32>::infinity()) { };
     uint32 index;
-    uint32 numExamples;
+    uint32 sumOfWeights;
     float32 minValue;
     float32 maxValue;
 };

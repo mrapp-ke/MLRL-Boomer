@@ -67,7 +67,7 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
         }
 
         filteredBinIterator[i].index = binIterator[r].index;
-        filteredBinIterator[i].numExamples = binIterator[r].numExamples;
+        filteredBinIterator[i].sumOfWeights = binIterator[r].sumOfWeights;
         filteredBinIterator[i].minValue = binIterator[r].minValue;
         filteredBinIterator[i].maxValue = binIterator[r].maxValue;
         i++;
@@ -78,7 +78,7 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
 }
 
 static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, uint32 numConditions,
-                                   const CoverageMask& coverageMask) {
+                                   const CoverageMask& coverageMask, const IWeightVector& weights) {
     uint32 maxElements = vector.getNumElements();
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
     bool wasEmpty = false;
@@ -98,16 +98,16 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     for(uint32 r = 0; r < maxElements; r++) {
         float32 maxValue = -std::numeric_limits<float32>::infinity();
         float32 minValue = std::numeric_limits<float32>::infinity();
-        uint32 numExamples = 0;
+        uint32 sumOfWeights = 0;
         const BinVector::ExampleList& examples = exampleIterator[r];
         BinVector::ExampleList::const_iterator before = examples.cbefore_begin();
         BinVector::ExampleList& filteredExamples = filteredExampleIterator[i];
 
         for (auto it = examples.cbegin(); it != examples.cend();) {
             const BinVector::Example example = *it;
-            uint32 index = example.index;
+            uint32 exampleIndex = example.index;
 
-            if (coverageMask.isCovered(index)) {
+            if (coverageMask.isCovered(exampleIndex)) {
                 float32 value = example.value;
 
                 if (value < minValue) {
@@ -122,12 +122,13 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                     filteredExamples.push_front(example);
                 }
 
-                numExamples++;
+                sumOfWeights += weights.getWeight(exampleIndex);
                 before = it;
                 it++;
             } else if (!wasEmpty) {
                 it = filteredExamples.erase_after(before);
-                cacheEntry.histogramPtr->removeFromBin(filteredBinIterator[r].index, index);
+                uint32 weight = weights.getWeight(exampleIndex);
+                cacheEntry.histogramPtr->removeFromBin(filteredBinIterator[r].index, exampleIndex, weight);
             } else {
                 it++;
             }
@@ -137,9 +138,9 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
             filteredVector->swapExamples(i, r);
         }
 
-        if (numExamples > 0) {
+        if (sumOfWeights > 0) {
             filteredBinIterator[i].index = binIterator[r].index;
-            filteredBinIterator[i].numExamples = numExamples;
+            filteredBinIterator[i].sumOfWeights = sumOfWeights;
             filteredBinIterator[i].minValue = minValue;
             filteredBinIterator[i].maxValue = maxValue;
             i++;
@@ -150,7 +151,8 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry) {
+static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry,
+                                  const IWeightVector& weights) {
     uint32 numBins = vector.getNumElements();
     std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
     BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
@@ -162,7 +164,12 @@ static inline void buildHistogram(BinVector& vector, const IStatistics& statisti
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
-            histogramBuilderPtr->addToBin(binIndex, example.index);
+            uint32 exampleIndex = example.index;
+            uint32 weight = weights.getWeight(exampleIndex);
+
+            if (weight > 0) {
+                histogramBuilderPtr->addToBin(binIndex, exampleIndex, weight);
+            }
         }
     }
 
@@ -240,7 +247,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 }
 
                                 // Build histogram...
-                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry);
+                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry,
+                                               thresholdsSubset_.weights_);
                                 histogram = cacheEntry.histogramPtr.get();
                             }
 
@@ -248,7 +256,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                             uint32 numConditions = thresholdsSubset_.numModifications_;
 
                             if (numConditions > cacheEntry.numConditions) {
-                                filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_);
+                                filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_,
+                                                thresholdsSubset_.weights_);
                                 binVector = cacheEntry.vectorPtr.get();
                             }
 
@@ -257,7 +266,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
                             BinVector::bin_iterator binIterator = currentBinVector_->bins_begin();
-                            binIterator[binIndex].numExamples += 1;
+                            binIterator[binIndex].sumOfWeights += thresholdsSubset_.weights_.getWeight(originalIndex);
 
                             if (value < binIterator[binIndex].minValue) {
                                 binIterator[binIndex].minValue = value;
