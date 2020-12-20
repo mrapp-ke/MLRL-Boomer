@@ -30,26 +30,26 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     uint32 r = 0;
     uint32 previousR = 0;
     float32 previousValue = 0;
-    uint32 coveredSumOfWeights = 0;
+    uint32 numCoveredExamples = 0;
 
     for (; r < numBins; r++) {
-        uint32 sumOfWeights = iterator[r].sumOfWeights;
+        uint32 numExamples = iterator[r].numExamples;
         uint32 index = iterator[r].index;
 
-        if (sumOfWeights > 0) {
+        if (numExamples > 0) {
             previousValue = iterator[r].maxValue;
             previousR = r;
-            coveredSumOfWeights += sumOfWeights;
+            numCoveredExamples += numExamples;
             statisticsSubsetPtr->addToSubset(index, 1);
             break;
         }
     }
 
-    if (coveredSumOfWeights > 0) {
+    if (numCoveredExamples > 0) {
         for (r = r + 1; r < numBins; r++) {
-            uint32 sumOfWeights = iterator[r].sumOfWeights;
+            uint32 numExamples = iterator[r].numExamples;
 
-            if (sumOfWeights > 0) {
+            if (numExamples > 0) {
                 float32 currentValue = iterator[r].minValue;
                 uint32 index = iterator[r].index;
 
@@ -62,7 +62,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                     refinementPtr->threshold = (previousValue + currentValue) / 2.0;
                     refinementPtr->end = r;
                     refinementPtr->previous = previousR;
-                    refinementPtr->coveredWeights = coveredSumOfWeights;
+                    refinementPtr->coveredWeights = numCoveredExamples;
                     refinementPtr->covered = true;
                 }
 
@@ -74,13 +74,13 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                     refinementPtr->threshold = (previousValue + currentValue) / 2.0;
                     refinementPtr->end = r;
                     refinementPtr->previous = previousR;
-                    refinementPtr->coveredWeights = coveredSumOfWeights;
+                    refinementPtr->coveredWeights = numCoveredExamples;
                     refinementPtr->covered = false;
                 }
 
                 previousValue = iterator[r].maxValue;
                 previousR = r;
-                coveredSumOfWeights += sumOfWeights;
+                numCoveredExamples += numExamples;
                 statisticsSubsetPtr->addToSubset(index, 1);
             }
         }

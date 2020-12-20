@@ -221,13 +221,12 @@ class LabelWiseHistogram : public AbstractLabelWiseStatistics<StatisticVector, S
 
         }
 
-        void removeFromBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
+        void removeFromBin(uint32 binIndex, uint32 statisticIndex) override {
             this->statisticMatrixPtr_->subtractFromRow(binIndex,
                                                        originalStatisticMatrix_.gradients_row_cbegin(statisticIndex),
                                                        originalStatisticMatrix_.gradients_row_cend(statisticIndex),
                                                        originalStatisticMatrix_.hessians_row_cbegin(statisticIndex),
-                                                       originalStatisticMatrix_.hessians_row_cend(statisticIndex),
-                                                       weight);
+                                                       originalStatisticMatrix_.hessians_row_cend(statisticIndex));
         }
 
 };
@@ -271,13 +270,12 @@ class LabelWiseStatistics final : public AbstractLabelWiseStatistics<StatisticVe
 
                 }
 
-                void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
+                void addToBin(uint32 binIndex, uint32 statisticIndex) override {
                     statisticMatrixPtr_->addToRow(binIndex,
                                                   statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
                                                   statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
                                                   statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                                                  statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex),
-                                                  weight);
+                                                  statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex));
                 }
 
                 std::unique_ptr<IHistogram> build() override {
