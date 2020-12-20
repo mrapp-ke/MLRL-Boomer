@@ -5,7 +5,7 @@
 
 #include "../statistics/statistics_immutable.h"
 #include <memory>
-#include <utility>
+#include <tuple>
 
 
 /**
@@ -21,7 +21,7 @@ class IRuleRefinementCallback {
 
         virtual ~IRuleRefinementCallback() { };
 
-        typedef std::pair<const IImmutableStatistics&, const T&> Result;
+        typedef std::tuple<const IImmutableStatistics&, const T&> Result;
 
         /**
          * Invokes the callback and returns its result.
@@ -32,4 +32,3 @@ class IRuleRefinementCallback {
         virtual std::unique_ptr<Result> get() = 0;
 
 };
-

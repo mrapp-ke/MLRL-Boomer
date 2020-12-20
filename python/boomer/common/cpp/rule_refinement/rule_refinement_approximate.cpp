@@ -18,8 +18,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     // Invoke the callback...
     std::unique_ptr<IRuleRefinementCallback<BinVector>::Result> callbackResultPtr = callbackPtr_->get();
-    const IImmutableStatistics& statistics = callbackResultPtr->first;
-    const BinVector& binVector = callbackResultPtr->second;
+    const IImmutableStatistics& statistics = std::get<0>(*callbackResultPtr);
+    const BinVector& binVector = std::get<1>(*callbackResultPtr);
     BinVector::bin_const_iterator iterator = binVector.bins_cbegin();
     uint32 numBins = binVector.getNumElements();
 
