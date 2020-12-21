@@ -2,9 +2,9 @@
 
 
 template<class T>
-ApproximateRuleRefinement<T>::ApproximateRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr,
-                                                        const T& labelIndices, uint32 featureIndex,
-                                                        std::unique_ptr<IRuleRefinementCallback<BinVector>> callbackPtr)
+ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
+        std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex,
+        std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>> callbackPtr)
     : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices), featureIndex_(featureIndex),
       callbackPtr_(std::move(callbackPtr)) {
 
@@ -18,7 +18,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     const AbstractEvaluatedPrediction* bestHead = currentHead;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<BinVector>::Result> callbackResultPtr = callbackPtr_->get();
+    std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>::Result> callbackResultPtr =
+        callbackPtr_->get();
     const IImmutableStatistics& statistics = callbackResultPtr->statistics_;
     const BinVector& binVector = callbackResultPtr->vector_;
     BinVector::bin_const_iterator iterator = binVector.bins_cbegin();
