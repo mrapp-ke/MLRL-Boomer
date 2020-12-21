@@ -148,7 +148,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                 it++;
             } else if (!wasEmpty) {
                 it = filteredExamples.erase_after(before);
-                uint32 binIndex = filteredBinIterator[r].index;
+                uint32 binIndex = binIterator[r].index;
                 cacheEntry.histogramPtr->removeFromBin(binIndex, exampleIndex);
             } else {
                 it++;
