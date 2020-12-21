@@ -35,13 +35,13 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     uint32 sumOfWeights = 0;
 
     for (; r < numBins; r++) {
-        uint32 numExamples = binIterator[r].numExamples;
+        uint32 weight = binIterator[r].numExamples;
         uint32 binIndex = binIterator[r].index;
 
-        if (numExamples > 0) {
+        if (weight > 0) {
             previousValue = binIterator[r].maxValue;
             previousR = r;
-            sumOfWeights += numExamples;
+            sumOfWeights += weight;
             statisticsSubsetPtr->addToSubset(binIndex, 1);
             break;
         }
@@ -49,9 +49,9 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     if (sumOfWeights > 0) {
         for (r = r + 1; r < numBins; r++) {
-            uint32 numExamples = binIterator[r].numExamples;
+            uint32 weight = binIterator[r].numExamples;
 
-            if (numExamples > 0) {
+            if (weight > 0) {
                 float32 currentValue = binIterator[r].minValue;
                 uint32 binIndex = binIterator[r].index;
 
@@ -82,7 +82,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
                 previousValue = binIterator[r].maxValue;
                 previousR = r;
-                sumOfWeights += numExamples;
+                sumOfWeights += weight;
                 statisticsSubsetPtr->addToSubset(binIndex, 1);
             }
         }
