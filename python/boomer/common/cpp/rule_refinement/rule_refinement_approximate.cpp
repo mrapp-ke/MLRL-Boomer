@@ -21,6 +21,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>::Result> callbackResultPtr =
         callbackPtr_->get();
     const IImmutableStatistics& statistics = callbackResultPtr->statistics_;
+    const DenseVector<uint32>& weights = callbackResultPtr->weights_;
+    DenseVector<uint32>::const_iterator weightIterator = weights.cbegin();
     const BinVector& binVector = callbackResultPtr->vector_;
     BinVector::bin_const_iterator binIterator = binVector.bins_cbegin();
     uint32 numBins = binVector.getNumElements();
@@ -35,8 +37,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     uint32 sumOfWeights = 0;
 
     for (; r < numBins; r++) {
-        uint32 weight = binIterator[r].numExamples;
         uint32 binIndex = binIterator[r].index;
+        uint32 weight = weightIterator[binIndex];
 
         if (weight > 0) {
             previousValue = binIterator[r].maxValue;
@@ -49,11 +51,11 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     if (sumOfWeights > 0) {
         for (r = r + 1; r < numBins; r++) {
-            uint32 weight = binIterator[r].numExamples;
+            uint32 binIndex = binIterator[r].index;
+            uint32 weight = weightIterator[binIndex];
 
             if (weight > 0) {
                 float32 currentValue = binIterator[r].minValue;
-                uint32 binIndex = binIterator[r].index;
 
                 const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
                                                                                        false, false);
