@@ -22,7 +22,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         callbackPtr_->get();
     const IImmutableStatistics& statistics = callbackResultPtr->statistics_;
     const BinVector& binVector = callbackResultPtr->vector_;
-    BinVector::bin_const_iterator iterator = binVector.bins_cbegin();
+    BinVector::bin_const_iterator binIterator = binVector.bins_cbegin();
     uint32 numBins = binVector.getNumElements();
 
     // Create a new, empty subset of the current statistics when processing a new feature...
@@ -35,11 +35,11 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     uint32 numCoveredExamples = 0;
 
     for (; r < numBins; r++) {
-        uint32 numExamples = iterator[r].numExamples;
-        uint32 binIndex = iterator[r].index;
+        uint32 numExamples = binIterator[r].numExamples;
+        uint32 binIndex = binIterator[r].index;
 
         if (numExamples > 0) {
-            previousValue = iterator[r].maxValue;
+            previousValue = binIterator[r].maxValue;
             previousR = r;
             numCoveredExamples += numExamples;
             statisticsSubsetPtr->addToSubset(binIndex, 1);
@@ -52,8 +52,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             uint32 numExamples = iterator[r].numExamples;
 
             if (numExamples > 0) {
-                float32 currentValue = iterator[r].minValue;
-                uint32 binIndex = iterator[r].index;
+                float32 currentValue = binIterator[r].minValue;
+                uint32 binIndex = binIterator[r].index;
 
                 const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
                                                                                        false, false);
@@ -80,7 +80,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                     refinementPtr->covered = false;
                 }
 
-                previousValue = iterator[r].maxValue;
+                previousValue = binIterator[r].maxValue;
                 previousR = r;
                 numCoveredExamples += numExamples;
                 statisticsSubsetPtr->addToSubset(binIndex, 1);
