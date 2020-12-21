@@ -32,7 +32,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     uint32 r = 0;
     uint32 previousR = 0;
     float32 previousValue = 0;
-    uint32 numCoveredExamples = 0;
+    uint32 sumOfWeights = 0;
 
     for (; r < numBins; r++) {
         uint32 numExamples = binIterator[r].numExamples;
@@ -41,13 +41,13 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         if (numExamples > 0) {
             previousValue = binIterator[r].maxValue;
             previousR = r;
-            numCoveredExamples += numExamples;
+            sumOfWeights += numExamples;
             statisticsSubsetPtr->addToSubset(binIndex, 1);
             break;
         }
     }
 
-    if (numCoveredExamples > 0) {
+    if (sumOfWeights > 0) {
         for (r = r + 1; r < numBins; r++) {
             uint32 numExamples = binIterator[r].numExamples;
 
@@ -64,7 +64,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                     refinementPtr->threshold = (previousValue + currentValue) / 2.0;
                     refinementPtr->end = r;
                     refinementPtr->previous = previousR;
-                    refinementPtr->coveredWeights = numCoveredExamples;
+                    refinementPtr->coveredWeights = sumOfWeights;
                     refinementPtr->covered = true;
                 }
 
@@ -76,13 +76,13 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                     refinementPtr->threshold = (previousValue + currentValue) / 2.0;
                     refinementPtr->end = r;
                     refinementPtr->previous = previousR;
-                    refinementPtr->coveredWeights = numCoveredExamples;
+                    refinementPtr->coveredWeights = sumOfWeights;
                     refinementPtr->covered = false;
                 }
 
                 previousValue = binIterator[r].maxValue;
                 previousR = r;
-                numCoveredExamples += numExamples;
+                sumOfWeights += numExamples;
                 statisticsSubsetPtr->addToSubset(binIndex, 1);
             }
         }
