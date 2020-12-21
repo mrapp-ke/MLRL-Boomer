@@ -13,6 +13,7 @@
  */
 struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
     std::unique_ptr<IHistogram> histogramPtr;
+    std::unique_ptr<DenseVector<uint32>> weightsPtr;
 };
 
 static inline void removeEmptyBins(BinVector& vector) {
@@ -102,6 +103,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                                    const CoverageMask& coverageMask) {
     uint32 maxElements = vector.getNumElements();
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
+    DenseVector<uint32>& weights = *cacheEntry.weightsPtr;
     bool wasEmpty = false;
 
     if (filteredVector == nullptr) {
@@ -114,6 +116,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
     BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
     BinVector::example_list_iterator filteredExampleIterator = filteredVector->examples_begin();
+    DenseVector<uint32>::iterator weightIterator = weights.begin();
     uint32 i = 0;
 
     for(uint32 r = 0; r < maxElements; r++) {
@@ -150,6 +153,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                 it = filteredExamples.erase_after(before);
                 uint32 binIndex = binIterator[r].index;
                 cacheEntry.histogramPtr->removeFromBin(binIndex, exampleIndex);
+                weightIterator[binIndex] -= 1;  // TODO use actual weight
             } else {
                 it++;
             }
@@ -177,18 +181,25 @@ static inline void buildHistogram(BinVector& vector, const IStatistics& statisti
     BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
     BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
     std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
+    std::unique_ptr<DenseVector<uint32>> weightsPtr = std::make_unique<DenseVector<uint32>>(numBins, false);
+    DenseVector<uint32>::iterator weightIterator = weightsPtr->begin();
 
     for (uint32 i = 0; i < numBins; i++) {
         const BinVector::ExampleList& examples = exampleIterator[i];
         uint32 binIndex = binIterator[i].index;
+        uint32 sumOfWeights = 0;
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
             histogramBuilderPtr->addToBin(binIndex, example.index);
+            sumOfWeights++;
         }
+
+        weightIterator[binIndex] = sumOfWeights;
     }
 
     cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
+    cacheEntry.weightsPtr = std::move(weightsPtr);
 }
 
 /**
@@ -212,7 +223,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IBinningObserver<float32>, public IRuleRefinementCallback<BinVector> {
+                class Callback final : public IBinningObserver<float32>,
+                                       public IRuleRefinementCallback<BinVector, DenseVector<uint32>> {
 
                     private:
 
@@ -274,8 +286,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                             }
 
                             const IHistogram& histogram = *cacheEntry.histogramPtr;
-                            return std::make_unique<Result>(histogram, thresholdsSubset_.weights_,
-                                                            thresholdsSubset_.weights_.getSumOfWeights(), *binVector);
+                            const DenseVector<uint32>& weights = *cacheEntry.weightsPtr;
+                            return std::make_unique<Result>(histogram, weights, *binVector);
                         }
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {

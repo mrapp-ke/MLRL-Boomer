@@ -6,6 +6,7 @@
 #include "rule_refinement.h"
 #include "rule_refinement_callback.h"
 #include "../input/feature_vector.h"
+#include "../sampling/weight_vector.h"
 #include "../head_refinement/head_refinement.h"
 
 
@@ -26,11 +27,13 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         const T& labelIndices_;
 
+        uint32 totalSumOfWeights_;
+
         uint32 featureIndex_;
 
         bool nominal_;
 
-        std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr_;
+        std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr_;
 
         std::unique_ptr<Refinement> refinementPtr_;
 
@@ -41,14 +44,16 @@ class ExactRuleRefinement final : public IRuleRefinement {
          *                          the head of refined rules
          * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
          *                          the labels for which the refined rule is allowed to predict
+         * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
+         *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
-         * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback<FeatureVector>` that
-         *                          allows to retrieve a feature vector for the given feature
+         * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback` that allows to
+         *                          retrieve a feature vector for the given feature
          */
         ExactRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
-                            uint32 featureIndex, bool nominal,
-                            std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
+                            uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+                            std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
 

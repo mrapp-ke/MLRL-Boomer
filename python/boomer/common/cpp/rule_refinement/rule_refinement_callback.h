@@ -4,18 +4,18 @@
 #pragma once
 
 #include "../statistics/statistics_immutable.h"
-#include "../sampling/weight_vector.h"
 #include <memory>
 
 
 /**
  * Defines an interface for callbacks that may be invoked by subclasses of the the class `IRuleRefinement` in order to
- * retrieve the data, consisting of statistics, weights and a vector, that is required to search for potential
- * refinements.
+ * retrieve the data, consisting of statistics, a vector, as well as corresponding weights, that is required to search
+ * for potential refinements.
  *
- * @tparam T The type of the vector that is returned by the callback
+ * @tparam Vector       The type of the vector that is returned by the callback
+ * @tparam WeightVector The type of the weight vector that is returned by the callback
  */
-template<class T>
+template<class Vector, class WeightVector>
 class IRuleRefinementCallback {
 
     public:
@@ -30,26 +30,21 @@ class IRuleRefinementCallback {
                 /**
                  * @param statistics        A reference to an object of type `IImmutableStatistics` that should be used
                  *                          to search for potential refinements
-                 * @param weights           A reference to an object of type `IWeightVector` that provides access to the
-                 *                          weights of individual training examples
-                 * @param totalSumOfWeights The total sum of the weights of the examples that are currently covered
-                 * @param vector            A reference to an object of template type `T` that should be used to search
-                 *                          for potential refinements
+                 * @param weights           A reference to an object of template type `WeightVector` that provides
+                 *                          access to the weights of the elements in `vector`
+                 * @param vector            A reference to an object of template type `Vector` that should be used to
+                 *                          search for potential refinements
                  */
-                Result(const IImmutableStatistics& statistics, const IWeightVector& weights, uint32 totalSumOfWeights,
-                       const T& vector)
-                    : statistics_(statistics), weights_(weights), totalSumOfWeights_(totalSumOfWeights),
-                      vector_(vector) {
+                Result(const IImmutableStatistics& statistics, const WeightVector& weights, const Vector& vector)
+                    : statistics_(statistics), weights_(weights), vector_(vector) {
 
                 }
 
                 const IImmutableStatistics& statistics_;
 
-                const IWeightVector& weights_;
+                const WeightVector& weights_;
 
-                uint32 totalSumOfWeights_;
-
-                const T& vector_;
+                const Vector& vector_;
 
         };
 
