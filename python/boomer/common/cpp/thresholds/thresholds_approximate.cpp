@@ -274,7 +274,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 binVector = cacheEntry.vectorPtr.get();
                             }
 
-                            return std::make_unique<Result>(*histogram, *binVector);
+                            return std::make_unique<Result>(*histogram, thresholdsSubset_.weights_,
+                                                            thresholdsSubset_.weights_.getSumOfWeights(), *binVector);
                         }
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
