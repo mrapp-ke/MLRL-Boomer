@@ -13,7 +13,7 @@
  */
 struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
     std::unique_ptr<IHistogram> histogramPtr;
-    std::unique_ptr<DenseVector<uint32>> weightsPtr;
+    std::unique_ptr<DenseVector<uint32>> weightVectorPtr;
 };
 
 static inline void removeEmptyBins(BinVector& vector) {
@@ -100,10 +100,10 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
 }
 
 static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, uint32 numConditions,
-                                   const CoverageMask& coverageMask) {
+                                   const CoverageMask& coverageMask, const IWeightVector& weights) {
     uint32 maxElements = vector.getNumElements();
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
-    DenseVector<uint32>& weights = *cacheEntry.weightsPtr;
+    DenseVector<uint32>& weightVector = *cacheEntry.weightVectorPtr;
     bool wasEmpty = false;
 
     if (filteredVector == nullptr) {
@@ -116,7 +116,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
     BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
     BinVector::example_list_iterator filteredExampleIterator = filteredVector->examples_begin();
-    DenseVector<uint32>::iterator weightIterator = weights.begin();
+    DenseVector<uint32>::iterator weightIterator = weightVector.begin();
     uint32 i = 0;
 
     for(uint32 r = 0; r < maxElements; r++) {
@@ -151,8 +151,9 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                 it++;
             } else {
                 uint32 binIndex = binIterator[r].index;
-                cacheEntry.histogramPtr->removeFromBin(binIndex, exampleIndex);
-                weightIterator[binIndex] -= 1;  // TODO use actual weight
+                uint32 weight = weights.getWeight(exampleIndex);
+                cacheEntry.histogramPtr->removeFromBin(binIndex, exampleIndex, weight);
+                weightIterator[binIndex] -= weight;
 
                 if (!wasEmpty) {
                     it = filteredExamples.erase_after(before);
@@ -179,13 +180,14 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry) {
+static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry,
+                                  const IWeightVector& weights) {
     uint32 numBins = vector.getNumElements();
     BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
     BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
     std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
-    std::unique_ptr<DenseVector<uint32>> weightsPtr = std::make_unique<DenseVector<uint32>>(numBins, false);
-    DenseVector<uint32>::iterator weightIterator = weightsPtr->begin();
+    std::unique_ptr<DenseVector<uint32>> weightVectorPtr = std::make_unique<DenseVector<uint32>>(numBins, false);
+    DenseVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
 
     for (uint32 i = 0; i < numBins; i++) {
         const BinVector::ExampleList& examples = exampleIterator[i];
@@ -194,15 +196,17 @@ static inline void buildHistogram(BinVector& vector, const IStatistics& statisti
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
-            histogramBuilderPtr->addToBin(binIndex, example.index);
-            sumOfWeights++;
+            uint32 exampleIndex = example.index;
+            uint32 weight = weights.getWeight(exampleIndex);
+            histogramBuilderPtr->addToBin(binIndex, exampleIndex, weight);
+            sumOfWeights += weight;
         }
 
         weightIterator[binIndex] = sumOfWeights;
     }
 
     cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
-    cacheEntry.weightsPtr = std::move(weightsPtr);
+    cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
 }
 
 /**
@@ -277,20 +281,22 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 }
 
                                 // Build histogram...
-                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry);
+                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry,
+                                               thresholdsSubset_.weights_);
                             }
 
                             // Filter bins, if necessary...
                             uint32 numConditions = thresholdsSubset_.numModifications_;
 
                             if (numConditions > cacheEntry.numConditions) {
-                                filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_);
+                                filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_,
+                                                thresholdsSubset_.weights_);
                                 binVector = cacheEntry.vectorPtr.get();
                             }
 
                             const IHistogram& histogram = *cacheEntry.histogramPtr;
-                            const DenseVector<uint32>& weights = *cacheEntry.weightsPtr;
-                            return std::make_unique<Result>(histogram, weights, *binVector);
+                            const DenseVector<uint32>& weightVector = *cacheEntry.weightVectorPtr;
+                            return std::make_unique<Result>(histogram, weightVector, *binVector);
                         }
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
