@@ -58,17 +58,10 @@ class DenseWeightVector final : public IWeightVector {
          */
         const_iterator cend() const;
 
-        /**
-         * Sets the sum of the weights in the vector.
-         *
-         * @param sumOfWeights The sum of weights to be set
-         */
-        void setSumOfWeights(uint32 sumOfWeights);
-
-        uint32 getSumOfWeights() const override;
-
         bool hasZeroWeights() const override;
 
         uint32 getWeight(uint32 pos) const override;
+
+        uint32 getSumOfWeights() const override;
 
 };
