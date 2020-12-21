@@ -35,13 +35,13 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     for (; r < numBins; r++) {
         uint32 numExamples = iterator[r].numExamples;
-        uint32 index = iterator[r].index;
+        uint32 binIndex = iterator[r].index;
 
         if (numExamples > 0) {
             previousValue = iterator[r].maxValue;
             previousR = r;
             numCoveredExamples += numExamples;
-            statisticsSubsetPtr->addToSubset(index, 1);
+            statisticsSubsetPtr->addToSubset(binIndex, 1);
             break;
         }
     }
@@ -52,7 +52,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
             if (numExamples > 0) {
                 float32 currentValue = iterator[r].minValue;
-                uint32 index = iterator[r].index;
+                uint32 binIndex = iterator[r].index;
 
                 const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
                                                                                        false, false);
@@ -82,7 +82,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 previousValue = iterator[r].maxValue;
                 previousR = r;
                 numCoveredExamples += numExamples;
-                statisticsSubsetPtr->addToSubset(index, 1);
+                statisticsSubsetPtr->addToSubset(binIndex, 1);
             }
         }
     }
