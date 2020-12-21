@@ -1,5 +1,6 @@
 #include "rule_refinement_approximate.h"
 
+
 template<class T>
 ApproximateRuleRefinement<T>::ApproximateRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr,
                                                         const T& labelIndices, uint32 featureIndex,
