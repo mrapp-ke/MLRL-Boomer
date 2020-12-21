@@ -23,7 +23,7 @@ class IRuleRefinementCallback {
         /**
          * The data that is provided via the callback's `get` function.
          */
-        class Result {
+        class Result final {
 
             public:
 
