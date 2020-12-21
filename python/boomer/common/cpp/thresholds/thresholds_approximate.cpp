@@ -19,14 +19,14 @@ struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
 static inline void removeEmptyBins(BinVector& vector) {
     uint32 numElements = vector.getNumElements();
     BinVector::bin_iterator binIterator = vector.bins_begin();
+    BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
     uint32 i = 0;
 
     for (uint32 r = 0; r < numElements; r++) {
-        uint32 numExamples = binIterator[r].numExamples;
+        const BinVector::ExampleList examples = exampleIterator[r];
 
-        if (numExamples > 0) {
+        if (examples.cbegin() != examples.cend()) {
             binIterator[i].index = i;
-            binIterator[i].numExamples = numExamples;
             binIterator[i].minValue = binIterator[r].minValue;
             binIterator[i].maxValue = binIterator[r].maxValue;
             vector.swapExamples(i, r);
@@ -89,7 +89,6 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
         }
 
         filteredBinIterator[i].index = binIterator[r].index;
-        filteredBinIterator[i].numExamples = binIterator[r].numExamples;
         filteredBinIterator[i].minValue = binIterator[r].minValue;
         filteredBinIterator[i].maxValue = binIterator[r].maxValue;
         i++;
@@ -169,7 +168,6 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
 
         if (numExamples > 0) {
             filteredBinIterator[i].index = binIterator[r].index;
-            filteredBinIterator[i].numExamples = numExamples;
             filteredBinIterator[i].minValue = minValue;
             filteredBinIterator[i].maxValue = maxValue;
             i++;
@@ -301,7 +299,6 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
                             BinVector::bin_iterator binIterator = currentBinVector_->bins_begin();
-                            binIterator[binIndex].numExamples += 1;
 
                             if (value < binIterator[binIndex].minValue) {
                                 binIterator[binIndex].minValue = value;
