@@ -156,7 +156,6 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                     it++;
                 }
             }
-
         }
 
         if (!wasEmpty) {
