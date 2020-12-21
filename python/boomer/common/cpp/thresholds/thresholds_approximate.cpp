@@ -126,9 +126,9 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
 
         for (auto it = examples.cbegin(); it != examples.cend();) {
             const BinVector::Example example = *it;
-            uint32 index = example.index;
+            uint32 exampleIndex = example.index;
 
-            if (coverageMask.isCovered(index)) {
+            if (coverageMask.isCovered(exampleIndex)) {
                 float32 value = example.value;
 
                 if (value < minValue) {
@@ -148,7 +148,8 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                 it++;
             } else if (!wasEmpty) {
                 it = filteredExamples.erase_after(before);
-                cacheEntry.histogramPtr->removeFromBin(filteredBinIterator[r].index, index);
+                uint32 binIndex = binIterator[r].index;
+                cacheEntry.histogramPtr->removeFromBin(binIndex, exampleIndex);
             } else {
                 it++;
             }
@@ -173,9 +174,9 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
 
 static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry) {
     uint32 numBins = vector.getNumElements();
-    std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
     BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
     BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
+    std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
 
     for (uint32 i = 0; i < numBins; i++) {
         const BinVector::ExampleList& examples = exampleIterator[i];
@@ -237,7 +238,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                             auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
                             FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
                             BinVector* binVector = cacheEntry.vectorPtr.get();
-                            IHistogram* histogram = cacheEntry.histogramPtr.get();
 
                             if (binVector == nullptr) {
                                 auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
@@ -263,7 +263,6 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                                 // Build histogram...
                                 buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry);
-                                histogram = cacheEntry.histogramPtr.get();
                             }
 
                             // Filter bins, if necessary...
@@ -274,7 +273,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 binVector = cacheEntry.vectorPtr.get();
                             }
 
-                            return std::make_unique<Result>(*histogram, *binVector);
+                            const IHistogram& histogram = *cacheEntry.histogramPtr;
+                            return std::make_unique<Result>(histogram, *binVector);
                         }
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {

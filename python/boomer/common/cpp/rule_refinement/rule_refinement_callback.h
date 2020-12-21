@@ -32,4 +32,3 @@ class IRuleRefinementCallback {
         virtual std::unique_ptr<Result> get() = 0;
 
 };
-
