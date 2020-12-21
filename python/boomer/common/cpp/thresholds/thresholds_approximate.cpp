@@ -126,9 +126,9 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
 
         for (auto it = examples.cbegin(); it != examples.cend();) {
             const BinVector::Example example = *it;
-            uint32 index = example.index;
+            uint32 exampleIndex = example.index;
 
-            if (coverageMask.isCovered(index)) {
+            if (coverageMask.isCovered(exampleIndex)) {
                 float32 value = example.value;
 
                 if (value < minValue) {
@@ -148,7 +148,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                 it++;
             } else if (!wasEmpty) {
                 it = filteredExamples.erase_after(before);
-                cacheEntry.histogramPtr->removeFromBin(filteredBinIterator[r].index, index);
+                cacheEntry.histogramPtr->removeFromBin(filteredBinIterator[r].index, exampleIndex);
             } else {
                 it++;
             }
