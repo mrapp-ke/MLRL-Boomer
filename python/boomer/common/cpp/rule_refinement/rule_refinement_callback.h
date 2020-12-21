@@ -27,6 +27,15 @@ class IRuleRefinementCallback {
 
             public:
 
+                /**
+                 * @param statistics        A reference to an object of type `IImmutableStatistics` that should be used
+                 *                          to search for potential refinements
+                 * @param weights           A reference to an object of type `IWeightVector` that provides access to the
+                 *                          weights of individual training examples
+                 * @param totalSumOfWeights The total sum of the weights of the examples that are currently covered
+                 * @param vector            A reference to an object of template type `T` that should be used to search
+                 *                          for potential refinements
+                 */
                 Result(const IImmutableStatistics& statistics, const IWeightVector& weights, uint32 totalSumOfWeights,
                        const T& vector)
                     : statistics_(statistics), weights_(weights), totalSumOfWeights_(totalSumOfWeights),
