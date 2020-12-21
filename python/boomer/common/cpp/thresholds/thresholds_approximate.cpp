@@ -237,7 +237,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                             auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
                             FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
                             BinVector* binVector = cacheEntry.vectorPtr.get();
-                            IHistogram* histogram = cacheEntry.histogramPtr.get();
 
                             if (binVector == nullptr) {
                                 auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
@@ -263,7 +262,6 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                                 // Build histogram...
                                 buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry);
-                                histogram = cacheEntry.histogramPtr.get();
                             }
 
                             // Filter bins, if necessary...
@@ -274,7 +272,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 binVector = cacheEntry.vectorPtr.get();
                             }
 
-                            return std::make_unique<Result>(*histogram, *binVector);
+                            const IHistogram& histogram = *cacheEntry.histogramPtr;
+                            return std::make_unique<Result>(histogram, *binVector);
                         }
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
