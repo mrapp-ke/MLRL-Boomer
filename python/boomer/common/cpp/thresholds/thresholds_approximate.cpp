@@ -15,6 +15,27 @@ struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
     std::unique_ptr<IHistogram> histogramPtr;
 };
 
+static inline void removeEmptyBins(BinVector& vector) {
+    uint32 numElements = vector.getNumElements();
+    BinVector::bin_iterator binIterator = vector.bins_begin();
+    uint32 i = 0;
+
+    for (uint32 r = 0; r < numElements; r++) {
+        uint32 numExamples = binIterator[r].numExamples;
+
+        if (numExamples > 0) {
+            binIterator[i].index = i;
+            binIterator[i].numExamples = numExamples;
+            binIterator[i].minValue = binIterator[r].minValue;
+            binIterator[i].maxValue = binIterator[r].maxValue;
+            vector.swapExamples(i, r);
+            i++;
+        }
+    }
+
+    vector.setNumElements(i, true);
+}
+
 static inline void filterCurrentVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, intp conditionEnd,
                                        bool covered, uint32 numConditions, CoverageMask& coverageMask) {
     uint32 numTotalElements = vector.getNumElements();
@@ -237,6 +258,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     currentBinVector_ = binVector;
                                     thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo,
                                                                                           *featureVectorPtr, *this);
+                                    removeEmptyBins(*binVector);
                                 }
 
                                 // Build histogram...
