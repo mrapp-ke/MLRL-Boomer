@@ -49,7 +49,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     if (numCoveredExamples > 0) {
         for (r = r + 1; r < numBins; r++) {
-            uint32 numExamples = iterator[r].numExamples;
+            uint32 numExamples = binIterator[r].numExamples;
 
             if (numExamples > 0) {
                 float32 currentValue = binIterator[r].minValue;
