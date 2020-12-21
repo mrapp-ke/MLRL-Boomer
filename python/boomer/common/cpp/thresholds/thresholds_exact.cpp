@@ -311,7 +311,9 @@ class ExactThresholds final : public AbstractThresholds {
                             featureVector = cacheEntry.vectorPtr.get();
                         }
 
-                        return std::make_unique<Result>(*thresholdsSubset_.thresholds_.statisticsPtr_, *featureVector);
+                        return std::make_unique<Result>(*thresholdsSubset_.thresholds_.statisticsPtr_,
+                                                        thresholdsSubset_.weights_, thresholdsSubset_.sumOfWeights_,
+                                                        *featureVector);
                     }
 
             };
@@ -345,9 +347,8 @@ class ExactThresholds final : public AbstractThresholds {
                 std::unique_ptr<IHeadRefinement> headRefinementPtr =
                     thresholds_.headRefinementFactoryPtr_->create(labelIndices);
                 std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-                return std::make_unique<ExactRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices, weights_,
-                                                                sumOfWeights_, featureIndex, nominal,
-                                                                std::move(callbackPtr));
+                return std::make_unique<ExactRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
+                                                                featureIndex, nominal, std::move(callbackPtr));
             }
 
             public:
