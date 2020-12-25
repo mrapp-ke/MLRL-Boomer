@@ -19,7 +19,8 @@
 static inline uint32 calculateNumBins(uint32 numValues, float32 binRatio, uint32 minBins, uint32 maxBins) {
     // Calculate number of bins based on the given percentage...
     uint32 numBins = std::ceil(binRatio * numValues);
-    // Prevent the minimum number of bins to exceed the number of available values
+
+    // Prevent the minimum number of bins to exceed the number of available values...
     uint32 min = minBins > numValues ? numValues : minBins;
 
     // Ensure that the number of bins is not smaller than the given minimum...
