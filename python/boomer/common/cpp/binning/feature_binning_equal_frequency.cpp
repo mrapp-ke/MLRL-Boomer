@@ -38,22 +38,25 @@ IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(Featur
 void EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
                                               IBinningObserver<float32>& observer) const {
     uint32 numBins = featureInfo.numBins;
-    //Defining length of the list, because we'll use it at least four times
-    uint32 length = featureVector.getNumElements();
-    FeatureVector::const_iterator iterator = featureVector.cbegin();
-    uint32 numElementsPerBin = (uint32) std::ceil((float) length / (float) numBins);
-    //looping over bins
-    uint32 binIndex = 0;  //Has to be initialized for the first iteration
-    float32 previousValue = 0.0;  //Has to be initialized for the first iteration
-    for (uint32 i = 0; i < length; i++) {
-        float32 currentValue = iterator[i].value;
-        //if the value is equal to the last one it will be put in the same bin...
-        if (previousValue != currentValue) {
-            binIndex = i / numElementsPerBin;  //... else we calculate it's own bin index
+
+    if (numBins > 0) {
+        //Defining length of the list, because we'll use it at least four times
+        uint32 length = featureVector.getNumElements();
+        FeatureVector::const_iterator iterator = featureVector.cbegin();
+        uint32 numElementsPerBin = (uint32) std::ceil((float) length / (float) numBins);
+        //looping over bins
+        uint32 binIndex = 0;  //Has to be initialized for the first iteration
+        float32 previousValue = 0.0;  //Has to be initialized for the first iteration
+        for (uint32 i = 0; i < length; i++) {
+            float32 currentValue = iterator[i].value;
+            //if the value is equal to the last one it will be put in the same bin...
+            if (previousValue != currentValue) {
+                binIndex = i / numElementsPerBin;  //... else we calculate it's own bin index
+            }
+            //set last value to the current one for the next iteration
+            previousValue = currentValue;
+            //notify observer
+            observer.onBinUpdate(binIndex, iterator[i].index, currentValue);
         }
-        //set last value to the current one for the next iteration
-        previousValue = currentValue;
-        //notify observer
-        observer.onBinUpdate(binIndex, iterator[i].index, currentValue);
     }
 }
