@@ -35,7 +35,8 @@ IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVec
             }
         }
 
-        featureInfo.numBins = calculateNumBins(numDistinctValues, binRatio_, minBins_, maxBins_);
+        featureInfo.numBins =
+            numDistinctValues > 1 ? calculateNumBins(numDistinctValues, binRatio_, minBins_, maxBins_) : 0;
         featureInfo.minValue = minValue;
         featureInfo.maxValue = maxValue;
     } else {
