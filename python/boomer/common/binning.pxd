@@ -1,4 +1,4 @@
-from boomer.common._types cimport float32
+from boomer.common._types cimport uint32, float32
 
 from libcpp.memory cimport shared_ptr
 
@@ -15,7 +15,7 @@ cdef extern from "cpp/binning/feature_binning_equal_frequency.h" nogil:
 
         # Constructors:
 
-        EqualFrequencyFeatureBinningImpl(float32 binRatio) except +
+        EqualFrequencyFeatureBinningImpl(float32 binRatio, uint32 minBins, uint32 maxBins) except +
 
 
 cdef extern from "cpp/binning/feature_binning_equal_width.h" nogil:
@@ -24,7 +24,7 @@ cdef extern from "cpp/binning/feature_binning_equal_width.h" nogil:
 
         # Constructors:
 
-        EqualWidthFeatureBinningImpl(float32 binRatio) except +
+        EqualWidthFeatureBinningImpl(float32 binRatio, uint32 minBins, uint32 maxBins) except +
 
 
 cdef class FeatureBinning:

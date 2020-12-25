@@ -2,8 +2,8 @@
 #include <cmath>
 
 
-EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio)
-    : binRatio_(binRatio) {
+EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
+    : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
 
 }
 
