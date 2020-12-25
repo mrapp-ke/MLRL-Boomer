@@ -28,8 +28,8 @@ static inline uint32 calculateNumBins(uint32 numValues, float32 binRatio, uint32
         return min;
     }
 
-    // If `maxBins >= min`, ensure that the number of bins does not exceed the given maximum...
-    if (maxBins >= min && numBins > maxBins) {
+    // If `maxBins >= minBins`, ensure that the number of bins does not exceed the given maximum...
+    if (maxBins >= minBins && numBins > maxBins) {
         return maxBins
     }
 
