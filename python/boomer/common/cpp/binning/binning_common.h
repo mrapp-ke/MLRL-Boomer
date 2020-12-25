@@ -18,17 +18,13 @@
  */
 static inline uint32 calculateNumBins(uint32 numValues, float32 binRatio, uint32 numBins, uint32 minBins,
                                       uint32 maxBins) {
-    if (numValues > 1) {
-        uint32 numBins = std::ceil(binRatio * numValues);
+    uint32 numBins = std::ceil(binRatio * numValues);
 
-        if (numBins < minBins) {
-            return minBins;
-        } else if (maxBins > minBins && numBins > maxBins) {
-            return maxBins;
-        } else {
-            return numBins;
-        }
+    if (numBins < minBins) {
+        return minBins;
+    } else if (maxBins > minBins && numBins > maxBins) {
+        return maxBins;
     } else {
-        return 0;
+        return numBins;
     }
 }
