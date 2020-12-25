@@ -448,7 +448,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 // value == 0
                 refinementPtr->threshold = previousThresholdNegative / 2.0;
             } else {
-                // If the condition separates an examples with feature value < 0 from an example with feature value > 0
+                // If the condition separates an example with feature value < 0 from an example with feature value > 0
                 refinementPtr->threshold =
                     previousThresholdNegative + (std::fabs(previousThreshold - previousThresholdNegative) / 2.0);
             }
