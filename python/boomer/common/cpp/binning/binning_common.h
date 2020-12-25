@@ -14,16 +14,23 @@
  * @param numValues The number of values available
  * @param binRatio  A percentage that specifies how many bins should be used
  * @param minBins   The minimum number of bins
- * @param maxBins   The maximum number of bins or a value <= `minBins`, if the maximum number should not be restricted
+ * @param maxBins   The maximum number of bins or a value < `minBins`, if the maximum number should not be restricted
  */
 static inline uint32 calculateNumBins(uint32 numValues, float32 binRatio, uint32 minBins, uint32 maxBins) {
+    // Calculate number of bins based on the given percentage...
     uint32 numBins = std::ceil(binRatio * numValues);
+    // Prevent the minimum number of bins to exceed the number of available values
+    uint32 min = minBins > numValues ? numValues : minBins;
 
-    if (numBins < minBins) {
-        return minBins;
-    } else if (maxBins > minBins && numBins > maxBins) {
-        return maxBins;
-    } else {
-        return numBins;
+    // Ensure that the number of bins is not smaller than the given minimum...
+    if (numBins < min) {
+        return min;
     }
+
+    // If `maxBins >= min`, ensure that the number of bins does not exceed the given maximum...
+    if (maxBins >= min && numBins > maxBins) {
+        return maxBins
+    }
+
+    return numBins;
 }
