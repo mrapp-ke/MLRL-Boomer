@@ -27,7 +27,7 @@ IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(Featur
         }
 
         featureInfo.numBins =
-            numDistinctValues > 1 : calculateNumBins(numDistinctValues, binRatio_, minBins_, maxBins_) ? 0;
+            numDistinctValues > 1 ? calculateNumBins(numDistinctValues, binRatio_, minBins_, maxBins_) : 0;
     } else {
         featureInfo.numBins = 0;
     }
