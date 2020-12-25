@@ -1,5 +1,5 @@
 #include "feature_binning_equal_frequency.h"
-#include <cmath>
+#include "binning_common.h"
 
 
 EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
@@ -26,7 +26,7 @@ IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(Featur
             }
         }
 
-        featureInfo.numBins = std::ceil(numDistinctValues * binRatio_);
+        featureInfo.numBins = calculateNumBins(numDistinctValues, binRatio_, minBins_, maxBins_);
     } else {
         featureInfo.numBins = 0;
     }

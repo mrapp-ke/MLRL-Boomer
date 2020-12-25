@@ -1,6 +1,6 @@
 #include "feature_binning_equal_width.h"
+#include "binning_common.h"
 #include <unordered_set>
-#include <cmath>
 
 
 EqualWidthFeatureBinning::EqualWidthFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
@@ -35,7 +35,7 @@ IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVec
             }
         }
 
-        featureInfo.numBins = std::ceil(numDistinctValues * binRatio_);
+        featureInfo.numBins = calculateNumBins(numDistinctValues, binRatio_, minBins_, maxBins_);
         featureInfo.minValue = minValue;
         featureInfo.maxValue = maxValue;
     } else {
