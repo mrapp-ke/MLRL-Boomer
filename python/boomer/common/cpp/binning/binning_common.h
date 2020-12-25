@@ -16,8 +16,7 @@
  * @param minBins   The minimum number of bins
  * @param maxBins   The maximum number of bins or a value <= `minBins`, if the maximum number should not be restricted
  */
-static inline uint32 calculateNumBins(uint32 numValues, float32 binRatio, uint32 numBins, uint32 minBins,
-                                      uint32 maxBins) {
+static inline uint32 calculateNumBins(uint32 numValues, float32 binRatio, uint32 minBins, uint32 maxBins) {
     uint32 numBins = std::ceil(binRatio * numValues);
 
     if (numBins < minBins) {
