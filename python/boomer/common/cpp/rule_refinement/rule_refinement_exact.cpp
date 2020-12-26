@@ -1,5 +1,5 @@
 #include "rule_refinement_exact.h"
-#include <cmath>
+#include "rule_refinement_common.h"
 
 
 template<class T>
@@ -107,7 +107,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = LEQ;
-                            refinementPtr->threshold = (previousThreshold + currentThreshold) / 2.0;
+                            refinementPtr->threshold = calculateThreshold(previousThreshold, currentThreshold);
                         }
                     }
 
@@ -129,7 +129,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = GR;
-                            refinementPtr->threshold = (previousThreshold + currentThreshold) / 2.0;
+                            refinementPtr->threshold = calculateThreshold(previousThreshold, currentThreshold);
                         }
                     }
 
@@ -251,7 +251,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = GR;
-                            refinementPtr->threshold = (previousThreshold + currentThreshold) / 2.0;
+                            refinementPtr->threshold = calculateThreshold(currentThreshold, previousThreshold);
                         }
                     }
 
@@ -273,7 +273,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = LEQ;
-                            refinementPtr->threshold = (previousThreshold + currentThreshold) / 2.0;
+                            refinementPtr->threshold = calculateThreshold(currentThreshold, previousThreshold);
                         }
                     }
 
@@ -371,7 +371,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->previous = previousR;
                 refinementPtr->coveredWeights = accumulatedSumOfWeights;
                 refinementPtr->comparator = GR;
-                refinementPtr->threshold = previousThreshold / 2.0;
+                refinementPtr->threshold = previousThreshold * 0.5;
             }
         }
 
@@ -396,7 +396,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->previous = previousR;
                 refinementPtr->coveredWeights = (totalSumOfWeights_ - accumulatedSumOfWeights);
                 refinementPtr->comparator = LEQ;
-                refinementPtr->threshold = previousThreshold / 2.0;
+                refinementPtr->threshold = previousThreshold * 0.5;
             }
         }
     }
@@ -424,11 +424,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             if (totalAccumulatedSumOfWeights < totalSumOfWeights_) {
                 // If the condition separates an example with feature value < 0 from an (sparse) example with feature
                 // value == 0
-                refinementPtr->threshold = previousThresholdNegative / 2.0;
+                refinementPtr->threshold = previousThresholdNegative * 0.5;
             } else {
-                // If the condition separates an examples with feature value < 0 from an example with feature value > 0
-                refinementPtr->threshold =
-                    previousThresholdNegative + (std::fabs(previousThreshold - previousThresholdNegative) / 2.0);
+                // If the condition separates an example with feature value < 0 from an example with feature value > 0
+                refinementPtr->threshold = calculateThreshold(previousThresholdNegative, previousThreshold);
             }
         }
 
@@ -448,11 +447,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             if (totalAccumulatedSumOfWeights < totalSumOfWeights_) {
                 // If the condition separates an example with feature value < 0 from an (sparse) example with feature
                 // value == 0
-                refinementPtr->threshold = previousThresholdNegative / 2.0;
+                refinementPtr->threshold = previousThresholdNegative * 0.5;
             } else {
-                // If the condition separates an examples with feature value < 0 from an example with feature value > 0
-                refinementPtr->threshold =
-                    previousThresholdNegative + (std::fabs(previousThreshold - previousThresholdNegative) / 2.0);
+                // If the condition separates an example with feature value < 0 from an example with feature value > 0
+                refinementPtr->threshold = calculateThreshold(previousThresholdNegative, previousThreshold);
             }
         }
     }
