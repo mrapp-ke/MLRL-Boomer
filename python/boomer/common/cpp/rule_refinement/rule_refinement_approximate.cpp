@@ -1,4 +1,5 @@
 #include "rule_refinement_approximate.h"
+#include "rule_refinement_common.h"
 
 
 template<class T>
@@ -60,7 +61,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 if (head != nullptr) {
                     bestHead = head;
                     refinementPtr->comparator = LEQ;
-                    refinementPtr->threshold = (previousValue + currentValue) / 2.0;
+                    refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
                     refinementPtr->end = r;
                     refinementPtr->previous = previousR;
                     refinementPtr->coveredWeights = numCoveredExamples;
@@ -72,7 +73,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 if (head != nullptr) {
                     bestHead = head;
                     refinementPtr->comparator = GR;
-                    refinementPtr->threshold = (previousValue + currentValue) / 2.0;
+                    refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
                     refinementPtr->end = r;
                     refinementPtr->previous = previousR;
                     refinementPtr->coveredWeights = numCoveredExamples;
