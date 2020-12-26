@@ -1,10 +1,10 @@
 #include "feature_binning_equal_width.h"
+#include "binning_common.h"
 #include <unordered_set>
-#include <cmath>
 
 
-EqualWidthFeatureBinning::EqualWidthFeatureBinning(float32 binRatio)
-    : binRatio_(binRatio) {
+EqualWidthFeatureBinning::EqualWidthFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
+    : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
 
 }
 
@@ -35,7 +35,8 @@ IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVec
             }
         }
 
-        featureInfo.numBins = std::ceil(numDistinctValues * binRatio_);
+        featureInfo.numBins =
+            numDistinctValues > 1 ? calculateNumBins(numDistinctValues, binRatio_, minBins_, maxBins_) : 0;
         featureInfo.minValue = minValue;
         featureInfo.maxValue = maxValue;
     } else {
@@ -48,23 +49,26 @@ IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVec
 void EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
                                           IBinningObserver<float32>& observer) const {
     uint32 numBins = featureInfo.numBins;
-    float32 min = featureInfo.minValue;
-    float32 max = featureInfo.maxValue;
-    //Defining length of the list, because we'll use it at least four times
-    uint32 length = featureVector.getNumElements();
-    //w stands for width and determines the span of values for a bin
-    float32 spanPerBin = (max - min) / numBins;
 
-    FeatureVector::const_iterator iterator = featureVector.cbegin();
+    if (numBins > 0) {
+        float32 min = featureInfo.minValue;
+        float32 max = featureInfo.maxValue;
+        //Defining length of the list, because we'll use it at least four times
+        uint32 length = featureVector.getNumElements();
+        //w stands for width and determines the span of values for a bin
+        float32 spanPerBin = (max - min) / numBins;
 
-    for (uint32 i = 0; i < length; i++) {
-        float32 currentValue = iterator[i].value;
-        uint32 binIndex = (uint32) std::floor((currentValue - min) / spanPerBin);
-        //in some cases the calculated index can exceed the last bin, in which case we want the example in the last bin
-        if (binIndex >= numBins) {
-            binIndex = numBins - 1;
+        FeatureVector::const_iterator iterator = featureVector.cbegin();
+
+        for (uint32 i = 0; i < length; i++) {
+            float32 currentValue = iterator[i].value;
+            uint32 binIndex = (uint32) std::floor((currentValue - min) / spanPerBin);
+            //in some cases the calculated index can exceed the last bin, in which case we want the example in the last bin
+            if (binIndex >= numBins) {
+                binIndex = numBins - 1;
+            }
+            //notify observer
+            observer.onBinUpdate(binIndex, iterator[i].index, currentValue);
         }
-        //notify observer
-        observer.onBinUpdate(binIndex, iterator[i].index, currentValue);
     }
 }
