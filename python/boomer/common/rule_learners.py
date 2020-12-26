@@ -55,6 +55,10 @@ BINNING_EQUAL_WIDTH = 'equal-width'
 
 ARGUMENT_BIN_RATIO = 'bin_ratio'
 
+ARGUMENT_MIN_BINS = 'min_bins'
+
+ARGUMENT_MAX_BINS = 'max_bins'
+
 PRUNING_IREP = 'irep'
 
 
@@ -176,10 +180,14 @@ def create_thresholds_factory(feature_binning: str) -> ThresholdsFactory:
 
         if prefix == BINNING_EQUAL_FREQUENCY:
             bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-            return ApproximateThresholdsFactory(EqualFrequencyFeatureBinning(bin_ratio))
+            min_bins = get_int_argument(args, ARGUMENT_MIN_BINS, 2, lambda x: x > 2)
+            max_bins = get_int_argument(args, ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+            return ApproximateThresholdsFactory(EqualFrequencyFeatureBinning(bin_ratio, min_bins, max_bins))
         elif prefix == BINNING_EQUAL_WIDTH:
             bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-            return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio))
+            min_bins = get_int_argument(args, ARGUMENT_MIN_BINS, 2, lambda x: x > 2)
+            max_bins = get_int_argument(args, ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+            return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio, min_bins, max_bins))
         raise ValueError('Invalid value given for parameter \'feature_binning\': ' + str(feature_binning))
 
 
