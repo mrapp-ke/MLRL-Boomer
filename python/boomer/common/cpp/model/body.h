@@ -8,7 +8,7 @@
 
 
 /**
- * Defines an interface for all classes that represent a body of a rule.
+ * Defines an interface for all classes that represent the body of a rule.
  */
 class IBody {
 
