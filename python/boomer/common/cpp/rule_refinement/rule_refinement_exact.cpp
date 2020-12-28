@@ -3,11 +3,11 @@
 
 
 template<class T>
-ExactRuleRefinement<T>::ExactRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
-                                            const IWeightVector& weights, uint32 totalSumOfWeights, uint32 featureIndex,
-                                            bool nominal,
-                                            std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
-    : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices), weights_(weights),
+ExactRuleRefinement<T>::ExactRuleRefinement(
+        std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 totalSumOfWeights,
+        uint32 featureIndex, bool nominal,
+        std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr)
+    : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices),
       totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex), nominal_(nominal),
       callbackPtr_(std::move(callbackPtr)) {
 
@@ -20,9 +20,11 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     const AbstractEvaluatedPrediction* bestHead = currentHead;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callbackPtr_->get();
-    const IImmutableStatistics& statistics = callbackResultPtr->first;
-    const FeatureVector& featureVector = callbackResultPtr->second;
+    std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>::Result> callbackResultPtr =
+        callbackPtr_->get();
+    const IImmutableStatistics& statistics = callbackResultPtr->statistics_;
+    const IWeightVector& weights = callbackResultPtr->weights_;
+    const FeatureVector& featureVector = callbackResultPtr->vector_;
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     uint32 numElements = featureVector.getNumElements();
 
@@ -31,7 +33,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
     for (auto it = featureVector.missing_indices_cbegin(); it != featureVector.missing_indices_cend(); it++) {
         uint32 i = *it;
-        uint32 weight = weights_.getWeight(i);
+        uint32 weight = weights.getWeight(i);
         statisticsSubsetPtr->addToMissing(i, weight);
     }
 
@@ -54,7 +56,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
         lastNegativeR = r;
         uint32 i = iterator[r].index;
-        uint32 weight = weights_.getWeight(i);
+        uint32 weight = weights.getWeight(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -79,7 +81,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
             lastNegativeR = r;
             uint32 i = iterator[r].index;
-            uint32 weight = weights_.getWeight(i);
+            uint32 weight = weights.getWeight(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
@@ -203,7 +205,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     // encountered...
     for (r = firstR; r > lastNegativeR; r--) {
         uint32 i = iterator[r].index;
-        uint32 weight = weights_.getWeight(i);
+        uint32 weight = weights.getWeight(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -221,7 +223,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     if (sumOfWeights > 0) {
         for (r = r - 1; r > lastNegativeR; r--) {
             uint32 i = iterator[r].index;
-            uint32 weight = weights_.getWeight(i);
+            uint32 weight = weights.getWeight(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
