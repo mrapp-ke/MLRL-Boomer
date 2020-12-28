@@ -82,9 +82,8 @@ cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
         """
         cdef uint32 num_examples = x.shape[0]
         cdef uint32 num_features = x.shape[1]
-        self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[FortranContiguousFeatureMatrix](num_examples,
-                                                                                                          num_features,
-                                                                                                          &x[0, 0])
+        self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[FortranContiguousFeatureMatrixImpl](
+            num_examples, num_features, &x[0, 0])
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
