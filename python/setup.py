@@ -23,7 +23,7 @@ sources = [
     'boomer/common/cpp/indices/index_vector_full.cpp',
     'boomer/common/cpp/indices/index_vector_partial.cpp',
     'boomer/common/cpp/input/feature_matrix_csc.cpp',
-    'boomer/common/cpp/input/feature_matrix_dense.cpp',
+    'boomer/common/cpp/input/feature_matrix_fortran_contiguous.cpp',
     'boomer/common/cpp/input/feature_vector.cpp',
     'boomer/common/cpp/input/label_matrix_dense.cpp',
     'boomer/common/cpp/input/label_matrix_dok.cpp',

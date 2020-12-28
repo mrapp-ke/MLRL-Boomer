@@ -41,13 +41,13 @@ cdef extern from "cpp/input/feature_matrix.h" nogil:
         pass
 
 
-cdef extern from "cpp/input/feature_matrix_dense.h" nogil:
+cdef extern from "cpp/input/feature_matrix_fortran_contiguous.h" nogil:
 
-    cdef cppclass DenseFeatureMatrixImpl"DenseFeatureMatrix"(IFeatureMatrix):
+    cdef cppclass FortranContiguousFeatureMatrixImpl"FortranContiguousFeatureMatrix"(IFeatureMatrix):
 
         # Constructors:
 
-        DenseFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) except +
+        FortranContiguousFeatureMatrixImpl(uint32 numExamples, uint32 numFeatures, const float32* x) except +
 
 
 cdef extern from "cpp/input/feature_matrix_csc.h" nogil:
@@ -101,7 +101,7 @@ cdef class FeatureMatrix:
     cdef shared_ptr[IFeatureMatrix] feature_matrix_ptr
 
 
-cdef class DenseFeatureMatrix(FeatureMatrix):
+cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
     pass
 
 
