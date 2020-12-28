@@ -7,7 +7,8 @@
 
 
 /**
- * Implements column-wise access to the feature values of the training examples based on a C-contiguous array.
+ * Implements column-wise access to the feature values of individual training examples that are stored in a
+ * pre-allocated Fortran-contiguous array.
  */
 class DenseFeatureMatrix final : public IFeatureMatrix {
 
