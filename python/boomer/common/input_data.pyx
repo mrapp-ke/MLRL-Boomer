@@ -77,8 +77,8 @@ cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
 
     def __cinit__(self, const float32[::1, :] x):
         """
-        :param x: An array of type `float32`, shape `(num_examples, num_features)`, representing the feature values of
-                  the training examples
+        :param x: A Fortran-contiguous array of type `float32`, shape `(num_examples, num_features)`, representing the
+                  feature values of the training examples
         """
         cdef uint32 num_examples = x.shape[0]
         cdef uint32 num_features = x.shape[1]
@@ -109,6 +109,20 @@ cdef class CscFeatureMatrix(FeatureMatrix):
                                                                                                 &x_data[0],
                                                                                                 &x_row_indices[0],
                                                                                                 &x_col_indices[0])
+
+cdef class CContiguousFeatureMatrix:
+    """
+    A wrapper for the C++ class `CContiguousFeatureMatrix`.
+    """
+
+    def __cinit__(self, const float32[:, ::1] x):
+        """
+        :param x: A C-contiguous array of type `float32`, shape `(num_examples, num_features)`, representing the feature
+                  values of the training examples
+        """
+        cdef uint32 num_examples = x.shape[0]
+        cdef uint32 num_features = x.shape[1]
+        self.feature_matrix_ptr = make_shared[CContiguousFeatureMatrixImpl](num_examples, num_features, &x[0, 0])
 
 
 cdef class NominalFeatureMask:
