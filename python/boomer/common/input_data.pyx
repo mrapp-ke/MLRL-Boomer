@@ -16,14 +16,14 @@ cdef class LabelMatrix:
 
 cdef class RandomAccessLabelMatrix(LabelMatrix):
     """
-    A wrapper for the pure virtual C++ class `AbstractRandomAccessLabelMatrix`.
+    A wrapper for the pure virtual C++ class `IRandomAccessLabelMatrix`.
     """
     pass
 
 
 cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
     """
-    A wrapper for the C++ class `DenseLabelMatrixImpl`.
+    A wrapper for the C++ class `DenseLabelMatrix`.
     """
 
     def __cinit__(self, const uint8[:, ::1] y):
@@ -39,7 +39,7 @@ cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
 
 cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     """
-    A wrapper for the C++ class `DokLabelMatrixImpl`.
+    A wrapper for the C++ class `DokLabelMatrix`.
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_labels, list[::1] rows):
@@ -65,14 +65,14 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
 
 cdef class FeatureMatrix:
     """
-    A wrapper for the pure virtual C++ class `AbstractFeatureMatrix`.
+    A wrapper for the pure virtual C++ class `IFeatureMatrix`.
     """
     pass
 
 
-cdef class DenseFeatureMatrix(FeatureMatrix):
+cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
     """
-    A wrapper for the C++ class `DenseFeatureMatrixImpl`.
+    A wrapper for the C++ class `FortranContiguousFeatureMatrix`.
     """
 
     def __cinit__(self, const float32[::1, :] x):
@@ -82,14 +82,14 @@ cdef class DenseFeatureMatrix(FeatureMatrix):
         """
         cdef uint32 num_examples = x.shape[0]
         cdef uint32 num_features = x.shape[1]
-        self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[DenseFeatureMatrixImpl](num_examples,
-                                                                                                  num_features,
-                                                                                                  &x[0, 0])
+        self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[FortranContiguousFeatureMatrix](num_examples,
+                                                                                                          num_features,
+                                                                                                          &x[0, 0])
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
     """
-    A wrapper for the C++ class `CscFeatureMatrixImpl`.
+    A wrapper for the C++ class `CscFeatureMatrix`.
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] x_data,
@@ -121,7 +121,7 @@ cdef class NominalFeatureMask:
 
 cdef class DokNominalFeatureMask(NominalFeatureMask):
     """
-    A wrapper for the C++ class `DokNominalFeatureMaskImpl`.
+    A wrapper for the C++ class `DokNominalFeatureMask`.
     """
 
     """

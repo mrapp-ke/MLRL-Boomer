@@ -13,9 +13,9 @@ from typing import List
 
 import numpy as np
 from boomer.common.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
-from boomer.common.input_data import DenseFeatureMatrix, CscFeatureMatrix
 from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix
 from boomer.common.input_data import DokNominalFeatureMask
+from boomer.common.input_data import FortranContiguousFeatureMatrix, CscFeatureMatrix
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, NoPruning, IREP
 from boomer.common.rules import ModelBuilder
@@ -318,7 +318,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
         else:
-            feature_matrix = DenseFeatureMatrix(x)
+            feature_matrix = FortranContiguousFeatureMatrix(x)
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_policy = create_sparse_policy(self.label_format)
