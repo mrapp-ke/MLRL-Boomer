@@ -27,6 +27,7 @@ sources = [
     'boomer/common/cpp/input/label_matrix_dense.cpp',
     'boomer/common/cpp/input/label_matrix_dok.cpp',
     'boomer/common/cpp/input/nominal_feature_mask_dok.cpp',
+    'boomer/common/cpp/model/body_empty.cpp',
     'boomer/common/cpp/model/condition_list.cpp',
     'boomer/common/cpp/sampling/random.cpp',
     'boomer/common/cpp/sampling/feature_sampling_no.cpp',
