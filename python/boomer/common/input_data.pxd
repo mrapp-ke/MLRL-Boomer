@@ -41,7 +41,7 @@ cdef extern from "cpp/input/feature_matrix.h" nogil:
         pass
 
 
-cdef extern from "cpp/input/feature_matrix_c_contigious.h" nogil:
+cdef extern from "cpp/input/feature_matrix_c_contiguous.h" nogil:
 
     cdef cppclass CContiguousFeatureMatrixImpl"CContiguousFeatureMatrix":
 
