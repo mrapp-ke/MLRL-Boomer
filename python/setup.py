@@ -9,8 +9,6 @@ ANNOTATE = False
 
 # True, if all Cython compiler optimizations should be disabled
 DEBUG = False
-
-# The compiler/linker argument to enable OpenMP support
 sources = [
     '**/*.pyx',
     'boomer/common/cpp/data/matrix_dense.cpp',
@@ -21,6 +19,7 @@ sources = [
     'boomer/common/cpp/data/vector_mapping_dense.cpp',
     'boomer/common/cpp/indices/index_vector_full.cpp',
     'boomer/common/cpp/indices/index_vector_partial.cpp',
+    'boomer/common/cpp/input/feature_matrix_c_contiguous.cpp',
     'boomer/common/cpp/input/feature_matrix_csc.cpp',
     'boomer/common/cpp/input/feature_matrix_fortran_contiguous.cpp',
     'boomer/common/cpp/input/feature_vector.cpp',
@@ -87,6 +86,8 @@ sources = [
     'boomer/seco/cpp/statistics/statistics_label_wise_dense.cpp',
     'boomer/seco/cpp/stopping/stopping_criterion_coverage.cpp'
 ]
+
+# The compiler/linker argument to enable OpenMP support
 
 COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenmp'
 
