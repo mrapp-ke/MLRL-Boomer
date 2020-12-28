@@ -7,9 +7,10 @@
 
 
 /**
- * Implements column-wise access to the feature values of the training examples based on a C-contiguous array.
+ * Implements column-wise access to the feature values of individual training examples that are stored in a
+ * pre-allocated Fortran-contiguous array.
  */
-class DenseFeatureMatrix final : public IFeatureMatrix {
+class FortranContiguousFeatureMatrix final : public IFeatureMatrix {
 
     private:
 
@@ -27,7 +28,7 @@ class DenseFeatureMatrix final : public IFeatureMatrix {
          * @param x             A pointer to a Fortran-contiguous array of type `float32`, shape
          *                      `(numExamples, numFeatures)`, representing the feature values of the training examples
          */
-        DenseFeatureMatrix(uint32 numExamples, uint32 numFeatures, const float32* x);
+        FortranContiguousFeatureMatrix(uint32 numExamples, uint32 numFeatures, const float32* x);
 
         uint32 getNumExamples() const override;
 
