@@ -7,8 +7,8 @@
 
 
 /**
- * Implements column-wise access to the feature values of the training examples based on a sparse matrix in the
- * compressed sparse column (CSC) format.
+ * Implements column-wise access to the feature values of individual training examples that are stored in a
+ * pre-allocated sparse matrix in the compressed sparse column (CSC) format.
  */
 class CscFeatureMatrix final : public IFeatureMatrix {
 
