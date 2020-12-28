@@ -125,6 +125,28 @@ cdef class CContiguousFeatureMatrix:
         self.feature_matrix_ptr = make_shared[CContiguousFeatureMatrixImpl](num_examples, num_features, &x[0, 0])
 
 
+cdef class CsrFeatureMatrix:
+    """
+    A wrapper for the C++ class `CsrFeatureMatrix`.
+    """
+
+    def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] x_data,
+                  const uint32[::1] x_row_indices, const uint32[::1] x_col_indices):
+        """
+        :param num_examples:    The total number of examples
+        :param num_features:    The total number of features
+        :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
+                                non-zero feature values of the training examples
+        :param x_row_indices:   An array of type `uint32`, shape `(num_examples + 1)`, representing the indices of the
+                                first element in `x_data` and `x_col_indices` that corresponds to a certain example. The
+                                index at the last position is equal to `num_non_zero_feature_values`
+        :param x_col_indices:   An array of type `uint32`, shape `(num_non_zero_feature_values)`, representing the
+                                column-indices of the features, the values in `x_data` correspond to
+        """
+        self.feature_matrix_ptr = make_shared[CsrFeatureMatrixImpl](num_examples, num_features, &x_data[0],
+                                                                    &x_row_indices[0], &x_col_indices[0])
+
+
 cdef class NominalFeatureMask:
     """
     A wrapper for the pure virtual C++ class `INominalFeatureMask`.
