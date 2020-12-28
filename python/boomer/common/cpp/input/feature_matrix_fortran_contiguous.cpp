@@ -1,21 +1,21 @@
-#include "feature_matrix_dense.h"
+#include "feature_matrix_fortran_contiguous.h"
 
 
-DenseFeatureMatrix::DenseFeatureMatrix(uint32 numExamples, uint32 numFeatures, const float32* x)
+FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numExamples, uint32 numFeatures, const float32* x)
     : numExamples_(numExamples), numFeatures_(numFeatures), x_(x) {
 
 }
 
-uint32 DenseFeatureMatrix::getNumExamples() const {
+uint32 FortranContiguousFeatureMatrix::getNumExamples() const {
     return numExamples_;
 }
 
-uint32 DenseFeatureMatrix::getNumFeatures() const {
+uint32 FortranContiguousFeatureMatrix::getNumFeatures() const {
     return numFeatures_;
 }
 
-void DenseFeatureMatrix::fetchFeatureVector(uint32 featureIndex,
-                                            std::unique_ptr<FeatureVector>& featureVectorPtr) const {
+void FortranContiguousFeatureMatrix::fetchFeatureVector(uint32 featureIndex,
+                                                        std::unique_ptr<FeatureVector>& featureVectorPtr) const {
     // The number of elements to be returned
     uint32 numElements = this->getNumExamples();
     // The first element in `x_` that corresponds to the given feature index
