@@ -3,8 +3,18 @@
  */
 #pragma once
 
-#include "../data/types.h"
+#include "../data/matrix_dense.h"
 
+
+/**
+ * Type definition for a C-contiguous matrix that stores predictions.
+ */
+typedef DenseMatrix<float64> DensePredictionMatrix;
+
+/**
+ * Type definition for a C-contiguous boolean matrix.
+ */
+typedef DenseMatrix<uint8> Mask;
 
 /**
  * Defines an interface for all classes that represent the head of a rule.
@@ -16,16 +26,25 @@ class IHead {
         virtual ~IHead { };
 
         /**
-         * Adds the scores that are contained by the head to a given matrix of predictions.
+         * Adds the scores that are contained by the head to a given vector of predictions.
          *
-         * Optionally, a mask may be provided in order to restrict the prediction to certain labels.
-         *
-         * @param predictions   A pointer to an array of type `float64`, shape `(num_labels)`, which stores the
-         *                      predictions to be updated
-         * @param mask          A pointer to an array of type `uint8`, shape `(num_labels)`, that indicates for which
-         *                      labels the head should predict or a null pointer, if the prediction should not be
-         *                      restricted
+         * @param begin An iterator to the beginning of the predictions to be updated
+         * @param end   An iterator to the end of the predictions to be updated
          */
-        virtual void apply(float64* predictions, uint8* mask) const = 0;
+        virtual void apply(DensePredictionMatrix::iterator begin, DensePredictionMatrix::iterator end) const = 0;
+
+        /**
+         * Adds the scores that are contained by the head to a given vector of predictions.
+         *
+         * The prediction is restricted to certain labels according to a given mask.
+         *
+         * @param predictionsBegin  An iterator to the beginning of the predictions to be updated
+         * @param predictionsEnd    An iterator to the end of the predictions to be updated
+         * @param maskBegin         An iterator to the beginning of the mask
+         * @param maskEnd           An iterator to the end of the mask
+         */
+        virtual void apply(DensePredictionMatrix::iterator predictionsBegin,
+                           DensePredictionMatrix::iterator predictionsEnd, Mask::const_iterator maskBegin,
+                           Mask::const_iterator maskEnd) const = 0;
 
 };
