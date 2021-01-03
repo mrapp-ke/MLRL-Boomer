@@ -51,3 +51,4 @@ typename DenseMatrix<T>::const_iterator DenseMatrix<T>::row_cend(uint32 row) con
 }
 
 template class DenseMatrix<float64>;
+template class DenseMatrix<uint8>;
