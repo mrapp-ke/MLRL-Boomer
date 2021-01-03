@@ -11,6 +11,8 @@ ANNOTATE = False
 DEBUG = False
 
 # The compiler/linker argument to enable OpenMP support
+COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenmp'
+
 sources = [
     '**/*.pyx',
     'boomer/common/cpp/data/matrix_dense.cpp',
@@ -87,8 +89,6 @@ sources = [
     'boomer/seco/cpp/statistics/statistics_label_wise_dense.cpp',
     'boomer/seco/cpp/stopping/stopping_criterion_coverage.cpp'
 ]
-
-COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenmp'
 
 extensions = [
     setuptools.Extension(name='*', sources=sources, language='c++', extra_compile_args=[COMPILE_FLAG_OPEN_MP],
