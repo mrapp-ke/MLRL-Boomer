@@ -42,8 +42,9 @@ class Rule final {
          * Identifies all examples in a C-contiguous matrix that are covered by the rule's body and adds the scores that
          * are contained by the rule's head to the corresponding rows of a given matrix of predictions.
          *
-         * The prediction of the rule is restricted to certain labels according to a given mask. The mask will be
-         * updated by this function.
+         * The prediction is restricted to labels for which the corresponding element in the given mask is zero, i.e.,
+         * for which no rule has predicted yet. The mask will be updated by this function by setting all elements for
+         * which a prediction has been made to a non-zero value.
          *
          * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the feature
          *                          values of the examples
@@ -80,8 +81,9 @@ class Rule final {
          * Identifies all examples in a sparse CSR matrix that are covered by the rule's body and adds the scores that
          * are contained by the rule's head to the corresponding rows of a given matrix of predictions.
          *
-         * The prediction of the rule is restricted to certain labels according to a given mask. The mask will be
-         * updated by this function.
+         * The prediction is restricted to labels for which the corresponding element in the given mask is zero, i.e.,
+         * for which no rule has predicted yet. The mask will be updated by this function by setting all elements for
+         * which a prediction has been made to a non-zero value.
          *
          * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the feature
          *                          values of the examples

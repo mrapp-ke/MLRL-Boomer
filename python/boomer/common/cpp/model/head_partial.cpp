@@ -29,9 +29,9 @@ void PartialHead::apply(DenseMatrix<float64>::iterator predictionsBegin, DenseMa
     for (uint32 i = 0; i < numScores_; i++) {
         uint32 labelIndex = labelIndices_[i];
 
-        if (maskBegin[labelIndex]) {
+        if (!maskBegin[labelIndex]) {
             predictionsBegin[labelIndex] += scores_[i];
-            maskBegin[labelIndex] = false;
+            maskBegin[labelIndex] = true;
         }
     }
 }
