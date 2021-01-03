@@ -24,7 +24,7 @@ sources = [
     'boomer/common/cpp/input/feature_matrix_csr.cpp',
     'boomer/common/cpp/input/feature_matrix_fortran_contiguous.cpp',
     'boomer/common/cpp/input/feature_vector.cpp',
-    'boomer/common/cpp/input/label_matrix_c_continuous.cpp',
+    'boomer/common/cpp/input/label_matrix_c_contiguous.cpp',
     'boomer/common/cpp/input/label_matrix_dok.cpp',
     'boomer/common/cpp/input/nominal_feature_mask_dok.cpp',
     'boomer/common/cpp/model/body_conjunctive.cpp',
