@@ -23,7 +23,7 @@ class IHead {
 
     public:
 
-        virtual ~IHead { };
+        virtual ~IHead() { };
 
         /**
          * Adds the scores that are contained by the head to a given vector of predictions.
