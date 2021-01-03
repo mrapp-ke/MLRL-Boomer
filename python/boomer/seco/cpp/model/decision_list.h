@@ -10,7 +10,9 @@ class DecisionList;
 class Rule;
 
 /**
- * Allows to build models that store several rules in a decision list.
+ * Allows to build models that store several rules in the order they have been added, except for the default rule, which
+ * is always located at the end. For prediction, the rules are processed in this particular order. Subsequent rules are
+ * only allowed to predict for labels for which no previous rules has already provided a prediction.
  */
 class DecisionListBuilder final : public IModelBuilder {
 
