@@ -23,9 +23,9 @@ void FullHead::apply(DenseMatrix<float64>::iterator begin, DenseMatrix<float64>:
 void FullHead::apply(DenseMatrix<float64>::iterator predictionsBegin, DenseMatrix<float64>::iterator predictionsEnd,
                      DenseMatrix<uint8>::iterator maskBegin, DenseMatrix<uint8>::iterator maskEnd) const {
     for (uint32 i = 0; i < numScores_; i++) {
-        if (maskBegin[i]) {
+        if (!maskBegin[i]) {
             predictionsBegin[i] += scores_[i];
-            maskBegin[i] = false;
+            maskBegin[i] = true;
         }
     }
 }

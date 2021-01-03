@@ -26,8 +26,9 @@ class IHead {
         /**
          * Adds the scores that are contained by the head to a given vector of predictions.
          *
-         * The prediction is restricted to certain labels according to a given mask. The mask will be updated by this
-         * function.
+         * The prediction is restricted to labels for which the corresponding element in the given mask is zero, i.e.,
+         * for which no rule has predicted yet. The mask will be updated by this function by setting all elements for
+         * which a prediction has been made to a non-zero value.
          *
          * @param predictionsBegin  An iterator to the beginning of the predictions to be updated
          * @param predictionsEnd    An iterator to the end of the predictions to be updated
