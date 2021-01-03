@@ -33,10 +33,10 @@ class Rule final {
          *
          * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the feature
          *                          values of the examples
-         * @param predictionMatrix  A reference to an object of type `DensePredictionMatrix` that stores the predictions
-         *                          to be updated
+         * @param predictionMatrix  A reference to an object of type `DenseMatrix` that stores the predictions to be
+         *                          updated
          */
-        void predict(const CContiguousFeatureMatrix& featureMatrix, DensePredictionMatrix& predictionMatrix) const;
+        void predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix) const;
 
         /**
          * Identifies all examples in a C-contiguous matrix that are covered by the rule's body and adds the scores that
@@ -47,13 +47,14 @@ class Rule final {
          *
          * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the feature
          *                          values of the examples
-         * @param predictionMatrix  A reference to an object of type `DensePredictionMatrix` that stores the predictions
-         *                          to be updated
-         * @param mask              A reference to an object of type `Mask` that specifies for which labels the rule is
-         *                          allowed to predict or a null pointer, if the prediction should not be restricted
+         * @param predictionMatrix  A reference to an object of type `DenseMatrix` that stores the predictions to be
+         *                          updated
+         * @param mask              A reference to an object of type `DenseMatrix` that specifies for which labels the
+         *                          rule is allowed to predict or a null pointer, if the prediction should not be
+         *                          restricted
          */
-        void predict(const CContiguousFeatureMatrix& featureMatrix, DensePredictionMatrix& predictionMatrix,
-                     Mask& mask) const;
+        void predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix,
+                     DenseMatrix<uint8>& mask) const;
 
         /**
          * Identifies all examples in a sparse CSR matrix that are covered by the rule's body and adds the scores that
@@ -61,8 +62,8 @@ class Rule final {
          *
          * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the feature
          *                          values of the examples
-         * @param predictionMatrix  A reference to an object of type `DensePredictionMatrix` that stores the predictions
-         *                          to be updated
+         * @param predictionMatrix  A reference to an object of type `DenseMatrix` that stores the predictions to be
+         *                          updated
          * @param tmpArray1         An array of type `float32`, shape `(num_features)` that is used to temporarily store
          *                          non-zero feature values. May contain arbitrary values
          * @param tmpArray2         An array of type `uint32`, shape `(num_features)` that is used to temporarily keep
@@ -72,7 +73,7 @@ class Rule final {
          *                          but using the same `tmpArray2`, the number must be unique for each of the function
          *                          invocations
          */
-        void predict(const CsrFeatureMatrix& featureMatrix, DensePredictionMatrix& predictionMatrix, float32* tmpArray1,
+        void predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix, float32* tmpArray1,
                      uint32* tmpArray2, uint32 n) const;
 
         /**
@@ -84,8 +85,8 @@ class Rule final {
          *
          * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the feature
          *                          values of the examples
-         * @param predictionMatrix  A reference to an object of type `DensePredictionMatrix` that stores the predictions
-         *                          to be updated
+         * @param predictionMatrix  A reference to an object of type `DenseMatrix` that stores the predictions to be
+         *                          updated
          * @param tmpArray1         An array of type `float32`, shape `(num_features)` that is used to temporarily store
          *                          non-zero feature values. May contain arbitrary values
          * @param tmpArray2         An array of type `uint32`, shape `(num_features)` that is used to temporarily keep
@@ -94,10 +95,10 @@ class Rule final {
          * @param n                 An arbitrary number. If this function is called multiple times for different rules,
          *                          but using the same `tmpArray2`, the number must be unique for each of the function
          *                          invocations
-         * @param mask              A reference to an object of type `Mask` that specifies for which labels the rule is
-         *                          allowed to predict
+         * @param mask              A reference to an object of type `DenseMatrix` that specifies for which labels the
+         *                          rule is allowed to predict
          */
-        void predict(const CsrFeatureMatrix& featureMatrix, DensePredictionMatrix& predictionMatrix, float32* tmpArray1,
-                     uint32* tmpArray2, uint32 n, Mask& mask) const;
+        void predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix, float32* tmpArray1,
+                     uint32* tmpArray2, uint32 n, DenseMatrix<uint8>& mask) const;
 
 };

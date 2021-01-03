@@ -7,16 +7,6 @@
 
 
 /**
- * Type definition for a C-contiguous matrix that stores predictions.
- */
-typedef DenseMatrix<float64> DensePredictionMatrix;
-
-/**
- * Type definition for a C-contiguous boolean matrix.
- */
-typedef DenseMatrix<uint8> Mask;
-
-/**
  * Defines an interface for all classes that represent the head of a rule.
  */
 class IHead {
@@ -31,7 +21,7 @@ class IHead {
          * @param begin An iterator to the beginning of the predictions to be updated
          * @param end   An iterator to the end of the predictions to be updated
          */
-        virtual void apply(DensePredictionMatrix::iterator begin, DensePredictionMatrix::iterator end) const = 0;
+        virtual void apply(DenseMatrix<float64>::iterator begin, DenseMatrix<float64>::iterator end) const = 0;
 
         /**
          * Adds the scores that are contained by the head to a given vector of predictions.
@@ -44,8 +34,8 @@ class IHead {
          * @param maskBegin         An iterator to the beginning of the mask
          * @param maskEnd           An iterator to the end of the mask
          */
-        virtual void apply(DensePredictionMatrix::iterator predictionsBegin,
-                           DensePredictionMatrix::iterator predictionsEnd, Mask::iterator maskBegin,
-                           Mask::iterator maskEnd) const = 0;
+        virtual void apply(DenseMatrix<float64>::iterator predictionsBegin,
+                           DenseMatrix<float64>::iterator predictionsEnd, DenseMatrix<uint8>::iterator maskBegin,
+                           DenseMatrix<uint8>::iterator maskEnd) const = 0;
 
 };
