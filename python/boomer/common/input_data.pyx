@@ -21,20 +21,20 @@ cdef class RandomAccessLabelMatrix(LabelMatrix):
     pass
 
 
-cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
+cdef class CContiguousLabelMatrix(RandomAccessLabelMatrix):
     """
-    A wrapper for the C++ class `DenseLabelMatrix`.
+    A wrapper for the C++ class `CContiguousLabelMatrix`.
     """
 
     def __cinit__(self, const uint8[:, ::1] y):
         """
-        :param y: An array of type `uint8`, shape `(num_examples, num_labels)`, representing the labels of the training
-                  examples
+        :param y: A C-contiguous array of type `uint8`, shape `(num_examples, num_labels)`, representing the labels of
+                  the training examples
         """
         cdef uint32 num_examples = y.shape[0]
         cdef uint32 num_labels = y.shape[1]
-        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[DenseLabelMatrixImpl](num_examples, num_labels,
-                                                                                            &y[0, 0])
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[CContiguousLabelMatrixImpl](num_examples,
+                                                                                                  num_labels, &y[0, 0])
 
 
 cdef class DokLabelMatrix(RandomAccessLabelMatrix):
