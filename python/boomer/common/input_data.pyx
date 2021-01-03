@@ -77,8 +77,8 @@ cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
 
     def __cinit__(self, const float32[::1, :] x):
         """
-        :param x: An array of type `float32`, shape `(num_examples, num_features)`, representing the feature values of
-                  the training examples
+        :param x: A Fortran-contiguous array of type `float32`, shape `(num_examples, num_features)`, representing the
+                  feature values of the training examples
         """
         cdef uint32 num_examples = x.shape[0]
         cdef uint32 num_features = x.shape[1]
