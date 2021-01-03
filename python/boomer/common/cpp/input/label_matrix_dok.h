@@ -8,8 +8,8 @@
 
 
 /**
- * Implements random access to the labels of the training examples based on a sparse matrix in the dictionary of keys
- * (DOK) format.
+ * Implements random access to the labels of individual training examples that are stored in a pre-allocated sparse
+ * matrix in the dictionary of keys (DOK) format.
  */
 class DokLabelMatrix : public IRandomAccessLabelMatrix {
 
