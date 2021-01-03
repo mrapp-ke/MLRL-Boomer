@@ -10,7 +10,9 @@ class RuleList;
 
 
 /**
- * Allows to build models that store several rules in a list.
+ * Allows to build models that store several rules in the order they have been added. For prediction, a linear
+ * combination of the scores that are provided by the individual rules is computed, i.e., the prediction is invariant to
+ * the order of the rules.
  */
 class RuleListBuilder final : public IModelBuilder {
 
