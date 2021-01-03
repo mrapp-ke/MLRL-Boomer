@@ -7,8 +7,8 @@
 
 
 /**
- * Implements row-wise access to the feature values of individual training examples that are stored in a pre-allocated
- * C-contiguous array.
+ * Implements row-wise read-only access to the feature values of individual training examples that are stored in a
+ * pre-allocated C-contiguous array.
  */
 class CContiguousFeatureMatrix final {
 
