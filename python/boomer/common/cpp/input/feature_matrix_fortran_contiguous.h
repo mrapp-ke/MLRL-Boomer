@@ -7,7 +7,7 @@
 
 
 /**
- * Implements column-wise access to the feature values of individual training examples that are stored in a
+ * Implements column-wise read-only access to the feature values of individual training examples that are stored in a
  * pre-allocated Fortran-contiguous array.
  */
 class FortranContiguousFeatureMatrix final : public IFeatureMatrix {
