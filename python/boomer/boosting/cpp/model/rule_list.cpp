@@ -48,10 +48,8 @@ class RuleList final : public IModel {
 
 };
 
-void RuleListBuilder::setDefaultRule(const AbstractPrediction* prediction) {
-    if (prediction != nullptr) {
-        modelPtr_->append(std::make_unique<Rule>(std::make_unique<EmptyBody>(), prediction->toHead()));
-    }
+void RuleListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
+    modelPtr_->append(std::make_unique<Rule>(std::make_unique<EmptyBody>(), prediction.toHead()));
 }
 
 void RuleListBuilder::addRule(const ConditionList& conditions, const AbstractPrediction& prediction) {

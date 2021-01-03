@@ -24,7 +24,7 @@ class DecisionListBuilder final : public IModelBuilder {
 
     public:
 
-        void setDefaultRule(const AbstractPrediction* prediction) override;
+        void setDefaultRule(const AbstractPrediction& prediction) override;
 
         void addRule(const ConditionList& conditions, const AbstractPrediction& prediction) override;
 

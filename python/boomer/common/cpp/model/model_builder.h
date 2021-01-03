@@ -18,14 +18,12 @@ class IModelBuilder {
         virtual ~IModelBuilder() { };
 
         /**
-         * Initializes the model ans sets its default rule.
-         *
-         * This function must be called prior to the invocation of any other method of this class.
+         * Sets the default rule of the model.
          *
          * @param prediction A pointer to an object of type `AbstractPrediction` that stores the scores that are
-         *                   predicted by the default rule or a null pointer, if no default rule should be used
+         *                   predicted by the default rule
          */
-        virtual void setDefaultRule(const AbstractPrediction* prediction) = 0;
+        virtual void setDefaultRule(const AbstractPrediction& prediction) = 0;
 
         /**
          * Adds a new rule to the model.
