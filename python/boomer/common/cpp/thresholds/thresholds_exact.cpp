@@ -265,7 +265,7 @@ class ExactThresholds final : public AbstractThresholds {
              * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved from
              * the cache. Otherwise, they are fetched from the feature matrix.
              */
-            class Callback final : public IRuleRefinementCallback<FeatureVector> {
+            class Callback final : public IRuleRefinementCallback<FeatureVector, IWeightVector> {
 
                 private:
 
@@ -311,7 +311,8 @@ class ExactThresholds final : public AbstractThresholds {
                             featureVector = cacheEntry.vectorPtr.get();
                         }
 
-                        return std::make_unique<Result>(*thresholdsSubset_.thresholds_.statisticsPtr_, *featureVector);
+                        return std::make_unique<Result>(*thresholdsSubset_.thresholds_.statisticsPtr_,
+                                                        thresholdsSubset_.weights_, *featureVector);
                     }
 
             };
@@ -345,7 +346,7 @@ class ExactThresholds final : public AbstractThresholds {
                 std::unique_ptr<IHeadRefinement> headRefinementPtr =
                     thresholds_.headRefinementFactoryPtr_->create(labelIndices);
                 std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-                return std::make_unique<ExactRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices, weights_,
+                return std::make_unique<ExactRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
                                                                 sumOfWeights_, featureIndex, nominal,
                                                                 std::move(callbackPtr));
             }
