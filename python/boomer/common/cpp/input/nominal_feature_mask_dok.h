@@ -29,4 +29,3 @@ class DokNominalFeatureMask : virtual public INominalFeatureMask {
         bool isNominal(uint32 featureIndex) const override;
 
 };
-
