@@ -29,12 +29,13 @@ class IStatistics : virtual public IImmutableStatistics {
                 virtual ~IHistogramBuilder() { };
 
                 /**
-                 * Adds the statistics at a specific index to a specific bin.
+                 * Adds the statistic at a specific index to a specific bin.
                  *
                  * @param binIndex          The index of the bin
-                 * @param statisticIndex    The index of the statistics
+                 * @param statisticIndex    The index of the statistic
+                 * @param weight            The weight of the statistic
                  */
-                virtual void addToBin(uint32 binIndex, uint32 statisticIndex) = 0;
+                virtual void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) = 0;
 
                 /**
                  * Creates and returns a new instance of the class `IHistogram` that stores the aggregated statistics.

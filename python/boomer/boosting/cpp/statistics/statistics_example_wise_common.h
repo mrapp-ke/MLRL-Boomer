@@ -235,12 +235,13 @@ class ExampleWiseHistogram : public AbstractExampleWiseStatistics<StatisticVecto
 
         }
 
-        void removeFromBin(uint32 binIndex, uint32 statisticIndex) override {
+        void removeFromBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
             this->statisticMatrixPtr_->subtractFromRow(binIndex,
                                                        originalStatisticMatrix_.gradients_row_cbegin(statisticIndex),
                                                        originalStatisticMatrix_.gradients_row_cend(statisticIndex),
                                                        originalStatisticMatrix_.hessians_row_cbegin(statisticIndex),
-                                                       originalStatisticMatrix_.hessians_row_cend(statisticIndex));
+                                                       originalStatisticMatrix_.hessians_row_cend(statisticIndex),
+                                                       weight);
         }
 
 };
@@ -284,12 +285,13 @@ class ExampleWiseStatistics final : public AbstractExampleWiseStatistics<Statist
 
             }
 
-            void addToBin(uint32 binIndex, uint32 statisticIndex) override {
+            void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
                 statisticMatrixPtr_->addToRow(binIndex,
                                               statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
                                               statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
                                               statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                                              statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex));
+                                              statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex),
+                                              weight);
             }
 
             std::unique_ptr<IHistogram> build() override {
