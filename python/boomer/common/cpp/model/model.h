@@ -10,11 +10,11 @@
 /**
  * Defines an interface for all classes that represent a rule-based model.
  */
-class IRuleModel {
+class IModel {
 
     public:
 
-        virtual ~IRuleModel() { };
+        virtual ~IModel() { };
 
         /**
          * Adds the scores that are predicts by all rules that are contained in the model to a given matrix of
