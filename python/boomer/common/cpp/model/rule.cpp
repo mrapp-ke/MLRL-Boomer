@@ -6,7 +6,7 @@ Rule::Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr)
 
 }
 
-void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DensePredictionMatrix& predictionMatrix) const {
+void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix) const {
     uint32 numExamples = featureMatrix.getNumExamples();
 
     for (uint32 r = 0; r < numExamples; r++) {
@@ -18,8 +18,8 @@ void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DensePredictio
     }
 }
 
-void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DensePredictionMatrix& predictionMatrix,
-                   Mask& mask) const {
+void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix,
+                   DenseMatrix<uint8>& mask) const {
     uint32 numExamples = featureMatrix.getNumExamples();
 
     for (uint32 r = 0; r < numExamples; r++) {
@@ -32,7 +32,7 @@ void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DensePredictio
     }
 }
 
-void Rule::predict(const CsrFeatureMatrix& featureMatrix, DensePredictionMatrix& predictionMatrix, float32* tmpArray1,
+void Rule::predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix, float32* tmpArray1,
                    uint32* tmpArray2, uint32 n) const {
     uint32 numExamples = featureMatrix.getNumExamples();
     uint32 i = n;
@@ -50,8 +50,8 @@ void Rule::predict(const CsrFeatureMatrix& featureMatrix, DensePredictionMatrix&
     }
 }
 
-void Rule::predict(const CsrFeatureMatrix& featureMatrix, DensePredictionMatrix& predictionMatrix, float32* tmpArray1,
-                   uint32* tmpArray2, uint32 n, Mask& mask) const {
+void Rule::predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix, float32* tmpArray1,
+                   uint32* tmpArray2, uint32 n, DenseMatrix<uint8>& mask) const {
     uint32 numExamples = featureMatrix.getNumExamples();
     uint32 i = n;
 
