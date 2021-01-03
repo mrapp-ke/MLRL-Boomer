@@ -11,7 +11,7 @@
 /**
  * A rule that consists of a body and a head.
  */
-class Rule {
+class Rule final {
 
     private:
 
