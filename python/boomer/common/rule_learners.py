@@ -13,7 +13,7 @@ from typing import List
 
 import numpy as np
 from boomer.common.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
-from boomer.common.input_data import DenseLabelMatrix, DokLabelMatrix
+from boomer.common.input_data import CContinuousLabelMatrix, DokLabelMatrix
 from boomer.common.input_data import DokNominalFeatureMask
 from boomer.common.input_data import FortranContiguousFeatureMatrix, CscFeatureMatrix
 from boomer.common.prediction import Predictor
@@ -331,7 +331,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             rows = np.ascontiguousarray(y.rows)
             label_matrix = DokLabelMatrix(y.shape[0], num_labels, rows)
         else:
-            label_matrix = DenseLabelMatrix(y)
+            label_matrix = CContinuousLabelMatrix(y)
 
         self.num_labels_ = num_labels
 

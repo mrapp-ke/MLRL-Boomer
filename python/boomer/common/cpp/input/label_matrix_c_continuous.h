@@ -10,7 +10,7 @@
  * Implements random read-only access to the labels of individual training examples that are stored in a pre-allocated
  * C-contiguous array.
  */
-class DenseLabelMatrix final : public IRandomAccessLabelMatrix {
+class CContinuousLabelMatrix final : public IRandomAccessLabelMatrix {
 
     private:
 
@@ -28,7 +28,7 @@ class DenseLabelMatrix final : public IRandomAccessLabelMatrix {
          * @param y             A pointer to a C-contiguous array of type `uint8`, shape `(numExamples, numLabels)`,
          *                      representing the labels of the training examples
          */
-        DenseLabelMatrix(uint32 numExamples, uint32 numLabels, const uint8* y);
+        CContinuousLabelMatrix(uint32 numExamples, uint32 numLabels, const uint8* y);
 
         uint32 getNumExamples() const override;
 

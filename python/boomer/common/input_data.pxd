@@ -13,13 +13,13 @@ cdef extern from "cpp/input/label_matrix.h" nogil:
         pass
 
 
-cdef extern from "cpp/input/label_matrix_dense.h" nogil:
+cdef extern from "cpp/input/label_matrix_c_continuous.h" nogil:
 
-    cdef cppclass DenseLabelMatrixImpl"DenseLabelMatrix"(IRandomAccessLabelMatrix):
+    cdef cppclass CContinuousLabelMatrixImpl"CContinuousLabelMatrix"(IRandomAccessLabelMatrix):
 
         # Constructors:
 
-        DenseLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) except +
+        CContinuousLabelMatrixImpl(uint32 numExamples, uint32 numLabels, const uint8* y) except +
 
 
 cdef extern from "cpp/input/label_matrix_dok.h" nogil:
@@ -105,7 +105,7 @@ cdef class RandomAccessLabelMatrix(LabelMatrix):
     pass
 
 
-cdef class DenseLabelMatrix(RandomAccessLabelMatrix):
+cdef class CContinuousLabelMatrix(RandomAccessLabelMatrix):
     pass
 
 
