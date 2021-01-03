@@ -17,7 +17,7 @@ class IBody {
         virtual ~IBody() { };
 
         /**
-         * Returns whether an individual example, which is stored in a C-contiguous array, is covered by the body or
+         * Returns whether an individual example, which is stored in a C-contiguous matrix, is covered by the body or
          * not.
          *
          * @param begin An iterator to the beginning of the example's feature values
@@ -28,7 +28,7 @@ class IBody {
                             CContiguousFeatureMatrix::const_iterator end) const = 0;
 
         /**
-         * Returns whether an individual examples, which is stored in a CSR matrix, is covered by the body or not.
+         * Returns whether an individual example, which is stored in a CSR sparse matrix, is covered by the body or not.
          *
          * @param indicesBegin  An iterator to the beginning of the example's feature values
          * @param indicesEnd    An iterator to the end of the example's feature values
