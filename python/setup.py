@@ -35,6 +35,7 @@ sources = [
     'boomer/common/cpp/model/body_empty.cpp',
     'boomer/common/cpp/model/condition_list.cpp',
     'boomer/common/cpp/model/head_full.cpp',
+    'boomer/common/cpp/model/head_partial.cpp',
     'boomer/common/cpp/model/rule.cpp',
     'boomer/common/cpp/sampling/random.cpp',
     'boomer/common/cpp/sampling/feature_sampling_no.cpp',
