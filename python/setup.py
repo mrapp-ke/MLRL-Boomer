@@ -79,6 +79,7 @@ sources = [
     'boomer/boosting/cpp/losses/loss_example_wise_logistic.cpp',
     'boomer/boosting/cpp/math/blas.cpp',
     'boomer/boosting/cpp/math/lapack.cpp',
+    'boomer/boosting/cpp/model/rule_list.cpp',
     'boomer/boosting/cpp/post_processing/shrinkage_constant.cpp',
     'boomer/boosting/cpp/rule_evaluation/rule_evaluation_example_wise_regularized.cpp',
     'boomer/boosting/cpp/rule_evaluation/rule_evaluation_label_wise_regularized.cpp',
