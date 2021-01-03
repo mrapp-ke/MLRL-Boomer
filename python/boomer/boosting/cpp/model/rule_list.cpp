@@ -1,4 +1,6 @@
 #include "rule_list.h"
+#include "../../../common/cpp/model/body_empty.h"
+#include "../../../common/cpp/model/body_conjunctive.h"
 
 
 void RuleList::append(std::unique_ptr<Rule> rulePtr) {
@@ -23,4 +25,18 @@ void RuleList::predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float6
         rule.predict(featureMatrix, predictionMatrix, &tmpArray1[0], &tmpArray2[0], n);
         n++;
     }
+}
+
+void RuleListBuilder::setDefaultRule(const AbstractPrediction* prediction) {
+    if (prediction != nullptr) {
+        modelPtr_->append(std::make_unique<Rule>(std::make_unique<EmptyBody>(), prediction->toHead()));
+    }
+}
+
+void RuleListBuilder::addRule(const ConditionList& conditions, const AbstractPrediction& prediction) {
+    modelPtr_->append(std::make_unique<Rule>(std::make_unique<ConjunctiveBody>(conditions), prediction.toHead()));
+}
+
+std::unique_ptr<IModel> RuleListBuilder::build() {
+    return std::move(modelPtr_);
 }
