@@ -16,7 +16,7 @@ class IHead {
         virtual ~IHead { };
 
         /**
-         * Adds the scores that are contained by the head to a given array of predictions.
+         * Adds the scores that are contained by the head to a given matrix of predictions.
          *
          * Optionally, a mask may be provided in order to restrict the prediction to certain labels.
          *
