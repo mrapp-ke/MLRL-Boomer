@@ -1,0 +1,42 @@
+/**
+ * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ */
+#pragma once
+
+#include "../input/feature_matrix_c_contiguous.h"
+#include "../input/feature_matrix_csr.h"
+
+
+/**
+ * Defines an interface for all classes that represent a rule-based model.
+ */
+class IRuleModel {
+
+    public:
+
+        virtual ~IRuleModel() { };
+
+        /**
+         * Adds the scores that are predicts by all rules that are contained in the model to a given matrix of
+         * predictions.
+         *
+         * @param featureMatrix     A reference to an object of type `CContinuousFeatureMatrix` that stores the feature
+         *                          values of the examples
+         * @param predictionMatrix  A reference to an object of type `DensePredictionMatrix` that stores the predictions
+         *                          to be updated
+         */
+        virtual void predict(const CContinuousFeatureMatrix& featureMatrix,
+                             DensePredictionMatrix& predictionMatrix) const = 0;
+
+        /**
+         * Adds the scores that are predicts by all rules that are contained in the model to a given matrix of
+         * predictions.
+         *
+         * @param featureMatrix     A reference to an object of type `CsrFeatureMatrix` that stores the feature values
+         *                          of the examples
+         * @param predictionMatrix  A reference to an object of type `DensePredictionMatrix` that stores the predictions
+         *                          to be updated
+         */
+        virtual void predict(const CsrFeatureMatrix& featureMatrix, DensePredictionMatrix& predictionMatrix) const = 0;
+
+};
