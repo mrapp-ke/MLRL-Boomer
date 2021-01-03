@@ -7,7 +7,8 @@
 
 
 /**
- * Implements random access to the labels of the training examples based on a C-contiguous array.
+ * Implements random read-only access to the labels of individual training examples that are stored in a pre-allocated
+ * C-contiguous array.
  */
 class DenseLabelMatrix final : public IRandomAccessLabelMatrix {
 
