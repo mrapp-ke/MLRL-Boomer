@@ -41,6 +41,6 @@ class IModelBuilder {
          *
          * @return An unique pointer to an object of type `IModel` that has been built
          */
-        virtual std::unique_ptr<IModel> build() const = 0;
+        virtual std::unique_ptr<IModel> build() = 0;
 
 };
