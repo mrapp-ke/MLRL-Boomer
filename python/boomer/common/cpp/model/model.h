@@ -8,7 +8,7 @@
 
 
 /**
- * Defines an interface for all classes that represent a rule-based model.
+ * Defines an interface for all classes that represent a model.
  */
 class IModel {
 
@@ -17,8 +17,7 @@ class IModel {
         virtual ~IModel() { };
 
         /**
-         * Adds the scores that are predicts by all rules that are contained in the model to a given matrix of
-         * predictions.
+         * Adds the scores that are predicted by the model to a given matrix of predictions.
          *
          * @param featureMatrix     A reference to an object of type `CContinuousFeatureMatrix` that stores the feature
          *                          values of the examples
@@ -29,8 +28,7 @@ class IModel {
                              DensePredictionMatrix& predictionMatrix) const = 0;
 
         /**
-         * Adds the scores that are predicts by all rules that are contained in the model to a given matrix of
-         * predictions.
+         * Adds the scores that are predicted by the model to a given matrix of predictions.
          *
          * @param featureMatrix     A reference to an object of type `CsrFeatureMatrix` that stores the feature values
          *                          of the examples
