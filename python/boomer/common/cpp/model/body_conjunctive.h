@@ -11,7 +11,7 @@
  * A body that consists of a conjunction of conditions using the operators <= or > for numerical conditions, and = or !=
  * for nominal conditions, respectively.
  */
-class ConjunctiveBody : public IBody {
+class ConjunctiveBody final : public IBody {
 
     private:
 
