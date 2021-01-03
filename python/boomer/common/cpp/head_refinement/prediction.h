@@ -5,9 +5,11 @@
 
 #include "../data/vector_dense.h"
 #include "../indices/index_vector.h"
+#include <memory>
 
 // Forward declarations
 class IStatistics;
+class IHead;
 
 
 /**
@@ -73,6 +75,13 @@ class AbstractPrediction : public IIndexVector {
          * @param statisticIndex    The index of the statistic to be updated
          */
         virtual void apply(IStatistics& statistics, uint32 statisticIndex) const = 0;
+
+        /**
+         * Creates and returns a head that contains the scores that are stored by this prediction.
+         *
+         * @return An unique pointer to an object of type `IHead` that has been created
+         */
+        virtual std::unique_ptr<IHead> toHead() const = 0;
 
         /**
          * Sets the number of labels for which the rule predict.
