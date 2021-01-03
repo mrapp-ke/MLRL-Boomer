@@ -24,7 +24,7 @@ class IModel {
          * @param predictionMatrix  A reference to an object of type `DensePredictionMatrix` that stores the predictions
          *                          to be updated
          */
-        virtual void predict(const CContinuousFeatureMatrix& featureMatrix,
+        virtual void predict(const CContiguousFeatureMatrix& featureMatrix,
                              DensePredictionMatrix& predictionMatrix) const = 0;
 
         /**
