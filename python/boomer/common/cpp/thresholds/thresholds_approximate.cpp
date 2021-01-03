@@ -13,19 +13,20 @@
  */
 struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
     std::unique_ptr<IHistogram> histogramPtr;
+    std::unique_ptr<DenseVector<uint32>> weightVectorPtr;
 };
 
 static inline void removeEmptyBins(BinVector& vector) {
     uint32 numElements = vector.getNumElements();
     BinVector::bin_iterator binIterator = vector.bins_begin();
+    BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
     uint32 i = 0;
 
     for (uint32 r = 0; r < numElements; r++) {
-        uint32 numExamples = binIterator[r].numExamples;
+        const BinVector::ExampleList examples = exampleIterator[r];
 
-        if (numExamples > 0) {
+        if (examples.cbegin() != examples.cend()) {
             binIterator[i].index = i;
-            binIterator[i].numExamples = numExamples;
             binIterator[i].minValue = binIterator[r].minValue;
             binIterator[i].maxValue = binIterator[r].maxValue;
             vector.swapExamples(i, r);
@@ -88,7 +89,6 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
         }
 
         filteredBinIterator[i].index = binIterator[r].index;
-        filteredBinIterator[i].numExamples = binIterator[r].numExamples;
         filteredBinIterator[i].minValue = binIterator[r].minValue;
         filteredBinIterator[i].maxValue = binIterator[r].maxValue;
         i++;
@@ -99,9 +99,10 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
 }
 
 static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, uint32 numConditions,
-                                   const CoverageMask& coverageMask) {
+                                   const CoverageMask& coverageMask, const IWeightVector& weights) {
     uint32 maxElements = vector.getNumElements();
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
+    DenseVector<uint32>& weightVector = *cacheEntry.weightVectorPtr;
     bool wasEmpty = false;
 
     if (filteredVector == nullptr) {
@@ -114,6 +115,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
     BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
     BinVector::example_list_iterator filteredExampleIterator = filteredVector->examples_begin();
+    DenseVector<uint32>::iterator weightIterator = weightVector.begin();
     uint32 i = 0;
 
     for(uint32 r = 0; r < maxElements; r++) {
@@ -148,7 +150,9 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                 it++;
             } else {
                 uint32 binIndex = binIterator[r].index;
-                cacheEntry.histogramPtr->removeFromBin(binIndex, exampleIndex);
+                uint32 weight = weights.getWeight(exampleIndex);
+                cacheEntry.histogramPtr->removeFromBin(binIndex, exampleIndex, weight);
+                weightIterator[binIndex] -= weight;
 
                 if (!wasEmpty) {
                     it = filteredExamples.erase_after(before);
@@ -164,7 +168,6 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
 
         if (numExamples > 0) {
             filteredBinIterator[i].index = binIterator[r].index;
-            filteredBinIterator[i].numExamples = numExamples;
             filteredBinIterator[i].minValue = minValue;
             filteredBinIterator[i].maxValue = maxValue;
             i++;
@@ -175,23 +178,33 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry) {
+static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry,
+                                  const IWeightVector& weights) {
     uint32 numBins = vector.getNumElements();
     BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
     BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
     std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
+    std::unique_ptr<DenseVector<uint32>> weightVectorPtr = std::make_unique<DenseVector<uint32>>(numBins, false);
+    DenseVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
 
     for (uint32 i = 0; i < numBins; i++) {
         const BinVector::ExampleList& examples = exampleIterator[i];
         uint32 binIndex = binIterator[i].index;
+        uint32 sumOfWeights = 0;
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
-            histogramBuilderPtr->addToBin(binIndex, example.index);
+            uint32 exampleIndex = example.index;
+            uint32 weight = weights.getWeight(exampleIndex);
+            histogramBuilderPtr->addToBin(binIndex, exampleIndex, weight);
+            sumOfWeights += weight;
         }
+
+        weightIterator[binIndex] = sumOfWeights;
     }
 
     cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
+    cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
 }
 
 /**
@@ -215,7 +228,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IBinningObserver<float32>, public IRuleRefinementCallback<BinVector> {
+                class Callback final : public IBinningObserver<float32>,
+                                       public IRuleRefinementCallback<BinVector, DenseVector<uint32>> {
 
                     private:
 
@@ -265,24 +279,26 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 }
 
                                 // Build histogram...
-                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry);
+                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry,
+                                               thresholdsSubset_.weights_);
                             }
 
                             // Filter bins, if necessary...
                             uint32 numConditions = thresholdsSubset_.numModifications_;
 
                             if (numConditions > cacheEntry.numConditions) {
-                                filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_);
+                                filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_,
+                                                thresholdsSubset_.weights_);
                                 binVector = cacheEntry.vectorPtr.get();
                             }
 
                             const IHistogram& histogram = *cacheEntry.histogramPtr;
-                            return std::make_unique<Result>(histogram, *binVector);
+                            const DenseVector<uint32>& weightVector = *cacheEntry.weightVectorPtr;
+                            return std::make_unique<Result>(histogram, weightVector, *binVector);
                         }
 
                         void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
                             BinVector::bin_iterator binIterator = currentBinVector_->bins_begin();
-                            binIterator[binIndex].numExamples += 1;
 
                             if (value < binIterator[binIndex].minValue) {
                                 binIterator[binIndex].minValue = value;
