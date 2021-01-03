@@ -55,10 +55,8 @@ class DecisionList final : public IModel {
 
 };
 
-void DecisionListBuilder::setDefaultRule(const AbstractPrediction* prediction) {
-    if (prediction != nullptr) {
-        defaultRulePtr_ = std::make_unique<Rule>(std::make_unique<EmptyBody>(), prediction->toHead());
-    }
+void DecisionListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
+    defaultRulePtr_ = std::make_unique<Rule>(std::make_unique<EmptyBody>(), prediction.toHead());
 }
 
 void DecisionListBuilder::addRule(const ConditionList& conditions, const AbstractPrediction& prediction) {
