@@ -6,7 +6,6 @@
 #include "../head_refinement/prediction.h"
 #include "model.h"
 #include "condition_list.h"
-#include <memory>
 
 
 /**
