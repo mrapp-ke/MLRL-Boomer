@@ -50,12 +50,12 @@ class Rule final {
          *                          values of the examples
          * @param predictionMatrix  A reference to an object of type `DenseMatrix` that stores the predictions to be
          *                          updated
-         * @param mask              A reference to an object of type `DenseMatrix` that specifies for which labels the
-         *                          rule is allowed to predict or a null pointer, if the prediction should not be
+         * @param mask              A reference to an object of type `PredictionMask` that specifies for which labels
+         *                          the rule is allowed to predict or a null pointer, if the prediction should not be
          *                          restricted
          */
         void predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix,
-                     DenseMatrix<uint8>& mask) const;
+                     PredictionMask& mask) const;
 
         /**
          * Identifies all examples in a sparse CSR matrix that are covered by the rule's body and adds the scores that
@@ -97,10 +97,10 @@ class Rule final {
          * @param n                 An arbitrary number. If this function is called multiple times for different rules,
          *                          but using the same `tmpArray2`, the number must be unique for each of the function
          *                          invocations
-         * @param mask              A reference to an object of type `DenseMatrix` that specifies for which labels the
-         *                          rule is allowed to predict
+         * @param mask              A reference to an object of type `PredictionMask` that specifies for which labels
+         *                          the rule is allowed to predict
          */
         void predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix, float32* tmpArray1,
-                     uint32* tmpArray2, uint32 n, DenseMatrix<uint8>& mask) const;
+                     uint32* tmpArray2, uint32 n, PredictionMask& mask) const;
 
 };

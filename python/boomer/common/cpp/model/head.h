@@ -5,6 +5,8 @@
 
 #include "../data/matrix_dense.h"
 
+typedef DenseMatrix<uint8> PredictionMask;
+
 
 /**
  * Defines an interface for all classes that represent the head of a rule.
@@ -36,7 +38,7 @@ class IHead {
          * @param maskEnd           An iterator to the end of the mask
          */
         virtual void apply(DenseMatrix<float64>::iterator predictionsBegin,
-                           DenseMatrix<float64>::iterator predictionsEnd, DenseMatrix<uint8>::iterator maskBegin,
-                           DenseMatrix<uint8>::iterator maskEnd) const = 0;
+                           DenseMatrix<float64>::iterator predictionsEnd, PredictionMask::iterator maskBegin,
+                           PredictionMask::iterator maskEnd) const = 0;
 
 };

@@ -31,6 +31,6 @@ class FullHead final : public IHead {
         void apply(DenseMatrix<float64>::iterator begin, DenseMatrix<float64>::iterator end) const override;
 
         void apply(DenseMatrix<float64>::iterator predictionsBegin, DenseMatrix<float64>::iterator predictionsEnd,
-                   DenseMatrix<uint8>::iterator maskBegin, DenseMatrix<uint8>::iterator maskEnd) const override;
+                   PredictionMask::iterator maskBegin, PredictionMask::iterator maskEnd) const override;
 
 };

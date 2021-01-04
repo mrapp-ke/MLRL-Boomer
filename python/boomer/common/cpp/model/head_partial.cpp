@@ -25,7 +25,7 @@ void PartialHead::apply(DenseMatrix<float64>::iterator begin, DenseMatrix<float6
 }
 
 void PartialHead::apply(DenseMatrix<float64>::iterator predictionsBegin, DenseMatrix<float64>::iterator predictionsEnd,
-                        DenseMatrix<uint8>::iterator maskBegin, DenseMatrix<uint8>::iterator maskEnd) const {
+                        PredictionMask::iterator maskBegin, PredictionMask::iterator maskEnd) const {
     for (uint32 i = 0; i < numScores_; i++) {
         uint32 labelIndex = labelIndices_[i];
 
