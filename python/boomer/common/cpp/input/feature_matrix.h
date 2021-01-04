@@ -22,14 +22,14 @@ class IFeatureMatrix {
          *
          * @return The number of examples
          */
-        virtual uint32 getNumExamples() const = 0;
+        virtual uint32 getNumRows() const = 0;
 
         /**
          * Returns the number of available features.
          *
          * @return The number of features
          */
-        virtual uint32 getNumFeatures() const = 0;
+        virtual uint32 getNumCols() const = 0;
 
         /**
          * Fetches a feature vector that stores the indices of the training examples, as well as their feature values,
