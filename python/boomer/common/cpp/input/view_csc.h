@@ -92,4 +92,12 @@ class CscView {
          */
         uint32 getNumCols() const;
 
+        /**
+         * Returns the number of elements at a specific column that correspond to a non-zero value.
+         *
+         * @param col   The column
+         * @return      The number of non-zero elements
+         */
+        uint32 getNumNonZeroElements(uint32 col) const;
+
 };
