@@ -34,9 +34,9 @@ class CsrView {
          * @param numCols       The number of cols in the view
          * @param data          A pointer to an array of template type `T`, shape `(num_non_zero_values)`, that stores
          *                      all non-zero values
-         * @param xRowIndices   A pointer to an array of type `uint32`, shape `(num_examples + 1)`, that stores the
-         *                      indices of the first element in `data` and `colIndices` that corresponds to a certain
-         *                      row. The index at the last position is equal to `num_non_zero_values`
+         * @param xRowIndices   A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
+         *                      of the first element in `data` and `colIndices` that corresponds to a certain row. The
+         *                      index at the last position is equal to `num_non_zero_values`
          * @param xColIndices   A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
          *                      column-indices, the values in `data` correspond to
          */
