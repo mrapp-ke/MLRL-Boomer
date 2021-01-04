@@ -11,7 +11,7 @@
  * Provides access to the information whether the features at specific indices are nominal or not, based on a
  * `BinaryDokVector` that stores the indices of all nominal features.
  */
-class DokNominalFeatureMask : virtual public INominalFeatureMask {
+class DokNominalFeatureMask : public INominalFeatureMask {
 
     private:
 

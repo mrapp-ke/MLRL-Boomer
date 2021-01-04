@@ -15,19 +15,19 @@ class DokLabelMatrix : public IRandomAccessLabelMatrix {
 
     private:
 
-        uint32 numExamples_;
+        uint32 numRows_;
 
-        uint32 numLabels_;
+        uint32 numCols_;
 
         BinaryDokMatrix matrix_;
 
     public:
 
         /**
-         * @param numExamples   The number of examples
-         * @param numLabels     The number of labels
+         * @param numRows   The number of rows in the label matrix
+         * @param numCols   The number of columns in the label matrix
          */
-        DokLabelMatrix(uint32 numExamples, uint32 numLabels);
+        DokLabelMatrix(uint32 numRows, uint32 numCols);
 
         /**
          * Marks a label of an example as relevant.
@@ -37,9 +37,9 @@ class DokLabelMatrix : public IRandomAccessLabelMatrix {
          */
         void setValue(uint32 exampleIndex, uint32 labelIndex);
 
-        uint32 getNumExamples() const override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumLabels() const override;
+        uint32 getNumCols() const override;
 
         uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
 
