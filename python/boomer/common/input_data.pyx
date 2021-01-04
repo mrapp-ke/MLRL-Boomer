@@ -26,15 +26,16 @@ cdef class CContiguousLabelMatrix(RandomAccessLabelMatrix):
     A wrapper for the C++ class `CContiguousLabelMatrix`.
     """
 
-    def __cinit__(self, const uint8[:, ::1] y):
+    def __cinit__(self, uint8[:, ::1] array):
         """
-        :param y: A C-contiguous array of type `uint8`, shape `(num_examples, num_labels)`, representing the labels of
-                  the training examples
+        :param array: A C-contiguous array of type `uint8`, shape `(num_examples, num_labels)`, that stores the labels
+                      of the training examples
         """
-        cdef uint32 num_examples = y.shape[0]
-        cdef uint32 num_labels = y.shape[1]
+        cdef uint32 num_examples = array.shape[0]
+        cdef uint32 num_labels = array.shape[1]
         self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[CContiguousLabelMatrixImpl](num_examples,
-                                                                                                  num_labels, &y[0, 0])
+                                                                                                  num_labels,
+                                                                                                  &array[0, 0])
 
 
 cdef class DokLabelMatrix(RandomAccessLabelMatrix):
@@ -75,15 +76,15 @@ cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
     A wrapper for the C++ class `FortranContiguousFeatureMatrix`.
     """
 
-    def __cinit__(self, const float32[::1, :] x):
+    def __cinit__(self, float32[::1, :] array):
         """
-        :param x: A Fortran-contiguous array of type `float32`, shape `(num_examples, num_features)`, representing the
-                  feature values of the training examples
+        :param array: A Fortran-contiguous array of type `float32`, shape `(num_examples, num_features)`, representing
+                      the feature values of the training examples
         """
-        cdef uint32 num_examples = x.shape[0]
-        cdef uint32 num_features = x.shape[1]
+        cdef uint32 num_examples = array.shape[0]
+        cdef uint32 num_features = array.shape[1]
         self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[FortranContiguousFeatureMatrixImpl](
-            num_examples, num_features, &x[0, 0])
+            num_examples, num_features, &array[0, 0])
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
@@ -91,24 +92,23 @@ cdef class CscFeatureMatrix(FeatureMatrix):
     A wrapper for the C++ class `CscFeatureMatrix`.
     """
 
-    def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] x_data,
-                  const uint32[::1] x_row_indices, const uint32[::1] x_col_indices):
+    def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] data,
+                  const uint32[::1] row_indices, const uint32[::1] col_indices):
         """
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
-        :param x_data:          An array of type `float32`, shape `(num_non_zero_feature_values)`, representing the
-                                non-zero feature values of the training examples
-        :param x_row_indices:   An array of type `uint32`, shape `(num_non_zero_feature_values)`, representing the
-                                row-indices of the examples, the values in `x_data` correspond to
-        :param x_col_indices:   An array of type `uint32`, shape `(num_features + 1)`, representing the indices of the
-                                first element in `x_data` and `x_row_indices` that corresponds to a certain feature. The
-                                index at the last position is equal to `num_non_zero_feature_values`
+        :param data:            An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
+                                feature values
+        :param row_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the row-indices,
+                                the values in `data` correspond to
+        :param col_indices:     An array of type `uint32`, shape `(num_features + 1)`, that stores the indices of the
+                                first element in `data` and `row_indices` that corresponds to a certain feature. The
+                                index at the last position is equal to `num_non_zero_values`
         """
         self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[CscFeatureMatrixImpl](num_examples,
-                                                                                                num_features,
-                                                                                                &x_data[0],
-                                                                                                &x_row_indices[0],
-                                                                                                &x_col_indices[0])
+                                                                                                num_features, &data[0],
+                                                                                                &row_indices[0],
+                                                                                                &col_indices[0])
 
 
 cdef class NominalFeatureMask:

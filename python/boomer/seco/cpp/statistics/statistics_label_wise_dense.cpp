@@ -208,7 +208,7 @@ class LabelWiseStatistics final : public ILabelWiseStatistics {
         LabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, float64* uncoveredLabels,
                             float64 sumUncoveredLabels, uint8* minorityLabels)
-            : numStatistics_(labelMatrixPtr->getNumExamples()), numLabels_(labelMatrixPtr->getNumLabels()),
+            : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),
               sumUncoveredLabels_(sumUncoveredLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
               labelMatrixPtr_(labelMatrixPtr), uncoveredLabels_(uncoveredLabels), minorityLabels_(minorityLabels) {
             // The number of labels
@@ -386,9 +386,9 @@ DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(
 
 std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create() const {
     // The number of examples
-    uint32 numExamples = labelMatrixPtr_->getNumExamples();
+    uint32 numExamples = labelMatrixPtr_->getNumRows();
     // The number of labels
-    uint32 numLabels = labelMatrixPtr_->getNumLabels();
+    uint32 numLabels = labelMatrixPtr_->getNumCols();
     // A matrix that stores the weights of individual examples and labels that are still uncovered
     float64* uncoveredLabels = (float64*) malloc(numExamples * numLabels * sizeof(float64));
     // The sum of weights of all examples and labels that remain to be covered

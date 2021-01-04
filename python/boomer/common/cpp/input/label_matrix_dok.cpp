@@ -1,17 +1,17 @@
 #include "label_matrix_dok.h"
 
 
-DokLabelMatrix::DokLabelMatrix(uint32 numExamples, uint32 numLabels)
-    : numExamples_(numExamples), numLabels_(numLabels) {
+DokLabelMatrix::DokLabelMatrix(uint32 numRows, uint32 numCols)
+    : numRows_(numRows), numCols_(numCols) {
 
 }
 
-uint32 DokLabelMatrix::getNumExamples() const {
-    return numExamples_;
+uint32 DokLabelMatrix::getNumRows() const {
+    return numRows_;
 }
 
-uint32 DokLabelMatrix::getNumLabels() const {
-    return numLabels_;
+uint32 DokLabelMatrix::getNumCols() const {
+    return numCols_;
 }
 
 uint8 DokLabelMatrix::getValue(uint32 exampleIndex, uint32 labelIndex) const {
