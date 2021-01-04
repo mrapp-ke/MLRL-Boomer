@@ -37,4 +37,9 @@ uint32 CscView<T>::getNumCols() const {
     return numCols_;
 }
 
+template<class T>
+uint32 CscView<T>::getNumNonZeroElements(uint32 col) const {
+    return colIndices_[col + 1] - colIndices_[col];
+}
+
 template class CscView<float32>;
