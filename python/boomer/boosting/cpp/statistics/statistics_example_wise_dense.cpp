@@ -17,8 +17,8 @@ DenseExampleWiseStatisticsFactory::DenseExampleWiseStatisticsFactory(
 }
 
 std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactory::create() const {
-    uint32 numExamples = labelMatrixPtr_->getNumExamples();
-    uint32 numLabels = labelMatrixPtr_->getNumLabels();
+    uint32 numExamples = labelMatrixPtr_->getNumRows();
+    uint32 numLabels = labelMatrixPtr_->getNumCols();
     std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr =
         std::make_unique<DenseExampleWiseStatisticMatrix>(numExamples, numLabels);
     std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =
