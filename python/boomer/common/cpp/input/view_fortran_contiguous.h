@@ -7,7 +7,8 @@
 
 
 /**
- * Implements column-wise read-only access to the values that are stored in a pre-allocated Fortran-contiguous array.
+ * Implements column-wise read and write access to the values that are stored in a pre-allocated Fortran-contiguous
+ * array.
  *
  * @tparam T The type of the values
  */
@@ -20,7 +21,7 @@ class FortranContiguousView {
 
         uint32 numCols_;
 
-        const T* array_;
+        T* array_;
 
     public:
 
@@ -30,9 +31,27 @@ class FortranContiguousView {
          * @param array     A pointer to a Fortran-contiguous array of template type `T` that stores the values, the
          *                  view provides access to
          */
-        FortranContiguousView(uint32 numRows, uint32 numCols, const T* array);
+        FortranContiguousView(uint32 numRows, uint32 numCols, T* array);
+
+        typedef T* iterator;
 
         typedef const T* const_iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of a specific column.
+         *
+         * @param col   The column
+         * @return      An `iterator` to the beginning
+         */
+        iterator column_begin(uint32 col);
+
+        /**
+         * Returns an `iterator` to the end of a specific column.
+         *
+         * @param col   The column
+         * @return      An `iterator` to the end
+         */
+        iterator column_end(uint32 col);
 
         /**
          * Returns a `const_iterator` to the beginning of a specific column.

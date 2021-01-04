@@ -2,9 +2,19 @@
 
 
 template<class T>
-FortranContiguousView<T>::FortranContiguousView(uint32 numRows, uint32 numCols, const T* array)
+FortranContiguousView<T>::FortranContiguousView(uint32 numRows, uint32 numCols, T* array)
     : numRows_(numRows), numCols_(numCols), array_(array) {
 
+}
+
+template<class T>
+typename FortranContiguousView<T>::iterator FortranContiguousView<T>::column_begin(uint32 col) {
+    return &array_[col * numRows_];
+}
+
+template<class T>
+typename FortranContiguousView<T>::iterator FortranContiguousView<T>::column_end(uint32 col) {
+    return &array_[(col + 1) * numRows_];
 }
 
 template<class T>

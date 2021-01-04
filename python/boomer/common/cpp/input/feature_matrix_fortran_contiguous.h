@@ -24,7 +24,7 @@ class FortranContiguousFeatureMatrix final : public IFeatureMatrix {
          * @param numCols   The number of columns in the feature matrix
          * @param x         A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
          */
-        FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array);
+        FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, float32* array);
 
         uint32 getNumRows() const override;
 
