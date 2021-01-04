@@ -12,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<class T>
-class CContiguousView {
+class CContiguousView final {
 
     private:
 
