@@ -8,11 +8,11 @@ CscFeatureMatrix::CscFeatureMatrix(uint32 numExamples, uint32 numFeatures, const
 
 }
 
-uint32 CscFeatureMatrix::getNumExamples() const {
+uint32 CscFeatureMatrix::getNumRows() const {
     return numExamples_;
 }
 
-uint32 CscFeatureMatrix::getNumFeatures() const {
+uint32 CscFeatureMatrix::getNumCols() const {
     return numFeatures_;
 }
 

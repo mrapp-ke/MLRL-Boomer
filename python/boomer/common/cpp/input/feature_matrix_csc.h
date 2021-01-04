@@ -40,9 +40,9 @@ class CscFeatureMatrix final : public IFeatureMatrix {
         CscFeatureMatrix(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
                          const uint32* xColIndices);
 
-        uint32 getNumExamples() const override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumFeatures() const override;
+        uint32 getNumCols() const override;
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 

@@ -6,18 +6,18 @@ FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numExample
 
 }
 
-uint32 FortranContiguousFeatureMatrix::getNumExamples() const {
+uint32 FortranContiguousFeatureMatrix::getNumRows() const {
     return numExamples_;
 }
 
-uint32 FortranContiguousFeatureMatrix::getNumFeatures() const {
+uint32 FortranContiguousFeatureMatrix::getNumCols() const {
     return numFeatures_;
 }
 
 void FortranContiguousFeatureMatrix::fetchFeatureVector(uint32 featureIndex,
                                                         std::unique_ptr<FeatureVector>& featureVectorPtr) const {
     // The number of elements to be returned
-    uint32 numElements = this->getNumExamples();
+    uint32 numElements = this->getNumRows();
     // The first element in `x_` that corresponds to the given feature index
     uint32 offset = featureIndex * numElements;
 
