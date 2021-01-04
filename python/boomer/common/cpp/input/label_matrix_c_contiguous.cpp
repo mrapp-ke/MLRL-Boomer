@@ -6,11 +6,11 @@ CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numExamples, uint32 numLab
 
 }
 
-uint32 CContiguousLabelMatrix::getNumExamples() const {
+uint32 CContiguousLabelMatrix::getNumRows() const {
     return numExamples_;
 }
 
-uint32 CContiguousLabelMatrix::getNumLabels() const {
+uint32 CContiguousLabelMatrix::getNumCols() const {
     return numLabels_;
 }
 

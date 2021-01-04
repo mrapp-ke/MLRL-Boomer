@@ -37,9 +37,9 @@ class DokLabelMatrix : public IRandomAccessLabelMatrix {
          */
         void setValue(uint32 exampleIndex, uint32 labelIndex);
 
-        uint32 getNumExamples() const override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumLabels() const override;
+        uint32 getNumCols() const override;
 
         uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
 
