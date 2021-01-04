@@ -26,14 +26,14 @@ class RuleList final : public IModel {
         }
 
         void predict(const CContiguousFeatureMatrix& featureMatrix,
-                     DenseMatrix<float64>& predictionMatrix) const override {
+                     CContiguousView<float64>& predictionMatrix) const override {
             for (auto it = list_.cbegin(); it != list_.cend(); it++) {
                 const Rule& rule = **it;
                 rule.predict(featureMatrix, predictionMatrix);
             }
         }
 
-        void predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix) const override {
+        void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix) const override {
             uint32 numFeatures = featureMatrix.getNumCols();
             float32 tmpArray1[numFeatures];
             uint32 tmpArray2[numFeatures] = {};
