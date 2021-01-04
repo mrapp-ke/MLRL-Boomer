@@ -13,7 +13,7 @@
  * @tparam T The type of the values
  */
 template<class T>
-class CscView {
+class CscView final {
 
     private:
 

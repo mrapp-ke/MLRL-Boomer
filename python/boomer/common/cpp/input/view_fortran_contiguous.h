@@ -13,7 +13,7 @@
  * @tparam T The type of the values
  */
 template<class T>
-class FortranContiguousView {
+class FortranContiguousView final {
 
     private:
 
