@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "view_c_contiguous.h"
 #include "label_matrix.h"
 
 
@@ -14,25 +15,20 @@ class CContiguousLabelMatrix final : public IRandomAccessLabelMatrix {
 
     private:
 
-        uint32 numExamples_;
-
-        uint32 numLabels_;
-
-        const uint8* y_;
+        CContiguousView<uint8> view_;
 
     public:
 
         /**
-         * @param numExamples   The number of examples
-         * @param numLabels     The number of labels
-         * @param y             A pointer to a C-contiguous array of type `uint8`, shape `(numExamples, numLabels)`,
-         *                      representing the labels of the training examples
+         * @param numRows   The number of rows in the label matrix
+         * @param numCols   The number of columns in the label matrix
+         * @param array     A pointer to a C-contiguous array of type `uint8` that stores the labels
          */
-        CContiguousLabelMatrix(uint32 numExamples, uint32 numLabels, const uint8* y);
+        CContiguousLabelMatrix(uint32 numRows, uint32 numCols, uint8* array);
 
-        uint32 getNumExamples() const override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumLabels() const override;
+        uint32 getNumCols() const override;
 
         uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
 

@@ -1,39 +1,36 @@
 #include "feature_matrix_fortran_contiguous.h"
 
 
-FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numExamples, uint32 numFeatures, const float32* x)
-    : numExamples_(numExamples), numFeatures_(numFeatures), x_(x) {
+FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, float32* array)
+    : view_(FortranContiguousView<float32>(numRows, numCols, array)) {
 
 }
 
-uint32 FortranContiguousFeatureMatrix::getNumExamples() const {
-    return numExamples_;
+uint32 FortranContiguousFeatureMatrix::getNumRows() const {
+    return view_.getNumRows();
 }
 
-uint32 FortranContiguousFeatureMatrix::getNumFeatures() const {
-    return numFeatures_;
+uint32 FortranContiguousFeatureMatrix::getNumCols() const {
+    return view_.getNumCols();
 }
 
 void FortranContiguousFeatureMatrix::fetchFeatureVector(uint32 featureIndex,
                                                         std::unique_ptr<FeatureVector>& featureVectorPtr) const {
-    // The number of elements to be returned
-    uint32 numElements = this->getNumExamples();
-    // The first element in `x_` that corresponds to the given feature index
-    uint32 offset = featureIndex * numElements;
-
+    FortranContiguousView<float32>::const_iterator columnIterator = view_.column_cbegin(featureIndex);
+    uint32 numElements = this->getNumRows();
     featureVectorPtr = std::make_unique<FeatureVector>(numElements);
-    FeatureVector::iterator iterator = featureVectorPtr->begin();
+    FeatureVector::iterator vectorIterator = featureVectorPtr->begin();
     uint32 i = 0;
 
     for (uint32 j = 0; j < numElements; j++) {
-        float32 value = x_[offset + j];
+        float32 value = columnIterator[j];
 
         if (value != value) {
             // The value is NaN (because comparisons to NaN always evaluate to false)...
             featureVectorPtr->addMissingIndex(j);
         } else {
-            iterator[i].index = j;
-            iterator[i].value = value;
+            vectorIterator[i].index = j;
+            vectorIterator[i].value = value;
             i++;
         }
     }
