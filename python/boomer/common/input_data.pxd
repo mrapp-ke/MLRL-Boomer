@@ -50,6 +50,15 @@ cdef extern from "cpp/input/feature_matrix_c_contiguous.h" nogil:
         CContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, float32* array) except +
 
 
+cdef extern from "cpp/input/feature_matrix_fortran_contiguous.h" nogil:
+
+    cdef cppclass FortranContiguousFeatureMatrixImpl"FortranContiguousFeatureMatrix"(IFeatureMatrix):
+
+        # Constructors:
+
+        FortranContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, float32* array) except +
+
+
 cdef extern from "cpp/input/feature_matrix_csc.h" nogil:
 
     cdef cppclass CscFeatureMatrixImpl"CscFeatureMatrix"(IFeatureMatrix):
@@ -68,15 +77,6 @@ cdef extern from "cpp/input/feature_matrix_csr.h" nogil:
 
         CsrFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, const uint32* rowIndices,
                              const uint32 colIndices) except +
-
-
-cdef extern from "cpp/input/feature_matrix_fortran_contiguous.h" nogil:
-
-    cdef cppclass FortranContiguousFeatureMatrixImpl"FortranContiguousFeatureMatrix"(IFeatureMatrix):
-
-        # Constructors:
-
-        FortranContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, float32* array) except +
 
 
 cdef extern from "cpp/input/nominal_feature_mask.h" nogil:

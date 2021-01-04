@@ -106,9 +106,7 @@ cdef class CscFeatureMatrix(FeatureMatrix):
                                 index at the last position is equal to `num_non_zero_values`
         """
         self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[CscFeatureMatrixImpl](num_examples,
-                                                                                                num_features, &data[0],
-                                                                                                &row_indices[0],
-                                                                                                &col_indices[0])
+
 
 cdef class CContiguousFeatureMatrix:
     """
