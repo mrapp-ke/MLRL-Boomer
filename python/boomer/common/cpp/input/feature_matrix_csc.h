@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "view_csc.h"
 #include "feature_matrix.h"
 
 
@@ -14,31 +15,23 @@ class CscFeatureMatrix final : public IFeatureMatrix {
 
     private:
 
-        uint32 numExamples_;
-
-        uint32 numFeatures_;
-
-        const float32* xData_;
-
-        const uint32* xRowIndices_;
-
-        const uint32* xColIndices_;
+        CscView<float32> view_;
 
     public:
 
         /**
-         * @param numExamples   The number of examples
-         * @param numFeatures   The number of features
-         * @param xData         A pointer to an array of type `float32`, shape `(num_non_zero_feature_values)`,
-         *                      representing the non-zero feature values of the training examples
-         * @param xRowIndices   A pointer to an array of type `uint32`, shape `(num_non_zero_feature_values)`,
-         *                      representing the row-indices of the examples, the values in `xData` correspond to
-         * @param xColIndices   A pointer to an array of type `uint32`, shape `(num_features + 1)`, representing the
-         *                      indices of the first element in `xData` and `xRowIndices` that corresponds to a certain
-         *                      feature. The index at the last position is equal to `num_non_zero_feature_values`
+         * @param numRows       The number of rows in the feature matrix
+         * @param numCols       The number of columns in the feature matrix
+         * @param data          A pointer to an array of type `float32`, shape `(num_non_zero_values)`, that stores all
+         *                      non-zero feature values
+         * @param rowIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
+         *                      row-indices, the values in `data` correspond to
+         * @param colIndices    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
+         *                      of the first element in `data` and `rowIndices` that corresponds to a certain column.
+         *                      The index at the last position is equal to `num_non_zero_values`
          */
-        CscFeatureMatrix(uint32 numExamples, uint32 numFeatures, const float32* xData, const uint32* xRowIndices,
-                         const uint32* xColIndices);
+        CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, const uint32* rowIndices,
+                         const uint32* colIndices);
 
         uint32 getNumRows() const override;
 
