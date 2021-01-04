@@ -34,7 +34,7 @@ class RuleList final : public IModel {
         }
 
         void predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix) const override {
-            uint32 numFeatures = featureMatrix.getNumFeatures();
+            uint32 numFeatures = featureMatrix.getNumCols();
             float32 tmpArray1[numFeatures];
             uint32 tmpArray2[numFeatures] = {};
             uint32 n = 1;
