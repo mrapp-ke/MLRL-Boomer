@@ -17,15 +17,16 @@ PartialHead::~PartialHead() {
     delete[] labelIndices_;
 }
 
-void PartialHead::apply(DenseMatrix<float64>::iterator begin, DenseMatrix<float64>::iterator end) const {
+void PartialHead::apply(CContiguousView<float64>::iterator begin, CContiguousView<float64>::iterator end) const {
     for (uint32 i = 0; i < numScores_; i++) {
         uint32 labelIndex = labelIndices_[i];
         begin[labelIndex] += scores_[i];
     }
 }
 
-void PartialHead::apply(DenseMatrix<float64>::iterator predictionsBegin, DenseMatrix<float64>::iterator predictionsEnd,
-                        PredictionMask::iterator maskBegin, PredictionMask::iterator maskEnd) const {
+void PartialHead::apply(CContiguousView<float64>::iterator predictionsBegin,
+                        CContiguousView<float64>::iterator predictionsEnd, PredictionMask::iterator maskBegin,
+                        PredictionMask::iterator maskEnd) const {
     for (uint32 i = 0; i < numScores_; i++) {
         uint32 labelIndex = labelIndices_[i];
 

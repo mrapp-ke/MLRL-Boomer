@@ -4,6 +4,7 @@
 #pragma once
 
 #include "../data/matrix_dense.h"
+#include "../input/view_c_contiguous.h"
 
 typedef DenseMatrix<uint8> PredictionMask;
 
@@ -23,7 +24,7 @@ class IHead {
          * @param begin An iterator to the beginning of the predictions to be updated
          * @param end   An iterator to the end of the predictions to be updated
          */
-        virtual void apply(DenseMatrix<float64>::iterator begin, DenseMatrix<float64>::iterator end) const = 0;
+        virtual void apply(CContiguousView<float64>::iterator begin, CContiguousView<float64>::iterator end) const = 0;
 
         /**
          * Adds the scores that are contained by the head to a given vector of predictions.
@@ -37,8 +38,8 @@ class IHead {
          * @param maskBegin         An iterator to the beginning of the mask
          * @param maskEnd           An iterator to the end of the mask
          */
-        virtual void apply(DenseMatrix<float64>::iterator predictionsBegin,
-                           DenseMatrix<float64>::iterator predictionsEnd, PredictionMask::iterator maskBegin,
+        virtual void apply(CContiguousView<float64>::iterator predictionsBegin,
+                           CContiguousView<float64>::iterator predictionsEnd, PredictionMask::iterator maskBegin,
                            PredictionMask::iterator maskEnd) const = 0;
 
 };

@@ -26,10 +26,10 @@ class DecisionList final : public IModel {
         }
 
         void predict(const CContiguousFeatureMatrix& featureMatrix,
-                     DenseMatrix<float64>& predictionMatrix) const override {
+                     CContiguousView<float64>& predictionMatrix) const override {
             uint32 numExamples = predictionMatrix.getNumRows();
             uint32 numLabels = predictionMatrix.getNumCols();
-            DenseMatrix<uint8> mask(numExamples, numLabels, true);
+            PredictionMask mask(numExamples, numLabels, true);
 
             for (auto it = list_.cbegin(); it != list_.cend(); it++) {
                 const Rule& rule = **it;
@@ -37,11 +37,11 @@ class DecisionList final : public IModel {
             }
         }
 
-        void predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix) const override {
+        void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix) const override {
             uint32 numFeatures = featureMatrix.getNumCols();
             uint32 numExamples = predictionMatrix.getNumRows();
             uint32 numLabels = predictionMatrix.getNumCols();
-            DenseMatrix<uint8> mask(numExamples, numLabels, true);
+            PredictionMask mask(numExamples, numLabels, true);
             float32 tmpArray1[numFeatures];
             uint32 tmpArray2[numFeatures] = {};
             uint32 n = 1;

@@ -30,9 +30,10 @@ class PartialHead final : public IHead {
 
         ~PartialHead();
 
-        void apply(DenseMatrix<float64>::iterator begin, DenseMatrix<float64>::iterator end) const override;
+        void apply(CContiguousView<float64>::iterator begin, CContiguousView<float64>::iterator end) const override;
 
-        void apply(DenseMatrix<float64>::iterator predictionsBegin, DenseMatrix<float64>::iterator predictionsEnd,
-                   PredictionMask::iterator maskBegin, PredictionMask::iterator maskEnd) const override;
+        void apply(CContiguousView<float64>::iterator predictionsBegin,
+                   CContiguousView<float64>::iterator predictionsEnd, PredictionMask::iterator maskBegin,
+                   PredictionMask::iterator maskEnd) const override;
 
 };
