@@ -7,7 +7,7 @@ Rule::Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr)
 }
 
 void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix) const {
-    uint32 numExamples = featureMatrix.getNumExamples();
+    uint32 numExamples = featureMatrix.getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {
         bool covers = bodyPtr_->covers(featureMatrix.row_cbegin(r), featureMatrix.row_cend(r));
@@ -20,7 +20,7 @@ void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<fl
 
 void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix,
                    PredictionMask& mask) const {
-    uint32 numExamples = featureMatrix.getNumExamples();
+    uint32 numExamples = featureMatrix.getNumRows();
 
     for (uint32 r = 0; r < numExamples; r++) {
         bool covers = bodyPtr_->covers(featureMatrix.row_cbegin(r), featureMatrix.row_cend(r));
@@ -34,7 +34,7 @@ void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<fl
 
 void Rule::predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix, float32* tmpArray1,
                    uint32* tmpArray2, uint32 n) const {
-    uint32 numExamples = featureMatrix.getNumExamples();
+    uint32 numExamples = featureMatrix.getNumRows();
     uint32 i = n;
 
     for (uint32 r = 0; r < numExamples; r++) {
@@ -52,7 +52,7 @@ void Rule::predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& 
 
 void Rule::predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix, float32* tmpArray1,
                    uint32* tmpArray2, uint32 n, PredictionMask& mask) const {
-    uint32 numExamples = featureMatrix.getNumExamples();
+    uint32 numExamples = featureMatrix.getNumRows();
     uint32 i = n;
 
     for (uint32 r = 0; r < numExamples; r++) {

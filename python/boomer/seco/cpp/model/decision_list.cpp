@@ -38,7 +38,7 @@ class DecisionList final : public IModel {
         }
 
         void predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix) const override {
-            uint32 numFeatures = featureMatrix.getNumFeatures();
+            uint32 numFeatures = featureMatrix.getNumCols();
             uint32 numExamples = predictionMatrix.getNumRows();
             uint32 numLabels = predictionMatrix.getNumCols();
             DenseMatrix<uint8> mask(numExamples, numLabels, true);
