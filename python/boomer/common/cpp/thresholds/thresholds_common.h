@@ -110,11 +110,11 @@ class AbstractThresholds : public IThresholds {
         }
 
         uint32 getNumExamples() const override final {
-            return featureMatrixPtr_->getNumExamples();
+            return featureMatrixPtr_->getNumRows();
         }
 
         uint32 getNumFeatures() const override final {
-            return featureMatrixPtr_->getNumFeatures();
+            return featureMatrixPtr_->getNumCols();
         }
 
         uint32 getNumLabels() const override final {

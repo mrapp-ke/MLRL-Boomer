@@ -19,7 +19,7 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
         statisticMatrix.gradients_row_begin(exampleIndex);
     DenseExampleWiseStatisticMatrix::hessian_iterator hessianIterator =
         statisticMatrix.hessians_row_begin(exampleIndex);
-    uint32 numLabels = labelMatrix.getNumLabels();
+    uint32 numLabels = labelMatrix.getNumCols();
 
     // For each label `c`, calculate `x = -expectedScore_c * predictedScore_c` and find the maximum among all these
     // values that is greater than 0 (because `exp(1) = 0`)
