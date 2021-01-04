@@ -30,9 +30,9 @@ class FortranContiguousFeatureMatrix final : public IFeatureMatrix {
          */
         FortranContiguousFeatureMatrix(uint32 numExamples, uint32 numFeatures, const float32* x);
 
-        uint32 getNumExamples() const override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumFeatures() const override;
+        uint32 getNumCols() const override;
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 
