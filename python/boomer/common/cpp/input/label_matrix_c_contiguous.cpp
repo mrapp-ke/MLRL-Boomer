@@ -1,20 +1,19 @@
 #include "label_matrix_c_contiguous.h"
 
 
-CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numExamples, uint32 numLabels, const uint8* y)
-    : numExamples_(numExamples), numLabels_(numLabels), y_(y) {
+CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, uint8* array)
+    : view_(CContiguousView<uint8>(numRows, numCols, array)) {
 
 }
 
 uint32 CContiguousLabelMatrix::getNumRows() const {
-    return numExamples_;
+    return view_.getNumRows();
 }
 
 uint32 CContiguousLabelMatrix::getNumCols() const {
-    return numLabels_;
+    return view_.getNumCols();
 }
 
 uint8 CContiguousLabelMatrix::getValue(uint32 exampleIndex, uint32 labelIndex) const {
-    uint32 i = (exampleIndex * numLabels_) + labelIndex;
-    return y_[i];
+    return view_.row_cbegin(exampleIndex)[labelIndex];
 }
