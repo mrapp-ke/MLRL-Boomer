@@ -37,4 +37,5 @@ uint32 CContiguousView<T>::getNumCols() const {
     return numCols_;
 }
 
+template class CContiguousView<uint8>;
 template class CContiguousView<float32>;
