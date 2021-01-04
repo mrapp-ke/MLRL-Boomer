@@ -19,7 +19,7 @@ void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<fl
 }
 
 void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix,
-                   DenseMatrix<uint8>& mask) const {
+                   PredictionMask& mask) const {
     uint32 numExamples = featureMatrix.getNumExamples();
 
     for (uint32 r = 0; r < numExamples; r++) {
@@ -51,7 +51,7 @@ void Rule::predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& 
 }
 
 void Rule::predict(const CsrFeatureMatrix& featureMatrix, DenseMatrix<float64>& predictionMatrix, float32* tmpArray1,
-                   uint32* tmpArray2, uint32 n, DenseMatrix<uint8>& mask) const {
+                   uint32* tmpArray2, uint32 n, PredictionMask& mask) const {
     uint32 numExamples = featureMatrix.getNumExamples();
     uint32 i = n;
 
