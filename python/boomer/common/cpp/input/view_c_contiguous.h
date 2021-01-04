@@ -7,7 +7,7 @@
 
 
 /**
- * Implements row-wise read-only access to the values that are stored in a pre-allocated C-contiguous array.
+ * Implements row-wise read and write access to the values that are stored in a pre-allocated C-contiguous array.
  *
  * @tparam T The type of the values
  */
@@ -20,7 +20,7 @@ class CContiguousView {
 
         uint32 numCols_;
 
-        const T* array_;
+        T* array_;
 
     public:
 
@@ -30,9 +30,27 @@ class CContiguousView {
          * @param data      A pointer to a C-contiguous array of template type `T` that stores the values, the view
          *                  provides access to
          */
-        CContiguousView(uint32 numRows, uint32 numCols, const T* array);
+        CContiguousView(uint32 numRows, uint32 numCols, T* array);
+
+        typedef T* iterator;
 
         typedef const T* const_iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of a specific row.
+         *
+         * @param row   The row
+         * @return      An `iterator` to the beginning of the given row
+         */
+        iterator row_begin(uint32 row);
+
+        /**
+         * Returns an `iterator` to the end of a specific row.
+         *
+         * @param row   The row
+         * @return      An `iterator` to the end of the given row
+         */
+        iterator row_end(uint32 row);
 
         /**
          * Returns a `const_iterator` to the beginning of a specific row.

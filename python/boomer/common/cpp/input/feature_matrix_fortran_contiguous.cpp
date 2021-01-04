@@ -1,7 +1,7 @@
 #include "feature_matrix_fortran_contiguous.h"
 
 
-FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array)
+FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, float32* array)
     : view_(FortranContiguousView<float32>(numRows, numCols, array)) {
 
 }

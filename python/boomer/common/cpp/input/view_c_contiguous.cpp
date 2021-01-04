@@ -2,9 +2,19 @@
 
 
 template<class T>
-CContiguousView<T>::CContiguousView(uint32 numRows, uint32 numCols, const T* array)
+CContiguousView<T>::CContiguousView(uint32 numRows, uint32 numCols, T* array)
     : numRows_(numRows), numCols_(numCols), array_(array) {
 
+}
+
+template<class T>
+typename CContiguousView<T>::iterator CContiguousView<T>::row_begin(uint32 row) {
+    return &array_[row * numCols_];
+}
+
+template<class T>
+typename CContiguousView<T>::iterator CContiguousView<T>::row_end(uint32 row) {
+    return &array_[(row + 1) * numCols_];
 }
 
 template<class T>
