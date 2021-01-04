@@ -24,6 +24,7 @@ sources = [
     'boomer/common/cpp/indices/index_vector_full.cpp',
     'boomer/common/cpp/indices/index_vector_partial.cpp',
     'boomer/common/cpp/input/view_c_contiguous.cpp',
+    'boomer/common/cpp/input/view_csr.cpp',
     'boomer/common/cpp/input/view_fortran_contiguous.cpp',
     'boomer/common/cpp/input/feature_matrix_c_contiguous.cpp',
     'boomer/common/cpp/input/feature_matrix_csc.cpp',
