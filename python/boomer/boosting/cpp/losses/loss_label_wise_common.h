@@ -42,7 +42,7 @@ namespace boosting {
                 DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
                     statisticMatrix.hessians_row_begin(exampleIndex);
                 DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
-                uint32 numLabels = labelMatrix.getNumLabels();
+                uint32 numLabels = labelMatrix.getNumCols();
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     bool trueLabel = labelMatrix.getValue(exampleIndex, i);

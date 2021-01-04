@@ -6,11 +6,11 @@ DokLabelMatrix::DokLabelMatrix(uint32 numExamples, uint32 numLabels)
 
 }
 
-uint32 DokLabelMatrix::getNumExamples() const {
+uint32 DokLabelMatrix::getNumRows() const {
     return numExamples_;
 }
 
-uint32 DokLabelMatrix::getNumLabels() const {
+uint32 DokLabelMatrix::getNumCols() const {
     return numLabels_;
 }
 

@@ -30,9 +30,9 @@ class CContiguousLabelMatrix final : public IRandomAccessLabelMatrix {
          */
         CContiguousLabelMatrix(uint32 numExamples, uint32 numLabels, const uint8* y);
 
-        uint32 getNumExamples() const override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumLabels() const override;
+        uint32 getNumCols() const override;
 
         uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
 
