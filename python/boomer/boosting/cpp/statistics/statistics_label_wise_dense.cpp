@@ -17,8 +17,8 @@ DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(
 }
 
 std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create() const {
-    uint32 numExamples = labelMatrixPtr_->getNumExamples();
-    uint32 numLabels = labelMatrixPtr_->getNumLabels();
+    uint32 numExamples = labelMatrixPtr_->getNumRows();
+    uint32 numLabels = labelMatrixPtr_->getNumCols();
     std::unique_ptr<DenseLabelWiseStatisticMatrix> statisticMatrixPtr =
         std::make_unique<DenseLabelWiseStatisticMatrix>(numExamples, numLabels);
     std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =

@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "view_fortran_contiguous.h"
 #include "feature_matrix.h"
 
 
@@ -14,25 +15,20 @@ class FortranContiguousFeatureMatrix final : public IFeatureMatrix {
 
     private:
 
-        uint32 numExamples_;
-
-        uint32 numFeatures_;
-
-        const float32* x_;
+        FortranContiguousView<float32> view_;
 
     public:
 
         /**
-         * @param numExamples   The number of examples
-         * @param numFeatures   The number of features
-         * @param x             A pointer to a Fortran-contiguous array of type `float32`, shape
-         *                      `(numExamples, numFeatures)`, representing the feature values of the training examples
+         * @param numRows   The number of rows in the feature matrix
+         * @param numCols   The number of columns in the feature matrix
+         * @param x         A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
          */
-        FortranContiguousFeatureMatrix(uint32 numExamples, uint32 numFeatures, const float32* x);
+        FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, float32* array);
 
-        uint32 getNumExamples() const override;
+        uint32 getNumRows() const override;
 
-        uint32 getNumFeatures() const override;
+        uint32 getNumCols() const override;
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override;
 
