@@ -37,14 +37,16 @@ class FortranContiguousView {
         /**
          * Returns a `const_iterator` to the beginning of a specific column.
          *
-         * @return A `const_iterator` to the beginning
+         * @param col   The column
+         * @return      A `const_iterator` to the beginning
          */
         const_iterator column_cbegin(uint32 col) const;
 
         /**
          * Returns a `const_iterator` to the end of a specific column.
          *
-         * @return A `const_iterator` to the end
+         * @param col   The column
+         * @return      A `const_iterator` to the end
          */
         const_iterator column_cend(uint32 col) const;
 
