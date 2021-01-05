@@ -148,9 +148,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_predictor(self) -> Predictor:
+    def _create_predictor(self, num_labels: int) -> Predictor:
         threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
-        return DensePredictor(ThresholdFunction(threshold))
+        return DensePredictor(num_labels, ThresholdFunction(threshold))
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()

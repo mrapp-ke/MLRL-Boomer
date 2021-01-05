@@ -14,23 +14,22 @@ cdef class Predictor:
     A base class for all classes that allow to make predictions based on rule-based models.
     """
 
-    cpdef object predict(self, float32[:, ::1] x, uint32 num_labels, RuleModel model):
+    cpdef object predict(self, float32[:, ::1] x, RuleModel model):
         """
         Obtains and returns the predictions for given examples.
 
         The feature matrix must be given as a dense C-contiguous array.
 
-        :param x:           An array of type `float32`, shape `(num_examples, num_features)`, representing the features
-                            of the examples to predict for
-        :param num_labels:  The total number of labels
-        :param model:       The model to be used for making predictions
-        :return:            A `np.ndarray` or a `scipy.sparse.matrix`, shape `(num_examples, num_labels)`, representing
-                            the predictions for individual examples and labels
+        :param x:       An array of type `float32`, shape `(num_examples, num_features)`, representing the features of
+                        the examples to predict for
+        :param model:   The model to be used for making predictions
+        :return:        A `np.ndarray` or a `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
+                        predictions for individual examples and labels
         """
         pass
 
     cpdef object predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
-                             uint32 num_features, uint32 num_labels, RuleModel model):
+                             uint32 num_features, RuleModel model):
         """
         Obtains and returns the predictions for given examples.
 
@@ -44,10 +43,9 @@ cdef class Predictor:
         :param x_col_indices:   An array of type `uint32`, shape `(num_non_zero_feature_values)`, representing the
                                 column-indices of the examples, the values in `x_data` correspond to
         :param num_features:    The total number of features
-        :param num_labels:      The total number of labels
         :param model:           The model to be used for making predictions
-        :return:                A `np.ndarray` or a `scipy.sparse.matrix`, shape `(num_examples, num_labels)`,
-                                representing the predictions for individual examples and labels
+        :return:                A `np.ndarray` or a `scipy.sparse`, shape `(num_examples, num_labels)`, that stores the
+                                predictions for individual examples and labels
         """
         pass
 
@@ -57,14 +55,17 @@ cdef class DensePredictor(Predictor):
     Allows to make predictions based on rule-based models that are stored in dense matrices.
     """
 
-    def __cinit__(self, TransformationFunction transformation_function = None):
+    def __cinit__(self, uint32 num_labels, TransformationFunction transformation_function = None):
         """
+        :param num_labels:              The total number of available labels
         :param transformation_function: An (optional) transformation function to be applied to the raw predictions or
                                         None, if no transformation function should be applied
         """
+        self.num_labels = num_labels
         self.transformation_function = transformation_function
 
-    cpdef object predict(self, float32[:, ::1] x, uint32 num_labels, RuleModel model):
+    cpdef object predict(self, float32[:, ::1] x, RuleModel model):
+        cdef uint32 num_labels = self.num_labels
         cdef float64[:, ::1] predictions = model.predict(x, num_labels)
         cdef TransformationFunction transformation_function = self.transformation_function
 
@@ -74,7 +75,8 @@ cdef class DensePredictor(Predictor):
             return np.asarray(predictions)
 
     cpdef object predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
-                             uint32 num_features, uint32 num_labels, RuleModel model):
+                             uint32 num_features, RuleModel model):
+        cdef uint32 num_labels = self.num_labels
         cdef float64[:, ::1] predictions = model.predict_csr(x_data, x_row_indices, x_col_indices, num_features,
                                                              num_labels)
         cdef TransformationFunction transformation_function = self.transformation_function
