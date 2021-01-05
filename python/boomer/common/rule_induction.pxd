@@ -1,6 +1,6 @@
 from boomer.common._types cimport uint32, intp
 from boomer.common.rules cimport ModelBuilder
-from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
+from boomer.common.input cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.statistics cimport StatisticsProvider
 from boomer.common.thresholds cimport IThresholds
 from boomer.common.sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG

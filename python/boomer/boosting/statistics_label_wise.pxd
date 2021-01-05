@@ -1,4 +1,4 @@
-from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
+from boomer.common.input cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, IStatistics
 from boomer.boosting.losses_label_wise cimport LabelWiseLoss, ILabelWiseLoss
 from boomer.boosting.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory
