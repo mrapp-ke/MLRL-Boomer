@@ -77,10 +77,10 @@ class Learner(BaseEstimator):
         """
         Trains a new model on the given training data.
 
-        :param x:   A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_features)`, representing the
+        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the training examples
-        :param y:   A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_labels)`, representing the
-                    labels of the training examples
+        :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
+                    labels of the training examples according to the ground truth
         :return:    The model that has been trained
         """
         pass
@@ -90,9 +90,9 @@ class Learner(BaseEstimator):
         """
         Makes a prediction for given query examples.
 
-        :param x:   A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_features)`, representing the
+        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
-        :return:    A numpy.ndarray or scipy.sparse matrix of shape `(num_examples, num_labels)`, representing the
-                    labels predicted for the given query examples
+        :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
+                    prediction for individual examples and labels
         """
         pass
