@@ -39,6 +39,7 @@ sources = [
     'boomer/common/cpp/model/head_full.cpp',
     'boomer/common/cpp/model/head_partial.cpp',
     'boomer/common/cpp/model/rule.cpp',
+    'boomer/common/cpp/model/rule_model.cpp',
     'boomer/common/cpp/sampling/random.cpp',
     'boomer/common/cpp/sampling/feature_sampling_no.cpp',
     'boomer/common/cpp/sampling/feature_sampling_random.cpp',
