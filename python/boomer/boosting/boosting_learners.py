@@ -22,6 +22,7 @@ from boomer.common.rule_induction import TopDownGreedyRuleInduction
 from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
+from sklearn.base import ClassifierMixin
 
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE, ARGUMENT_BIN_RATIO
@@ -42,7 +43,7 @@ LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
 LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
 
 
-class Boomer(MLRuleLearner):
+class Boomer(MLRuleLearner, ClassifierMixin):
     """
     A scikit-multilearn implementation of "BOOMER" -- an algorithm for learning gradient boosted multi-label
     classification rules.
