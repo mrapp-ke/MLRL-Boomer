@@ -238,5 +238,5 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             return PartialHeadRefinementFactory(lift_function)
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
-    def _create_predictor(self) -> Predictor:
-        return DensePredictor(ThresholdFunction(0))
+    def _create_predictor(self, num_labels: int) -> Predictor:
+        return DensePredictor(num_labels, ThresholdFunction(0))

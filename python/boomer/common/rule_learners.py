@@ -289,7 +289,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
 
     Attributes
-        num_labels_ The number of labels in the training data set
+        predictor_ The `Predictor` to be used for making predictions
     """
 
     def __init__(self, random_state: int, feature_format: str, label_format: str):
@@ -333,7 +333,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         else:
             label_matrix = CContiguousLabelMatrix(y)
 
-        self.num_labels_ = num_labels
+        # Create predictor...
+        self.predictor_ = self._create_predictor(num_labels)
 
         # Induce rules...
         nominal_features = DokNominalFeatureMask(self.nominal_attribute_indices)
@@ -349,25 +350,25 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C'), reset=False,
                                 accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
-        num_labels = self.num_labels_
         model = self.model_
-        predictor = self._create_predictor()
+        predictor = self.predictor_
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
             num_features = x.shape[1]
-            return predictor.predict_csr(x_data, x_row_indices, x_col_indices, num_features, num_labels, model)
+            return predictor.predict_csr(x_data, x_row_indices, x_col_indices, num_features, model)
         else:
-            return predictor.predict(x, num_labels, model)
+            return predictor.predict(x, model)
 
     @abstractmethod
-    def _create_predictor(self) -> Predictor:
+    def _create_predictor(self, num_labels: int) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
 
-        :return: The `Predictor` that has been created
+        :param num_labels:  The number of labels in the training data set
+        :return:            The `Predictor` that has been created
         """
         pass
 
@@ -382,6 +383,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         pass
 
+    @abstractmethod
     def _create_model_builder(self) -> ModelBuilder:
         """
         Must be implemented by subclasses in order to create the builder that should be used for building the model.
