@@ -47,8 +47,8 @@ cdef class DokLabelMatrix(RandomAccessLabelMatrix):
         """
         :param num_examples:    The total number of examples
         :param num_labels:      The total number of labels
-        :param rows:            An array of type `list`, shape `(num_rows)`, storing a list for each example containing
-                                the column indices of all non-zero labels
+        :param rows:            An array of type `list`, shape `(num_rows)`, that stores a list for each example, which
+                                contains the column indices of all non-zero labels
         """
         cdef unique_ptr[DokLabelMatrixImpl] ptr = make_unique[DokLabelMatrixImpl](num_examples, num_labels)
         cdef uint32 num_rows = rows.shape[0]
@@ -78,7 +78,7 @@ cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
 
     def __cinit__(self, float32[::1, :] array):
         """
-        :param array: A Fortran-contiguous array of type `float32`, shape `(num_examples, num_features)`, representing
+        :param array: A Fortran-contiguous array of type `float32`, shape `(num_examples, num_features)`, that stores
                       the feature values of the training examples
         """
         cdef uint32 num_examples = array.shape[0]
@@ -118,7 +118,7 @@ cdef class CContiguousFeatureMatrix:
 
     def __cinit__(self, float32[:, ::1] array):
         """
-        :param array: A C-contiguous array of type `float32`, shape `(num_examples, num_features)`, representing the
+        :param array: A C-contiguous array of type `float32`, shape `(num_examples, num_features)`, that stores the
                       feature values of the training examples
         """
         cdef uint32 num_examples = array.shape[0]
