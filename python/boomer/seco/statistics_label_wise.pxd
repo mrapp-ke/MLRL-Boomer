@@ -1,4 +1,4 @@
-from boomer.common.input_data cimport LabelMatrix, IRandomAccessLabelMatrix
+from boomer.common.input cimport LabelMatrix, IRandomAccessLabelMatrix
 from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, IStatistics
 from boomer.seco.statistics cimport ICoverageStatistics
 from boomer.seco.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory
