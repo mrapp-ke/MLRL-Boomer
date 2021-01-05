@@ -39,3 +39,4 @@ uint32 CContiguousView<T>::getNumCols() const {
 
 template class CContiguousView<uint8>;
 template class CContiguousView<float32>;
+template class CContiguousView<float64>;
