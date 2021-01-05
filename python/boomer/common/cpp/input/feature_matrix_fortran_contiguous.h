@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "view_fortran_contiguous.h"
+#include "../data/view_fortran_contiguous.h"
 #include "feature_matrix.h"
 
 
