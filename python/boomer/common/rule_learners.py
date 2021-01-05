@@ -13,9 +13,9 @@ from typing import List
 
 import numpy as np
 from boomer.common.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
-from boomer.common.input_data import CContiguousLabelMatrix, DokLabelMatrix
-from boomer.common.input_data import DokNominalFeatureMask
-from boomer.common.input_data import FortranContiguousFeatureMatrix, CscFeatureMatrix
+from boomer.common.input import CContiguousLabelMatrix, DokLabelMatrix
+from boomer.common.input import DokNominalFeatureMask
+from boomer.common.input import FortranContiguousFeatureMatrix, CscFeatureMatrix
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, NoPruning, IREP
 from boomer.common.rules import ModelBuilder
@@ -24,7 +24,7 @@ from boomer.common.sampling import InstanceSubSampling, Bagging, RandomInstanceS
     NoInstanceSubSampling
 from boomer.common.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
-from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
+from boomer.common.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.common.thresholds import ThresholdsFactory
 from boomer.common.thresholds_approximate import ApproximateThresholdsFactory
 from boomer.common.thresholds_exact import ExactThresholdsFactory
