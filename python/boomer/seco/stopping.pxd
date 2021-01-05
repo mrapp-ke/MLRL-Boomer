@@ -1,5 +1,5 @@
 from boomer.common._types cimport float64
-from boomer.common.stopping_criteria cimport IStoppingCriterion, StoppingCriterion
+from boomer.common.stopping cimport IStoppingCriterion, StoppingCriterion
 
 
 cdef extern from "cpp/stopping/stopping_criterion_coverage.h" nogil:

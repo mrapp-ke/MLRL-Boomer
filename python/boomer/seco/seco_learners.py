@@ -12,7 +12,7 @@ from boomer.seco.head_refinement import PartialHeadRefinementFactory, LiftFuncti
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
 from boomer.seco.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
 from boomer.seco.statistics_label_wise import LabelWiseStatisticsProviderFactory
-from boomer.seco.stopping_criteria import CoverageStoppingCriterion
+from boomer.seco.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
 from boomer.common.rule_learners import HEAD_REFINEMENT_SINGLE
