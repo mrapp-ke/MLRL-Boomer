@@ -5,20 +5,15 @@
 
 #include "../../../common/cpp/model/model_builder.h"
 
-// Forward declarations
-class RuleList;
-
 
 /**
- * Allows to build models that store several rules in the order they have been added. For prediction, a linear
- * combination of the scores that are provided by the individual rules is computed, i.e., the prediction is invariant to
- * the order of the rules.
+ * Allows to build models that store several rules in the order they have been added.
  */
 class RuleListBuilder final : public IModelBuilder {
 
     private:
 
-        std::unique_ptr<RuleList> modelPtr_;
+        std::unique_ptr<RuleModel> modelPtr_;
 
     public:
 
@@ -26,6 +21,6 @@ class RuleListBuilder final : public IModelBuilder {
 
         void addRule(const ConditionList& conditions, const AbstractPrediction& prediction) override;
 
-        std::unique_ptr<IModel> build() override;
+        std::unique_ptr<RuleModel> build() override;
 
 };

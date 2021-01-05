@@ -5,14 +5,10 @@
 
 #include "../../../common/cpp/model/model_builder.h"
 
-// Forward declarations
-class DecisionList;
-class Rule;
 
 /**
  * Allows to build models that store several rules in the order they have been added, except for the default rule, which
- * is always located at the end. For prediction, the rules are processed in this particular order. Subsequent rules are
- * only allowed to predict for labels for which no previous rules has already provided a prediction.
+ * is always located at the end.
  */
 class DecisionListBuilder final : public IModelBuilder {
 
@@ -20,7 +16,7 @@ class DecisionListBuilder final : public IModelBuilder {
 
         std::unique_ptr<Rule> defaultRulePtr_;
 
-        std::unique_ptr<DecisionList> modelPtr_;
+        std::unique_ptr<RuleModel> modelPtr_;
 
     public:
 
@@ -28,6 +24,6 @@ class DecisionListBuilder final : public IModelBuilder {
 
         void addRule(const ConditionList& conditions, const AbstractPrediction& prediction) override;
 
-        std::unique_ptr<IModel> build() override;
+        std::unique_ptr<RuleModel> build() override;
 
 };
