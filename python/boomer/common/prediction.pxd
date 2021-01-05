@@ -6,24 +6,26 @@ cdef class Predictor:
 
     # Functions:
 
-    cpdef object predict(self, float32[:, ::1] x, uint32 num_labels, RuleModel model)
+    cpdef object predict(self, float32[:, ::1] x, RuleModel model)
 
     cpdef object predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
-                             uint32 num_features, uint32 num_labels, RuleModel model)
+                             uint32 num_features, RuleModel model)
 
 
 cdef class DensePredictor(Predictor):
 
     # Attributes:
 
-    cdef readonly TransformationFunction transformation_function
+    cdef uint32 num_labels
+
+    cdef TransformationFunction transformation_function
 
     # Functions:
 
-    cpdef object predict(self, float32[:, ::1] x, uint32 num_labels, RuleModel model)
+    cpdef object predict(self, float32[:, ::1] x, RuleModel model)
 
     cpdef object predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
-                             uint32 num_features, uint32 num_labels, RuleModel model)
+                             uint32 num_features, RuleModel model)
 
 cdef class TransformationFunction:
 
