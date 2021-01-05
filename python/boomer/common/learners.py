@@ -60,7 +60,7 @@ class Learner(BaseEstimator):
                     prediction for individual examples and labels
         """
         check_is_fitted(self)
-        log.info("Making a prediction for %s query instances...", x.shape[0])
+        log.info('Making a prediction for %s query instances...', x.shape[0])
         return self._predict(x)
 
     @abstractmethod
