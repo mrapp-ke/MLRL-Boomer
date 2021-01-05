@@ -14,7 +14,7 @@ class DecisionListBuilder final : public IModelBuilder {
 
     private:
 
-        std::unique_ptr<Rule> defaultRulePtr_;
+        std::unique_ptr<IHead> defaultHeadPtr_;
 
         std::unique_ptr<RuleModel> modelPtr_;
 
