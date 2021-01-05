@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "view_csc.h"
+#include "../data/view_csc.h"
 #include "feature_matrix.h"
 
 
