@@ -32,6 +32,15 @@ class Learner(BaseEstimator):
     """
 
     def fit(self, x, y):
+        """
+        Fits a model according to given training examples and corresponding ground truth labels.
+
+        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
+                    feature values of the training examples
+        :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
+                    labels of the training examples according to the ground truth
+        :return:    The fitted learner
+        """
         log.info('Fitting model...')
         start_time = timer()
         model = self._fit(x, y)
@@ -42,6 +51,14 @@ class Learner(BaseEstimator):
         return self
 
     def predict(self, x):
+        """
+        Makes a prediction for given query examples.
+
+        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
+                    feature values of the query examples
+        :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
+                    prediction for individual examples and labels
+        """
         check_is_fitted(self)
         log.info("Making a prediction for %s query instances...", x.shape[0])
         return self._predict(x)
