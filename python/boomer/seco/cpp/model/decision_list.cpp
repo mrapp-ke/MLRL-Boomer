@@ -4,16 +4,16 @@
 
 
 void DecisionListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
-    defaultRulePtr_ = std::make_unique<Rule>(std::make_unique<EmptyBody>(), prediction.toHead());
+    defaultHeadPtr_ = prediction.toHead();
 }
 
 void DecisionListBuilder::addRule(const ConditionList& conditions, const AbstractPrediction& prediction) {
-    modelPtr_->addRule(std::make_unique<Rule>(std::make_unique<ConjunctiveBody>(conditions), prediction.toHead()));
+    modelPtr_->addRule(std::make_unique<ConjunctiveBody>(conditions), prediction.toHead());
 }
 
 std::unique_ptr<RuleModel> DecisionListBuilder::build() {
-    if (defaultRulePtr_.get() != nullptr) {
-        modelPtr_->addRule(std::move(defaultRulePtr_));
+    if (defaultHeadPtr_.get() != nullptr) {
+        modelPtr_->addRule(std::make_unique<EmptyBody>(), std::move(defaultHeadPtr_));
     }
 
     return std::move(modelPtr_);

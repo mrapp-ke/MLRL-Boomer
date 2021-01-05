@@ -4,11 +4,11 @@
 
 
 void RuleListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
-    modelPtr_->addRule(std::make_unique<Rule>(std::make_unique<EmptyBody>(), prediction.toHead()));
+    modelPtr_->addRule(std::make_unique<EmptyBody>(), prediction.toHead());
 }
 
 void RuleListBuilder::addRule(const ConditionList& conditions, const AbstractPrediction& prediction) {
-    modelPtr_->addRule(std::make_unique<Rule>(std::make_unique<ConjunctiveBody>(conditions), prediction.toHead()));
+    modelPtr_->addRule(std::make_unique<ConjunctiveBody>(conditions), prediction.toHead());
 }
 
 std::unique_ptr<RuleModel> RuleListBuilder::build() {

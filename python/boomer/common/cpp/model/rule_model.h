@@ -14,15 +14,16 @@ class RuleModel final {
 
     private:
 
-        std::list<std::unique_ptr<Rule>> list_;
+        std::list<Rule> list_;
 
     public:
 
         /**
-         * Adds a new rule to the model.
+         * Creates a new rule from a given body and head and adds it to the model.
          *
-         * @param rulePtr An unique pointer to an object of type `Rule` that should be added
+         * @param bodyPtr An unique pointer to an object of type `IBody` that should be used as the body of the rule
+         * @param headPtr An unique pointer to an object of type `IHead` that should be used as the head of the rule
          */
-        void addRule(std::unique_ptr<Rule> rulePtr);
+        void addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr);
 
 };
