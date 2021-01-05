@@ -5,7 +5,7 @@
 Provides wrappers for classes that allow to store the elements of confusion matrices that are computed independently for
 each label.
 """
-from boomer.common.input_data cimport RandomAccessLabelMatrix, ILabelMatrix
+from boomer.common.input cimport RandomAccessLabelMatrix, ILabelMatrix
 
 from libcpp.memory cimport make_shared, dynamic_pointer_cast
 from libcpp.utility cimport move

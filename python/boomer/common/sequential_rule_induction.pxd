@@ -4,7 +4,7 @@ from boomer.common.rule_induction cimport RuleInduction
 from boomer.common.statistics cimport StatisticsProviderFactory
 from boomer.common.thresholds cimport ThresholdsFactory
 from boomer.common.head_refinement cimport HeadRefinementFactory
-from boomer.common.input_data cimport LabelMatrix, FeatureMatrix, NominalFeatureMask
+from boomer.common.input cimport LabelMatrix, FeatureMatrix, NominalFeatureMask
 from boomer.common.pruning cimport Pruning
 from boomer.common.post_processing cimport PostProcessor
 from boomer.common.sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling

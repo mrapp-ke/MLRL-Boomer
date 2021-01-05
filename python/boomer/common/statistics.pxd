@@ -1,5 +1,5 @@
 from boomer.common._types cimport uint32
-from boomer.common.input_data cimport LabelMatrix
+from boomer.common.input cimport LabelMatrix
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
