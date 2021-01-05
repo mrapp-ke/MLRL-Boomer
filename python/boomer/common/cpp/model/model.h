@@ -4,9 +4,9 @@
 #pragma once
 
 #include "../data/matrix_dense.h"
+#include "../data/view_c_contiguous.h"
 #include "../input/feature_matrix_c_contiguous.h"
 #include "../input/feature_matrix_csr.h"
-#include "../input/view_c_contiguous.h"
 
 
 /**
