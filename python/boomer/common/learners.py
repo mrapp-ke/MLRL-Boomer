@@ -63,6 +63,19 @@ class Learner(BaseEstimator):
         log.info('Making a prediction for %s query instances...', x.shape[0])
         return self._predict(x)
 
+    def predict_proba(self, x):
+        """
+        Returns probability estimates for given query examples.
+
+        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
+                    feature values of the query examples
+        :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
+                    probabilities for individual examples and labels
+        """
+        check_is_fitted(self)
+        log.info('Predicting probability estimates for %s query instances...', x.shape[0])
+        return self._predict_proba(x)
+
     @abstractmethod
     def get_name(self) -> str:
         """
@@ -96,3 +109,14 @@ class Learner(BaseEstimator):
                     prediction for individual examples and labels
         """
         pass
+
+    def _predict_proba(self, x):
+        """
+        Returns probability estimates for given query examples.
+
+        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
+                    feature values of the query examples
+        :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
+                    probabilities for individual examples and labels
+        """
+        raise RuntimeError('Prediction of probabilities not supported using the current configuration')
