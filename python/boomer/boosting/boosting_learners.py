@@ -145,8 +145,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_predictor(self) -> Predictor:
-        return DensePredictor(SignFunction())
+    def _create_predictor(self, num_labels: int) -> Predictor:
+        return DensePredictor(num_labels, SignFunction())
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
