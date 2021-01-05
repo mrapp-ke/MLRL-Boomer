@@ -382,6 +382,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         pass
 
+    @abstractmethod
     def _create_model_builder(self) -> ModelBuilder:
         """
         Must be implemented by subclasses in order to create the builder that should be used for building the model.
