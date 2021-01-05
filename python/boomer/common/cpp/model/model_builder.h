@@ -4,7 +4,7 @@
 #pragma once
 
 #include "../head_refinement/prediction.h"
-#include "model.h"
+#include "rule_model.h"
 #include "condition_list.h"
 
 
@@ -37,8 +37,8 @@ class IModelBuilder {
         /**
          * Builds and returns the model.
          *
-         * @return An unique pointer to an object of type `IModel` that has been built
+         * @return An unique pointer to an object of type `RuleModel` that has been built
          */
-        virtual std::unique_ptr<IModel> build() = 0;
+        virtual std::unique_ptr<RuleModel> build() = 0;
 
 };
