@@ -3,7 +3,7 @@
 
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
-from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
+from boomer.common.input cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor

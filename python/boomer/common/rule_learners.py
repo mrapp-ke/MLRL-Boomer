@@ -13,9 +13,9 @@ from typing import List
 
 import numpy as np
 from boomer.common.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
-from boomer.common.input_data import CContiguousLabelMatrix, DokLabelMatrix
-from boomer.common.input_data import DokNominalFeatureMask
-from boomer.common.input_data import FortranContiguousFeatureMatrix, CscFeatureMatrix
+from boomer.common.input import CContiguousLabelMatrix, DokLabelMatrix
+from boomer.common.input import DokNominalFeatureMask
+from boomer.common.input import FortranContiguousFeatureMatrix, CscFeatureMatrix
 from boomer.common.prediction import Predictor
 from boomer.common.pruning import Pruning, NoPruning, IREP
 from boomer.common.rules import ModelBuilder
