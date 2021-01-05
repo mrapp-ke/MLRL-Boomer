@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "view_c_contiguous.h"
+#include "../data/view_c_contiguous.h"
 #include "label_matrix.h"
 
 
