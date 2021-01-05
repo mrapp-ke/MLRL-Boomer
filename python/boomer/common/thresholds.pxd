@@ -1,6 +1,6 @@
 from boomer.common._types cimport uint32
 from boomer.common.head_refinement cimport IHeadRefinementFactory, AbstractPrediction
-from boomer.common.input_data cimport IFeatureMatrix, INominalFeatureMask
+from boomer.common.input cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.rule_refinement cimport Refinement
 from boomer.common.statistics cimport IStatistics
 from boomer.common.sampling cimport IWeightVector
