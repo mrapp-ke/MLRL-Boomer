@@ -4,7 +4,7 @@
 #pragma once
 
 #include "../data/matrix_dense.h"
-#include "../input/view_c_contiguous.h"
+#include "../data/view_c_contiguous.h"
 
 typedef DenseMatrix<uint8> PredictionMask;
 

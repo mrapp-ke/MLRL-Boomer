@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "view_csr.h"
+#include "../data/view_csr.h"
 
 
 /**
