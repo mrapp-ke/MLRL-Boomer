@@ -24,7 +24,7 @@ from boomer.common.sampling import InstanceSubSampling, Bagging, RandomInstanceS
     NoInstanceSubSampling
 from boomer.common.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
-from boomer.common.stopping_criteria import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
+from boomer.common.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.common.thresholds import ThresholdsFactory
 from boomer.common.thresholds_approximate import ApproximateThresholdsFactory
 from boomer.common.thresholds_exact import ExactThresholdsFactory
