@@ -9,7 +9,7 @@ from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.statistics cimport StatisticsProvider, IStatistics
 from boomer.common.thresholds cimport IThresholds
-from boomer.common.stopping_criteria cimport IStoppingCriterion, StoppingCriterion
+from boomer.common.stopping cimport IStoppingCriterion, StoppingCriterion
 from boomer.common.sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG
 from boomer.common.head_refinement cimport IHeadRefinementFactory
 
