@@ -16,6 +16,8 @@ cdef class ClassificationPredictor(Predictor):
 
     # Attributes:
 
+    cdef uint32 num_labels
+
     cdef unique_ptr[ClassificationPredictorImpl] predictor_ptr
 
     # Functions:
