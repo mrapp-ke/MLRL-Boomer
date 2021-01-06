@@ -1,11 +1,20 @@
 from boomer.common._types cimport uint32, float32
-from boomer.common.model cimport RuleModel
+from boomer.common._data cimport CContiguousView
+from boomer.common.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl
+from boomer.common.model cimport RuleModel, RuleModelImpl
 
 
 cdef extern from "cpp/output/predictor.h" nogil:
 
-    cdef cppclass IPredictor:
-        pass
+    cdef cppclass IPredictor[T]:
+
+        # Functions:
+
+        void predict(const CContiguousFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix,
+                     const RuleModelImpl& model)
+
+        void predict(const CsrFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix,
+                     const RuleModelImpl& model)
 
 
 cdef class Predictor:
