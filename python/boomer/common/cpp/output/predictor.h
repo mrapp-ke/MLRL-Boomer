@@ -12,9 +12,9 @@
  * Defines an interface for all classes that allow to make predictions for given query examples using an existing
  * rule-based model.
  *
- * @tparam O The type of the values that are stored by the prediction matrix
+ * @tparam T The type of the values that are stored by the prediction matrix
  */
-template<class O>
+template<class T>
 class IPredictor {
 
     public:
@@ -32,7 +32,7 @@ class IPredictor {
          * @param model             A reference to an object of type `RuleModel` that should be used to obtain the
          *                          predictions
          */
-        virtual void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<O>& predictionMatrix,
+        virtual void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<T>& predictionMatrix,
                              const RuleModel& model) const = 0;
 
         /**
@@ -46,7 +46,7 @@ class IPredictor {
          * @param model             A reference to an object of type `RuleModel` that should be used to obtain the
          *                          predictions
          */
-        virtual void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<O>& predictionMatrix,
+        virtual void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<T>& predictionMatrix,
                              const RuleModel& model) const = 0;
 
 };
