@@ -61,8 +61,8 @@ class Rule final {
          * Identifies all examples in a sparse CSR matrix that are covered by the rule's body and adds the scores that
          * are contained by the rule's head to the corresponding rows of a given matrix of predictions.
          *
-         * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the feature
-         *                          values of the examples
+         * @param featureMatrix     A reference to an object of type `CsrFeatureMatrix` that stores the feature values
+         *                          of the examples
          * @param predictionMatrix  A reference to an object of type `CContiguousView` that stores the predictions to be
          *                          updated
          * @param tmpArray1         An array of type `float32`, shape `(num_features)` that is used to temporarily store
@@ -85,8 +85,8 @@ class Rule final {
          * for which no rule has predicted yet. The mask will be updated by this function by setting all elements for
          * which a prediction has been made to a non-zero value.
          *
-         * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the feature
-         *                          values of the examples
+         * @param featureMatrix     A reference to an object of type `CsrFeatureMatrix` that stores the feature values
+         *                          of the examples
          * @param predictionMatrix  A reference to an object of type `CContiguousView` that stores the predictions to be
          *                          updated
          * @param tmpArray1         An array of type `float32`, shape `(num_features)` that is used to temporarily store
