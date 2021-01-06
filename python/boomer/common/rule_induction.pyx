@@ -6,7 +6,7 @@ Provides classes that implement algorithms for inducing individual classificatio
 from boomer.common._types cimport float32
 from boomer.common._indices cimport IIndexVector, FullIndexVector
 from boomer.common.head_refinement cimport IHeadRefinement, AbstractEvaluatedPrediction
-from boomer.common.rules cimport Condition, Comparator, ConditionList
+from boomer.common.model cimport Condition, Comparator, ConditionList
 from boomer.common.rule_refinement cimport Refinement, IRuleRefinement
 from boomer.common.statistics cimport IStatistics, IStatisticsSubset
 from boomer.common.sampling cimport IWeightVector
