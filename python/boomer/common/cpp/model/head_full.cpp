@@ -2,10 +2,10 @@
 
 
 FullHead::FullHead(const FullPrediction& prediction)
-    : numScores_(prediction.getNumElements()), scores_(new float64[numScores_]) {
+    : numElements_(prediction.getNumElements()), scores_(new float64[numElements_]) {
     FullPrediction::score_const_iterator iterator = prediction.scores_cbegin();
 
-    for (uint32 i = 0; i < numScores_; i++) {
+    for (uint32 i = 0; i < numElements_; i++) {
         scores_[i] = iterator[i];
     }
 }
@@ -14,8 +14,20 @@ FullHead::~FullHead() {
     delete[] scores_;
 }
 
+uint32 FullHead::getNumElements() const {
+    return numElements_;
+}
+
+FullHead::score_const_iterator FullHead::scores_cbegin() const {
+    return scores_;
+}
+
+FullHead::score_const_iterator FullHead::scores_cend() const {
+    return &scores_[numElements_];
+}
+
 void FullHead::apply(CContiguousView<float64>::iterator begin, CContiguousView<float64>::iterator end) const {
-    for (uint32 i = 0; i < numScores_; i++) {
+    for (uint32 i = 0; i < numElements_; i++) {
         begin[i] += scores_[i];
     }
 }
@@ -23,7 +35,7 @@ void FullHead::apply(CContiguousView<float64>::iterator begin, CContiguousView<f
 void FullHead::apply(CContiguousView<float64>::iterator predictionsBegin,
                      CContiguousView<float64>::iterator predictionsEnd, PredictionMask::iterator maskBegin,
                      PredictionMask::iterator maskEnd) const {
-    for (uint32 i = 0; i < numScores_; i++) {
+    for (uint32 i = 0; i < numElements_; i++) {
         if (!maskBegin[i]) {
             predictionsBegin[i] += scores_[i];
             maskBegin[i] = true;
