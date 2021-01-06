@@ -18,6 +18,22 @@ class RuleModel final {
 
     public:
 
+        typedef std::list<Rule>::const_iterator const_iterator;
+
+        /**
+         * Returns a `const_iterator` to the beginning of the rules.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the rules.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
+
         /**
          * Creates a new rule from a given body and head and adds it to the model.
          *
