@@ -5,11 +5,11 @@ uint32 ConjunctiveBody::getNumLeq() const {
     return numLeq_;
 }
 
-ConjunctiveBody::value_const_iterator ConjunctiveBody::leq_values_cbegin() const {
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::leq_values_cbegin() const {
     return leqThresholds_;
 }
 
-ConjunctiveBody::value_const_iterator ConjunctiveBody::leq_values_cend() const {
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::leq_values_cend() const {
     return &leqThresholds_[numLeq_];
 }
 
@@ -25,11 +25,11 @@ uint32 ConjunctiveBody::getNumGr() const {
     return numGr_;
 }
 
-ConjunctiveBody::value_const_iterator ConjunctiveBody::gr_values_cbegin() const {
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::gr_values_cbegin() const {
     return grThresholds_;
 }
 
-ConjunctiveBody::value_const_iterator ConjunctiveBody::gr_values_cend() const {
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::gr_values_cend() const {
     return &grThresholds_[numLeq_];
 }
 
@@ -45,11 +45,11 @@ uint32 ConjunctiveBody::getNumEq() const {
     return numEq_;
 }
 
-ConjunctiveBody::value_const_iterator ConjunctiveBody::eq_values_cbegin() const {
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::eq_values_cbegin() const {
     return eqThresholds_;
 }
 
-ConjunctiveBody::value_const_iterator ConjunctiveBody::eq_values_cend() const {
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::eq_values_cend() const {
     return &eqThresholds_[numLeq_];
 }
 
@@ -65,11 +65,11 @@ uint32 ConjunctiveBody::getNumNeq() const {
     return numNeq_;
 }
 
-ConjunctiveBody::value_const_iterator ConjunctiveBody::neq_values_cbegin() const {
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::neq_values_cbegin() const {
     return neqThresholds_;
 }
 
-ConjunctiveBody::value_const_iterator ConjunctiveBody::neq_values_cend() const {
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::neq_values_cend() const {
     return &neqThresholds_[numLeq_];
 }
 
