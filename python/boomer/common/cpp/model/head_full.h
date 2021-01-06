@@ -28,7 +28,7 @@ class FullHead final : public IHead {
 
         ~FullHead();
 
-        typedef const float64* score_const_iterator
+        typedef const float64* score_const_iterator;
 
         /**
          * Returns the number of scores that are contained by the head.
