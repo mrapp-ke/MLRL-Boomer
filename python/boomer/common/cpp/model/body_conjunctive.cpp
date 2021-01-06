@@ -1,6 +1,86 @@
 #include "body_conjunctive.h"
 
 
+uint32 ConjunctiveBody::getNumLeq() const {
+    return numLeq_;
+}
+
+ConjunctiveBody::value_const_iterator ConjunctiveBody::leq_values_cbegin() const {
+    return leqThresholds_;
+}
+
+ConjunctiveBody::value_const_iterator ConjunctiveBody::leq_values_cend() const {
+    return &leqThresholds_[numLeq_];
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::leq_indices_cbegin() const {
+    return leqFeatureIndices_;
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::leq_indices_cend() const {
+    return &leqFeatureIndices_[numLeq_];
+}
+
+uint32 ConjunctiveBody::getNumGr() const {
+    return numGr_;
+}
+
+ConjunctiveBody::value_const_iterator ConjunctiveBody::gr_values_cbegin() const {
+    return grThresholds_;
+}
+
+ConjunctiveBody::value_const_iterator ConjunctiveBody::gr_values_cend() const {
+    return &grThresholds_[numLeq_];
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::gr_indices_cbegin() const {
+    return grFeatureIndices_;
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::gr_indices_cend() const {
+    return &grFeatureIndices_[numLeq_];
+}
+
+uint32 ConjunctiveBody::getNumEq() const {
+    return numEq_;
+}
+
+ConjunctiveBody::value_const_iterator ConjunctiveBody::eq_values_cbegin() const {
+    return eqThresholds_;
+}
+
+ConjunctiveBody::value_const_iterator ConjunctiveBody::eq_values_cend() const {
+    return &eqThresholds_[numLeq_];
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::eq_indices_cbegin() const {
+    return eqFeatureIndices_;
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::eq_indices_cend() const {
+    return &eqFeatureIndices_[numLeq_];
+}
+
+uint32 ConjunctiveBody::getNumNeq() const {
+    return numNeq_;
+}
+
+ConjunctiveBody::value_const_iterator ConjunctiveBody::neq_values_cbegin() const {
+    return neqThresholds_;
+}
+
+ConjunctiveBody::value_const_iterator ConjunctiveBody::neq_values_cend() const {
+    return &neqThresholds_[numLeq_];
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::neq_indices_cbegin() const {
+    return neqFeatureIndices_;
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::neq_indices_cend() const {
+    return &neqFeatureIndices_[numLeq_];
+}
+
 ConjunctiveBody::ConjunctiveBody(const ConditionList& conditionList)
     : numLeq_(conditionList.getNumConditions(LEQ)), leqFeatureIndices_(new uint32[numLeq_]),
       leqThresholds_(new float32[numLeq_]), numGr_(conditionList.getNumConditions(GR)),
