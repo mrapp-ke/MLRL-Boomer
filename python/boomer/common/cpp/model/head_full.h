@@ -31,9 +31,9 @@ class FullHead final : public IHead {
         typedef const float64* score_const_iterator
 
         /**
-         * Returns the number of numerical scores that are contained by the head.
+         * Returns the number of scores that are contained by the head.
          *
-         * @return The number of numerical scores
+         * @return The number of scores
          */
         uint32 getNumElements() const;
 
