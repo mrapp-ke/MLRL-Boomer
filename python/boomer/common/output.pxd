@@ -2,6 +2,12 @@ from boomer.common._types cimport uint32, float32
 from boomer.common.model cimport RuleModel
 
 
+cdef extern from "cpp/output/predictor.h" nogil:
+
+    cdef cppclass IPredictor:
+        pass
+
+
 cdef class Predictor:
 
     # Functions:
