@@ -66,7 +66,7 @@ class ConjunctiveBody final : public IBody {
          *
          * @return A `threshold_const_iterator` to the beginning
          */
-        threshold_const_iterator leq_values_cbegin() const;
+        threshold_const_iterator leq_thresholds_cbegin() const;
 
         /**
          * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
@@ -74,7 +74,7 @@ class ConjunctiveBody final : public IBody {
          *
          * @return A `threshold_const_iterator` to the end
          */
-        threshold_const_iterator leq_values_cend() const;
+        threshold_const_iterator leq_thresholds_cend() const;
 
         /**
          * Returns a `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
@@ -105,7 +105,7 @@ class ConjunctiveBody final : public IBody {
          *
          * @return A `threshold_const_iterator` to the beginning
          */
-        threshold_const_iterator gr_values_cbegin() const;
+        threshold_const_iterator gr_thresholds_cbegin() const;
 
         /**
          * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
@@ -113,7 +113,7 @@ class ConjunctiveBody final : public IBody {
          *
          * @return A `threshold_const_iterator` to the end
          */
-        threshold_const_iterator gr_values_cend() const;
+        threshold_const_iterator gr_thresholds_cend() const;
 
         /**
          * Returns a `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
@@ -144,7 +144,7 @@ class ConjunctiveBody final : public IBody {
          *
          * @return A `threshold_const_iterator` to the beginning
          */
-        threshold_const_iterator eq_values_cbegin() const;
+        threshold_const_iterator eq_thresholds_cbegin() const;
 
         /**
          * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
@@ -152,7 +152,7 @@ class ConjunctiveBody final : public IBody {
          *
          * @return A `threshold_const_iterator` to the end
          */
-        threshold_const_iterator eq_values_cend() const;
+        threshold_const_iterator eq_thresholds_cend() const;
 
         /**
          * Returns a `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
@@ -183,7 +183,7 @@ class ConjunctiveBody final : public IBody {
          *
          * @return A `threshold_const_iterator` to the beginning
          */
-        threshold_const_iterator neq_values_cbegin() const;
+        threshold_const_iterator neq_thresholds_cbegin() const;
 
         /**
          * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
@@ -191,7 +191,7 @@ class ConjunctiveBody final : public IBody {
          *
          * @return A `threshold_const_iterator` to the end
          */
-        threshold_const_iterator neq_values_cend() const;
+        threshold_const_iterator neq_thresholds_cend() const;
 
         /**
          * Returns a `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
