@@ -2,6 +2,8 @@
 #include "../../../common/cpp/model/body_empty.h"
 #include "../../../common/cpp/model/body_conjunctive.h"
 
+using namespace boosting;
+
 
 void RuleListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
     modelPtr_->addRule(std::make_unique<EmptyBody>(), prediction.toHead());

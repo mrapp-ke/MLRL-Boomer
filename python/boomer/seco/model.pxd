@@ -1,9 +1,9 @@
 from boomer.common.model cimport IModelBuilder, ModelBuilder
 
 
-cdef extern from "cpp/model/decision_list.h" nogil:
+cdef extern from "cpp/model/decision_list.h" namespace "seco" nogil:
 
-    cdef cppclass DecisionListBuilderImpl"DecisionListBuilder"(IModelBuilder):
+    cdef cppclass DecisionListBuilderImpl"seco::DecisionListBuilder"(IModelBuilder):
         pass
 
 

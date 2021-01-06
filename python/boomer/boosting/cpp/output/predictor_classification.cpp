@@ -1,5 +1,7 @@
 #include "predictor_classification.h"
 
+using namespace boosting;
+
 
 static inline void aggregatePredictions(const CContiguousFeatureMatrix& featureMatrix,
                                         CContiguousView<float64> scoreMatrix, const RuleModel& model) {
