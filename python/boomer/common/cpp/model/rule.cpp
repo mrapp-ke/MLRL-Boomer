@@ -6,6 +6,14 @@ Rule::Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr)
 
 }
 
+const IBody& Rule::getBody() const {
+    return *bodyPtr_;
+}
+
+const IHead& Rule::getHead() const {
+    return *headPtr_;
+}
+
 void Rule::predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix) const {
     uint32 numExamples = featureMatrix.getNumRows();
 

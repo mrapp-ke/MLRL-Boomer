@@ -28,6 +28,20 @@ class Rule final {
         Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr);
 
         /**
+         * Returns the body of the rule.
+         *
+         * @return A reference to an object of type `IBody` that represents the body of the rule
+         */
+        const IBody& getBody() const;
+
+        /**
+         * Returns the head of the rule.
+         *
+         * @return A reference to an object of type `IHead` that represents the head of the rule
+         */
+        const IHead& getHead() const;
+
+        /**
          * Identifies all examples in a C-contiguous matrix that are covered by the rule's body and adds the scores that
          * are contained by the rule's head to the corresponding rows of a given matrix of predictions.
          *
