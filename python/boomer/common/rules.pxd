@@ -1,6 +1,4 @@
 from boomer.common._types cimport uint8, uint32, float32, float64
-from boomer.common.head_refinement cimport AbstractPrediction
-from boomer.common.model cimport ConditionList
 
 
 cdef class Body:
@@ -127,35 +125,3 @@ cdef class RuleList(RuleModel):
 
     cdef float64[:, ::1] predict_csr(self, float32[::1] x_data, uint32[::1] x_row_indices, uint32[::1] x_col_indices,
                                      uint32 num_features, uint32 num_labels)
-
-
-cdef class ModelBuilder:
-
-    # Functions:
-
-    cdef void set_default_rule(self, AbstractPrediction* prediction)
-
-    cdef void add_rule(self, AbstractPrediction* prediction, ConditionList& conditions)
-
-    cdef RuleModel build_model(self)
-
-
-cdef class RuleListBuilder(ModelBuilder):
-
-    # Attributes:
-
-    cdef readonly bint use_mask
-
-    cdef readonly bint default_rule_at_end
-
-    cdef RuleList rule_list
-
-    cdef Rule default_rule
-
-    # Functions:
-
-    cdef void set_default_rule(self, AbstractPrediction* prediction)
-
-    cdef void add_rule(self, AbstractPrediction* prediction, ConditionList& conditions)
-
-    cdef RuleModel build_model(self)
