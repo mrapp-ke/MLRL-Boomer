@@ -26,7 +26,7 @@ cdef class RuleInduction:
     """
 
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
-                                  IHeadRefinementFactory* head_refinement_factory, ModelBuilder model_builder):
+                                  IHeadRefinementFactory* head_refinement_factory, IModelBuilder* model_builder):
         """
         Induces the default rule.
 
@@ -35,7 +35,8 @@ cdef class RuleInduction:
         :param head_refinement_factory: A pointer to an object of type `IHeadRefinementFactory` that allows to create
                                         instances of the class that should be used to find the head of the default rule
                                         or a null pointer, if no default rule should be induced
-        :param model_builder:           The builder, the default rule should be added to
+        :param model_builder:           A pointer to an object of type `IModelBuilder`, the default rule should be added
+                                        to
         """
         pass
 
@@ -43,7 +44,7 @@ cdef class RuleInduction:
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
                           IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
-                          intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
+                          intp max_head_refinements, int num_threads, RNG* rng, IModelBuilder* model_builder):
         """
         Induces a new classification rule.
 
@@ -74,7 +75,7 @@ cdef class RuleInduction:
                                         rule in parallel. Must be at least 1
         :param rng:                     A pointer to an object of type `RNG`, implementing the random number generator
                                         to be used
-        :param model_builder:           The builder, the rule should be added to
+        :param model_builder:           A pointer to an object of type `IModelBuilder`, the rule should be added to
         :return:                        1, if a rule has been induced, 0 otherwise
         """
         pass
@@ -88,7 +89,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     """
 
     cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
-                                  IHeadRefinementFactory* head_refinement_factory, ModelBuilder model_builder):
+                                  IHeadRefinementFactory* head_refinement_factory, IModelBuilder* model_builder):
         cdef unique_ptr[IHeadRefinement] head_refinement_ptr
         cdef unique_ptr[AbstractEvaluatedPrediction] default_prediction_ptr
         cdef unique_ptr[IStatisticsSubset] statistics_subset_ptr
@@ -115,7 +116,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             for i in range(num_statistics):
                 default_prediction_ptr.get().apply(dereference(statistics), i)
 
-            model_builder.set_default_rule(default_prediction_ptr.get())
+            model_builder.setDefaultRule(dereference(default_prediction_ptr.get()))
         else:
             statistics_provider.switch_rule_evaluation()
 
@@ -123,7 +124,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
                           IFeatureMatrix* feature_matrix, ILabelSubSampling* label_sub_sampling,
                           IInstanceSubSampling* instance_sub_sampling, IFeatureSubSampling* feature_sub_sampling,
                           IPruning* pruning, IPostProcessor* post_processor, uint32 min_coverage, intp max_conditions,
-                          intp max_head_refinements, int num_threads, RNG* rng, ModelBuilder model_builder):
+                          intp max_head_refinements, int num_threads, RNG* rng, IModelBuilder* model_builder):
         # The total number of statistics
         cdef uint32 num_examples = thresholds.getNumExamples()
         # The total number of features
@@ -238,7 +239,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             thresholds_subset_ptr.get().applyPrediction(dereference(best_refinement_ptr.get().headPtr.get()))
 
             # Add the induced rule to the model...
-            model_builder.add_rule(best_refinement_ptr.get().headPtr.get(), conditions)
+            model_builder.addRule(conditions, dereference(best_refinement_ptr.get().headPtr.get()))
             return True
 
 
