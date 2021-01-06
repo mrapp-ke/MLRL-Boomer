@@ -2,14 +2,15 @@
 
 from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     FullHeadRefinementFactory
+from boomer.common.model import ModelBuilder
+from boomer.common.output import Predictor
 from boomer.common.post_processing import NoPostProcessor
-from boomer.common.prediction import Predictor, DensePredictor, SignFunction
 from boomer.common.rule_induction import TopDownGreedyRuleInduction
-from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
 from boomer.seco.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
+from boomer.seco.model import DecisionListBuilder
 from boomer.seco.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
 from boomer.seco.statistics_label_wise import LabelWiseStatisticsProviderFactory
 from boomer.seco.stopping import CoverageStoppingCriterion
@@ -157,7 +158,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         return name
 
     def _create_model_builder(self) -> ModelBuilder:
-        return RuleListBuilder(use_mask=True, default_rule_at_end=True)
+        return DecisionListBuilder()
 
     def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
         heuristic = self.__create_heuristic()
@@ -239,4 +240,5 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def _create_predictor(self, num_labels: int) -> Predictor:
-        return DensePredictor(num_labels, SignFunction())
+        # TODO
+        return None

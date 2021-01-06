@@ -1,4 +1,7 @@
-from libcpp.memory cimport unique_ptr
+from boomer.common.head_refinement cimport AbstractPrediction
+from boomer.common.rules cimport ConditionList
+
+from libcpp.memory cimport unique_ptr, shared_ptr
 
 
 cdef extern from "cpp/model/rule_model.h" nogil:
@@ -10,7 +13,14 @@ cdef extern from "cpp/model/rule_model.h" nogil:
 cdef extern from "cpp/model/model_builder.h" nogil:
 
     cdef cppclass IModelBuilder:
-        pass
+
+        # Functions:
+
+        void setDefaultRule(const AbstractPrediction& prediction)
+
+        void addRule(const ConditionList& conditions, const AbstractPrediction& prediction)
+
+        unique_ptr[RuleModelImpl] build()
 
 
 cdef class RuleModel:
@@ -24,4 +34,8 @@ cdef class ModelBuilder:
 
     # Attributes:
 
-    cdef unique_ptr[IModelBuilder] model_builder_ptr
+    cdef shared_ptr[IModelBuilder] model_builder_ptr
+
+    # Functions:
+
+    cdef RuleModel build(self)

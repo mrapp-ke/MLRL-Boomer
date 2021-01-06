@@ -16,9 +16,9 @@ from boomer.common.binning import EqualWidthFeatureBinning, EqualFrequencyFeatur
 from boomer.common.input import CContiguousLabelMatrix, DokLabelMatrix
 from boomer.common.input import DokNominalFeatureMask
 from boomer.common.input import FortranContiguousFeatureMatrix, CscFeatureMatrix
-from boomer.common.prediction import Predictor
+from boomer.common.model import ModelBuilder
+from boomer.common.output import Predictor
 from boomer.common.pruning import Pruning, NoPruning, IREP
-from boomer.common.rules import ModelBuilder
 from boomer.common.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
 from boomer.common.sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, \
     NoInstanceSubSampling

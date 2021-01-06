@@ -1,6 +1,7 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
+from libcpp.utility cimport move
 
 
 cdef class RuleModel:
@@ -14,4 +15,11 @@ cdef class ModelBuilder:
     """
     A wrapper for the pure virtual C++ class `IModelBuilder`.
     """
-    pass
+
+    cdef RuleModel build(self):
+        """
+        Builds and returns the model.
+        """
+        cdef RuleModel model = RuleModel()
+        model.model_ptr = move(self.model_builder_ptr.get().build())
+        return model

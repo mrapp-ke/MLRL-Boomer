@@ -4,6 +4,7 @@
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
 from boomer.common.input cimport IFeatureMatrix, INominalFeatureMask
+from boomer.common.model cimport IModelBuilder
 from boomer.common.rules cimport Rule, RuleList
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
@@ -123,6 +124,7 @@ cdef class SequentialRuleInduction:
         cdef bint success
 
         # Induce default rule...
+        cdef shared_ptr[IModelBuilder] model_builder_ptr = model_builder.model_builder_ptr
         cdef shared_ptr[IHeadRefinementFactory] head_refinement_factory_ptr
 
         if default_rule_head_refinement_factory is not None:
@@ -130,7 +132,8 @@ cdef class SequentialRuleInduction:
             num_rules += 1;
 
         cdef StatisticsProvider statistics_provider = statistics_provider_factory.create(label_matrix)
-        rule_induction.induce_default_rule(statistics_provider, head_refinement_factory_ptr.get(), model_builder)
+        rule_induction.induce_default_rule(statistics_provider, head_refinement_factory_ptr.get(),
+                                           model_builder_ptr.get())
 
         # Induce the remaining rules...
         head_refinement_factory_ptr = head_refinement_factory.head_refinement_factory_ptr
@@ -150,7 +153,7 @@ cdef class SequentialRuleInduction:
                                                  instance_sub_sampling_ptr.get(), feature_sub_sampling_ptr.get(),
                                                  pruning_ptr.get(), post_processor_ptr.get(), min_coverage,
                                                  max_conditions, max_head_refinements, num_threads, rng_ptr.get(),
-                                                 model_builder)
+                                                 model_builder_ptr.get())
 
             if not success:
                 break
@@ -158,7 +161,7 @@ cdef class SequentialRuleInduction:
             num_rules += 1
 
         # Build and return the final model...
-        return model_builder.build_model()
+        return model_builder.build()
 
 
 cdef inline bint __should_continue(list stopping_criteria, IStatistics* statistics, uint32 num_rules):
