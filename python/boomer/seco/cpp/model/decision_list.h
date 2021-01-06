@@ -6,24 +6,28 @@
 #include "../../../common/cpp/model/model_builder.h"
 
 
-/**
- * Allows to build models that store several rules in the order they have been added, except for the default rule, which
- * is always located at the end.
- */
-class DecisionListBuilder final : public IModelBuilder {
+namespace seco {
 
-    private:
+    /**
+     * Allows to build models that store several rules in the order they have been added, except for the default rule, which
+     * is always located at the end.
+     */
+    class DecisionListBuilder final : public IModelBuilder {
 
-        std::unique_ptr<IHead> defaultHeadPtr_;
+        private:
 
-        std::unique_ptr<RuleModel> modelPtr_;
+            std::unique_ptr<IHead> defaultHeadPtr_;
 
-    public:
+            std::unique_ptr<RuleModel> modelPtr_;
 
-        void setDefaultRule(const AbstractPrediction& prediction) override;
+        public:
 
-        void addRule(const ConditionList& conditions, const AbstractPrediction& prediction) override;
+            void setDefaultRule(const AbstractPrediction& prediction) override;
 
-        std::unique_ptr<RuleModel> build() override;
+            void addRule(const ConditionList& conditions, const AbstractPrediction& prediction) override;
 
-};
+            std::unique_ptr<RuleModel> build() override;
+
+    };
+
+}

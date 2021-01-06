@@ -2,6 +2,8 @@
 #include "../../../common/cpp/model/body_empty.h"
 #include "../../../common/cpp/model/body_conjunctive.h"
 
+using namespace seco;
+
 
 void DecisionListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
     defaultHeadPtr_ = prediction.toHead();
