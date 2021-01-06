@@ -1,4 +1,4 @@
-from boomer.common._types cimport uint32, float32, float64
+from boomer.common._types cimport uint8, uint32, float32, float64
 from boomer.common.model cimport RuleModel
 from boomer.common.output cimport Predictor, IPredictor
 
@@ -7,7 +7,7 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "cpp/output/predictor_classification.h" namespace "boosting" nogil:
 
-    cdef cppclass ClassificationPredictorImpl"boosting::ClassificationPredictor"(IPredictor):
+    cdef cppclass ClassificationPredictorImpl"boosting::ClassificationPredictor"(IPredictor[uint8]):
 
         ClassificationPredictorImpl(float64 threshold)
 
