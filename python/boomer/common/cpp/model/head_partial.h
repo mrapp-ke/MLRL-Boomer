@@ -14,7 +14,7 @@ class PartialHead final : public IHead {
 
     private:
 
-        uint32 numScores_;
+        uint32 numElements_;
 
         float64* scores_;
 
@@ -29,6 +29,47 @@ class PartialHead final : public IHead {
         PartialHead(const PartialPrediction& prediction);
 
         ~PartialHead();
+
+        typedef const float64* score_const_iterator;
+
+        typedef const uint32* index_const_iterator;
+
+        /**
+         * Returns the number of numerical scores that are contained by the head.
+         *
+         * @return The number of numerical scores
+         */
+        uint32 getNumElements() const;
+
+        /**
+         * Returns a `score_const_iterator` to the beginning of the scores that are contained by the head.
+         *
+         * @return A `score_const_iterator` to the beginning
+         */
+        score_const_iterator scores_cbegin() const;
+
+        /**
+         * Returns a `score_const_iterator` to the end of the scores that are contained by the head.
+         *
+         * @return A `score_const_iterator` to the end
+         */
+        score_const_iterator scores_cend() const;
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the indices, the scores that are contained by the head
+         * correspond to.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator indices_cbegin() const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the indices, the scores that are contained by the head,
+         * correspond to.
+         *
+         * @return An `index_const_iterator` to the end
+         */
+        index_const_iterator indices_cend() const;
 
         void apply(CContiguousView<float64>::iterator begin, CContiguousView<float64>::iterator end) const override;
 
