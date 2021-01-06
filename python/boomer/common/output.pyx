@@ -7,7 +7,7 @@ Provides classes for making predictions using rule-based models.
 
 cdef class Predictor:
     """
-    A base class for all classes that allow to make predictions based on rule-based models.
+    A wrapper for the pure virtual C++ class `IPredictor`.
     """
 
     cpdef object predict(self, float32[:, ::1] array, RuleModel model):
