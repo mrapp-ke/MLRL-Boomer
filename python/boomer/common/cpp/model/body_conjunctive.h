@@ -49,7 +49,7 @@ class ConjunctiveBody final : public IBody {
 
         ~ConjunctiveBody();
 
-        typedef const float32* value_const_iterator;
+        typedef const float32* threshold_const_iterator;
 
         typedef const uint32* index_const_iterator;
 
@@ -61,20 +61,20 @@ class ConjunctiveBody final : public IBody {
         uint32 getNumLeq() const;
 
         /**
-         * Returns a `value_const_iterator` to the beginning of the thresholds that correspond to conditions that use
-         * the <= operator.
+         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to conditions that
+         * use the <= operator.
          *
-         * @return A `value_const_iterator` to the beginning
+         * @return A `threshold_const_iterator` to the beginning
          */
-        value_const_iterator leq_values_cbegin() const;
+        threshold_const_iterator leq_values_cbegin() const;
 
         /**
-         * Returns a `value_const_iterator` to the end of the thresholds that correspond to conditions that use the <=
-         * operator.
+         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
+         * <= operator.
          *
-         * @return A `value_const_iterator` to the end
+         * @return A `threshold_const_iterator` to the end
          */
-        value_const_iterator leq_values_cend() const;
+        threshold_const_iterator leq_values_cend() const;
 
         /**
          * Returns a `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
@@ -100,20 +100,20 @@ class ConjunctiveBody final : public IBody {
         uint32 getNumGr() const;
 
         /**
-         * Returns a `value_const_iterator` to the beginning of the thresholds that correspond to conditions that use
-         * the > operator.
+         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to conditions that
+         * use the > operator.
          *
-         * @return A `value_const_iterator` to the beginning
+         * @return A `threshold_const_iterator` to the beginning
          */
-        value_const_iterator gr_values_cbegin() const;
+        threshold_const_iterator gr_values_cbegin() const;
 
         /**
-         * Returns a `value_const_iterator` to the end of the thresholds that correspond to conditions that use the >
-         * operator.
+         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
+         * > operator.
          *
-         * @return A `value_const_iterator` to the end
+         * @return A `threshold_const_iterator` to the end
          */
-        value_const_iterator gr_values_cend() const;
+        threshold_const_iterator gr_values_cend() const;
 
         /**
          * Returns a `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
@@ -139,20 +139,20 @@ class ConjunctiveBody final : public IBody {
         uint32 getNumEq() const;
 
         /**
-         * Returns a `value_const_iterator` to the beginning of the thresholds that correspond to conditions that use
-         * the == operator.
+         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to conditions that
+         * use the == operator.
          *
-         * @return A `value_const_iterator` to the beginning
+         * @return A `threshold_const_iterator` to the beginning
          */
-        value_const_iterator eq_values_cbegin() const;
+        threshold_const_iterator eq_values_cbegin() const;
 
         /**
-         * Returns a `value_const_iterator` to the end of the thresholds that correspond to conditions that use the ==
-         * operator.
+         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
+         * == operator.
          *
-         * @return A `value_const_iterator` to the end
+         * @return A `threshold_const_iterator` to the end
          */
-        value_const_iterator eq_values_cend() const;
+        threshold_const_iterator eq_values_cend() const;
 
         /**
          * Returns a `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
@@ -178,20 +178,20 @@ class ConjunctiveBody final : public IBody {
         uint32 getNumNeq() const;
 
         /**
-         * Returns a `value_const_iterator` to the beginning of the thresholds that correspond to conditions that use
-         * the != operator.
+         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to conditions that
+         * use the != operator.
          *
-         * @return A `value_const_iterator` to the beginning
+         * @return A `threshold_const_iterator` to the beginning
          */
-        value_const_iterator neq_values_cbegin() const;
+        threshold_const_iterator neq_values_cbegin() const;
 
         /**
-         * Returns a `value_const_iterator` to the end of the thresholds that correspond to conditions that use the !=
-         * operator.
+         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
+         * != operator.
          *
-         * @return A `value_const_iterator` to the end
+         * @return A `threshold_const_iterator` to the end
          */
-        value_const_iterator neq_values_cend() const;
+        threshold_const_iterator neq_values_cend() const;
 
         /**
          * Returns a `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
