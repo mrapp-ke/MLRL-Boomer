@@ -77,4 +77,6 @@ class PartialHead final : public IHead {
                    CContiguousView<float64>::iterator predictionsEnd, PredictionMask::iterator maskBegin,
                    PredictionMask::iterator maskEnd) const override;
 
+        void visit(IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const override;
+
 };

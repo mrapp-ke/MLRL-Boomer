@@ -1,4 +1,6 @@
 #include "predictor_classification.h"
+#include "../../../common/cpp/model/head_full.h"
+#include "../../../common/cpp/model/head_partial.h"
 
 using namespace boosting;
 
@@ -37,7 +39,13 @@ static inline void aggregatePredictions(const CsrFeatureMatrix& featureMatrix, C
             if (body.covers(featureMatrix.row_indices_cbegin(i), featureMatrix.row_indices_cend(i),
                             featureMatrix.row_values_cbegin(i), featureMatrix.row_values_cend(i), &tmpArray1[0],
                             &tmpArray2[0], n)) {
-                head.apply(scoreMatrix.row_begin(i), scoreMatrix.row_end(i));
+                auto fullHeadVisitor = [&, i](const FullHead& head) {
+                    head.apply(scoreMatrix.row_begin(i), scoreMatrix.row_end(i));
+                };
+                auto partialHeadVisitor = [&, i](const PartialHead& head) {
+                    head.apply(scoreMatrix.row_begin(i), scoreMatrix.row_end(i));
+                };
+                head.visit(fullHeadVisitor, partialHeadVisitor);
             }
 
             n++;
