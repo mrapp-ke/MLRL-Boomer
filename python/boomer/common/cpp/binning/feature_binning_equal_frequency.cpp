@@ -36,7 +36,7 @@ IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(Featur
 }
 
 void EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                              IBinningObserver<float32>& observer) const {
+                                              Callback callback) const {
     uint32 numBins = featureInfo.numBins;
 
     if (numBins > 0) {
@@ -56,7 +56,7 @@ void EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo, const Fea
             //set last value to the current one for the next iteration
             previousValue = currentValue;
             //notify observer
-            observer.onBinUpdate(binIndex, iterator[i].index, currentValue);
+            callback(binIndex, iterator[i].index, currentValue);
         }
     }
 }
