@@ -57,3 +57,7 @@ void PartialHead::apply(CContiguousView<float64>::iterator predictionsBegin,
         }
     }
 }
+
+void PartialHead::visit(IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const {
+    partialHeadVisitor(*this);
+}

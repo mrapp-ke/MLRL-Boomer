@@ -5,9 +5,13 @@
 
 #include "../data/matrix_dense.h"
 #include "../data/view_c_contiguous.h"
+#include <functional>
+
+// Forward declarations
+class FullHead;
+class PartialHead;
 
 typedef DenseMatrix<uint8> PredictionMask;
-
 
 /**
  * Defines an interface for all classes that represent the head of a rule.
@@ -17,6 +21,10 @@ class IHead {
     public:
 
         virtual ~IHead() { };
+
+        typedef std::function<void(const FullHead& head)> FullHeadVisitor;
+
+        typedef std::function<void(const PartialHead& head)> PartialHeadVisitor;
 
         /**
          * Adds the scores that are contained by the head to a given vector of predictions.
@@ -41,5 +49,13 @@ class IHead {
         virtual void apply(CContiguousView<float64>::iterator predictionsBegin,
                            CContiguousView<float64>::iterator predictionsEnd, PredictionMask::iterator maskBegin,
                            PredictionMask::iterator maskEnd) const = 0;
+
+        /**
+         * Invokes one of the given visitors, depending on which one is able to handle this particular head.
+         *
+         * @param fullHeadVisitor       The visitor for handling objects of the type `FullHead`
+         * @param partialHeadVisitor    The visitor for handling objects of the type `PartialHead`
+         */
+        virtual void visit(FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor) const = 0;
 
 };
