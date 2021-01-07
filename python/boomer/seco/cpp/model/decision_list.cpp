@@ -5,6 +5,11 @@
 using namespace seco;
 
 
+DecisionListBuilder::DecisionListBuilder()
+    : modelPtr_(std::make_unique<RuleModel>()){
+
+}
+
 void DecisionListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
     defaultHeadPtr_ = prediction.toHead();
 }

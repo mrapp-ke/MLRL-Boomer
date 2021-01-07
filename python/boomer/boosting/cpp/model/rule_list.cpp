@@ -5,6 +5,11 @@
 using namespace boosting;
 
 
+RuleListBuilder::RuleListBuilder()
+    : modelPtr_(std::make_unique<RuleModel>()) {
+
+}
+
 void RuleListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
     modelPtr_->addRule(std::make_unique<EmptyBody>(), prediction.toHead());
 }
