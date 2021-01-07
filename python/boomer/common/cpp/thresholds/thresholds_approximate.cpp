@@ -207,6 +207,25 @@ static inline void buildHistogram(BinVector& vector, const IStatistics& statisti
     cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
 }
 
+static inline void addValueToBinVector(BinVector& vector, uint32 binIndex, uint32 originalIndex, float32 value) {
+    BinVector::bin_iterator binIterator = vector.bins_begin();
+
+    if (value < binIterator[binIndex].minValue) {
+        binIterator[binIndex].minValue = value;
+    }
+
+    if (binIterator[binIndex].maxValue < value) {
+        binIterator[binIndex].maxValue = value;
+    }
+
+    IndexedValue<float32> example;
+    example.index = originalIndex;
+    example.value = value;
+    BinVector::example_list_iterator exampleIterator = vector.examples_begin();
+    BinVector::ExampleList& examples = exampleIterator[binIndex];
+    examples.push_front(example);
+}
+
 /**
  * Provides access to the thresholds that result from applying a binning method to the feature values of the training
  * examples.
@@ -269,26 +288,9 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     uint32 numBins = featureInfo.numBins;
                                     cacheIterator->second = std::move(std::make_unique<BinVector>(numBins, true));
                                     binVector = cacheIterator->second.get();
-
-                                    auto callback = [=](uint32 originalIndex, uint32 binIndex, float32 value) {
-                                        BinVector::bin_iterator binIterator = binVector->bins_begin();
-
-                                        if (value < binIterator[binIndex].minValue) {
-                                            binIterator[binIndex].minValue = value;
-                                        }
-
-                                        if (binIterator[binIndex].maxValue < value) {
-                                            binIterator[binIndex].maxValue = value;
-                                        }
-
-                                        IndexedValue<float32> example;
-                                        example.index = originalIndex;
-                                        example.value = value;
-                                        BinVector::example_list_iterator exampleIterator = binVector->examples_begin();
-                                        BinVector::ExampleList& examples = exampleIterator[binIndex];
-                                        examples.push_front(example);
+                                    auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
+                                        addValueToBinVector(*binVector, binIndex, originalIndex, value);
                                     };
-
                                     thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo,
                                                                                           *featureVectorPtr, callback);
                                     removeEmptyBins(*binVector);
