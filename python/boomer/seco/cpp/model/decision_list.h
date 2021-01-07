@@ -22,6 +22,8 @@ namespace seco {
 
         public:
 
+            DecisionListBuilder();
+
             void setDefaultRule(const AbstractPrediction& prediction) override;
 
             void addRule(const ConditionList& conditions, const AbstractPrediction& prediction) override;
