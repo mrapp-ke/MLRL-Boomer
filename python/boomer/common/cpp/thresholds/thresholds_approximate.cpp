@@ -228,16 +228,13 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IBinningObserver<float32>,
-                                       public IRuleRefinementCallback<BinVector, DenseVector<uint32>> {
+                class Callback final : public IRuleRefinementCallback<BinVector, DenseVector<uint32>> {
 
                     private:
 
                         ThresholdsSubset& thresholdsSubset_;
 
                         uint32 featureIndex_;
-
-                        BinVector* currentBinVector_;
 
                     public:
 
@@ -272,9 +269,28 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     uint32 numBins = featureInfo.numBins;
                                     cacheIterator->second = std::move(std::make_unique<BinVector>(numBins, true));
                                     binVector = cacheIterator->second.get();
-                                    currentBinVector_ = binVector;
+
+                                    auto callback = [=](uint32 originalIndex, uint32 binIndex, float32 value) {
+                                        BinVector::bin_iterator binIterator = binVector->bins_begin();
+
+                                        if (value < binIterator[binIndex].minValue) {
+                                            binIterator[binIndex].minValue = value;
+                                        }
+
+                                        if (binIterator[binIndex].maxValue < value) {
+                                            binIterator[binIndex].maxValue = value;
+                                        }
+
+                                        IndexedValue<float32> example;
+                                        example.index = originalIndex;
+                                        example.value = value;
+                                        BinVector::example_list_iterator exampleIterator = binVector->examples_begin();
+                                        BinVector::ExampleList& examples = exampleIterator[binIndex];
+                                        examples.push_front(example);
+                                    };
+
                                     thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo,
-                                                                                          *featureVectorPtr, *this);
+                                                                                          *featureVectorPtr, callback);
                                     removeEmptyBins(*binVector);
                                 }
 
@@ -295,25 +311,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                             const IHistogram& histogram = *cacheEntry.histogramPtr;
                             const DenseVector<uint32>& weightVector = *cacheEntry.weightVectorPtr;
                             return std::make_unique<Result>(histogram, weightVector, *binVector);
-                        }
-
-                        void onBinUpdate(uint32 binIndex, uint32 originalIndex, float32 value) override {
-                            BinVector::bin_iterator binIterator = currentBinVector_->bins_begin();
-
-                            if (value < binIterator[binIndex].minValue) {
-                                binIterator[binIndex].minValue = value;
-                            }
-
-                            if (binIterator[binIndex].maxValue < value) {
-                                binIterator[binIndex].maxValue = value;
-                            }
-
-                            IndexedValue<float32> example;
-                            example.index = originalIndex;
-                            example.value = value;
-                            BinVector::example_list_iterator exampleIterator = currentBinVector_->examples_begin();
-                            BinVector::ExampleList& examples = exampleIterator[binIndex];
-                            examples.push_front(example);
                         }
 
                 };

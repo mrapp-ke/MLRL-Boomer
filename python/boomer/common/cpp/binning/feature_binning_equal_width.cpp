@@ -47,7 +47,7 @@ IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVec
 }
 
 void EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                          IBinningObserver<float32>& observer) const {
+                                          Callback callback) const {
     uint32 numBins = featureInfo.numBins;
 
     if (numBins > 0) {
@@ -68,7 +68,7 @@ void EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo, const Feature
                 binIndex = numBins - 1;
             }
             //notify observer
-            observer.onBinUpdate(binIndex, iterator[i].index, currentValue);
+            callback(binIndex, iterator[i].index, currentValue);
         }
     }
 }

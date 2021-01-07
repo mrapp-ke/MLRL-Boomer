@@ -5,8 +5,7 @@
 #pragma once
 
 #include "../input/feature_vector.h"
-#include "binning_observer.h"
-
+#include <functional>
 
 /**
  * Defines an interface for methods that assign feature values to bins.
@@ -28,6 +27,12 @@ class IFeatureBinning {
         virtual ~IFeatureBinning() { };
 
         /**
+         * A callback function that is invoked when a value is assigned to a bin. It takes the index of the bin, the
+         * original index of the value, as well as the value itself, as arguments.
+         */
+        typedef std::function<void(uint32, uint32, float32)> Callback;
+
+        /**
          * Retrieves and returns information about the values in a given `FeatureVector` that is required to apply the
          * binning method.
          *
@@ -46,10 +51,9 @@ class IFeatureBinning {
          *
          * @param featureInfo   A struct of type `FeatureInfo` that stores information about the given `FeatureVector`
          * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
-         * @param observer      A reference to an object of type `IBinningObserver` that should be notified when a value
-         *                      is assigned to a bin
+         * @param callback      A callback that is invoked when a value is assigned to a bin
          */
         virtual void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                IBinningObserver<float32>& observer) const = 0;
+                                Callback callback) const = 0;
 
 };
