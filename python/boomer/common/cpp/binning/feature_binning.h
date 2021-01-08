@@ -30,7 +30,7 @@ class IFeatureBinning {
          * A callback function that is invoked when a value is assigned to a bin. It takes the index of the bin, the
          * original index of the value, as well as the value itself, as arguments.
          */
-        typedef std::function<void(uint32, uint32, float32)> Callback;
+        typedef std::function<void(uint32 binIndex, uint32 originalIndex, float32 value)> Callback;
 
         /**
          * Retrieves and returns information about the values in a given `FeatureVector` that is required to apply the
