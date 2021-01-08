@@ -33,7 +33,6 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 
         FeatureInfo getFeatureInfo(FeatureVector& featureVector) const override;
 
-        void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                        IBinningObserver<float32>& observer) const override;
+        void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector, Callback callback) const override;
 
 };
