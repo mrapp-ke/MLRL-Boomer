@@ -9,6 +9,7 @@
 class FullHead;
 class PartialHead;
 
+
 /**
  * Defines an interface for all classes that represent the head of a rule.
  */
