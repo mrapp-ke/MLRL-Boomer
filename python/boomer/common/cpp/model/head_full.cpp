@@ -26,6 +26,6 @@ FullHead::score_const_iterator FullHead::scores_cend() const {
     return &scores_[numElements_];
 }
 
-void FullHead::visit(IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const {
+void FullHead::visit(FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor) const {
     fullHeadVisitor(*this);
 }
