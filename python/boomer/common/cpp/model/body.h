@@ -5,6 +5,11 @@
 
 #include "../input/feature_matrix_c_contiguous.h"
 #include "../input/feature_matrix_csr.h"
+#include <functional>
+
+// Forward declarations
+class EmptyBody;
+class ConjunctiveBody;
 
 
 /**
@@ -15,6 +20,10 @@ class IBody {
     public:
 
         virtual ~IBody() { };
+
+        typedef std::function<void(const EmptyBody&)> EmptyBodyVisitor;
+
+        typedef std::function<void(const ConjunctiveBody&)> ConjunctiveBodyVisitor;
 
         /**
          * Returns whether an individual example, which is stored in a C-contiguous matrix, is covered by the body or
@@ -49,5 +58,14 @@ class IBody {
                             CsrFeatureMatrix::value_const_iterator valuesBegin,
                             CsrFeatureMatrix::value_const_iterator valuesEnd, float32* tmpArray1, uint32* tmpArray2,
                             uint32 n) const = 0;
+
+        /**
+         * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
+         * body.
+         *
+         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
+         */
+        virtual void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const = 0;
 
 };

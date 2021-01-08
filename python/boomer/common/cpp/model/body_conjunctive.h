@@ -218,4 +218,6 @@ class ConjunctiveBody final : public IBody {
                     CsrFeatureMatrix::value_const_iterator valuesEnd, float32* tmpArray1, uint32* tmpArray2,
                     uint32 n) const override;
 
+        void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const override;
+
 };
