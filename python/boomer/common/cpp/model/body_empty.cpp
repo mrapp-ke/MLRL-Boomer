@@ -13,3 +13,7 @@ bool EmptyBody::covers(CsrFeatureMatrix::index_const_iterator indicesBegin,
                        uint32 n) const {
     return true;
 }
+
+void EmptyBody::visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const {
+    emptyBodyVisitor(*this);
+}

@@ -246,3 +246,7 @@ bool ConjunctiveBody::covers(CsrFeatureMatrix::index_const_iterator indicesBegin
 
     return true;
 }
+
+void ConjunctiveBody::visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const {
+    conjunctiveBodyVisitor(*this);
+}
