@@ -18,9 +18,9 @@ class IHead {
 
         virtual ~IHead() { };
 
-        typedef std::function<void(const FullHead& head)> FullHeadVisitor;
+        typedef std::function<void(const FullHead&)> FullHeadVisitor;
 
-        typedef std::function<void(const PartialHead& head)> PartialHeadVisitor;
+        typedef std::function<void(const PartialHead&)> PartialHeadVisitor;
 
         /**
          * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
