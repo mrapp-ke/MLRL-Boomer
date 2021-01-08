@@ -38,26 +38,6 @@ PartialHead::index_const_iterator PartialHead::indices_cend() const {
     return &labelIndices_[numElements_];
 }
 
-void PartialHead::apply(CContiguousView<float64>::iterator begin, CContiguousView<float64>::iterator end) const {
-    for (uint32 i = 0; i < numElements_; i++) {
-        uint32 labelIndex = labelIndices_[i];
-        begin[labelIndex] += scores_[i];
-    }
-}
-
-void PartialHead::apply(CContiguousView<float64>::iterator predictionsBegin,
-                        CContiguousView<float64>::iterator predictionsEnd, PredictionMask::iterator maskBegin,
-                        PredictionMask::iterator maskEnd) const {
-    for (uint32 i = 0; i < numElements_; i++) {
-        uint32 labelIndex = labelIndices_[i];
-
-        if (!maskBegin[labelIndex]) {
-            predictionsBegin[labelIndex] += scores_[i];
-            maskBegin[labelIndex] = true;
-        }
-    }
-}
-
 void PartialHead::visit(IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const {
     partialHeadVisitor(*this);
 }
