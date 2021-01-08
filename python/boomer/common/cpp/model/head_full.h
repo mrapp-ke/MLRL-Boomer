@@ -51,6 +51,6 @@ class FullHead final : public IHead {
          */
         score_const_iterator scores_cend() const;
 
-        void visit(IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const override;
+        void visit(FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor) const override;
 
 };

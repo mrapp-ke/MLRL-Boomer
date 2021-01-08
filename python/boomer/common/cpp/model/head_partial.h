@@ -71,6 +71,6 @@ class PartialHead final : public IHead {
          */
         index_const_iterator indices_cend() const;
 
-        void visit(IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const override;
+        void visit(FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor) const override;
 
 };
