@@ -1,8 +1,7 @@
-from boomer.common._types cimport uint8, uint32, float32
+from boomer.common._types cimport uint8
+from boomer.common.input cimport CContiguousFeatureMatrix, CsrFeatureMatrix
 from boomer.common.model cimport RuleModel
-from boomer.common.output cimport Predictor, IPredictor
-
-from libcpp.memory cimport unique_ptr
+from boomer.common.output cimport AbstractClassificationPredictor, IPredictor
 
 
 cdef extern from "cpp/output/predictor_classification.h" namespace "seco" nogil:
@@ -11,17 +10,8 @@ cdef extern from "cpp/output/predictor_classification.h" namespace "seco" nogil:
         pass
 
 
-cdef class ClassificationPredictor(Predictor):
+cdef class ClassificationPredictor(AbstractClassificationPredictor):
 
-    # Attributes:
+    cpdef object predict(self, CContiguousFeatureMatrix feature_matrix, RuleModel model)
 
-    cdef uint8 num_labels
-
-    cdef unique_ptr[ClassificationPredictorImpl] predictor_ptr
-
-    # Functions:
-
-    cpdef object predict(self, float32[:, ::1] array, RuleModel model)
-
-    cpdef object predict_csr(self, float32[::1] data, uint32[::1] row_indices, uint32[::1] col_indices,
-                             uint32 num_features, RuleModel model)
+    cpdef object predict_csr(self, CsrFeatureMatrix feature_matrix, RuleModel model)

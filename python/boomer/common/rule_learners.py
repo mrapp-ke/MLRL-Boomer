@@ -15,7 +15,8 @@ import numpy as np
 from boomer.common.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
 from boomer.common.input import CContiguousLabelMatrix, DokLabelMatrix
 from boomer.common.input import DokNominalFeatureMask
-from boomer.common.input import FortranContiguousFeatureMatrix, CscFeatureMatrix
+from boomer.common.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
+    CContiguousFeatureMatrix
 from boomer.common.model import ModelBuilder
 from boomer.common.output import Predictor
 from boomer.common.pruning import Pruning, NoPruning, IREP
@@ -357,10 +358,11 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
-            num_features = x.shape[1]
-            return predictor.predict_csr(x_data, x_row_indices, x_col_indices, num_features, model)
+            feature_matrix = CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
         else:
-            return predictor.predict(x, model)
+            feature_matrix = CContiguousFeatureMatrix(x)
+
+        return predictor.predict(feature_matrix, model)
 
     @abstractmethod
     def _create_predictor(self, num_labels: int) -> Predictor:
