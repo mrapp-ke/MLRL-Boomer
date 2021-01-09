@@ -11,6 +11,7 @@ from boomer.common.statistics import StatisticsProviderFactory
 from boomer.seco.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
 from boomer.seco.model import DecisionListBuilder
+from boomer.seco.output import ClassificationPredictor
 from boomer.seco.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
 from boomer.seco.statistics_label_wise import LabelWiseStatisticsProviderFactory
 from boomer.seco.stopping import CoverageStoppingCriterion
@@ -240,5 +241,4 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
     def _create_predictor(self, num_labels: int) -> Predictor:
-        # TODO
-        return None
+        return ClassificationPredictor(num_labels)

@@ -98,6 +98,7 @@ sources = [
     'boomer/seco/cpp/heuristics/heuristic_recall.cpp',
     'boomer/seco/cpp/heuristics/heuristic_wra.cpp',
     'boomer/seco/cpp/model/decision_list.cpp',
+    'boomer/seco/cpp/output/predictor_classification.cpp',
     'boomer/seco/cpp/rule_evaluation/rule_evaluation_label_wise_heuristic.cpp',
     'boomer/seco/cpp/statistics/statistics_label_wise_dense.cpp',
     'boomer/seco/cpp/stopping/stopping_criterion_coverage.cpp'
