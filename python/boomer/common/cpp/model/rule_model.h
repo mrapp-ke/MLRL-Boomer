@@ -42,4 +42,16 @@ class RuleModel final {
          */
         void addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr);
 
+        /**
+         * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
+         * of the rules that are contained in this model.
+         *
+         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
+         * @param fullHeadVisitor           The visitor function for handling objects of the type `FullHead`
+         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         */
+        void visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                   IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const;
+
 };
