@@ -1,4 +1,5 @@
 #include "vector_dense_label_wise.h"
+#include "../../../common/cpp/data/arrays.h"
 #include <cstdlib>
 
 using namespace boosting;
@@ -66,10 +67,8 @@ uint32 DenseLabelWiseStatisticVector::getNumElements() const {
 }
 
 void DenseLabelWiseStatisticVector::setAllToZero() {
-    for (uint32 i = 0; i < numElements_; i++) {
-        gradients_[i] = 0;
-        hessians_[i] = 0;
-    }
+    setArrayToZeros(gradients_, numElements_);
+    setArrayToZeros(hessians_, numElements_);
 }
 
 void DenseLabelWiseStatisticVector::add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
