@@ -19,6 +19,8 @@ cdef class ModelBuilder:
     cdef RuleModel build(self):
         """
         Builds and returns the model.
+
+        :return: The model that has been built
         """
         cdef RuleModel model = RuleModel()
         model.model_ptr = move(self.model_builder_ptr.get().build())
