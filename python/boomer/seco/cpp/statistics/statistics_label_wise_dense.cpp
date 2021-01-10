@@ -1,24 +1,11 @@
 #include "statistics_label_wise_dense.h"
-#include "../heuristics/confusion_matrices.h"
+#include "../../../common/cpp/data/arrays.h"
 #include "../../../common/cpp/statistics/statistics_subset_decomposable.h"
+#include "../heuristics/confusion_matrices.h"
 #include <cstdlib>
 
 using namespace seco;
 
-
-/**
- * Sets all elements in an one- or two-dimensional array to zero.
- *
- * @tparam T            The type of the array
- * @param a             A pointer to an array of template type `T`
- * @param numElements   The number of elements in the array
- */
-template<typename T>
-static inline void setToZeros(T* a, uint32 numElements) {
-    for (uint32 i = 0; i < numElements; i++) {
-        a[i] = 0;
-    }
-}
 
 /**
  * Provides access to the elements of confusion matrices that are computed independently for each label using dense data
@@ -72,7 +59,7 @@ class LabelWiseStatistics final : public ILabelWiseStatistics {
                     uint32 numPredictions = labelIndices.getNumElements();
                     confusionMatricesCovered_ =
                         (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-                    setToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
+                    setArrayToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
                     accumulatedConfusionMatricesCovered_ = nullptr;
                     confusionMatricesSubset_ = statistics_.confusionMatricesSubset_;
                     confusionMatricesCoverableSubset_ = nullptr;
@@ -144,8 +131,8 @@ class LabelWiseStatistics final : public ILabelWiseStatistics {
                     if (accumulatedConfusionMatricesCovered_ == nullptr) {
                         accumulatedConfusionMatricesCovered_ =
                             (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-                        setToZeros(accumulatedConfusionMatricesCovered_,
-                                   numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
+                        setArrayToZeros(accumulatedConfusionMatricesCovered_,
+                                        numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
                     }
 
                     // Reset the confusion matrix for each label to zero and add its elements to the accumulated
@@ -247,8 +234,8 @@ class LabelWiseStatistics final : public ILabelWiseStatistics {
         void resetSampledStatistics() override {
             uint32 numLabels = this->getNumLabels();
             uint32 numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
-            setToZeros(confusionMatricesTotal_, numElements);
-            setToZeros(confusionMatricesSubset_, numElements);
+            setArrayToZeros(confusionMatricesTotal_, numElements);
+            setArrayToZeros(confusionMatricesSubset_, numElements);
         }
 
         void addSampledStatistic(uint32 statisticIndex, uint32 weight) override {
@@ -276,7 +263,7 @@ class LabelWiseStatistics final : public ILabelWiseStatistics {
             // Reset confusion matrices to 0...
             uint32 numLabels = this->getNumLabels();
             uint32 numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
-            setToZeros(confusionMatricesSubset_, numElements);
+            setArrayToZeros(confusionMatricesSubset_, numElements);
         }
 
         void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
