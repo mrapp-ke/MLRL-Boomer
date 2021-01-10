@@ -41,4 +41,16 @@ class Rule final {
          */
         const IHead& getHead() const;
 
+        /**
+         * Invokes some of the given visitor functions, depending on which ones are able to handle the rule's particular
+         * type of body and head.
+         *
+         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
+         * @param fullHeadVisitor           The visitor function for handling objects of the type `FullHead`
+         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         */
+        void visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                   IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const;
+
 };
