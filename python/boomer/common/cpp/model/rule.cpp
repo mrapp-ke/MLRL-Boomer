@@ -13,3 +13,9 @@ const IBody& Rule::getBody() const {
 const IHead& Rule::getHead() const {
     return *headPtr_;
 }
+
+void Rule::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                 IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const {
+    bodyPtr_->visit(emptyBodyVisitor, conjunctiveBodyVisitor);
+    headPtr_->visit(fullHeadVisitor, partialHeadVisitor);
+}
