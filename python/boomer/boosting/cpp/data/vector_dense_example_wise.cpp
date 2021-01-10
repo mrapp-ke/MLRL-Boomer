@@ -1,4 +1,5 @@
 #include "vector_dense_example_wise.h"
+#include "../../../common/cpp/data/arrays.h"
 #include "../math/math.h"
 #include <cstdlib>
 
@@ -103,13 +104,8 @@ uint32 DenseExampleWiseStatisticVector::getNumElements() const {
 }
 
 void DenseExampleWiseStatisticVector::setAllToZero() {
-    for (uint32 i = 0; i < numGradients_; i++) {
-        gradients_[i] = 0;
-    }
-
-    for (uint32 i = 0; i< numHessians_; i++) {
-        hessians_[i] = 0;
-    }
+    setArrayToZeros(gradients_, numGradients_);
+    setArrayToZeros(hessians_, numHessians_);
 }
 
 void DenseExampleWiseStatisticVector::add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
