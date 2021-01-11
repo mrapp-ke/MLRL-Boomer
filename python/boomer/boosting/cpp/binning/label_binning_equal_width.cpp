@@ -1,7 +1,7 @@
 #include "label_binning_equal_width.h"
+#include "../../../common/binning/binning_common.h"
 #include "../data/vector_dense_label_wise.h"
 #include "../data/vector_dense_example_wise.h"
-#include <cmath>
 #include <limits>
 
 using namespace boosting;
@@ -15,7 +15,7 @@ EqualWidthLabelBinning<T>::EqualWidthLabelBinning(float32 binRatio, uint32 minBi
 
 template<class T>
 uint32 EqualWidthLabelBinning<T>::getMaxBins(uint32 numLabels) const {
-    return std::ceil(binRatio_ * numLabels) + 1;
+    return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
 }
 
 template<class T>
@@ -60,8 +60,8 @@ LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector) cons
             }
         }
 
-        labelInfo.numNegativeBins = std::ceil(binRatio_ * numPositive);
-        labelInfo.numPositiveBins = std::ceil(binRatio_ * numNegative);
+        labelInfo.numNegativeBins = calculateNumBins(numPositive, binRatio_, minBins_, maxBins_);
+        labelInfo.numPositiveBins = calculateNumBins(numNegative, binRatio_, minBins_, maxBins_);
     } else {
         labelInfo.numPositiveBins = 0;
         labelInfo.numNegativeBins = 0;
