@@ -1,34 +1,11 @@
 #include "rule_evaluation_example_wise_regularized.h"
 #include "rule_evaluation_example_wise_common.h"
-#include "rule_evaluation_label_wise_common.h"
+#include "rule_evaluation_label_wise_regularized_common.h"
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
 #include "../math/math.h"
 
 using namespace boosting;
 
-
-/**
- * Copies the Hessians that are stored by a vector to a coefficient matrix that may be passed to LAPACK's DSYSV routine.
- *
- * @tparam StatisticVector  The type of the vector that stores the Hessians
- * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the Hessians
- * @param output            A pointer to an array of type `float64`, shape `(n, n)`, the Hessians should be copied to
- * @param n                 The number of rows and columns in the coefficient matrix
- */
-template<class StatisticVector>
-static inline void copyCoefficients(const StatisticVector& statisticVector, float64* output, uint32 n) {
-    typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
-
-    for (uint32 c = 0; c < n; c++) {
-        uint32 offset = c * n;
-
-        for (uint32 r = 0; r < c + 1; r++) {
-            float64 hessian = *hessianIterator;
-            output[offset + r] = hessian;
-            hessianIterator++;
-        }
-    }
-}
 
 /**
  * Adds a specific L2 regularization weight to the diagonal of a coefficient matrix.
@@ -40,26 +17,6 @@ static inline void copyCoefficients(const StatisticVector& statisticVector, floa
 static inline void addRegularizationWeight(float64* output, uint32 n, float64 l2RegularizationWeight) {
     for (uint32 i = 0; i < n; i++) {
         output[(i * n) + i] += l2RegularizationWeight;
-    }
-}
-
-/**
- * Copies the gradients that are stored by a vector to a vector of ordinates that may be passed to LAPACK's DSYSV
- * routine.
- *
- * @tparam StatisticVector  The type of the vector that stores the gradients
- * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the gradients
- * @param output            A pointer to an array of type `float64`, shape `(n)`, the gradients should be copied to
- * @param n                 The number of ordinates
- */
-template<class StatisticVector>
-static inline void copyOrdinates(const StatisticVector& statisticVector, float64* output, uint32 n) {
-    typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-
-    for (uint32 i = 0; i < n; i++) {
-        float64 gradient = *gradientIterator;
-        output[i] = -gradient;
-        gradientIterator++;
     }
 }
 
@@ -128,13 +85,24 @@ class RegularizedExampleWiseRuleEvaluation final : public AbstractExampleWiseRul
             }
 
             typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_->scores_begin();
-            copyCoefficients<DenseExampleWiseStatisticVector>(statisticVector, this->dsysvTmpArray1_, numPredictions);
+            copyCoefficients<DenseExampleWiseStatisticVector::hessian_const_iterator>(
+                statisticVector.hessians_cbegin(), this->dsysvTmpArray1_, numPredictions);
             addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
-            copyOrdinates<DenseExampleWiseStatisticVector>(statisticVector, scoreIterator, numPredictions);
-            scoreVector_->overallQualityScore = calculateExampleWisePredictionInternally(
-                numPredictions, scoreIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
-                l2RegularizationWeight_, *blasPtr_, *this->lapackPtr_, this->dsysvLwork_, this->dsysvTmpArray1_,
-                this->dsysvTmpArray2_, this->dsysvTmpArray3_, this->dspmvTmpArray_);
+            copyOrdinates<DenseExampleWiseStatisticVector::gradient_const_iterator>(
+                statisticVector.gradients_cbegin(), scoreIterator, numPredictions);
+
+            // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
+            this->lapackPtr_->dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
+                                    numPredictions, this->dsysvLwork_);
+
+            // Calculate the overall quality score...
+            float64 qualityScore = calculateExampleWiseQualityScore(numPredictions, scoreIterator,
+                                                                    statisticVector.gradients_begin(),
+                                                                    statisticVector.hessians_begin(), *blasPtr_,
+                                                                    this->dspmvTmpArray_);
+            qualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow<typename DenseScoreVector<T>::score_iterator>(
+                scoreIterator, numPredictions);
+            scoreVector_->overallQualityScore = qualityScore;
             return *scoreVector_;
         }
 
