@@ -21,26 +21,6 @@ static inline void addRegularizationWeight(float64* output, uint32 n, float64 l2
 }
 
 /**
- * Copies the gradients that are stored by a vector to a vector of ordinates that may be passed to LAPACK's DSYSV
- * routine.
- *
- * @tparam StatisticVector  The type of the vector that stores the gradients
- * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the gradients
- * @param output            A pointer to an array of type `float64`, shape `(n)`, the gradients should be copied to
- * @param n                 The number of ordinates
- */
-template<class StatisticVector>
-static inline void copyOrdinates(const StatisticVector& statisticVector, float64* output, uint32 n) {
-    typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-
-    for (uint32 i = 0; i < n; i++) {
-        float64 gradient = *gradientIterator;
-        output[i] = -gradient;
-        gradientIterator++;
-    }
-}
-
-/**
  * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
  * Hessians that have been calculated according to a loss function that is applied example wise using L2 regularization.
  *
@@ -108,7 +88,8 @@ class RegularizedExampleWiseRuleEvaluation final : public AbstractExampleWiseRul
             copyCoefficients<DenseExampleWiseStatisticVector::hessian_const_iterator>(
                 statisticVector.hessians_cbegin(), this->dsysvTmpArray1_, numPredictions);
             addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
-            copyOrdinates<DenseExampleWiseStatisticVector>(statisticVector, scoreIterator, numPredictions);
+            copyOrdinates<DenseExampleWiseStatisticVector::gradient_const_iterator>(
+                statisticVector.gradients_cbegin(), scoreIterator, numPredictions);
             scoreVector_->overallQualityScore = calculateExampleWisePredictionInternally(
                 numPredictions, scoreIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
                 l2RegularizationWeight_, *blasPtr_, *this->lapackPtr_, this->dsysvLwork_, this->dsysvTmpArray1_,

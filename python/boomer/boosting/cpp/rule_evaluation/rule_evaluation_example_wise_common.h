@@ -38,6 +38,24 @@ namespace boosting {
         }
     }
 
+    /**
+     * Copies the gradients that are stored by a vector to a vector of ordinates that may be passed to LAPACK's DSYSV
+     * routine.
+     *
+     * @tparam GradientIterator The type of the iterator that provides access to the gradients
+     * @param gradientIterator  An iterator of template type`GradientIterator` that provides random access to the
+     *                          gradients that are stored in the vector
+     * @param output            A pointer to an array of type `float64`, shape `(n)`, the gradients should be copied to
+     * @param n                 The number of ordinates
+     */
+    template<class GradientIterator>
+    static inline void copyOrdinates(GradientIterator gradientIterator, float64* output, uint32 n) {
+        for (uint32 i = 0; i < n; i++) {
+            float64 gradient = gradientIterator[i];
+            output[i] = -gradient;
+        }
+    }
+
     static inline float64 calculateExampleWisePredictionInternally(uint32 numPredictions, float64* scores,
                                                                    float64* gradients, float64* hessians,
                                                                    float64 l2RegularizationWeight, Blas& blas,
