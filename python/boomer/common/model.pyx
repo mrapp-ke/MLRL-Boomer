@@ -100,9 +100,9 @@ cdef class RuleModelFormatter:
         cdef ConjunctiveBodyImpl.threshold_const_iterator threshold_iterator = body.leq_thresholds_cbegin()
         cdef ConjunctiveBodyImpl.index_const_iterator index_iterator = body.leq_indices_cbegin()
         cdef uint32 num_conditions = body.getNumLeq()
-        num_processed_conditions = format_conditions(num_processed_conditions, num_conditions, index_iterator,
-                                                     threshold_iterator, attributes, print_feature_names,
-                                                     print_nominal_values, text, '<=')
+        num_processed_conditions = __format_conditions(num_processed_conditions, num_conditions, index_iterator,
+                                                       threshold_iterator, attributes, print_feature_names,
+                                                       print_nominal_values, text, '<=')
 
         threshold_iterator = body.gr_thresholds_cbegin()
         index_iterator = body.gr_indices_cbegin()
