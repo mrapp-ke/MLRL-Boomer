@@ -90,10 +90,19 @@ class RegularizedExampleWiseRuleEvaluation final : public AbstractExampleWiseRul
             addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
             copyOrdinates<DenseExampleWiseStatisticVector::gradient_const_iterator>(
                 statisticVector.gradients_cbegin(), scoreIterator, numPredictions);
-            scoreVector_->overallQualityScore = calculateExampleWisePredictionInternally(
-                numPredictions, scoreIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
-                l2RegularizationWeight_, *blasPtr_, *this->lapackPtr_, this->dsysvLwork_, this->dsysvTmpArray1_,
-                this->dsysvTmpArray2_, this->dsysvTmpArray3_, this->dspmvTmpArray_);
+
+            // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
+            this->lapackPtr_->dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
+                                    numPredictions, this->dsysvLwork_);
+
+            // Calculate the overall quality score...
+            float64 qualityScore = calculateExampleWiseQualityScore(numPredictions, scoreIterator,
+                                                                    statisticVector.gradients_begin(),
+                                                                    statisticVector.hessians_begin(), *blasPtr_,
+                                                                    this->dspmvTmpArray_);
+            qualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow<typename DenseScoreVector<T>::score_iterator>(
+                scoreIterator, numPredictions);
+            scoreVector_->overallQualityScore = qualityScore;
             return *scoreVector_;
         }
 
