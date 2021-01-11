@@ -104,6 +104,7 @@ cdef extern from "cpp/model/body_conjunctive.h" nogil:
 
 
 ctypedef void (*EmptyBodyVisitor)(const EmptyBodyImpl&)
+
 ctypedef void (*ConjunctiveBodyVisitor)(const ConjunctiveBodyImpl&)
 
 
@@ -146,6 +147,7 @@ cdef extern from "cpp/model/head_partial.h" nogil:
 
 
 ctypedef void (*FullHeadVisitor)(const FullHeadImpl&)
+
 ctypedef void (*PartialHeadVisitor)(const PartialHeadImpl&)
 
 
@@ -170,6 +172,63 @@ cdef extern from "cpp/model/model_builder.h" nogil:
         unique_ptr[RuleModelImpl] build()
 
 
+cdef extern from *:
+    """
+    #include "cpp/model/body.h"
+    #include "cpp/model/head.h"
+
+
+    typedef void (*EmptyBodyCythonVisitor)(void*, const EmptyBody&);
+
+    typedef void (*ConjunctiveBodyCythonVisitor)(void*, const ConjunctiveBody&);
+
+    typedef void (*FullHeadCythonVisitor)(void*, const FullHead&);
+
+    typedef void (*PartialHeadCythonVisitor)(void*, const PartialHead&);
+
+    static inline IBody::EmptyBodyVisitor wrapEmptyBodyVisitor(void* self, EmptyBodyCythonVisitor visitor) {
+        return [=](const EmptyBody& body) {
+            visitor(self, body);
+        };
+    }
+
+    static inline IBody::ConjunctiveBodyVisitor wrapConjunctiveBodyVisitor(void* self,
+                                                                           ConjunctiveBodyCythonVisitor visitor) {
+        return [=](const ConjunctiveBody& body) {
+            visitor(self, body);
+        };
+    }
+
+    static inline IHead::FullHeadVisitor wrapFullHeadVisitor(void* self, FullHeadCythonVisitor visitor) {
+        return [=](const FullHead& head) {
+            visitor(self, head);
+        };
+    }
+
+    static inline IHead::PartialHeadVisitor wrapPartialHeadVisitor(void* self, PartialHeadCythonVisitor visitor) {
+        return [=](const PartialHead& head) {
+            visitor(self, head);
+        };
+    }
+    """
+
+    ctypedef void (*EmptyBodyCythonVisitor)(void*, const EmptyBodyImpl&)
+
+    ctypedef void (*ConjunctiveBodyCythonVisitor)(void*, const ConjunctiveBodyImpl&)
+
+    ctypedef void (*FullHeadCythonVisitor)(void*, const FullHeadImpl&)
+
+    ctypedef void (*PartialHeadCythonVisitor)(void*, const PartialHeadImpl&)
+
+    EmptyBodyVisitor wrapEmptyBodyVisitor(void* self, EmptyBodyCythonVisitor visitor)
+
+    ConjunctiveBodyVisitor wrapConjunctiveBodyVisitor(void* self, ConjunctiveBodyCythonVisitor visitor)
+
+    FullHeadVisitor wrapFullHeadVisitor(void* self, FullHeadCythonVisitor visitor)
+
+    PartialHeadVisitor wrapPartialHeadVisitor(void* self, PartialHeadCythonVisitor visitor)
+
+
 cdef class RuleModel:
 
     # Attributes:
@@ -186,3 +245,34 @@ cdef class ModelBuilder:
     # Functions:
 
     cdef RuleModel build(self)
+
+
+cdef class RuleModelFormatter:
+
+    # Attributes:
+
+    cdef list attributes
+
+    cdef list label_names
+
+    cdef bint print_feature_names
+
+    cdef bint print_label_names
+
+    cdef bint print_nominal_values
+
+    cdef object text
+
+    # Functions:
+
+    cdef __visit_empty_body(self, const EmptyBodyImpl& body)
+
+    cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body)
+
+    cdef __visit_full_head(self, const FullHeadImpl& head)
+
+    cdef __visit_partial_head(self, const PartialHeadImpl& head)
+
+    cpdef void format(self, RuleModel model)
+
+    cpdef object get_text(self)
