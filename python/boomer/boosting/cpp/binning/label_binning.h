@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "../../../common/cpp/binning/binning_observer.h"
+#include "../../../common/cpp/data/types.h"
+#include <functional>
 
 
 namespace boosting {
@@ -33,6 +34,12 @@ namespace boosting {
         public:
 
             virtual ~ILabelBinning() { };
+
+            /**
+             * A callback function that is invoked when a value is assigned to a bin. It takes the index of the bin, the
+             * original index of the value, as well as the value itself, as arguments.
+             */
+            typedef std::function<void(uint32 binIndex, uint32 originalIndex, float64 value)> Callback;
 
             /**
              * Returns an upper bound for the number of bins used by the binning method, given a specific number of
@@ -65,11 +72,9 @@ namespace boosting {
              *                          given vector
              * @param statisticVector   A reference to an object of template type `T` that provides access to the
              *                          gradients
-             * @param observer          A reference to an object of type `IBinningObserver` that should be notified when
-             *                          a label is assigned to a bin
+             * @param callback          A callback that is invoked when a value is assigned to a bin
              */
-            virtual void createBins(LabelInfo labelInfo, const T& statisticVector,
-                                    IBinningObserver<float64>& observer) const = 0;
+            virtual void createBins(LabelInfo labelInfo, const T& statisticVector, Callback callback) const = 0;
 
     };
 

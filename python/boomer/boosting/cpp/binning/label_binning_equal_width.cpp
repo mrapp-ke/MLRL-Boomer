@@ -73,7 +73,7 @@ LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector) cons
 
 template<class T>
 void EqualWidthLabelBinning<T>::createBins(LabelInfo labelInfo, const T& statisticVector,
-                                           IBinningObserver<float64>& observer) const {
+                                           typename ILabelBinning<T>::Callback callback) const {
     uint32 numPositiveBins = labelInfo.numPositiveBins;
     float64 minPositive = labelInfo.minPositive;
     float64 maxPositive = labelInfo.maxPositive;
@@ -99,7 +99,7 @@ void EqualWidthLabelBinning<T>::createBins(LabelInfo labelInfo, const T& statist
                 binIndex = numNegativeBins - 1;
             }
 
-            observer.onBinUpdate(binIndex, i, value);
+            callback(binIndex, i, value);
         } else if (value < 0) {
             // Gradient is negative, i.e., label belongs to a positive bin...
             uint32 binIndex = std::floor((value - minNegative) / spanPerPositiveBin);
@@ -108,7 +108,7 @@ void EqualWidthLabelBinning<T>::createBins(LabelInfo labelInfo, const T& statist
                 binIndex = numPositiveBins - 1;
             }
 
-            observer.onBinUpdate(numNegativeBins + binIndex, i, value);
+            callback(numNegativeBins + binIndex, i, value);
         }
     }
 }

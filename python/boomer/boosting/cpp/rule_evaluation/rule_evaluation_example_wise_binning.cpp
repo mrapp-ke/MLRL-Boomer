@@ -99,51 +99,6 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
     private:
 
-        class LabelWiseBinningObserver : public IBinningObserver<float64> {
-
-            private:
-
-                const BinningExampleWiseRuleEvaluation<T>& ruleEvaluation_;
-
-            public:
-
-                LabelWiseBinningObserver(const BinningExampleWiseRuleEvaluation<T>& ruleEvaluation)
-                    : ruleEvaluation_(ruleEvaluation) {
-
-                }
-
-                void onBinUpdate(uint32 binIndex, uint32 originalIndex, float64 value) override {
-                    ruleEvaluation_.tmpGradients_[binIndex] += value;
-                    float64 hessian =
-                        ruleEvaluation_.currentStatisticVector_->hessians_diagonal_cbegin()[originalIndex];
-                    ruleEvaluation_.tmpHessians_[binIndex] += hessian;
-                    ruleEvaluation_.numElementsPerBin_[binIndex] += 1;
-                    ruleEvaluation_.labelWiseScoreVector_->indices_binned_begin()[originalIndex] = binIndex;
-                }
-
-        };
-
-        class ExampleWiseBinningObserver : public IBinningObserver<float64> {
-
-            private:
-
-                const BinningExampleWiseRuleEvaluation<T>& ruleEvaluation_;
-
-            public:
-
-                ExampleWiseBinningObserver(const BinningExampleWiseRuleEvaluation<T>& ruleEvaluation)
-                    : ruleEvaluation_(ruleEvaluation) {
-
-                }
-
-                void onBinUpdate(uint32 binIndex, uint32 originalIndex, float64 value) override {
-                    ruleEvaluation_.mapping_->begin()[binIndex].push_front(originalIndex);
-                    ruleEvaluation_.numElementsPerBin_[binIndex] += 1;
-                    ruleEvaluation_.scoreVector_->indices_binned_begin()[originalIndex] = binIndex;
-                }
-
-        };
-
         float64 l2RegularizationWeight_;
 
         uint32 maxBins_;
@@ -163,10 +118,6 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
         uint32* numElementsPerBin_;
 
         DenseMappingVector<uint32>* mapping_;
-
-        IBinningObserver<float64>* binningObserver_;
-
-        const DenseExampleWiseStatisticVector* currentStatisticVector_;
 
     public:
 
@@ -189,7 +140,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             : AbstractExampleWiseRuleEvaluation<T>(labelIndices, lapackPtr),
               l2RegularizationWeight_(l2RegularizationWeight), maxBins_(maxBins), binningPtr_(std::move(binningPtr)),
               blasPtr_(blasPtr), scoreVector_(nullptr), labelWiseScoreVector_(nullptr), tmpGradients_(nullptr),
-              tmpHessians_(nullptr), numElementsPerBin_(nullptr), mapping_(nullptr), binningObserver_(nullptr) {
+              tmpHessians_(nullptr), numElementsPerBin_(nullptr), mapping_(nullptr) {
 
         }
 
@@ -200,7 +151,6 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             free(tmpHessians_);
             free(numElementsPerBin_);
             delete mapping_;
-            delete binningObserver_;
         }
 
         const ILabelWiseScoreVector& calculateLabelWisePrediction(
@@ -210,7 +160,6 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                 tmpGradients_ = (float64*) malloc(maxBins_ * sizeof(float64));
                 tmpHessians_ = (float64*) malloc(maxBins_ * sizeof(float64));
                 numElementsPerBin_ = (uint32*) malloc(maxBins_ * sizeof(uint32));
-                binningObserver_ = new BinningExampleWiseRuleEvaluation<T>::LabelWiseBinningObserver(*this);
             }
 
             // Obtain information about the bins to be used...
@@ -226,8 +175,14 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             }
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-            currentStatisticVector_ = &statisticVector;
-            binningPtr_->createBins(labelInfo, statisticVector, *binningObserver_);
+            auto callback = [=, &statisticVector](uint32 binIndex, uint32 originalIndex, float64 value) {
+                tmpGradients_[binIndex] += value;
+                float64 hessian = statisticVector.hessians_diagonal_cbegin()[originalIndex];
+                tmpHessians_[binIndex] += hessian;
+                numElementsPerBin_[binIndex] += 1;
+                labelWiseScoreVector_->indices_binned_begin()[originalIndex] = binIndex;
+            };
+            binningPtr_->createBins(labelInfo, statisticVector, callback);
 
             // Compute predictions and quality scores...
             labelWiseScoreVector_->overallQualityScore = calculateLabelWisePredictionInternally<
@@ -248,7 +203,6 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                 tmpHessians_ = (float64*) malloc(triangularNumber(maxBins_) * sizeof(float64));
                 numElementsPerBin_ = (uint32*) malloc(maxBins_ * sizeof(uint32));
                 mapping_ = new DenseMappingVector<uint32>(maxBins_);
-                binningObserver_ = new BinningExampleWiseRuleEvaluation<T>::ExampleWiseBinningObserver(*this);
             }
 
             // Obtain information about the bins to be used...
@@ -263,8 +217,12 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             }
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-            currentStatisticVector_ = &statisticVector;
-            binningPtr_->createBins(labelInfo, statisticVector, *binningObserver_);
+            auto callback = [this](uint32 binIndex, uint32 originalIndex, float64 value) {
+                mapping_->begin()[binIndex].push_front(originalIndex);
+                numElementsPerBin_[binIndex] += 1;
+                scoreVector_->indices_binned_begin()[originalIndex] = binIndex;
+            };
+            binningPtr_->createBins(labelInfo, statisticVector, callback);
             numBins = aggregateGradientsAndHessians(statisticVector, *mapping_, numElementsPerBin_, tmpGradients_,
                                                     tmpHessians_, numBins);
             scoreVector_->setNumBins(numBins, false);
