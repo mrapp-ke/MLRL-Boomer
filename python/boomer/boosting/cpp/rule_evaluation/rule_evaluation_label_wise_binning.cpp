@@ -15,7 +15,7 @@ using namespace boosting;
  * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
  */
 template<class T>
-class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation, public IBinningObserver<float64> {
+class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
 
     private:
 
@@ -30,8 +30,6 @@ class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation, pu
         float64* tmpHessians_;
 
         uint32* numElementsPerBin_;
-
-        const DenseLabelWiseStatisticVector* currentStatisticVector_;
 
     public:
 
@@ -75,8 +73,14 @@ class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation, pu
             }
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-            currentStatisticVector_ = &statisticVector;
-            binningPtr_->createBins(labelInfo, statisticVector, *this);
+            auto callback = [this, &statisticVector](uint32 binIndex, uint32 originalIndex, float64 value) {
+                tmpGradients_[binIndex] += value;
+                float64 hessian = statisticVector.hessians_cbegin()[originalIndex];
+                tmpHessians_[binIndex] += hessian;
+                numElementsPerBin_[binIndex] += 1;
+                scoreVector_.indices_binned_begin()[originalIndex] = binIndex;
+            };
+            binningPtr_->createBins(labelInfo, statisticVector, callback);
 
             // Compute predictions and quality scores...
             scoreVector_.overallQualityScore = calculateLabelWisePredictionInternally<
@@ -86,14 +90,6 @@ class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation, pu
                 numBins, scoreVector_.scores_binned_begin(), scoreVector_.quality_scores_binned_begin(), tmpGradients_,
                 tmpHessians_, numElementsPerBin_, l2RegularizationWeight_);
             return scoreVector_;
-        }
-
-        void onBinUpdate(uint32 binIndex, uint32 originalIndex, float64 value) override {
-            tmpGradients_[binIndex] += value;
-            float64 hessian = currentStatisticVector_->hessians_cbegin()[originalIndex];
-            tmpHessians_[binIndex] += hessian;
-            numElementsPerBin_[binIndex] += 1;
-            scoreVector_.indices_binned_begin()[originalIndex] = binIndex;
         }
 
 };
