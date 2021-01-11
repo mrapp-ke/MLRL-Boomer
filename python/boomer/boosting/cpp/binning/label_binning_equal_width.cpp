@@ -68,7 +68,6 @@ LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector) cons
     }
 
     return labelInfo;
-
 }
 
 template<class T>
