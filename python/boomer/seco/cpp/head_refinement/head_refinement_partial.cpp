@@ -6,14 +6,15 @@
 using namespace seco;
 
 
-static inline std::unique_ptr<SparseArrayVector<float64>> argsort(const float64* a, uint32 numElements) {
+template<class Iterator>
+static inline std::unique_ptr<SparseArrayVector<float64>> argsort(Iterator iterator, uint32 numElements) {
     std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr = std::make_unique<SparseArrayVector<float64>>(
         numElements);
-    SparseArrayVector<float64>::iterator iterator = sortedVectorPtr->begin();
+    SparseArrayVector<float64>::iterator sortedIterator = sortedVectorPtr->begin();
 
     for (uint32 i = 0; i < numElements; i++) {
-        iterator[i].index = i;
-        iterator[i].value = a[i];
+        sortedIterator[i].index = i;
+        sortedIterator[i].value = iterator[i];
     }
 
     sortedVectorPtr->sortByValues();
