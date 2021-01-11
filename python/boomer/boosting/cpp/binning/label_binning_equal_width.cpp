@@ -60,8 +60,8 @@ LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector) cons
             }
         }
 
-        labelInfo.numNegativeBins = numNegative > 0 ? calculateNumBins(numPositive, binRatio_, minBins_, maxBins_) : 0;
-        labelInfo.numPositiveBins = numPositive > 0 ? calculateNumBins(numNegative, binRatio_, minBins_, maxBins_) : 0;
+        labelInfo.numNegativeBins = numPositive > 0 ? calculateNumBins(numPositive, binRatio_, minBins_, maxBins_) : 0;
+        labelInfo.numPositiveBins = numNegative > 0 ? calculateNumBins(numNegative, binRatio_, minBins_, maxBins_) : 0;
     } else {
         labelInfo.numPositiveBins = 0;
         labelInfo.numNegativeBins = 0;
