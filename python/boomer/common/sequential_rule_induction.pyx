@@ -5,7 +5,6 @@ Provides classes that allow to sequentially induce models that consist of severa
 """
 from boomer.common.input cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.model cimport IModelBuilder
-from boomer.common.rules cimport Rule, RuleList
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.statistics cimport StatisticsProvider, IStatistics
