@@ -4,6 +4,7 @@
 #pragma once
 
 #include "rule_evaluation_example_wise.h"
+#include "../math/blas.h"
 #include "../math/lapack.h"
 #include <cstdlib>
 
@@ -54,7 +55,18 @@ namespace boosting {
         }
     }
 
-
+    /**
+     * Calculates and returns an overall quality score, given the predicted scores for several labels, as well as the
+     * corresponding gradients and Hessians.
+     *
+     * @param numPredictions    The number of predicted scores
+     * @param scores            A pointer to an array of type `float64` that stores the predicted scores
+     * @param gradients         A pointer to an array of type `float64` that stores the gradients
+     * @param hessians          A pointer to an array of type `float64` that stores the Hessians
+     * @param blas              A reference to an object of type `Blas` that allows to execture different BLAS routines
+     * @param dspmvTmpArray     A pointer to an array of type `float64` that should be used by BLAS' DSPMV routine to
+     *                          store temporary values
+     */
     static inline float64 calculateExampleWiseQualityScore(uint32 numPredictions, float64* scores, float64* gradients,
                                                            float64* hessians, Blas& blas, float64* dspmvTmpArray) {
         float64 overallQualityScore = blas.ddot(scores, gradients, numPredictions);
