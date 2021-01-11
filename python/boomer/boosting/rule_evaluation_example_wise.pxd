@@ -1,4 +1,4 @@
-from boomer.common._types cimport float32, float64
+from boomer.common._types cimport uint32, float32, float64
 from boomer.boosting._blas cimport Blas
 from boomer.boosting._lapack cimport Lapack
 
@@ -30,7 +30,7 @@ cdef extern from "cpp/rule_evaluation/rule_evaluation_example_wise_binning.h" na
         # Constructors:
 
         EqualBinningExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, float32 binRatio,
-                                                         shared_ptr[Blas] blasPtr,
+                                                         uint32 minBins, uint32 maxBins, shared_ptr[Blas] blasPtr,
                                                          shared_ptr[Lapack] lapackPtr) except +
 
 

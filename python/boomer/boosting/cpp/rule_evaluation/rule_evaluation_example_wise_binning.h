@@ -21,6 +21,10 @@ namespace boosting {
 
             float32 binRatio_;
 
+            uint32 minBins_;
+
+            uint32 maxBins_;
+
             std::shared_ptr<Blas> blasPtr_;
 
             std::shared_ptr<Lapack> lapackPtr_;
@@ -32,12 +36,15 @@ namespace boosting {
              *                                  scores to be predicted by rules
              * @param binRatio                  A percentage that specifies how many bins should be used to assign
              *                                  labels to
+             * @param minBins                   The minimum number of bins to be used to assign labels to
+             * @param maxBins                   The maximum number of bins to be used to assign labels to
              * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
              *                                  different BLAS routines
              * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
             EqualWidthBinningExampleWiseRuleEvaluationFactory(float64 l2RegularizationWeight, float32 binRatio,
+                                                              uint32 minBins, uint32 maxBins,
                                                               std::shared_ptr<Blas> blasPtr,
                                                               std::shared_ptr<Lapack> lapackPtr);
 

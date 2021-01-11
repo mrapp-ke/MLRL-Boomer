@@ -19,6 +19,10 @@ namespace boosting {
 
             float32 binRatio_;
 
+            uint32 minBins_;
+
+            uint32 maxBins_;
+
         public:
 
             /**
@@ -26,8 +30,11 @@ namespace boosting {
              *                                  scores to be predicted by rules
              * @param binRatio                  A percentage that specifies how many bins should be used to assign
              *                                  labels to
+             * @param minBins                   The minimum number of bins to be used to assign labels to
+             * @param maxBins                   The maximum number of bins to be used to assign labels to
              */
-            EqualWidthBinningLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight, float32 binRatio);
+            EqualWidthBinningLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight, float32 binRatio,
+                                                            uint32 minBins, uint32 maxBins);
 
             std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
 
