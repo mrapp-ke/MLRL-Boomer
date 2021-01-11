@@ -228,7 +228,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         label_binning = self.label_binning
 
         if label_binning is None:
-            return None, 0
+            return None, 0, 0, 0
         else:
             prefix, args = parse_prefix_and_dict(label_binning, [LABEL_BINNING_EQUAL_WIDTH])
 
