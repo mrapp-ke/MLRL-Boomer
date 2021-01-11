@@ -8,29 +8,6 @@ using namespace boosting;
 
 
 /**
- * Copies the Hessians that are stored by a vector to a coefficient matrix that may be passed to LAPACK's DSYSV routine.
- *
- * @tparam StatisticVector  The type of the vector that stores the Hessians
- * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the Hessians
- * @param output            A pointer to an array of type `float64`, shape `(n, n)`, the Hessians should be copied to
- * @param n                 The number of rows and columns in the coefficient matrix
- */
-template<class StatisticVector>
-static inline void copyCoefficients(const StatisticVector& statisticVector, float64* output, uint32 n) {
-    typename StatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
-
-    for (uint32 c = 0; c < n; c++) {
-        uint32 offset = c * n;
-
-        for (uint32 r = 0; r < c + 1; r++) {
-            float64 hessian = *hessianIterator;
-            output[offset + r] = hessian;
-            hessianIterator++;
-        }
-    }
-}
-
-/**
  * Adds a specific L2 regularization weight to the diagonal of a coefficient matrix.
  *
  * @param output                    A pointer to an array of type `float64`, shape `(n, n)` that stores the coefficients
@@ -128,7 +105,8 @@ class RegularizedExampleWiseRuleEvaluation final : public AbstractExampleWiseRul
             }
 
             typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_->scores_begin();
-            copyCoefficients<DenseExampleWiseStatisticVector>(statisticVector, this->dsysvTmpArray1_, numPredictions);
+            copyCoefficients<DenseExampleWiseStatisticVector::hessian_const_iterator>(
+                statisticVector.hessians_cbegin(), this->dsysvTmpArray1_, numPredictions);
             addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
             copyOrdinates<DenseExampleWiseStatisticVector>(statisticVector, scoreIterator, numPredictions);
             scoreVector_->overallQualityScore = calculateExampleWisePredictionInternally(
