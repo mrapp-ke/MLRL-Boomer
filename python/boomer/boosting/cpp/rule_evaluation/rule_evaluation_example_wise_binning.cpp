@@ -271,16 +271,17 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 };
 
 EqualWidthBinningExampleWiseRuleEvaluationFactory::EqualWidthBinningExampleWiseRuleEvaluationFactory(
-        float64 l2RegularizationWeight, float32 binRatio, std::shared_ptr<Blas> blasPtr,
+        float64 l2RegularizationWeight, float32 binRatio, uint32 minBins, uint32 maxBins, std::shared_ptr<Blas> blasPtr,
         std::shared_ptr<Lapack> lapackPtr)
-    : l2RegularizationWeight_(l2RegularizationWeight), binRatio_(binRatio), blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
+    : l2RegularizationWeight_(l2RegularizationWeight), binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins),
+      blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
 
 }
 
 std::unique_ptr<IExampleWiseRuleEvaluation> EqualWidthBinningExampleWiseRuleEvaluationFactory::create(
         const FullIndexVector& indexVector) const {
     std::unique_ptr<ILabelBinning<DenseExampleWiseStatisticVector>> binningPtr =
-        std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector>>(binRatio_);
+        std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector>>(binRatio_, minBins_, maxBins_);
     uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
     return std::make_unique<BinningExampleWiseRuleEvaluation<FullIndexVector>>(indexVector, l2RegularizationWeight_,
                                                                                maxBins, std::move(binningPtr), blasPtr_,
@@ -290,7 +291,7 @@ std::unique_ptr<IExampleWiseRuleEvaluation> EqualWidthBinningExampleWiseRuleEval
 std::unique_ptr<IExampleWiseRuleEvaluation> EqualWidthBinningExampleWiseRuleEvaluationFactory::create(
         const PartialIndexVector& indexVector) const {
     std::unique_ptr<ILabelBinning<DenseExampleWiseStatisticVector>> binningPtr =
-        std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector>>(binRatio_);
+        std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector>>(binRatio_, minBins_, maxBins_);
     uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
     return std::make_unique<BinningExampleWiseRuleEvaluation<PartialIndexVector>>(indexVector, l2RegularizationWeight_,
                                                                                   maxBins, std::move(binningPtr),

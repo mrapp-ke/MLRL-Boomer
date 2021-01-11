@@ -1,4 +1,4 @@
-from boomer.common._types cimport float32, float64
+from boomer.common._types cimport uint32, float32, float64
 
 from libcpp.memory cimport shared_ptr
 
@@ -26,7 +26,8 @@ cdef extern from "cpp/rule_evaluation/rule_evaluation_label_wise_binning.h" name
 
         # Constructors:
 
-        EqualWidthBinningLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, float32 binRatio) except +
+        EqualWidthBinningLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, float32 binRatio,
+                                                            uint32 minBins, uint32 maxBins) except +
 
 
 cdef class LabelWiseRuleEvaluationFactory:

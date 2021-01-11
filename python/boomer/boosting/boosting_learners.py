@@ -25,12 +25,12 @@ from boomer.common.statistics import StatisticsProviderFactory
 from sklearn.base import ClassifierMixin
 
 from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
-    HEAD_REFINEMENT_SINGLE, ARGUMENT_BIN_RATIO
+    HEAD_REFINEMENT_SINGLE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from boomer.common.rule_learners import MLRuleLearner, SparsePolicy
 from boomer.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
     create_max_head_refinements, create_num_threads, create_thresholds_factory, parse_prefix_and_dict, \
-    get_float_argument
+    get_float_argument, get_int_argument
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -209,16 +209,18 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_rule_evaluation_factory(self, loss_function, l2_regularization_weight: float):
-        label_binning, bin_ratio = self.__create_label_binning()
+        label_binning, bin_ratio, min_bins, max_bins = self.__create_label_binning()
 
         if isinstance(loss_function, LabelWiseLoss):
             if label_binning == LABEL_BINNING_EQUAL_WIDTH:
-                return EqualWidthBinningLabelWiseRuleEvaluationFactory(l2_regularization_weight, bin_ratio)
+                return EqualWidthBinningLabelWiseRuleEvaluationFactory(l2_regularization_weight, bin_ratio, min_bins,
+                                                                       max_bins)
             else:
                 return RegularizedLabelWiseRuleEvaluationFactory(l2_regularization_weight)
         else:
             if label_binning == LABEL_BINNING_EQUAL_WIDTH:
-                return EqualWidthBinningExampleWiseRuleEvaluationFactory(l2_regularization_weight, bin_ratio)
+                return EqualWidthBinningExampleWiseRuleEvaluationFactory(l2_regularization_weight, bin_ratio, min_bins,
+                                                                         max_bins)
             else:
                 return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
 
@@ -232,7 +234,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
             if prefix == LABEL_BINNING_EQUAL_WIDTH:
                 bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-                return prefix, bin_ratio
+                min_bins = get_int_argument(args, ARGUMENT_MIN_BINS, 1, lambda x: x >= 1)
+                max_bins = get_int_argument(args, ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+                return prefix, bin_ratio, min_bins, max_bins
             raise ValueError('Invalid value given for parameter \'label_binning\': ' + str(label_binning))
 
     def __create_statistics_provider_factory(self, loss_function, rule_evaluation_factory) -> StatisticsProviderFactory:

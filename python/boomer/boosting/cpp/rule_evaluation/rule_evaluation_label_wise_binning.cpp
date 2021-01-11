@@ -95,15 +95,15 @@ class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
 };
 
 EqualWidthBinningLabelWiseRuleEvaluationFactory::EqualWidthBinningLabelWiseRuleEvaluationFactory(
-        float64 l2RegularizationWeight, float32 binRatio)
-    : l2RegularizationWeight_(l2RegularizationWeight), binRatio_(binRatio) {
+        float64 l2RegularizationWeight, float32 binRatio, uint32 minBins, uint32 maxBins)
+    : l2RegularizationWeight_(l2RegularizationWeight), binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
 
 }
 
 std::unique_ptr<ILabelWiseRuleEvaluation> EqualWidthBinningLabelWiseRuleEvaluationFactory::create(
         const FullIndexVector& indexVector) const {
     std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr =
-        std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector>>(binRatio_);
+        std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector>>(binRatio_, minBins_, maxBins_);
     uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
     return std::make_unique<BinningLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, l2RegularizationWeight_,
                                                                              maxBins, std::move(binningPtr));
@@ -112,7 +112,7 @@ std::unique_ptr<ILabelWiseRuleEvaluation> EqualWidthBinningLabelWiseRuleEvaluati
 std::unique_ptr<ILabelWiseRuleEvaluation> EqualWidthBinningLabelWiseRuleEvaluationFactory::create(
         const PartialIndexVector& indexVector) const {
     std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr =
-        std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector>>(binRatio_);
+        std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector>>(binRatio_, minBins_, maxBins_);
     uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
     return std::make_unique<BinningLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector, l2RegularizationWeight_,
                                                                                 maxBins, std::move(binningPtr));
