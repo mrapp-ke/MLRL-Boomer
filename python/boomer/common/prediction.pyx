@@ -14,6 +14,12 @@ cdef class Predictor:
     A base class for all classes that allow to make predictions based on rule-based models.
     """
 
+    def __getstate__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
     cpdef object predict(self, float32[:, ::1] x, RuleModel model):
         """
         Obtains and returns the predictions for given examples.
@@ -55,12 +61,20 @@ cdef class DensePredictor(Predictor):
     Allows to make predictions based on rule-based models that are stored in dense matrices.
     """
 
-    def __cinit__(self, uint32 num_labels, TransformationFunction transformation_function = None):
+    def __cinit__(self, uint32 num_labels = 0, TransformationFunction transformation_function = None):
         """
         :param num_labels:              The total number of available labels
         :param transformation_function: An (optional) transformation function to be applied to the raw predictions or
                                         None, if no transformation function should be applied
         """
+        self.num_labels = num_labels
+        self.transformation_function = transformation_function
+
+    def __getstate__(self):
+        return self.num_labels, self.transformation_function
+
+    def __setstate__(self, state):
+        num_labels, transformation_function = state
         self.num_labels = num_labels
         self.transformation_function = transformation_function
 
@@ -92,6 +106,12 @@ cdef class TransformationFunction:
     A base class for all transformation functions that may be applied to predictions.
     """
 
+    def __getstate__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
+
     cdef object transform_matrix(self, float64[:, ::1] m):
         """
         Applies the transformation function to a matrix.
@@ -108,6 +128,12 @@ cdef class SignFunction(TransformationFunction):
     """
     Transforms predictions according to the sign function (1 if x > 0, 0 otherwise).
     """
+
+    def __getstate__(self):
+        pass
+
+    def __setstate__(self, state):
+        pass
 
     cdef object transform_matrix(self, float64[:, ::1] m):
         cdef uint32 num_rows = m.shape[0]
