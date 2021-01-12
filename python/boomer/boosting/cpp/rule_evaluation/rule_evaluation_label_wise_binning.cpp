@@ -1,5 +1,6 @@
 #include "rule_evaluation_label_wise_binning.h"
 #include "rule_evaluation_label_wise_binning_common.h"
+#include "../../../common/cpp/data/arrays.h"
 #include "../../../common/cpp/rule_evaluation/score_vector_label_wise_binned_dense.h"
 #include "../binning/label_binning_equal_width.h"
 #include <cstdlib>
@@ -65,12 +66,10 @@ class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
             uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
             scoreVector_.setNumBins(numBins, false);
 
-            // Reset gradients and Hessians to zero...
-            for (uint32 i = 0; i < numBins; i++) {
-                tmpGradients_[i] = 0;
-                tmpHessians_[i] = 0;
-                numElementsPerBin_[i] = 0;
-            }
+            // Reset arrays to zero...
+            setArrayToZeros(tmpGradients_, numBins);
+            setArrayToZeros(tmpHessians_, numBins);
+            setArrayToZeros(numElementsPerBin_, numBins);
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
             auto callback = [this, &statisticVector](uint32 binIndex, uint32 originalIndex, float64 value) {
