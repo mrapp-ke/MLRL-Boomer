@@ -208,9 +208,10 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector);
             uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
 
-            // Reset mapping and the number of elements per bin...
+            // Reset mapping...
             mapping_->clear();
 
+            // Reset arrays to zero...
             for (uint32 i = 0; i < numBins; i++) {
                 numElementsPerBin_[i] = 0;
             }
