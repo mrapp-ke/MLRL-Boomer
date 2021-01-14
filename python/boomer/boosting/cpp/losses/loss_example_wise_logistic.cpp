@@ -61,7 +61,7 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
 
         for (uint32 c = 0; c < numLabels; c++) {
             float64 x = gradientIterator[c];
-            sumExp += std::exp(x - max2);
+            sumExp2 += std::exp(x - max2);
         }
     } else {
         sumExp2 = sumExp;
