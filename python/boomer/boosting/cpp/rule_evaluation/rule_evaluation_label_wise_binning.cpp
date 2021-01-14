@@ -22,6 +22,8 @@ class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
 
         float64 l2RegularizationWeight_;
 
+        uint32 maxBins_;
+
         std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr_;
 
         DenseBinnedLabelWiseScoreVector<T> scoreVector_;
@@ -45,12 +47,15 @@ class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
          */
         BinningLabelWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight, uint32 maxBins,
                                        std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr)
-            : l2RegularizationWeight_(l2RegularizationWeight), binningPtr_(std::move(binningPtr)),
-              scoreVector_(DenseBinnedLabelWiseScoreVector<T>(labelIndices, maxBins)),
+            : l2RegularizationWeight_(l2RegularizationWeight), maxBins_(maxBins), binningPtr_(std::move(binningPtr)),
+              scoreVector_(DenseBinnedLabelWiseScoreVector<T>(labelIndices, maxBins + 1)),
               tmpGradients_((float64*) malloc(maxBins * sizeof(float64))),
               tmpHessians_((float64*) malloc(maxBins * sizeof(float64))),
               numElementsPerBin_((uint32*) malloc(maxBins * sizeof(uint32))) {
-
+            // The last bin is used for labels with zero statistics. For this particular bin, the prediction and quality
+            // score is always zero.
+            scoreVector_.scores_binned_begin()[maxBins] = 0;
+            scoreVector_.quality_scores_binned_begin()[maxBins] = 0;
         }
 
         ~BinningLabelWiseRuleEvaluation() {
@@ -79,7 +84,10 @@ class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
                 numElementsPerBin_[binIndex] += 1;
                 scoreVector_.indices_binned_begin()[labelIndex] = binIndex;
             };
-            binningPtr_->createBins(labelInfo, statisticVector, callback);
+            auto zeroCallback = [this](uint32 labelIndex) {
+                scoreVector_.indices_binned_begin()[labelIndex] = maxBins_;
+            };
+            binningPtr_->createBins(labelInfo, statisticVector, callback, zeroCallback);
 
             // Compute predictions and quality scores...
             scoreVector_.overallQualityScore = calculateLabelWisePredictionInternally<

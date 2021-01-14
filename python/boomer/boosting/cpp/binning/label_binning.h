@@ -42,6 +42,12 @@ namespace boosting {
             typedef std::function<void(uint32 binIndex, uint32 labelIndex, float64 statistic)> Callback;
 
             /**
+             * A callback function that is invoked when a label with zero statistics is encountered. It takes the index
+             * of the label as an argument.
+             */
+            typedef std::function<void(uint32 labelIndex)> ZeroCallback;
+
+            /**
              * Returns an upper bound for the number of bins used by the binning method, given a specific number of
              * labels for which rules may predict.
              *
@@ -73,8 +79,10 @@ namespace boosting {
              * @param statisticVector   A reference to an object of template type `T` that provides access to the
              *                          statistics
              * @param callback          A callback that is invoked when a label is assigned to a bin
+             * @param zeroCallback      A callback that is invoked when a label with zero statistics is encountered
              */
-            virtual void createBins(LabelInfo labelInfo, const T& statisticVector, Callback callback) const = 0;
+            virtual void createBins(LabelInfo labelInfo, const T& statisticVector, Callback callback,
+                                    ZeroCallback zeroCallback) const = 0;
 
     };
 

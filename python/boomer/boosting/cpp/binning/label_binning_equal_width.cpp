@@ -72,7 +72,8 @@ LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector) cons
 
 template<class T>
 void EqualWidthLabelBinning<T>::createBins(LabelInfo labelInfo, const T& statisticVector,
-                                           typename ILabelBinning<T>::Callback callback) const {
+                                           typename ILabelBinning<T>::Callback callback,
+                                           typename ILabelBinning<T>::ZeroCallback zeroCallback) const {
     uint32 numPositiveBins = labelInfo.numPositiveBins;
     float64 minPositive = labelInfo.minPositive;
     float64 maxPositive = labelInfo.maxPositive;
@@ -108,6 +109,8 @@ void EqualWidthLabelBinning<T>::createBins(LabelInfo labelInfo, const T& statist
             }
 
             callback(numNegativeBins + binIndex, i, value);
+        } else {
+            zeroCallback(i);
         }
     }
 }

@@ -40,8 +40,8 @@ namespace boosting {
 
             LabelInfo getLabelInfo(const T& statisticVector) const override;
 
-            void createBins(LabelInfo labelInfo, const T& statisticVector,
-                            typename ILabelBinning<T>::Callback callback) const override;
+            void createBins(LabelInfo labelInfo, const T& statisticVector, typename ILabelBinning<T>::Callback callback,
+                            typename ILabelBinning<T>::ZeroCallback zeroCallback) const override;
 
     };
 
