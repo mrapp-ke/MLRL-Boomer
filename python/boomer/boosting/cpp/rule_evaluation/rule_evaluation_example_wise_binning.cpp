@@ -157,10 +157,15 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
         const ILabelWiseScoreVector& calculateLabelWisePrediction(
                 const DenseExampleWiseStatisticVector& statisticVector) override {
             if (labelWiseScoreVector_ == nullptr) {
-                labelWiseScoreVector_ = new DenseBinnedLabelWiseScoreVector<T>(this->labelIndices_, maxBins_);
+                labelWiseScoreVector_ = new DenseBinnedLabelWiseScoreVector<T>(this->labelIndices_, maxBins_ + 1);
                 tmpGradients_ = (float64*) malloc(maxBins_ * sizeof(float64));
                 tmpHessians_ = (float64*) malloc(maxBins_ * sizeof(float64));
                 numElementsPerBin_ = (uint32*) malloc(maxBins_ * sizeof(uint32));
+
+                // The last bin is used for labels with zero statistics. For this particular bin, the prediction and
+                // quality score is always zero.
+                labelWiseScoreVector_->scores_binned_begin()[maxBins_] = 0;
+                labelWiseScoreVector_->quality_scores_binned_begin()[maxBins_] = 0;
             }
 
             // Obtain information about the bins to be used...
@@ -181,7 +186,10 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                 numElementsPerBin_[binIndex] += 1;
                 labelWiseScoreVector_->indices_binned_begin()[labelIndex] = binIndex;
             };
-            binningPtr_->createBins(labelInfo, statisticVector, callback);
+            auto zeroCallback = [this](uint32 labelIndex) {
+                labelWiseScoreVector_->indices_binned_begin()[labelIndex] = maxBins_;
+            };
+            binningPtr_->createBins(labelInfo, statisticVector, callback, zeroCallback);
 
             // Compute predictions and quality scores...
             labelWiseScoreVector_->overallQualityScore = calculateLabelWisePredictionInternally<
@@ -196,12 +204,16 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
 
         const IScoreVector& calculateExampleWisePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
             if (scoreVector_ == nullptr) {
-                scoreVector_ = new DenseBinnedScoreVector<T>(this->labelIndices_, maxBins_);
+                scoreVector_ = new DenseBinnedScoreVector<T>(this->labelIndices_, maxBins_ + 1);
                 this->initializeTmpArrays(maxBins_);
                 tmpGradients_ = (float64*) malloc(maxBins_ * sizeof(float64));
                 tmpHessians_ = (float64*) malloc(triangularNumber(maxBins_) * sizeof(float64));
                 numElementsPerBin_ = (uint32*) malloc(maxBins_ * sizeof(uint32));
                 mapping_ = new DenseMappingVector<uint32>(maxBins_);
+
+                // The last bin is used for labels with zero statistics. For this particular bin, the prediction is
+                // always zero.
+                scoreVector_->scores_binned_begin()[maxBins_] = 0;
             }
 
             // Obtain information about the bins to be used...
@@ -220,7 +232,10 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
                 numElementsPerBin_[binIndex] += 1;
                 scoreVector_->indices_binned_begin()[labelIndex] = binIndex;
             };
-            binningPtr_->createBins(labelInfo, statisticVector, callback);
+            auto zeroCallback = [this](uint32 labelIndex) {
+                scoreVector_->indices_binned_begin()[labelIndex] = maxBins_;
+            };
+            binningPtr_->createBins(labelInfo, statisticVector, callback, zeroCallback);
             numBins = aggregateGradientsAndHessians(statisticVector, *mapping_, numElementsPerBin_, tmpGradients_,
                                                     tmpHessians_, numBins);
             scoreVector_->setNumBins(numBins, false);
