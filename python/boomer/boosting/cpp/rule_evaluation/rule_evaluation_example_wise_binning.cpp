@@ -212,9 +212,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             mapping_->clear();
 
             // Reset arrays to zero...
-            for (uint32 i = 0; i < numBins; i++) {
-                numElementsPerBin_[i] = 0;
-            }
+            setArrayToZeros(numElementsPerBin_, numBins);
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
             auto callback = [this](uint32 binIndex, uint32 labelIndex, float64 statistic) {
