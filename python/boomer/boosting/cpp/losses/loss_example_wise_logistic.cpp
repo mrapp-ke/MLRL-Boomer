@@ -44,6 +44,9 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
         sumExp += std::exp(x - max);
     }
 
+    float64 max2 = max;
+    float64 sumExp2 = zeroExp;
+
     // Calculate the gradients and Hessians by traversing the labels in reverse order (to ensure that the values that
     // have temporarily been stored in the array of gradients have not been overwritten yet)
     intp i = triangularNumber(numLabels) - 1;
@@ -75,8 +78,8 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
             float64 expectedScore2 = trueLabel2 ? 1 : -1;
             float64 x2 = gradientIterator[r];
             hessianIterator[i] = invertedExpectedScore * expectedScore2
-                                 * divideOrZero<float64>(std::exp(x + x2 - max), sumExp)
-                                 * divideOrZero<float64>(zeroExp, sumExp);
+                                 * divideOrZero<float64>(std::exp(x + x2 - max2), sumExp2)
+                                 * divideOrZero<float64>(zeroExp, sumExp2);
             i--;
         }
 
