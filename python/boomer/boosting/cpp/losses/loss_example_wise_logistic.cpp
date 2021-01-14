@@ -20,9 +20,10 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
         statisticMatrix.hessians_row_begin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumCols();
 
-    // For each label `c`, calculate `x = -expectedScore_c * predictedScore_c` and find the maximum among all these
-    // values that is greater than 0 (because `exp(1) = 0`)
-    float64 max = 0;
+    // For each label `c`, calculate `x = -expectedScore_c * predictedScore_c` and find the largest and second largest
+    // values (that must be greater than 0, because `exp(1) = 0`) among all of them...
+    float64 max = 0;  // The largest value
+    float64 max2 = 0;  // The second largest value
 
     for (uint32 c = 0; c < numLabels; c++) {
         float64 predictedScore = scoreIterator[c];
@@ -31,7 +32,10 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
         gradientIterator[c] = x;  // Temporarily store `x` in the array of gradients
 
         if (x > max) {
+            max2 = max;
             max = x;
+        } else if (x > max2) {
+            max2 = x;
         }
     }
 
@@ -44,8 +48,24 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
         sumExp += std::exp(x - max);
     }
 
-    float64 max2 = max;
-    float64 sumExp2 = zeroExp;
+    // In the following, the largest value the exponential function may be applied to is `max + max2`, which happens
+    // when Hessians that belong to the upper triangle of the Hessian matrix are calculated...
+    max2 += max;
+    float64 sumExp2;
+
+    // If `max + max2 != max` we must calculate `sumExp2 = exp(0 - max2) + exp(x_1 - max2) + exp(x_2 - max2) + ...`,
+    // otherwise it's the same as `sumExp`...
+    if (max2 != max) {
+        zeroExp = std::exp(0.0 - max2);
+        sumExp2 = zeroExp;
+
+        for (uint32 c = 0; c < numLabels; c++) {
+            float64 x = gradientIterator[c];
+            sumExp += std::exp(x - max2);
+        }
+    } else {
+        sumExp2 = sumExp;
+    }
 
     // Calculate the gradients and Hessians by traversing the labels in reverse order (to ensure that the values that
     // have temporarily been stored in the array of gradients have not been overwritten yet)
