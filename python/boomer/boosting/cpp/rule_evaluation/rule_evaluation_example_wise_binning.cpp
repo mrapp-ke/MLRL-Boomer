@@ -7,7 +7,6 @@
 #include "../binning/label_binning_equal_width.h"
 #include "../math/blas.h"
 #include <cstdlib>
-#include <iostream>
 
 using namespace boosting;
 
@@ -246,29 +245,9 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             addRegularizationWeight(this->dsysvTmpArray1_, numBins, numElementsPerBin_, l2RegularizationWeight_);
             copyOrdinates<float64*>(tmpGradients_, scoreIterator, numBins);
 
-            std::cout << "-------------------------------------------------\n";
-            std::cout << "Gradients: ";
-            for (uint32 i = 0; i < numBins; i++) {
-                std::cout << scoreIterator[i] << ", ";
-            }
-            std::cout << "\n";
-            std::cout << "Hessians: ";
-            for (uint32 i = 0; i < numBins; i++) {
-                for (uint32 j = 0; j < i + 1; j++) {
-                    std::cout << this->dsysvTmpArray1_[(i * numBins) + j] << ", ";
-                }
-            }
-            std::cout << "\n";
-
             // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
             this->lapackPtr_->dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
                                     numBins, this->dsysvLwork_);
-
-            std::cout << "Predicted Scores: ";
-            for (uint32 i = 0; i < numBins; i++) {
-                std::cout << scoreIterator[i] << ", ";
-            }
-            std::cout << "\n";
 
             // Calculate the overall quality score...
             float64 qualityScore = calculateExampleWiseQualityScore(numBins, scoreIterator, tmpGradients_, tmpHessians_,
@@ -276,7 +255,6 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             qualityScore += 0.5 * l2RegularizationWeight_ *
                             l2NormPow<typename DenseBinnedScoreVector<T>::score_binned_iterator, uint32*>(
                                 scoreIterator, numElementsPerBin_, numBins);
-            std::cout << "Quality Score: " << qualityScore << "\n";
             scoreVector_->overallQualityScore = qualityScore;
             return *scoreVector_;
         }
