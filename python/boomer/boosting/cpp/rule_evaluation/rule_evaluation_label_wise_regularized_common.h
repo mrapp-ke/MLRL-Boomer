@@ -23,7 +23,7 @@ namespace boosting {
 
             // Calculate the score to be predicted for the current label...
             float64 score = sumOfHessians + l2RegularizationWeight;
-            score = score != 0 ? -sumOfGradients / score : 0;
+            score = divideOrZero<float64>(-sumOfGradients, score);
             scoreIterator[c] = score;
 
             // Calculate the quality score for the current label...
