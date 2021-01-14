@@ -72,12 +72,12 @@ class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
             setArrayToZeros(numElementsPerBin_, numBins);
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-            auto callback = [this, &statisticVector](uint32 binIndex, uint32 originalIndex, float64 value) {
-                tmpGradients_[binIndex] += value;
-                float64 hessian = statisticVector.hessians_cbegin()[originalIndex];
+            auto callback = [this, &statisticVector](uint32 binIndex, uint32 labelIndex, float64 statistic) {
+                tmpGradients_[binIndex] += statistic;
+                float64 hessian = statisticVector.hessians_cbegin()[labelIndex];
                 tmpHessians_[binIndex] += hessian;
                 numElementsPerBin_[binIndex] += 1;
-                scoreVector_.indices_binned_begin()[originalIndex] = binIndex;
+                scoreVector_.indices_binned_begin()[labelIndex] = binIndex;
             };
             binningPtr_->createBins(labelInfo, statisticVector, callback);
 
