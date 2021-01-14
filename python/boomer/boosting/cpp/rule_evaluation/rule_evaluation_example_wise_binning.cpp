@@ -174,7 +174,7 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             setArrayToZeros(numElementsPerBin_, numBins);
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-            auto callback = [=, &statisticVector](uint32 binIndex, uint32 labelIndex, float64 statistic) {
+            auto callback = [this, &statisticVector](uint32 binIndex, uint32 labelIndex, float64 statistic) {
                 tmpGradients_[binIndex] += statistic;
                 float64 hessian = statisticVector.hessians_diagonal_cbegin()[labelIndex];
                 tmpHessians_[binIndex] += hessian;
