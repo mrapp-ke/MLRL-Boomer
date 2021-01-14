@@ -218,43 +218,50 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             // Obtain information about the bins to be used...
             LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector);
             uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
+            float64 qualityScore;
 
-            // Reset mapping...
-            mapping_->clear();
+            if (numBins > 0) {
+                // Reset mapping...
+                mapping_->clear();
 
-            // Reset arrays to zero...
-            setArrayToZeros(numElementsPerBin_, numBins);
+                // Reset arrays to zero...
+                setArrayToZeros(numElementsPerBin_, numBins);
 
-            // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-            auto callback = [this](uint32 binIndex, uint32 labelIndex, float64 statistic) {
-                mapping_->begin()[binIndex].push_front(labelIndex);
-                numElementsPerBin_[binIndex] += 1;
-                scoreVector_->indices_binned_begin()[labelIndex] = binIndex;
-            };
-            auto zeroCallback = [this](uint32 labelIndex) {
-                scoreVector_->indices_binned_begin()[labelIndex] = maxBins_;
-            };
-            binningPtr_->createBins(labelInfo, statisticVector, callback, zeroCallback);
-            numBins = aggregateGradientsAndHessians(statisticVector, *mapping_, numElementsPerBin_, tmpGradients_,
-                                                    tmpHessians_, numBins);
-            scoreVector_->setNumBins(numBins, false);
+                // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
+                auto callback = [this](uint32 binIndex, uint32 labelIndex, float64 statistic) {
+                    mapping_->begin()[binIndex].push_front(labelIndex);
+                    numElementsPerBin_[binIndex] += 1;
+                    scoreVector_->indices_binned_begin()[labelIndex] = binIndex;
+                };
+                auto zeroCallback = [this](uint32 labelIndex) {
+                    scoreVector_->indices_binned_begin()[labelIndex] = maxBins_;
+                };
+                binningPtr_->createBins(labelInfo, statisticVector, callback, zeroCallback);
+                numBins = aggregateGradientsAndHessians(statisticVector, *mapping_, numElementsPerBin_, tmpGradients_,
+                                                        tmpHessians_, numBins);
+                scoreVector_->setNumBins(numBins, false);
 
-            typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
-                scoreVector_->scores_binned_begin();
-            copyCoefficients<float64*>(tmpHessians_, this->dsysvTmpArray1_, numBins);
-            addRegularizationWeight(this->dsysvTmpArray1_, numBins, numElementsPerBin_, l2RegularizationWeight_);
-            copyOrdinates<float64*>(tmpGradients_, scoreIterator, numBins);
+                typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
+                    scoreVector_->scores_binned_begin();
+                copyCoefficients<float64*>(tmpHessians_, this->dsysvTmpArray1_, numBins);
+                addRegularizationWeight(this->dsysvTmpArray1_, numBins, numElementsPerBin_, l2RegularizationWeight_);
+                copyOrdinates<float64*>(tmpGradients_, scoreIterator, numBins);
 
-            // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
-            this->lapackPtr_->dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
-                                    numBins, this->dsysvLwork_);
+                // Calculate the scores to be predicted for the individual labels by solving a system of linear equations...
+                this->lapackPtr_->dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_,
+                                        scoreIterator, numBins, this->dsysvLwork_);
 
-            // Calculate the overall quality score...
-            float64 qualityScore = calculateExampleWiseQualityScore(numBins, scoreIterator, tmpGradients_, tmpHessians_,
-                                                                    *blasPtr_, this->dspmvTmpArray_);
-            qualityScore += 0.5 * l2RegularizationWeight_ *
-                            l2NormPow<typename DenseBinnedScoreVector<T>::score_binned_iterator, uint32*>(
-                                scoreIterator, numElementsPerBin_, numBins);
+                // Calculate the overall quality score...
+                qualityScore = calculateExampleWiseQualityScore(numBins, scoreIterator, tmpGradients_, tmpHessians_,
+                                                                *blasPtr_, this->dspmvTmpArray_);
+                qualityScore += 0.5 * l2RegularizationWeight_ *
+                                l2NormPow<typename DenseBinnedScoreVector<T>::score_binned_iterator, uint32*>(
+                                    scoreIterator, numElementsPerBin_, numBins);
+            } else {
+                setArrayToValue(scoreVector_->indices_binned_begin(), this->labelIndices_.getNumElements(), maxBins_);
+                qualityScore = 0;
+            }
+
             scoreVector_->overallQualityScore = qualityScore;
             return *scoreVector_;
         }
