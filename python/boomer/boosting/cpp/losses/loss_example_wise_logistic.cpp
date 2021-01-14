@@ -57,7 +57,7 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
         // `-expectedScore_c * exp(x_c) / (1 + exp(x_1) + exp(x_2) + ...)`, which can be rewritten as
         // `-expectedScore_c * (exp(x_c - max) / sumExp)`
         float64 xExp = std::exp(x - max);
-        float64 tmp = xExp / sumExp;
+        float64 tmp = divideOrZero<float64>(xExp, sumExp);
         float64 gradient = invertedExpectedScore * tmp;
 
         // Calculate the Hessian on the diagonal of the Hessian matrix that corresponds to the current label. Such
@@ -74,8 +74,9 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
             uint32 trueLabel2 = labelMatrix.getValue(exampleIndex, r);
             float64 expectedScore2 = trueLabel2 ? 1 : -1;
             float64 x2 = gradientIterator[r];
-            hessianIterator[i] = invertedExpectedScore * expectedScore2 * (std::exp(x + x2 - max) / sumExp)
-                                 * (zeroExp / sumExp);
+            hessianIterator[i] = invertedExpectedScore * expectedScore2
+                                 * divideOrZero<float64>(std::exp(x + x2 - max), sumExp)
+                                 * divideOrZero<float64>(zeroExp, sumExp);
             i--;
         }
 
