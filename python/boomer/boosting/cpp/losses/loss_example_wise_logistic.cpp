@@ -39,32 +39,19 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
         }
     }
 
+    // In the following, the largest value the exponential function may be applied to is `max + max2`, which happens
+    // when Hessians that belong to the upper triangle of the Hessian matrix are calculated...
+    max2 += max;
+
     // Calculate `sumExp = exp(0 - max) + exp(x_1 - max) + exp(x_2 - max) + ...`
-    float64 zeroExp = std::exp(0.0 - max);
-    float64 sumExp = zeroExp;
+    float64 sumExp = std::exp(0.0 - max);
+    float64 zeroExp = std::exp(0.0 - max2);
+    float64 sumExp2 = zeroExp;
 
     for (uint32 c = 0; c < numLabels; c++) {
         float64 x = gradientIterator[c];
         sumExp += std::exp(x - max);
-    }
-
-    // In the following, the largest value the exponential function may be applied to is `max + max2`, which happens
-    // when Hessians that belong to the upper triangle of the Hessian matrix are calculated...
-    max2 += max;
-    float64 sumExp2;
-
-    // If `max + max2 != max` we must calculate `sumExp2 = exp(0 - max2) + exp(x_1 - max2) + exp(x_2 - max2) + ...`,
-    // otherwise it's the same as `sumExp`...
-    if (max2 != max) {
-        zeroExp = std::exp(0.0 - max2);
-        sumExp2 = zeroExp;
-
-        for (uint32 c = 0; c < numLabels; c++) {
-            float64 x = gradientIterator[c];
-            sumExp2 += std::exp(x - max2);
-        }
-    } else {
-        sumExp2 = sumExp;
+        sumExp2 += std::exp(x - max2);
     }
 
     // Calculate `zeroExp / sumExp2` (it is needed multiple times for calculating Hessians that belong to the upper
