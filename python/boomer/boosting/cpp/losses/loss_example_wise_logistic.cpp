@@ -20,9 +20,10 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
         statisticMatrix.hessians_row_begin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumCols();
 
-    // For each label `c`, calculate `x = -expectedScore_c * predictedScore_c` and find the maximum among all these
-    // values that is greater than 0 (because `exp(1) = 0`)
-    float64 max = 0;
+    // For each label `c`, calculate `x = -expectedScore_c * predictedScore_c` and find the largest and second largest
+    // values (that must be greater than 0, because `exp(1) = 0`) among all of them...
+    float64 max = 0;  // The largest value
+    float64 max2 = 0;  // The second largest value
 
     for (uint32 c = 0; c < numLabels; c++) {
         float64 predictedScore = scoreIterator[c];
@@ -31,18 +32,31 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
         gradientIterator[c] = x;  // Temporarily store `x` in the array of gradients
 
         if (x > max) {
+            max2 = max;
             max = x;
+        } else if (x > max2) {
+            max2 = x;
         }
     }
 
+    // In the following, the largest value the exponential function may be applied to is `max + max2`, which happens
+    // when Hessians that belong to the upper triangle of the Hessian matrix are calculated...
+    max2 += max;
+
     // Calculate `sumExp = exp(0 - max) + exp(x_1 - max) + exp(x_2 - max) + ...`
-    float64 zeroExp = std::exp(0.0 - max);
-    float64 sumExp = zeroExp;
+    float64 sumExp = std::exp(0.0 - max);
+    float64 zeroExp = std::exp(0.0 - max2);
+    float64 sumExp2 = zeroExp;
 
     for (uint32 c = 0; c < numLabels; c++) {
         float64 x = gradientIterator[c];
         sumExp += std::exp(x - max);
+        sumExp2 += std::exp(x - max2);
     }
+
+    // Calculate `zeroExp / sumExp2` (it is needed multiple times for calculating Hessians that belong to the upper
+    // triangle of the Hessian matrix)...
+    zeroExp = divideOrZero<float64>(zeroExp, sumExp2);
 
     // Calculate the gradients and Hessians by traversing the labels in reverse order (to ensure that the values that
     // have temporarily been stored in the array of gradients have not been overwritten yet)
@@ -57,7 +71,7 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
         // `-expectedScore_c * exp(x_c) / (1 + exp(x_1) + exp(x_2) + ...)`, which can be rewritten as
         // `-expectedScore_c * (exp(x_c - max) / sumExp)`
         float64 xExp = std::exp(x - max);
-        float64 tmp = xExp / sumExp;
+        float64 tmp = divideOrZero<float64>(xExp, sumExp);
         float64 gradient = invertedExpectedScore * tmp;
 
         // Calculate the Hessian on the diagonal of the Hessian matrix that corresponds to the current label. Such
@@ -74,8 +88,8 @@ void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
             uint32 trueLabel2 = labelMatrix.getValue(exampleIndex, r);
             float64 expectedScore2 = trueLabel2 ? 1 : -1;
             float64 x2 = gradientIterator[r];
-            hessianIterator[i] = invertedExpectedScore * expectedScore2 * (std::exp(x + x2 - max) / sumExp)
-                                 * (zeroExp / sumExp);
+            hessianIterator[i] = invertedExpectedScore * expectedScore2
+                                 * divideOrZero<float64>(std::exp(x + x2 - max2), sumExp2) * zeroExp;
             i--;
         }
 

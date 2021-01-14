@@ -70,8 +70,7 @@ class RuleLearnerRunnable(Runnable, ABC):
                                     clear_dir=args.current_fold == -1))
 
             if args.store_rules:
-                model_printer_outputs.append(
-                    ModelPrinterTxtOutput(options=args.print_options, output_dir=output_dir, clear_dir=False))
+                model_printer_outputs.append(ModelPrinterTxtOutput(output_dir=output_dir, clear_dir=False))
 
         model_dir = args.model_dir
         persistence = None if model_dir is None else ModelPersistence(model_dir)
