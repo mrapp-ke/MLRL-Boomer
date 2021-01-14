@@ -24,9 +24,9 @@ namespace boosting {
     };
 
     /**
-     * Defines an interface for methods that assign labels to bins, based on the corresponding gradients.
+     * Defines an interface for methods that assign labels to bins, based on the corresponding statistics.
      *
-     * @tparam T The type of the vector that provides access to the gradients
+     * @tparam T The type of the vector that provides access to the statistics
      */
     template<class T>
     class ILabelBinning {
@@ -36,10 +36,10 @@ namespace boosting {
             virtual ~ILabelBinning() { };
 
             /**
-             * A callback function that is invoked when a value is assigned to a bin. It takes the index of the bin, the
-             * original index of the value, as well as the value itself, as arguments.
+             * A callback function that is invoked when a label is assigned to a bin. It takes the index of the bin, the
+             * index of the label, as well as the statistic, as arguments.
              */
-            typedef std::function<void(uint32 binIndex, uint32 originalIndex, float64 value)> Callback;
+            typedef std::function<void(uint32 binIndex, uint32 labelIndex, float64 statistic)> Callback;
 
             /**
              * Returns an upper bound for the number of bins used by the binning method, given a specific number of
@@ -66,13 +66,13 @@ namespace boosting {
             virtual LabelInfo getLabelInfo(const T& statisticVector) const = 0;
 
             /**
-             * Assigns the labels to bins, based on the corresponding gradients.
+             * Assigns the labels to bins, based on the corresponding statistics.
              *
              * @param labelInfo         A struct of type `LabelInfo` that stores information about the statistics in the
              *                          given vector
              * @param statisticVector   A reference to an object of template type `T` that provides access to the
-             *                          gradients
-             * @param callback          A callback that is invoked when a value is assigned to a bin
+             *                          statistics
+             * @param callback          A callback that is invoked when a label is assigned to a bin
              */
             virtual void createBins(LabelInfo labelInfo, const T& statisticVector, Callback callback) const = 0;
 

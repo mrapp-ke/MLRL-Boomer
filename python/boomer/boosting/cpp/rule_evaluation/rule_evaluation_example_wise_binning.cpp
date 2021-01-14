@@ -174,12 +174,12 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             setArrayToZeros(numElementsPerBin_, numBins);
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-            auto callback = [=, &statisticVector](uint32 binIndex, uint32 originalIndex, float64 value) {
-                tmpGradients_[binIndex] += value;
-                float64 hessian = statisticVector.hessians_diagonal_cbegin()[originalIndex];
+            auto callback = [=, &statisticVector](uint32 binIndex, uint32 labelIndex, float64 statistic) {
+                tmpGradients_[binIndex] += statistic;
+                float64 hessian = statisticVector.hessians_diagonal_cbegin()[labelIndex];
                 tmpHessians_[binIndex] += hessian;
                 numElementsPerBin_[binIndex] += 1;
-                labelWiseScoreVector_->indices_binned_begin()[originalIndex] = binIndex;
+                labelWiseScoreVector_->indices_binned_begin()[labelIndex] = binIndex;
             };
             binningPtr_->createBins(labelInfo, statisticVector, callback);
 
@@ -217,10 +217,10 @@ class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluatio
             }
 
             // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-            auto callback = [this](uint32 binIndex, uint32 originalIndex, float64 value) {
-                mapping_->begin()[binIndex].push_front(originalIndex);
+            auto callback = [this](uint32 binIndex, uint32 labelIndex, float64 statistic) {
+                mapping_->begin()[binIndex].push_front(labelIndex);
                 numElementsPerBin_[binIndex] += 1;
-                scoreVector_->indices_binned_begin()[originalIndex] = binIndex;
+                scoreVector_->indices_binned_begin()[labelIndex] = binIndex;
             };
             binningPtr_->createBins(labelInfo, statisticVector, callback);
             numBins = aggregateGradientsAndHessians(statisticVector, *mapping_, numElementsPerBin_, tmpGradients_,
