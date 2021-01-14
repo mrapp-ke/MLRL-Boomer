@@ -1,6 +1,5 @@
 #include "loss_example_wise_logistic.h"
 #include "../math/math.h"
-#include <cmath>
 
 using namespace boosting;
 
