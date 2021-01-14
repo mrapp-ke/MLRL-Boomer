@@ -93,8 +93,7 @@ class ModelPrinterTxtOutput(ModelPrinterOutput):
     Writes the textual representation of a model to a TXT file.
     """
 
-    def __init__(self, options: Dict, output_dir: str, clear_dir: bool = True):
-        super().__init__(options)
+    def __init__(self, output_dir: str, clear_dir: bool = True):
         self.output_dir = output_dir
         self.clear_dir = clear_dir
 
