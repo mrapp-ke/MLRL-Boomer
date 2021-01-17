@@ -29,6 +29,13 @@ class IStatistics : virtual public IImmutableStatistics {
                 virtual ~IHistogramBuilder() { };
 
                 /**
+                 * Returns the number of bins.
+                 *
+                 * @return The number of bins
+                 */
+                virtual uint32 getNumBins() const = 0;
+
+                /**
                  * Adds the statistic at a specific index to a specific bin.
                  *
                  * @param binIndex          The index of the bin

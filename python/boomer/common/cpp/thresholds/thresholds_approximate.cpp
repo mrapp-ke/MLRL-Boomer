@@ -102,7 +102,8 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                                    const CoverageMask& coverageMask, const IWeightVector& weights) {
     uint32 maxElements = vector.getNumElements();
     BinVector* filteredVector = cacheEntry.vectorPtr.get();
-    DenseVector<uint32>& weightVector = *cacheEntry.weightVectorPtr;
+    DenseVector<uint32>* weightVector = cacheEntry.weightVectorPtr.get();
+    IHistogram* histogram = cacheEntry.histogramPtr.get();
     bool wasEmpty = false;
 
     if (filteredVector == nullptr) {
@@ -115,7 +116,6 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
     BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
     BinVector::example_list_iterator filteredExampleIterator = filteredVector->examples_begin();
-    DenseVector<uint32>::iterator weightIterator = weightVector.begin();
     uint32 i = 0;
 
     for(uint32 r = 0; r < maxElements; r++) {
@@ -149,10 +149,12 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
                 before = it;
                 it++;
             } else {
-                uint32 binIndex = binIterator[r].index;
-                uint32 weight = weights.getWeight(exampleIndex);
-                cacheEntry.histogramPtr->removeFromBin(binIndex, exampleIndex, weight);
-                weightIterator[binIndex] -= weight;
+                if (histogram != nullptr) {
+                    uint32 binIndex = binIterator[r].index;
+                    uint32 weight = weights.getWeight(exampleIndex);
+                    weightVector->begin()[binIndex] -= weight;
+                    histogram->removeFromBin(binIndex, exampleIndex, weight);
+                }
 
                 if (!wasEmpty) {
                     it = filteredExamples.erase_after(before);
@@ -178,16 +180,16 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void buildHistogram(BinVector& vector, const IStatistics& statistics, FilteredBinCacheEntry& cacheEntry,
-                                  const IWeightVector& weights) {
-    uint32 numBins = vector.getNumElements();
+static inline void buildHistogram(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder,
+                                  FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights) {
+    uint32 numElements = vector.getNumElements();
+    uint32 numBins = histogramBuilder.getNumBins();
     BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
     BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
-    std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr = statistics.createHistogramBuilder(numBins);
     std::unique_ptr<DenseVector<uint32>> weightVectorPtr = std::make_unique<DenseVector<uint32>>(numBins, false);
     DenseVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
 
-    for (uint32 i = 0; i < numBins; i++) {
+    for (uint32 i = 0; i < numElements; i++) {
         const BinVector::ExampleList& examples = exampleIterator[i];
         uint32 binIndex = binIterator[i].index;
         uint32 sumOfWeights = 0;
@@ -196,14 +198,14 @@ static inline void buildHistogram(BinVector& vector, const IStatistics& statisti
             BinVector::Example example = *it;
             uint32 exampleIndex = example.index;
             uint32 weight = weights.getWeight(exampleIndex);
-            histogramBuilderPtr->addToBin(binIndex, exampleIndex, weight);
+            histogramBuilder.addToBin(binIndex, exampleIndex, weight);
             sumOfWeights += weight;
         }
 
         weightIterator[binIndex] = sumOfWeights;
     }
 
-    cacheEntry.histogramPtr = std::move(histogramBuilderPtr->build());
+    cacheEntry.histogramPtr = std::move(histogramBuilder.build());
     cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
 }
 
@@ -271,6 +273,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
                             FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
                             BinVector* binVector = cacheEntry.vectorPtr.get();
+                            std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr;
 
                             if (binVector == nullptr) {
                                 auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
@@ -296,9 +299,9 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     removeEmptyBins(*binVector);
                                 }
 
-                                // Build histogram...
-                                buildHistogram(*binVector, *thresholdsSubset_.thresholds_.statisticsPtr_, cacheEntry,
-                                               thresholdsSubset_.weights_);
+                                histogramBuilderPtr =
+                                    thresholdsSubset_.thresholds_.statisticsPtr_->createHistogramBuilder(
+                                        binVector->getNumElements());
                             }
 
                             // Filter bins, if necessary...
@@ -308,6 +311,13 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_,
                                                 thresholdsSubset_.weights_);
                                 binVector = cacheEntry.vectorPtr.get();
+                            }
+
+                            // Build histogram, if necessary...
+                            IStatistics::IHistogramBuilder* histogramBuilder = histogramBuilderPtr.get();
+
+                            if (histogramBuilder != nullptr) {
+                                buildHistogram(*binVector, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
                             }
 
                             const IHistogram& histogram = *cacheEntry.histogramPtr;
