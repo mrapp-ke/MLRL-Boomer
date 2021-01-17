@@ -285,6 +285,10 @@ class ExampleWiseStatistics final : public AbstractExampleWiseStatistics<Statist
 
             }
 
+            uint32 getNumBins() const {
+                return statisticMatrixPtr_->getNumRows();
+            }
+
             void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
                 statisticMatrixPtr_->addToRow(binIndex,
                                               statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
