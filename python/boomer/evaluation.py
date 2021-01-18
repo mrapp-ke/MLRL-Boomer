@@ -233,18 +233,19 @@ class EvaluationLogOutput(EvaluationOutput):
             text = ''
 
             for measure in sorted(evaluation_result.measures):
-                if len(text) > 0:
-                    text += '\n'
+                if measure != TRAINING_TIME:
+                    if len(text) > 0:
+                        text += '\n'
 
-                if fold is None:
-                    score, std_dev = evaluation_result.avg(measure)
-                    text += (measure + ': ' + str(score))
+                    if fold is None:
+                        score, std_dev = evaluation_result.avg(measure)
+                        text += (measure + ': ' + str(score))
 
-                    if total_folds > 1:
-                        text += (' ±' + str(std_dev))
-                else:
-                    score = evaluation_result.get(measure, fold)
-                    text += (measure + ': ' + str(score))
+                        if total_folds > 1:
+                            text += (' ±' + str(std_dev))
+                    else:
+                        score = evaluation_result.get(measure, fold)
+                        text += (measure + ': ' + str(score))
 
             msg = ('Overall evaluation result for experiment \"' + experiment_name + '\"' if fold is None else
                    'Evaluation result for experiment \"' + experiment_name + '\" (Fold ' + str(
