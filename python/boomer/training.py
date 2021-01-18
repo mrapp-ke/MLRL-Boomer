@@ -41,8 +41,6 @@ class CrossValidation(Randomized, ABC):
     classifier or ranker.
     """
 
-    _run_time: float = 0.0
-
     def __init__(self, data_set: DataSet, num_folds: int, current_fold: int):
         """
         :param data_set:        The properties of the data set to be used
@@ -53,6 +51,7 @@ class CrossValidation(Randomized, ABC):
         self.data_set = data_set
         self.num_folds = num_folds
         self.current_fold = current_fold
+        self._run_time: float = 0.0
 
     def run(self):
         start_time = timer()
