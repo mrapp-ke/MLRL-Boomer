@@ -51,7 +51,6 @@ class CrossValidation(Randomized, ABC):
         self.data_set = data_set
         self.num_folds = num_folds
         self.current_fold = current_fold
-        self.run_time: float = 0.0
 
     def run(self):
         start_time = timer()
@@ -63,8 +62,8 @@ class CrossValidation(Randomized, ABC):
             self.__train_test_split()
 
         end_time = timer()
-        self.run_time = end_time - start_time
-        log.info('Successfully finished after %s seconds', self.run_time)
+        run_time = end_time - start_time
+        log.info('Successfully finished after %s seconds', run_time)
 
     def __cross_validate(self, num_folds: int):
         """
@@ -158,9 +157,6 @@ class CrossValidation(Randomized, ABC):
         # Train and evaluate classifier
         self._train_and_evaluate(meta_data, None, train_x, train_y, None, test_x, test_y, first_fold=0,
                                  current_fold=0, last_fold=0, num_folds=1)
-
-    def get_runtime(self):
-        return self.run_time
 
     @abstractmethod
     def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
