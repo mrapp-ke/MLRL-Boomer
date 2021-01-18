@@ -74,7 +74,7 @@ EX_BASED_F1 = 'Ex.-based F1'
 # The name of the rank loss metric
 RANK_LOSS = 'Rank Loss'
 
-# The time needed to learn the model
+# The time needed to train the model
 TRAINING_TIME = 'Training Time'
 
 
@@ -96,7 +96,7 @@ class Evaluation(ABC):
         :param current_fold:    The current cross validation fold starting at 0, or 0 if no cross validation is used
         :param last_fold:       The last cross validation fold or 0, if no cross validation is used
         :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
-        :param train_time:      The time needed to learn the model
+        :param train_time:      The time needed to train the model
         """
         pass
 
