@@ -82,7 +82,7 @@ class Experiment(CrossValidation, ABC):
         # Save model to disk...
         self.__save_model(current_learner, current_fold=current_fold, num_folds=num_folds)
 
-        run_time = super(CrossValidation).get_runtime()
+        run_time = current_learner.train_time_
 
         # Obtain and evaluate predictions for training data, if necessary...
         evaluation = self.train_evaluation
@@ -90,7 +90,8 @@ class Experiment(CrossValidation, ABC):
         if evaluation is not None:
             predictions = current_learner.predict(train_x)
             evaluation.evaluate('train_' + learner_name, predictions, train_y, first_fold=first_fold,
-                                current_fold=current_fold, last_fold=last_fold, num_folds=num_folds, learn_time=run_time)
+                                current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
+                                train_time=run_time)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
