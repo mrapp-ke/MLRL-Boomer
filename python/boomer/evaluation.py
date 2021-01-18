@@ -75,7 +75,7 @@ EX_BASED_F1 = 'Ex.-based F1'
 RANK_LOSS = 'Rank Loss'
 
 # The time needed to learn the model
-LEARN_TIME = 'Time to learn'
+TRAINING_TIME = 'Training Time'
 
 
 class Evaluation(ABC):
@@ -85,7 +85,7 @@ class Evaluation(ABC):
 
     @abstractmethod
     def evaluate(self, experiment_name: str, predictions, ground_truth, first_fold: int, current_fold: int,
-                 last_fold: int, num_folds: int, learn_time: float):
+                 last_fold: int, num_folds: int, train_time: float):
         """
         Evaluates the predictions provided by a classifier or ranker.
 
@@ -96,7 +96,7 @@ class Evaluation(ABC):
         :param current_fold:    The current cross validation fold starting at 0, or 0 if no cross validation is used
         :param last_fold:       The last cross validation fold or 0, if no cross validation is used
         :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
-        :param learn_time:      The time needed to learn the model
+        :param train_time:      The time needed to learn the model
         """
         pass
 
@@ -328,19 +328,17 @@ class AbstractEvaluation(Evaluation):
         self.results: Dict[str, EvaluationResult] = {}
 
     def evaluate(self, experiment_name: str, predictions, ground_truth, first_fold: int, current_fold: int,
-                 last_fold: int, num_folds: int, learn_time: float):
+                 last_fold: int, num_folds: int, train_time: float):
         result = self.results[experiment_name] if experiment_name in self.results else EvaluationResult()
         self.results[experiment_name] = result
-        self._populate_result(result, predictions, ground_truth, current_fold=current_fold, num_folds=num_folds,
-                              learn_time=learn_time)
+        self._populate_result(result, predictions, ground_truth, current_fold=current_fold, num_folds=num_folds)
         self.__write_predictions(experiment_name, predictions, ground_truth, current_fold=current_fold,
                                  num_folds=num_folds)
         self.__write_evaluation_result(experiment_name, result, first_fold=first_fold, current_fold=current_fold,
                                        last_fold=last_fold, num_folds=num_folds)
 
     @abstractmethod
-    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int,
-                         learn_time: float):
+    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         pass
 
     def __write_predictions(self, experiment_name: str, predictions, ground_truth, current_fold: int, num_folds: int):
@@ -388,8 +386,7 @@ class ClassificationEvaluation(AbstractEvaluation):
     def __init__(self, *args: EvaluationOutput):
         super().__init__(*args)
 
-    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int,
-                         learn_time: float):
+    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         if is_multilabel(ground_truth):
             hamming_loss = metrics.hamming_loss(ground_truth, predictions)
             result.put(HAMMING_LOSS, hamming_loss, current_fold, num_folds)
@@ -426,8 +423,7 @@ class ClassificationEvaluation(AbstractEvaluation):
             result.put(RECALL, metrics.recall_score(ground_truth, predictions, zero_division=1), current_fold,
                        num_folds)
             result.put(F1, metrics.f1_score(ground_truth, predictions, zero_division=1), current_fold, num_folds)
-        if learn_time > 0:
-            result.put(LEARN_TIME, learn_time, current_fold, num_folds)
+        result.put(TRAINING_TIME, 0.0, current_fold, num_folds)
 
 
 class RankingEvaluation(AbstractEvaluation):
@@ -438,6 +434,5 @@ class RankingEvaluation(AbstractEvaluation):
     def __init__(self, *args: EvaluationOutput):
         super().__init__(*args)
 
-    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int,
-                         learn_time: float):
+    def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), current_fold, num_folds)
