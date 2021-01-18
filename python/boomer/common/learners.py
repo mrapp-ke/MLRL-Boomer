@@ -48,6 +48,7 @@ class Learner(BaseEstimator):
         run_time = end_time - start_time
         log.info('Successfully fit model in %s seconds', run_time)
         self.model_ = model
+        self.train_time_ = run_time
         return self
 
     def predict(self, x):
