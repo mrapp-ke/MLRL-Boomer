@@ -74,6 +74,9 @@ EX_BASED_F1 = 'Ex.-based F1'
 # The name of the rank loss metric
 RANK_LOSS = 'Rank Loss'
 
+# The time needed to train the model
+TRAINING_TIME = 'Training Time'
+
 
 class Evaluation(ABC):
     """
@@ -82,7 +85,7 @@ class Evaluation(ABC):
 
     @abstractmethod
     def evaluate(self, experiment_name: str, predictions, ground_truth, first_fold: int, current_fold: int,
-                 last_fold: int, num_folds: int):
+                 last_fold: int, num_folds: int, train_time: float):
         """
         Evaluates the predictions provided by a classifier or ranker.
 
@@ -93,6 +96,7 @@ class Evaluation(ABC):
         :param current_fold:    The current cross validation fold starting at 0, or 0 if no cross validation is used
         :param last_fold:       The last cross validation fold or 0, if no cross validation is used
         :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
+        :param train_time:      The time needed to train the model
         """
         pass
 
@@ -229,18 +233,19 @@ class EvaluationLogOutput(EvaluationOutput):
             text = ''
 
             for measure in sorted(evaluation_result.measures):
-                if len(text) > 0:
-                    text += '\n'
+                if measure != TRAINING_TIME:
+                    if len(text) > 0:
+                        text += '\n'
 
-                if fold is None:
-                    score, std_dev = evaluation_result.avg(measure)
-                    text += (measure + ': ' + str(score))
+                    if fold is None:
+                        score, std_dev = evaluation_result.avg(measure)
+                        text += (measure + ': ' + str(score))
 
-                    if total_folds > 1:
-                        text += (' ±' + str(std_dev))
-                else:
-                    score = evaluation_result.get(measure, fold)
-                    text += (measure + ': ' + str(score))
+                        if total_folds > 1:
+                            text += (' ±' + str(std_dev))
+                    else:
+                        score = evaluation_result.get(measure, fold)
+                        text += (measure + ': ' + str(score))
 
             msg = ('Overall evaluation result for experiment \"' + experiment_name + '\"' if fold is None else
                    'Evaluation result for experiment \"' + experiment_name + '\" (Fold ' + str(
@@ -324,9 +329,10 @@ class AbstractEvaluation(Evaluation):
         self.results: Dict[str, EvaluationResult] = {}
 
     def evaluate(self, experiment_name: str, predictions, ground_truth, first_fold: int, current_fold: int,
-                 last_fold: int, num_folds: int):
+                 last_fold: int, num_folds: int, train_time: float):
         result = self.results[experiment_name] if experiment_name in self.results else EvaluationResult()
         self.results[experiment_name] = result
+        result.put(TRAINING_TIME, train_time, current_fold, num_folds)
         self._populate_result(result, predictions, ground_truth, current_fold=current_fold, num_folds=num_folds)
         self.__write_predictions(experiment_name, predictions, ground_truth, current_fold=current_fold,
                                  num_folds=num_folds)
