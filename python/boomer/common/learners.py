@@ -28,7 +28,8 @@ class Learner(BaseEstimator):
     A base class for all single- or multi-label classifiers or rankers.
 
     Attributes
-        model_  The model
+        model_      The model
+        train_time_ The time needed to train the model
     """
 
     def fit(self, x, y):
@@ -48,6 +49,7 @@ class Learner(BaseEstimator):
         run_time = end_time - start_time
         log.info('Successfully fit model in %s seconds', run_time)
         self.model_ = model
+        self.train_time_ = run_time
         return self
 
     def predict(self, x):
