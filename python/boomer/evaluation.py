@@ -155,12 +155,18 @@ class EvaluationResult:
 
     def avg(self, name: str) -> (float, float):
         """
-        Returns the score and standard deviation according to a specific measure averaged over all folds.
+        Returns the score and standard deviation according to a specific measure averaged over all available folds.
 
         :param name:    The name of the measure
         :return:        A tuple consisting of the averaged score and standard deviation
         """
-        values = np.array([self.get(name, i) for i in range(len(self.results))])
+        values = []
+
+        for i in range(len(self.results)):
+            if len(self.results[i]) > 0:
+                values.append(self.get(name, i))
+
+        values = np.array(values)
         return np.average(values), np.std(values)
 
     def avg_dict(self) -> Dict:
