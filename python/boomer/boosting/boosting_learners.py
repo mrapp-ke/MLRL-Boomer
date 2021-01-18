@@ -142,7 +142,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_min-coverage=' + str(self.min_coverage)
         if int(self.max_conditions) != -1:
             name += '_max-conditions=' + str(self.max_conditions)
-        if int(self.max_head_refinements) != 1:
+        if int(self.max_head_refinements) != -1:
             name += '_max-head-refinements=' + str(self.max_head_refinements)
         if int(self.random_state) != 1:
             name += '_random_state=' + str(self.random_state)
