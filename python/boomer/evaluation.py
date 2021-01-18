@@ -331,6 +331,7 @@ class AbstractEvaluation(Evaluation):
                  last_fold: int, num_folds: int, train_time: float):
         result = self.results[experiment_name] if experiment_name in self.results else EvaluationResult()
         self.results[experiment_name] = result
+        result.put(TRAINING_TIME, train_time, current_fold, num_folds)
         self._populate_result(result, predictions, ground_truth, current_fold=current_fold, num_folds=num_folds)
         self.__write_predictions(experiment_name, predictions, ground_truth, current_fold=current_fold,
                                  num_folds=num_folds)
@@ -423,7 +424,6 @@ class ClassificationEvaluation(AbstractEvaluation):
             result.put(RECALL, metrics.recall_score(ground_truth, predictions, zero_division=1), current_fold,
                        num_folds)
             result.put(F1, metrics.f1_score(ground_truth, predictions, zero_division=1), current_fold, num_folds)
-        result.put(TRAINING_TIME, 0.0, current_fold, num_folds)
 
 
 class RankingEvaluation(AbstractEvaluation):
