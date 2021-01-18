@@ -41,6 +41,8 @@ class CrossValidation(Randomized, ABC):
     classifier or ranker.
     """
 
+    _run_time: float = 0.0
+
     def __init__(self, data_set: DataSet, num_folds: int, current_fold: int):
         """
         :param data_set:        The properties of the data set to be used
@@ -62,8 +64,8 @@ class CrossValidation(Randomized, ABC):
             self.__train_test_split()
 
         end_time = timer()
-        run_time = end_time - start_time
-        log.info('Successfully finished after %s seconds', run_time)
+        _run_time = end_time - start_time
+        log.info('Successfully finished after %s seconds', _run_time)
 
     def __cross_validate(self, num_folds: int):
         """
@@ -157,6 +159,9 @@ class CrossValidation(Randomized, ABC):
         # Train and evaluate classifier
         self._train_and_evaluate(meta_data, None, train_x, train_y, None, test_x, test_y, first_fold=0,
                                  current_fold=0, last_fold=0, num_folds=1)
+
+    def get_runtime(self):
+        return self._run_time
 
     @abstractmethod
     def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,

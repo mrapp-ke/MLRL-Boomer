@@ -82,7 +82,7 @@ class Evaluation(ABC):
 
     @abstractmethod
     def evaluate(self, experiment_name: str, predictions, ground_truth, first_fold: int, current_fold: int,
-                 last_fold: int, num_folds: int):
+                 last_fold: int, num_folds: int, learn_time: float):
         """
         Evaluates the predictions provided by a classifier or ranker.
 
@@ -93,6 +93,7 @@ class Evaluation(ABC):
         :param current_fold:    The current cross validation fold starting at 0, or 0 if no cross validation is used
         :param last_fold:       The last cross validation fold or 0, if no cross validation is used
         :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
+        :param learn_time:      The time needed to learn the model
         """
         pass
 
