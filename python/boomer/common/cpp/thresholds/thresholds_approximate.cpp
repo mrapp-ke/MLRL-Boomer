@@ -347,11 +347,13 @@ class ApproximateThresholds final : public AbstractThresholds {
                         thresholds_.cache_.emplace(featureIndex, std::unique_ptr<BinVector>());
                     }
 
+                    bool nominal = thresholds_.nominalFeatureMaskPtr_->isNominal(featureIndex);
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
                     std::unique_ptr<IHeadRefinement> headRefinementPtr =
                         thresholds_.headRefinementFactoryPtr_->create(labelIndices);
                     return std::make_unique<ApproximateRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
-                                                                          featureIndex, std::move(callbackPtr));
+                                                                          featureIndex, nominal,
+                                                                          std::move(callbackPtr));
                 }
 
             public:
