@@ -1,6 +1,7 @@
 #include "thresholds_approximate.h"
 #include "thresholds_common.h"
 #include "../binning/bin_vector.h"
+#include "../binning/feature_binning_nominal.h"
 #include "../rule_refinement/rule_refinement_approximate.h"
 #include <unordered_map>
 #include <limits>
@@ -257,15 +258,19 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                         uint32 featureIndex_;
 
+                        bool nominal_;
+
                     public:
 
                         /**
                          * @param thresholdsSubset  A reference to an object of type `ThresholdsSubset` that caches the
                          *                          bins
                          * @param featureIndex      The index of the feature for which the bins should be retrieved
+                         * @param nominal           True, if the feature at index `featureIndex` is nominal, false
+                         *                          otherwise
                          */
-                        Callback(ThresholdsSubset& thresholdsSubset, uint32 featureIndex)
-                            : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
+                        Callback(ThresholdsSubset& thresholdsSubset, uint32 featureIndex, bool nominal)
+                            : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex), nominal_(nominal) {
 
                         }
 
@@ -286,17 +291,22 @@ class ApproximateThresholds final : public AbstractThresholds {
                                         featureIndex_, featureVectorPtr);
 
                                     // Apply binning method...
+                                    const IFeatureBinning& binning =
+                                        nominal_ ? thresholdsSubset_.thresholds_.nominalBinning_
+                                                 : *thresholdsSubset_.thresholds_.binningPtr_;
                                     IFeatureBinning::FeatureInfo featureInfo =
-                                        thresholdsSubset_.thresholds_.binningPtr_->getFeatureInfo(*featureVectorPtr);
+                                        binning.getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
                                     cacheIterator->second = std::move(std::make_unique<BinVector>(numBins, true));
                                     binVector = cacheIterator->second.get();
                                     auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
                                         addValueToBinVector(*binVector, binIndex, originalIndex, value);
                                     };
-                                    thresholdsSubset_.thresholds_.binningPtr_->createBins(featureInfo,
-                                                                                          *featureVectorPtr, callback);
-                                    removeEmptyBins(*binVector);
+                                    binning.createBins(featureInfo, *featureVectorPtr, callback);
+
+                                    if (!nominal_) {
+                                        removeEmptyBins(*binVector);
+                                    }
                                 }
 
                                 histogramBuilderPtr =
@@ -348,7 +358,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     }
 
                     bool nominal = thresholds_.nominalFeatureMaskPtr_->isNominal(featureIndex);
-                    std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
+                    std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
                     std::unique_ptr<IHeadRefinement> headRefinementPtr =
                         thresholds_.headRefinementFactoryPtr_->create(labelIndices);
                     return std::make_unique<ApproximateRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
@@ -428,6 +438,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
         };
+
+        NominalFeatureBinning nominalBinning_;
 
         std::shared_ptr<IFeatureBinning> binningPtr_;
 
