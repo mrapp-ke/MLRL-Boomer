@@ -52,9 +52,9 @@ void EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo, const Fea
             //if the value is equal to the last one it will be put in the same bin...
             if (previousValue != currentValue) {
                 binIndex = i / numElementsPerBin;  //... else we calculate it's own bin index
+                //set last value to the current one for the next iteration
+                previousValue = currentValue;
             }
-            //set last value to the current one for the next iteration
-            previousValue = currentValue;
             //notify observer
             callback(binIndex, iterator[i].index, currentValue);
         }
