@@ -29,6 +29,8 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
 
         uint32 featureIndex_;
 
+        bool nominal_;
+
         std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>> callbackPtr_;
 
         std::unique_ptr<Refinement> refinementPtr_;
@@ -41,11 +43,12 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
          * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
          *                          the labels for which the refined rule is allowed to predict
          * @param featureIndex      The index of the feature, the new condition corresponds to
+         * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback` that allows to
          *                          retrieve the bins for a certain feature
          */
         ApproximateRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
-                                  uint32 featureIndex,
+                                  uint32 featureIndex, bool nominal,
                                   std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
