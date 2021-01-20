@@ -65,6 +65,7 @@ sources = [
     'boomer/common/cpp/binning/bin_vector.cpp',
     'boomer/common/cpp/binning/feature_binning_equal_frequency.cpp',
     'boomer/common/cpp/binning/feature_binning_equal_width.cpp',
+    'boomer/common/cpp/binning/feature_binning_nominal.cpp',
     'boomer/common/cpp/thresholds/coverage_mask.cpp',
     'boomer/common/cpp/thresholds/thresholds_exact.cpp',
     'boomer/common/cpp/thresholds/thresholds_approximate.cpp',
