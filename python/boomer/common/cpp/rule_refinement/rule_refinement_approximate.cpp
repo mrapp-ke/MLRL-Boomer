@@ -69,11 +69,11 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                     refinementPtr->covered = true;
 
                     if (nominal_) {
-                        refinementPtr->comparator = LEQ;
-                        refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
-                    } else {
                         refinementPtr->comparator = EQ;
                         refinementPtr->threshold = previousValue;
+                    } else {
+                        refinementPtr->comparator = LEQ;
+                        refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
                     }
                 }
 
@@ -87,11 +87,11 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                     refinementPtr->covered = false;
 
                     if (nominal_) {
-                        refinementPtr->comparator = GR;
-                        refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
-                    } else {
                         refinementPtr->comparator = NEQ;
                         refinementPtr->threshold = previousValue;
+                    } else {
+                        refinementPtr->comparator = GR;
+                        refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
                     }
                 }
 
