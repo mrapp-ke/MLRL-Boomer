@@ -48,7 +48,7 @@ class AbstractLabelWiseStatistics : virtual public IImmutableStatistics {
             public:
 
                 /**
-                 * @param histogram         A reference to an object of type `AbstractLabelWiseStatistics` that stores
+                 * @param statistics        A reference to an object of type `AbstractLabelWiseStatistics` that stores
                  *                          the gradients and Hessians
                  * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
                  *                          should be used to calculate the predictions, as well as corresponding
