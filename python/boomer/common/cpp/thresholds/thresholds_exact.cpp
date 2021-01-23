@@ -486,14 +486,7 @@ class ExactThresholds final : public AbstractThresholds {
         }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
-            uint32 numExamples = statisticsPtr_->getNumStatistics();
-            statisticsPtr_->resetSampledStatistics();
-
-            for (uint32 r = 0; r < numExamples; r++) {
-                uint32 weight = weights.getWeight(r);
-                statisticsPtr_->addSampledStatistic(r, weight);
-            }
-
+            updateSampledStatistics(*statisticsPtr_, weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset>(*this, weights);
         }
 

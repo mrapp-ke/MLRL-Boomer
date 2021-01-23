@@ -471,6 +471,7 @@ class ApproximateThresholds final : public AbstractThresholds {
         }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
+            updateSampledStatistics(*statisticsPtr_, weights);
             return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this, weights);
         }
 
