@@ -39,7 +39,8 @@ static inline void removeEmptyBins(BinVector& vector) {
 }
 
 static inline void filterCurrentVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, intp conditionEnd,
-                                       bool covered, uint32 numConditions, CoverageMask& coverageMask) {
+                                       bool covered, uint32 numConditions, CoverageMask& coverageMask,
+                                       IStatistics& statistics, const IWeightVector& weights) {
     uint32 numTotalElements = vector.getNumElements();
     uint32 numElements = covered ? conditionEnd : (numTotalElements > conditionEnd ? numTotalElements - conditionEnd : 0);
     bool wasEmpty = false;
@@ -59,6 +60,7 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     coverageMask.target = numConditions;
+    statistics.resetCoveredStatistics();
     intp start, end;
     uint32 i = 0;
 
@@ -76,7 +78,10 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             const BinVector::Example example = *it;
-            coverageMaskIterator[example.index] = numConditions;
+            uint32 index = example.index;
+            coverageMaskIterator[index] = numConditions;
+            uint32 weight = weights.getWeight(index);
+            statistics.updateCoveredStatistic(index, weight, false);
 
             if (wasEmpty) {
                 filteredExamples.push_front(example);
@@ -402,7 +407,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     }
 
                     filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
-                                        coverageMask_);
+                                        coverageMask_, *thresholds_.statisticsPtr_, weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
