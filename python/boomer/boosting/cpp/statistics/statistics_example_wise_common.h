@@ -47,7 +47,7 @@ class AbstractExampleWiseStatistics : virtual public IImmutableStatistics {
             public:
 
                 /**
-                 * @param histogram         A reference to an object of type `AbstractExampleWiseStatistics` that stores
+                 * @param statistics        A reference to an object of type `AbstractExampleWiseStatistics` that stores
                  *                          the gradients and Hessians
                  * @param ruleEvaluationPtr An unique pointer to an object of type `IExampleWiseRuleEvaluation` that
                  *                          should be used to calculate the predictions, as well as corresponding
