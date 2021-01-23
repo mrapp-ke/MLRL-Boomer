@@ -193,28 +193,27 @@ class ExampleWiseHistogram final : public AbstractExampleWiseStatistics<Statisti
 
         const StatisticMatrix& originalStatisticMatrix_;
 
-        std::unique_ptr<StatisticVector> totalSumVectorPtr_;
+        const StatisticVector* totalSumVector_;
 
     public:
 
         /**
          * @param originalStatisticMatrix   A reference to an object of template type `StatisticMatrix` that stores the
          *                                  original gradients and Hessians, the histogram was created from
+         * @param totalSumVector            A pointer to an object of template type `StatisticVector` that stores the
+         *                                  total sums of gradients and Hessians
          * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
          *                                  stores the gradients and Hessians
-         * @param totalSumVectorPtr         An unique pointer to an object of template type `StatisticVector` that
-         *                                  stores the total sums of gradients and Hessians
          * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory`,
          *                                  to be used for calculating the predictions, as well as corresponding quality
          *                                  scores, of rules
          */
-        ExampleWiseHistogram(const StatisticMatrix& originalStatisticMatrix,
+        ExampleWiseHistogram(const StatisticMatrix& originalStatisticMatrix, const StatisticVector* totalSumVector,
                              std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
-                             std::unique_ptr<StatisticVector> totalSumVectorPtr,
                              std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
             : AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
                   std::move(statisticMatrixPtr), ruleEvaluationFactoryPtr),
-              originalStatisticMatrix_(originalStatisticMatrix), totalSumVectorPtr_(std::move(totalSumVectorPtr)) {
+              originalStatisticMatrix_(originalStatisticMatrix), totalSumVector_(totalSumVector) {
 
         }
 
@@ -231,14 +230,14 @@ class ExampleWiseHistogram final : public AbstractExampleWiseStatistics<Statisti
             std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                 this->ruleEvaluationFactoryPtr_->create(labelIndices);
             return std::make_unique<typename AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>::StatisticsSubset<FullIndexVector>>(
-                *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
+                *this, totalSumVector_, std::move(ruleEvaluationPtr), labelIndices);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override final {
             std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                 this->ruleEvaluationFactoryPtr_->create(labelIndices);
             return std::make_unique<typename AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>::StatisticsSubset<PartialIndexVector>>(
-                *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
+                *this, totalSumVector_, std::move(ruleEvaluationPtr), labelIndices);
         }
 
 };
@@ -296,20 +295,9 @@ class ExampleWiseStatistics final : public AbstractExampleWiseStatistics<Statist
             }
 
             std::unique_ptr<IHistogram> build() override {
-                std::unique_ptr<StatisticVector> totalSumVectorPtr =
-                    std::make_unique<StatisticVector>(statistics_.getNumLabels(), true);
-                uint32 numBins = statisticMatrixPtr_->getNumRows();
-
-                for (uint32 i = 0; i < numBins; i++) {
-                    totalSumVectorPtr->add(statisticMatrixPtr_->gradients_row_cbegin(i),
-                                           statisticMatrixPtr_->gradients_row_cend(i),
-                                           statisticMatrixPtr_->hessians_row_cbegin(i),
-                                           statisticMatrixPtr_->hessians_row_cend(i));
-                }
-
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
-                    *statistics_.statisticMatrixPtr_, std::move(statisticMatrixPtr_), std::move(totalSumVectorPtr),
-                    statistics_.ruleEvaluationFactoryPtr_);
+                    *statistics_.statisticMatrixPtr_, statistics_.totalSumVectorPtr_.get(),
+                    std::move(statisticMatrixPtr_), statistics_.ruleEvaluationFactoryPtr_);
             }
 
         };
