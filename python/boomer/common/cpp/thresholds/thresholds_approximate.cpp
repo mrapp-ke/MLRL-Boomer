@@ -74,18 +74,16 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
         const BinVector::ExampleList& examples = examplesIterator[r];
         BinVector::ExampleList& filteredExamples = filteredExamplesIterator[i];
 
-        if (wasEmpty) {
-            for (auto it = examples.cbegin(); it != examples.cend(); it++) {
-                const BinVector::Example example = *it;
-                coverageMaskIterator[example.index] = numConditions;
+        for (auto it = examples.cbegin(); it != examples.cend(); it++) {
+            const BinVector::Example example = *it;
+            coverageMaskIterator[example.index] = numConditions;
+
+            if (wasEmpty) {
                 filteredExamples.push_front(example);
             }
-        } else {
-            for (auto it = examples.cbegin(); it != examples.cend(); it++) {
-                const BinVector::Example example = *it;
-                coverageMaskIterator[example.index] = numConditions;
-            }
+        }
 
+        if (!wasEmpty) {
             filteredVector->swapExamples(i, r);
         }
 
