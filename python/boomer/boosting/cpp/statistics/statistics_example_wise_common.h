@@ -205,8 +205,8 @@ class AbstractExampleWiseStatistics : virtual public IImmutableStatistics {
  * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
 template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-class ExampleWiseHistogram : public AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
-                             virtual public IHistogram {
+class ExampleWiseHistogram final : public AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
+                                   virtual public IHistogram {
 
     private:
 
