@@ -191,8 +191,8 @@ class AbstractLabelWiseStatistics : virtual public IImmutableStatistics {
  * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
  */
 template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-class LabelWiseHistogram : public AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
-                           virtual public IHistogram {
+class LabelWiseHistogram final : public AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
+                                 virtual public IHistogram {
 
     private:
 
