@@ -30,13 +30,31 @@ class FullIndexVector final : public IIndexVector {
 
                 Iterator(uint32 index);
 
-                uint32 operator[](uint32 index) const;
+                typedef int difference_type;
 
-                uint32 operator*() const;
+                typedef uint32 value_type;
+
+                typedef uint32* pointer;
+
+                typedef uint32 reference;
+
+                typedef std::random_access_iterator_tag iterator_category;
+
+                reference operator[](uint32 index) const;
+
+                reference operator*() const;
+
+                Iterator& operator++();
 
                 Iterator& operator++(int n);
 
+                Iterator& operator--();
+
+                Iterator& operator--(int n);
+
                 bool operator!=(const Iterator& rhs) const;
+
+                difference_type operator-(const Iterator& rhs) const;
 
         };
 
