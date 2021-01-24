@@ -1,4 +1,5 @@
 #include "coverage_mask.h"
+#include "../data/arrays.h"
 
 
 CoverageMask::CoverageMask(uint32 numElements)
@@ -9,9 +10,7 @@ CoverageMask::CoverageMask(uint32 numElements)
 CoverageMask::CoverageMask(const CoverageMask& coverageMask)
     : array_(new uint32[coverageMask.numElements_]), numElements_(coverageMask.numElements_),
       target(coverageMask.target) {
-    for (uint32 i = 0; i < numElements_; i++) {
-        array_[i] = coverageMask.array_[i];
-    }
+    copyArray(coverageMask.array_, array_, numElements_);
 }
 
 CoverageMask::~CoverageMask() {
@@ -28,10 +27,7 @@ CoverageMask::iterator CoverageMask::end() {
 
 void CoverageMask::reset() {
     target = 0;
-
-    for (uint32 i = 0; i < numElements_; i++) {
-        array_[i] = 0;
-    }
+    setArrayToZeros(array_, numElements_);
 }
 
 bool CoverageMask::isCovered(uint32 pos) const {

@@ -2,6 +2,7 @@
 #include "prediction_full.h"
 #include "prediction_partial.h"
 #include "../rule_evaluation/score_processor.h"
+#include <algorithm>
 
 
 /**
@@ -21,31 +22,19 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
             // The quality score must be better than that of `bestHead`...
             if (bestHead == nullptr || overallQualityScore < bestHead->overallQualityScore) {
                 uint32 numPredictions = scoreVector.getNumElements();
-                typename T::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
 
                 if (headPtr_.get() == nullptr) {
                     if (scoreVector.isPartial()) {
-                        typename T::index_const_iterator indexIterator = scoreVector.indices_cbegin();
                         std::unique_ptr<PartialPrediction> headPtr =
                             std::make_unique<PartialPrediction>(numPredictions);
-                        PartialPrediction::index_iterator headIndexIterator = headPtr->indices_begin();
-
-                        for (uint32 c = 0; c < numPredictions; c++) {
-                            headIndexIterator[c] = indexIterator[c];
-                        }
-
+                        std::copy(scoreVector.indices_cbegin(), scoreVector.indices_cend(), headPtr->indices_begin());
                         headPtr_ = std::move(headPtr);
                     } else {
                         headPtr_ = std::make_unique<FullPrediction>(numPredictions);
                     }
                 }
 
-                AbstractEvaluatedPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
-
-                for (uint32 c = 0; c < numPredictions; c++) {
-                    headScoreIterator[c] = scoreIterator[c];
-                }
-
+                std::copy(scoreVector.scores_cbegin(), scoreVector.scores_cend(), headPtr_->scores_begin());
                 headPtr_->overallQualityScore = overallQualityScore;
                 return headPtr_.get();
             }
