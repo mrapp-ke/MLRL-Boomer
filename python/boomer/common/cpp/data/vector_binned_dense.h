@@ -4,6 +4,7 @@
 #pragma once
 
 #include "types.h"
+#include <iterator>
 
 
 /**
@@ -44,13 +45,31 @@ class DenseBinnedVector {
 
                 Iterator(const DenseBinnedVector<T>& vector, uint32 index);
 
-                T operator[](uint32 index) const;
+                typedef int difference_type;
 
-                T operator*() const;
+                typedef T value_type;
+
+                typedef T* pointer;
+
+                typedef T reference;
+
+                typedef std::random_access_iterator_tag iterator_category;
+
+                reference operator[](uint32 index) const;
+
+                reference operator*() const;
+
+                Iterator& operator++();
 
                 Iterator& operator++(int n);
 
+                Iterator& operator--();
+
+                Iterator& operator--(int n);
+
                 bool operator!=(const Iterator& rhs) const;
+
+                difference_type operator-(const Iterator& rhs) const;
 
         };
 
