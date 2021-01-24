@@ -9,9 +9,7 @@ CoverageMask::CoverageMask(uint32 numElements)
 CoverageMask::CoverageMask(const CoverageMask& coverageMask)
     : array_(new uint32[coverageMask.numElements_]), numElements_(coverageMask.numElements_),
       target(coverageMask.target) {
-    for (uint32 i = 0; i < numElements_; i++) {
-        array_[i] = coverageMask.array_[i];
-    }
+    copyArray(coverageMask.array_, array_, numElements_);
 }
 
 CoverageMask::~CoverageMask() {
