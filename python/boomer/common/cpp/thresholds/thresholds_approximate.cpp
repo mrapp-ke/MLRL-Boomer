@@ -39,7 +39,8 @@ static inline void removeEmptyBins(BinVector& vector) {
 }
 
 static inline void filterCurrentVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, intp conditionEnd,
-                                       bool covered, uint32 numConditions, CoverageMask& coverageMask) {
+                                       bool covered, uint32 numConditions, CoverageMask& coverageMask,
+                                       IStatistics& statistics, const IWeightVector& weights) {
     uint32 numTotalElements = vector.getNumElements();
     uint32 numElements = covered ? conditionEnd : (numTotalElements > conditionEnd ? numTotalElements - conditionEnd : 0);
     bool wasEmpty = false;
@@ -59,6 +60,7 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     coverageMask.target = numConditions;
+    statistics.resetCoveredStatistics();
     intp start, end;
     uint32 i = 0;
 
@@ -74,18 +76,19 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
         const BinVector::ExampleList& examples = examplesIterator[r];
         BinVector::ExampleList& filteredExamples = filteredExamplesIterator[i];
 
-        if (wasEmpty) {
-            for (auto it = examples.cbegin(); it != examples.cend(); it++) {
-                const BinVector::Example example = *it;
-                coverageMaskIterator[example.index] = numConditions;
+        for (auto it = examples.cbegin(); it != examples.cend(); it++) {
+            const BinVector::Example example = *it;
+            uint32 index = example.index;
+            coverageMaskIterator[index] = numConditions;
+            uint32 weight = weights.getWeight(index);
+            statistics.updateCoveredStatistic(index, weight, false);
+
+            if (wasEmpty) {
                 filteredExamples.push_front(example);
             }
-        } else {
-            for (auto it = examples.cbegin(); it != examples.cend(); it++) {
-                const BinVector::Example example = *it;
-                coverageMaskIterator[example.index] = numConditions;
-            }
+        }
 
+        if (!wasEmpty) {
             filteredVector->swapExamples(i, r);
         }
 
@@ -404,7 +407,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     }
 
                     filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
-                                        coverageMask_);
+                                        coverageMask_, *thresholds_.statisticsPtr_, weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
@@ -471,6 +474,7 @@ class ApproximateThresholds final : public AbstractThresholds {
         }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
+            updateSampledStatistics(*statisticsPtr_, weights);
             return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this, weights);
         }
 
