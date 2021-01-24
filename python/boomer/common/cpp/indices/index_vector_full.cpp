@@ -10,12 +10,17 @@ FullIndexVector::Iterator::Iterator(uint32 index)
 
 }
 
-uint32 FullIndexVector::Iterator::operator[](uint32 index) const {
+FullIndexVector::Iterator::reference FullIndexVector::Iterator::operator[](uint32 index) const {
     return index;
 }
 
-uint32 FullIndexVector::Iterator::operator*() const {
+FullIndexVector::Iterator::reference FullIndexVector::Iterator::operator*() const {
  return index_;
+}
+
+FullIndexVector::Iterator& FullIndexVector::Iterator::operator++() {
+    ++index_;
+    return *this;
 }
 
 FullIndexVector::Iterator& FullIndexVector::Iterator::operator++(int n) {
@@ -23,8 +28,23 @@ FullIndexVector::Iterator& FullIndexVector::Iterator::operator++(int n) {
     return *this;
 }
 
+FullIndexVector::Iterator& FullIndexVector::Iterator::operator--() {
+    --index_;
+    return *this;
+}
+
+FullIndexVector::Iterator& FullIndexVector::Iterator::operator--(int n) {
+    index_--;
+    return *this;
+}
+
 bool FullIndexVector::Iterator::operator!=(const FullIndexVector::Iterator& rhs) const {
     return index_ != rhs.index_;
+}
+
+FullIndexVector::Iterator::difference_type FullIndexVector::Iterator::operator-(
+        const FullIndexVector::Iterator& rhs) const {
+    return (int) index_ - (int) rhs.index_;
 }
 
 FullIndexVector::FullIndexVector(uint32 numElements) {
