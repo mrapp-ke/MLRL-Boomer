@@ -4,6 +4,7 @@
 #pragma once
 
 #include "index_vector.h"
+#include <iterator>
 
 
 /**
