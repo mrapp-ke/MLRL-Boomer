@@ -47,13 +47,31 @@ class DenseMappingVector {
 
                 Iterator(const DenseMappingVector<T>& vector, uint32 index);
 
-                Entry& operator[](uint32 index);
+                typedef int difference_type;
 
-                Entry& operator*();
+                typedef Entry value_type;
+
+                typedef Entry* pointer;
+
+                typedef Entry& reference;
+
+                typedef std::random_access_iterator_tag iterator_category;
+
+                reference operator[](uint32 index);
+
+                reference operator*();
+
+                Iterator& operator++();
 
                 Iterator& operator++(int n);
 
+                Iterator& operator--();
+
+                Iterator& operator--(int n);
+
                 bool operator!=(const Iterator& rhs) const;
+
+                difference_type operator-(const Iterator& rhs) const;
 
         };
 
@@ -72,13 +90,31 @@ class DenseMappingVector {
 
                 ConstIterator(const DenseMappingVector<T>& vector, uint32 index);
 
-                const Entry& operator[](uint32 index) const;
+                typedef int difference_type;
 
-                const Entry& operator*() const;
+                typedef const Entry value_type;
+
+                typedef const Entry* pointer;
+
+                typedef const Entry& reference;
+
+                typedef std::random_access_iterator_tag iterator_category;
+
+                reference operator[](uint32 index) const;
+
+                reference operator*() const;
+
+                ConstIterator& operator++();
 
                 ConstIterator& operator++(int n);
 
+                ConstIterator& operator--();
+
+                ConstIterator& operator--(int n);
+
                 bool operator!=(const ConstIterator& rhs) const;
+
+                difference_type operator-(const ConstIterator& rhs) const;
 
         };
 

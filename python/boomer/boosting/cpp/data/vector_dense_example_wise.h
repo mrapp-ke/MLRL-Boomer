@@ -44,13 +44,31 @@ namespace boosting {
 
                     HessianDiagonalIterator(const DenseExampleWiseStatisticVector& vector, uint32 index);
 
-                    float64 operator[](uint32 index) const;
+                    typedef int difference_type;
 
-                    float64 operator*() const;
+                    typedef float64 value_type;
+
+                    typedef float64* pointer;
+
+                    typedef float64 reference;
+
+                    typedef std::random_access_iterator_tag iterator_category;
+
+                    reference operator[](uint32 index) const;
+
+                    reference operator*() const;
+
+                    HessianDiagonalIterator& operator++();
 
                     HessianDiagonalIterator& operator++(int n);
 
+                    HessianDiagonalIterator& operator--();
+
+                    HessianDiagonalIterator& operator--(int n);
+
                     bool operator!=(const HessianDiagonalIterator& rhs) const;
+
+                    difference_type operator-(const HessianDiagonalIterator& rhs) const;
 
             };
 
