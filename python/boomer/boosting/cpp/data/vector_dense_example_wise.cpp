@@ -127,13 +127,8 @@ void DenseExampleWiseStatisticVector::setAllToZero() {
 
 void DenseExampleWiseStatisticVector::add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                                           hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd) {
-    for (uint32 i = 0; i < numGradients_; i++) {
-        gradients_[i] += gradientsBegin[i];
-    }
-
-    for (uint32 i = 0; i < numHessians_; i++) {
-        hessians_[i] += hessiansBegin[i];
-    }
+    std::copy(gradientsBegin, gradientsEnd, gradients_);
+    std::copy(hessiansBegin, hessiansEnd, hessians_);
 }
 
 void DenseExampleWiseStatisticVector::add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
