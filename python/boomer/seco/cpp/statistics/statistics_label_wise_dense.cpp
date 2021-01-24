@@ -77,11 +77,7 @@ class LabelWiseStatistics final : public ILabelWiseStatistics {
                     // Allocate arrays for storing the totals sums of gradients and Hessians, if necessary...
                     if (confusionMatricesCoverableSubset_ == nullptr) {
                         confusionMatricesCoverableSubset_ = (float64*) malloc(numLabels * sizeof(float64));
-
-                        for (uint32 c = 0; c < numLabels; c++) {
-                            confusionMatricesCoverableSubset_[c] = confusionMatricesSubset_[c];
-                        }
-
+                        copyArray(confusionMatricesSubset_, confusionMatricesCoverableSubset_, numLabels);
                         confusionMatricesSubset_ = confusionMatricesCoverableSubset_;
                     }
 
@@ -139,12 +135,9 @@ class LabelWiseStatistics final : public ILabelWiseStatistics {
                     // confusion matrix...
                     for (uint32 c = 0; c < numPredictions; c++) {
                         uint32 offset = c * NUM_CONFUSION_MATRIX_ELEMENTS;
-
-                        for (uint32 i = 0; i < NUM_CONFUSION_MATRIX_ELEMENTS; i++) {
-                            uint32 j = offset + i;
-                            accumulatedConfusionMatricesCovered_[j] += confusionMatricesCovered_[j];
-                            confusionMatricesCovered_[j] = 0;
-                        }
+                        copyArray(&confusionMatricesCovered_[offset], &accumulatedConfusionMatricesCovered_[offset],
+                                  NUM_CONFUSION_MATRIX_ELEMENTS);
+                        setArrayToZeros(&confusionMatricesCovered_[offset], NUM_CONFUSION_MATRIX_ELEMENTS);
                     }
                 }
 

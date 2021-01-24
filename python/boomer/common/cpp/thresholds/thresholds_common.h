@@ -24,7 +24,7 @@ struct FilteredCacheEntry {
     uint32 numConditions;
 };
 
-static inline void updateSampledStatistics(IStatistics& statistics, const IWeightVector& weights) {
+static inline void updateSampledStatisticsInternally(IStatistics& statistics, const IWeightVector& weights) {
     uint32 numExamples = statistics.getNumStatistics();
     statistics.resetSampledStatistics();
 

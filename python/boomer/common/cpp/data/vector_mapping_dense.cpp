@@ -40,7 +40,7 @@ DenseMappingVector<T>::Iterator::Iterator(const DenseMappingVector<T>& vector, u
 }
 
 template<class T>
-typename DenseMappingVector<T>::Entry& DenseMappingVector<T>::Iterator::operator[](uint32 index) {
+typename DenseMappingVector<T>::Iterator::reference DenseMappingVector<T>::Iterator::operator[](uint32 index) {
     Entry* ptr = vector_.array_[index];
 
     if (ptr == nullptr) {
@@ -52,7 +52,7 @@ typename DenseMappingVector<T>::Entry& DenseMappingVector<T>::Iterator::operator
 }
 
 template<class T>
-typename DenseMappingVector<T>::Entry& DenseMappingVector<T>::Iterator::operator*() {
+typename DenseMappingVector<T>::Iterator::reference DenseMappingVector<T>::Iterator::operator*() {
     Entry* ptr = vector_.array_[index_];
 
     if (ptr == nullptr) {
@@ -64,8 +64,26 @@ typename DenseMappingVector<T>::Entry& DenseMappingVector<T>::Iterator::operator
 }
 
 template<class T>
+typename DenseMappingVector<T>::Iterator& DenseMappingVector<T>::Iterator::operator++() {
+    ++index_;
+    return *this;
+}
+
+template<class T>
 typename DenseMappingVector<T>::Iterator& DenseMappingVector<T>::Iterator::operator++(int n) {
     index_++;
+    return *this;
+}
+
+template<class T>
+typename DenseMappingVector<T>::Iterator& DenseMappingVector<T>::Iterator::operator--() {
+    --index_;
+    return *this;
+}
+
+template<class T>
+typename DenseMappingVector<T>::Iterator& DenseMappingVector<T>::Iterator::operator--(int n) {
+    index_--;
     return *this;
 }
 
@@ -75,21 +93,34 @@ bool DenseMappingVector<T>::Iterator::operator!=(const DenseMappingVector<T>::It
 }
 
 template<class T>
+typename DenseMappingVector<T>::Iterator::difference_type DenseMappingVector<T>::Iterator::operator-(
+        const DenseMappingVector<T>::Iterator& rhs) const {
+    return (int) index_ - (int) rhs.index_;
+}
+
+template<class T>
 DenseMappingVector<T>::ConstIterator::ConstIterator(const DenseMappingVector<T>& vector, uint32 index)
     : vector_(vector), index_(index) {
 
 }
 
 template<class T>
-const typename DenseMappingVector<T>::Entry& DenseMappingVector<T>::ConstIterator::operator[](uint32 index) const {
+typename DenseMappingVector<T>::ConstIterator::reference DenseMappingVector<T>::ConstIterator::operator[](
+        uint32 index) const {
     Entry* ptr = vector_.array_[index];
     return ptr != nullptr ? *ptr : vector_.emptyEntry_;
 }
 
 template<class T>
-const typename DenseMappingVector<T>::Entry& DenseMappingVector<T>::ConstIterator::operator*() const {
+typename DenseMappingVector<T>::ConstIterator::reference DenseMappingVector<T>::ConstIterator::operator*() const {
     Entry* ptr = vector_.array_[index_];
     return ptr != nullptr ? *ptr : vector_.emptyEntry_;
+}
+
+template<class T>
+typename DenseMappingVector<T>::ConstIterator& DenseMappingVector<T>::ConstIterator::operator++() {
+    ++index_;
+    return *this;
 }
 
 template<class T>
@@ -99,8 +130,26 @@ typename DenseMappingVector<T>::ConstIterator& DenseMappingVector<T>::ConstItera
 }
 
 template<class T>
+typename DenseMappingVector<T>::ConstIterator& DenseMappingVector<T>::ConstIterator::operator--() {
+    --index_;
+    return *this;
+}
+
+template<class T>
+typename DenseMappingVector<T>::ConstIterator& DenseMappingVector<T>::ConstIterator::operator--(int n) {
+    index_--;
+    return *this;
+}
+
+template<class T>
 bool DenseMappingVector<T>::ConstIterator::operator!=(const ConstIterator& rhs) const {
     return index_ != rhs.index_;
+}
+
+template<class T>
+typename DenseMappingVector<T>::ConstIterator::difference_type DenseMappingVector<T>::ConstIterator::operator-(
+        const DenseMappingVector<T>::ConstIterator& rhs) const {
+    return (int) index_ - (int) rhs.index_;
 }
 
 template<class T>
