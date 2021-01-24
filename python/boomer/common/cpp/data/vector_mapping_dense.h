@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include <forward_list>
+#include <iterator>
 
 
 /**
