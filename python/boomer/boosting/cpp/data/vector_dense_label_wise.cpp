@@ -19,10 +19,8 @@ DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements,
 
 DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& vector)
     : DenseLabelWiseStatisticVector(vector.numElements_) {
-    for (uint32 i = 0; i < numElements_; i++) {
-        gradients_[i] = vector.gradients_[i];
-        hessians_[i] = vector.hessians_[i];
-    }
+    copyArray(vector.gradients_, gradients_, numElements_);
+    copyArray(vector.hessians_, hessians_, numElements_);
 }
 
 DenseLabelWiseStatisticVector::~DenseLabelWiseStatisticVector() {

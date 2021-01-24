@@ -67,13 +67,8 @@ DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradi
 
 DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& vector)
     : DenseExampleWiseStatisticVector(vector.numGradients_) {
-    for (uint32 i = 0; i < numGradients_; i++) {
-        gradients_[i] = vector.gradients_[i];
-    }
-
-    for (uint32 i = 0; i < numHessians_; i++) {
-        hessians_[i] = vector.hessians_[i];
-    }
+    copyArray(vector.gradients_, gradients_, numGradients_);
+    copyArray(vector.hessians_, hessians_, numHessians_);
 }
 
 DenseExampleWiseStatisticVector::~DenseExampleWiseStatisticVector() {
