@@ -5,12 +5,24 @@ from libcpp.utility cimport move
 
 from _io import StringIO
 
+import numpy as np
+
+SERIALIZATION_VERSION = 1
+
 
 cdef class RuleModel:
     """
     A wrapper for the C++ class `RuleModel`.
     """
-    pass
+
+    def __getstate__(self):
+        cdef RuleModelSerializer serializer = RuleModelSerializer.__new__(RuleModelSerializer)
+        cdef object state = serializer.serialize(self)
+        return state
+
+    def __setstate__(self, state):
+        cdef RuleModelSerializer serializer = RuleModelSerializer.__new__(RuleModelSerializer)
+        serializer.deserialize(self, state)
 
 
 cdef class ModelBuilder:
@@ -62,6 +74,106 @@ cdef uint32 __format_conditions(uint32 num_processed_conditions, uint32 num_cond
         result += 1
 
     return result
+
+
+cdef class RuleModelSerializer:
+    """
+    Allows to serialize and deserialize the rules that are contained by a `RuleModel`.
+    """
+
+    cdef __visit_empty_body(self, const EmptyBodyImpl& body):
+        body_state = None
+        rule_state = (body_state, None)
+        self.state.append(rule_state)
+
+    cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body):
+        cdef uint32 num_leq = body.getNumLeq()
+        cdef uint32 num_gr = body.getNumGr()
+        cdef uint32 num_eq = body.getNumEq()
+        cdef uint32 num_neq = body.getNumNeq()
+        body_state = (np.asarray(<float32[:num_leq]>body.leq_thresholds_cbegin()) if num_leq > 0 else None,
+                      np.asarray(<uint32[:num_leq]>body.leq_indices_cbegin()) if num_leq > 0 else None,
+                      np.asarray(<float32[:num_gr]>body.gr_thresholds_cbegin()) if num_gr > 0 else None,
+                      np.asarray(<uint32[:num_gr]>body.gr_indices_cbegin()) if num_gr > 0 else None,
+                      np.asarray(<float32[:num_eq]>body.eq_thresholds_cbegin()) if num_eq > 0 else None,
+                      np.asarray(<uint32[:num_eq]>body.eq_indices_cbegin()) if num_eq > 0 else None,
+                      np.asarray(<float32[:num_neq]>body.neq_thresholds_cbegin()) if num_neq > 0 else None,
+                      np.asarray(<uint32[:num_neq]>body.neq_indices_cbegin()) if num_neq > 0 else None)
+        rule_state = (body_state, None)
+        self.state.append(rule_state)
+
+    cdef __visit_full_head(self, const FullHeadImpl& head):
+        cdef uint32 num_elements = head.getNumElements()
+        rule_state = self.state[len(self.state) - 1]
+        head_state = np.asarray(<float64[:num_elements]>head.scores_cbegin())
+        rule_state[1] = head_state
+
+    cdef __visit_partial_head(self, const PartialHeadImpl& head):
+        cdef uint32 num_elements = head.getNumElements()
+        rule_state = self.state[len(self.state) - 1]
+        head_state = (np.asarray(<float64[:num_elements]>head.scores_cbegin()),
+                      np.asarray(<uint32[:num_elements]>head.indices_cbegin()))
+        rule_state[1] = head_state
+
+    cpdef object serialize(self, RuleModel model):
+        """
+        Creates and returns a state, which may be serialized using Python's pickle mechanism, from the rules that are
+        contained by a given `RuleModel`.
+
+        :param model:   The model that contains the rules to be serialized
+        :return:        The state that has been created
+        """
+        self.state = []
+        model.model_ptr.get().visit(
+            wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
+            wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
+            wrapFullHeadVisitor(<void*>self, <FullHeadCythonVisitor>self.__visit_full_head),
+            wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
+        return (SERIALIZATION_VERSION, self.state)
+
+    cpdef deserialize(self, RuleModel model, object state):
+        """
+        Deserializes the rules that are contained by a given state and adds them to a `RuleModel`.
+
+        :param model:   The model, the deserialized rules should be added to
+        :param state:   A state that has previously been created via the function `serialize`
+        """
+        version = state[0]
+
+        if version != SERIALIZATION_VERSION:
+            raise AssertionError(
+                'Version of the serialized model is ' + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
+
+        cdef list rule_list = state[1]
+        cdef uint32 num_rules = len(rule_list)
+        cdef unique_ptr[RuleModelImpl] rule_model_ptr = make_unique[RuleModelImpl]()
+        cdef unique_ptr[IBody] body_ptr
+        cdef unique_ptr[IHead] head_ptr
+        cdef uint32 i
+
+        for i in range(num_rules):
+            rule_state = rule_list[i]
+            body_state = rule_state[0]
+
+            if body_state is None:
+                body_ptr = make_unique[EmptyBodyImpl]()
+                pass # TODO EmptyBody
+            else:
+                pass # TODO Conjunctive Body
+
+            head_state = rule_state[1]
+            # TODO scores =
+
+            if len(head_state) > 1:
+                pass # TODO Indices & PartialHead
+                head_ptr = make_unique[PartialHeadImpl]()
+            else:
+                pass # TODO FullHead
+                head_ptr = make_unique[FullHeadImpl]()
+
+            rule_model_ptr.get().addRule(move(body_ptr), move(head_ptr))
+
+        model.model_ptr = move(rule_model_ptr)
 
 
 cdef class RuleModelFormatter:
