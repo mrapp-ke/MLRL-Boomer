@@ -10,15 +10,22 @@ DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::QualityScoreIterator(
 }
 
 template<class T>
-float64 DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator[](uint32 index) const {
+typename DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::reference DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator[](
+        uint32 index) const {
     uint32 binIndex = vector_.indices_binned_cbegin()[index];
     return vector_.qualityScoreVector_.cbegin()[binIndex];
 }
 
 template<class T>
-float64 DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator*() const {
+typename DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::reference DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator*() const {
     uint32 binIndex = vector_.indices_binned_cbegin()[index_];
     return vector_.qualityScoreVector_.cbegin()[binIndex];
+}
+
+template<class T>
+typename DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator& DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator++() {
+    ++index_;
+    return *this;
 }
 
 template<class T>
@@ -29,9 +36,28 @@ typename DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator& DenseBinnedLa
 }
 
 template<class T>
+typename DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator& DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator--() {
+    --index_;
+    return *this;
+}
+
+template<class T>
+typename DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator& DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator--(
+        int n) {
+    index_--;
+    return *this;
+}
+
+template<class T>
 bool DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator!=(
         const DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator& rhs) const {
     return index_ != rhs.index_;
+}
+
+template<class T>
+typename DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::difference_type DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator-(
+        const DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator& rhs) const {
+    return (int) index_ != (int) rhs.index_;
 }
 
 template<class T>

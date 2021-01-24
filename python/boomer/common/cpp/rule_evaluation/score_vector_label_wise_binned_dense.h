@@ -6,6 +6,7 @@
 #include "score_vector_label_wise.h"
 #include "score_vector_binned_dense.h"
 #include "../data/vector_dense.h"
+#include <iterator>
 
 
 /**
@@ -39,13 +40,31 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
 
                 QualityScoreIterator(const DenseBinnedLabelWiseScoreVector<T>& vector, uint32 index);
 
-                float64 operator[](uint32 index) const;
+                typedef int difference_type;
 
-                float64 operator*() const;
+                typedef float64 value_type;
+
+                typedef float64* pointer;
+
+                typedef float64 reference;
+
+                typedef std::random_access_iterator_tag iterator_category;
+
+                reference operator[](uint32 index) const;
+
+                reference operator*() const;
+
+                QualityScoreIterator& operator++();
 
                 QualityScoreIterator& operator++(int n);
 
+                QualityScoreIterator& operator--();
+
+                QualityScoreIterator& operator--(int n);
+
                 bool operator!=(const QualityScoreIterator& rhs) const;
+
+                difference_type operator-(const QualityScoreIterator& rhs) const;
 
         };
 
