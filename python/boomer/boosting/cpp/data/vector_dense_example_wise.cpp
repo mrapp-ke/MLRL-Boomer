@@ -12,12 +12,18 @@ DenseExampleWiseStatisticVector::HessianDiagonalIterator::HessianDiagonalIterato
 
 }
 
-float64 DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator[](uint32 index) const {
+DenseExampleWiseStatisticVector::HessianDiagonalIterator::reference DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator[](
+        uint32 index) const {
     return vector_.hessians_[triangularNumber(index + 1) - 1];
 }
 
-float64 DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator*() const {
+DenseExampleWiseStatisticVector::HessianDiagonalIterator::reference DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator*() const {
     return vector_.hessians_[triangularNumber(index_ + 1) - 1];
+}
+
+DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator++() {
+    ++index_;
+    return *this;
 }
 
 DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator++(
@@ -26,9 +32,25 @@ DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatis
     return *this;
 }
 
+DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator--() {
+    --index_;
+    return *this;
+}
+
+DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator--(
+        int n) {
+    index_--;
+    return *this;
+}
+
 bool DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator!=(
         const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
     return index_ != rhs.index_;
+}
+
+DenseExampleWiseStatisticVector::HessianDiagonalIterator::difference_type DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator-(
+        const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
+    return (int) index_ - (int) rhs.index_;
 }
 
 DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients)
