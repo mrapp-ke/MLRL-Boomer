@@ -2,6 +2,7 @@
 #include "../../../common/cpp/data/vector_sparse_array.h"
 #include "../../../common/cpp/head_refinement/prediction_partial.h"
 #include "../../../common/cpp/rule_evaluation/score_processor_label_wise.h"
+#include <algorithm>
 
 using namespace seco;
 
@@ -42,7 +43,6 @@ class PartialHeadRefinement final : public IHeadRefinement, public ILabelWiseSco
         const AbstractEvaluatedPrediction* processScoresInternally(const AbstractEvaluatedPrediction* bestHead,
                                                                    const T2& scoreVector) {
             uint32 numPredictions = scoreVector.getNumElements();
-            typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
             typename T2::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
             std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr;
             float64 sumOfQualityScores = 0;
@@ -85,17 +85,15 @@ class PartialHeadRefinement final : public IHeadRefinement, public ILabelWiseSco
                     headPtr_->setNumElements(bestNumPredictions, false);
                 }
 
-                typename T2::index_const_iterator indexIterator = scoreVector.indices_cbegin();
-                PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
-                PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
-
                 if (keepLabels_) {
-                    for (uint32 c = 0; c < bestNumPredictions; c++) {
-                        headIndexIterator[c] = indexIterator[c];
-                        headScoreIterator[c] = scoreIterator[c];
-                    }
+                    std::copy(scoreVector.indices_cbegin(), scoreVector.indices_cend(), headPtr_->indices_begin());
+                    std::copy(scoreVector.scores_cbegin(), scoreVector.scores_cend(), headPtr_->scores_begin());
                 } else {
                     SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
+                    typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
+                    typename T2::index_const_iterator indexIterator = scoreVector.indices_cbegin();
+                    PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
+                    PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
 
                     for (uint32 c = 0; c < bestNumPredictions; c++) {
                         uint32 i = sortedIterator[c].index;

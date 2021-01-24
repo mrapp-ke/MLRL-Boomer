@@ -12,12 +12,18 @@ DenseExampleWiseStatisticVector::HessianDiagonalIterator::HessianDiagonalIterato
 
 }
 
-float64 DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator[](uint32 index) const {
+DenseExampleWiseStatisticVector::HessianDiagonalIterator::reference DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator[](
+        uint32 index) const {
     return vector_.hessians_[triangularNumber(index + 1) - 1];
 }
 
-float64 DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator*() const {
+DenseExampleWiseStatisticVector::HessianDiagonalIterator::reference DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator*() const {
     return vector_.hessians_[triangularNumber(index_ + 1) - 1];
+}
+
+DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator++() {
+    ++index_;
+    return *this;
 }
 
 DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator++(
@@ -26,9 +32,25 @@ DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatis
     return *this;
 }
 
+DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator--() {
+    --index_;
+    return *this;
+}
+
+DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator--(
+        int n) {
+    index_--;
+    return *this;
+}
+
 bool DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator!=(
         const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
     return index_ != rhs.index_;
+}
+
+DenseExampleWiseStatisticVector::HessianDiagonalIterator::difference_type DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator-(
+        const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
+    return (int) index_ - (int) rhs.index_;
 }
 
 DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients)
@@ -45,13 +67,8 @@ DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradi
 
 DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& vector)
     : DenseExampleWiseStatisticVector(vector.numGradients_) {
-    for (uint32 i = 0; i < numGradients_; i++) {
-        gradients_[i] = vector.gradients_[i];
-    }
-
-    for (uint32 i = 0; i < numHessians_; i++) {
-        hessians_[i] = vector.hessians_[i];
-    }
+    copyArray(vector.gradients_, gradients_, numGradients_);
+    copyArray(vector.hessians_, hessians_, numHessians_);
 }
 
 DenseExampleWiseStatisticVector::~DenseExampleWiseStatisticVector() {
@@ -110,13 +127,8 @@ void DenseExampleWiseStatisticVector::setAllToZero() {
 
 void DenseExampleWiseStatisticVector::add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                                           hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd) {
-    for (uint32 i = 0; i < numGradients_; i++) {
-        gradients_[i] += gradientsBegin[i];
-    }
-
-    for (uint32 i = 0; i < numHessians_; i++) {
-        hessians_[i] += hessiansBegin[i];
-    }
+    std::copy(gradientsBegin, gradientsEnd, gradients_);
+    std::copy(hessiansBegin, hessiansEnd, hessians_);
 }
 
 void DenseExampleWiseStatisticVector::add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,

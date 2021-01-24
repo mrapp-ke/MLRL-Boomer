@@ -1,4 +1,5 @@
 #include "prediction.h"
+#include <algorithm>
 
 
 AbstractPrediction::AbstractPrediction(uint32 numElements)
@@ -32,10 +33,5 @@ AbstractPrediction::score_const_iterator AbstractPrediction::scores_cend() const
 
 void AbstractPrediction::set(AbstractPrediction::score_const_iterator begin,
                              AbstractPrediction::score_const_iterator end) {
-    uint32 numElements = predictedScoreVector_.getNumElements();
-    DenseVector<float64>::iterator iterator = predictedScoreVector_.begin();
-
-    for (uint32 i = 0; i < numElements; i++) {
-        iterator[i] = begin[i];
-    }
+    std::copy(begin, end, predictedScoreVector_.begin());
 }
