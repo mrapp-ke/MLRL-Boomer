@@ -24,6 +24,16 @@ struct FilteredCacheEntry {
     uint32 numConditions;
 };
 
+static inline void updateSampledStatistics(IStatistics& statistics, const IWeightVector& weights) {
+    uint32 numExamples = statistics.getNumStatistics();
+    statistics.resetSampledStatistics();
+
+    for (uint32 i = 0; i < numExamples; i++) {
+        uint32 weight = weights.getWeight(i);
+        statistics.addSampledStatistic(i, weight);
+    }
+}
+
 static inline float64 evaluateOutOfSampleInternally(const IStatistics& statistics,
                                                     const IHeadRefinementFactory& headRefinementFactory,
                                                     const IWeightVector& weights, const CoverageMask& coverageMask,
