@@ -247,6 +247,27 @@ cdef class ModelBuilder:
     cdef RuleModel build(self)
 
 
+cdef class RuleModelSerializer:
+
+    # Attributes:
+
+    cdef list state
+
+    # Functions:
+
+    cdef __visit_empty_body(self, const EmptyBodyImpl& body)
+
+    cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body)
+
+    cdef __visit_full_head(self, const FullHeadImpl& head)
+
+    cdef __visit_partial_head(self, const PartialHeadImpl& head)
+
+    cpdef object serialize(self, RuleModel model)
+
+    cpdef deserialize(self, RuleModel model, object state)
+
+
 cdef class RuleModelFormatter:
 
     # Attributes:
