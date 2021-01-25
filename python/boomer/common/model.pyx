@@ -181,7 +181,7 @@ cdef class RuleModelSerializer:
     cdef __visit_full_head(self, const FullHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         rule_state = self.state[len(self.state) - 1]
-        head_state = np.asarray(<float64[:num_elements]>head.scores_cbegin())
+        head_state = (np.asarray(<float64[:num_elements]>head.scores_cbegin()),)
         rule_state[1] = head_state
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head):
