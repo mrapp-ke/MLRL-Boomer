@@ -8,13 +8,8 @@ PartialHead::PartialHead(uint32 numElements)
 
 PartialHead::PartialHead(const PartialPrediction& prediction)
     : PartialHead(prediction.getNumElements()) {
-    PartialPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
-    PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
-
-    for (uint32 i = 0; i < numElements_; i++) {
-        scores_[i] = scoreIterator[i];
-        labelIndices_[i] = indexIterator[i];
-    }
+    std::copy(prediction.scores_cbegin(), prediction.scores_cend(), scores_);
+    std::copy(prediction.indices_cbegin(), prediction.indices_cend(), labelIndices_);
 }
 
 PartialHead::~PartialHead() {
