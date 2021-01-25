@@ -21,6 +21,11 @@ class FullHead final : public IHead {
     public:
 
         /**
+         * @param numElements The number of scores that are contained by the head.
+         */
+        FullHead(uint32 numElements);
+
+        /**
          * @param prediction A reference to an object of type `FullPrediction` that stores the scores to be contained by
          *                   the head
          */
