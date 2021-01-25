@@ -1,13 +1,17 @@
 #include "body_conjunctive.h"
 
 
+ConjunctiveBody::ConjunctiveBody(uint32 numLeq, uint32 numGr, uint32 numEq, uint32 numNeq)
+    : numLeq_(numLeq), leqFeatureIndices_(new uint32[numLeq_]), leqThresholds_(new float32[numLeq_]),
+      numGr_(numGr), grFeatureIndices_(new uint32[numGr_]), grThresholds_(new float32[numGr_]),
+      numEq_(numEq), eqFeatureIndices_(new uint32[numEq_]), eqThresholds_(new float32[numEq_]),
+      numNeq_(numNeq), neqFeatureIndices_(new uint32[numNeq_]), neqThresholds_(new float32[numNeq_]) {
+
+}
+
 ConjunctiveBody::ConjunctiveBody(const ConditionList& conditionList)
-    : numLeq_(conditionList.getNumConditions(LEQ)), leqFeatureIndices_(new uint32[numLeq_]),
-      leqThresholds_(new float32[numLeq_]), numGr_(conditionList.getNumConditions(GR)),
-      grFeatureIndices_(new uint32[numGr_]), grThresholds_(new float32[numGr_]),
-      numEq_(conditionList.getNumConditions(EQ)), eqFeatureIndices_(new uint32[numEq_]),
-      eqThresholds_(new float32[numEq_]), numNeq_(conditionList.getNumConditions(NEQ)),
-      neqFeatureIndices_(new uint32[numNeq_]), neqThresholds_(new float32[numNeq_]) {
+    : ConjunctiveBody(conditionList.getNumConditions(LEQ), conditionList.getNumConditions(GR),
+                      conditionList.getNumConditions(EQ), conditionList.getNumConditions(NEQ)) {
     uint32 leqIndex = 0;
     uint32 grIndex = 0;
     uint32 eqIndex = 0;
