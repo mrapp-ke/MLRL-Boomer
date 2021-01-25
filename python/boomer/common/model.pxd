@@ -122,9 +122,15 @@ cdef extern from "cpp/model/head_full.h" nogil:
 
         FullHeadImpl(uint32 numElements) except +
 
+        ctypedef float64* score_iterator
+
         ctypedef const float64* score_const_iterator
 
         uint32 getNumElements()
+
+        score_iterator scores_begin()
+
+        score_iterator scores_end()
 
         score_const_iterator scores_cbegin()
 

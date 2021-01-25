@@ -19,6 +19,14 @@ uint32 FullHead::getNumElements() const {
     return numElements_;
 }
 
+FullHead::score_iterator FullHead::scores_begin() {
+    return scores_;
+}
+
+FullHead::score_iterator FullHead::scores_end() {
+    return &scores_[numElements_];
+}
+
 FullHead::score_const_iterator FullHead::scores_cbegin() const {
     return scores_;
 }
