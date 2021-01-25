@@ -35,7 +35,11 @@ class PartialHead final : public IHead {
 
         ~PartialHead();
 
+        typedef float64* score_iterator;
+
         typedef const float64* score_const_iterator;
+
+        typedef uint32* index_iterator;
 
         typedef const uint32* index_const_iterator;
 
@@ -45,6 +49,20 @@ class PartialHead final : public IHead {
          * @return The number of scores
          */
         uint32 getNumElements() const;
+
+        /**
+         * Returns a `score_iterator` to the beginning of the scores that are contained by the head.
+         *
+         * @return A `score_iterator` to the beginning
+         */
+        score_iterator scores_begin();
+
+        /**
+         * Returns a `score_iterator` to the end of the scores that are contained by the head.
+         *
+         * @return A `score_iterator` to the end
+         */
+        score_iterator scores_end();
 
         /**
          * Returns a `score_const_iterator` to the beginning of the scores that are contained by the head.
@@ -59,6 +77,22 @@ class PartialHead final : public IHead {
          * @return A `score_const_iterator` to the end
          */
         score_const_iterator scores_cend() const;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the indices, the scores that are contained by the head
+         * correspond to.
+         *
+         * @return An `index_iterator` to the beginning
+         */
+        index_iterator indices_begin();
+
+        /**
+         * Returns an `index_iterator` to the end of the indices, the scores that are contained by the head correspond
+         * to.
+         *
+         * @return An `index_iterator` to the end
+         */
+        index_iterator indices_end();
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices, the scores that are contained by the head
