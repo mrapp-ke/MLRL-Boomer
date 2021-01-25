@@ -139,6 +139,10 @@ class AbstractExampleWiseStatistics : virtual public IImmutableStatistics {
 
         };
 
+        typedef StatisticsSubset<FullIndexVector> FullSubset;
+
+        typedef StatisticsSubset<PartialIndexVector> PartialSubset;
+
     private:
 
         uint32 numStatistics_;
@@ -229,15 +233,17 @@ class ExampleWiseHistogram final : public AbstractExampleWiseStatistics<Statisti
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
             std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                 this->ruleEvaluationFactoryPtr_->create(labelIndices);
-            return std::make_unique<typename AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>::StatisticsSubset<FullIndexVector>>(
-                *this, totalSumVector_, std::move(ruleEvaluationPtr), labelIndices);
+            return std::make_unique<typename ExampleWiseHistogram::FullSubset>(*this, totalSumVector_,
+                                                                               std::move(ruleEvaluationPtr),
+                                                                               labelIndices);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override final {
             std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                 this->ruleEvaluationFactoryPtr_->create(labelIndices);
-            return std::make_unique<typename AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>::StatisticsSubset<PartialIndexVector>>(
-                *this, totalSumVector_, std::move(ruleEvaluationPtr), labelIndices);
+            return std::make_unique<typename ExampleWiseHistogram::PartialSubset>(*this, totalSumVector_,
+                                                                                  std::move(ruleEvaluationPtr),
+                                                                                  labelIndices);
         }
 
 };
@@ -391,15 +397,17 @@ class ExampleWiseStatistics final : public AbstractExampleWiseStatistics<Statist
         std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
             std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                 this->ruleEvaluationFactoryPtr_->create(labelIndices);
-            return std::make_unique<typename AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>::StatisticsSubset<FullIndexVector>>(
-                *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
+            return std::make_unique<typename ExampleWiseStatistics::FullSubset>(*this, totalSumVectorPtr_.get(),
+                                                                                std::move(ruleEvaluationPtr),
+                                                                                labelIndices);
         }
 
         std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override final {
             std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                 this->ruleEvaluationFactoryPtr_->create(labelIndices);
-            return std::make_unique<typename AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>::StatisticsSubset<PartialIndexVector>>(
-                *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
+            return std::make_unique<typename ExampleWiseStatistics::PartialSubset>(*this, totalSumVectorPtr_.get(),
+                                                                                   std::move(ruleEvaluationPtr),
+                                                                                   labelIndices);
         }
 
 };
