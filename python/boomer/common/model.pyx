@@ -1,6 +1,8 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
+from libcpp.algorithm cimport copy
+from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
 from _io import StringIO
@@ -76,6 +78,115 @@ cdef uint32 __format_conditions(uint32 num_processed_conditions, uint32 num_cond
     return result
 
 
+cdef unique_ptr[IBody] __create_body(object state):
+    cdef const float32[::1] leq_thresholds
+    cdef const uint32[::1] leq_indices
+    cdef const float32[::1] gr_thresholds
+    cdef const uint32[::1] gr_indices
+    cdef const float32[::1] eq_thresholds
+    cdef const uint32[::1] eq_indices
+    cdef const float32[::1] neq_thresholds
+    cdef const uint32[::1] neq_indices
+
+    if state is None:
+        return <unique_ptr[IBody]>make_unique[EmptyBodyImpl]()
+    else:
+        leq_thresholds = state[0]
+        leq_indices = state[1]
+        gr_thresholds = state[2]
+        gr_indices = state[3]
+        eq_thresholds = state[4]
+        eq_indices = state[5]
+        neq_thresholds = state[6]
+        neq_indices = state[7]
+        return __create_conjunctive_body(leq_thresholds, leq_indices, gr_thresholds, gr_indices, eq_thresholds,
+                                         eq_indices, neq_thresholds, neq_indices)
+
+
+cdef unique_ptr[IBody] __create_conjunctive_body(const float32[::1] leq_thresholds, const uint32[::1] leq_indices,
+                                                 const float32[::1] gr_thresholds, const uint32[::1] gr_indices,
+                                                 const float32[::1] eq_thresholds, const uint32[::1] eq_indices,
+                                                 const float32[::1] neq_thresholds, const uint32[::1] neq_indices):
+    cdef uint32 num_leq = leq_thresholds.shape[0]
+    cdef uint32 num_gr = gr_thresholds.shape[0]
+    cdef uint32 num_eq = eq_thresholds.shape[0]
+    cdef uint32 num_neq = neq_thresholds.shape[0]
+    cdef unique_ptr[ConjunctiveBodyImpl] body_ptr = make_unique[ConjunctiveBodyImpl](num_leq, num_gr, num_eq, num_neq)
+
+    cdef const float32* thresholds_begin = &leq_thresholds[0]
+    cdef const float32* thresholds_end = &leq_thresholds[num_leq]
+    cdef ConjunctiveBodyImpl.threshold_iterator threshold_iterator = body_ptr.get().leq_thresholds_begin()
+    copy(thresholds_begin, thresholds_end, threshold_iterator)
+    cdef const uint32* indices_begin = &leq_indices[0]
+    cdef const uint32* indices_end = &leq_indices[num_leq]
+    cdef ConjunctiveBodyImpl.index_iterator index_iterator = body_ptr.get().leq_indices_begin()
+    copy(indices_begin, indices_end, index_iterator)
+
+    thresholds_begin = &gr_thresholds[0]
+    thresholds_end = &gr_thresholds[num_gr]
+    threshold_iterator = body_ptr.get().gr_thresholds_begin()
+    copy(thresholds_begin, thresholds_end, threshold_iterator)
+    indices_begin = &gr_indices[0]
+    indices_end = &gr_indices[num_gr]
+    index_iterator = body_ptr.get().gr_indices_begin()
+    copy(indices_begin, indices_end, index_iterator)
+
+    thresholds_begin = &eq_thresholds[0]
+    thresholds_end = &eq_thresholds[num_eq]
+    threshold_iterator = body_ptr.get().eq_thresholds_begin()
+    copy(thresholds_begin, thresholds_end, threshold_iterator)
+    indices_begin = &eq_indices[0]
+    indices_end = &eq_indices[num_eq]
+    index_iterator = body_ptr.get().eq_indices_begin()
+    copy(indices_begin, indices_end, index_iterator)
+
+    thresholds_begin = &neq_thresholds[0]
+    thresholds_end = &neq_thresholds[num_neq]
+    threshold_iterator = body_ptr.get().neq_thresholds_begin()
+    copy(thresholds_begin, thresholds_end, threshold_iterator)
+    indices_begin = &neq_indices[0]
+    indices_end = &neq_indices[num_neq]
+    index_iterator = body_ptr.get().neq_indices_begin()
+    copy(indices_begin, indices_end, index_iterator)
+
+    return <unique_ptr[IBody]>move(body_ptr)
+
+
+cdef unique_ptr[IHead] __create_head(object state):
+    cdef float64[::1] scores = state[0]
+    cdef uint32[::1] label_indices
+
+    if len(state) > 1:
+        label_indices = state[1]
+        return __create_partial_head(scores, label_indices)
+    else:
+        return __create_full_head(scores)
+
+
+cdef unique_ptr[IHead] __create_full_head(float64[::1] scores):
+    cdef uint32 num_elements = scores.shape[0]
+    cdef unique_ptr[FullHeadImpl] head_ptr = make_unique[FullHeadImpl](num_elements)
+    cdef float64* scores_begin = &scores[0]
+    cdef float64* scores_end = &scores[num_elements]
+    cdef FullHeadImpl.score_iterator score_iterator = head_ptr.get().scores_begin()
+    copy(scores_begin, scores_end, score_iterator)
+    return <unique_ptr[IHead]>move(head_ptr)
+
+
+cdef unique_ptr[IHead] __create_partial_head(float64[::1] scores, uint32[::1] label_indices):
+    cdef uint32 num_elements = scores.shape[0]
+    cdef unique_ptr[PartialHeadImpl] head_ptr = make_unique[PartialHeadImpl](num_elements)
+    cdef float64* scores_begin = &scores[0]
+    cdef float64* scores_end = &scores[num_elements]
+    cdef PartialHeadImpl.score_iterator score_iterator = head_ptr.get().scores_begin()
+    copy(scores_begin, scores_end, score_iterator)
+    cdef uint32* indices_begin = &label_indices[0]
+    cdef uint32* indices_end = &label_indices[num_elements]
+    cdef PartialHeadImpl.index_iterator index_iterator = head_ptr.get().indices_begin()
+    copy(indices_begin, indices_end, index_iterator)
+    return <unique_ptr[IHead]>move(head_ptr)
+
+
 cdef class RuleModelSerializer:
     """
     Allows to serialize and deserialize the rules that are contained by a `RuleModel`.
@@ -138,7 +249,7 @@ cdef class RuleModelSerializer:
         :param model:   The model, the deserialized rules should be added to
         :param state:   A state that has previously been created via the function `serialize`
         """
-        version = state[0]
+        cdef int version = state[0]
 
         if version != SERIALIZATION_VERSION:
             raise AssertionError(
@@ -147,31 +258,12 @@ cdef class RuleModelSerializer:
         cdef list rule_list = state[1]
         cdef uint32 num_rules = len(rule_list)
         cdef unique_ptr[RuleModelImpl] rule_model_ptr = make_unique[RuleModelImpl]()
-        cdef unique_ptr[IBody] body_ptr
-        cdef unique_ptr[IHead] head_ptr
+        cdef object rule_state
         cdef uint32 i
 
         for i in range(num_rules):
             rule_state = rule_list[i]
-            body_state = rule_state[0]
-
-            if body_state is None:
-                body_ptr = make_unique[EmptyBodyImpl]()
-                pass # TODO EmptyBody
-            else:
-                pass # TODO Conjunctive Body
-
-            head_state = rule_state[1]
-            # TODO scores =
-
-            if len(head_state) > 1:
-                pass # TODO Indices & PartialHead
-                head_ptr = make_unique[PartialHeadImpl]()
-            else:
-                pass # TODO FullHead
-                head_ptr = make_unique[FullHeadImpl]()
-
-            rule_model_ptr.get().addRule(move(body_ptr), move(head_ptr))
+            rule_model_ptr.get().addRule(move(__create_body(rule_state[0])), move(__create_head(rule_state[1])))
 
         model.model_ptr = move(rule_model_ptr)
 
