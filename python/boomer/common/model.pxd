@@ -58,6 +58,8 @@ cdef extern from "cpp/model/body_conjunctive.h" nogil:
 
     cdef cppclass ConjunctiveBodyImpl"ConjunctiveBody"(IBody):
 
+        ConjunctiveBodyImpl(uint32 numLeq, uint32 numGr, uint32 numEq, uint32 numNeq) except +
+
         ctypedef const float32* threshold_const_iterator
 
         ctypedef const uint32* index_const_iterator
@@ -118,6 +120,8 @@ cdef extern from "cpp/model/head_full.h" nogil:
 
     cdef cppclass FullHeadImpl"FullHead"(IHead):
 
+        FullHeadImpl(uint32 numElements) except +
+
         ctypedef const float64* score_const_iterator
 
         uint32 getNumElements()
@@ -130,6 +134,8 @@ cdef extern from "cpp/model/head_full.h" nogil:
 cdef extern from "cpp/model/head_partial.h" nogil:
 
     cdef cppclass PartialHeadImpl"PartialHead"(IHead):
+
+        PartialHeadImpl(uint32 numElements) except +
 
         ctypedef const float64* score_const_iterator
 
