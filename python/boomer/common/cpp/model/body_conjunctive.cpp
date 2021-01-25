@@ -1,6 +1,64 @@
 #include "body_conjunctive.h"
 
 
+ConjunctiveBody::ConjunctiveBody(const ConditionList& conditionList)
+    : numLeq_(conditionList.getNumConditions(LEQ)), leqFeatureIndices_(new uint32[numLeq_]),
+      leqThresholds_(new float32[numLeq_]), numGr_(conditionList.getNumConditions(GR)),
+      grFeatureIndices_(new uint32[numGr_]), grThresholds_(new float32[numGr_]),
+      numEq_(conditionList.getNumConditions(EQ)), eqFeatureIndices_(new uint32[numEq_]),
+      eqThresholds_(new float32[numEq_]), numNeq_(conditionList.getNumConditions(NEQ)),
+      neqFeatureIndices_(new uint32[numNeq_]), neqThresholds_(new float32[numNeq_]) {
+    uint32 leqIndex = 0;
+    uint32 grIndex = 0;
+    uint32 eqIndex = 0;
+    uint32 neqIndex = 0;
+
+    for (auto it = conditionList.cbegin(); it != conditionList.cend(); it++) {
+        const Condition& condition = *it;
+        uint32 featureIndex = condition.featureIndex;
+        float32 threshold = condition.threshold;
+
+        switch (condition.comparator) {
+            case LEQ: {
+                leqFeatureIndices_[leqIndex] = featureIndex;
+                leqThresholds_[leqIndex] = threshold;
+                leqIndex++;
+                break;
+            }
+            case GR: {
+                grFeatureIndices_[grIndex] = featureIndex;
+                grThresholds_[grIndex] = threshold;
+                grIndex++;
+                break;
+            }
+            case EQ: {
+                eqFeatureIndices_[eqIndex] = featureIndex;
+                eqThresholds_[eqIndex] = threshold;
+                eqIndex++;
+                break;
+            }
+            case NEQ: {
+                neqFeatureIndices_[neqIndex] = featureIndex;
+                neqThresholds_[neqIndex] = threshold;
+                neqIndex++;
+                break;
+            }
+            default: { }
+        }
+    }
+}
+
+ConjunctiveBody::~ConjunctiveBody() {
+    delete[] leqFeatureIndices_;
+    delete[] leqThresholds_;
+    delete[] grFeatureIndices_;
+    delete[] grThresholds_;
+    delete[] eqFeatureIndices_;
+    delete[] eqThresholds_;
+    delete[] neqFeatureIndices_;
+    delete[] neqThresholds_;
+}
+
 uint32 ConjunctiveBody::getNumLeq() const {
     return numLeq_;
 }
@@ -79,64 +137,6 @@ ConjunctiveBody::index_const_iterator ConjunctiveBody::neq_indices_cbegin() cons
 
 ConjunctiveBody::index_const_iterator ConjunctiveBody::neq_indices_cend() const {
     return &neqFeatureIndices_[numLeq_];
-}
-
-ConjunctiveBody::ConjunctiveBody(const ConditionList& conditionList)
-    : numLeq_(conditionList.getNumConditions(LEQ)), leqFeatureIndices_(new uint32[numLeq_]),
-      leqThresholds_(new float32[numLeq_]), numGr_(conditionList.getNumConditions(GR)),
-      grFeatureIndices_(new uint32[numGr_]), grThresholds_(new float32[numGr_]),
-      numEq_(conditionList.getNumConditions(EQ)), eqFeatureIndices_(new uint32[numEq_]),
-      eqThresholds_(new float32[numEq_]), numNeq_(conditionList.getNumConditions(NEQ)),
-      neqFeatureIndices_(new uint32[numNeq_]), neqThresholds_(new float32[numNeq_]) {
-    uint32 leqIndex = 0;
-    uint32 grIndex = 0;
-    uint32 eqIndex = 0;
-    uint32 neqIndex = 0;
-
-    for (auto it = conditionList.cbegin(); it != conditionList.cend(); it++) {
-        const Condition& condition = *it;
-        uint32 featureIndex = condition.featureIndex;
-        float32 threshold = condition.threshold;
-
-        switch (condition.comparator) {
-            case LEQ: {
-                leqFeatureIndices_[leqIndex] = featureIndex;
-                leqThresholds_[leqIndex] = threshold;
-                leqIndex++;
-                break;
-            }
-            case GR: {
-                grFeatureIndices_[grIndex] = featureIndex;
-                grThresholds_[grIndex] = threshold;
-                grIndex++;
-                break;
-            }
-            case EQ: {
-                eqFeatureIndices_[eqIndex] = featureIndex;
-                eqThresholds_[eqIndex] = threshold;
-                eqIndex++;
-                break;
-            }
-            case NEQ: {
-                neqFeatureIndices_[neqIndex] = featureIndex;
-                neqThresholds_[neqIndex] = threshold;
-                neqIndex++;
-                break;
-            }
-            default: { }
-        }
-    }
-}
-
-ConjunctiveBody::~ConjunctiveBody() {
-    delete[] leqFeatureIndices_;
-    delete[] leqThresholds_;
-    delete[] grFeatureIndices_;
-    delete[] grThresholds_;
-    delete[] eqFeatureIndices_;
-    delete[] eqThresholds_;
-    delete[] neqFeatureIndices_;
-    delete[] neqThresholds_;
 }
 
 bool ConjunctiveBody::covers(CContiguousFeatureMatrix::const_iterator begin,
