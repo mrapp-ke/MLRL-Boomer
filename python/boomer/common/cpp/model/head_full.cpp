@@ -8,11 +8,7 @@ FullHead::FullHead(uint32 numElements)
 
 FullHead::FullHead(const FullPrediction& prediction)
     : FullHead(prediction.getNumElements()) {
-    FullPrediction::score_const_iterator iterator = prediction.scores_cbegin();
-
-    for (uint32 i = 0; i < numElements_; i++) {
-        scores_[i] = iterator[i];
-    }
+    std::copy(prediction.scores_cbegin(), prediction.scores_cend(), scores_);
 }
 
 FullHead::~FullHead() {
