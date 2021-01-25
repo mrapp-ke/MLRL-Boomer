@@ -1,8 +1,13 @@
 #include "head_full.h"
 
 
+FullHead::FullHead(uint32 numElements)
+    : numElements_(numElements), scores_(new float64[numElements]) {
+
+}
+
 FullHead::FullHead(const FullPrediction& prediction)
-    : numElements_(prediction.getNumElements()), scores_(new float64[numElements_]) {
+    : FullHead(prediction.getNumElements()) {
     FullPrediction::score_const_iterator iterator = prediction.scores_cbegin();
 
     for (uint32 i = 0; i < numElements_; i++) {
