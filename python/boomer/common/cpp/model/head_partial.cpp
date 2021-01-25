@@ -1,9 +1,13 @@
 #include "head_partial.h"
 
 
+PartialHead::PartialHead(uint32 numElements)
+    : numElements_(numElements), scores_(new float64[numElements]), labelIndices_(new uint32[numElements]) {
+
+}
+
 PartialHead::PartialHead(const PartialPrediction& prediction)
-    : numElements_(prediction.getNumElements()), scores_(new float64[numElements_]),
-      labelIndices_(new uint32[numElements_]) {
+    : PartialHead(prediction.getNumElements()) {
     PartialPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
     PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
 

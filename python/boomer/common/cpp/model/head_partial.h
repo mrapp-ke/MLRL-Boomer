@@ -23,6 +23,11 @@ class PartialHead final : public IHead {
     public:
 
         /**
+         * @param numElements The number of scores that are contained by the head
+         */
+        PartialHead(uint32 numElements);
+
+        /**
          * @param prediction A reference to an object of type `PartialPrediction` that stores the scores to be contained
          *                   by the head
          */
