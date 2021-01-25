@@ -21,11 +21,11 @@ uint32 PartialHead::getNumElements() const {
     return numElements_;
 }
 
-PartialHead::score_iterator PartialHead::scores_begin() const {
+PartialHead::score_iterator PartialHead::scores_begin() {
     return scores_;
 }
 
-PartialHead::score_iterator PartialHead::scores_end() const {
+PartialHead::score_iterator PartialHead::scores_end() {
     return &scores_[numElements_];
 }
 
@@ -37,11 +37,11 @@ PartialHead::score_const_iterator PartialHead::scores_cend() const {
     return &scores_[numElements_];
 }
 
-PartialHead::index_iterator PartialHead::indices_begin() const {
+PartialHead::index_iterator PartialHead::indices_begin() {
     return labelIndices_;
 }
 
-PartialHead::index_iterator PartialHead::indices_end() const {
+PartialHead::index_iterator PartialHead::indices_end() {
     return &labelIndices_[numElements_];
 }
 
