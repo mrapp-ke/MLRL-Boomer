@@ -20,3 +20,6 @@ cdef class ClassificationPredictor(AbstractClassificationPredictor):
         """
         self.num_labels = num_labels
         self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[ClassificationPredictorImpl]()
+
+    def __reduce__(self):
+        return (ClassificationPredictor, (self.num_labels,))
