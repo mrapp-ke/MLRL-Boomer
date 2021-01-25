@@ -21,12 +21,28 @@ uint32 PartialHead::getNumElements() const {
     return numElements_;
 }
 
+PartialHead::score_iterator PartialHead::scores_begin() const {
+    return scores_;
+}
+
+PartialHead::score_iterator PartialHead::scores_end() const {
+    return &scores_[numElements_];
+}
+
 PartialHead::score_const_iterator PartialHead::scores_cbegin() const {
     return scores_;
 }
 
 PartialHead::score_const_iterator PartialHead::scores_cend() const {
     return &scores_[numElements_];
+}
+
+PartialHead::index_iterator PartialHead::indices_begin() const {
+    return labelIndices_;
+}
+
+PartialHead::index_iterator PartialHead::indices_end() const {
+    return &labelIndices_[numElements_];
 }
 
 PartialHead::index_const_iterator PartialHead::indices_cbegin() const {

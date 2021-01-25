@@ -143,15 +143,27 @@ cdef extern from "cpp/model/head_partial.h" nogil:
 
         PartialHeadImpl(uint32 numElements) except +
 
+        ctypedef float64* score_iterator
+
         ctypedef const float64* score_const_iterator
+
+        ctypedef uint32* index_iterator
 
         ctypedef const uint32* index_const_iterator
 
         uint32 getNumElements()
 
+        score_iterator scores_begin()
+
+        score_iterator scores_end()
+
         score_const_iterator scores_cbegin()
 
         score_const_iterator scores_cend()
+
+        index_iterator indices_begin()
+
+        index_iterator indices_end()
 
         index_const_iterator indices_cbegin()
 
