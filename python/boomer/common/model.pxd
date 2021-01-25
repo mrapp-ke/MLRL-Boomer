@@ -60,15 +60,27 @@ cdef extern from "cpp/model/body_conjunctive.h" nogil:
 
         ConjunctiveBodyImpl(uint32 numLeq, uint32 numGr, uint32 numEq, uint32 numNeq) except +
 
+        ctypedef float32* threshold_iterator
+
         ctypedef const float32* threshold_const_iterator
+
+        ctypedef uint32* index_iterator
 
         ctypedef const uint32* index_const_iterator
 
         uint32 getNumLeq()
 
+        threshold_iterator leq_thresholds_begin()
+
+        threshold_iterator leq_thresholds_end()
+
         threshold_const_iterator leq_thresholds_cbegin()
 
         threshold_const_iterator leq_thresholds_cend()
+
+        index_iterator leq_indices_begin()
+
+        index_iterator leq_indices_end()
 
         index_const_iterator leq_indices_cbegin()
 
@@ -76,9 +88,17 @@ cdef extern from "cpp/model/body_conjunctive.h" nogil:
 
         uint32 getNumGr()
 
+        threshold_iterator gr_thresholds_begin()
+
+        threshold_iterator gr_thresholds_end()
+
         threshold_const_iterator gr_thresholds_cbegin()
 
         threshold_const_iterator gr_thresholds_cend()
+
+        index_iterator gr_indices_begin()
+
+        index_iterator gr_indices_end()
 
         index_const_iterator gr_indices_cbegin()
 
@@ -86,9 +106,17 @@ cdef extern from "cpp/model/body_conjunctive.h" nogil:
 
         uint32 getNumEq()
 
+        threshold_iterator eq_thresholds_begin()
+
+        threshold_iterator eq_thresholds_end()
+
         threshold_const_iterator eq_thresholds_cbegin()
 
         threshold_const_iterator eq_thresholds_cend()
+
+        index_iterator eq_indices_begin()
+
+        index_iterator eq_indices_end()
 
         index_const_iterator eq_indices_cbegin()
 
@@ -96,9 +124,17 @@ cdef extern from "cpp/model/body_conjunctive.h" nogil:
 
         uint32 getNumNeq()
 
+        threshold_iterator neq_thresholds_begin()
+
+        threshold_iterator neq_thresholds_end()
+
         threshold_const_iterator neq_thresholds_cbegin()
 
         threshold_const_iterator neq_thresholds_cend()
+
+        index_iterator neq_indices_begin()
+
+        index_iterator neq_indices_end()
 
         index_const_iterator neq_indices_cbegin()
 
