@@ -159,7 +159,7 @@ cdef class RuleModelSerializer:
 
     cdef __visit_empty_body(self, const EmptyBodyImpl& body):
         body_state = None
-        rule_state = (body_state, None)
+        rule_state = [body_state, None]
         self.state.append(rule_state)
 
     cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body):
@@ -175,7 +175,7 @@ cdef class RuleModelSerializer:
                       np.asarray(<uint32[:num_eq]>body.eq_indices_cbegin()) if num_eq > 0 else None,
                       np.asarray(<float32[:num_neq]>body.neq_thresholds_cbegin()) if num_neq > 0 else None,
                       np.asarray(<uint32[:num_neq]>body.neq_indices_cbegin()) if num_neq > 0 else None)
-        rule_state = (body_state, None)
+        rule_state = [body_state, None]
         self.state.append(rule_state)
 
     cdef __visit_full_head(self, const FullHeadImpl& head):
