@@ -118,35 +118,35 @@ cdef unique_ptr[IBody] __create_conjunctive_body(const float32[::1] leq_threshol
 
 
 cdef unique_ptr[IHead] __create_head(object state):
-    cdef float64[::1] scores = state[0]
-    cdef uint32[::1] label_indices
+    cdef const float64[::1] scores = state[0]
+    cdef const uint32[::1] indices
 
     if len(state) > 1:
-        label_indices = state[1]
-        return __create_partial_head(scores, label_indices)
+        indices = state[1]
+        return __create_partial_head(scores, indices)
     else:
         return __create_full_head(scores)
 
 
-cdef unique_ptr[IHead] __create_full_head(float64[::1] scores):
+cdef unique_ptr[IHead] __create_full_head(const float64[::1] scores):
     cdef uint32 num_elements = scores.shape[0]
     cdef unique_ptr[FullHeadImpl] head_ptr = make_unique[FullHeadImpl](num_elements)
-    cdef float64* scores_begin = &scores[0]
-    cdef float64* scores_end = &scores[num_elements]
+    cdef const float64* scores_begin = &scores[0]
+    cdef const float64* scores_end = &scores[num_elements]
     cdef FullHeadImpl.score_iterator score_iterator = head_ptr.get().scores_begin()
     copy(scores_begin, scores_end, score_iterator)
     return <unique_ptr[IHead]>move(head_ptr)
 
 
-cdef unique_ptr[IHead] __create_partial_head(float64[::1] scores, uint32[::1] label_indices):
+cdef unique_ptr[IHead] __create_partial_head(const float64[::1] scores, const uint32[::1] indices):
     cdef uint32 num_elements = scores.shape[0]
     cdef unique_ptr[PartialHeadImpl] head_ptr = make_unique[PartialHeadImpl](num_elements)
-    cdef float64* scores_begin = &scores[0]
-    cdef float64* scores_end = &scores[num_elements]
+    cdef const float64* scores_begin = &scores[0]
+    cdef const float64* scores_end = &scores[num_elements]
     cdef PartialHeadImpl.score_iterator score_iterator = head_ptr.get().scores_begin()
     copy(scores_begin, scores_end, score_iterator)
-    cdef uint32* indices_begin = &label_indices[0]
-    cdef uint32* indices_end = &label_indices[num_elements]
+    cdef const uint32* indices_begin = &indices[0]
+    cdef const uint32* indices_end = &indices[num_elements]
     cdef PartialHeadImpl.index_iterator index_iterator = head_ptr.get().indices_begin()
     copy(indices_begin, indices_end, index_iterator)
     return <unique_ptr[IHead]>move(head_ptr)
