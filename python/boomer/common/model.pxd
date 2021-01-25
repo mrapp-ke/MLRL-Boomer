@@ -161,6 +161,8 @@ cdef extern from "cpp/model/rule_model.h" nogil:
 
     cdef cppclass RuleModelImpl"RuleModel":
 
+        void addRule(unique_ptr[IBody] bodyPtr, unique_ptr[IHead] headPtr)
+
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                    FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor)
 
