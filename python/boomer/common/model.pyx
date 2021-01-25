@@ -43,41 +43,6 @@ cdef class ModelBuilder:
         return model
 
 
-cdef uint32 __format_conditions(uint32 num_processed_conditions, uint32 num_conditions,
-                                ConjunctiveBodyImpl.index_const_iterator index_iterator,
-                                ConjunctiveBodyImpl.threshold_const_iterator threshold_iterator, object attributes,
-                                bint print_feature_names, bint print_nominal_values, object text, object comparator):
-    cdef uint32 result = num_processed_conditions
-    cdef uint32 feature_index, i
-    cdef object attribute
-
-    for i in range(num_conditions):
-        if result > 0:
-            text.write(' & ')
-
-        feature_index = index_iterator[i]
-        attribute = attributes[feature_index] if len(attributes) > feature_index else None
-
-        if print_feature_names and attribute is not None:
-            text.write(attribute.attribute_name)
-        else:
-            text.write(str(feature_index))
-
-        text.write(' ')
-        text.write(comparator)
-        text.write(' ')
-
-        if print_nominal_values and attribute is not None and attribute.nominal_values is not None and len(
-                attribute.nominal_values) > i:
-            text.write('"' + attribute.nominal_values[i] + '"')
-        else:
-            text.write(str(threshold_iterator[i]))
-
-        result += 1
-
-    return result
-
-
 cdef unique_ptr[IBody] __create_body(object state):
     cdef const float32[::1] leq_thresholds
     cdef const uint32[::1] leq_indices
@@ -266,6 +231,41 @@ cdef class RuleModelSerializer:
             rule_model_ptr.get().addRule(move(__create_body(rule_state[0])), move(__create_head(rule_state[1])))
 
         model.model_ptr = move(rule_model_ptr)
+
+
+cdef uint32 __format_conditions(uint32 num_processed_conditions, uint32 num_conditions,
+                                ConjunctiveBodyImpl.index_const_iterator index_iterator,
+                                ConjunctiveBodyImpl.threshold_const_iterator threshold_iterator, object attributes,
+                                bint print_feature_names, bint print_nominal_values, object text, object comparator):
+    cdef uint32 result = num_processed_conditions
+    cdef uint32 feature_index, i
+    cdef object attribute
+
+    for i in range(num_conditions):
+        if result > 0:
+            text.write(' & ')
+
+        feature_index = index_iterator[i]
+        attribute = attributes[feature_index] if len(attributes) > feature_index else None
+
+        if print_feature_names and attribute is not None:
+            text.write(attribute.attribute_name)
+        else:
+            text.write(str(feature_index))
+
+        text.write(' ')
+        text.write(comparator)
+        text.write(' ')
+
+        if print_nominal_values and attribute is not None and attribute.nominal_values is not None and len(
+                attribute.nominal_values) > i:
+            text.write('"' + attribute.nominal_values[i] + '"')
+        else:
+            text.write(str(threshold_iterator[i]))
+
+        result += 1
+
+    return result
 
 
 cdef class RuleModelFormatter:
