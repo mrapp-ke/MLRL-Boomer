@@ -19,4 +19,8 @@ cdef class ClassificationPredictor(AbstractClassificationPredictor):
         :param thresholds:  The threshold to be used for making predictions
         """
         self.num_labels = num_labels
+        self.threshold = threshold
         self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[ClassificationPredictorImpl](threshold)
+
+    def __reduce__(self):
+        return (ClassificationPredictor, (self.num_labels, self.threshold))

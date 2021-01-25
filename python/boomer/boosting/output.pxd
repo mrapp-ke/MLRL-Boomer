@@ -13,6 +13,10 @@ cdef extern from "cpp/output/predictor_classification.h" namespace "boosting" no
 
 cdef class ClassificationPredictor(AbstractClassificationPredictor):
 
+    # Attributes:
+
+    cdef float64 threshold
+
     # Functions:
 
     cpdef object predict(self, CContiguousFeatureMatrix feature_matrix, RuleModel model)
