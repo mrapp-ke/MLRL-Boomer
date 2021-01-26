@@ -5,7 +5,7 @@ Provides wrappers for classes that allow to find the best refinement of rules.
 """
 from boomer.common._types cimport uint32, intp, float32
 from boomer.common.head_refinement cimport AbstractEvaluatedPrediction
-from boomer.common.rules cimport Comparator
+from boomer.common.model cimport Comparator
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
