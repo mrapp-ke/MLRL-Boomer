@@ -5,9 +5,10 @@ using namespace boosting;
 
 
 /**
- * Calculates and returns the logistic function `1 / (1 + exp(-x)) = exp(x) / (1 + exp(x))`, given a specific value `x`.
+ * Calculates and returns the logistic function `1 / (1 + exp(-x))`, given a specific value `x`.
  *
- * This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
+ * This implementation exploits the identity `1 / (1 + exp(-x)) = exp(x) / (1 + exp(x))` to increase numerical stability
+ * (see, e.g., section "Numerically stable sigmoid function" in
  * https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
  *
  * @param x The value `x`
