@@ -2,18 +2,20 @@
 
 
 TimeStoppingCriterion::TimeStoppingCriterion(uint32 timeLimit)
-    : timeLimit_(timeLimit), startTime_(nullptr) {
+    : timeLimit_(std::chrono::duration_cast<timer_unit>(std::chrono::seconds(timeLimit))), startTime_(timer::now()),
+      timerStarted_(false) {
 
 }
 
 bool TimeStoppingCriterion::shouldContinue(const IStatistics& statistics, uint32 numRules) {
-    if (startTime_ == nullptr) {
-        time(startTime_);
-        return true;
+    if (timerStarted_) {
+        auto currentTime = timer::now();
+        auto duration = std::chrono::duration_cast<timer_unit>(currentTime - startTime_);
+        return duration < timeLimit_;
     } else {
-        time_t currentTime;
-        time(&currentTime);
-        return difftime(currentTime, *startTime_) < timeLimit_;
+        startTime_ = timer::now();
+        timerStarted_ = true;
+        return true;
     }
 
 }
