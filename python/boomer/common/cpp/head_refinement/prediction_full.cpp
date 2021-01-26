@@ -2,6 +2,7 @@
 #include "head_refinement.h"
 #include "../rule_refinement/rule_refinement.h"
 #include "../statistics/statistics.h"
+#include "../model/head_full.h"
 
 
 FullPrediction::FullPrediction(uint32 numElements)
@@ -45,4 +46,8 @@ std::unique_ptr<IHeadRefinement> FullPrediction::createHeadRefinement(const IHea
 
 void FullPrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
     statistics.applyPrediction(statisticIndex, *this);
+}
+
+std::unique_ptr<IHead> FullPrediction::toHead() const {
+    return std::make_unique<FullHead>(*this);
 }
