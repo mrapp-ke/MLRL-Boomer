@@ -8,6 +8,8 @@ Provides a scikit-learn implementations of boosting algorithms
 from boomer.boosting.losses_example_wise import ExampleWiseLogisticLoss
 from boomer.boosting.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
     LabelWiseSquaredHingeLoss
+from boomer.boosting.model import RuleListBuilder
+from boomer.boosting.output import ClassificationPredictor
 from boomer.boosting.post_processing import ConstantShrinkage
 from boomer.boosting.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory
 from boomer.boosting.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory
@@ -15,10 +17,10 @@ from boomer.boosting.statistics_example_wise import ExampleWiseStatisticsProvide
 from boomer.boosting.statistics_label_wise import LabelWiseStatisticsProviderFactory
 from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     FullHeadRefinementFactory
+from boomer.common.model import ModelBuilder
+from boomer.common.output import Predictor
 from boomer.common.post_processing import PostProcessor, NoPostProcessor
-from boomer.common.prediction import Predictor, DensePredictor, ThresholdFunction
 from boomer.common.rule_induction import TopDownGreedyRuleInduction
-from boomer.common.rules import ModelBuilder, RuleListBuilder
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
 from sklearn.base import ClassifierMixin
@@ -150,7 +152,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def _create_predictor(self, num_labels: int) -> Predictor:
         threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
-        return DensePredictor(num_labels, ThresholdFunction(threshold))
+        return ClassificationPredictor(num_labels=num_labels, threshold=0)
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
