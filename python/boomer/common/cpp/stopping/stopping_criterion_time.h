@@ -4,7 +4,7 @@
 #pragma once
 
 #include "stopping_criterion.h"
-#include <ctime>
+#include <chrono>
 
 
 /**
@@ -14,9 +14,15 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
 
     private:
 
-        uint32 timeLimit_;
+        typedef std::chrono::steady_clock timer;
 
-        time_t* startTime_;
+        typedef std::chrono::seconds timer_unit;
+
+        timer_unit timeLimit_;
+
+        std::chrono::time_point<timer> startTime_;
+
+        bool timerStarted_;
 
     public:
 
