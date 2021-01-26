@@ -1,5 +1,5 @@
 from boomer.common._types cimport uint32, intp
-from boomer.common.rules cimport RuleModel, ModelBuilder
+from boomer.common.model cimport RuleModel, ModelBuilder
 from boomer.common.rule_induction cimport RuleInduction
 from boomer.common.statistics cimport StatisticsProviderFactory
 from boomer.common.thresholds cimport ThresholdsFactory

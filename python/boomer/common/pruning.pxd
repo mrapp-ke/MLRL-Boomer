@@ -1,5 +1,5 @@
 from boomer.common.head_refinement cimport AbstractPrediction
-from boomer.common.rules cimport Condition, ConditionList
+from boomer.common.model cimport Condition, ConditionList
 from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
 
 from libcpp.memory cimport unique_ptr, shared_ptr
