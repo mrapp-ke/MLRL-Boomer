@@ -152,7 +152,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def _create_predictor(self, num_labels: int) -> Predictor:
         threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
-        return ClassificationPredictor(num_labels=num_labels, threshold=0)
+        return ClassificationPredictor(num_labels=num_labels, threshold=threshold)
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
