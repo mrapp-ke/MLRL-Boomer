@@ -5,7 +5,6 @@
 
 #include "index_vector.h"
 #include "index_iterator.h"
-#include <iterator>
 
 
 /**
