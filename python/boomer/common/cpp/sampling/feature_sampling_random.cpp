@@ -1,5 +1,6 @@
 #include "feature_sampling_random.h"
 #include "index_sampling.h"
+#include "../indices/index_iterator.h"
 #include <cmath>
 
 
@@ -17,5 +18,5 @@ std::unique_ptr<IIndexVector> RandomFeatureSubsetSelection::subSample(uint32 num
             numSamples = (uint32) (log2(numFeatures - 1) + 1);
     }
 
-    return sampleIndicesWithoutReplacement(numFeatures, numSamples, rng);
+    return sampleIndicesWithoutReplacement<IndexIterator>(IndexIterator(numFeatures), numFeatures, numSamples, rng);
 }
