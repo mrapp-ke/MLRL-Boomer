@@ -50,7 +50,7 @@ bool DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator!=(
 
 DenseExampleWiseStatisticVector::HessianDiagonalIterator::difference_type DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator-(
         const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
-    return (int) index_ - (int) rhs.index_;
+    return (difference_type) index_ - (difference_type) rhs.index_;
 }
 
 DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients)
