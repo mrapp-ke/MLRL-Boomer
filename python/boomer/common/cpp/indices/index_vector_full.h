@@ -4,6 +4,7 @@
 #pragma once
 
 #include "index_vector.h"
+#include "index_iterator.h"
 #include <iterator>
 
 
@@ -19,52 +20,11 @@ class FullIndexVector final : public IIndexVector {
     public:
 
         /**
-         * Allows to iterate the indices of a `FullIndexVector`.
-         */
-        class Iterator final {
-
-            private:
-
-                uint32 index_;
-
-            public:
-
-                Iterator(uint32 index);
-
-                typedef int difference_type;
-
-                typedef uint32 value_type;
-
-                typedef uint32* pointer;
-
-                typedef uint32 reference;
-
-                typedef std::random_access_iterator_tag iterator_category;
-
-                reference operator[](uint32 index) const;
-
-                reference operator*() const;
-
-                Iterator& operator++();
-
-                Iterator& operator++(int n);
-
-                Iterator& operator--();
-
-                Iterator& operator--(int n);
-
-                bool operator!=(const Iterator& rhs) const;
-
-                difference_type operator-(const Iterator& rhs) const;
-
-        };
-
-        /**
          * @param numElements The number of indices, the vector provides access to
          */
         FullIndexVector(uint32 numElements);
 
-        typedef Iterator const_iterator;
+        typedef IndexIterator const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the indices.
