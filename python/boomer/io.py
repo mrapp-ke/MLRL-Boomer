@@ -21,7 +21,7 @@ CSV_QUOTE_CHAR = '"'
 
 def open_writable_txt_file(directory: str, file_name: str, fold: int = None, append: bool = False):
     """
-    Opens a TXT file to be written to.
+    Opens a text file to be written to.
 
     :param directory:   The directory where the file is located
     :param file_name:   The name of the file to be opened (without suffix)
@@ -37,7 +37,7 @@ def open_writable_txt_file(directory: str, file_name: str, fold: int = None, app
 
 def __get_txt_file(directory: str, file_name: str, fold: int):
     """
-    Returns the TXT file with a specific name that corresponds to a certain fold.
+    Returns the text file with a specific name that corresponds to a certain fold.
 
     :param directory:   The directory where the file is located
     :param file_name:   The name of the file (without suffix)
