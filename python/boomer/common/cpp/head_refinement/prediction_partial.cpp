@@ -2,6 +2,7 @@
 #include "head_refinement.h"
 #include "../rule_refinement/rule_refinement.h"
 #include "../statistics/statistics.h"
+#include "../model/head_partial.h"
 
 
 PartialPrediction::PartialPrediction(uint32 numElements)
@@ -53,4 +54,8 @@ std::unique_ptr<IHeadRefinement> PartialPrediction::createHeadRefinement(const I
 
 void PartialPrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
     statistics.applyPrediction(statisticIndex, *this);
+}
+
+std::unique_ptr<IHead> PartialPrediction::toHead() const {
+    return std::make_unique<PartialHead>(*this);
 }
