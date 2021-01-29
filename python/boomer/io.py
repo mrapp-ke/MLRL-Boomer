@@ -27,6 +27,9 @@ SUFFIX_CSV = 'csv'
 # The suffix of an ARFF file
 SUFFIX_ARFF = 'arff'
 
+# The suffix of a XML file
+SUFFIX_XML = 'xml'
+
 
 def open_writable_txt_file(directory: str, file_name: str, fold: int = None, append: bool = False):
     """
