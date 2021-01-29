@@ -90,7 +90,7 @@ class ModelPrinterLogOutput(ModelPrinterOutput):
 
 class ModelPrinterTxtOutput(ModelPrinterOutput):
     """
-    Writes the textual representation of a model to a TXT file.
+    Writes the textual representation of a model to a text file.
     """
 
     def __init__(self, output_dir: str, clear_dir: bool = True):
