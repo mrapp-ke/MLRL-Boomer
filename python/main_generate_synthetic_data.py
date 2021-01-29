@@ -75,7 +75,7 @@ class GenerateSyntheticDataRunnable(Runnable):
         meta_data = save_data_set_and_meta_data(args.output_dir, arff_file_name=dataset_name + '.arff',
                                                 xml_file_name=dataset_name + '.xml', x=features, y=labels)
         log.info('The generated data set contains %s examples, %s attributes and %s labels', features.shape[0],
-                 len(meta_data.attributes), len(meta_data.label_names))
+                 len(meta_data.attributes), len(meta_data.labels))
 
     @staticmethod
     def __generate_dataset(num_examples: int, num_labels: int, tau: float, p: float, marginal_independence: bool,
