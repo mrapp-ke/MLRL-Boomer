@@ -54,7 +54,7 @@ def open_readable_csv_file(directory: str, file_name: str, fold: int):
                         a specific fold
     :return:            The file that has been opened
     """
-    file = __get_csv_file(directory, file_name, fold)
+    file = __get_file(directory, file_name, fold, SUFFIX_CSV)
     return open(file, mode='r', newline='')
 
 
@@ -69,22 +69,9 @@ def open_writable_csv_file(directory: str, file_name: str, fold: int = None, app
     :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
     :return:            The file that has been opened
     """
-    file = __get_csv_file(directory, file_name, fold)
+    file = __get_file(directory, file_name, fold, SUFFIX_CSV)
     write_mode = 'a' if append and path.isfile(file) else 'w'
     return open(file, mode=write_mode)
-
-
-def __get_csv_file(directory: str, file_name: str, fold: int):
-    """
-    Returns the CSV file with a specific name that corresponds to a certain fold.
-
-    :param directory:   The directory where the file is located
-    :param file_name:   The name of the file (without suffix)
-    :param fold:        The cross validation fold, the file corresponds to, or None, if the file does not correspond to
-                        a specific fold
-    :return:            The file
-    """
-    return __get_file(directory, file_name, fold, SUFFIX_CSV)
 
 
 def __get_file(directory: str, file_name: str, fold: int, suffix: str):
