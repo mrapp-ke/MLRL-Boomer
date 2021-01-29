@@ -8,7 +8,7 @@ measures. The evaluation results can be written to one or several outputs, e.g. 
 """
 import logging as log
 from abc import ABC, abstractmethod
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Optional
 
 import numpy as np
 import sklearn.metrics as metrics
@@ -110,7 +110,7 @@ class EvaluationResult:
 
     def __init__(self):
         self.measures: Set[str] = set()
-        self.results: List[Dict[str, float]] = None
+        self.results: Optional[List[Dict[str, float]]] = None
 
     def put(self, name: str, score: float, fold: int, num_folds: int):
         """
