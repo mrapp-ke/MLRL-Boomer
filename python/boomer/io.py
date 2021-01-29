@@ -18,6 +18,15 @@ CSV_DELIMITER = ','
 # The character used for quotations in a CSV file
 CSV_QUOTE_CHAR = '"'
 
+# The suffix of a text file
+SUFFIX_TEXT = 'txt'
+
+# The suffix of a CSV file
+SUFFIX_CSV = 'csv'
+
+# The suffix of an ARFF file
+SUFFIX_ARFF = 'arff'
+
 
 def open_writable_txt_file(directory: str, file_name: str, fold: int = None, append: bool = False):
     """
@@ -45,7 +54,7 @@ def __get_txt_file(directory: str, file_name: str, fold: int):
                         a specific fold
     :return:            The file
     """
-    return __get_file(directory, file_name, fold, 'txt')
+    return __get_file(directory, file_name, fold, SUFFIX_TEXT)
 
 
 def open_readable_csv_file(directory: str, file_name: str, fold: int):
@@ -88,7 +97,7 @@ def __get_csv_file(directory: str, file_name: str, fold: int):
                         a specific fold
     :return:            The file
     """
-    return __get_file(directory, file_name, fold, 'csv')
+    return __get_file(directory, file_name, fold, SUFFIX_CSV)
 
 
 def __get_file(directory: str, file_name: str, fold: int, suffix: str):
