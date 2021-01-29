@@ -42,7 +42,7 @@ def get_file_name(name: str, suffix: str):
     return name + '.' + suffix
 
 
-def get_file_name(name: str, suffix: str, fold: int):
+def get_file_name_per_fold(name: str, suffix: str, fold: int):
     """
     Returns a file name, including a suffix, that corresponds to a certain fold.
 
@@ -66,7 +66,7 @@ def open_writable_txt_file(directory: str, file_name: str, fold: int = None, app
     :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
     :return:            The file that has been opened
     """
-    file = path.join(directory, get_file_name(file_name, SUFFIX_TEXT, fold))
+    file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_TEXT, fold))
     write_mode = 'a' if append and path.isfile(file) else 'w'
     return open(file, mode=write_mode)
 
@@ -81,7 +81,7 @@ def open_readable_csv_file(directory: str, file_name: str, fold: int):
                         a specific fold
     :return:            The file that has been opened
     """
-    file = path.join(directory, get_file_name(file_name, SUFFIX_CSV, fold))
+    file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_CSV, fold))
     return open(file, mode='r', newline='')
 
 
@@ -96,7 +96,7 @@ def open_writable_csv_file(directory: str, file_name: str, fold: int = None, app
     :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
     :return:            The file that has been opened
     """
-    file = path.join(directory, get_file_name(file_name, SUFFIX_CSV, fold))
+    file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_CSV, fold))
     write_mode = 'a' if append and path.isfile(file) else 'w'
     return open(file, mode=write_mode)
 
