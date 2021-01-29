@@ -14,10 +14,9 @@ from xml.dom import minidom
 
 import arff
 import numpy as np
-from scipy.sparse import coo_matrix, lil_matrix, csc_matrix, csr_matrix, issparse
+from scipy.sparse import coo_matrix, lil_matrix, csc_matrix, issparse, dok_matrix
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
-from skmultilearn.dataset import save_to_arff
 
 from boomer.common.types import DTYPE_UINT8, DTYPE_FLOAT32
 from boomer.io import write_xml_file
@@ -160,23 +159,82 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
 
     :param output_dir:      The path of the directory where the ARFF file should be saved
     :param arff_file_name:  The name of the ARFF file (including the suffix)
-    :param x:               An array of type `float`, shape `(num_examples, num_features)`, representing the features of
-                            the examples that are contained in the data set
-    :param y:               An array of type `float`, shape `(num_examples, num_labels)`, representing the label vectors
-                            of the examples that are contained in the data set
+    :param x:               A `np.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores
+                            the features of the examples that are contained in the data set
+    :param y:               A `np.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
+                            labels of the examples that are contained in the data set
     :return:                The meta data of the data set that has been saved
     """
 
-    arff_file = path.join(output_dir, arff_file_name)
-    log.debug('Saving data set to file \'' + str(arff_file) + '\'...')
     num_attributes = x.shape[1]
     attributes = [Attribute('X' + str(i), AttributeType.NUMERIC) for i in range(num_attributes)]
     num_labels = y.shape[1]
     labels = [Label('y' + str(i)) for i in range(num_labels)]
     meta_data = MetaData(attributes, labels, labels_at_start=False)
-    save_to_arff(csr_matrix(x), csr_matrix(y), label_location='end', save_sparse=False, filename=arff_file)
-    log.info('Successfully saved data set to file \'' + str(arff_file) + '\'.')
+    save_data_set(output_dir, arff_file_name, x, y, meta_data)
     return meta_data
+
+
+def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.ndarray, meta_data: MetaData):
+    """
+    Saves a multi-label data set to an ARFF file.
+
+    :param output_dir:      The path of the directory where the ARFF file should be saved
+    :param arff_file_name:  The name of the ARFF file (including the suffix)
+    :param x:               A `np.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores
+                            the features of the examples that are contained in the data set
+    :param y:               A `np.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
+                            labels of the examples that are contained in the data set
+    :param meta_data:       The meta data of the data set that should be saved
+    """
+    arff_file = path.join(output_dir, arff_file_name)
+    log.debug('Saving data set to file \'' + str(arff_file) + '\'...')
+    sparse = issparse(x) and issparse(y)
+    x = dok_matrix(x)
+    y = dok_matrix(y)
+    x_prefix = 0
+    y_prefix = 0
+
+    attributes = meta_data.attributes
+    x_attributes = [(u'{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
+                     u'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None or attributes[
+                         i].attribute_type == AttributeType.NUMERIC else attributes[i].nominal_values)
+                    for i in range(x.shape[1])]
+
+    labels = meta_data.labels
+    y_attributes = [(u'{}'.format(labels[i].attribute_name if len(labels) > i else 'y' + str(i)),
+                     u'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None or labels[
+                         i].attribute_type == AttributeType.NUMERIC else labels[i].nominal_values)
+                    for i in range(y.shape[1])]
+
+    if meta_data.labels_at_start:
+        x_prefix = y.shape[1]
+        relation_sign = 1
+        attributes = y_attributes + x_attributes
+    else:
+        y_prefix = x.shape[1]
+        relation_sign = -1
+        attributes = x_attributes + y_attributes
+
+    if sparse:
+        data = [{} for _ in range(x.shape[0])]
+    else:
+        data = [[0 for _ in range(x.shape[1] + y.shape[1])] for _ in range(x.shape[0])]
+
+    for keys, value in list(x.items()):
+        data[keys[0]][x_prefix + keys[1]] = value
+
+    for keys, value in list(y.items()):
+        data[keys[0]][y_prefix + keys[1]] = value
+
+    with open(arff_file, 'w') as file:
+        file.write(arff.dumps({
+            u'description': u'traindata',
+            u'relation': u'traindata: -C {}'.format(y.shape[1] * relation_sign),
+            u'attributes': attributes,
+            u'data': data
+        }))
+    log.info('Successfully saved data set to file \'' + str(arff_file) + '\'.')
 
 
 def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
