@@ -31,6 +31,30 @@ SUFFIX_ARFF = 'arff'
 SUFFIX_XML = 'xml'
 
 
+def get_file_name(name: str, suffix: str):
+    """
+    Returns a file name, including a suffix.
+
+    :param name:    The name of the file (without suffix)
+    :param suffix:  The suffix of the file
+    :return:        The file name
+    """
+    return name + '.' + suffix
+
+
+def get_file_name(name: str, suffix: str, fold: int):
+    """
+    Returns a file name, including a suffix, that corresponds to a certain fold.
+
+    :param name:    The name of the file (without suffix)
+    :param suffix:  The suffix of the file
+    :param fold:    The cross validation fold, the file corresponds to, or None, if the file does not correspond to a
+                    specific fold
+    :return:        The file name
+    """
+    return get_file_name(name + '_' + ('overall' if fold is None else 'fold_' + str(fold + 1)), suffix)
+
+
 def open_writable_txt_file(directory: str, file_name: str, fold: int = None, append: bool = False):
     """
     Opens a text file to be written to.
@@ -75,30 +99,6 @@ def open_writable_csv_file(directory: str, file_name: str, fold: int = None, app
     file = path.join(directory, get_file_name(file_name, SUFFIX_CSV, fold))
     write_mode = 'a' if append and path.isfile(file) else 'w'
     return open(file, mode=write_mode)
-
-
-def get_file_name(name: str, suffix: str):
-    """
-    Returns a file name, including a suffix.
-
-    :param name:    The name of the file (without suffix)
-    :param suffix:  The suffix of the file
-    :return:        The file name
-    """
-    return name + '.' + suffix
-
-
-def get_file_name(name: str, suffix: str, fold: int):
-    """
-    Returns a file name, including a suffix, that corresponds to a certain fold.
-
-    :param name:    The name of the file (without suffix)
-    :param suffix:  The suffix of the file
-    :param fold:    The cross validation fold, the file corresponds to, or None, if the file does not correspond to a
-                    specific fold
-    :return:        The file name
-    """
-    return get_file_name(name + '_' + ('overall' if fold is None else 'fold_' + str(fold + 1)), suffix)
 
 
 def create_csv_dict_reader(csv_file) -> DictReader:
