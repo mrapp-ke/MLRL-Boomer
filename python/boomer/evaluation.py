@@ -16,7 +16,8 @@ from sklearn.utils.multiclass import is_multilabel
 
 from boomer.common.arrays import enforce_dense
 from boomer.data import MetaData, save_data_set, Label
-from boomer.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, get_file_name
+from boomer.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, \
+    get_file_name_per_fold
 
 # The name of the accuracy metric
 ACCURACY = 'Acc.'
@@ -304,7 +305,7 @@ class EvaluationCsvOutput(EvaluationOutput):
                           fold: int = None):
         if self.output_predictions:
             self.__clear_dir_if_necessary()
-            file_name = get_file_name('predictions_' + experiment_name, SUFFIX_ARFF, fold)
+            file_name = get_file_name_per_fold('predictions_' + experiment_name, SUFFIX_ARFF, fold)
             attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
             labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
             prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
