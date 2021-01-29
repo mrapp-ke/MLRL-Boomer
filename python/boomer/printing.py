@@ -324,8 +324,8 @@ def __format_full_head(meta_data: MetaData, head: FullHead, print_label_names: b
         if len(text) > 0:
             text += ', '
 
-        if print_label_names and len(meta_data.label_names) > i:
-            text += meta_data.label_names[i]
+        if print_label_names and len(meta_data.labels) > i:
+            text += meta_data.labels[i].attribute_name
         else:
             text += str(i)
 
@@ -355,8 +355,8 @@ def __format_partial_head(meta_data: MetaData, head: PartialHead, print_label_na
 
         label_index = label_indices[i]
 
-        if print_label_names and len(meta_data.label_names) > label_index:
-            text += meta_data.label_names[label_index]
+        if print_label_names and len(meta_data.labels) > label_index:
+            text += meta_data.labels[label_index].attribute_name
         else:
             text += str(label_index)
 
