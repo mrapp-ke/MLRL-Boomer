@@ -15,8 +15,8 @@ import sklearn.metrics as metrics
 from sklearn.utils.multiclass import is_multilabel
 
 from boomer.common.arrays import enforce_dense
-from boomer.data import MetaData
-from boomer.io import open_writable_csv_file, create_csv_dict_writer, create_csv_writer, clear_directory
+from boomer.data import MetaData, save_data_set, Label
+from boomer.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, get_file_name
 
 # The name of the accuracy metric
 ACCURACY = 'Acc.'
@@ -304,19 +304,11 @@ class EvaluationCsvOutput(EvaluationOutput):
                           fold: int = None):
         if self.output_predictions:
             self.__clear_dir_if_necessary()
-            num_examples = predictions.shape[0]
-            num_labels = predictions.shape[1]
-            header = ['Ground Truth L' + str(i + 1) for i in range(num_labels)]
-            header.extend(['Prediction L' + str(i + 1) for i in range(num_labels)])
-
-            with open_writable_csv_file(self.output_dir, 'predictions_' + experiment_name, fold) as csv_file:
-                csv_writer = create_csv_writer(csv_file)
-                csv_writer.writerow(header)
-
-                for n in range(num_examples):
-                    columns = [ground_truth[n, i] for i in range(num_labels)]
-                    columns.extend([predictions[n, i] for i in range(num_labels)])
-                    csv_writer.writerow(columns)
+            file_name = get_file_name('predictions_' + experiment_name, SUFFIX_ARFF, fold)
+            attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
+            labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
+            prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
+            save_data_set(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     def __clear_dir_if_necessary(self):
         """
