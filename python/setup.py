@@ -132,7 +132,6 @@ setuptools.setup(name='boomer',
                      "scipy>=1.5.0",
                      "Cython>=0.29.0",
                      'scikit-learn>=0.23.0',
-                     'scikit-multilearn>=0.2.0',
                      'liac-arff>=2.5.0',
                      'requests>=2.25.0'
                  ],
