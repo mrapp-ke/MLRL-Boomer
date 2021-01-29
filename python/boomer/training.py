@@ -16,7 +16,7 @@ from sklearn.model_selection import KFold
 
 from boomer.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
 from boomer.interfaces import Randomized
-from boomer.io import SUFFIX_ARFF, SUFFIX_XML
+from boomer.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
 
 
 class DataSet:
@@ -78,8 +78,8 @@ class CrossValidation(Randomized, ABC):
                  num_folds)
         data_set = self.data_set
         data_set_name = data_set.data_set_name
-        x, y, meta_data = load_data_set_and_meta_data(data_set.data_dir, data_set_name + '.' + SUFFIX_ARFF,
-                                                      data_set_name + '.' + SUFFIX_XML)
+        x, y, meta_data = load_data_set_and_meta_data(data_set.data_dir, get_file_name(data_set_name, SUFFIX_ARFF),
+                                                      get_file_name(data_set_name, SUFFIX_XML))
 
         if data_set.use_one_hot_encoding:
             x, _, meta_data = one_hot_encode(x, y, meta_data)
@@ -126,18 +126,18 @@ class CrossValidation(Randomized, ABC):
         data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name
         use_one_hot_encoding = data_set.use_one_hot_encoding
-        train_arff_file_name = data_set_name + '-train.' + SUFFIX_ARFF
+        train_arff_file_name = get_file_name(data_set_name + '-train', SUFFIX_ARFF)
         train_arff_file = path.join(data_dir, train_arff_file_name)
         test_data_exists = True
 
         if not path.isfile(train_arff_file):
-            train_arff_file_name = data_set_name + '.' + SUFFIX_ARFF
+            train_arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
             log.warning('File \'' + train_arff_file + '\' does not exist. Using \'' +
                         path.join(data_dir, train_arff_file_name) + '\' instead!')
             test_data_exists = False
 
         train_x, train_y, meta_data = load_data_set_and_meta_data(data_dir, train_arff_file_name,
-                                                                  data_set_name + '.' + SUFFIX_XML)
+                                                                  get_file_name(data_set_name, SUFFIX_XML))
 
         if use_one_hot_encoding:
             train_x, encoder, meta_data = one_hot_encode(train_x, train_y, meta_data)
@@ -146,7 +146,7 @@ class CrossValidation(Randomized, ABC):
 
         # Load test data
         if test_data_exists:
-            test_x, test_y = load_data_set(data_dir, data_set_name + '-test.' + SUFFIX_ARFF, meta_data)
+            test_x, test_y = load_data_set(data_dir, get_file_name(data_set_name + '-test', SUFFIX_ARFF), meta_data)
 
             if encoder is not None:
                 test_x, _ = one_hot_encode(test_x, test_y, meta_data, encoder=encoder)
