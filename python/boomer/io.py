@@ -88,8 +88,31 @@ def __get_file(directory: str, file_name: str, fold: int, suffix: str):
     :param suffix:      The suffix of the file
     :return:            The file
     """
-    full_file_name = file_name + '_' + ('overall' if fold is None else 'fold_' + str(fold + 1)) + '.' + suffix
-    return path.join(directory, full_file_name)
+    return path.join(directory, get_file_name(file_name, suffix, fold))
+
+
+def get_file_name(name: str, suffix: str):
+    """
+    Returns a file name, including a suffix.
+
+    :param name:    The name of the file (without suffix)
+    :param suffix:  The suffix of the file
+    :return:        The file name
+    """
+    return name + '.' + suffix
+
+
+def get_file_name(name: str, suffix: str, fold: int):
+    """
+    Returns a file name, including a suffix, that corresponds to a certain fold.
+
+    :param name:    The name of the file (without suffix)
+    :param suffix:  The suffix of the file
+    :param fold:    The cross validation fold, the file corresponds to, or None, if the file does not correspond to a
+                    specific fold
+    :return:        The file name
+    """
+    return get_file_name(name + '_' + ('overall' if fold is None else 'fold_' + str(fold + 1)), suffix)
 
 
 def create_csv_dict_reader(csv_file) -> DictReader:
