@@ -8,7 +8,7 @@ Provides functions for writing and reading files.
 import os
 import os.path as path
 import xml.etree.ElementTree as XmlTree
-from csv import DictReader, writer, DictWriter, QUOTE_MINIMAL
+from csv import DictReader, DictWriter, QUOTE_MINIMAL
 
 from xml.dom import minidom
 
@@ -109,16 +109,6 @@ def create_csv_dict_reader(csv_file) -> DictReader:
     :return:            The 'DictReader' that has been created
     """
     return DictReader(csv_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR)
-
-
-def create_csv_writer(csv_file):
-    """
-    Creates and returns a writer that allows to write rows to a CSV file.
-
-    :param csv_file:    The CSV file
-    :return:            The writer that has been created
-    """
-    return writer(csv_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR, quoting=QUOTE_MINIMAL)
 
 
 def create_csv_dict_writer(csv_file, header) -> DictWriter:
