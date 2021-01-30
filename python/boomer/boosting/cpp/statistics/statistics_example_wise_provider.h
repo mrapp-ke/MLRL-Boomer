@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "../../../common/cpp/statistics/statistics_provider.h"
+#include "../../../common/cpp/statistics/statistics_provider_factory.h"
 #include "../losses/loss_example_wise.h"
 #include "statistics_example_wise.h"
 

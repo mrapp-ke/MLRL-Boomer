@@ -36,6 +36,8 @@ cdef extern from "cpp/statistics/statistics_provider.h" nogil:
         void switchRuleEvaluation()
 
 
+cdef extern from "cpp/statistics/statistics_provider_factory.h" nogil:
+
     cdef cppclass IStatisticsProviderFactory:
 
         unique_ptr[IStatisticsProvider] create(shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr)
