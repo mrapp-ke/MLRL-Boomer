@@ -2,7 +2,7 @@ from boomer.common._types cimport uint32, intp
 from boomer.common._indices cimport IIndexVector
 from boomer.common.input cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.model cimport IModelBuilder
-from boomer.common.statistics cimport StatisticsProvider
+from boomer.common.statistics cimport IStatisticsProvider
 from boomer.common.thresholds cimport IThresholds
 from boomer.common.sampling cimport IWeightVector, IFeatureSubSampling, RNG
 from boomer.common.pruning cimport IPruning
@@ -14,7 +14,7 @@ cdef class RuleInduction:
 
     # Functions:
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
+    cdef void induce_default_rule(self, IStatisticsProvider* statistics_provider,
                                   IHeadRefinementFactory* head_refinement_factory, IModelBuilder* model_builder)
 
     cdef bint induce_rule(self, IThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
@@ -28,7 +28,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
 
     # Functions:
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
+    cdef void induce_default_rule(self, IStatisticsProvider* statistics_provider,
                                   IHeadRefinementFactory* head_refinement_factory, IModelBuilder* model_builder)
 
     cdef bint induce_rule(self, IThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
