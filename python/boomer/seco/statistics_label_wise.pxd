@@ -1,75 +1,20 @@
-from boomer.common.input cimport LabelMatrix, IRandomAccessLabelMatrix
-from boomer.common.statistics cimport StatisticsProvider, StatisticsProviderFactory, IStatistics
-from boomer.seco.statistics cimport ICoverageStatistics
-from boomer.seco.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory
+from boomer.common.statistics cimport StatisticsProviderFactory, IStatisticsProviderFactory
+from boomer.seco.rule_evaluation_label_wise cimport ILabelWiseRuleEvaluationFactory
 
-from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/statistics/statistics_label_wise.h" namespace "seco" nogil:
+cdef extern from "cpp/statistics/statistics_label_wise_provider.h" namespace "seco" nogil:
 
-    cdef cppclass ILabelWiseStatistics(ICoverageStatistics):
-
-        # Functions:
-
-        void setRuleEvaluationFactory(shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr)
-
-
-    cdef cppclass ILabelWiseStatisticsFactory:
-
-        # Functions:
-
-        unique_ptr[ILabelWiseStatistics] create()
-
-
-cdef extern from "cpp/statistics/statistics_label_wise_dense.h" namespace "seco" nogil:
-
-    cdef cppclass DenseLabelWiseStatisticsFactoryImpl"seco::DenseLabelWiseStatisticsFactory"(
-            ILabelWiseStatisticsFactory):
+    cdef cppclass LabelWiseStatisticsProviderFactoryImpl"seco::LabelWiseStatisticsProviderFactory"(
+            IStatisticsProviderFactory):
 
         # Constructors:
 
-        DenseLabelWiseStatisticsFactoryImpl(shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr,
-                                            shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr) except +
-
-
-cdef class LabelWiseStatisticsFactory:
-
-    # Attributes:
-
-    cdef shared_ptr[ILabelWiseStatisticsFactory] statistics_factory_ptr
-
-    # Functions:
-
-    cdef unique_ptr[ILabelWiseStatistics] create(self)
-
-
-cdef class DenseLabelWiseStatisticsFactory(LabelWiseStatisticsFactory):
-
-    # Functions:
-
-    cdef unique_ptr[ILabelWiseStatistics] create(self)
-
-
-cdef class LabelWiseStatisticsProvider(StatisticsProvider):
-
-    # Attributes:
-
-    cdef LabelWiseRuleEvaluationFactory rule_evaluation_factory
-
-    # Functions:
-
-    cdef IStatistics* get(self)
+        LabelWiseStatisticsProviderFactory(
+            shared_ptr[ILabelWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
+            shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr)
 
 
 cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
-
-    # Attributes:
-
-    cdef LabelWiseRuleEvaluationFactory default_rule_evaluation_factory
-
-    cdef LabelWiseRuleEvaluationFactory rule_evaluation_factory
-
-    # Functions:
-
-    cdef StatisticsProvider create(self, LabelMatrix label_matrix)
+    pass
