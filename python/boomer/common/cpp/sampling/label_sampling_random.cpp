@@ -1,5 +1,6 @@
 #include "label_sampling_random.h"
 #include "index_sampling.h"
+#include "../indices/index_iterator.h"
 
 RandomLabelSubsetSelection::RandomLabelSubsetSelection(uint32 numSamples)
     : numSamples_(numSamples) {
@@ -7,5 +8,5 @@ RandomLabelSubsetSelection::RandomLabelSubsetSelection(uint32 numSamples)
 }
 
 std::unique_ptr<IIndexVector> RandomLabelSubsetSelection::subSample(uint32 numLabels, RNG& rng) const {
-    return sampleIndicesWithoutReplacement(numLabels, numSamples_, rng);
+    return sampleIndicesWithoutReplacement<IndexIterator>(IndexIterator(numLabels), numLabels, numSamples_, rng);
 }

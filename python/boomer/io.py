@@ -8,7 +8,7 @@ Provides functions for writing and reading files.
 import os
 import os.path as path
 import xml.etree.ElementTree as XmlTree
-from csv import DictReader, writer, DictWriter, QUOTE_MINIMAL
+from csv import DictReader, DictWriter, QUOTE_MINIMAL
 
 from xml.dom import minidom
 
@@ -18,10 +18,46 @@ CSV_DELIMITER = ','
 # The character used for quotations in a CSV file
 CSV_QUOTE_CHAR = '"'
 
+# The suffix of a text file
+SUFFIX_TEXT = 'txt'
+
+# The suffix of a CSV file
+SUFFIX_CSV = 'csv'
+
+# The suffix of an ARFF file
+SUFFIX_ARFF = 'arff'
+
+# The suffix of a XML file
+SUFFIX_XML = 'xml'
+
+
+def get_file_name(name: str, suffix: str):
+    """
+    Returns a file name, including a suffix.
+
+    :param name:    The name of the file (without suffix)
+    :param suffix:  The suffix of the file
+    :return:        The file name
+    """
+    return name + '.' + suffix
+
+
+def get_file_name_per_fold(name: str, suffix: str, fold: int):
+    """
+    Returns a file name, including a suffix, that corresponds to a certain fold.
+
+    :param name:    The name of the file (without suffix)
+    :param suffix:  The suffix of the file
+    :param fold:    The cross validation fold, the file corresponds to, or None, if the file does not correspond to a
+                    specific fold
+    :return:        The file name
+    """
+    return get_file_name(name + '_' + ('overall' if fold is None else 'fold_' + str(fold + 1)), suffix)
+
 
 def open_writable_txt_file(directory: str, file_name: str, fold: int = None, append: bool = False):
     """
-    Opens a TXT file to be written to.
+    Opens a text file to be written to.
 
     :param directory:   The directory where the file is located
     :param file_name:   The name of the file to be opened (without suffix)
@@ -30,22 +66,9 @@ def open_writable_txt_file(directory: str, file_name: str, fold: int = None, app
     :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
     :return:            The file that has been opened
     """
-    file = __get_txt_file(directory, file_name, fold)
+    file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_TEXT, fold))
     write_mode = 'a' if append and path.isfile(file) else 'w'
     return open(file, mode=write_mode)
-
-
-def __get_txt_file(directory: str, file_name: str, fold: int):
-    """
-    Returns the TXT file with a specific name that corresponds to a certain fold.
-
-    :param directory:   The directory where the file is located
-    :param file_name:   The name of the file (without suffix)
-    :param fold:        The cross validation fold, the file corresponds to, or None, if the file does not correspond to
-                        a specific fold
-    :return:            The file
-    """
-    return __get_file(directory, file_name, fold, 'txt')
 
 
 def open_readable_csv_file(directory: str, file_name: str, fold: int):
@@ -58,7 +81,7 @@ def open_readable_csv_file(directory: str, file_name: str, fold: int):
                         a specific fold
     :return:            The file that has been opened
     """
-    file = __get_csv_file(directory, file_name, fold)
+    file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_CSV, fold))
     return open(file, mode='r', newline='')
 
 
@@ -73,37 +96,9 @@ def open_writable_csv_file(directory: str, file_name: str, fold: int = None, app
     :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
     :return:            The file that has been opened
     """
-    file = __get_csv_file(directory, file_name, fold)
+    file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_CSV, fold))
     write_mode = 'a' if append and path.isfile(file) else 'w'
     return open(file, mode=write_mode)
-
-
-def __get_csv_file(directory: str, file_name: str, fold: int):
-    """
-    Returns the CSV file with a specific name that corresponds to a certain fold.
-
-    :param directory:   The directory where the file is located
-    :param file_name:   The name of the file (without suffix)
-    :param fold:        The cross validation fold, the file corresponds to, or None, if the file does not correspond to
-                        a specific fold
-    :return:            The file
-    """
-    return __get_file(directory, file_name, fold, 'csv')
-
-
-def __get_file(directory: str, file_name: str, fold: int, suffix: str):
-    """
-    Returns the file with a specific name that corresponds to a certain fold.
-
-    :param directory:   The directory where the file is located
-    :param file_name:   The name of the file (without suffix)
-    :param fold:        The cross validation fold, the file corresponds to, or None, if the file does not correspond to
-                        a specific fold
-    :param suffix:      The suffix of the file
-    :return:            The file
-    """
-    full_file_name = file_name + '_' + ('overall' if fold is None else 'fold_' + str(fold + 1)) + '.' + suffix
-    return path.join(directory, full_file_name)
 
 
 def create_csv_dict_reader(csv_file) -> DictReader:
@@ -114,16 +109,6 @@ def create_csv_dict_reader(csv_file) -> DictReader:
     :return:            The 'DictReader' that has been created
     """
     return DictReader(csv_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR)
-
-
-def create_csv_writer(csv_file):
-    """
-    Creates and returns a writer that allows to write rows to a CSV file.
-
-    :param csv_file:    The CSV file
-    :return:            The writer that has been created
-    """
-    return writer(csv_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR, quoting=QUOTE_MINIMAL)
 
 
 def create_csv_dict_writer(csv_file, header) -> DictWriter:

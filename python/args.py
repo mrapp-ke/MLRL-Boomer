@@ -120,7 +120,7 @@ class ArgumentParserBuilder:
                             help='The cross validation fold to be performed')
         parser.add_argument('--store-predictions', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_predictions', False, **kwargs),
-                            help='True, if the predictions should be stored as CSV files, False otherwise')
+                            help='True, if the predictions should be stored as ARFF files, False otherwise')
         parser.add_argument('--parameter-dir', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('parameter_dir', None, **kwargs),
                             help='The path of the directory, parameter settings should be loaded from')
@@ -179,7 +179,7 @@ class ArgumentParserBuilder:
                             help='A dictionary that specifies options for printing rules')
         parser.add_argument('--store-rules', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_rules', False, **kwargs),
-                            help='True, if the induced rules should be stored in TXT files, False otherwise')
+                            help='True, if the induced rules should be stored in text files, False otherwise')
         parser.add_argument('--feature-binning', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('feature_binning', None, **kwargs),
                             help='The name of the strategy to be used for feature binning or None')

@@ -95,7 +95,7 @@ bool DenseMappingVector<T>::Iterator::operator!=(const DenseMappingVector<T>::It
 template<class T>
 typename DenseMappingVector<T>::Iterator::difference_type DenseMappingVector<T>::Iterator::operator-(
         const DenseMappingVector<T>::Iterator& rhs) const {
-    return (int) index_ - (int) rhs.index_;
+    return (difference_type) index_ - (difference_type) rhs.index_;
 }
 
 template<class T>
@@ -149,7 +149,7 @@ bool DenseMappingVector<T>::ConstIterator::operator!=(const ConstIterator& rhs) 
 template<class T>
 typename DenseMappingVector<T>::ConstIterator::difference_type DenseMappingVector<T>::ConstIterator::operator-(
         const DenseMappingVector<T>::ConstIterator& rhs) const {
-    return (int) index_ - (int) rhs.index_;
+    return (difference_type) index_ - (difference_type) rhs.index_;
 }
 
 template<class T>
