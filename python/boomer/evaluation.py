@@ -8,14 +8,16 @@ measures. The evaluation results can be written to one or several outputs, e.g. 
 """
 import logging as log
 from abc import ABC, abstractmethod
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Optional
 
 import numpy as np
 import sklearn.metrics as metrics
 from sklearn.utils.multiclass import is_multilabel
 
 from boomer.common.arrays import enforce_dense
-from boomer.io import open_writable_csv_file, create_csv_dict_writer, create_csv_writer, clear_directory
+from boomer.data import MetaData, save_data_set, Label
+from boomer.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, \
+    get_file_name_per_fold
 
 # The name of the accuracy metric
 ACCURACY = 'Acc.'
@@ -84,12 +86,13 @@ class Evaluation(ABC):
     """
 
     @abstractmethod
-    def evaluate(self, experiment_name: str, predictions, ground_truth, first_fold: int, current_fold: int,
-                 last_fold: int, num_folds: int, train_time: float):
+    def evaluate(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, first_fold: int,
+                 current_fold: int, last_fold: int, num_folds: int, train_time: float):
         """
         Evaluates the predictions provided by a classifier or ranker.
 
         :param experiment_name: The name of the experiment
+        :param meta_data        The meta data of the data set
         :param predictions:     The predictions provided by the classifier
         :param ground_truth:    The true labels
         :param first_fold:      The first cross validation fold or 0, if no cross validation is used
@@ -108,7 +111,7 @@ class EvaluationResult:
 
     def __init__(self):
         self.measures: Set[str] = set()
-        self.results: List[Dict[str, float]] = None
+        self.results: Optional[List[Dict[str, float]]] = None
 
     def put(self, name: str, score: float, fold: int, num_folds: int):
         """
@@ -211,11 +214,13 @@ class EvaluationOutput(ABC):
         pass
 
     @abstractmethod
-    def write_predictions(self, experiment_name: str, predictions, ground_truth, total_folds: int, fold: int = None):
+    def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
+                          fold: int = None):
         """
         Writes predictions to the output.
 
         :param experiment_name: The name of the experiment
+        :param meta_data        The meta data of the data set
         :param predictions:     The predictions
         :param ground_truth:    The ground truth
         :param total_folds:     The total number of folds
@@ -258,7 +263,8 @@ class EvaluationLogOutput(EvaluationOutput):
                        fold + 1) + ')') + ':\n\n%s\n'
             log.info(msg, text)
 
-    def write_predictions(self, experiment_name: str, predictions, ground_truth, total_folds: int, fold: int = None):
+    def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
+                          fold: int = None):
         if self.output_predictions:
             text = 'Ground truth:\n\n' + np.array2string(ground_truth) + '\n\nPredictions:\n\n' + np.array2string(
                 predictions)
@@ -295,22 +301,15 @@ class EvaluationCsvOutput(EvaluationOutput):
                 csv_writer = create_csv_dict_writer(csv_file, header)
                 csv_writer.writerow(columns)
 
-    def write_predictions(self, experiment_name: str, predictions, ground_truth, total_folds: int, fold: int = None):
+    def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
+                          fold: int = None):
         if self.output_predictions:
             self.__clear_dir_if_necessary()
-            num_examples = predictions.shape[0]
-            num_labels = predictions.shape[1]
-            header = ['Ground Truth L' + str(i + 1) for i in range(num_labels)]
-            header.extend(['Prediction L' + str(i + 1) for i in range(num_labels)])
-
-            with open_writable_csv_file(self.output_dir, 'predictions_' + experiment_name, fold) as csv_file:
-                csv_writer = create_csv_writer(csv_file)
-                csv_writer.writerow(header)
-
-                for n in range(num_examples):
-                    columns = [ground_truth[n, i] for i in range(num_labels)]
-                    columns.extend([predictions[n, i] for i in range(num_labels)])
-                    csv_writer.writerow(columns)
+            file_name = get_file_name_per_fold('predictions_' + experiment_name, SUFFIX_ARFF, fold)
+            attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
+            labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
+            prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
+            save_data_set(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     def __clear_dir_if_necessary(self):
         """
@@ -334,13 +333,13 @@ class AbstractEvaluation(Evaluation):
         self.outputs = args
         self.results: Dict[str, EvaluationResult] = {}
 
-    def evaluate(self, experiment_name: str, predictions, ground_truth, first_fold: int, current_fold: int,
-                 last_fold: int, num_folds: int, train_time: float):
+    def evaluate(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, first_fold: int,
+                 current_fold: int, last_fold: int, num_folds: int, train_time: float):
         result = self.results[experiment_name] if experiment_name in self.results else EvaluationResult()
         self.results[experiment_name] = result
         result.put(TRAINING_TIME, train_time, current_fold, num_folds)
         self._populate_result(result, predictions, ground_truth, current_fold=current_fold, num_folds=num_folds)
-        self.__write_predictions(experiment_name, predictions, ground_truth, current_fold=current_fold,
+        self.__write_predictions(experiment_name, meta_data, predictions, ground_truth, current_fold=current_fold,
                                  num_folds=num_folds)
         self.__write_evaluation_result(experiment_name, result, first_fold=first_fold, current_fold=current_fold,
                                        last_fold=last_fold, num_folds=num_folds)
@@ -349,11 +348,13 @@ class AbstractEvaluation(Evaluation):
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         pass
 
-    def __write_predictions(self, experiment_name: str, predictions, ground_truth, current_fold: int, num_folds: int):
+    def __write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth,
+                            current_fold: int, num_folds: int):
         """
         Writes predictions to the outputs.
 
         :param experiment_name: The name of the experiment
+        :param meta_data        The meta data of the data set
         :param predictions:     The predictions
         :param ground_truth:    The ground truth
         :param current_fold:    The current cross validation fold or 0, if no cross validation is used
@@ -361,7 +362,7 @@ class AbstractEvaluation(Evaluation):
         """
 
         for output in self.outputs:
-            output.write_predictions(experiment_name, predictions, ground_truth, num_folds,
+            output.write_predictions(experiment_name, meta_data, predictions, ground_truth, num_folds,
                                      current_fold if num_folds > 1 else None)
 
     def __write_evaluation_result(self, experiment_name: str, result: EvaluationResult, first_fold: int,

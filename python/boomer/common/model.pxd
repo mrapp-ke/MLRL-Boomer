@@ -336,7 +336,7 @@ cdef class RuleModelFormatter:
 
     cdef list attributes
 
-    cdef list label_names
+    cdef list labels
 
     cdef bint print_feature_names
 
