@@ -5,48 +5,6 @@
 #include "../thresholds/thresholds_subset.h"
 
 
-FullIndexVector::Iterator::Iterator(uint32 index)
-    : index_(index) {
-
-}
-
-FullIndexVector::Iterator::reference FullIndexVector::Iterator::operator[](uint32 index) const {
-    return index;
-}
-
-FullIndexVector::Iterator::reference FullIndexVector::Iterator::operator*() const {
- return index_;
-}
-
-FullIndexVector::Iterator& FullIndexVector::Iterator::operator++() {
-    ++index_;
-    return *this;
-}
-
-FullIndexVector::Iterator& FullIndexVector::Iterator::operator++(int n) {
-    index_++;
-    return *this;
-}
-
-FullIndexVector::Iterator& FullIndexVector::Iterator::operator--() {
-    --index_;
-    return *this;
-}
-
-FullIndexVector::Iterator& FullIndexVector::Iterator::operator--(int n) {
-    index_--;
-    return *this;
-}
-
-bool FullIndexVector::Iterator::operator!=(const FullIndexVector::Iterator& rhs) const {
-    return index_ != rhs.index_;
-}
-
-FullIndexVector::Iterator::difference_type FullIndexVector::Iterator::operator-(
-        const FullIndexVector::Iterator& rhs) const {
-    return (int) index_ - (int) rhs.index_;
-}
-
 FullIndexVector::FullIndexVector(uint32 numElements) {
     numElements_ = numElements;
 }
@@ -68,11 +26,11 @@ uint32 FullIndexVector::getIndex(uint32 pos) const {
 }
 
 FullIndexVector::const_iterator FullIndexVector::cbegin() const {
-    return FullIndexVector::Iterator(0);
+    return IndexIterator(0);
 }
 
 FullIndexVector::const_iterator FullIndexVector::cend() const {
-    return FullIndexVector::Iterator(numElements_);
+    return IndexIterator(numElements_);
 }
 
 std::unique_ptr<IStatisticsSubset> FullIndexVector::createSubset(const IImmutableStatistics& statistics) const {

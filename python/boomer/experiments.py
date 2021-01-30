@@ -89,7 +89,7 @@ class Experiment(CrossValidation, ABC):
 
         if evaluation is not None:
             predictions = current_learner.predict(train_x)
-            evaluation.evaluate('train_' + learner_name, predictions, train_y, first_fold=first_fold,
+            evaluation.evaluate('train_' + learner_name, meta_data, predictions, train_y, first_fold=first_fold,
                                 current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
                                 train_time=train_time)
 
@@ -98,7 +98,7 @@ class Experiment(CrossValidation, ABC):
 
         if evaluation is not None:
             predictions = current_learner.predict(test_x)
-            evaluation.evaluate('test_' + learner_name, predictions, test_y, first_fold=first_fold,
+            evaluation.evaluate('test_' + learner_name, meta_data, predictions, test_y, first_fold=first_fold,
                                 current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
                                 train_time=train_time)
 

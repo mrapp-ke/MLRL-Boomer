@@ -3,6 +3,7 @@
 
 Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
+from boomer.common._indices cimport IIndexVector
 from boomer.common.input cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.model cimport IModelBuilder
 from boomer.common.pruning cimport IPruning
@@ -10,7 +11,7 @@ from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.statistics cimport StatisticsProvider, IStatistics
 from boomer.common.thresholds cimport IThresholds
 from boomer.common.stopping cimport IStoppingCriterion, StoppingCriterion
-from boomer.common.sampling cimport IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG
+from boomer.common.sampling cimport IWeightVector, IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG
 from boomer.common.head_refinement cimport IHeadRefinementFactory
 
 from libcpp.memory cimport shared_ptr, unique_ptr, make_unique
@@ -120,6 +121,8 @@ cdef class SequentialRuleInduction:
         # The number of rules induced so far
         cdef uint32 num_rules = 0
         # Temporary variables
+        cdef unique_ptr[IWeightVector] weights_ptr
+        cdef unique_ptr[IIndexVector] label_indices_ptr
         cdef bint success
 
         # Induce default rule...
@@ -146,12 +149,19 @@ cdef class SequentialRuleInduction:
         cdef unique_ptr[IThresholds] thresholds_ptr = thresholds_factory.thresholds_factory_ptr.get().create(
             feature_matrix_ptr, nominal_feature_mask_ptr, statistics_provider.statistics_ptr, head_refinement_factory_ptr)
 
+        # The total number of examples
+        cdef uint32 num_examples = thresholds_ptr.get().getNumExamples()
+        # The total number of labels
+        cdef uint32 num_labels = thresholds_ptr.get().getNumLabels()
+
         while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
+            weights_ptr = instance_sub_sampling_ptr.get().subSample(num_examples, dereference(rng_ptr.get()))
+            label_indices_ptr = label_sub_sampling_ptr.get().subSample(num_labels, dereference(rng_ptr.get()))
             success = rule_induction.induce_rule(thresholds_ptr.get(), nominal_feature_mask_ptr.get(),
-                                                 feature_matrix_ptr.get(), label_sub_sampling_ptr.get(),
-                                                 instance_sub_sampling_ptr.get(), feature_sub_sampling_ptr.get(),
-                                                 pruning_ptr.get(), post_processor_ptr.get(), min_coverage,
-                                                 max_conditions, max_head_refinements, num_threads, rng_ptr.get(),
+                                                 feature_matrix_ptr.get(), label_indices_ptr.get(), weights_ptr.get(),
+                                                 feature_sub_sampling_ptr.get(), pruning_ptr.get(),
+                                                 post_processor_ptr.get(), min_coverage, max_conditions,
+                                                 max_head_refinements, num_threads, rng_ptr.get(),
                                                  model_builder_ptr.get())
 
             if not success:

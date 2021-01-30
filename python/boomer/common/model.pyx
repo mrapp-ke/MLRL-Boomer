@@ -273,11 +273,11 @@ cdef class RuleModelFormatter:
     Allows to create textual representations of the rules that are contained by a `RuleModel`.
     """
 
-    def __cinit__(self, list attributes, list label_names, bint print_feature_names=True, bint print_label_names=True,
+    def __cinit__(self, list attributes, list labels, bint print_feature_names=True, bint print_label_names=True,
                   bint print_nominal_values=False):
         """
         :param attributes:              A list that contains the attributes
-        :param label_names:             A list that contains the names of the labels
+        :param labels:                  A list that contains the labels
         :param print_feature_names:     True, if the names of features should be printed, False otherwise
         :param print_label_names:       True, if the names of labels should be printed, False otherwise
         :param print_nominal_values:    True, if the values of nominal values should be printed, False otherwise
@@ -286,7 +286,7 @@ cdef class RuleModelFormatter:
         self.print_label_names = print_label_names
         self.print_nominal_values = print_nominal_values
         self.attributes = attributes
-        self.label_names = label_names
+        self.labels = labels
         self.text = StringIO()
 
     cdef __visit_empty_body(self, const EmptyBodyImpl& body):
@@ -334,7 +334,7 @@ cdef class RuleModelFormatter:
     cdef __visit_full_head(self, const FullHeadImpl& head):
         cdef object text = self.text
         cdef bint print_label_names = self.print_label_names
-        cdef list label_names = self.label_names
+        cdef list labels = self.labels
         cdef FullHeadImpl.score_const_iterator score_iterator = head.scores_cbegin()
         cdef uint32 num_elements = head.getNumElements()
         cdef uint32 i
@@ -345,8 +345,8 @@ cdef class RuleModelFormatter:
             if i > 0:
                 text.write(', ')
 
-            if print_label_names and len(label_names) > i:
-                text.write(label_names[i])
+            if print_label_names and len(labels) > i:
+                text.write(labels[i].attribute_name)
             else:
                 text.write(str(i))
 
@@ -358,7 +358,7 @@ cdef class RuleModelFormatter:
     cdef __visit_partial_head(self, const PartialHeadImpl& head):
         cdef object text = self.text
         cdef bint print_label_names = self.print_label_names
-        cdef list label_names = self.label_names
+        cdef list labels = self.labels
         cdef PartialHeadImpl.score_const_iterator score_iterator = head.scores_cbegin()
         cdef PartialHeadImpl.index_const_iterator index_iterator = head.indices_cbegin()
         cdef uint32 num_elements = head.getNumElements()
@@ -372,8 +372,8 @@ cdef class RuleModelFormatter:
 
             label_index = index_iterator[i]
 
-            if print_label_names and len(label_names) > label_index:
-                text.write(label_names[label_index])
+            if print_label_names and len(labels) > label_index:
+                text.write(labels[label_index].attribute_name)
             else:
                 text.write(str(label_index))
 
