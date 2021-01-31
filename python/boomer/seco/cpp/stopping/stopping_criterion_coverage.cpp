@@ -1,15 +1,17 @@
 #include "stopping_criterion_coverage.h"
 #include "../statistics/statistics_coverage.h"
 
-using namespace seco;
 
+namespace seco {
 
-CoverageStoppingCriterion::CoverageStoppingCriterion(float64 threshold)
-    : threshold_(threshold) {
+    CoverageStoppingCriterion::CoverageStoppingCriterion(float64 threshold)
+        : threshold_(threshold) {
 
-}
+    }
 
-bool CoverageStoppingCriterion::shouldContinue(const IStatistics& statistics, uint32 numRules) {
-    const ICoverageStatistics& coverageStatistics = static_cast<const ICoverageStatistics&>(statistics);
-    return coverageStatistics.getSumOfUncoveredLabels() > threshold_;
+    bool CoverageStoppingCriterion::shouldContinue(const IStatistics& statistics, uint32 numRules) {
+        const ICoverageStatistics& coverageStatistics = static_cast<const ICoverageStatistics&>(statistics);
+        return coverageStatistics.getSumOfUncoveredLabels() > threshold_;
+    }
+
 }
