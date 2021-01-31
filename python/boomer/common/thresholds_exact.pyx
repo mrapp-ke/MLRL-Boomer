@@ -1,8 +1,5 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides Cython wrappers for classes that provide access to exact thresholds that may be used by the conditions of
-rules.
 """
 from libcpp.memory cimport shared_ptr, make_shared
 

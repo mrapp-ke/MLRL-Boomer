@@ -1,7 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides commonly used type definitions.
 """
 cimport numpy as npc
 

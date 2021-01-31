@@ -1,8 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides classes for making predictions using rule-based models that have been learned by the seperate-and-conquer
-algorithm.
 """
 from boomer.common._types cimport uint32
 
