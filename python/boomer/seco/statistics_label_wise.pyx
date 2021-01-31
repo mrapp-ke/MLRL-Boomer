@@ -1,9 +1,6 @@
 """
 @author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides wrappers for classes that allow to store the elements of confusion matrices that are computed independently for
-each label.
 """
 from boomer.seco.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFactory
 

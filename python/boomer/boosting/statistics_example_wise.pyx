@@ -1,8 +1,5 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides wrappers for classes that allow to store gradients and Hessians that are calculated according to a
-(non-decomposable) loss function that is applied example-wise.
 """
 from boomer.boosting.losses_example_wise cimport ExampleWiseLoss
 from boomer.boosting.rule_evaluation_example_wise cimport ExampleWiseRuleEvaluationFactory
