@@ -22,13 +22,13 @@ cdef class RuleInduction:
     A base class for all classes that implement an algorithm for the induction of individual classification rules.
     """
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
+    cdef void induce_default_rule(self, IStatisticsProvider* statistics_provider,
                                   IHeadRefinementFactory* head_refinement_factory, IModelBuilder* model_builder):
         """
         Induces the default rule.
 
-        :param statistics_provider:     A `StatisticsProvider` that provides access to the statistics which should serve
-                                        as the basis for inducing the default rule
+        :param statistics_provider:     A pointer to an object of type `IStatisticsProvider` that provides access to the
+                                        statistics which should serve as the basis for inducing the default rule
         :param head_refinement_factory: A pointer to an object of type `IHeadRefinementFactory` that allows to create
                                         instances of the class that should be used to find the head of the default rule
                                         or a null pointer, if no default rule should be induced
@@ -85,7 +85,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
     rule the most is chosen. The search stops if no refinement results in an improvement.
     """
 
-    cdef void induce_default_rule(self, StatisticsProvider statistics_provider,
+    cdef void induce_default_rule(self, IStatisticsProvider* statistics_provider,
                                   IHeadRefinementFactory* head_refinement_factory, IModelBuilder* model_builder):
         cdef unique_ptr[IHeadRefinement] head_refinement_ptr
         cdef unique_ptr[AbstractEvaluatedPrediction] default_prediction_ptr
@@ -95,7 +95,7 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
         cdef uint32 num_statistics, num_labels, i
 
         if head_refinement_factory != NULL:
-            statistics = statistics_provider.get()
+            statistics = &statistics_provider.get()
             num_statistics = statistics.getNumStatistics()
             num_labels = statistics.getNumLabels()
             label_indices_ptr = make_unique[FullIndexVector](num_labels)
@@ -108,14 +108,14 @@ cdef class TopDownGreedyRuleInduction(RuleInduction):
             head_refinement_ptr = head_refinement_factory.create(dereference(label_indices_ptr.get()))
             head_refinement_ptr.get().findHead(NULL, dereference(statistics_subset_ptr.get()), True, False)
             default_prediction_ptr = head_refinement_ptr.get().pollHead()
-            statistics_provider.switch_rule_evaluation()
+            statistics_provider.switchRuleEvaluation()
 
             for i in range(num_statistics):
                 default_prediction_ptr.get().apply(dereference(statistics), i)
 
             model_builder.setDefaultRule(dereference(default_prediction_ptr.get()))
         else:
-            statistics_provider.switch_rule_evaluation()
+            statistics_provider.switchRuleEvaluation()
 
     cdef bint induce_rule(self, IThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
                           IFeatureMatrix* feature_matrix, IIndexVector* label_indices, IWeightVector* weight_vector,

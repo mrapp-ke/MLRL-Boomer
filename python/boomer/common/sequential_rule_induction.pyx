@@ -2,17 +2,17 @@
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
 from boomer.common._indices cimport IIndexVector
-from boomer.common.input cimport IFeatureMatrix, INominalFeatureMask
+from boomer.common.input cimport IFeatureMatrix, ILabelMatrix, IRandomAccessLabelMatrix, INominalFeatureMask
 from boomer.common.model cimport IModelBuilder
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
-from boomer.common.statistics cimport StatisticsProvider, IStatistics
+from boomer.common.statistics cimport IStatisticsProvider, IStatisticsProviderFactory, IStatistics
 from boomer.common.thresholds cimport IThresholds
 from boomer.common.stopping cimport IStoppingCriterion, StoppingCriterion
 from boomer.common.sampling cimport IWeightVector, IInstanceSubSampling, IFeatureSubSampling, ILabelSubSampling, RNG
 from boomer.common.head_refinement cimport IHeadRefinementFactory
 
-from libcpp.memory cimport shared_ptr, unique_ptr, make_unique
+from libcpp.memory cimport shared_ptr, unique_ptr, make_unique, dynamic_pointer_cast
 
 from cython.operator cimport dereference
 
@@ -131,8 +131,12 @@ cdef class SequentialRuleInduction:
             head_refinement_factory_ptr = default_rule_head_refinement_factory.head_refinement_factory_ptr
             num_rules += 1;
 
-        cdef StatisticsProvider statistics_provider = statistics_provider_factory.create(label_matrix)
-        rule_induction.induce_default_rule(statistics_provider, head_refinement_factory_ptr.get(),
+        cdef shared_ptr[IStatisticsProviderFactory] statistics_provider_factory_ptr = statistics_provider_factory.statistics_provider_factory_ptr
+        cdef shared_ptr[IRandomAccessLabelMatrix] label_matrix_ptr = dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](
+            label_matrix.label_matrix_ptr)
+        cdef shared_ptr[IStatisticsProvider] statistics_provider_ptr = shared_ptr[IStatisticsProvider](
+            statistics_provider_factory_ptr.get().create(label_matrix_ptr))
+        rule_induction.induce_default_rule(statistics_provider_ptr.get(), head_refinement_factory_ptr.get(),
                                            model_builder_ptr.get())
 
         # Induce the remaining rules...
@@ -145,14 +149,14 @@ cdef class SequentialRuleInduction:
         cdef shared_ptr[IPruning] pruning_ptr = pruning.pruning_ptr
         cdef shared_ptr[IPostProcessor] post_processor_ptr = post_processor.post_processor_ptr
         cdef unique_ptr[IThresholds] thresholds_ptr = thresholds_factory.thresholds_factory_ptr.get().create(
-            feature_matrix_ptr, nominal_feature_mask_ptr, statistics_provider.statistics_ptr, head_refinement_factory_ptr)
+            feature_matrix_ptr, nominal_feature_mask_ptr, statistics_provider_ptr, head_refinement_factory_ptr)
 
         # The total number of examples
         cdef uint32 num_examples = thresholds_ptr.get().getNumExamples()
         # The total number of labels
         cdef uint32 num_labels = thresholds_ptr.get().getNumLabels()
 
-        while __should_continue(stopping_criteria, statistics_provider.get(), num_rules):
+        while __should_continue(stopping_criteria, &statistics_provider_ptr.get().get(), num_rules):
             weights_ptr = instance_sub_sampling_ptr.get().subSample(num_examples, dereference(rng_ptr.get()))
             label_indices_ptr = label_sub_sampling_ptr.get().subSample(num_labels, dereference(rng_ptr.get()))
             success = rule_induction.induce_rule(thresholds_ptr.get(), nominal_feature_mask_ptr.get(),
