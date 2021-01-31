@@ -95,7 +95,9 @@ sources = [
     'boomer/boosting/cpp/rule_evaluation/rule_evaluation_label_wise_regularized.cpp',
     'boomer/boosting/cpp/rule_evaluation/rule_evaluation_label_wise_binning.cpp',
     'boomer/boosting/cpp/statistics/statistics_label_wise_dense.cpp',
+    'boomer/boosting/cpp/statistics/statistics_label_wise_provider.cpp',
     'boomer/boosting/cpp/statistics/statistics_example_wise_dense.cpp',
+    'boomer/boosting/cpp/statistics/statistics_example_wise_provider.cpp',
     'boomer/boosting/cpp/binning/label_binning_equal_width.cpp',
     'boomer/seco/cpp/head_refinement/head_refinement_partial.cpp',
     'boomer/seco/cpp/head_refinement/lift_function_peak.cpp',
@@ -109,6 +111,7 @@ sources = [
     'boomer/seco/cpp/output/predictor_classification.cpp',
     'boomer/seco/cpp/rule_evaluation/rule_evaluation_label_wise_heuristic.cpp',
     'boomer/seco/cpp/statistics/statistics_label_wise_dense.cpp',
+    'boomer/seco/cpp/statistics/statistics_label_wise_provider.cpp',
     'boomer/seco/cpp/stopping/stopping_criterion_coverage.cpp'
 ]
 
