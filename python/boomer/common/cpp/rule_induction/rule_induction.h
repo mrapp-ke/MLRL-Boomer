@@ -5,6 +5,7 @@
 
 #include "../head_refinement/head_refinement_factory.h"
 #include "../model/model_builder.h"
+#include "../post_processing/post_processor.h"
 #include "../pruning/pruning.h"
 #include "../sampling/feature_sampling.h"
 #include "../sampling/weight_vector.h"
