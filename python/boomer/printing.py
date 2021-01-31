@@ -119,7 +119,6 @@ class RulePrinter(ModelPrinter):
         super().__init__(options, outputs)
 
     def _format_model(self, meta_data: MetaData, model) -> str:
-        formatter = RuleModelFormatter(attributes=meta_data.attributes, label_names=meta_data.label_names,
-                                       **self.options)
+        formatter = RuleModelFormatter(attributes=meta_data.attributes, labels=meta_data.labels, **self.options)
         formatter.format(model)
         return formatter.get_text()
