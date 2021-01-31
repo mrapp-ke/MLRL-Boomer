@@ -15,7 +15,7 @@ cdef extern from "cpp/statistics/statistics_example_wise_provider.h" namespace "
         ExampleWiseStatisticsProviderFactoryImpl(
             shared_ptr[IExampleWiseLoss] lossFunctionPtr,
             shared_ptr[IExampleWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
-            shared_ptr[IExampleWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr)
+            shared_ptr[IExampleWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
 
 
 cdef class ExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
