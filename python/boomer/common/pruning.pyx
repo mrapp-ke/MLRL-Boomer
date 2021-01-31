@@ -1,7 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides wrapper for C++ classes that implement strategies for pruning classification rules.
 """
 from libcpp.memory cimport make_shared
 
