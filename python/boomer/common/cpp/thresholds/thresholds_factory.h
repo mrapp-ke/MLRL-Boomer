@@ -7,7 +7,7 @@
 #include "../input/feature_matrix.h"
 #include "../input/nominal_feature_mask.h"
 #include "../head_refinement/head_refinement_factory.h"
-#include "../statistics/statistics.h"
+#include "../statistics/statistics_provider.h"
 
 
 /**
@@ -26,8 +26,8 @@ class IThresholdsFactory {
          *                                  to the feature values of the training examples
          * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
          *                                  access to the information whether individual features are nominal or not
-         * @param statisticsPtr             A shared pointer to an object of type `IStatistics` that provides access to
-         *                                  statistics about the labels of the training examples
+         * @param statisticsProviderPtr     A shared pointer to an object of type `IStatisticsProvider` that provides
+         *                                  access to statistics about the labels of the training examples
          * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
          *                                  to create instances of the class that should be used to find the heads of
          *                                  rules
@@ -35,7 +35,8 @@ class IThresholdsFactory {
          */
         virtual std::unique_ptr<IThresholds> create(
             std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-            std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr, std::shared_ptr<IStatistics> statisticsPtr,
+            std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
+            std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const = 0;
 
 };

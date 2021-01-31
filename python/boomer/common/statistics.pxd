@@ -1,7 +1,6 @@
 from boomer.common._types cimport uint32
-from boomer.common.input cimport LabelMatrix
+from boomer.common.input cimport IRandomAccessLabelMatrix
 
-from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
@@ -26,21 +25,26 @@ cdef extern from "cpp/statistics/statistics.h" nogil:
         uint32 getNumLabels()
 
 
-cdef class StatisticsProvider:
+cdef extern from "cpp/statistics/statistics_provider.h" nogil:
 
-    # Attributes:
+    cdef cppclass IStatisticsProvider:
 
-    cdef shared_ptr[IStatistics] statistics_ptr
+        # Functions:
 
-    # Functions:
+        IStatistics& get()
 
-    cdef IStatistics* get(self)
+        void switchRuleEvaluation()
 
-    cdef void switch_rule_evaluation(self)
+
+cdef extern from "cpp/statistics/statistics_provider_factory.h" nogil:
+
+    cdef cppclass IStatisticsProviderFactory:
+
+        unique_ptr[IStatisticsProvider] create(shared_ptr[IRandomAccessLabelMatrix] labelMatrixPtr)
 
 
 cdef class StatisticsProviderFactory:
 
-    # Functions:
+    # Attributes:
 
-    cdef StatisticsProvider create(self, LabelMatrix label_matrix)
+    cdef shared_ptr[IStatisticsProviderFactory] statistics_provider_factory_ptr
