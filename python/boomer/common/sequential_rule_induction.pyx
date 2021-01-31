@@ -134,8 +134,8 @@ cdef class SequentialRuleInduction:
         cdef shared_ptr[IStatisticsProviderFactory] statistics_provider_factory_ptr = statistics_provider_factory.statistics_provider_factory_ptr
         cdef shared_ptr[IRandomAccessLabelMatrix] label_matrix_ptr = dynamic_pointer_cast[IRandomAccessLabelMatrix, ILabelMatrix](
             label_matrix.label_matrix_ptr)
-        cdef shared_ptr[IStatisticsProvider] statistics_provider_ptr = <shared_ptr[IStatisticsProvider]>statistics_provider_factory_ptr.get().create(
-            label_matrix_ptr)
+        cdef shared_ptr[IStatisticsProvider] statistics_provider_ptr = shared_ptr[IStatisticsProvider](
+            statistics_provider_factory_ptr.get().create(label_matrix_ptr))
         rule_induction.induce_default_rule(statistics_provider_ptr.get(), head_refinement_factory_ptr.get(),
                                            model_builder_ptr.get())
 
