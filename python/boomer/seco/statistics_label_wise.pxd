@@ -13,7 +13,7 @@ cdef extern from "cpp/statistics/statistics_label_wise_provider.h" namespace "se
 
         LabelWiseStatisticsProviderFactoryImpl(
             shared_ptr[ILabelWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
-            shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr)
+            shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
 
 
 cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
