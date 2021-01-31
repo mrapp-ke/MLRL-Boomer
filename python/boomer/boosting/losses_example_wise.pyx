@@ -1,7 +1,5 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides classes that implement different differentiable loss functions.
 """
 from libcpp.memory cimport make_shared
 

@@ -1,7 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides Cython wrappers for classes that provide access to data that is stored in matrices or vectors.
 """
 from boomer.common._types cimport uint32
 from boomer.common.rule_refinement cimport IRuleRefinement

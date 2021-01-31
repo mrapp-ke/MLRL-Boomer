@@ -1,10 +1,5 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides a function that allows to create a wrapper for executing different LAPACK routines.
-
-The function pointers to the different LAPACK routines are initialized such that they refer to the functions provided by
-scipy.
 """
 from scipy.linalg.cython_lapack cimport dsysv
 

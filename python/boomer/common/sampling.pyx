@@ -1,7 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides wrappers for classes that implement strategies for sub-sampling training examples, features or labels.
 """
 from libcpp.memory cimport make_shared
 
