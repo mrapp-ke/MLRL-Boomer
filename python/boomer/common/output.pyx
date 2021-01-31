@@ -1,7 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides classes for making predictions using rule-based models.
 """
 from boomer.common._arrays cimport c_matrix_uint8
 from boomer.common._data cimport CContiguousView

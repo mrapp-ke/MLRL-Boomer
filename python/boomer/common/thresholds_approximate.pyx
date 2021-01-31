@@ -1,9 +1,6 @@
 """
 @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides Cython wrappers for classes that provide access to approximate thresholds that may be used by the conditions of
-rules.
 """
 from boomer.common.binning cimport FeatureBinning
 

@@ -1,8 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides wrappers for classes that implement different stopping criteria that allow to decide whether additional rules
-should be added to a theory or not.
 """
 from libcpp.memory cimport make_shared
 

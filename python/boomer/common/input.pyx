@@ -1,7 +1,5 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides classes that provide access to the data that is provided for training.
 """
 from libcpp.memory cimport make_unique, make_shared
 from libcpp.utility cimport move
