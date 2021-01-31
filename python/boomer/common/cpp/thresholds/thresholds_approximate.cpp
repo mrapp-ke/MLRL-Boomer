@@ -313,7 +313,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 }
 
                                 histogramBuilderPtr =
-                                    thresholdsSubset_.thresholds_.statisticsPtr_->createHistogramBuilder(
+                                    thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogramBuilder(
                                         binVector->getNumElements());
                             }
 
@@ -407,7 +407,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     }
 
                     filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
-                                        coverageMask_, *thresholds_.statisticsPtr_, weights_);
+                                        coverageMask_, thresholds_.statisticsProviderPtr_->get(), weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
@@ -426,18 +426,18 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 float64 evaluateOutOfSample(const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
-                    return evaluateOutOfSampleInternally(*thresholds_.statisticsPtr_, 
+                    return evaluateOutOfSampleInternally(thresholds_.statisticsProviderPtr_->get(),
                                                          *thresholds_.headRefinementFactoryPtr_, weights_, coverageMask,
                                                          head);
                 }
 
                 void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
-                    recalculatePredictionInternally(*thresholds_.statisticsPtr_, *thresholds_.headRefinementFactoryPtr_,
-                                                    coverageMask, refinement);
+                    recalculatePredictionInternally(thresholds_.statisticsProviderPtr_->get(),
+                                                    *thresholds_.headRefinementFactoryPtr_, coverageMask, refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
-                    updateStatisticsInternally(*thresholds_.statisticsPtr_, coverageMask_, prediction);
+                    updateStatisticsInternally(thresholds_.statisticsProviderPtr_->get(), coverageMask_, prediction);
                 }
 
         };
@@ -455,8 +455,8 @@ class ApproximateThresholds final : public AbstractThresholds {
          *                                  to the feature values of the training examples
          * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
          *                                  access to the information whether individual features are nominal or not
-         * @param statisticsPtr             A shared pointer to an object of type `IStatistics` that provides access to
-         *                                  statistics about the labels of the training examples
+         * @param statisticsProviderPtr     A shared pointer to an object of type `IStatisticsProvider` that provides
+         *                                  access to statistics about the labels of the training examples
          * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
          *                                  to create instances of the class that should be used to find the heads of
          *                                  rules
@@ -465,16 +465,16 @@ class ApproximateThresholds final : public AbstractThresholds {
          */
         ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                               std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                              std::shared_ptr<IStatistics> statisticsPtr,
+                              std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
                               std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                               std::shared_ptr<IFeatureBinning> binningPtr)
-            : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr),
-              binningPtr_(binningPtr) {
+            : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsProviderPtr,
+                                 headRefinementFactoryPtr), binningPtr_(binningPtr) {
 
         }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
-            updateSampledStatisticsInternally(*statisticsPtr_, weights);
+            updateSampledStatisticsInternally(statisticsProviderPtr_->get(), weights);
             return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this, weights);
         }
 
@@ -487,8 +487,8 @@ ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::shared_ptr<IFeat
 
 std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(
         std::shared_ptr<IFeatureMatrix> featureMatrixPtr, std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-        std::shared_ptr<IStatistics> statisticsPtr,
+        std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const {
-    return std::make_unique<ApproximateThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr,
+    return std::make_unique<ApproximateThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsProviderPtr,
                                                    headRefinementFactoryPtr, binningPtr_);
 }
