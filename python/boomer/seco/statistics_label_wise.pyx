@@ -7,7 +7,7 @@ each label.
 """
 from boomer.seco.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFactory
 
-from libcpp.memory cimport  make_shared
+from libcpp.memory cimport make_shared
 
 
 cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
