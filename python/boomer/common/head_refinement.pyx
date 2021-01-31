@@ -1,7 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides classes that implement strategies for finding the heads of rules.
 """
 from libcpp.memory cimport make_shared
 

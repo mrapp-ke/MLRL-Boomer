@@ -1,8 +1,5 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides Cython wrappers for C++ classes that allow to calculate the predictions of rules, as well as corresponding
-quality scores.
 """
 from libcpp.memory cimport make_shared
 

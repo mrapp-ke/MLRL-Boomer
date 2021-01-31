@@ -1,8 +1,6 @@
 """
 @author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides wrappers for classes that implement different stopping criteria for separate-and-conquer algorithms.
 """
 from libcpp.memory cimport shared_ptr, make_shared
 

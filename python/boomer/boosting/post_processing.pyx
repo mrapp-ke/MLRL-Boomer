@@ -1,8 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides classes that allow to post-process the predictions of rules once they have been learned by a boosting
-algorithm.
 """
 from libcpp.memory cimport make_shared
 
