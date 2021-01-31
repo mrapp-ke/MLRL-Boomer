@@ -1,7 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides classes that implement algorithms for inducing individual classification rules.
 """
 from boomer.common._types cimport float32
 from boomer.common._indices cimport FullIndexVector

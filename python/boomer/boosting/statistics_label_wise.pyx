@@ -1,8 +1,5 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides wrappers for classes that allow to store gradients and Hessians that are calculated according to a
-(decomposable) loss function that is applied label-wise.
 """
 from boomer.boosting.losses_label_wise cimport LabelWiseLoss
 from boomer.boosting.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFactory

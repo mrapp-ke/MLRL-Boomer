@@ -1,8 +1,6 @@
 """
 @author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides Cython wrappers for C++ classes that allow to find the best head for rules.
 """
 from libcpp.memory cimport make_shared
 

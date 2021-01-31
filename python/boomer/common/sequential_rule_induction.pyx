@@ -1,7 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides classes that allow to sequentially induce models that consist of several classification rules.
 """
 from boomer.common._indices cimport IIndexVector
 from boomer.common.input cimport IFeatureMatrix, ILabelMatrix, IRandomAccessLabelMatrix, INominalFeatureMask

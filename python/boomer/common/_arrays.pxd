@@ -1,7 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides utility functions for creating arrays.
 """
 from boomer.common._types cimport uint8, uint32
 
