@@ -1,8 +1,5 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides wrappers for classes that allow to store gradients and Hessians that are calculated according to a
-(non-decomposable) loss function that is applied example-wise.
 """
 from boomer.common.input cimport RandomAccessLabelMatrix, ILabelMatrix
 

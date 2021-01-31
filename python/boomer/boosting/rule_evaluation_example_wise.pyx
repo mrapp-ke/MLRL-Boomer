@@ -1,8 +1,5 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides classes that allow to calculate the predictions of rules, as well as corresponding quality scores, such that
-they minimize a loss function that is applied example-wise.
 """
 from boomer.boosting._blas cimport init_blas
 from boomer.boosting._lapack cimport init_lapack

@@ -1,7 +1,5 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
-
-Provides wrappers for classes that allow to find the best refinement of rules.
 """
 from boomer.common._types cimport uint32, intp, float32
 from boomer.common.head_refinement cimport AbstractEvaluatedPrediction
