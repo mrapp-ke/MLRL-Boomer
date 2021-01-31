@@ -311,7 +311,7 @@ class ExactThresholds final : public AbstractThresholds {
                             featureVector = cacheEntry.vectorPtr.get();
                         }
 
-                        return std::make_unique<Result>(*thresholdsSubset_.thresholds_.statisticsPtr_,
+                        return std::make_unique<Result>(thresholdsSubset_.thresholds_.statisticsProviderPtr_->get(),
                                                         thresholdsSubset_.weights_, *featureVector);
                     }
 
@@ -403,7 +403,7 @@ class ExactThresholds final : public AbstractThresholds {
                     // Identify the examples that are covered by the refined rule...
                     filterCurrentVector(*featureVector, cacheEntry, refinement.start, refinement.end,
                                         refinement.comparator, refinement.covered, numModifications_, coverageMask_,
-                                        *thresholds_.statisticsPtr_, weights_);
+                                        thresholds_.statisticsProviderPtr_->get(), weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
@@ -430,7 +430,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                     filterCurrentVector(*featureVector, cacheEntry, condition.start, condition.end,
                                         condition.comparator, condition.covered, numModifications_, coverageMask_,
-                                        *thresholds_.statisticsPtr_, weights_);
+                                        thresholds_.statisticsProviderPtr_->get(), weights_);
                 }
 
                 void resetThresholds() override {
@@ -446,18 +446,18 @@ class ExactThresholds final : public AbstractThresholds {
 
                 float64 evaluateOutOfSample(const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
-                    return evaluateOutOfSampleInternally(*thresholds_.statisticsPtr_, 
+                    return evaluateOutOfSampleInternally(thresholds_.statisticsProviderPtr_->get(),
                                                          *thresholds_.headRefinementFactoryPtr_, weights_, coverageMask,
                                                          head);
                 }
 
                 void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
-                    recalculatePredictionInternally(*thresholds_.statisticsPtr_, *thresholds_.headRefinementFactoryPtr_,
-                                                    coverageMask, refinement);
+                    recalculatePredictionInternally(thresholds_.statisticsProviderPtr_->get(),
+                                                    *thresholds_.headRefinementFactoryPtr_, coverageMask, refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
-                    updateStatisticsInternally(*thresholds_.statisticsPtr_, coverageMask_, prediction);
+                    updateStatisticsInternally(thresholds_.statisticsProviderPtr_->get(), coverageMask_, prediction);
                 }
 
         };
@@ -471,22 +471,23 @@ class ExactThresholds final : public AbstractThresholds {
          *                                  to the feature values of the training examples
          * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
          *                                  access to the information whether individual features are nominal or not
-         * @param statisticsPtr             A shared pointer to an object of type `IStatistics` that provides access to
-         *                                  statistics about the labels of the training examples
+         * @param statisticsProviderPtr     A shared pointer to an object of type `IStatisticsProvider` that provides
+         *                                  access to statistics about the labels of the training examples
          * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
          *                                  to create instances of the class that should be used to find the heads of
          *                                  rules
          */
         ExactThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                         std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                        std::shared_ptr<IStatistics> statisticsPtr,
+                        std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
                         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
-            : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr, headRefinementFactoryPtr) {
+            : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsProviderPtr,
+                                 headRefinementFactoryPtr) {
 
         }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
-            updateSampledStatisticsInternally(*statisticsPtr_, weights);
+            updateSampledStatisticsInternally(statisticsProviderPtr_->get(), weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset>(*this, weights);
         }
 
@@ -494,8 +495,8 @@ class ExactThresholds final : public AbstractThresholds {
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(
         std::shared_ptr<IFeatureMatrix> featureMatrixPtr, std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-        std::shared_ptr<IStatistics> statisticsPtr,
+        std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const {
-    return std::make_unique<ExactThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsPtr,
+    return std::make_unique<ExactThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsProviderPtr,
                                              headRefinementFactoryPtr);
 }
