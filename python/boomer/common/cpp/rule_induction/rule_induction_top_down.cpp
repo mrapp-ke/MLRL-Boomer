@@ -4,6 +4,11 @@
 #include <unordered_map>
 
 
+TopDownRuleInduction::TopDownRuleInduction(uint32 numThreads)
+    : numThreads_(numThreads) {
+
+}
+
 void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProvider,
                                              const IHeadRefinementFactory* headRefinementFactory,
                                              IModelBuilder& modelBuilder) const {
@@ -37,7 +42,7 @@ void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProv
 bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
                                       const IWeightVector& weights, const IFeatureSubSampling& featureSubSampling,
                                       const IPruning& pruning, const IPostProcessor& postProcessor, uint32 minCoverage,
-                                      intp maxConditions, intp maxHeadRefinements, int numThreads, RNG& rng,
+                                      intp maxConditions, intp maxHeadRefinements, RNG& rng,
                                       IModelBuilder& modelBuilder) const {
     // The total number of features
     uint32 numFeatures = thresholds.getNumFeatures();
@@ -81,7 +86,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
 
         // Search for the best condition among all available features to be added to the current rule...
         #pragma omp parallel for firstprivate(numSampledFeatures) firstprivate(ruleRefinementsPtr) \
-        firstprivate(bestHead) schedule(dynamic) num_threads(numThreads)
+        firstprivate(bestHead) schedule(dynamic) num_threads(numThreads_)
         for (intp i = 0; i < numSampledFeatures; i++) {
             uint32 featureIndex = sampledFeatureIndicesPtr->getIndex((uint32) i);
             std::unique_ptr<IRuleRefinement>& ruleRefinementPtr = ruleRefinementsPtr->find(featureIndex)->second;
