@@ -6,7 +6,8 @@
 Provides a scikit-learn implementations of boosting algorithms
 """
 from boomer.boosting.losses_example_wise import ExampleWiseLogisticLoss
-from boomer.boosting.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss
+from boomer.boosting.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
+    LabelWiseSquaredHingeLoss
 from boomer.boosting.model import RuleListBuilder
 from boomer.boosting.output import ClassificationPredictor
 from boomer.boosting.post_processing import ConstantShrinkage
@@ -35,6 +36,8 @@ HEAD_REFINEMENT_FULL = 'full'
 LOSS_LABEL_WISE_LOGISTIC = 'label-wise-logistic-loss'
 
 LOSS_LABEL_WISE_SQUARED_ERROR = 'label-wise-squared-error-loss'
+
+LOSS_LABEL_WISE_SQUARED_HINGE = 'label-wise-squared-hinge-loss'
 
 LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
 
@@ -147,7 +150,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return name
 
     def _create_predictor(self, num_labels: int) -> Predictor:
-        return ClassificationPredictor(num_labels=num_labels, threshold=0)
+        threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
+        return ClassificationPredictor(num_labels=num_labels, threshold=threshold)
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
@@ -191,6 +195,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
         if loss == LOSS_LABEL_WISE_SQUARED_ERROR:
             return LabelWiseSquaredErrorLoss()
+        elif loss == LOSS_LABEL_WISE_SQUARED_HINGE:
+            return LabelWiseSquaredHingeLoss()
         elif loss == LOSS_LABEL_WISE_LOGISTIC:
             return LabelWiseLogisticLoss()
         elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:

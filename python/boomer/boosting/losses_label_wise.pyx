@@ -27,3 +27,12 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
 
     def __cinit__(self):
         self.loss_function_ptr = <shared_ptr[ILabelWiseLoss]>make_shared[LabelWiseSquaredErrorLossImpl]()
+
+
+cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
+    """
+    A wrapper for the C++ class `LabelWiseSquaredHingeLoss`.
+    """
+
+    def __cinit__(self):
+        self.loss_function_ptr = <shared_ptr[ILabelWiseLoss]>make_shared[LabelWiseSquaredHingeLossImpl]()
