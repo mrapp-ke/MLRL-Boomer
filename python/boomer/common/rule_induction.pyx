@@ -111,7 +111,7 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
             stopping_criterion = stopping_criteria[i]
             stopping_criteria_ptr.get().push_front(stopping_criterion.stopping_criterion_ptr)
 
-        self.rule_model_induction_ptr = <shared_ptr[IRuleModelInduction]>make_shared[SequentialRuleModelInduction](
+        self.rule_model_induction_ptr = <shared_ptr[IRuleModelInduction]>make_shared[SequentialRuleModelInductionImpl](
             statistics_provider_factory.statistics_provider_factory_ptr, thresholds_factory.thresholds_factory_ptr,
             rule_induction.rule_induction_ptr, default_rule_head_refinement_factory.head_refinement_factory_ptr,
             head_refinement_factory.head_refinement_factory_ptr, label_sub_sampling.label_sub_sampling_ptr,
