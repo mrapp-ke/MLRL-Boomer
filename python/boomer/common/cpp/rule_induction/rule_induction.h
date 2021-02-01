@@ -70,7 +70,7 @@ class IRuleInduction {
         virtual bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
                                 const IWeightVector& weights, const IFeatureSubSampling& featureSubSampling,
                                 const IPruning& pruning, const IPostProcessor& postProcessor, uint32 minCoverage,
-                                intp maxConditions, intp maxHeadRefinements, int numThreads, RNG& rng,
+                                intp maxConditions, intp maxHeadRefinements, uint32 numThreads, RNG& rng,
                                 IModelBuilder& modelBuilder) const = 0;
 
 };
