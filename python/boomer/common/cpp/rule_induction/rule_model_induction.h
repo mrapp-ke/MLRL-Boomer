@@ -33,7 +33,7 @@ class IRuleModelInduction {
          * @return                      An unique pointer to an object of type `RuleModel` that consists of the rules
          *                              that have been induced
          */
-        virtual std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask nominalFeatureMask,
+        virtual std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
                                                        const IFeatureMatrix featureMatrix,
                                                        const ILabelMatrix& labelMatrix,
                                                        IModelBuilder& modelBuilder) const = 0;
