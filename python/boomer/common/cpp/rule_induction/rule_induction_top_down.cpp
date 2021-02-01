@@ -52,6 +52,8 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
     std::unordered_map<uint32, IRuleRefinement*> ruleRefinements; // TODO Should we really use a pointer
     // An unique pointer to the best refinement of the current rule
     std::unique_ptr<Refinement> bestRefinementPtr = std::make_unique<Refinement>();
+    // A pointer to the head of the best rule found so far
+    AbstractEvaluatedPrediction* bestHead = nullptr;
     // Whether a refinement of the current rule has been found
     bool foundRefinement = true;
 
@@ -79,7 +81,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         for (intp i = 0; i < numSampledFeatures; i++) {  // TODO Use OpenMP
             uint32 featureIndex = sampledFeatureIndicesPtr->getIndex((uint32) i);
             IRuleRefinement* ruleRefinement = ruleRefinements[featureIndex];
-            ruleRefinement->findRefinement(bestRefinementPtr->headPtr.get());
+            ruleRefinement->findRefinement(bestHead);
         }
 
         // Pick the best refinement among the refinements that have been found for the different features...
@@ -97,6 +99,8 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         }
 
         if (foundRefinement) {
+            bestHead = bestRefinementPtr->headPtr.get();
+
             // Filter the current subset of thresholds by applying the best refinement that has been found...
             thresholdsSubsetPtr->filterThresholds(*bestRefinementPtr);
             uint32 numCoveredExamples = bestRefinementPtr->coveredWeights;
@@ -107,7 +111,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
 
             // Keep the labels for which the rule predicts, if the head should not be further refined...
             if (maxHeadRefinements > 0 && numConditions >= maxHeadRefinements) {
-                currentLabelIndices = bestRefinementPtr->headPtr.get();
+                currentLabelIndices = bestHead;
             }
 
             // Abort refinement process if the rule is not allowed to cover less examples...
@@ -117,15 +121,14 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         }
     }
 
-    if (bestRefinementPtr->headPtr.get() == nullptr) {
+    if (bestHead == nullptr) {
         // No rule could be induced, because no useful condition could be found. This might be the case, if all examples
         // have the same values for the considered features.
         return false;
     } else {
         if (instanceSubSamplingUsed) {
             // Prune rule...
-            std::unique_ptr<CoverageMask> coverageMaskPtr = pruning.prune(*thresholdsSubsetPtr, conditions,
-                                                                          *bestRefinementPtr->headPtr);
+            std::unique_ptr<CoverageMask> coverageMaskPtr = pruning.prune(*thresholdsSubsetPtr, conditions, *bestHead);
 
             // Re-calculate the scores in the head based on the entire training data...
             const CoverageMask& coverageMask =
@@ -134,13 +137,13 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         }
 
         // Apply post-processor...
-        postProcessor.postProcess(*bestRefinementPtr->headPtr);
+        postProcessor.postProcess(*bestHead);
 
         // Update the statistics by applying the predictions of the new rule...
-        thresholdsSubsetPtr->applyPrediction(*bestRefinementPtr->headPtr);
+        thresholdsSubsetPtr->applyPrediction(*bestHead);
 
         // Add the induced rule to the model...
-        modelBuilder.addRule(conditions, *bestRefinementPtr->headPtr);
+        modelBuilder.addRule(conditions, *bestHead);
         return true;
     }
 }
