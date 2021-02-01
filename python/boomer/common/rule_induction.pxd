@@ -1,13 +1,12 @@
 from boomer.common._types cimport uint32, intp
-from boomer.common._indices cimport IIndexVector
 from boomer.common.input cimport NominalFeatureMask, INominalFeatureMask
 from boomer.common.input cimport FeatureMatrix, IFeatureMatrix
 from boomer.common.input cimport LabelMatrix, ILabelMatrix
 from boomer.common.model cimport ModelBuilder, RuleModel, IModelBuilder, RuleModelImpl
-from boomer.common.sampling cimport IWeightVector, ILabelSubSampling, IInstanceSubSampling, IFeatureSubSampling, RNG
-from boomer.common.statistics cimport IStatisticsProvider, IStatisticsProviderFactory
+from boomer.common.sampling cimport ILabelSubSampling, IInstanceSubSampling, IFeatureSubSampling, RNG
+from boomer.common.statistics cimport IStatisticsProviderFactory
 from boomer.common.stopping cimport IStoppingCriterion
-from boomer.common.thresholds cimport IThresholds, IThresholdsFactory
+from boomer.common.thresholds cimport IThresholdsFactory
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.head_refinement cimport IHeadRefinementFactory
@@ -20,16 +19,7 @@ from libcpp.forward_list cimport forward_list
 cdef extern from "cpp/rule_induction/rule_induction.h" nogil:
 
     cdef cppclass IRuleInduction:
-
-        # Functions:
-
-        void induceDefaultRule(IStatisticsProvider& statisticsProvider,
-                               const IHeadRefinementFactory* headRefinementFactory, IModelBuilder& modelBuilder)
-
-        bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-                        const IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
-                        const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
-                        intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder)
+        pass
 
 
 cdef extern from "cpp/rule_induction/rule_model_induction.h" nogil:

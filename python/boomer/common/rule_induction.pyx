@@ -4,7 +4,6 @@
 from boomer.common.head_refinement cimport HeadRefinementFactory
 from boomer.common.post_processing cimport PostProcessor
 from boomer.common.pruning cimport Pruning
-from boomer.common.rule_induction cimport RuleInduction
 from boomer.common.sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
 from boomer.common.statistics cimport StatisticsProviderFactory
 from boomer.common.stopping cimport StoppingCriterion
