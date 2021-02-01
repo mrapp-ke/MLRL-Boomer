@@ -87,6 +87,7 @@ sources = [
     'boomer/boosting/cpp/data/vector_dense_example_wise.cpp',
     'boomer/boosting/cpp/losses/loss_label_wise_logistic.cpp',
     'boomer/boosting/cpp/losses/loss_label_wise_squared_error.cpp',
+    'boomer/boosting/cpp/losses/loss_label_wise_squared_hinge.cpp',
     'boomer/boosting/cpp/losses/loss_example_wise_logistic.cpp',
     'boomer/boosting/cpp/math/blas.cpp',
     'boomer/boosting/cpp/math/lapack.cpp',
