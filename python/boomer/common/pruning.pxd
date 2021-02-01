@@ -1,18 +1,10 @@
-from boomer.common.head_refinement cimport AbstractPrediction
-from boomer.common.model cimport Condition, ConditionList
-from boomer.common.thresholds cimport IThresholdsSubset, CoverageMask
-
-from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/pruning/pruning.h" nogil:
 
     cdef cppclass IPruning:
-
-        # Functions:
-
-        unique_ptr[CoverageMask] prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
-                                       const AbstractPrediction& head)
+        pass
 
 
 cdef extern from "cpp/pruning/pruning_no.h" nogil:

@@ -19,7 +19,7 @@ from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHead
 from boomer.common.model import ModelBuilder
 from boomer.common.output import Predictor
 from boomer.common.post_processing import PostProcessor, NoPostProcessor
-from boomer.common.rule_induction import TopDownGreedyRuleInduction
+from boomer.common.rule_induction import TopDownRuleInduction
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
 from sklearn.base import ClassifierMixin
@@ -171,7 +171,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
         num_threads = create_num_threads(self.num_threads)
         thresholds_factory = create_thresholds_factory(self.feature_binning)
-        rule_induction = TopDownGreedyRuleInduction()
+        rule_induction = TopDownRuleInduction()
         return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                        default_rule_head_refinement_factory, head_refinement_factory, stopping_criteria,
                                        label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
