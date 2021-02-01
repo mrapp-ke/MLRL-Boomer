@@ -65,9 +65,8 @@ cdef extern from "cpp/rule_induction/rule_model_induction_sequential.h" nogil:
                                      shared_ptr[ILabelSubSampling] labelSubSamplingPtr,
                                      shared_ptr[IInstanceSubSampling] instanceSubSamplingPtr,
                                      shared_ptr[IFeatureSubSampling] featureSubSamplingPtr,
-                                     shared_ptr[IPruning] pruningPtr,
-                                     shared_ptr[IPostProcessor] postProcessorPtr, uint32 minCoverage,
-                                     intp maxConditions, intp maxHeadRefinements, uint32 numThreads,
+                                     shared_ptr[IPruning] pruningPtr, shared_ptr[IPostProcessor] postProcessorPtr,
+                                     uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
                                      unique_ptr[forward_list[IStoppingCriterion]] stoppingCriteriaPtr) except +
 
 
