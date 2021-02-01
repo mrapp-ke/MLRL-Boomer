@@ -37,7 +37,7 @@ void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProv
 bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
                                       const IWeightVector& weights, const IFeatureSubSampling& featureSubSampling,
                                       const IPruning& pruning, const IPostProcessor& postProcessor, uint32 minCoverage,
-                                      intp maxConditions, intp maxHeadRefinements, int numThreads, RNG& rng,
+                                      intp maxConditions, intp maxHeadRefinements, uint32 numThreads, RNG& rng,
                                       IModelBuilder& modelBuilder) const {
     // The total number of features
     uint32 numFeatures = thresholds.getNumFeatures();
