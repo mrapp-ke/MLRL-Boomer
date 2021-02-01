@@ -3,18 +3,6 @@
 #include <unordered_map>
 
 
-static inline Condition createCondition(const Refinement& refinement) {
-    Condition condition;
-    condition.featureIndex = refinement.featureIndex;
-    condition.comparator = refinement.comparator;
-    condition.threshold = refinement.threshold;
-    condition.start = refinement.start;
-    condition.end = refinement.end;
-    condition.covered = refinement.covered;
-    condition.coveredWeights = refinement.coveredWeights;
-    return condition;
-}
-
 void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProvider,
                                              const IHeadRefinementFactory* headRefinementFactory,
                                              IModelBuilder& modelBuilder) const {
@@ -117,7 +105,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
             numCoveredExamples = bestRefinementPtr->coveredWeights;
 
             // Add the new condition...
-            conditions.append(createCondition(*bestRefinementPtr));
+            conditions.addCondition(*bestRefinementPtr);
             numConditions++;
 
             // Keep the labels for which the rule predicts, if the head should not be further refined...
