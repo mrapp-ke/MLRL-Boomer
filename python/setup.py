@@ -36,6 +36,7 @@ sources = [
     'boomer/common/cpp/input/nominal_feature_mask_dok.cpp',
     'boomer/common/cpp/model/body_conjunctive.cpp',
     'boomer/common/cpp/model/body_empty.cpp',
+    'boomer/common/cpp/model/condition.cpp',
     'boomer/common/cpp/model/condition_list.cpp',
     'boomer/common/cpp/model/head_full.cpp',
     'boomer/common/cpp/model/head_partial.cpp',
