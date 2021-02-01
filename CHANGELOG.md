@@ -4,7 +4,7 @@
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
-* More code has been refactored and migrated to C++.
+* The entire code of the core algorithm has been refactored and migrated to C++.
 * The (label- and example-wise) logistic loss functions have been rewritten to better prevent numerical problems.
 * Approximate methods for evaluating potential conditions of rules, based on unsupervised binning methods (currently equal-width- and equal-frequency-binning), have been added.
 * The algorithm does now support data sets with missing feature values.
