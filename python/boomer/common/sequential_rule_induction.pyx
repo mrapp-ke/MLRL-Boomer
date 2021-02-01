@@ -6,6 +6,7 @@ from boomer.common.input cimport IFeatureMatrix, ILabelMatrix, IRandomAccessLabe
 from boomer.common.model cimport IModelBuilder
 from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
+from boomer.common.rule_induction cimport IRuleInduction
 from boomer.common.statistics cimport IStatisticsProvider, IStatisticsProviderFactory, IStatistics
 from boomer.common.thresholds cimport IThresholds
 from boomer.common.stopping cimport IStoppingCriterion, StoppingCriterion
@@ -136,8 +137,10 @@ cdef class SequentialRuleInduction:
             label_matrix.label_matrix_ptr)
         cdef shared_ptr[IStatisticsProvider] statistics_provider_ptr = shared_ptr[IStatisticsProvider](
             statistics_provider_factory_ptr.get().create(label_matrix_ptr))
-        rule_induction.induce_default_rule(statistics_provider_ptr.get(), head_refinement_factory_ptr.get(),
-                                           model_builder_ptr.get())
+        cdef shared_ptr[IRuleInduction] rule_induction_ptr = rule_induction.rule_induction_ptr
+        rule_induction_ptr.get().induceDefaultRule(dereference(statistics_provider_ptr.get()),
+                                                   head_refinement_factory_ptr.get(),
+                                                   dereference(model_builder_ptr.get()))
 
         # Induce the remaining rules...
         head_refinement_factory_ptr = head_refinement_factory.head_refinement_factory_ptr
@@ -159,12 +162,15 @@ cdef class SequentialRuleInduction:
         while __should_continue(stopping_criteria, &statistics_provider_ptr.get().get(), num_rules):
             weights_ptr = instance_sub_sampling_ptr.get().subSample(num_examples, dereference(rng_ptr.get()))
             label_indices_ptr = label_sub_sampling_ptr.get().subSample(num_labels, dereference(rng_ptr.get()))
-            success = rule_induction.induce_rule(thresholds_ptr.get(), nominal_feature_mask_ptr.get(),
-                                                 feature_matrix_ptr.get(), label_indices_ptr.get(), weights_ptr.get(),
-                                                 feature_sub_sampling_ptr.get(), pruning_ptr.get(),
-                                                 post_processor_ptr.get(), min_coverage, max_conditions,
-                                                 max_head_refinements, num_threads, rng_ptr.get(),
-                                                 model_builder_ptr.get())
+            success = rule_induction_ptr.get().induceRule(dereference(thresholds_ptr.get()),
+                                                          dereference(label_indices_ptr.get()),
+                                                          dereference(weights_ptr.get()),
+                                                          dereference(feature_sub_sampling_ptr.get()),
+                                                          dereference(pruning_ptr.get()),
+                                                          dereference(post_processor_ptr.get()), min_coverage,
+                                                          max_conditions, max_head_refinements, num_threads,
+                                                          dereference(rng_ptr.get()),
+                                                          dereference(model_builder_ptr.get()))
 
             if not success:
                 break
