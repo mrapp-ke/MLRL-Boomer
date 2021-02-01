@@ -34,7 +34,7 @@ class IRuleModelInduction {
          *                              that have been induced
          */
         virtual std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
-                                                       const IFeatureMatrix featureMatrix,
+                                                       const IFeatureMatrix& featureMatrix,
                                                        const ILabelMatrix& labelMatrix,
                                                        IModelBuilder& modelBuilder) const = 0;
 
