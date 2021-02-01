@@ -48,7 +48,6 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     ruleInductionPtr_->induceDefaultRule(*statisticsProviderPtr, defaultRuleHeadRefinementFactory, modelBuilder);
 
     // Induce the remaining rules...
-    headRefinementFactory = headRefinementFactoryPtr_.get();
     std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrixPtr, nominalFeatureMaskPtr,
                                                                                statisticsProviderPtr,
                                                                                headRefinementFactoryPtr_);
