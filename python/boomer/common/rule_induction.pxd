@@ -1,7 +1,9 @@
 from boomer.common._types cimport uint32, intp
 from boomer.common._indices cimport IIndexVector
-from boomer.common.input cimport INominalFeatureMask, IFeatureMatrix, ILabelMatrix
-from boomer.common.model cimport IModelBuilder, RuleModelImpl
+from boomer.common.input cimport NominalFeatureMask, INominalFeatureMask
+from boomer.common.input cimport FeatureMatrix, IFeatureMatrix
+from boomer.common.input cimport LabelMatrix, ILabelMatrix
+from boomer.common.model cimport ModelBuilder, RuleModel, IModelBuilder, RuleModelImpl
 from boomer.common.sampling cimport IWeightVector, ILabelSubSampling, IInstanceSubSampling, IFeatureSubSampling, RNG
 from boomer.common.statistics cimport IStatisticsProvider, IStatisticsProviderFactory
 from boomer.common.stopping cimport IStoppingCriterion
@@ -86,6 +88,12 @@ cdef class RuleModelInduction:
     # Attributes:
 
     cdef shared_ptr[IRuleModelInduction] rule_model_induction_ptr
+
+    # Functions:
+
+    cpdef RuleModel induce_rules(self, NominalFeatureMask nominal_feature_mask, FeatureMatrix feature_matrix,
+                                 LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder)
+
 
 
 cdef class SequentialRuleModelInduction(RuleModelInduction):

@@ -20,11 +20,11 @@ from boomer.common.input import FortranContiguousFeatureMatrix, CscFeatureMatrix
 from boomer.common.model import ModelBuilder
 from boomer.common.output import Predictor
 from boomer.common.pruning import Pruning, NoPruning, IREP
+from boomer.common.rule_induction import RuleModelInduction
 from boomer.common.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
 from boomer.common.sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, \
     NoInstanceSubSampling
 from boomer.common.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
-from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from boomer.common.thresholds import ThresholdsFactory
 from boomer.common.thresholds_approximate import ApproximateThresholdsFactory
@@ -339,10 +339,10 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         # Induce rules...
         nominal_features = DokNominalFeatureMask(self.nominal_attribute_indices)
-        sequential_rule_induction = self._create_sequential_rule_induction(num_labels)
+        rule_model_induction = self._create_rule_model_induction(num_labels)
         model_builder = self._create_model_builder()
-        return sequential_rule_induction.induce_rules(nominal_features, feature_matrix, label_matrix, self.random_state,
-                                                      model_builder)
+        return rule_model_induction.induce_rules(nominal_features, feature_matrix, label_matrix, self.random_state,
+                                                 model_builder)
 
     def _predict(self, x):
         sparse_format = 'csr'
@@ -364,7 +364,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             feature_matrix = CContiguousFeatureMatrix(x)
             return predictor.predict(feature_matrix, model)
 
-
     @abstractmethod
     def _create_predictor(self, num_labels: int) -> Predictor:
         """
@@ -376,13 +375,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         pass
 
     @abstractmethod
-    def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
+    def _create_rule_model_induction(self, num_labels: int) -> RuleModelInduction:
         """
-        Must be implemented by subclasses in order to create the algorithm that should be used for sequential rule
-        induction.
+        Must be implemented by subclasses in order to create the algorithm that should be used for inducing a rule
+        model.
 
         :param num_labels:  The number of labels in the training data set
-        :return:            The algorithm for sequential rule induction that has been created
+        :return:            The algorithm for inducting a rule model that has been created
         """
         pass
 
