@@ -48,7 +48,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
 
         intp maxHeadRefinements_;
 
-        std::unique_ptr<std::forward_list<IStoppingCriterion>> stoppingCriteriaPtr_;
+        std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr_;
 
     public:
 
@@ -93,18 +93,17 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          *                                              which should be used to decide whether additional rules should
          *                                              be induced or not
          */
-        SequentialRuleModelInduction(std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-                                     std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-                                     std::shared_ptr<IRuleInduction> ruleInductionPtr,
-                                     std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
-                                     std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                                     std::shared_ptr<ILabelSubSampling> labelSubSamplingPtr,
-                                     std::shared_ptr<IInstanceSubSampling> instanceSubSamplingPtr,
-                                     std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr,
-                                     std::shared_ptr<IPruning> pruningPtr,
-                                     std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage,
-                                     intp maxConditions, intp maxHeadRefinements,
-                                     std::unique_ptr<std::forward_list<IStoppingCriterion>> stoppingCriteriaPtr);
+        SequentialRuleModelInduction(
+            std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+            std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
+            std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
+            std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
+            std::shared_ptr<ILabelSubSampling> labelSubSamplingPtr,
+            std::shared_ptr<IInstanceSubSampling> instanceSubSamplingPtr,
+            std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
+            std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
+            intp maxHeadRefinements,
+            std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr);
 
         std::unique_ptr<RuleModel> induceRules(std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                                                std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
