@@ -47,9 +47,9 @@ class ConditionList final {
         /**
          * Adds a new condition to the end of the list.
          *
-         * @param condition The condition to be added
+         * @param condition A reference to an object of type `Condition` that should be added
          */
-        void append(Condition condition);
+        void addCondition(const Condition& condition);
 
         /**
          * Removes the last condition from the list.
