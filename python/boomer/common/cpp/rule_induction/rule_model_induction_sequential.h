@@ -52,8 +52,6 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
 
         std::unique_ptr<std::forward_list<IStoppingCriterion>> stoppingCriteriaPtr_;
 
-        RNG rng_;
-
     public:
 
         /**
@@ -95,7 +93,6 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          *                                              not be restricted
          * @param numThreads                            The number of CPU threads to be used to search for potential
          *                                              refinements in parallel. Must be at least 1
-         * @param randomState                           The seed to be used by RNGs. Must be at least 1
          * @param stoppingCriteriaPtr                   An unique pointer to a list that contains the stopping criteria,
          *                                              which should be used to decide whether additional rules should
          *                                              be induced or not
@@ -110,11 +107,12 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
                                      std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr,
                                      std::shared_ptr<IPruning> pruningPtr,
                                      std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage,
-                                     intp maxConditions, intp maxHeadRefinements, uint32 numThreads, uint32 randomState,
+                                     intp maxConditions, intp maxHeadRefinements, uint32 numThreads,
                                      std::unique_ptr<std::forward_list<IStoppingCriterion>> stoppingCriteriaPtr);
 
-        std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
-                                               const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
-                                               IModelBuilder& modelBuilder) const override;
+        std::unique_ptr<RuleModel> induceRules(std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
+                                               std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
+                                               std::shared_ptr<ILabelMatrix> labelMatrixPtr, RNG& rng,
+                                               IModelBuilder& modelBuilder) override;
 
 };
