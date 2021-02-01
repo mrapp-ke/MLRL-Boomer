@@ -1,5 +1,6 @@
 #include "rule_induction_top_down.h"
 #include "../indices/index_vector_full.h"
+#include "omp.h"
 #include <unordered_map>
 
 
@@ -50,6 +51,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
     uint32 numConditions = 0;
     // A map that stores a pointer to an object of type `IRuleRefinement` for each feature
     std::unordered_map<uint32, std::unique_ptr<IRuleRefinement>> ruleRefinements;
+    std::unordered_map<uint32, std::unique_ptr<IRuleRefinement>>* ruleRefinementsPtr = &ruleRefinements;
     // An unique pointer to the best refinement of the current rule
     std::unique_ptr<Refinement> bestRefinementPtr = std::make_unique<Refinement>();
     // A pointer to the head of the best rule found so far
@@ -78,9 +80,11 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         }
 
         // Search for the best condition among all available features to be added to the current rule...
-        for (intp i = 0; i < numSampledFeatures; i++) {  // TODO Use OpenMP
+        #pragma omp parallel for firstprivate(numSampledFeatures) firstprivate(ruleRefinementsPtr) \
+        firstprivate(bestHead) schedule(dynamic) num_threads(numThreads)
+        for (intp i = 0; i < numSampledFeatures; i++) {
             uint32 featureIndex = sampledFeatureIndicesPtr->getIndex((uint32) i);
-            std::unique_ptr<IRuleRefinement>& ruleRefinementPtr = ruleRefinements.find(featureIndex)->second;
+            std::unique_ptr<IRuleRefinement>& ruleRefinementPtr = ruleRefinementsPtr->find(featureIndex)->second;
             ruleRefinementPtr->findRefinement(bestHead);
         }
 
