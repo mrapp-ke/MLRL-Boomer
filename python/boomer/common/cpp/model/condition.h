@@ -22,12 +22,29 @@ enum Comparator : uint32 {
  * [start, end) that corresponds to the elements, e.g. examples or bins, that are covered (or uncovered, if
  * `covered == false`) by the condition, as well as the sum of the weights of all covered elements.
  */
-struct Condition {
-    uint32 featureIndex;
-    Comparator comparator;
-    float32 threshold;
-    intp start;
-    intp end;
-    bool covered;
-    uint32 coveredWeights;
+class Condition {
+
+    public:
+
+        Condition();
+
+        /**
+         * @param condition An existing condition to be copied
+         */
+        Condition(const Condition& condition);
+
+        uint32 featureIndex;
+
+        Comparator comparator;
+
+        float32 threshold;
+
+        intp start;
+
+        intp end;
+
+        bool covered;
+
+        uint32 coveredWeights;
+
 };

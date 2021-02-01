@@ -17,9 +17,9 @@ uint32 ConditionList::getNumConditions(Comparator comparator) const {
     return numConditionsPerComparator_[comparator];
 }
 
-void ConditionList::append(Condition condition) {
+void ConditionList::addCondition(const Condition& condition) {
     numConditionsPerComparator_[condition.comparator] += 1;
-    list_.push_back(condition);
+    list_.emplace_back(condition);
 }
 
 void ConditionList::removeLast() {
