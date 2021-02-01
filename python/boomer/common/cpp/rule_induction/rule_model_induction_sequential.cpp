@@ -23,14 +23,13 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
         std::shared_ptr<IInstanceSubSampling> instanceSubSamplingPtr,
         std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
         std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
-        intp maxHeadRefinements, uint32 numThreads,
-        std::unique_ptr<std::forward_list<IStoppingCriterion>> stoppingCriteriaPtr)
+        intp maxHeadRefinements, std::unique_ptr<std::forward_list<IStoppingCriterion>> stoppingCriteriaPtr)
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), ruleInductionPtr_(ruleInductionPtr),
       defaultRuleHeadRefinementFactoryPtr_(defaultRuleHeadRefinementFactoryPtr),
       headRefinementFactoryPtr_(headRefinementFactoryPtr), labelSubSamplingPtr_(labelSubSamplingPtr),
       instanceSubSamplingPtr_(instanceSubSamplingPtr), featureSubSamplingPtr_(featureSubSamplingPtr),
       pruningPtr_(pruningPtr), postProcessorPtr_(postProcessorPtr), minCoverage_(minCoverage),
-      maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads),
+      maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
       stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
 
 }
