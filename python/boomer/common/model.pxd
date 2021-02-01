@@ -261,10 +261,6 @@ cdef class ModelBuilder:
 
     cdef shared_ptr[IModelBuilder] model_builder_ptr
 
-    # Functions:
-
-    cdef RuleModel build(self)
-
 
 cdef class RuleModelSerializer:
 

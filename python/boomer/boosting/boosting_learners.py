@@ -19,8 +19,7 @@ from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHead
 from boomer.common.model import ModelBuilder
 from boomer.common.output import Predictor
 from boomer.common.post_processing import PostProcessor, NoPostProcessor
-from boomer.common.rule_induction import TopDownRuleInduction
-from boomer.common.sequential_rule_induction import SequentialRuleInduction
+from boomer.common.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from boomer.common.statistics import StatisticsProviderFactory
 from sklearn.base import ClassifierMixin
 
@@ -153,7 +152,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
 
-    def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
+    def _create_rule_model_induction(self, num_labels: int) -> SequentialRuleModelInduction:
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
@@ -172,10 +171,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         thresholds_factory = create_thresholds_factory(self.feature_binning)
         num_threads = create_num_threads(self.num_threads)
         rule_induction = TopDownRuleInduction(num_threads)
-        return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
-                                       default_rule_head_refinement_factory, head_refinement_factory, stopping_criteria,
-                                       label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
-                                       shrinkage, min_coverage, max_conditions, max_head_refinements, num_threads)
+        return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
+                                            default_rule_head_refinement_factory, head_refinement_factory,
+                                            label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
+                                            shrinkage, min_coverage, max_conditions, max_head_refinements,
+                                            stopping_criteria)
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)
