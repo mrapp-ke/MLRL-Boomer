@@ -15,7 +15,7 @@
 
 
 /**
- * Defines an interface for all classes that implement an algorithm for inducing individual classification rules.
+ * Defines an interface for all classes that implement an algorithm for inducing individual rules.
  */
 class IRuleInduction {
 
@@ -39,7 +39,7 @@ class IRuleInduction {
                                        IModelBuilder& modelBuilder) const = 0;
 
         /**
-         * Induces a new classification rule.
+         * Induces a new rule.
          *
          * @param thresholds            A reference to an object of type `IThresholds` that provides access to the
          *                              thresholds that may be used by the conditions of the rule
@@ -68,7 +68,7 @@ class IRuleInduction {
         virtual bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
                                 const IWeightVector& weights, const IFeatureSubSampling& featureSubSampling,
                                 const IPruning& pruning, const IPostProcessor& postProcessor, uint32 minCoverage,
-                                intp maxConditions, intp maxHeadRefinements, int numThreads, RNG& rng,
+                                intp maxConditions, intp maxHeadRefinements, RNG& rng,
                                 IModelBuilder& modelBuilder) const = 0;
 
 };

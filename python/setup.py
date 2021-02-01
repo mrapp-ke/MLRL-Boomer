@@ -69,6 +69,7 @@ sources = [
     'boomer/common/cpp/rule_evaluation/score_vector_label_wise_dense.cpp',
     'boomer/common/cpp/rule_evaluation/score_vector_label_wise_binned_dense.cpp',
     'boomer/common/cpp/rule_induction/rule_induction_top_down.cpp',
+    'boomer/common/cpp/rule_induction/rule_model_induction_sequential.cpp',
     'boomer/common/cpp/rule_refinement/rule_refinement.cpp',
     'boomer/common/cpp/rule_refinement/rule_refinement_exact.cpp',
     'boomer/common/cpp/rule_refinement/rule_refinement_approximate.cpp',
