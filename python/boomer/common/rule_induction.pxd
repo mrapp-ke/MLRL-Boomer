@@ -49,17 +49,17 @@ cdef extern from "cpp/rule_induction/rule_model_induction_sequential.h" nogil:
 
         # Constructors:
 
-        SequentialRuleModelInduction(shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
-                                     shared_ptr[IThresholdsFactory] thresholdsFactoryPtr,
-                                     shared_ptr[IRuleInduction] ruleInductionPtr,
-                                     shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
-                                     shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
-                                     shared_ptr[ILabelSubSampling] labelSubSamplingPtr,
-                                     shared_ptr[IInstanceSubSampling] instanceSubSamplingPtr,
-                                     shared_ptr[IFeatureSubSampling] featureSubSamplingPtr,
-                                     shared_ptr[IPruning] pruningPtr, shared_ptr[IPostProcessor] postProcessorPtr,
-                                     uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
-                                     unique_ptr[forward_list[shared_ptr[IStoppingCriterion]]] stoppingCriteriaPtr) except +
+        SequentialRuleModelInductionImpl(shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
+                                         shared_ptr[IThresholdsFactory] thresholdsFactoryPtr,
+                                         shared_ptr[IRuleInduction] ruleInductionPtr,
+                                         shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
+                                         shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
+                                         shared_ptr[ILabelSubSampling] labelSubSamplingPtr,
+                                         shared_ptr[IInstanceSubSampling] instanceSubSamplingPtr,
+                                         shared_ptr[IFeatureSubSampling] featureSubSamplingPtr,
+                                         shared_ptr[IPruning] pruningPtr, shared_ptr[IPostProcessor] postProcessorPtr,
+                                         uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
+                                         unique_ptr[forward_list[shared_ptr[IStoppingCriterion]]] stoppingCriteriaPtr) except +
 
 
 cdef class RuleInduction:
