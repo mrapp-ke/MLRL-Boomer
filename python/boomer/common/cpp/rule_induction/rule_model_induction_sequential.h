@@ -48,8 +48,6 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
 
         intp maxHeadRefinements_;
 
-        uint32 numThreads_;
-
         std::unique_ptr<std::forward_list<IStoppingCriterion>> stoppingCriteriaPtr_;
 
     public:
@@ -91,8 +89,6 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          *                                              refinement after a new condition has been added to its body.
          *                                              Must be at least 1 or -1, if the number of refinements should
          *                                              not be restricted
-         * @param numThreads                            The number of CPU threads to be used to search for potential
-         *                                              refinements in parallel. Must be at least 1
          * @param stoppingCriteriaPtr                   An unique pointer to a list that contains the stopping criteria,
          *                                              which should be used to decide whether additional rules should
          *                                              be induced or not
@@ -107,7 +103,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
                                      std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr,
                                      std::shared_ptr<IPruning> pruningPtr,
                                      std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage,
-                                     intp maxConditions, intp maxHeadRefinements, uint32 numThreads,
+                                     intp maxConditions, intp maxHeadRefinements,
                                      std::unique_ptr<std::forward_list<IStoppingCriterion>> stoppingCriteriaPtr);
 
         std::unique_ptr<RuleModel> induceRules(std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
