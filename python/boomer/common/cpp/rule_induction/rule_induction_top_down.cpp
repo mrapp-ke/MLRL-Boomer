@@ -55,9 +55,6 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
     // Whether a refinement of the current rule has been found
     bool foundRefinement = true;
 
-    // Temporary variables
-    uint32 numCoveredExamples;
-
     // Create a new subset of the given thresholds...
     std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = thresholds.createSubset(weights);
 
@@ -102,7 +99,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         if (foundRefinement) {
             // Filter the current subset of thresholds by applying the best refinement that has been found...
             thresholdsSubsetPtr->filterThresholds(*bestRefinementPtr);
-            numCoveredExamples = bestRefinementPtr->coveredWeights;
+            uint32 numCoveredExamples = bestRefinementPtr->coveredWeights;
 
             // Add the new condition...
             conditions.addCondition(*bestRefinementPtr);
