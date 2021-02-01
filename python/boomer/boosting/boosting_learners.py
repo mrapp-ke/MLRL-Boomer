@@ -169,9 +169,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         l2_regularization_weight = self.__create_l2_regularization_weight()
         rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
-        num_threads = create_num_threads(self.num_threads)
         thresholds_factory = create_thresholds_factory(self.feature_binning)
-        rule_induction = TopDownRuleInduction()
+        num_threads = create_num_threads(self.num_threads)
+        rule_induction = TopDownRuleInduction(num_threads)
         return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                        default_rule_head_refinement_factory, head_refinement_factory, stopping_criteria,
                                        label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,

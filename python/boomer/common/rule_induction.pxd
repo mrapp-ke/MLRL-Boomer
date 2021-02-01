@@ -24,13 +24,16 @@ cdef extern from "cpp/rule_induction/rule_induction.h" nogil:
         bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
                         const IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
                         const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
-                        intp maxHeadRefinements, int numThreads, RNG& rng, IModelBuilder& modelBuilder)
+                        intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder)
 
 
 cdef extern from "cpp/rule_induction/rule_induction_top_down.h" nogil:
 
     cdef cppclass TopDownRuleInductionImpl"TopDownRuleInduction"(IRuleInduction):
-        pass
+
+        # Constructors:
+
+        TopDownRuleInductionImpl(uint32 numThreads)
 
 
 cdef class RuleInduction:
