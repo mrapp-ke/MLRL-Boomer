@@ -1,17 +1,12 @@
 from boomer.common._types cimport uint32
-from boomer.common.statistics cimport IStatistics
 
-from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/stopping/stopping_criterion.h" nogil:
 
     cdef cppclass IStoppingCriterion:
-
-        # Functions:
-
-        bool shouldContinue(const IStatistics& statistics, uint32 numRules)
+        pass
 
 
 cdef extern from "cpp/stopping/stopping_criterion_size.h" nogil:
