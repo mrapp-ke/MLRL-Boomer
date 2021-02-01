@@ -5,8 +5,7 @@ from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHead
 from boomer.common.model import ModelBuilder
 from boomer.common.output import Predictor
 from boomer.common.post_processing import NoPostProcessor
-from boomer.common.rule_induction import TopDownRuleInduction
-from boomer.common.sequential_rule_induction import SequentialRuleInduction
+from boomer.common.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from boomer.common.statistics import StatisticsProviderFactory
 from boomer.seco.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
 from boomer.seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
@@ -161,11 +160,12 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def _create_model_builder(self) -> ModelBuilder:
         return DecisionListBuilder()
 
-    def _create_sequential_rule_induction(self, num_labels: int) -> SequentialRuleInduction:
+    def _create_rule_model_induction(self, num_labels: int) -> SequentialRuleModelInduction:
         heuristic = self.__create_heuristic()
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
         thresholds_factory = create_thresholds_factory(self.feature_binning)
-        rule_induction = TopDownRuleInduction()
+        num_threads = create_num_threads(self.num_threads)
+        rule_induction = TopDownRuleInduction(num_threads)
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)
@@ -179,11 +179,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(CoverageStoppingCriterion(0))
-        num_threads = create_num_threads(self.num_threads)
-        return SequentialRuleInduction(statistics_provider_factory, thresholds_factory, rule_induction,
-                                       default_rule_head_refinement_factory, head_refinement_factory, stopping_criteria,
-                                       label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
-                                       post_processor, min_coverage, max_conditions, max_head_refinements, num_threads)
+        return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
+                                            default_rule_head_refinement_factory, head_refinement_factory,
+                                            label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
+                                            post_processor, min_coverage, max_conditions, max_head_refinements,
+                                            stopping_criteria)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic

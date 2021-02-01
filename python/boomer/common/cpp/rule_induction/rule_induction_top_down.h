@@ -13,7 +13,17 @@
  */
 class TopDownRuleInduction : public IRuleInduction {
 
+    private:
+
+        uint32 numThreads_;
+
     public:
+
+        /**
+         * @param numThreads The number of CPU threads to be used to search for potential refinements of a rule in
+         *                   parallel. Must be at least 1
+         */
+        TopDownRuleInduction(uint32 numThreads);
 
         void induceDefaultRule(IStatisticsProvider& statisticsProvider,
                                const IHeadRefinementFactory* headRefinementFactory,
@@ -22,6 +32,6 @@ class TopDownRuleInduction : public IRuleInduction {
         bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
                         const IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
                         const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
-                        intp maxHeadRefinements, int numThreads, RNG& rng, IModelBuilder& modelBuilder) const override;
+                        intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder) const override;
 
 };
