@@ -60,6 +60,8 @@ class IRuleInduction {
          * @param maxHeadRefinements    The maximum number of times, the head of the rule may be refinement after a new
          *                              condition has been added to its body. Must be at least 1 or -1, if the number of
          *                              refinements should not be restricted
+         * @param numThreads            The number of CPU threads to be used to search for potential refinements in
+         *                              parallel. Must be at least 1
          * @param rng                   A reference to an object of type `RNG` that implements the random number
          *                              generator to be used
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the rule should be added to
