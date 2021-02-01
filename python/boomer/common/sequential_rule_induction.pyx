@@ -168,7 +168,7 @@ cdef class SequentialRuleInduction:
                                                           dereference(feature_sub_sampling_ptr.get()),
                                                           dereference(pruning_ptr.get()),
                                                           dereference(post_processor_ptr.get()), min_coverage,
-                                                          max_conditions, max_head_refinements, num_threads,
+                                                          max_conditions, max_head_refinements,
                                                           dereference(rng_ptr.get()),
                                                           dereference(model_builder_ptr.get()))
 
