@@ -19,6 +19,12 @@ cdef extern from "cpp/losses/loss_label_wise_squared_error.h" namespace "boostin
         pass
 
 
+cdef extern from "cpp/losses/loss_label_wise_squared_hinge.h" namespace "boosting" nogil:
+
+    cdef cppclass LabelWiseSquaredHingeLossImpl"boosting::LabelWiseSquaredHingeLoss"(ILabelWiseLoss):
+        pass
+
+
 cdef class LabelWiseLoss:
 
     # Attributes:
@@ -31,4 +37,8 @@ cdef class LabelWiseLogisticLoss(LabelWiseLoss):
 
 
 cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
+    pass
+
+
+cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
     pass
