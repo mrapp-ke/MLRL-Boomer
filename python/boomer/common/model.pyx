@@ -31,16 +31,7 @@ cdef class ModelBuilder:
     """
     A wrapper for the pure virtual C++ class `IModelBuilder`.
     """
-
-    cdef RuleModel build(self):
-        """
-        Builds and returns the model.
-
-        :return: The model that has been built
-        """
-        cdef RuleModel model = RuleModel()
-        model.model_ptr = move(self.model_builder_ptr.get().build())
-        return model
+    pass
 
 
 cdef unique_ptr[IBody] __create_body(object state):
