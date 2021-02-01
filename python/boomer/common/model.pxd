@@ -185,10 +185,7 @@ cdef extern from "cpp/model/rule_model.h" nogil:
 cdef extern from "cpp/model/model_builder.h" nogil:
 
     cdef cppclass IModelBuilder:
-
-        # Functions:
-
-        unique_ptr[RuleModelImpl] build()
+        pass
 
 
 cdef extern from *:
