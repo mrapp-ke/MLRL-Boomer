@@ -1,7 +1,6 @@
 from boomer.common._types cimport uint32, float32
 from boomer.common._indices cimport IIndexVector
 
-from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
@@ -13,22 +12,11 @@ cdef extern from "cpp/sampling/random.h" nogil:
 
         RNG(uint32 randomState) except +
 
-        # Functions:
-
-        uint32 random(uint32 min, uint32 max)
-
 
 cdef extern from "cpp/sampling/weight_vector.h" nogil:
 
     cdef cppclass IWeightVector:
-
-        # Functions:
-
-        bool hasZeroWeights()
-
-        uint32 getSumOfWeights()
-
-        uint32 getWeight(uint32 pos)
+        pass
 
 
 cdef extern from "cpp/sampling/instance_sampling.h" nogil:
@@ -67,10 +55,7 @@ cdef extern from "cpp/sampling/instance_sampling_no.h" nogil:
 cdef extern from "cpp/sampling/feature_sampling.h" nogil:
 
     cdef cppclass IFeatureSubSampling:
-
-        # Functions:
-
-        unique_ptr[IIndexVector] subSample(uint32 numFeatures, RNG& rng)
+        pass
 
 
 cdef extern from "cpp/sampling/feature_sampling_random.h" nogil:

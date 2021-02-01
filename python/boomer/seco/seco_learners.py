@@ -5,7 +5,7 @@ from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHead
 from boomer.common.model import ModelBuilder
 from boomer.common.output import Predictor
 from boomer.common.post_processing import NoPostProcessor
-from boomer.common.rule_induction import TopDownGreedyRuleInduction
+from boomer.common.rule_induction import TopDownRuleInduction
 from boomer.common.sequential_rule_induction import SequentialRuleInduction
 from boomer.common.statistics import StatisticsProviderFactory
 from boomer.seco.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
@@ -165,7 +165,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         heuristic = self.__create_heuristic()
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
         thresholds_factory = create_thresholds_factory(self.feature_binning)
-        rule_induction = TopDownGreedyRuleInduction()
+        rule_induction = TopDownRuleInduction()
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)

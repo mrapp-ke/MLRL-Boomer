@@ -1,6 +1,5 @@
 from boomer.common._types cimport uint32, intp
 from boomer.common._indices cimport IIndexVector
-from boomer.common.input cimport IFeatureMatrix, INominalFeatureMask
 from boomer.common.model cimport IModelBuilder
 from boomer.common.statistics cimport IStatisticsProvider
 from boomer.common.thresholds cimport IThresholds
@@ -9,30 +8,37 @@ from boomer.common.pruning cimport IPruning
 from boomer.common.post_processing cimport IPostProcessor
 from boomer.common.head_refinement cimport IHeadRefinementFactory
 
+from libcpp cimport bool
+from libcpp.memory cimport shared_ptr
+
+
+cdef extern from "cpp/rule_induction/rule_induction.h" nogil:
+
+    cdef cppclass IRuleInduction:
+
+        # Functions:
+
+        void induceDefaultRule(IStatisticsProvider& statisticsProvider,
+                               const IHeadRefinementFactory* headRefinementFactory, IModelBuilder& modelBuilder)
+
+        bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
+                        const IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
+                        const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
+                        intp maxHeadRefinements, int numThreads, RNG& rng, IModelBuilder& modelBuilder)
+
+
+cdef extern from "cpp/rule_induction/rule_induction_top_down.h" nogil:
+
+    cdef cppclass TopDownRuleInductionImpl"TopDownRuleInduction"(IRuleInduction):
+        pass
+
 
 cdef class RuleInduction:
 
-    # Functions:
+    # Attributes:
 
-    cdef void induce_default_rule(self, IStatisticsProvider* statistics_provider,
-                                  IHeadRefinementFactory* head_refinement_factory, IModelBuilder* model_builder)
-
-    cdef bint induce_rule(self, IThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
-                          IFeatureMatrix* feature_matrix, IIndexVector* label_indices, IWeightVector* weight_vector,
-                          IFeatureSubSampling* feature_sub_sampling, IPruning* pruning, IPostProcessor* post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
-                          RNG* rng, IModelBuilder* model_builder)
+    cdef shared_ptr[IRuleInduction] rule_induction_ptr
 
 
-cdef class TopDownGreedyRuleInduction(RuleInduction):
-
-    # Functions:
-
-    cdef void induce_default_rule(self, IStatisticsProvider* statistics_provider,
-                                  IHeadRefinementFactory* head_refinement_factory, IModelBuilder* model_builder)
-
-    cdef bint induce_rule(self, IThresholds* thresholds, INominalFeatureMask* nominal_feature_mask,
-                          IFeatureMatrix* feature_matrix, IIndexVector* label_indices, IWeightVector* weight_vector,
-                          IFeatureSubSampling* feature_sub_sampling, IPruning* pruning, IPostProcessor* post_processor,
-                          uint32 min_coverage, intp max_conditions, intp max_head_refinements, int num_threads,
-                          RNG* rng, IModelBuilder* model_builder)
+cdef class TopDownRuleInduction(RuleInduction):
+    pass
