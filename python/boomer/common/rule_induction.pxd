@@ -67,7 +67,7 @@ cdef extern from "cpp/rule_induction/rule_model_induction_sequential.h" nogil:
                                      shared_ptr[IFeatureSubSampling] featureSubSamplingPtr,
                                      shared_ptr[IPruning] pruningPtr, shared_ptr[IPostProcessor] postProcessorPtr,
                                      uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
-                                     unique_ptr[forward_list[IStoppingCriterion]] stoppingCriteriaPtr) except +
+                                     unique_ptr[forward_list[shared_ptr[IStoppingCriterion]]] stoppingCriteriaPtr) except +
 
 
 cdef class RuleInduction:
@@ -78,4 +78,15 @@ cdef class RuleInduction:
 
 
 cdef class TopDownRuleInduction(RuleInduction):
+    pass
+
+
+cdef class RuleModelInduction:
+
+    # Attributes:
+
+    cdef shared_ptr[IRuleModelInduction] rule_model_induction_ptr
+
+
+cdef class SequentialRuleModelInduction(RuleModelInduction):
     pass

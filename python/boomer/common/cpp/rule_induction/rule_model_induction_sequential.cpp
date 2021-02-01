@@ -1,12 +1,12 @@
 #include "rule_model_induction_sequential.h"
 
 
-static inline bool shouldContinue(std::forward_list<IStoppingCriterion>& stoppingCriteria,
+static inline bool shouldContinue(std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria,
                                   const IStatistics& statistics, uint32 numRules) {
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
-        IStoppingCriterion& stoppingCriterion = *it;
+        std::shared_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
 
-        if (!stoppingCriterion.shouldContinue(statistics, numRules)) {
+        if (!stoppingCriterionPtr->shouldContinue(statistics, numRules)) {
             return false;
         }
     }
@@ -23,7 +23,8 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
         std::shared_ptr<IInstanceSubSampling> instanceSubSamplingPtr,
         std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
         std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
-        intp maxHeadRefinements, std::unique_ptr<std::forward_list<IStoppingCriterion>> stoppingCriteriaPtr)
+        intp maxHeadRefinements,
+        std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr)
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), ruleInductionPtr_(ruleInductionPtr),
       defaultRuleHeadRefinementFactoryPtr_(defaultRuleHeadRefinementFactoryPtr),
       headRefinementFactoryPtr_(headRefinementFactoryPtr), labelSubSamplingPtr_(labelSubSamplingPtr),
