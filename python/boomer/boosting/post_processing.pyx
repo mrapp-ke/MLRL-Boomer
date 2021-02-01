@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport shared_ptr, make_shared
 
 
 cdef class ConstantShrinkage(PostProcessor):

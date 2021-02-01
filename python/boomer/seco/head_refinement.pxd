@@ -7,12 +7,7 @@ from libcpp.memory cimport shared_ptr
 cdef extern from "cpp/head_refinement/lift_function.h" namespace "seco" nogil:
 
     cdef cppclass ILiftFunction:
-
-        # Functions:
-
-        float64 calculateLift(uint32 numLabels)
-
-        float64 getMaxLift()
+        pass
 
 
 cdef extern from "cpp/head_refinement/lift_function_peak.h" namespace "seco" nogil:
