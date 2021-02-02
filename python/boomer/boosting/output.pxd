@@ -4,14 +4,14 @@ from boomer.common.model cimport RuleModel
 from boomer.common.output cimport AbstractClassificationPredictor, IPredictor
 
 
-cdef extern from "cpp/output/predictor_classification.h" namespace "boosting" nogil:
+cdef extern from "cpp/output/predictor_classification_label_wise.h" namespace "boosting" nogil:
 
-    cdef cppclass ClassificationPredictorImpl"boosting::ClassificationPredictor"(IPredictor[uint8]):
+    cdef cppclass LabelWiseClassificationPredictorImpl"boosting::LabelWiseClassificationPredictor"(IPredictor[uint8]):
 
-        ClassificationPredictorImpl(float64 threshold)
+        LabelWiseClassificationPredictorImpl(float64 threshold)
 
 
-cdef class ClassificationPredictor(AbstractClassificationPredictor):
+cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
 
     # Attributes:
 
