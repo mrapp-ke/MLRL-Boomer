@@ -274,7 +274,7 @@ bool ConjunctiveBody::covers(CsrFeatureMatrix::index_const_iterator indicesBegin
         float32 threshold = leqThresholds_[i];
         float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
 
-        if (threshold > featureValue) {
+        if (featureValue > threshold) {
             return false;
         }
     }
@@ -285,7 +285,7 @@ bool ConjunctiveBody::covers(CsrFeatureMatrix::index_const_iterator indicesBegin
         float32 threshold = grThresholds_[i];
         float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
 
-        if (threshold <= featureValue) {
+        if (featureValue <= threshold) {
             return false;
         }
     }
@@ -296,7 +296,7 @@ bool ConjunctiveBody::covers(CsrFeatureMatrix::index_const_iterator indicesBegin
         float32 threshold = eqThresholds_[i];
         float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
 
-        if (threshold != featureValue) {
+        if (featureValue != threshold) {
             return false;
         }
     }
@@ -307,7 +307,7 @@ bool ConjunctiveBody::covers(CsrFeatureMatrix::index_const_iterator indicesBegin
         float32 threshold = neqThresholds_[i];
         float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
 
-        if (threshold == featureValue) {
+        if (featureValue == threshold) {
             return false;
         }
     }
