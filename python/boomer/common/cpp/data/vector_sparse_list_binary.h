@@ -19,7 +19,7 @@ class BinarySparseListVector {
 
     public:
 
-        typedef const std::list<uint32>::const_iterator index_const_iterator;
+        typedef std::list<uint32>::const_iterator index_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices in the vector.
