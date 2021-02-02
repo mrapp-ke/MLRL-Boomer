@@ -9,14 +9,14 @@
 namespace seco {
 
     /**
-     * Allows to predicted the labels of given query examples using an existing rule-based model that has been learned
+     * Allows to predict the labels of given query examples using an existing rule-based model that has been learned
      * using a separate-and-conquer algorithm.
      *
      * For prediction, the rules are processed in the order they have been learned. If a rule covers an example, its
-     * prediction (1 if the label is relevant, 0 otherwise) for individual labels is applied, if none of the previous
-     * rules has already predicted for that particular example and label.
+     * prediction (1 if the label is relevant, 0 otherwise) is applied to the labels individually, if none of the
+     * previous rules has already predicted for that particular example and label.
      */
-    class ClassificationPredictor : public IPredictor<uint8> {
+    class LabelWiseClassificationPredictor : public IPredictor<uint8> {
 
         public:
 

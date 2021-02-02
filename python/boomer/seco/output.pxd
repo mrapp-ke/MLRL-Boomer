@@ -4,13 +4,13 @@ from boomer.common.model cimport RuleModel
 from boomer.common.output cimport AbstractClassificationPredictor, IPredictor
 
 
-cdef extern from "cpp/output/predictor_classification.h" namespace "seco" nogil:
+cdef extern from "cpp/output/predictor_classification_label_wise.h" namespace "seco" nogil:
 
-    cdef cppclass ClassificationPredictorImpl"seco::ClassificationPredictor"(IPredictor[uint8]):
+    cdef cppclass LabelWiseClassificationPredictorImpl"seco::LabelWiseClassificationPredictor"(IPredictor[uint8]):
         pass
 
 
-cdef class ClassificationPredictor(AbstractClassificationPredictor):
+cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
 
     cpdef object predict(self, CContiguousFeatureMatrix feature_matrix, RuleModel model)
 
