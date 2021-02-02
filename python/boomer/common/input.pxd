@@ -43,6 +43,15 @@ cdef extern from "cpp/input/label_matrix_dok.h" nogil:
         void setValue(uint32 exampleIndex, uint32 rowIndex)
 
 
+cdef extern from "cpp/input/label_vector.h" nogil:
+
+    cdef cppclass LabelVector:
+
+        # Functions:
+
+        void setValue(uint32 pos)
+
+
 cdef extern from "cpp/input/feature_matrix.h" nogil:
 
     cdef cppclass IFeatureMatrix:

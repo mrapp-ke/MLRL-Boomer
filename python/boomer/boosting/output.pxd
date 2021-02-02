@@ -1,5 +1,5 @@
 from boomer.common._types cimport uint8, float64
-from boomer.common._data cimport BinarySparseListVector
+from boomer.common.input cimport LabelVector
 from boomer.common.output cimport AbstractClassificationPredictor, IPredictor
 
 from libcpp.memory cimport unique_ptr
@@ -14,14 +14,13 @@ cdef extern from "cpp/output/predictor_classification_label_wise.h" namespace "b
         LabelWiseClassificationPredictorImpl(float64 threshold)
 
 
+ctypedef void (*LabelVectorVisitor)(const LabelVector&)
+
+
 cdef extern from "cpp/output/predictor_classification_example_wise.h" namespace "boosting" nogil:
 
     cdef cppclass ExampleWiseClassificationPredictorImpl"boosting::ExampleWiseClassificationPredictor"(
             IPredictor[uint8]):
-
-        ctypedef BinarySparseListVector LabelVector
-
-        ctypedef void (*LabelVectorVisitor)(const LabelVector&)
 
         # Functions:
 

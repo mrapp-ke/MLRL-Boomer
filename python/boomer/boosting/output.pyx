@@ -44,12 +44,12 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
         cdef uint32 num_rows = label_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = label_matrix_ptr.get().getNumCols()
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl]()
-        cdef unique_ptr[ExampleWiseClassificationPredictorImpl.LabelVector] label_vector_ptr
+        cdef unique_ptr[LabelVector] label_vector_ptr
         cdef uint8 value
         cdef uint32 i, j
 
         for i in range(num_rows):
-            label_vector_ptr = make_unique[ExampleWiseClassificationPredictorImpl.LabelVector]()
+            label_vector_ptr = make_unique[LabelVector]()
 
             for j in range(num_cols):
                 value = label_matrix_ptr.get().getValue(i, j)
@@ -68,12 +68,12 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
     def create_lil(cls, uint32 num_labels, list[::1] rows):
         cdef uint32 num_rows = rows.shape[0]
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl]()
-        cdef unique_ptr[ExampleWiseClassificationPredictorImpl.LabelVector] label_vector_ptr
+        cdef unique_ptr[LabelVector] label_vector_ptr
         cdef list col_indices
         cdef uint32 i, j
 
         for i in range(num_rows):
-            label_vector_ptr = make_unique[ExampleWiseClassificationPredictorImpl.LabelVector]()
+            label_vector_ptr = make_unique[LabelVector]()
             col_indices = rows[i]
 
             for j in col_indices:
