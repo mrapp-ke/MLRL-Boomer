@@ -6,7 +6,6 @@
 
 Provides base classes for implementing single- or multi-label classifiers or rankers.
 """
-import logging as log
 from abc import ABC, abstractmethod
 from timeit import default_timer as timer
 from typing import List
@@ -42,12 +41,10 @@ class Learner(BaseEstimator):
                     labels of the training examples according to the ground truth
         :return:    The fitted learner
         """
-        log.info('Fitting model...')
         start_time = timer()
         model = self._fit(x, y)
         end_time = timer()
         run_time = end_time - start_time
-        log.info('Successfully fit model in %s seconds', run_time)
         self.model_ = model
         self.train_time_ = run_time
         return self
@@ -62,7 +59,6 @@ class Learner(BaseEstimator):
                     prediction for individual examples and labels
         """
         check_is_fitted(self)
-        log.info('Making a prediction for %s query instances...', x.shape[0])
         return self._predict(x)
 
     def predict_proba(self, x):
@@ -75,7 +71,6 @@ class Learner(BaseEstimator):
                     probabilities for individual examples and labels
         """
         check_is_fitted(self)
-        log.info('Predicting probability estimates for %s query instances...', x.shape[0])
         return self._predict_proba(x)
 
     @abstractmethod
