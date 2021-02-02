@@ -8,6 +8,13 @@ namespace boosting {
         labelVectors_.emplace(std::move(labelVectorPtr));
     }
 
+    void ExampleWiseClassificationPredictor::visit(LabelVectorVisitor visitor) const {
+        for (auto it = labelVectors_.cbegin(); it != labelVectors_.cend(); it++) {
+            const std::unique_ptr<LabelVector>& labelVectorPtr = *it;
+            visitor(*labelVectorPtr);
+        }
+    }
+
     void ExampleWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
                                                      CContiguousView<uint8>& predictionMatrix,
                                                      const RuleModel& model) const {

@@ -6,6 +6,7 @@
 #include "../../../common/cpp/output/predictor.h"
 #include "../../../common/cpp/data/vector_sparse_list_binary.h"
 #include <unordered_set>
+#include <functional>
 
 
 namespace boosting {
@@ -73,12 +74,21 @@ namespace boosting {
 
         public:
 
+            typedef std::function<void(const LabelVector&)> LabelVectorVisitor;
+
             /**
              * Adds a known label vector that may be predicted for individual query examples.
              *
              * @param labelVectorPtr An unique pointer to an object of type `LabelVector`
              */
             void addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr);
+
+            /**
+             * Invokes the given visitor function for each unique label vector that has been provided via the function `addLabelVector`.
+             *
+             * @param visitor The visitor function for handling objects of the type `LabelVector`
+             */
+            void visit(LabelVectorVisitor visitor) const;
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const RuleModel& model) const override;
