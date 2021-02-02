@@ -16,7 +16,6 @@ COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenm
 sources = [
     '**/*.pyx',
     'boomer/common/cpp/data/matrix_dense.cpp',
-    'boomer/common/cpp/data/matrix_dense_numeric.cpp',
     'boomer/common/cpp/data/matrix_dok_binary.cpp',
     'boomer/common/cpp/data/vector_dense.cpp',
     'boomer/common/cpp/data/vector_dok_binary.cpp',
@@ -79,6 +78,7 @@ sources = [
     'boomer/common/cpp/thresholds/coverage_mask.cpp',
     'boomer/common/cpp/thresholds/thresholds_exact.cpp',
     'boomer/common/cpp/thresholds/thresholds_approximate.cpp',
+    'boomer/boosting/cpp/data/matrix_dense_numeric.cpp',
     'boomer/boosting/cpp/data/matrix_dense_label_wise.cpp',
     'boomer/boosting/cpp/data/matrix_dense_example_wise.cpp',
     'boomer/boosting/cpp/data/vector_dense_label_wise.cpp',

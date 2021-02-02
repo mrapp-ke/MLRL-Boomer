@@ -4,8 +4,8 @@
 #pragma once
 
 #include "../../../common/cpp/input/label_matrix.h"
-#include "../../../common/cpp/data/matrix_dense_numeric.h"
 #include "../../../common/cpp/measures/measure.h"
+#include "../data/matrix_dense_numeric.h"
 #include "../data/matrix_dense_label_wise.h"
 
 

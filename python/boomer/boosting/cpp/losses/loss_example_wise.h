@@ -4,7 +4,7 @@
 #pragma once
 
 #include "../../../common/cpp/input/label_matrix.h"
-#include "../../../common/cpp/data/matrix_dense_numeric.h"
+#include "../data/matrix_dense_numeric.h"
 #include "../data/matrix_dense_example_wise.h"
 
 
