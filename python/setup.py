@@ -20,6 +20,7 @@ sources = [
     'boomer/common/cpp/data/vector_dense.cpp',
     'boomer/common/cpp/data/vector_dok_binary.cpp',
     'boomer/common/cpp/data/vector_sparse_array.cpp',
+    'boomer/common/cpp/data/vector_sparse_list_binary.cpp',
     'boomer/common/cpp/data/vector_mapping_dense.cpp',
     'boomer/common/cpp/data/view_c_contiguous.cpp',
     'boomer/common/cpp/data/view_csc.cpp',
