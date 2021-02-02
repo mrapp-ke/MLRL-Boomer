@@ -8,6 +8,7 @@ Provides classes for performing experiments.
 """
 import logging as log
 from abc import ABC
+from timeit import default_timer as timer
 
 from sklearn.base import clone
 
@@ -77,30 +78,40 @@ class Experiment(CrossValidation, ABC):
         if isinstance(loaded_learner, Learner):
             current_learner = loaded_learner
         else:
+            log.info('Fitting model to %s training examples...', train_x.shape[0])
             current_learner.fit(train_x, train_y)
+            log.info('Successfully fit model in %s seconds', current_learner.train_time_)
 
         # Save model to disk...
         self.__save_model(current_learner, current_fold=current_fold, num_folds=num_folds)
-
-        train_time = current_learner.train_time_
 
         # Obtain and evaluate predictions for training data, if necessary...
         evaluation = self.train_evaluation
 
         if evaluation is not None:
+            log.info('Predicting for %s training examples...', train_x.shape[0])
+            start_time = timer()
             predictions = current_learner.predict(train_x)
+            end_time = timer()
+            predict_time = end_time - start_time
+            log.info('Successfully predicted in %s seconds', predict_time)
             evaluation.evaluate('train_' + learner_name, meta_data, predictions, train_y, first_fold=first_fold,
                                 current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
-                                train_time=train_time)
+                                train_time=current_learner.train_time_, predict_time=predict_time)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
 
         if evaluation is not None:
+            log.info('Predicting for %s test examples...', test_x.shape[0])
+            start_time = timer()
             predictions = current_learner.predict(test_x)
+            end_time = timer()
+            predict_time = end_time - start_time
+            log.info('Successfully predicted in %s seconds', predict_time)
             evaluation.evaluate('test_' + learner_name, meta_data, predictions, test_y, first_fold=first_fold,
                                 current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
-                                train_time=train_time)
+                                train_time=current_learner.train_time_, predict_time=predict_time)
 
         # Print model, if necessary...
         model_printer = self.model_printer
