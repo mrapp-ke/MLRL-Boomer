@@ -19,6 +19,9 @@ namespace boosting {
                                              const DenseNumericMatrix<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
 
+            float64 evaluate(const LabelVector& labelVector, DenseVector<float64>::const_iterator scoresBegin,
+                             DenseVector<float64>::const_iterator scoresEnd) const override;
+
     };
 
 }
