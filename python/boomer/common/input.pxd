@@ -6,11 +6,19 @@ from libcpp.memory cimport unique_ptr, shared_ptr
 cdef extern from "cpp/input/label_matrix.h" nogil:
 
     cdef cppclass ILabelMatrix:
-        pass
+
+        # Functions:
+
+        uint32 getNumRows()
+
+        uint32 getNumCols()
 
 
     cdef cppclass IRandomAccessLabelMatrix(ILabelMatrix):
-        pass
+
+        # Functions:
+
+        uint8 getValue(uint32 row, uint32 col)
 
 
 cdef extern from "cpp/input/label_matrix_c_contiguous.h" nogil:
