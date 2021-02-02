@@ -85,3 +85,6 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
             ExampleWiseClassificationPredictor, num_labels)
         predictor.predictor_ptr = <unique_ptr[IPredictor[uint8]]>move(predictor_ptr)
         return predictor
+
+    def __reduce__(self):
+        return (ExampleWiseClassificationPredictor, (self.num_labels,))
