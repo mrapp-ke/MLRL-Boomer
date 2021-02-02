@@ -4,7 +4,7 @@
 #pragma once
 
 #include "../../../common/cpp/output/predictor.h"
-#include "../../../common/cpp/data/vector_sparse_list_binary.h"
+#include "../../../common/cpp/input/label_vector.h"
 #include <unordered_set>
 #include <functional>
 
@@ -20,10 +20,6 @@ namespace boosting {
      * that is closest to the aggregated score vector is finally predicted.
      */
     class ExampleWiseClassificationPredictor : public IPredictor<uint8> {
-
-        public:
-
-            typedef BinarySparseListVector LabelVector;
 
         private:
 
