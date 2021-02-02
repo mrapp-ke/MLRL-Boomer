@@ -1,4 +1,4 @@
-#include "predictor_classification.h"
+#include "predictor_classification_label_wise.h"
 #include "../../../common/cpp/model/head_full.h"
 #include "../../../common/cpp/model/head_partial.h"
 
@@ -93,13 +93,14 @@ namespace boosting {
         }
     }
 
-    ClassificationPredictor::ClassificationPredictor(float64 threshold)
+    LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(float64 threshold)
         : threshold_(threshold) {
 
     }
 
-    void ClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
-                                          CContiguousView<uint8>& predictionMatrix, const RuleModel& model) const {
+    void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
+                                                   CContiguousView<uint8>& predictionMatrix,
+                                                   const RuleModel& model) const {
         uint32 numExamples = predictionMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
         float64 scores[numExamples * numLabels] = {};
@@ -108,8 +109,9 @@ namespace boosting {
         applyThreshold<float64, uint8>(scoreMatrix, predictionMatrix, threshold_);
     }
 
-    void ClassificationPredictor::predict(const CsrFeatureMatrix& featureMatrix,
-                                          CContiguousView<uint8>& predictionMatrix, const RuleModel& model) const {
+    void LabelWiseClassificationPredictor::predict(const CsrFeatureMatrix& featureMatrix,
+                                                   CContiguousView<uint8>& predictionMatrix,
+                                                   const RuleModel& model) const {
         uint32 numExamples = predictionMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
         float64 scores[numExamples * numLabels] = {};
