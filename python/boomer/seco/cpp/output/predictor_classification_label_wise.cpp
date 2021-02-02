@@ -1,4 +1,4 @@
-#include "predictor_classification.h"
+#include "predictor_classification_label_wise.h"
 #include "../../../common/cpp/data/arrays.h"
 #include "../../../common/cpp/data/vector_dense.h"
 #include "../../../common/cpp/model/head_full.h"
@@ -49,8 +49,9 @@ namespace seco {
         head.visit(fullHeadVisitor, partialHeadVisitor);
     }
 
-    void ClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
-                                          CContiguousView<uint8>& predictionMatrix, const RuleModel& model) const {
+    void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
+                                                   CContiguousView<uint8>& predictionMatrix,
+                                                   const RuleModel& model) const {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
         DenseVector<uint8> mask(numLabels);
@@ -70,8 +71,9 @@ namespace seco {
         }
     }
 
-    void ClassificationPredictor::predict(const CsrFeatureMatrix& featureMatrix,
-                                          CContiguousView<uint8>& predictionMatrix, const RuleModel& model) const {
+    void LabelWiseClassificationPredictor::predict(const CsrFeatureMatrix& featureMatrix,
+                                                   CContiguousView<uint8>& predictionMatrix,
+                                                   const RuleModel& model) const {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();

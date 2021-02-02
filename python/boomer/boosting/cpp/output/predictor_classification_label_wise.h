@@ -13,10 +13,10 @@ namespace boosting {
      * using a boosting algorithm.
      *
      * For prediction, the scores that are provided by the individual rules, are summed up. The aggregated scores are
-     * then transformed into binary values according to a certain threshold (1 if a score exceeds the threshold, i.e.,
-     * the label is relevant, 0 otherwise).
+     * then transformed into binary values according to a certain threshold that is applied to the labels individually
+     * (1 if a score exceeds the threshold, i.e., the label is relevant, 0 otherwise).
      */
-    class ClassificationPredictor : public IPredictor<uint8> {
+    class LabelWiseClassificationPredictor : public IPredictor<uint8> {
 
         private:
 
@@ -27,7 +27,7 @@ namespace boosting {
             /**
              * @param threshold The threshold to be used
              */
-            ClassificationPredictor(float64 threshold);
+            LabelWiseClassificationPredictor(float64 threshold);
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const RuleModel& model) const override;
