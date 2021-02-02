@@ -77,10 +77,10 @@ EX_BASED_F1 = 'Ex.-based F1'
 RANK_LOSS = 'Rank Loss'
 
 # The time needed to train the model
-TRAINING_TIME = 'Training Time'
+TIME_TRAIN = 'Training Time'
 
 # The time needed to make predictions
-PREDICTION_TIME = 'Prediction Time'
+TIME_PREDICT = 'Prediction Time'
 
 
 class Evaluation(ABC):
@@ -248,7 +248,7 @@ class EvaluationLogOutput(EvaluationOutput):
             text = ''
 
             for measure in sorted(evaluation_result.measures):
-                if measure != TRAINING_TIME and measure != PREDICTION_TIME:
+                if measure != TIME_TRAIN and measure != TIME_PREDICT:
                     if len(text) > 0:
                         text += '\n'
 
@@ -341,8 +341,8 @@ class AbstractEvaluation(Evaluation):
                  current_fold: int, last_fold: int, num_folds: int, train_time: float, predict_time: float):
         result = self.results[experiment_name] if experiment_name in self.results else EvaluationResult()
         self.results[experiment_name] = result
-        result.put(TRAINING_TIME, train_time, current_fold, num_folds)
-        result.put(PREDICTION_TIME, predict_time, current_fold, num_folds)
+        result.put(TIME_TRAIN, train_time, current_fold, num_folds)
+        result.put(TIME_PREDICT, predict_time, current_fold, num_folds)
         self._populate_result(result, predictions, ground_truth, current_fold=current_fold, num_folds=num_folds)
         self.__write_predictions(experiment_name, meta_data, predictions, ground_truth, current_fold=current_fold,
                                  num_folds=num_folds)
