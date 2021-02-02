@@ -97,7 +97,7 @@ class Experiment(CrossValidation, ABC):
             log.info('Successfully predicted in %s seconds', predict_time)
             evaluation.evaluate('train_' + learner_name, meta_data, predictions, train_y, first_fold=first_fold,
                                 current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
-                                train_time=current_learner.train_time_)
+                                train_time=current_learner.train_time_, predict_time=predict_time)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
@@ -111,7 +111,7 @@ class Experiment(CrossValidation, ABC):
             log.info('Successfully predicted in %s seconds', predict_time)
             evaluation.evaluate('test_' + learner_name, meta_data, predictions, test_y, first_fold=first_fold,
                                 current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
-                                train_time=current_learner.train_time_)
+                                train_time=current_learner.train_time_, predict_time=predict_time)
 
         # Print model, if necessary...
         model_printer = self.model_printer
