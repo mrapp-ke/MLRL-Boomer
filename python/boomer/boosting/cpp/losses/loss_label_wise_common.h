@@ -4,6 +4,7 @@
 #pragma once
 
 #include "loss_label_wise.h"
+#include "../math/math.h"
 
 
 namespace boosting {
@@ -27,6 +28,16 @@ namespace boosting {
             virtual void updateGradientAndHessian(DenseVector<float64>::iterator gradient,
                                                   DenseVector<float64>::iterator hessian, bool trueLabel,
                                                   float64 predictedScore) const = 0;
+
+            /**
+             * Must be implemented by subclasses in order to calculate a numerical score that assesses the quality of
+             * the prediction for a single example and label.
+             *
+             * @param trueLabel         True, if the label is relevant, false otherwise
+             * @param predictedScore    The score that is predicted for the label
+             * @return                  The numerical score that has been calculated
+             */
+            virtual float64 evaluate(bool trueLabel, float64 predictedScore) const = 0;
 
         public:
 
@@ -70,6 +81,32 @@ namespace boosting {
                     this->updateGradientAndHessian(&gradientIterator[labelIndex], &hessianIterator[labelIndex],
                                                    trueLabel, predictedScore);
                 }
+            }
+
+            float64 evaluate(const LabelVector& labelVector, DenseVector<float64>::const_iterator scoresBegin,
+                             DenseVector<float64>::const_iterator scoresEnd) const override final {
+                LabelVector::index_const_iterator indexIterator = labelVector.indices_cbegin();
+                LabelVector::index_const_iterator indicesEnd = labelVector.indices_cend();
+                float64 mean = 0;
+                uint32 i = 0;
+
+                for (auto scoreIterator = scoresBegin; scoreIterator != scoresEnd; scoreIterator++) {
+                    float64 predictedScore = *scoreIterator;
+                    bool trueLabel;
+
+                    if (indexIterator != indicesEnd && *indexIterator == i) {
+                        indexIterator++;
+                        trueLabel = true;
+                    } else {
+                        trueLabel = false;
+                    }
+
+                    float64 score = this->evaluate(trueLabel, predictedScore);
+                    mean = iterativeMean<float64>(i + 1, score, mean);
+                    i++;
+                }
+
+                return mean;
             }
 
     };

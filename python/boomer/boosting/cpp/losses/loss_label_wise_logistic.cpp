@@ -41,6 +41,24 @@ namespace boosting {
         }
     }
 
+    /**
+     * Calculates and returns the function `log(1 + exp(x)) = log(exp(0) + exp(x))`, given a specific value `x`.
+     *
+     * This function exploits the identity `log(exp(0) + exp(x)) = b + log(exp(0 - b) + exp(x - b))`, where
+     * `b = max(0, x)`, to increase numerical stability (see, e.g., section "Log-sum-exp for computing the
+     * log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
+     *
+     * @param x The value `x`
+     * @return  The value that has been calculated
+     */
+    static inline float64 logSumExp(float64 x) {
+        if (x > 0) {
+            return x + std::log(std::exp(0 - x) + 1);
+        } else {
+            return std::log(1 + std::exp(x));
+        }
+    }
+
     void LabelWiseLogisticLoss::updateGradientAndHessian(DenseVector<float64>::iterator gradient,
                                                          DenseVector<float64>::iterator hessian, bool trueLabel,
                                                          float64 predictedScore) const {
@@ -52,6 +70,12 @@ namespace boosting {
         // The Hessian computes as `exp(expectedScore * predictedScore) / (1 + exp(expectedScore * predictedScore))^2`,
         // or as `1 / (1 + exp(expectedScore * predictedScore)) - 1 / (1 + exp(expectedScore * predictedScore))^2`
         *hessian = logistic - squaredLogisticFunction(predictedScore);
+    }
+
+    float64 LabelWiseLogisticLoss::evaluate(bool trueLabel, float64 predictedScore) const {
+       // The logistic loss calculates as `log(1 + exp(-expectedScore * predictedScore))`...
+        float64 x = trueLabel ? -predictedScore : predictedScore;
+        return logSumExp(x);
     }
 
 }
