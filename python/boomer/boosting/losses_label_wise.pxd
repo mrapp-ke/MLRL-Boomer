@@ -1,4 +1,4 @@
-from boomer.common._measures cimport IMeasure
+from boomer.common.measures cimport IMeasure
 
 from libcpp.memory cimport shared_ptr
 
