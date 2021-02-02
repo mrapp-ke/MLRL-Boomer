@@ -1,9 +1,11 @@
+from boomer.common._measures cimport IMeasure
+
 from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "cpp/losses/loss_example_wise.h" namespace "boosting" nogil:
 
-    cdef cppclass IExampleWiseLoss:
+    cdef cppclass IExampleWiseLoss(IMeasure):
         pass
 
 
