@@ -21,9 +21,13 @@ cdef extern from "cpp/output/predictor_classification_example_wise.h" namespace 
 
         ctypedef BinarySparseListVector LabelVector
 
+        ctypedef void (*LabelVectorVisitor)(const LabelVector&)
+
         # Functions:
 
         void addLabelVector(unique_ptr[LabelVector] labelVectorPtr)
+
+        void visit(LabelVectorVisitor)
 
 
 cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
