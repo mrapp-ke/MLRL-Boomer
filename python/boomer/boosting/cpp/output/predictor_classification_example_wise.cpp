@@ -1,5 +1,4 @@
 #include "predictor_classification_example_wise.h"
-#include <iostream> // TODO Remove
 
 
 namespace boosting {
