@@ -7,7 +7,7 @@
 namespace boosting {
 
     template<class T>
-    static inline void predictClosestLabelVector(uint32 exampleIndex, const DenseMatrix<float64>& scoreMatrix,
+    static inline void predictClosestLabelVector(uint32 exampleIndex, const CContiguousView<float64>& scoreMatrix,
                                                  CContiguousView<uint8>& predictionMatrix, const IMeasure& measure,
                                                  const T& labelVectors) {
         std::fill(predictionMatrix.row_begin(exampleIndex), predictionMatrix.row_end(exampleIndex), 0);
@@ -40,8 +40,9 @@ namespace boosting {
 
     template<class T>
     static inline void predictInternally(const RuleModel& model, const CContiguousFeatureMatrix& featureMatrix,
-                                         DenseMatrix<float64>& scoreMatrix, CContiguousView<uint8>& predictionMatrix,
-                                         const IMeasure& measure, const T& labelVectors) {
+                                         CContiguousView<float64>& scoreMatrix,
+                                         CContiguousView<uint8>& predictionMatrix, const IMeasure& measure,
+                                         const T& labelVectors) {
         uint32 numExamples = featureMatrix.getNumRows();
 
         for (uint32 i = 0; i < numExamples; i++) {
@@ -56,8 +57,9 @@ namespace boosting {
 
     template<class T>
     static inline void predictInternally(const RuleModel& model, const CsrFeatureMatrix& featureMatrix,
-                                         DenseMatrix<float64>& scoreMatrix, CContiguousView<uint8>& predictionMatrix,
-                                         const IMeasure& measure, const T& labelVectors) {
+                                         CContiguousView<float64>& scoreMatrix,
+                                         CContiguousView<uint8>& predictionMatrix, const IMeasure& measure,
+                                         const T& labelVectors) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         float32 tmpArray1[numFeatures];
