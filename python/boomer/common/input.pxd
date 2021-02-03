@@ -1,6 +1,7 @@
 from boomer.common._types cimport uint8, uint32, float32
 
 from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.list cimport list as double_linked_list
 
 
 cdef extern from "cpp/input/label_matrix.h" nogil:
@@ -47,7 +48,13 @@ cdef extern from "cpp/input/label_vector.h" nogil:
 
     cdef cppclass LabelVector:
 
+        ctypedef double_linked_list[uint32].const_iterator index_const_iterator
+
         # Functions:
+
+        index_const_iterator indices_cbegin()
+
+        index_const_iterator indices_cend()
 
         void setValue(uint32 pos)
 
