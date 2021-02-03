@@ -17,6 +17,7 @@ from boomer.boosting.statistics_example_wise import ExampleWiseStatisticsProvide
 from boomer.boosting.statistics_label_wise import LabelWiseStatisticsProviderFactory
 from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     FullHeadRefinementFactory
+from boomer.common.input import CContiguousLabelMatrix
 from boomer.common.model import ModelBuilder
 from boomer.common.output import Predictor
 from boomer.common.post_processing import PostProcessor, NoPostProcessor
@@ -151,7 +152,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_predictor(self, num_labels: int) -> Predictor:
+    def _create_predictor(self, num_labels: int, label_matrix: CContiguousLabelMatrix) -> Predictor:
+        return self.__create_label_wise_predictor(num_labels)
+
+    def _create_predictor_lil(self, num_labels: int, label_matrix: list) -> Predictor:
+        return self.__create_label_wise_predictor(num_labels)
+
+    def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
         threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
         return LabelWiseClassificationPredictor(num_labels=num_labels, threshold=threshold)
 
