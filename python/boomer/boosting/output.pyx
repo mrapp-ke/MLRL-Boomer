@@ -3,6 +3,8 @@
 """
 from boomer.common._types cimport uint32
 from boomer.common.input cimport CContiguousLabelMatrix, CContiguousLabelMatrixImpl, ILabelMatrix
+from boomer.boosting.losses_label_wise cimport LabelWiseLoss
+from boomer.boosting.losses_example_wise cimport ExampleWiseLoss
 
 from libcpp.memory cimport shared_ptr, make_unique, dynamic_pointer_cast
 from libcpp.utility cimport move
@@ -26,6 +28,23 @@ cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
         return (LabelWiseClassificationPredictor, (self.num_labels, self.threshold))
 
 
+cdef inline shared_ptr[IMeasure] __get_measure_ptr(object measure):
+    cdef shared_ptr[IMeasure] measure_ptr
+    cdef LabelWiseLoss label_wise_loss
+    cdef ExampleWiseLoss example_wise_loss
+
+    if isinstance(measure, LabelWiseLoss):
+        label_wise_loss = measure
+        measure_ptr = <shared_ptr[IMeasure]>label_wise_loss.loss_function_ptr
+    elif isinstance(measure, ExampleWiseLoss):
+        example_wise_loss = measure
+        measure_ptr = <shared_ptr[IMeasure]>example_wise_loss.loss_function_ptr
+    else:
+        raise ValueError('Unknown type of measure: ' + type(measure).__name__)
+
+    return measure_ptr
+
+
 cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
     """
     A wrapper for the C++ class `ExampleWiseClassificationPredictor`.
@@ -38,12 +57,14 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
         self.num_labels = num_labels
 
     @classmethod
-    def create(cls, CContiguousLabelMatrix label_matrix):
+    def create(cls, CContiguousLabelMatrix label_matrix, object measure):
+        cdef shared_ptr[IMeasure] measure_ptr = __get_measure_ptr(measure)
         cdef shared_ptr[CContiguousLabelMatrixImpl] label_matrix_ptr = dynamic_pointer_cast[CContiguousLabelMatrixImpl, ILabelMatrix](
             label_matrix.label_matrix_ptr)
         cdef uint32 num_rows = label_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = label_matrix_ptr.get().getNumCols()
-        cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl]()
+        cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
+            measure_ptr)
         cdef unique_ptr[LabelVector] label_vector_ptr
         cdef uint8 value
         cdef uint32 i, j
@@ -65,9 +86,11 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
         return predictor
 
     @classmethod
-    def create_lil(cls, uint32 num_labels, list[::1] rows):
+    def create_lil(cls, uint32 num_labels, list[::1] rows, object measure):
+        cdef shared_ptr[IMeasure] measure_ptr = __get_measure_ptr(measure)
         cdef uint32 num_rows = rows.shape[0]
-        cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl]()
+        cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
+            measure_ptr)
         cdef unique_ptr[LabelVector] label_vector_ptr
         cdef list col_indices
         cdef uint32 i, j
