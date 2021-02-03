@@ -12,9 +12,9 @@
  * @tparam T The type of the values
  */
 template<class T>
-class CContiguousView final {
+class CContiguousView {
 
-    private:
+    protected:
 
         uint32 numRows_;
 
