@@ -98,4 +98,57 @@ namespace boosting {
         }
     }
 
+    float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const LabelVector& labelVector,
+                                              const CContiguousView<float64>& scoreMatrix) const {
+        // The example-wise logistic loss calculates as
+        // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2) + ...)`.
+        // In the following, we exploit the identity
+        // `log(exp(x_1) + exp(x_2) + ...) = max + log(exp(x_1 - max) + exp(x_2 - max) + ...)`, where
+        // `max = max(x_1, x_2, ...)`, to increase numerical stability (see, e.g., section "Log-sum-exp for computing
+        // the log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
+        uint32 numLabels = scoreMatrix.getNumCols();
+        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        LabelVector::index_const_iterator indexIterator = labelVector.indices_cbegin();
+        LabelVector::index_const_iterator indicesEnd = labelVector.indices_cend();
+        float64 max = 0;
+
+        // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value (that must
+        // be greater than 0, because `exp(1) = 0`) among all of them...
+        for (uint32 i = 0; i < numLabels; i++) {
+            float64 predictedScore = scoreIterator[i];
+            float64 x;
+
+            if (indexIterator != indicesEnd && *indexIterator == i) {
+                indexIterator++;
+                x = -predictedScore;
+            } else {
+                x = predictedScore;
+            }
+
+            if (x > max) {
+                max = x;
+            }
+        }
+
+        // Calculate the example-wise loss as `max + log(exp(0 - max) + exp(x_1 - max) + ...)`...
+        float64 sumExp = std::exp(0 - max);
+        indexIterator = labelVector.indices_cbegin();
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            float64 predictedScore = scoreIterator[i];
+            float64 x;
+
+            if (indexIterator != indicesEnd && *indexIterator == i) {
+                indexIterator++;
+                x = -predictedScore;
+            } else {
+                x = predictedScore;
+            }
+
+            sumExp += std::exp(x - max);
+        }
+
+        return max + std::log(sumExp);
+    }
+
 }

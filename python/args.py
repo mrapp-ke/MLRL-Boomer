@@ -199,6 +199,9 @@ class ArgumentParserBuilder:
         parser.add_argument('--shrinkage', type=float,
                             default=ArgumentParserBuilder.__get_or_default('shrinkage', 0.3, **kwargs),
                             help='The shrinkage parameter to be used')
+        parser.add_argument('--predictor', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('predictor', None, **kwargs),
+                            help='The name of the strategy to be used for making predictions or None')
         return self
 
     def add_seco_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':

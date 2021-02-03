@@ -25,4 +25,20 @@ namespace boosting {
         }
     }
 
+    float64 LabelWiseSquaredHingeLoss::evaluate(bool trueLabel, float64 predictedScore) const {
+        if (trueLabel) {
+            if (predictedScore < 1) {
+                return (1 - predictedScore) * (1 - predictedScore);
+            } else {
+                return 0;
+            }
+        } else {
+            if (predictedScore > 0) {
+                return predictedScore * predictedScore;
+            } else {
+                return 0;
+            }
+        }
+    }
+
 }
