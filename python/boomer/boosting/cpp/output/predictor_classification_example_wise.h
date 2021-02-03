@@ -5,6 +5,7 @@
 
 #include "../../../common/cpp/output/predictor.h"
 #include "../../../common/cpp/input/label_vector.h"
+#include "../../../common/cpp/measures/measure.h"
 #include <unordered_set>
 #include <functional>
 
@@ -66,9 +67,19 @@ namespace boosting {
 
             };
 
-            std::unordered_set<std::unique_ptr<LabelVector>, HashFunction, EqualsFunction> labelVectors_;
+            typedef std::unordered_set<std::unique_ptr<LabelVector>, HashFunction, EqualsFunction> LabelVectorSet;
+
+            LabelVectorSet labelVectors_;
+
+            std::shared_ptr<IMeasure> measurePtr_;
 
         public:
+
+            /**
+             * @param measurePtr A shared pointer to an object of type `IMeasure` that should be used to compute the
+             *                   similarity between predictions and known label vectors
+             */
+            ExampleWiseClassificationPredictor(std::shared_ptr<IMeasure> measurePtr);
 
             typedef std::function<void(const LabelVector&)> LabelVectorVisitor;
 
