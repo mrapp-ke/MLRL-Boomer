@@ -2,6 +2,7 @@
 
 from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     FullHeadRefinementFactory
+from boomer.common.input import CContiguousLabelMatrix
 from boomer.common.model import ModelBuilder
 from boomer.common.output import Predictor
 from boomer.common.post_processing import NoPostProcessor
@@ -240,5 +241,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             return PartialHeadRefinementFactory(lift_function)
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
 
-    def _create_predictor(self, num_labels: int) -> Predictor:
+    def _create_predictor(self, num_labels: int, label_matrix: CContiguousLabelMatrix) -> Predictor:
+        return self.__create_label_wise_predictor(num_labels)
+
+    def _create_predictor_lil(self, num_labels: int, label_matrix: list) -> Predictor:
+        return self.__create_label_wise_predictor(num_labels)
+
+    def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
         return LabelWiseClassificationPredictor(num_labels)
