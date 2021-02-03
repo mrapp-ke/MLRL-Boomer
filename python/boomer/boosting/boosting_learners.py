@@ -41,6 +41,8 @@ LOSS_LABEL_WISE_SQUARED_HINGE = 'label-wise-squared-hinge-loss'
 
 LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
 
+NON_DECOMPOSABLE_LOSSES = {LOSS_EXAMPLE_WISE_LOGISTIC}
+
 
 class Boomer(MLRuleLearner, ClassifierMixin):
     """
@@ -168,7 +170,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         loss_function = self.__create_loss_function()
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
-        head_refinement_factory = self.__create_head_refinement_factory(loss_function)
+        head_refinement_factory = self.__create_head_refinement_factory()
         l2_regularization_weight = self.__create_l2_regularization_weight()
         rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
@@ -215,19 +217,24 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         else:
             return ExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory)
 
-    def __create_head_refinement_factory(self, loss_function) -> HeadRefinementFactory:
-        head_refinement = self.head_refinement
+    def __create_head_refinement_factory(self) -> HeadRefinementFactory:
+        head_refinement = self.___get_preferred_head_refinement()
 
-        if head_refinement is None:
-            if isinstance(loss_function, LabelWiseLoss):
-                return SingleLabelHeadRefinementFactory()
-            else:
-                return FullHeadRefinementFactory()
-        elif head_refinement == HEAD_REFINEMENT_SINGLE:
+        if head_refinement == HEAD_REFINEMENT_SINGLE:
             return SingleLabelHeadRefinementFactory()
         elif head_refinement == HEAD_REFINEMENT_FULL:
             return FullHeadRefinementFactory()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
+
+    def ___get_preferred_head_refinement(self) -> str:
+        head_refinement = self.head_refinement
+
+        if head_refinement is None:
+            if self.loss in NON_DECOMPOSABLE_LOSSES:
+                return HEAD_REFINEMENT_FULL
+            else:
+                return HEAD_REFINEMENT_SINGLE
+        return head_refinement
 
     def __create_post_processor(self) -> PostProcessor:
         shrinkage = float(self.shrinkage)
