@@ -16,7 +16,9 @@ namespace boosting {
 
         for (auto it = labelVectors.cbegin(); it != labelVectors.cend(); it++) {
             std::cout << no << ": ";
-            const std::unique_ptr<LabelVector>& labelVectorPtr = *it;
+            const auto& entry = *it;
+            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
+            uint32 count = entry.second;
             auto indexIterator = labelVectorPtr->indices_cbegin();
             auto indicesEnd = labelVectorPtr->indices_cend();
 
@@ -32,8 +34,7 @@ namespace boosting {
 
                 std::cout << (label ? "1" : "0") << " ";
             }
-
-            std::cout << "\n";
+            std::cout << " (occurred " << count << " times)\n";
             no++;
         }
 
@@ -59,6 +60,7 @@ namespace boosting {
         std::fill(predictionMatrix.row_begin(exampleIndex), predictionMatrix.row_end(exampleIndex), 0);
         const LabelVector* closestLabelVector = nullptr;
         float64 bestScore = 0;
+        uint32 bestCount = 0;
 
 
         std::cout << "Comparisons\n";
@@ -68,13 +70,16 @@ namespace boosting {
 
         for (auto it = labelVectors.cbegin(); it != labelVectors.cend(); it++) {
             std::cout << no << ": ";
-            const std::unique_ptr<LabelVector>& labelVectorPtr = *it;
+            const auto& entry = *it;
+            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
+            uint32 count = entry.second;
             float64 score = measure.evaluate(exampleIndex, *labelVectorPtr, scoreMatrix);
             std::cout << "score = " << score;
 
-            if (closestLabelVector == nullptr || score < bestScore) {
+            if (closestLabelVector == nullptr || score < bestScore || (score == bestScore && count > bestCount)) {
                 closestLabelVector = labelVectorPtr.get();
                 bestScore = score;
+                bestCount = count;
                 std::cout << " --> best seen so far";
             }
 
@@ -149,12 +154,13 @@ namespace boosting {
     }
 
     void ExampleWiseClassificationPredictor::addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) {
-        labelVectors_.emplace(std::move(labelVectorPtr));
+        ++labelVectors_[std::move(labelVectorPtr)];
     }
 
     void ExampleWiseClassificationPredictor::visit(LabelVectorVisitor visitor) const {
         for (auto it = labelVectors_.cbegin(); it != labelVectors_.cend(); it++) {
-            const std::unique_ptr<LabelVector>& labelVectorPtr = *it;
+            const auto& entry = *it;
+            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
             visitor(*labelVectorPtr);
         }
     }
