@@ -15,7 +15,7 @@
  * @tparam T The type of the values that are associated with individual elements
  */
 template<class T>
-class DenseMappingVector {
+class DenseMappingVector final {
 
     public:
 
