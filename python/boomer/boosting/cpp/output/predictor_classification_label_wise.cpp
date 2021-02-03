@@ -9,7 +9,8 @@ namespace boosting {
                                       float64 threshold) {
         for (uint32 i = 0; i < numElements; i++) {
             float64 originalValue = originalIterator[i];
-            transformedIterator[i] = originalValue > threshold ? 1 : 0;
+            uint8 transformedValue = originalValue > threshold ? 1 : 0;
+            transformedIterator[i] = transformedValue;
         }
     }
 
@@ -17,40 +18,38 @@ namespace boosting {
                                          CContiguousView<float64>& scoreMatrix,
                                          CContiguousView<uint8>& predictionMatrix, float64 threshold) {
         uint32 numExamples = featureMatrix.getNumRows();
+        uint32 numLabels = predictionMatrix.getNumCols();
 
         for (uint32 i = 0; i < numExamples; i++) {
-            uint32 numFeatures = featureMatrix.getNumCols();
-
             for (auto it = model.cbegin(); it != model.cend(); it++) {
                 const Rule& rule = *it;
-                applyRule(rule, featureMatrix.row_cbegin(i), featureMatrix.row_cend(i), scoreMatrix.row_begin(i),
-                          scoreMatrix.row_end(i));
+                applyRule(rule, featureMatrix.row_cbegin(i), featureMatrix.row_cend(i), scoreMatrix.row_begin(i));
             }
 
-            applyThreshold(scoreMatrix.row_cbegin(i), predictionMatrix.row_begin(i), numFeatures, threshold);
+            applyThreshold(scoreMatrix.row_cbegin(i), predictionMatrix.row_begin(i), numLabels, threshold);
         }
     }
 
-    static inline void predictCsrInternally(const RuleModel& model, const CsrFeatureMatrix& featureMatrix,
-                                            CContiguousView<float64>& scoreMatrix,
-                                            CContiguousView<uint8>& predictionMatrix, float64 threshold) {
+    static inline void predictInternally(const RuleModel& model, const CsrFeatureMatrix& featureMatrix,
+                                         CContiguousView<float64>& scoreMatrix,
+                                         CContiguousView<uint8>& predictionMatrix, float64 threshold) {
         uint32 numExamples = featureMatrix.getNumRows();
+        uint32 numFeatures = featureMatrix.getNumCols();
+        uint32 numLabels = predictionMatrix.getNumCols();
+        float32 tmpArray1[numFeatures];
+        uint32 tmpArray2[numFeatures] = {};
+        uint32 n = 1;
 
         for (uint32 i = 0; i < numExamples; i++) {
-            uint32 numFeatures = featureMatrix.getNumCols();
-            float32 tmpArray1[numFeatures];
-            uint32 tmpArray2[numFeatures] = {};
-            uint32 n = 1;
-
             for (auto it = model.cbegin(); it != model.cend(); it++) {
                 const Rule& rule = *it;
                 applyRuleCsr(rule, featureMatrix.row_indices_cbegin(i), featureMatrix.row_indices_cend(i),
                              featureMatrix.row_values_cbegin(i), featureMatrix.row_values_cend(i),
-                             scoreMatrix.row_begin(i), scoreMatrix.row_end(i), tmpArray1, tmpArray2, n);
+                             scoreMatrix.row_begin(i), &tmpArray1[0], &tmpArray2[0], n);
                 n++;
             }
 
-            applyThreshold(scoreMatrix.row_cbegin(i), predictionMatrix.row_begin(i), numFeatures, threshold);
+            applyThreshold(scoreMatrix.row_cbegin(i), predictionMatrix.row_begin(i), numLabels, threshold);
         }
     }
 
@@ -76,7 +75,7 @@ namespace boosting {
         uint32 numLabels = predictionMatrix.getNumCols();
         float64 scores[numExamples * numLabels] = {};
         CContiguousView<float64> scoreMatrix(numExamples, numLabels, &scores[0]);
-        predictCsrInternally(model, featureMatrix, scoreMatrix, predictionMatrix, threshold_);
+        predictInternally(model, featureMatrix, scoreMatrix, predictionMatrix, threshold_);
     }
 
 }
