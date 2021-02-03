@@ -6,7 +6,7 @@
 #include "../../../common/cpp/output/predictor.h"
 #include "../../../common/cpp/input/label_vector.h"
 #include "../../../common/cpp/measures/measure.h"
-#include <unordered_set>
+#include <unordered_map>
 #include <functional>
 
 
@@ -67,7 +67,7 @@ namespace boosting {
 
             };
 
-            typedef std::unordered_set<std::unique_ptr<LabelVector>, HashFunction, EqualsFunction> LabelVectorSet;
+            typedef std::unordered_map<std::unique_ptr<LabelVector>, uint32, HashFunction, EqualsFunction> LabelVectorSet;
 
             LabelVectorSet labelVectors_;
 
