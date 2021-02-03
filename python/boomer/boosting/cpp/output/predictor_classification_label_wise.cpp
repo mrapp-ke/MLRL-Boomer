@@ -1,5 +1,6 @@
 #include "predictor_classification_label_wise.h"
 #include "predictor_common.h"
+#include "../../../common/cpp/data/matrix_dense.h"
 
 
 namespace boosting {
@@ -63,8 +64,7 @@ namespace boosting {
                                                    const RuleModel& model) const {
         uint32 numExamples = predictionMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
-        float64 scores[numExamples * numLabels] = {};
-        CContiguousView<float64> scoreMatrix(numExamples, numLabels, &scores[0]);
+        DenseMatrix<float64> scoreMatrix(numExamples, numLabels);
         predictInternally(model, featureMatrix, scoreMatrix, predictionMatrix, threshold_);
     }
 
@@ -73,8 +73,7 @@ namespace boosting {
                                                    const RuleModel& model) const {
         uint32 numExamples = predictionMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
-        float64 scores[numExamples * numLabels] = {};
-        CContiguousView<float64> scoreMatrix(numExamples, numLabels, &scores[0]);
+        DenseMatrix<float64> scoreMatrix(numExamples, numLabels);
         predictInternally(model, featureMatrix, scoreMatrix, predictionMatrix, threshold_);
     }
 

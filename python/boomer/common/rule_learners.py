@@ -330,12 +330,11 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         if issparse(y):
             rows = np.ascontiguousarray(y.rows)
+            self.predictor_ = self._create_predictor_lil(num_labels, rows)
             label_matrix = DokLabelMatrix(y.shape[0], num_labels, rows)
         else:
             label_matrix = CContiguousLabelMatrix(y)
-
-        # Create predictor...
-        self.predictor_ = self._create_predictor(num_labels)
+            self.predictor_ = self._create_predictor(num_labels, label_matrix)
 
         # Induce rules...
         nominal_features = DokNominalFeatureMask(self.nominal_attribute_indices)
@@ -365,12 +364,26 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             return predictor.predict(feature_matrix, model)
 
     @abstractmethod
-    def _create_predictor(self, num_labels: int) -> Predictor:
+    def _create_predictor(self, num_labels: int, label_matrix: CContiguousLabelMatrix) -> Predictor:
         """
-        Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
+        Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions based on
+        a C-contiguous label matrix.
 
-        :param num_labels:  The number of labels in the training data set
-        :return:            The `Predictor` that has been created
+        :param num_labels:      The number of labels in the training data set
+        :param label_matrix:    The label matrix that provides access to the labels of the training examples
+        :return:                The `Predictor` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_predictor_lil(self, num_labels: int, label_matrix: list) -> Predictor:
+        """
+        Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions based on
+        a label matrix in the LIL format.
+
+        :param num_labels:      The number of labels in the training data set
+        :param label_matrix:    The label matrix that provides access to the labels of the training examples
+        :return:                The `Predictor` that has been created
         """
         pass
 

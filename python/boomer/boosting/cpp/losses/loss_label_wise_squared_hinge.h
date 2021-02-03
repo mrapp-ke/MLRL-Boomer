@@ -16,6 +16,8 @@ namespace boosting {
                                           DenseVector<float64>::iterator hessian, bool trueLabel,
                                           float64 predictedScore) const override;
 
+            float64 evaluate(bool trueLabel, float64 predictedScore) const override;
+
     };
 
 }
