@@ -19,6 +19,9 @@ cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     def __cinit__(self):
         self.loss_function_ptr = <shared_ptr[ILabelWiseLoss]>make_shared[LabelWiseLogisticLossImpl]()
 
+    def __reduce__(self):
+        return (LabelWiseLogisticLoss, ())
+
 
 cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
     """
@@ -28,6 +31,9 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
     def __cinit__(self):
         self.loss_function_ptr = <shared_ptr[ILabelWiseLoss]>make_shared[LabelWiseSquaredErrorLossImpl]()
 
+    def __reduce__(self):
+        return (LabelWiseSquaredErrorLoss, ())
+
 
 cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
     """
@@ -36,3 +42,6 @@ cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
 
     def __cinit__(self):
         self.loss_function_ptr = <shared_ptr[ILabelWiseLoss]>make_shared[LabelWiseSquaredHingeLossImpl]()
+
+    def __reduce__(self):
+        return (LabelWiseSquaredHingeLoss, ())
