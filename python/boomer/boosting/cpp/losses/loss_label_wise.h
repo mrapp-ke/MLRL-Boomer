@@ -4,6 +4,7 @@
 #pragma once
 
 #include "../../../common/cpp/input/label_matrix.h"
+#include "../../../common/cpp/measures/measure.h"
 #include "../data/matrix_dense_numeric.h"
 #include "../data/matrix_dense_label_wise.h"
 
@@ -13,7 +14,7 @@ namespace boosting {
     /**
      * Defines an interface for all (decomposable) loss functions that are applied label-wise.
      */
-    class ILabelWiseLoss {
+    class ILabelWiseLoss : public IMeasure {
 
         public:
 

@@ -9,7 +9,7 @@ from boomer.boosting.losses_example_wise import ExampleWiseLogisticLoss
 from boomer.boosting.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
     LabelWiseSquaredHingeLoss
 from boomer.boosting.model import RuleListBuilder
-from boomer.boosting.output import LabelWiseClassificationPredictor
+from boomer.boosting.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor
 from boomer.boosting.post_processing import ConstantShrinkage
 from boomer.boosting.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory, \
     EqualWidthBinningExampleWiseRuleEvaluationFactory
@@ -19,6 +19,7 @@ from boomer.boosting.statistics_example_wise import ExampleWiseStatisticsProvide
 from boomer.boosting.statistics_label_wise import LabelWiseStatisticsProviderFactory
 from boomer.common.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     FullHeadRefinementFactory
+from boomer.common.input import CContiguousLabelMatrix
 from boomer.common.model import ModelBuilder
 from boomer.common.output import Predictor
 from boomer.common.post_processing import PostProcessor, NoPostProcessor
@@ -44,6 +45,12 @@ LOSS_LABEL_WISE_SQUARED_HINGE = 'label-wise-squared-hinge-loss'
 
 LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
 
+NON_DECOMPOSABLE_LOSSES = {LOSS_EXAMPLE_WISE_LOGISTIC}
+
+PREDICTOR_LABEL_WISE = 'label-wise'
+
+PREDICTOR_EXAMPLE_WISE = 'example-wise'
+
 LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
 
 
@@ -55,8 +62,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, time_limit: int = -1,
-                 head_refinement: str = None, loss: str = LOSS_LABEL_WISE_LOGISTIC, label_sub_sampling: str = None,
-                 instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
+                 head_refinement: str = None, loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None,
+                 label_sub_sampling: str = None, instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, feature_binning: str = None,
                  label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
@@ -72,6 +79,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param loss:                                The loss function to be minimized. Must be
                                                     `label-wise-squared-error-loss`, `label-wise-logistic-loss` or
                                                     `example-wise-logistic-loss`
+        :param predictor:                           The strategy that is used for making predictions. Must be
+                                                    `label-wise`, `example-wise` or None, if the default strategy should
+                                                    be used
         :param label_sub_sampling:                  The strategy that is used for sub-sampling the labels each time a
                                                     new classification rule is learned. Must be 'random-label-selection'
                                                     or None, if no sub-sampling should be used. Additional arguments may
@@ -118,6 +128,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.time_limit = time_limit
         self.head_refinement = head_refinement
         self.loss = loss
+        self.predictor = predictor
         self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
@@ -136,6 +147,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if self.head_refinement is not None:
             name += '_head-refinement=' + str(self.head_refinement)
         name += '_loss=' + str(self.loss)
+        if self.predictor is not None:
+            name += '_predictor=' + str(self.predictor)
         if self.label_sub_sampling is not None:
             name += '_label-sub-sampling=' + str(self.label_sub_sampling)
         if self.instance_sub_sampling is not None:
@@ -162,9 +175,47 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_predictor(self, num_labels: int) -> Predictor:
+    def _create_predictor(self, num_labels: int, label_matrix: CContiguousLabelMatrix) -> Predictor:
+        predictor = self.__get_preferred_predictor()
+
+        if predictor == PREDICTOR_LABEL_WISE:
+            return self.__create_label_wise_predictor(num_labels)
+        elif predictor == PREDICTOR_EXAMPLE_WISE:
+            return self.__create_example_wise_predictor(label_matrix)
+        raise ValueError('Invalid value given for parameter \'predictor\': ' + str(predictor))
+
+    def _create_predictor_lil(self, num_labels: int, label_matrix: list) -> Predictor:
+        predictor = self.__get_preferred_predictor()
+
+        if predictor == PREDICTOR_LABEL_WISE:
+            return self.__create_label_wise_predictor(num_labels)
+        elif predictor == PREDICTOR_EXAMPLE_WISE:
+            return self.__create_example_wise_predictor_lil(num_labels, label_matrix)
+        raise ValueError('Invalid value given for parameter \'predictor\': ' + str(predictor))
+
+    def __get_preferred_predictor(self) -> str:
+        predictor = self.predictor
+
+        if predictor is None:
+            if self.loss in NON_DECOMPOSABLE_LOSSES:
+                return PREDICTOR_EXAMPLE_WISE
+            else:
+                return PREDICTOR_LABEL_WISE
+        return predictor
+
+    def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
         threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
         return LabelWiseClassificationPredictor(num_labels=num_labels, threshold=threshold)
+
+    def __create_example_wise_predictor(self,
+                                        label_matrix: CContiguousLabelMatrix) -> ExampleWiseClassificationPredictor:
+        loss = self.__create_loss_function()
+        return ExampleWiseClassificationPredictor.create(label_matrix, loss)
+
+    def __create_example_wise_predictor_lil(self, num_labels: int,
+                                            label_matrix: list) -> ExampleWiseClassificationPredictor:
+        loss = self.__create_loss_function()
+        return ExampleWiseClassificationPredictor.create_lil(num_labels, label_matrix, loss)
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
@@ -181,7 +232,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         loss_function = self.__create_loss_function()
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
-        head_refinement_factory = self.__create_head_refinement_factory(loss_function)
+        head_refinement_factory = self.__create_head_refinement_factory()
         l2_regularization_weight = self.__create_l2_regularization_weight()
         rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
@@ -253,19 +304,24 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         else:
             return ExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory)
 
-    def __create_head_refinement_factory(self, loss_function) -> HeadRefinementFactory:
-        head_refinement = self.head_refinement
+    def __create_head_refinement_factory(self) -> HeadRefinementFactory:
+        head_refinement = self.___get_preferred_head_refinement()
 
-        if head_refinement is None:
-            if isinstance(loss_function, LabelWiseLoss):
-                return SingleLabelHeadRefinementFactory()
-            else:
-                return FullHeadRefinementFactory()
-        elif head_refinement == HEAD_REFINEMENT_SINGLE:
+        if head_refinement == HEAD_REFINEMENT_SINGLE:
             return SingleLabelHeadRefinementFactory()
         elif head_refinement == HEAD_REFINEMENT_FULL:
             return FullHeadRefinementFactory()
         raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
+
+    def ___get_preferred_head_refinement(self) -> str:
+        head_refinement = self.head_refinement
+
+        if head_refinement is None:
+            if self.loss in NON_DECOMPOSABLE_LOSSES:
+                return HEAD_REFINEMENT_FULL
+            else:
+                return HEAD_REFINEMENT_SINGLE
+        return head_refinement
 
     def __create_post_processor(self) -> PostProcessor:
         shrinkage = float(self.shrinkage)

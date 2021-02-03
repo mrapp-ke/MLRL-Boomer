@@ -11,4 +11,10 @@ namespace boosting {
         *hessian = 2;
     }
 
+    float64 LabelWiseSquaredErrorLoss::evaluate(bool trueLabel, float64 predictedScore) const {
+        float64 expectedScore = trueLabel ? 1 : -1;
+        float64 difference = (expectedScore - predictedScore);
+        return difference * difference;
+    }
+
 }
