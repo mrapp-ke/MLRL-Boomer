@@ -20,7 +20,7 @@ namespace boosting {
                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
 
             float64 evaluate(uint32 exampleIndex, const LabelVector& labelVector,
-                             const DenseMatrix<float64>& scoreMatrix) const override;
+                             const CContiguousView<float64>& scoreMatrix) const override;
 
     };
 

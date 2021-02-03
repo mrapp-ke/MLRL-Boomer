@@ -99,7 +99,7 @@ namespace boosting {
     }
 
     float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const LabelVector& labelVector,
-                                              const DenseMatrix<float64>& scoreMatrix) const {
+                                              const CContiguousView<float64>& scoreMatrix) const {
         // The example-wise logistic loss calculates as
         // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2) + ...)`.
         // In the following, we exploit the identity
@@ -107,7 +107,7 @@ namespace boosting {
         // `max = max(x_1, x_2, ...)`, to increase numerical stability (see, e.g., section "Log-sum-exp for computing
         // the log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
         uint32 numLabels = scoreMatrix.getNumCols();
-        DenseMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         LabelVector::index_const_iterator indexIterator = labelVector.indices_cbegin();
         LabelVector::index_const_iterator indicesEnd = labelVector.indices_cend();
         float64 max = 0;

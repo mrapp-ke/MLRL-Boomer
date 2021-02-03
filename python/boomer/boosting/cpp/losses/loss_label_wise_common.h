@@ -84,9 +84,9 @@ namespace boosting {
             }
 
             float64 evaluate(uint32 exampleIndex, const LabelVector& labelVector,
-                             const DenseMatrix<float64>& scoreMatrix) const override final {
+                             const CContiguousView<float64>& scoreMatrix) const override final {
                 uint32 numLabels = scoreMatrix.getNumCols();
-                DenseMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+                CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
                 LabelVector::index_const_iterator indexIterator = labelVector.indices_cbegin();
                 LabelVector::index_const_iterator indicesEnd = labelVector.indices_cend();
                 float64 mean = 0;

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "../data/matrix_dense.h"
+#include "../data/view_c_contiguous.h"
 #include "../input/label_vector.h"
 
 
@@ -24,10 +24,10 @@ class IMeasure {
          * @param exampleIndex  The index of the example
          * @param labelVector   A reference to an object of type `LabelVector` that provides access to the relevant
          *                      labels of the given example
-         * @param scoreMatrix   A reference to an object of type `DenseNumericMatrix` that stores the predicted scores
+         * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the predicted scores
          * @return              The numerical score that has been calculated
          */
         virtual float64 evaluate(uint32 exampleIndex, const LabelVector& labelVector,
-                                 const DenseMatrix<float64>& scoreMatrix) const = 0;
+                                 const CContiguousView<float64>& scoreMatrix) const = 0;
 
 };
