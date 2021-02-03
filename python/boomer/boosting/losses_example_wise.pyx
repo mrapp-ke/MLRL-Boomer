@@ -18,3 +18,6 @@ cdef class ExampleWiseLogisticLoss(ExampleWiseLoss):
 
     def __cinit__(self):
         self.loss_function_ptr = <shared_ptr[IExampleWiseLoss]>make_shared[ExampleWiseLogisticLossImpl]()
+
+    def __reduce__(self):
+        return (ExampleWiseLogisticLoss, ())
