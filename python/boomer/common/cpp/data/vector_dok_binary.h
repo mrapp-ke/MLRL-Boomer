@@ -10,7 +10,7 @@
 /**
  * An one-dimensional sparse vector that stores binary data using the dictionary of keys (DOK) format.
  */
-class BinaryDokVector {
+class BinaryDokVector final {
 
     private:
 

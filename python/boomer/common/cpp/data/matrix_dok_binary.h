@@ -11,7 +11,7 @@
 /**
  * A two-dimensional sparse matrix that stores binary data using the dictionary of keys (DOK) format.
  */
-class BinaryDokMatrix {
+class BinaryDokMatrix final {
 
     private:
 
