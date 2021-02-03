@@ -83,15 +83,16 @@ namespace boosting {
                 }
             }
 
-            float64 evaluate(const LabelVector& labelVector, DenseVector<float64>::const_iterator scoresBegin,
-                             DenseVector<float64>::const_iterator scoresEnd) const override final {
+            float64 evaluate(uint32 exampleIndex, const LabelVector& labelVector,
+                             const DenseMatrix<float64>& scoreMatrix) const override final {
+                uint32 numLabels = scoreMatrix.getNumCols();
+                DenseMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
                 LabelVector::index_const_iterator indexIterator = labelVector.indices_cbegin();
                 LabelVector::index_const_iterator indicesEnd = labelVector.indices_cend();
                 float64 mean = 0;
-                uint32 i = 0;
 
-                for (auto scoreIterator = scoresBegin; scoreIterator != scoresEnd; scoreIterator++) {
-                    float64 predictedScore = *scoreIterator;
+                for (uint32 i = 0; i < numLabels; i++) {
+                    float64 predictedScore = scoreIterator[i];
                     bool trueLabel;
 
                     if (indexIterator != indicesEnd && *indexIterator == i) {
@@ -103,7 +104,6 @@ namespace boosting {
 
                     float64 score = this->evaluate(trueLabel, predictedScore);
                     mean = iterativeMean<float64>(i + 1, score, mean);
-                    i++;
                 }
 
                 return mean;
