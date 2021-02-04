@@ -64,7 +64,7 @@ namespace boosting {
                                                    const RuleModel& model) const {
         uint32 numExamples = predictionMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
-        DenseMatrix<float64> scoreMatrix(numExamples, numLabels);
+        DenseMatrix<float64> scoreMatrix(numExamples, numLabels, true);
         predictInternally(model, featureMatrix, scoreMatrix, predictionMatrix, threshold_);
     }
 
@@ -73,7 +73,7 @@ namespace boosting {
                                                    const RuleModel& model) const {
         uint32 numExamples = predictionMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
-        DenseMatrix<float64> scoreMatrix(numExamples, numLabels);
+        DenseMatrix<float64> scoreMatrix(numExamples, numLabels, true);
         predictInternally(model, featureMatrix, scoreMatrix, predictionMatrix, threshold_);
     }
 
