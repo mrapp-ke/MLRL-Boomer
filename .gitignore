@@ -1,4 +1,5 @@
 # Build files
+__pycache__/
 python/**/boosting/*.so
 python/**/common/*.so
 python/**/seco/*.so
