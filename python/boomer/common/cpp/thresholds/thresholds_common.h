@@ -119,6 +119,8 @@ class AbstractThresholds : public IThresholds {
 
         }
 
+        virtual ~AbstractThresholds() { };
+
         uint32 getNumExamples() const override final {
             return featureMatrixPtr_->getNumRows();
         }

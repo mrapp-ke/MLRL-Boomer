@@ -101,7 +101,7 @@ namespace boosting {
                                                      const RuleModel& model) const {
         uint32 numExamples = predictionMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
-        DenseMatrix<float64> scoreMatrix(numExamples, numLabels);
+        DenseMatrix<float64> scoreMatrix(numExamples, numLabels, true);
         predictInternally<LabelVectorSet>(model, featureMatrix, scoreMatrix, predictionMatrix, *measurePtr_,
                                           labelVectors_);
     }
@@ -111,7 +111,7 @@ namespace boosting {
                                                      const RuleModel& model) const {
         uint32 numExamples = predictionMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
-        DenseMatrix<float64> scoreMatrix(numExamples, numLabels);
+        DenseMatrix<float64> scoreMatrix(numExamples, numLabels, true);
         predictInternally<LabelVectorSet>(model, featureMatrix, scoreMatrix, predictionMatrix, *measurePtr_,
                                           labelVectors_);
     }
