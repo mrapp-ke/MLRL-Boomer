@@ -15,6 +15,8 @@ class IThresholds {
 
     public:
 
+        virtual ~IThresholds() { };
+
         /**
          * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
          *
