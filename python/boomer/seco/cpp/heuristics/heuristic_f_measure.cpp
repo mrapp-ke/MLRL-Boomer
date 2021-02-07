@@ -1,5 +1,5 @@
-#include "heuristic_f_measure.h"
-#include "heuristic_common.h"
+#include "heuristic_f_measure.hpp"
+#include "heuristic_common.hpp"
 #include <cmath>
 
 

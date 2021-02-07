@@ -1,6 +1,6 @@
-#include "rule_evaluation_label_wise_heuristic.h"
-#include "../heuristics/confusion_matrices.h"
-#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
+#include "rule_evaluation_label_wise_heuristic.hpp"
+#include "../heuristics/confusion_matrices.hpp"
+#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.hpp"
 
 
 namespace seco {

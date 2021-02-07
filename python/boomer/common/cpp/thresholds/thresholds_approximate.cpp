@@ -1,8 +1,8 @@
-#include "thresholds_approximate.h"
-#include "thresholds_common.h"
-#include "../binning/bin_vector.h"
-#include "../binning/feature_binning_nominal.h"
-#include "../rule_refinement/rule_refinement_approximate.h"
+#include "thresholds_approximate.hpp"
+#include "thresholds_common.hpp"
+#include "../binning/bin_vector.hpp"
+#include "../binning/feature_binning_nominal.hpp"
+#include "../rule_refinement/rule_refinement_approximate.hpp"
 #include <unordered_map>
 #include <limits>
 

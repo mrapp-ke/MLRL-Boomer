@@ -1,4 +1,4 @@
-#include "vector_sparse_list_binary.h"
+#include "vector_sparse_list_binary.hpp"
 
 
 BinarySparseListVector::index_const_iterator BinarySparseListVector::indices_cbegin() const {

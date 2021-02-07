@@ -1,4 +1,4 @@
-#include "loss_label_wise_squared_error.h"
+#include "loss_label_wise_squared_error.hpp"
 
 
 namespace boosting {

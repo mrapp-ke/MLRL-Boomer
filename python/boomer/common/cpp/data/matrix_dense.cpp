@@ -1,4 +1,4 @@
-#include "matrix_dense.h"
+#include "matrix_dense.hpp"
 #include <cstdlib>
 
 

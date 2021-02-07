@@ -1,6 +1,6 @@
-#include "rule_list.h"
-#include "../../../common/cpp/model/body_empty.h"
-#include "../../../common/cpp/model/body_conjunctive.h"
+#include "rule_list.hpp"
+#include "../../../common/cpp/model/body_empty.hpp"
+#include "../../../common/cpp/model/body_conjunctive.hpp"
 
 
 namespace boosting {

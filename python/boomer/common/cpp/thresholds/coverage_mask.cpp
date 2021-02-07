@@ -1,5 +1,5 @@
-#include "coverage_mask.h"
-#include "../data/arrays.h"
+#include "coverage_mask.hpp"
+#include "../data/arrays.hpp"
 
 
 CoverageMask::CoverageMask(uint32 numElements)

@@ -1,4 +1,4 @@
-#include "body_empty.h"
+#include "body_empty.hpp"
 
 
 bool EmptyBody::covers(CContiguousFeatureMatrix::const_iterator begin,

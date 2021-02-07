@@ -1,4 +1,4 @@
-#include "head_partial.h"
+#include "head_partial.hpp"
 
 
 PartialHead::PartialHead(uint32 numElements)

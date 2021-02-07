@@ -6,7 +6,7 @@ from scipy.linalg.cython_blas cimport ddot, dspmv
 from libcpp.memory cimport unique_ptr, make_unique
 
 
-cdef extern from "cpp/math/blas.h" namespace "boosting" nogil:
+cdef extern from "cpp/math/blas.hpp" namespace "boosting" nogil:
 
     ctypedef double (*ddot_t)(int* n, double* dx, int* incx, double* dy, int* incy)
 

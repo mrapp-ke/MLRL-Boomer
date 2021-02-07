@@ -1,8 +1,8 @@
-#include "predictor_classification_label_wise.h"
-#include "../../../common/cpp/data/arrays.h"
-#include "../../../common/cpp/data/vector_dense.h"
-#include "../../../common/cpp/model/head_full.h"
-#include "../../../common/cpp/model/head_partial.h"
+#include "predictor_classification_label_wise.hpp"
+#include "../../../common/cpp/data/arrays.hpp"
+#include "../../../common/cpp/data/vector_dense.hpp"
+#include "../../../common/cpp/model/head_full.hpp"
+#include "../../../common/cpp/model/head_partial.hpp"
 
 
 namespace seco {

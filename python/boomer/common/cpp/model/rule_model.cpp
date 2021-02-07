@@ -1,4 +1,4 @@
-#include "rule_model.h"
+#include "rule_model.hpp"
 
 
 RuleModel::const_iterator RuleModel::cbegin() const {
