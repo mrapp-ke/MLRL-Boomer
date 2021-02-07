@@ -42,9 +42,11 @@ class BbcCvAdapter(CrossValidation):
         self.predictions = []
         self.configurations = []
         self.true_labels = None
+        self.meta_data = None
 
     def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
                             first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+        self.meta_data = meta_data
         num_total_examples = test_x.shape[0] + (0 if test_indices is None else train_x.shape[0])
         num_labels = test_y.shape[1] if len(test_y.shape) > 1 else 1
 
@@ -78,6 +80,7 @@ class BbcCvAdapter(CrossValidation):
         self.predictions = []
         self.configurations = []
         self.true_labels = None
+        self.meta_data = None
         super().run()
 
     @abstractmethod
@@ -117,11 +120,12 @@ class BbcCvObserver(ABC):
     """
 
     @abstractmethod
-    def evaluate(self, configurations: List[dict], ground_truth_tuning: np.ndarray, predictions_tuning: np.ndarray,
-                 ground_truth_test: np.ndarray, predictions_test: np.ndarray, current_bootstrap: int,
-                 num_bootstraps: int):
+    def evaluate(self, configurations: List[dict], meta_data: MetaData, ground_truth_tuning: np.ndarray,
+                 predictions_tuning: np.ndarray, ground_truth_test: np.ndarray, predictions_test: np.ndarray,
+                 current_bootstrap: int, num_bootstraps: int):
         """
         :param configurations:      The configurations that have been provided to the BBC-CV method
+        :param meta_data:           The meta data of the data set
         :param ground_truth_tuning: The ground truth of the examples that belong to the tuning set
         :param predictions_tuning:  The predictions for the examples that belong to the tuning set
         :param ground_truth_test:   The ground truth of the examples that belong to the test set
@@ -135,7 +139,8 @@ class BbcCvObserver(ABC):
 class Bootstrapping(Randomized):
 
     @abstractmethod
-    def bootstrap(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], observer: BbcCvObserver):
+    def bootstrap(self, meta_data: MetaData, prediction_matrix, ground_truth_matrix, configurations: List[dict],
+                  observer: BbcCvObserver):
         pass
 
 
@@ -160,9 +165,9 @@ class DefaultBbcCvObserver(BbcCvObserver):
 
         self.evaluation = ClassificationEvaluation(*evaluation_outputs)
 
-    def evaluate(self, configurations: List[dict], ground_truth_tuning: np.ndarray, predictions_tuning: np.ndarray,
-                 ground_truth_test: np.ndarray, predictions_test: np.ndarray, current_bootstrap: int,
-                 num_bootstraps: int):
+    def evaluate(self, configurations: List[dict], meta_data: MetaData, ground_truth_tuning: np.ndarray,
+                 predictions_tuning: np.ndarray, ground_truth_test: np.ndarray, predictions_test: np.ndarray,
+                 current_bootstrap: int, num_bootstraps: int):
         target_measure = self.target_measure
         target_measure_is_loss = self.target_measure_is_loss
         num_configurations = len(configurations)
@@ -174,7 +179,7 @@ class DefaultBbcCvObserver(BbcCvObserver):
 
         best_k = np.argmin(evaluation_scores_tuning) if target_measure_is_loss else np.argmax(evaluation_scores_tuning)
         best_predictions = predictions_test[:, best_k, :]
-        self.evaluation.evaluate('best_configuration', best_predictions, ground_truth_test, first_fold=0,
+        self.evaluation.evaluate('best_configuration', meta_data, best_predictions, ground_truth_test, first_fold=0,
                                  current_fold=current_bootstrap, last_fold=num_bootstraps - 1, num_folds=num_bootstraps,
                                  train_time=0, predict_time=0)
 
@@ -199,6 +204,7 @@ class BbcCv(Randomized):
         self.prediction_matrix_ = None
         self.ground_truth_matrix_ = None
         self.configurations_ = None
+        self.meta_data = None
 
     def store_predictions(self):
         configurations = self.configurations
@@ -232,6 +238,8 @@ class BbcCv(Randomized):
                 # Ignore configuration if a model file is missing...
                 pass
 
+        self.meta_data = adapter.meta_data
+
         # Create 3-dimensional prediction matrix....
         prediction_matrix = np.moveaxis(np.dstack(list_of_predictions), source=1, destination=2)
         prediction_matrix = np.where(prediction_matrix > 0, 1, 0)
@@ -247,11 +255,12 @@ class BbcCv(Randomized):
         ground_truth_matrix = self.ground_truth_matrix_
         configurations = self.configurations_
         random_state = self.random_state
+        meta_data = self.meta_data
 
         # Bootstrap sampling...
         bootstrapping = self.bootstrapping
         bootstrapping.random_state = random_state
-        bootstrapping.bootstrap(prediction_matrix, ground_truth_matrix, configurations, observer)
+        bootstrapping.bootstrap(meta_data, prediction_matrix, ground_truth_matrix, configurations, observer)
 
 
 class CV(CrossValidation):
@@ -274,7 +283,7 @@ class CV(CrossValidation):
         predictions_tuning = prediction_matrix[train_indices, :, :]
         ground_truth_test = ground_truth_matrix[test_indices, :]
         predictions_test = prediction_matrix[test_indices, :, :]
-        observer.evaluate(configurations, ground_truth_tuning, predictions_tuning, ground_truth_test,
+        observer.evaluate(configurations, meta_data, ground_truth_tuning, predictions_tuning, ground_truth_test,
                           predictions_test, current_fold, num_folds)
 
 
@@ -284,7 +293,8 @@ class CVBootstrapping(Bootstrapping):
         self.data_set = data_set
         self.num_folds = num_folds
 
-    def bootstrap(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], observer: BbcCvObserver):
+    def bootstrap(self, meta_data: MetaData, prediction_matrix, ground_truth_matrix, configurations: List[dict],
+                  observer: BbcCvObserver):
         num_configurations = prediction_matrix.shape[1]
         log.info('%s configurations have been evaluated...', num_configurations)
         cv = CV(self.data_set, self.num_folds, prediction_matrix, ground_truth_matrix, configurations, observer)
@@ -297,7 +307,8 @@ class DefaultBootstrapping(Bootstrapping):
     def __init__(self, num_bootstraps: int):
         self.num_bootstraps = num_bootstraps
 
-    def bootstrap(self, prediction_matrix, ground_truth_matrix, configurations: List[dict], observer: BbcCvObserver):
+    def bootstrap(self, meta_data: MetaData, prediction_matrix, ground_truth_matrix, configurations: List[dict],
+                  observer: BbcCvObserver):
         num_bootstraps = self.num_bootstraps
         num_examples = prediction_matrix.shape[0]
         num_configurations = prediction_matrix.shape[1]
@@ -320,5 +331,5 @@ class DefaultBootstrapping(Bootstrapping):
             predictions_tuning = prediction_matrix[bootstrapped_indices, :, :]
             ground_truth_test = ground_truth_matrix[mask_test, :]
             predictions_test = prediction_matrix[mask_test, :, :]
-            observer.evaluate(configurations, ground_truth_tuning, predictions_tuning, ground_truth_test,
+            observer.evaluate(configurations, meta_data, ground_truth_tuning, predictions_tuning, ground_truth_test,
                               predictions_test, i, num_bootstraps)
