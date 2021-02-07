@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "rule_evaluation_example_wise.h"
-#include "../math/blas.h"
-#include "../math/lapack.h"
+#include "rule_evaluation_example_wise.hpp"
+#include "../math/blas.hpp"
+#include "../math/lapack.hpp"
 
 
 namespace boosting {

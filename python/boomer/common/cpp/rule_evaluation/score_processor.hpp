@@ -4,7 +4,7 @@
 #pragma once
 
 #include "score_vector_dense.hpp"
-#include "score_vector_binned_dense.h"
+#include "score_vector_binned_dense.hpp"
 #include "../indices/index_vector_full.hpp"
 #include "../indices/index_vector_partial.hpp"
 

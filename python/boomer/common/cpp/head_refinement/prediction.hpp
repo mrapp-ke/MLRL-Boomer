@@ -4,7 +4,7 @@
 #pragma once
 
 #include "../data/vector_dense.hpp"
-#include "../data/vector_binned_dense.h"
+#include "../data/vector_binned_dense.hpp"
 #include "../indices/index_vector.hpp"
 #include <memory>
 

@@ -1,4 +1,4 @@
-#include "vector_binned_dense.h"
+#include "vector_binned_dense.hpp"
 #include <cstdlib>
 
 

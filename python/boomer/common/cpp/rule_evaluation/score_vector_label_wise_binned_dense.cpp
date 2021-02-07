@@ -1,5 +1,5 @@
-#include "score_vector_label_wise_binned_dense.h"
-#include "score_processor_label_wise.h"
+#include "score_vector_label_wise_binned_dense.hpp"
+#include "score_processor_label_wise.hpp"
 
 
 template<class T>
