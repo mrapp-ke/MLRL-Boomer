@@ -1,5 +1,5 @@
-#include "heuristic_wra.h"
-#include "heuristic_common.h"
+#include "heuristic_wra.hpp"
+#include "heuristic_common.hpp"
 
 
 namespace seco {

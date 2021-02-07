@@ -5,7 +5,7 @@ from boomer.boosting.rule_evaluation_label_wise cimport ILabelWiseRuleEvaluation
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/statistics/statistics_label_wise_provider.h" namespace "boosting" nogil:
+cdef extern from "cpp/statistics/statistics_label_wise_provider.hpp" namespace "boosting" nogil:
 
     cdef cppclass LabelWiseStatisticsProviderFactoryImpl"boosting::LabelWiseStatisticsProviderFactory"(
             IStatisticsProviderFactory):

@@ -1,4 +1,4 @@
-#include "vector_dok_binary.h"
+#include "vector_dok_binary.hpp"
 
 
 BinaryDokVector::index_const_iterator BinaryDokVector::indices_cbegin() const {

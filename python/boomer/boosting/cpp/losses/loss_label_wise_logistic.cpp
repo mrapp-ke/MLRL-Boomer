@@ -1,4 +1,4 @@
-#include "loss_label_wise_logistic.h"
+#include "loss_label_wise_logistic.hpp"
 #include <cmath>
 
 

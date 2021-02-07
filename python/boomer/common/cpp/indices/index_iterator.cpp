@@ -1,4 +1,4 @@
-#include "index_iterator.h"
+#include "index_iterator.hpp"
 
 
 IndexIterator::IndexIterator(uint32 index)

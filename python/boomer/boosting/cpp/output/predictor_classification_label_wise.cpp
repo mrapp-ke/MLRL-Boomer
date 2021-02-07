@@ -1,6 +1,6 @@
-#include "predictor_classification_label_wise.h"
-#include "predictor_common.h"
-#include "../../../common/cpp/data/matrix_dense.h"
+#include "predictor_classification_label_wise.hpp"
+#include "predictor_common.hpp"
+#include "../../../common/cpp/data/matrix_dense.hpp"
 
 
 namespace boosting {

@@ -1,7 +1,7 @@
-#include "head_refinement_full.h"
-#include "prediction_full.h"
-#include "prediction_partial.h"
-#include "../rule_evaluation/score_processor.h"
+#include "head_refinement_full.hpp"
+#include "prediction_full.hpp"
+#include "prediction_partial.hpp"
+#include "../rule_evaluation/score_processor.hpp"
 #include <algorithm>
 
 

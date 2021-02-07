@@ -1,4 +1,4 @@
-#include "heuristic_hamming_loss.h"
+#include "heuristic_hamming_loss.hpp"
 
 
 namespace seco {

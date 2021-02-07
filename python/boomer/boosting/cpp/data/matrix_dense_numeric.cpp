@@ -1,4 +1,4 @@
-#include "matrix_dense_numeric.h"
+#include "matrix_dense_numeric.hpp"
 
 
 namespace boosting {

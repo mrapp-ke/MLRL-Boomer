@@ -1,4 +1,4 @@
-#include "view_c_contiguous.h"
+#include "view_c_contiguous.hpp"
 
 
 template<class T>

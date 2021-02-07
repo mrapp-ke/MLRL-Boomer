@@ -1,4 +1,4 @@
-#include "feature_matrix_csc.h"
+#include "feature_matrix_csc.hpp"
 
 
 CscFeatureMatrix::CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, const uint32* rowIndices,

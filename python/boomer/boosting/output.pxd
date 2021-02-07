@@ -6,7 +6,7 @@ from boomer.common.output cimport AbstractClassificationPredictor, IPredictor
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/output/predictor_classification_label_wise.h" namespace "boosting" nogil:
+cdef extern from "cpp/output/predictor_classification_label_wise.hpp" namespace "boosting" nogil:
 
     cdef cppclass LabelWiseClassificationPredictorImpl"boosting::LabelWiseClassificationPredictor"(IPredictor[uint8]):
 
@@ -18,7 +18,7 @@ cdef extern from "cpp/output/predictor_classification_label_wise.h" namespace "b
 ctypedef void (*LabelVectorVisitor)(const LabelVector&)
 
 
-cdef extern from "cpp/output/predictor_classification_example_wise.h" namespace "boosting" nogil:
+cdef extern from "cpp/output/predictor_classification_example_wise.hpp" namespace "boosting" nogil:
 
     cdef cppclass ExampleWiseClassificationPredictorImpl"boosting::ExampleWiseClassificationPredictor"(
             IPredictor[uint8]):
@@ -36,7 +36,7 @@ cdef extern from "cpp/output/predictor_classification_example_wise.h" namespace 
 
 cdef extern from * namespace "boosting":
     """
-    #include "cpp/output/predictor_classification_example_wise.h"
+    #include "cpp/output/predictor_classification_example_wise.hpp"
 
 
     namespace boosting {

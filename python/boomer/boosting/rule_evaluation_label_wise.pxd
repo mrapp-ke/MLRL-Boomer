@@ -3,13 +3,13 @@ from boomer.common._types cimport uint32, float32, float64
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/rule_evaluation/rule_evaluation_label_wise.h" namespace "boosting" nogil:
+cdef extern from "cpp/rule_evaluation/rule_evaluation_label_wise.hpp" namespace "boosting" nogil:
 
     cdef cppclass ILabelWiseRuleEvaluationFactory:
         pass
 
 
-cdef extern from "cpp/rule_evaluation/rule_evaluation_label_wise_regularized.h" namespace "boosting" nogil:
+cdef extern from "cpp/rule_evaluation/rule_evaluation_label_wise_regularized.hpp" namespace "boosting" nogil:
 
     cdef cppclass RegularizedLabelWiseRuleEvaluationFactoryImpl"boosting::RegularizedLabelWiseRuleEvaluationFactory"(
             ILabelWiseRuleEvaluationFactory):

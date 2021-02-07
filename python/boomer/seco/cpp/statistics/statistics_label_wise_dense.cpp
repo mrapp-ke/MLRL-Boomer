@@ -1,7 +1,7 @@
-#include "statistics_label_wise_dense.h"
-#include "../../../common/cpp/data/arrays.h"
-#include "../../../common/cpp/statistics/statistics_subset_decomposable.h"
-#include "../heuristics/confusion_matrices.h"
+#include "statistics_label_wise_dense.hpp"
+#include "../../../common/cpp/data/arrays.hpp"
+#include "../../../common/cpp/statistics/statistics_subset_decomposable.hpp"
+#include "../heuristics/confusion_matrices.hpp"
 #include <cstdlib>
 
 

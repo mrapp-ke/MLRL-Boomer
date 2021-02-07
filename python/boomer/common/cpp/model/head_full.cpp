@@ -1,4 +1,4 @@
-#include "head_full.h"
+#include "head_full.hpp"
 
 
 FullHead::FullHead(uint32 numElements)

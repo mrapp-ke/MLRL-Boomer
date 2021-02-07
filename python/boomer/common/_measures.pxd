@@ -3,7 +3,7 @@
 """
 
 
-cdef extern from "cpp/measures/measure.h" nogil:
+cdef extern from "cpp/measures/measure.hpp" nogil:
 
     cdef cppclass IMeasure:
         pass
