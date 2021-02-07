@@ -12,7 +12,7 @@ from timeit import default_timer as timer
 
 from sklearn.base import clone
 
-from boomer.common.learners import Learner, NominalAttributeLearner
+from common.learners import Learner, NominalAttributeLearner
 from testbed.data import MetaData, AttributeType
 from testbed.evaluation import Evaluation
 from testbed.parameters import ParameterInput
