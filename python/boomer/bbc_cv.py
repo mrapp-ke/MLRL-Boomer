@@ -175,7 +175,8 @@ class DefaultBbcCvObserver(BbcCvObserver):
         best_k = np.argmin(evaluation_scores_tuning) if target_measure_is_loss else np.argmax(evaluation_scores_tuning)
         best_predictions = predictions_test[:, best_k, :]
         self.evaluation.evaluate('best_configuration', best_predictions, ground_truth_test, first_fold=0,
-                                 current_fold=current_bootstrap, last_fold=num_bootstraps - 1, num_folds=num_bootstraps)
+                                 current_fold=current_bootstrap, last_fold=num_bootstraps - 1, num_folds=num_bootstraps,
+                                 train_time=0, predict_time=0)
 
 
 class BbcCv(Randomized):
