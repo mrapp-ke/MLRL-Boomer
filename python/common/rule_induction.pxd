@@ -16,13 +16,13 @@ from libcpp.memory cimport unique_ptr, shared_ptr
 from libcpp.forward_list cimport forward_list
 
 
-cdef extern from "cpp/rule_induction/rule_induction.hpp" nogil:
+cdef extern from "common/rule_induction/rule_induction.hpp" nogil:
 
     cdef cppclass IRuleInduction:
         pass
 
 
-cdef extern from "cpp/rule_induction/rule_model_induction.hpp" nogil:
+cdef extern from "common/rule_induction/rule_model_induction.hpp" nogil:
 
     cdef cppclass IRuleModelInduction:
 
@@ -34,7 +34,7 @@ cdef extern from "cpp/rule_induction/rule_model_induction.hpp" nogil:
                                               IModelBuilder& modelBuilder)
 
 
-cdef extern from "cpp/rule_induction/rule_induction_top_down.hpp" nogil:
+cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
 
     cdef cppclass TopDownRuleInductionImpl"TopDownRuleInduction"(IRuleInduction):
 
@@ -43,7 +43,7 @@ cdef extern from "cpp/rule_induction/rule_induction_top_down.hpp" nogil:
         TopDownRuleInductionImpl(uint32 numThreads) except +
 
 
-cdef extern from "cpp/rule_induction/rule_model_induction_sequential.hpp" nogil:
+cdef extern from "common/rule_induction/rule_model_induction_sequential.hpp" nogil:
 
     cdef cppclass SequentialRuleModelInductionImpl"SequentialRuleModelInduction"(IRuleModelInduction):
 

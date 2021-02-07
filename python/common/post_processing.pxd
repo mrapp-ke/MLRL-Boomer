@@ -1,13 +1,13 @@
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/post_processing/post_processor.hpp" nogil:
+cdef extern from "common/post_processing/post_processor.hpp" nogil:
 
     cdef cppclass IPostProcessor:
         pass
 
 
-cdef extern from "cpp/post_processing/post_processor_no.hpp" nogil:
+cdef extern from "common/post_processing/post_processor_no.hpp" nogil:
 
     cdef cppclass NoPostProcessorImpl"NoPostProcessor"(IPostProcessor):
         pass
