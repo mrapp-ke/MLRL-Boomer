@@ -14,8 +14,9 @@ clean_cython:
 	find python/ -type f -name "*.o" -delete
 	find python/ -type f -name "*.so" -delete
 	find python/ -type f -name "*.c" -delete
+	find python/ -type f -name "*.cpp" -delete
 	find python/ -type f -name "*.pyd" -delete
-	find python/ -type f -name "*.cpp" -not -path "**/cpp/*" -delete
+	find python/ -type f -name "*.pyc" -delete
 	find python/ -type f -name "*.html" -delete
 
 clean_compile: clean_cpp clean_cython
