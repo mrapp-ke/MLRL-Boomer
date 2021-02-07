@@ -15,8 +15,8 @@ import sklearn.metrics as metrics
 from sklearn.utils.multiclass import is_multilabel
 
 from boomer.common.arrays import enforce_dense
-from boomer.data import MetaData, save_arff_file, Label
-from boomer.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, \
+from testbed.data import MetaData, save_arff_file, Label
+from testbed.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, \
     get_file_name_per_fold
 
 # The name of the accuracy metric

@@ -13,12 +13,12 @@ from timeit import default_timer as timer
 from sklearn.base import clone
 
 from boomer.common.learners import Learner, NominalAttributeLearner
-from boomer.data import MetaData, AttributeType
-from boomer.evaluation import Evaluation
-from boomer.parameters import ParameterInput
-from boomer.persistence import ModelPersistence
-from boomer.printing import ModelPrinter
-from boomer.training import CrossValidation, DataSet
+from testbed.data import MetaData, AttributeType
+from testbed.evaluation import Evaluation
+from testbed.parameters import ParameterInput
+from testbed.persistence import ModelPersistence
+from testbed.printing import ModelPrinter
+from testbed.training import CrossValidation, DataSet
 
 
 class Experiment(CrossValidation, ABC):
