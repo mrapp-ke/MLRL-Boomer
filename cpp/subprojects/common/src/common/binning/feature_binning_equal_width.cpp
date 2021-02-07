@@ -1,5 +1,5 @@
 #include "common/binning/feature_binning_equal_width.hpp"
-#include "binning_common.hpp"
+#include "common/binning/binning_common.hpp"
 #include <unordered_set>
 
 
