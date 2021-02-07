@@ -10,9 +10,9 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import Dict, List
 
-from boomer.common.model import RuleModelFormatter
+from common.model import RuleModelFormatter
 
-from boomer.common.learners import Learner
+from common.learners import Learner
 from testbed.data import MetaData
 from testbed.io import clear_directory, open_writable_txt_file
 

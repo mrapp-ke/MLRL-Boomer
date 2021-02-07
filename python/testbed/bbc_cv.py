@@ -14,8 +14,8 @@ import numpy as np
 from sklearn.base import clone
 from sklearn.utils import check_random_state
 
-from boomer.common.learners import Learner
-from boomer.common.types import DTYPE_UINT8, DTYPE_UINT32
+from common.learners import Learner
+from common.types import DTYPE_UINT8, DTYPE_UINT32
 from testbed.data import MetaData
 from testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from testbed.interfaces import Randomized
