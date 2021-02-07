@@ -4,7 +4,7 @@ from common.thresholds cimport ThresholdsFactory, IThresholdsFactory
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/thresholds/thresholds_approximate.hpp" nogil:
+cdef extern from "common/thresholds/thresholds_approximate.hpp" nogil:
 
     cdef cppclass ApproximateThresholdsFactoryImpl"ApproximateThresholdsFactory"(IThresholdsFactory):
 

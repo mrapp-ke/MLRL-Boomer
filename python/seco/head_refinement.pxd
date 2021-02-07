@@ -4,13 +4,13 @@ from common.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactor
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/head_refinement/lift_function.hpp" namespace "seco" nogil:
+cdef extern from "seco/head_refinement/lift_function.hpp" namespace "seco" nogil:
 
     cdef cppclass ILiftFunction:
         pass
 
 
-cdef extern from "cpp/head_refinement/lift_function_peak.hpp" namespace "seco" nogil:
+cdef extern from "seco/head_refinement/lift_function_peak.hpp" namespace "seco" nogil:
 
     cdef cppclass PeakLiftFunctionImpl"seco::PeakLiftFunction"(ILiftFunction):
 
@@ -19,7 +19,7 @@ cdef extern from "cpp/head_refinement/lift_function_peak.hpp" namespace "seco" n
         PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature) except +
 
 
-cdef extern from "cpp/head_refinement/head_refinement_partial.hpp" namespace "seco" nogil:
+cdef extern from "seco/head_refinement/head_refinement_partial.hpp" namespace "seco" nogil:
 
     cdef cppclass PartialHeadRefinementFactoryImpl"seco::PartialHeadRefinementFactory"(IHeadRefinementFactory):
 
