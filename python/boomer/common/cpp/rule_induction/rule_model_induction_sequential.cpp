@@ -1,4 +1,4 @@
-#include "rule_model_induction_sequential.h"
+#include "rule_model_induction_sequential.hpp"
 
 
 static inline bool shouldContinue(std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria,

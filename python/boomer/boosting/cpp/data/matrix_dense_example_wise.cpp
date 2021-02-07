@@ -1,5 +1,5 @@
-#include "matrix_dense_example_wise.h"
-#include "../math/math.h"
+#include "matrix_dense_example_wise.hpp"
+#include "../math/math.hpp"
 #include <cstdlib>
 
 

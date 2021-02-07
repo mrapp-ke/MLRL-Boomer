@@ -1,4 +1,4 @@
-#include "matrix_dok_binary.h"
+#include "matrix_dok_binary.hpp"
 
 
 bool BinaryDokMatrix::getValue(uint32 row, uint32 column) const {

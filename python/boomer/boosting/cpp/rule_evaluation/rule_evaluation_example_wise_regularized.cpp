@@ -1,8 +1,8 @@
-#include "rule_evaluation_example_wise_regularized.h"
-#include "rule_evaluation_example_wise_common.h"
-#include "rule_evaluation_label_wise_regularized_common.h"
-#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.h"
-#include "../math/math.h"
+#include "rule_evaluation_example_wise_regularized.hpp"
+#include "rule_evaluation_example_wise_common.hpp"
+#include "rule_evaluation_label_wise_regularized_common.hpp"
+#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_dense.hpp"
+#include "../math/math.hpp"
 
 
 namespace boosting {

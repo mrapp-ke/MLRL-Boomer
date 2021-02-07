@@ -1,4 +1,4 @@
-#include "feature_matrix_fortran_contiguous.h"
+#include "feature_matrix_fortran_contiguous.hpp"
 
 
 FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, float32* array)

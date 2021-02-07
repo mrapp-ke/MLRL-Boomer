@@ -1,4 +1,4 @@
-#include "body_conjunctive.h"
+#include "body_conjunctive.hpp"
 
 
 ConjunctiveBody::ConjunctiveBody(uint32 numLeq, uint32 numGr, uint32 numEq, uint32 numNeq)

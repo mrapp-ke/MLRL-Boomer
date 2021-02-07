@@ -1,5 +1,5 @@
-#include "vector_mapping_dense.h"
-#include "indexed_value.h"
+#include "vector_mapping_dense.hpp"
+#include "indexed_value.hpp"
 #include <cstdlib>
 
 

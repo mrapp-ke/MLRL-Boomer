@@ -1,7 +1,7 @@
-#include "head_refinement_partial.h"
-#include "../../../common/cpp/data/vector_sparse_array.h"
-#include "../../../common/cpp/head_refinement/prediction_partial.h"
-#include "../../../common/cpp/rule_evaluation/score_processor_label_wise.h"
+#include "head_refinement_partial.hpp"
+#include "../../../common/cpp/data/vector_sparse_array.hpp"
+#include "../../../common/cpp/head_refinement/prediction_partial.hpp"
+#include "../../../common/cpp/rule_evaluation/score_processor_label_wise.hpp"
 #include <algorithm>
 
 

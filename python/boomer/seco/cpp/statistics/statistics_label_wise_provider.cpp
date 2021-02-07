@@ -1,5 +1,5 @@
-#include "statistics_label_wise_provider.h"
-#include "statistics_label_wise_dense.h"
+#include "statistics_label_wise_provider.hpp"
+#include "statistics_label_wise_dense.hpp"
 
 
 namespace seco {

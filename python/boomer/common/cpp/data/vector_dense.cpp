@@ -1,5 +1,5 @@
-#include "vector_dense.h"
-#include "bin.h"
+#include "vector_dense.hpp"
+#include "bin.hpp"
 #include <cstdlib>
 
 

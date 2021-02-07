@@ -1,4 +1,4 @@
-#include "weight_vector_dense.h"
+#include "weight_vector_dense.hpp"
 
 
 DenseWeightVector::DenseWeightVector(uint32 numElements, uint32 sumOfWeights)

@@ -1,4 +1,4 @@
-#include "feature_vector.h"
+#include "feature_vector.hpp"
 
 
 FeatureVector::FeatureVector(uint32 numElements)

@@ -1,4 +1,4 @@
-#include "view_fortran_contiguous.h"
+#include "view_fortran_contiguous.hpp"
 
 
 template<class T>
