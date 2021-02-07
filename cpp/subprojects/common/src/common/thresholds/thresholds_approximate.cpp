@@ -1,8 +1,8 @@
 #include "common/thresholds/thresholds_approximate.hpp"
-#include "common/thresholds/thresholds_common.hpp"
 #include "common/binning/bin_vector.hpp"
 #include "common/binning/feature_binning_nominal.hpp"
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
+#include "thresholds_common.hpp"
 #include <unordered_map>
 #include <limits>
 
