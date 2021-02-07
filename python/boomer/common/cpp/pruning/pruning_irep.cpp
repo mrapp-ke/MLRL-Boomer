@@ -1,4 +1,4 @@
-#include "pruning_irep.h"
+#include "pruning_irep.hpp"
 
 
 std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,

@@ -1,0 +1,20 @@
+/**
+ * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ */
+#pragma once
+
+#include "feature_binning.hpp"
+
+
+/**
+ * Assigns nominal feature values to bins, such that each bin contains one of the available values.
+ */
+class NominalFeatureBinning final : public IFeatureBinning {
+
+    public:
+
+        FeatureInfo getFeatureInfo(FeatureVector& featureVector) const override;
+
+        void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector, Callback callback) const override;
+
+};

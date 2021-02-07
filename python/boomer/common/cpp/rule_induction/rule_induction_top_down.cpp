@@ -1,5 +1,5 @@
-#include "rule_induction_top_down.h"
-#include "../indices/index_vector_full.h"
+#include "rule_induction_top_down.hpp"
+#include "../indices/index_vector_full.hpp"
 #include "omp.h"
 #include <unordered_map>
 

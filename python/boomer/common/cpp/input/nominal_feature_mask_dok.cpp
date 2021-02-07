@@ -1,4 +1,4 @@
-#include "nominal_feature_mask_dok.h"
+#include "nominal_feature_mask_dok.hpp"
 
 
 bool DokNominalFeatureMask::isNominal(uint32 featureIndex) const {

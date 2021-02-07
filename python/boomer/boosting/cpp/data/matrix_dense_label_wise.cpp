@@ -1,4 +1,4 @@
-#include "matrix_dense_label_wise.h"
+#include "matrix_dense_label_wise.hpp"
 #include <cstdlib>
 
 

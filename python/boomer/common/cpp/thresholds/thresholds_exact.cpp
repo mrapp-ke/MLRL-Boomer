@@ -1,6 +1,6 @@
-#include "thresholds_exact.h"
-#include "thresholds_common.h"
-#include "../rule_refinement/rule_refinement_exact.h"
+#include "thresholds_exact.hpp"
+#include "thresholds_common.hpp"
+#include "../rule_refinement/rule_refinement_exact.hpp"
 #include <unordered_map>
 #include <cmath>
 

@@ -7,7 +7,7 @@ from boomer.common.model cimport RuleModel, RuleModelImpl
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "cpp/output/predictor.h" nogil:
+cdef extern from "cpp/output/predictor.hpp" nogil:
 
     cdef cppclass IPredictor[T]:
 

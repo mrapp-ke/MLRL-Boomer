@@ -1,19 +1,19 @@
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/head_refinement/head_refinement_factory.h" nogil:
+cdef extern from "cpp/head_refinement/head_refinement_factory.hpp" nogil:
 
     cdef cppclass IHeadRefinementFactory:
         pass
 
 
-cdef extern from "cpp/head_refinement/head_refinement_single.h" nogil:
+cdef extern from "cpp/head_refinement/head_refinement_single.hpp" nogil:
 
     cdef cppclass SingleLabelHeadRefinementFactoryImpl"SingleLabelHeadRefinementFactory"(IHeadRefinementFactory):
         pass
 
 
-cdef extern from "cpp/head_refinement/head_refinement_full.h" nogil:
+cdef extern from "cpp/head_refinement/head_refinement_full.hpp" nogil:
 
     cdef cppclass FullHeadRefinementFactoryImpl"FullHeadRefinementFactory"(IHeadRefinementFactory):
         pass

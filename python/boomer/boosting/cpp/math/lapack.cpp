@@ -1,4 +1,4 @@
-#include "lapack.h"
+#include "lapack.hpp"
 #include <string>
 #include <stdexcept>
 

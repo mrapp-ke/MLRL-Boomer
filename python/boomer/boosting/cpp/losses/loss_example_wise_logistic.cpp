@@ -1,5 +1,5 @@
-#include "loss_example_wise_logistic.h"
-#include "../math/math.h"
+#include "loss_example_wise_logistic.hpp"
+#include "../math/math.hpp"
 
 
 namespace boosting {

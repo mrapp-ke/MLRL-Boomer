@@ -1,5 +1,5 @@
-#include "rule_refinement_approximate.h"
-#include "rule_refinement_common.h"
+#include "rule_refinement_approximate.hpp"
+#include "rule_refinement_common.hpp"
 
 
 template<class T>
