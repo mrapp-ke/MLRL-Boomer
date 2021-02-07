@@ -10,12 +10,12 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
-from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
-from boomer.experiments import Experiment
-from boomer.parameters import ParameterCsvInput
-from boomer.persistence import ModelPersistence
-from boomer.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
-from boomer.training import DataSet
+from testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+from testbed.experiments import Experiment
+from testbed.parameters import ParameterCsvInput
+from testbed.persistence import ModelPersistence
+from testbed.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
+from testbed.training import DataSet
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
