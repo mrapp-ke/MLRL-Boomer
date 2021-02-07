@@ -1,7 +1,7 @@
-#include "label_binning_equal_width.h"
-#include "../../../common/cpp/binning/binning_common.h"
-#include "../data/vector_dense_label_wise.h"
-#include "../data/vector_dense_example_wise.h"
+#include "label_binning_equal_width.hpp"
+#include "../../../common/cpp/binning/binning_common.hpp"
+#include "../data/vector_dense_label_wise.hpp"
+#include "../data/vector_dense_example_wise.hpp"
 #include <limits>
 
 

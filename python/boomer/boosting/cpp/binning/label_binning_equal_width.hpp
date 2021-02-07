@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "label_binning.h"
+#include "label_binning.hpp"
 
 
 namespace boosting {

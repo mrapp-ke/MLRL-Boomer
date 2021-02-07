@@ -1,11 +1,11 @@
-#include "rule_evaluation_example_wise_binning.h"
-#include "rule_evaluation_label_wise_binning_common.h"
-#include "rule_evaluation_example_wise_common.h"
-#include "../../../common/cpp/data/arrays.h"
-#include "../../../common/cpp/data/vector_mapping_dense.h"
-#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_binned_dense.h"
-#include "../binning/label_binning_equal_width.h"
-#include "../math/blas.h"
+#include "rule_evaluation_example_wise_binning.hpp"
+#include "rule_evaluation_label_wise_binning_common.hpp"
+#include "rule_evaluation_example_wise_common.hpp"
+#include "../../../common/cpp/data/arrays.hpp"
+#include "../../../common/cpp/data/vector_mapping_dense.hpp"
+#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_binned_dense.hpp"
+#include "../binning/label_binning_equal_width.hpp"
+#include "../math/blas.hpp"
 #include <cstdlib>
 
 
