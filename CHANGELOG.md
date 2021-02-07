@@ -4,7 +4,7 @@
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
-* The entire code of the core algorithm has been refactored and migrated to C++.
+* Large parts of the code have been refactored and the core algorithm has been migrated to C++ entirely. It is now built and compiled using Meson and Ninja, which results in drastically reduced compile times.
 * The (label- and example-wise) logistic loss functions have been rewritten to better prevent numerical problems.
 * Approximate methods for evaluating potential conditions of rules, based on unsupervised binning methods (currently equal-width- and equal-frequency-binning), have been added.
 * The parameter `--predictor` does now allow to use different algorithms for prediction (`label-wise` or `example-wise`).
