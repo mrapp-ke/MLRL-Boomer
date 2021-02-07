@@ -171,11 +171,11 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
     num_labels = y.shape[1]
     labels = [Label('y' + str(i)) for i in range(num_labels)]
     meta_data = MetaData(attributes, labels, labels_at_start=False)
-    save_data_set(output_dir, arff_file_name, x, y, meta_data)
+    save_arff_file(output_dir, arff_file_name, x, y, meta_data)
     return meta_data
 
 
-def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.ndarray, meta_data: MetaData):
+def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.ndarray, meta_data: MetaData):
     """
     Saves a multi-label data set to an ARFF file.
 

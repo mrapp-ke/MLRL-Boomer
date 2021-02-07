@@ -15,7 +15,7 @@ import sklearn.metrics as metrics
 from sklearn.utils.multiclass import is_multilabel
 
 from boomer.common.arrays import enforce_dense
-from boomer.data import MetaData, save_data_set, Label
+from boomer.data import MetaData, save_arff_file, Label
 from boomer.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, \
     get_file_name_per_fold
 
@@ -313,7 +313,7 @@ class EvaluationCsvOutput(EvaluationOutput):
             attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
             labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
             prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
-            save_data_set(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
+            save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     def __clear_dir_if_necessary(self):
         """
