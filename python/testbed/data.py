@@ -18,7 +18,7 @@ from scipy.sparse import coo_matrix, lil_matrix, csc_matrix, issparse, dok_matri
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
-from boomer.common.types import DTYPE_UINT8, DTYPE_FLOAT32
+from common.types import DTYPE_UINT8, DTYPE_FLOAT32
 from testbed.io import write_xml_file
 
 
