@@ -2,7 +2,7 @@ from common._types cimport float64
 from common.post_processing cimport PostProcessor, IPostProcessor
 
 
-cdef extern from "cpp/post_processing/shrinkage_constant.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/post_processing/shrinkage_constant.hpp" namespace "boosting" nogil:
 
     cdef cppclass ConstantShrinkageImpl"boosting::ConstantShrinkage"(IPostProcessor):
 

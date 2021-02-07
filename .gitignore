@@ -1,20 +1,14 @@
 # Build files
-__pycache__/
-python/**/boosting/*.so
-python/**/common/*.so
-python/**/seco/*.so
-python/**/boosting/*.pyd
-python/**/common/*.pyd
-python/**/seco/*.pyd
-python/**/boosting/*.c
-python/**/common/*.c
-python/**/seco/*.c
-python/**/boosting/*.cpp
-python/**/common/*.cpp
-python/**/seco/*.cpp
+python/**/*.o
+python/**/*.so
+python/**/*.c
+python/**/*.cpp
+python/**/*.pyd
+python/**/*.pyc
 python/**/*.html
 python/build/
-*.pyc
+cpp/build/
+__pycache__/
 
 # Virtual Environment
 venv/

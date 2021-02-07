@@ -4,7 +4,7 @@
 from common._types cimport uint32
 
 
-cdef extern from "cpp/data/view_c_contiguous.hpp" nogil:
+cdef extern from "common/data/view_c_contiguous.hpp" nogil:
 
     cdef cppclass CContiguousView[T]:
 
