@@ -31,6 +31,8 @@ venv:
 	venv/bin/pip install ninja
 
 compile: venv
+	@echo "Compiling C++ code..."
+	cd cpp/ && ../venv/bin/meson setup build && cd build/ && ../../venv/bin/ninja
 	@echo "Compiling Cython code..."
 	cd python/ && ../venv/bin/python setup.py build_ext --inplace
 
