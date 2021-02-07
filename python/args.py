@@ -11,9 +11,9 @@ from ast import literal_eval
 
 import sklearn.metrics as metrics
 
-from boomer.boosting.boosting_learners import LOSS_LABEL_WISE_LOGISTIC
-from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM
-from boomer.seco.seco_learners import HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
+from boosting.boosting_learners import LOSS_LABEL_WISE_LOGISTIC
+from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM
+from seco.seco_learners import HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
 
 
 def log_level(s):
