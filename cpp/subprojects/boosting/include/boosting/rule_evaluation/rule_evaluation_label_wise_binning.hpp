@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "rule_evaluation_label_wise.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 
 
 namespace boosting {

@@ -1,8 +1,8 @@
-#include "rule_evaluation_label_wise_binning.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise_binning.hpp"
+#include "boosting/binning/label_binning_equal_width.hpp"
+#include "common/data/arrays.hpp"
+#include "common/rule_evaluation/score_vector_label_wise_binned_dense.hpp"
 #include "rule_evaluation_label_wise_binning_common.hpp"
-#include "../../../common/cpp/data/arrays.hpp"
-#include "../../../common/cpp/rule_evaluation/score_vector_label_wise_binned_dense.hpp"
-#include "../binning/label_binning_equal_width.hpp"
 #include <cstdlib>
 
 

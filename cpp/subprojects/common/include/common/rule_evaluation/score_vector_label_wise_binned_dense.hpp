@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "score_vector_label_wise.hpp"
-#include "score_vector_binned_dense.hpp"
-#include "../data/vector_dense.hpp"
+#include "common/rule_evaluation/score_vector_label_wise.hpp"
+#include "common/rule_evaluation/score_vector_binned_dense.hpp"
+#include "common/data/vector_dense.hpp"
 #include <iterator>
 
 

@@ -1,4 +1,4 @@
-#include "vector_binned_dense.hpp"
+#include "common/data/vector_binned_dense.hpp"
 #include <cstdlib>
 
 

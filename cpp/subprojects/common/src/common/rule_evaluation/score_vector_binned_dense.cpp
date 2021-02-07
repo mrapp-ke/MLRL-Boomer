@@ -1,8 +1,8 @@
-#include "score_vector_binned_dense.hpp"
-#include "score_processor.hpp"
-#include "../head_refinement/prediction.hpp"
-#include "../indices/index_vector_full.hpp"
-#include "../indices/index_vector_partial.hpp"
+#include "common/rule_evaluation/score_vector_binned_dense.hpp"
+#include "common/rule_evaluation/score_processor.hpp"
+#include "common/head_refinement/prediction.hpp"
+#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_partial.hpp"
 
 
 template<class T>

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "../../../common/cpp/data/types.hpp"
+#include "common/data/types.hpp"
 #include <functional>
 
 
