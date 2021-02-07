@@ -4,7 +4,7 @@ from boomer.seco.rule_evaluation_label_wise cimport ILabelWiseRuleEvaluationFact
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/statistics/statistics_label_wise_provider.h" namespace "seco" nogil:
+cdef extern from "cpp/statistics/statistics_label_wise_provider.hpp" namespace "seco" nogil:
 
     cdef cppclass LabelWiseStatisticsProviderFactoryImpl"seco::LabelWiseStatisticsProviderFactory"(
             IStatisticsProviderFactory):

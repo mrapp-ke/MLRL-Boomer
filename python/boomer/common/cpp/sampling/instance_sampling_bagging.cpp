@@ -1,5 +1,5 @@
-#include "instance_sampling_bagging.h"
-#include "weight_vector_dense.h"
+#include "instance_sampling_bagging.hpp"
+#include "weight_vector_dense.hpp"
 
 
 Bagging::Bagging(float32 sampleSize)

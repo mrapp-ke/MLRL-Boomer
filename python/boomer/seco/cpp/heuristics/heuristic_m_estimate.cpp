@@ -1,5 +1,5 @@
-#include "heuristic_m_estimate.h"
-#include "heuristic_common.h"
+#include "heuristic_m_estimate.hpp"
+#include "heuristic_common.hpp"
 #include <cmath>
 
 

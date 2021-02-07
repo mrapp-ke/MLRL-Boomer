@@ -1,4 +1,4 @@
-#include "label_matrix_c_contiguous.h"
+#include "label_matrix_c_contiguous.hpp"
 
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, uint8* array)

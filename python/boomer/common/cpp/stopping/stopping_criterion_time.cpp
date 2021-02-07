@@ -1,4 +1,4 @@
-#include "stopping_criterion_time.h"
+#include "stopping_criterion_time.hpp"
 
 
 TimeStoppingCriterion::TimeStoppingCriterion(uint32 timeLimit)

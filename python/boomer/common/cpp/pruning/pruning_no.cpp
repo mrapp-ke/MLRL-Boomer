@@ -1,4 +1,4 @@
-#include "pruning_no.h"
+#include "pruning_no.hpp"
 
 
 std::unique_ptr<CoverageMask> NoPruning::prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,

@@ -1,7 +1,7 @@
 from boomer.common.model cimport IModelBuilder, ModelBuilder
 
 
-cdef extern from "cpp/model/rule_list.h" namespace "boosting" nogil:
+cdef extern from "cpp/model/rule_list.hpp" namespace "boosting" nogil:
 
     cdef cppclass RuleListBuilderImpl"boosting::RuleListBuilder"(IModelBuilder):
         pass

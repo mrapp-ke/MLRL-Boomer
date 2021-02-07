@@ -1,6 +1,6 @@
-#include "vector_dense_example_wise.h"
-#include "../../../common/cpp/data/arrays.h"
-#include "../math/math.h"
+#include "vector_dense_example_wise.hpp"
+#include "../../../common/cpp/data/arrays.hpp"
+#include "../math/math.hpp"
 #include <cstdlib>
 
 

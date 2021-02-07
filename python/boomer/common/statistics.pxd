@@ -1,7 +1,7 @@
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/statistics/statistics_provider_factory.h" nogil:
+cdef extern from "cpp/statistics/statistics_provider_factory.hpp" nogil:
 
     cdef cppclass IStatisticsProviderFactory:
         pass
