@@ -1,5 +1,5 @@
-#include "vector_dense_label_wise.h"
-#include "../../../common/cpp/data/arrays.h"
+#include "vector_dense_label_wise.hpp"
+#include "../../../common/cpp/data/arrays.hpp"
 #include <cstdlib>
 
 

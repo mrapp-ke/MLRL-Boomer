@@ -1,4 +1,4 @@
-#include "label_matrix_dok.h"
+#include "label_matrix_dok.hpp"
 
 
 DokLabelMatrix::DokLabelMatrix(uint32 numRows, uint32 numCols)

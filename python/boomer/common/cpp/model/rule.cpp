@@ -1,4 +1,4 @@
-#include "rule.h"
+#include "rule.hpp"
 
 
 Rule::Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr)

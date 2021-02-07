@@ -1,4 +1,4 @@
-#include "lift_function_peak.h"
+#include "lift_function_peak.hpp"
 #include <cmath>
 
 

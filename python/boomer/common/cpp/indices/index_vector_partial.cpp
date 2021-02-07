@@ -1,8 +1,8 @@
-#include "index_vector_partial.h"
-#include "../head_refinement/head_refinement.h"
-#include "../head_refinement/head_refinement_factory.h"
-#include "../statistics/statistics_immutable.h"
-#include "../thresholds/thresholds_subset.h"
+#include "index_vector_partial.hpp"
+#include "../head_refinement/head_refinement.hpp"
+#include "../head_refinement/head_refinement_factory.hpp"
+#include "../statistics/statistics_immutable.hpp"
+#include "../thresholds/thresholds_subset.hpp"
 
 
 PartialIndexVector::PartialIndexVector(uint32 numElements)

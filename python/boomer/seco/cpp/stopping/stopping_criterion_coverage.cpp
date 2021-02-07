@@ -1,5 +1,5 @@
-#include "stopping_criterion_coverage.h"
-#include "../statistics/statistics_coverage.h"
+#include "stopping_criterion_coverage.hpp"
+#include "../statistics/statistics_coverage.hpp"
 
 
 namespace seco {

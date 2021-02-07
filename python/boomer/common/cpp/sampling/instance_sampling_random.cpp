@@ -1,5 +1,5 @@
-#include "instance_sampling_random.h"
-#include "weight_sampling.h"
+#include "instance_sampling_random.hpp"
+#include "weight_sampling.hpp"
 
 
 RandomInstanceSubsetSelection::RandomInstanceSubsetSelection(float32 sampleSize)

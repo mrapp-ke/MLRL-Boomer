@@ -1,8 +1,8 @@
-#include "statistics_label_wise_dense.h"
-#include "statistics_label_wise_common.h"
-#include "../data/matrix_dense_numeric.h"
-#include "../data/matrix_dense_label_wise.h"
-#include "../data/vector_dense_label_wise.h"
+#include "statistics_label_wise_dense.hpp"
+#include "statistics_label_wise_common.hpp"
+#include "../data/matrix_dense_numeric.hpp"
+#include "../data/matrix_dense_label_wise.hpp"
+#include "../data/vector_dense_label_wise.hpp"
 
 
 namespace boosting {

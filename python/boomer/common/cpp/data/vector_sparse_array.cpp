@@ -1,4 +1,4 @@
-#include "vector_sparse_array.h"
+#include "vector_sparse_array.hpp"
 #include <algorithm>
 #include <cstdlib>
 

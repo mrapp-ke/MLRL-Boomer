@@ -1,8 +1,8 @@
-#include "prediction_full.h"
-#include "head_refinement.h"
-#include "../rule_refinement/rule_refinement.h"
-#include "../statistics/statistics.h"
-#include "../model/head_full.h"
+#include "prediction_full.hpp"
+#include "head_refinement.hpp"
+#include "../rule_refinement/rule_refinement.hpp"
+#include "../statistics/statistics.hpp"
+#include "../model/head_full.hpp"
 
 
 FullPrediction::FullPrediction(uint32 numElements)

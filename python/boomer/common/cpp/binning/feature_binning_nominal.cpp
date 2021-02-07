@@ -1,4 +1,4 @@
-#include "feature_binning_nominal.h"
+#include "feature_binning_nominal.hpp"
 
 
 IFeatureBinning::FeatureInfo NominalFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {

@@ -1,4 +1,4 @@
-#include "weight_vector_equal.h"
+#include "weight_vector_equal.hpp"
 
 
 EqualWeightVector::EqualWeightVector(uint32 numElements)

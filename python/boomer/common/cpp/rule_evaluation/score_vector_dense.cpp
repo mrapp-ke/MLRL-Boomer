@@ -1,8 +1,8 @@
-#include "score_vector_dense.h"
-#include "score_processor.h"
-#include "../head_refinement/prediction.h"
-#include "../indices/index_vector_full.h"
-#include "../indices/index_vector_partial.h"
+#include "score_vector_dense.hpp"
+#include "score_processor.hpp"
+#include "../head_refinement/prediction.hpp"
+#include "../indices/index_vector_full.hpp"
+#include "../indices/index_vector_partial.hpp"
 
 
 template<class T>

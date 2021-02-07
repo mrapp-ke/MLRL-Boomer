@@ -1,4 +1,4 @@
-#include "bin_vector.h"
+#include "bin_vector.hpp"
 
 
 BinVector::BinVector(uint32 numElements)

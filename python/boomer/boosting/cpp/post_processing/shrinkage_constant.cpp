@@ -1,4 +1,4 @@
-#include "shrinkage_constant.h"
+#include "shrinkage_constant.hpp"
 
 
 namespace boosting {

@@ -1,4 +1,4 @@
-#include "stopping_criterion_size.h"
+#include "stopping_criterion_size.hpp"
 
 
 SizeStoppingCriterion::SizeStoppingCriterion(uint32 maxRules)

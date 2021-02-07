@@ -1,6 +1,6 @@
-#include "feature_sampling_random.h"
-#include "index_sampling.h"
-#include "../indices/index_iterator.h"
+#include "feature_sampling_random.hpp"
+#include "index_sampling.hpp"
+#include "../indices/index_iterator.hpp"
 #include <cmath>
 
 

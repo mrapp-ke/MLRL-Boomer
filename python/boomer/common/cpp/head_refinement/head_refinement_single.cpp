@@ -1,6 +1,6 @@
-#include "head_refinement_single.h"
-#include "prediction_partial.h"
-#include "../rule_evaluation/score_processor_label_wise.h"
+#include "head_refinement_single.hpp"
+#include "prediction_partial.hpp"
+#include "../rule_evaluation/score_processor_label_wise.hpp"
 
 
 /**

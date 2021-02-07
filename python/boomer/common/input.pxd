@@ -4,7 +4,7 @@ from libcpp.memory cimport unique_ptr, shared_ptr
 from libcpp.list cimport list as double_linked_list
 
 
-cdef extern from "cpp/input/label_matrix.h" nogil:
+cdef extern from "cpp/input/label_matrix.hpp" nogil:
 
     cdef cppclass ILabelMatrix:
 
@@ -22,7 +22,7 @@ cdef extern from "cpp/input/label_matrix.h" nogil:
         uint8 getValue(uint32 row, uint32 col)
 
 
-cdef extern from "cpp/input/label_matrix_c_contiguous.h" nogil:
+cdef extern from "cpp/input/label_matrix_c_contiguous.hpp" nogil:
 
     cdef cppclass CContiguousLabelMatrixImpl"CContiguousLabelMatrix"(IRandomAccessLabelMatrix):
 
@@ -31,7 +31,7 @@ cdef extern from "cpp/input/label_matrix_c_contiguous.h" nogil:
         CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, uint8* array) except +
 
 
-cdef extern from "cpp/input/label_matrix_dok.h" nogil:
+cdef extern from "cpp/input/label_matrix_dok.hpp" nogil:
 
     cdef cppclass DokLabelMatrixImpl"DokLabelMatrix"(IRandomAccessLabelMatrix):
 
@@ -44,7 +44,7 @@ cdef extern from "cpp/input/label_matrix_dok.h" nogil:
         void setValue(uint32 exampleIndex, uint32 rowIndex)
 
 
-cdef extern from "cpp/input/label_vector.h" nogil:
+cdef extern from "cpp/input/label_vector.hpp" nogil:
 
     cdef cppclass LabelVector:
 
@@ -59,13 +59,13 @@ cdef extern from "cpp/input/label_vector.h" nogil:
         void setValue(uint32 pos)
 
 
-cdef extern from "cpp/input/feature_matrix.h" nogil:
+cdef extern from "cpp/input/feature_matrix.hpp" nogil:
 
     cdef cppclass IFeatureMatrix:
         pass
 
 
-cdef extern from "cpp/input/feature_matrix_c_contiguous.h" nogil:
+cdef extern from "cpp/input/feature_matrix_c_contiguous.hpp" nogil:
 
     cdef cppclass CContiguousFeatureMatrixImpl"CContiguousFeatureMatrix":
 
@@ -78,7 +78,7 @@ cdef extern from "cpp/input/feature_matrix_c_contiguous.h" nogil:
         uint32 getNumRows()
 
 
-cdef extern from "cpp/input/feature_matrix_fortran_contiguous.h" nogil:
+cdef extern from "cpp/input/feature_matrix_fortran_contiguous.hpp" nogil:
 
     cdef cppclass FortranContiguousFeatureMatrixImpl"FortranContiguousFeatureMatrix"(IFeatureMatrix):
 
@@ -87,7 +87,7 @@ cdef extern from "cpp/input/feature_matrix_fortran_contiguous.h" nogil:
         FortranContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, float32* array) except +
 
 
-cdef extern from "cpp/input/feature_matrix_csc.h" nogil:
+cdef extern from "cpp/input/feature_matrix_csc.hpp" nogil:
 
     cdef cppclass CscFeatureMatrixImpl"CscFeatureMatrix"(IFeatureMatrix):
 
@@ -97,7 +97,7 @@ cdef extern from "cpp/input/feature_matrix_csc.h" nogil:
                              const uint32* colIndices) except +
 
 
-cdef extern from "cpp/input/feature_matrix_csr.h" nogil:
+cdef extern from "cpp/input/feature_matrix_csr.hpp" nogil:
 
     cdef cppclass CsrFeatureMatrixImpl"CsrFeatureMatrix":
 
@@ -111,13 +111,13 @@ cdef extern from "cpp/input/feature_matrix_csr.h" nogil:
         uint32 getNumRows()
 
 
-cdef extern from "cpp/input/nominal_feature_mask.h" nogil:
+cdef extern from "cpp/input/nominal_feature_mask.hpp" nogil:
 
     cdef cppclass INominalFeatureMask:
         pass
 
 
-cdef extern from "cpp/input/nominal_feature_mask_dok.h" nogil:
+cdef extern from "cpp/input/nominal_feature_mask_dok.hpp" nogil:
 
     cdef cppclass DokNominalFeatureMaskImpl"DokNominalFeatureMask"(INominalFeatureMask):
 
