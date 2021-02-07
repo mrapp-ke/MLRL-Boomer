@@ -32,27 +32,32 @@ In addition, the following features that may speed up training or reduce the mem
 ## Project structure
 
 ```
-|-- data                                Directory that contains several benchmark data sets
+|-- data                                Contains several benchmark data sets
     |-- ...
-|-- data-synthetic                      Directory that contains several synthetic data sets
+|-- data-synthetic                      Contains several synthetic data sets
     |-- ...
-|-- python                              Directory that contains the project's source code
-    |-- boomer                          Directory that contains the code for loading data sets and running experiments
-        |-- boosting                    Directory that contains the implementation of boosting algorithms
-            | ...
-        |-- common                      Directory that contains the implementations that all algorithms have in common
-            | ...
-        |-- seco                        Directory that contains the implementation of separate-and-conquer algorithms 
-            | ...
-        | ...
-    |-- main_boomer.py                  Can be used to start an experiment, i.e., to train and evaluate a model, using BOOMER
+|-- cpp                                 Contains the implementation of core algorithms in C++
+    |-- subprojects
+        |-- common                      Contains implementations that all algorithms have in common
+        |-- boosting                    Contains implementations of boosting algorithms
+        |-- seco                        Contains implementations of separate-and-conquer algorithms
+    |-- ...
+|-- python                              Contains Python code for running experiments using different algorithms
+    |-- common                          Contains Python code that is needed to run any kind of algorithms
+        |-- cython                      Contains commonly used Cython wrappers
+        |-- ...
+    |-- boosting                        Contains Python code for running boosting algorithms
+        |-- cython                      Contains boosting-specific Cython wrappers
+        |-- ...
+    |-- seco                            Contains Python code for running separate-and-conquer algorithms
+        |-- cython                      Contains separate-and-conquer-specific Cython wrappers
+        |-- ...
+    |-- testbed                         Contains useful functionality for running experiments, e.g., for cross validation, writing of output files, etc.
+    |-- main_boomer.py                  Can be used to start an experiment using the BOOMER algorithm
+    |-- main_seco.py                    Can be used to start an experiment using the separate-and-conquer algorithm
     |-- main_generate_synthetic_data.py Can be used to generate synthetic data sets
-    |-- main_seco.py                    Can be used to start an experiment, i.e., to train and evaluate a model using the separate-and-conquer algorithm
-    |-- setup.py                        Distutil definition of the library for installation via pip
     |-- ...
-|-- Makefile                            Makefile for compiling the Cython source files and installing a Python virtual environment
-|-- README.md                           This file
-|-- settings.zip                        PyCharm settings for syntax highlighting of Cython code
+|-- Makefile                            Makefile for compilation
 |-- ...
 ```
 
