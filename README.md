@@ -20,9 +20,11 @@ The algorithm that is provided by this project currently supports the following 
 * The conditions of rules can be pruned based on a hold-out set.  
 * The algorithm can natively handle numerical, ordinal and nominal features (without the need for pre-processing techniques such as one-hot encoding).
 * The algorithm is able to deal with missing feature values, i.e., occurrences of NaN in the feature matrix.
+* Different strategies for prediction, which can be tailored to the used loss function, are available.
 
 In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:
- 
+
+* Approximate methods for evaluating potential conditions of rules, based on unsupervised binning methods, can be used.
 * Dense or sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets.
 * Dense or sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets.
 * Multi-threading can be used to parallelize the evaluation of a rule's potential refinements across multiple CPU cores. 
