@@ -6,8 +6,10 @@ source_files = [
 ]
 
 # Dependencies
-dependencies = [
+openmp_dep = dependency('openmp')
 
+dependencies = [
+    openmp_dep
 ]
 
 # Directory containing public headers
