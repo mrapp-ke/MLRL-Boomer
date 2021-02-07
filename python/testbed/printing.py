@@ -13,8 +13,8 @@ from typing import Dict, List
 from boomer.common.model import RuleModelFormatter
 
 from boomer.common.learners import Learner
-from boomer.data import MetaData
-from boomer.io import clear_directory, open_writable_txt_file
+from testbed.data import MetaData
+from testbed.io import clear_directory, open_writable_txt_file
 
 
 class ModelPrinterOutput(ABC):
