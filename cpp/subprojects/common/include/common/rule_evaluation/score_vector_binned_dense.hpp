@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "score_vector.hpp"
-#include "../data/vector_binned_dense.hpp"
+#include "common/rule_evaluation/score_vector.hpp"
+#include "common/data/vector_binned_dense.hpp"
 
 
 /**

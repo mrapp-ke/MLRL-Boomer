@@ -22,7 +22,7 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_regulari
                                                         shared_ptr[Lapack] lapackPtr) except +
 
 
-cdef extern from "cpp/rule_evaluation/rule_evaluation_example_wise_binning.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_binning.hpp" namespace "boosting" nogil:
 
     cdef cppclass EqualWidthBinningExampleWiseRuleEvaluationFactoryImpl"boosting::EqualWidthBinningExampleWiseRuleEvaluationFactory"(
             IExampleWiseRuleEvaluationFactory):

@@ -19,7 +19,7 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_regularize
         RegularizedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight) except +
 
 
-cdef extern from "cpp/rule_evaluation/rule_evaluation_label_wise_binning.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_binning.hpp" namespace "boosting" nogil:
 
     cdef cppclass EqualWidthBinningLabelWiseRuleEvaluationFactoryImpl"boosting::EqualWidthBinningLabelWiseRuleEvaluationFactory"(
             ILabelWiseRuleEvaluationFactory):
