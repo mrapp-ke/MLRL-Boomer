@@ -1,18 +1,24 @@
 default_target: compile
-.PHONY: clean_venv clean_compile clean compile install
+.PHONY: clean_venv clean_cpp clean_cython clean_compile clean install
 
 clean_venv:
 	@echo "Removing virtual Python environment..."
 	rm -rf venv/
 
-clean_compile:
-	@echo "Removing compiled C/C++ files..."
+clean_cpp:
+	@echo "Removing C++ compilation files..."
+	rm -rf cpp/build/
+
+clean_cython:
+	@echo "Removing Cython compilation files..."
 	find python/ -type f -name "*.o" -delete
 	find python/ -type f -name "*.so" -delete
 	find python/ -type f -name "*.c" -delete
 	find python/ -type f -name "*.pyd" -delete
 	find python/ -type f -name "*.cpp" -not -path "**/cpp/*" -delete
 	find python/ -type f -name "*.html" -delete
+
+clean_compile: clean_cpp clean_cython
 
 clean: clean_compile clean_venv
 
