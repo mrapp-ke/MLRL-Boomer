@@ -12,21 +12,22 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-from common.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
-from common.input import CContiguousLabelMatrix, DokLabelMatrix
-from common.input import DokNominalFeatureMask
-from common.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, CContiguousFeatureMatrix
-from common.model import ModelBuilder
-from common.output import Predictor
-from common.pruning import Pruning, NoPruning, IREP
-from common.rule_induction import RuleModelInduction
-from common.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
-from common.sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, NoInstanceSubSampling
-from common.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
-from common.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
-from common.thresholds import ThresholdsFactory
-from common.thresholds_approximate import ApproximateThresholdsFactory
-from common.thresholds_exact import ExactThresholdsFactory
+from common.cython.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
+from common.cython.input import CContiguousLabelMatrix, DokLabelMatrix
+from common.cython.input import DokNominalFeatureMask
+from common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
+    CContiguousFeatureMatrix
+from common.cython.model import ModelBuilder
+from common.cython.output import Predictor
+from common.cython.pruning import Pruning, NoPruning, IREP
+from common.cython.rule_induction import RuleModelInduction
+from common.cython.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
+from common.cython.sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, NoInstanceSubSampling
+from common.cython.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
+from common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
+from common.cython.thresholds import ThresholdsFactory
+from common.cython.thresholds_approximate import ApproximateThresholdsFactory
+from common.cython.thresholds_exact import ExactThresholdsFactory
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
