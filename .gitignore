@@ -1,9 +1,10 @@
 # Build files
+python/**/*.o
 python/**/*.so
-python/**/*.pyd
-python/**/*.pyc
 python/**/*.c
 python/**/*.cpp
+python/**/*.pyd
+python/**/*.pyc
 python/**/*.html
 python/build/
 cpp/build/
