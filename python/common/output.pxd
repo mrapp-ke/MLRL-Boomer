@@ -6,7 +6,7 @@ from common.model cimport RuleModel, RuleModelImpl
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "cpp/output/predictor.hpp" nogil:
+cdef extern from "common/output/predictor.hpp" nogil:
 
     cdef cppclass IPredictor[T]:
 

@@ -5,7 +5,7 @@ from boosting.rule_evaluation_example_wise cimport IExampleWiseRuleEvaluationFac
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/statistics/statistics_example_wise_provider.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/statistics/statistics_example_wise_provider.hpp" namespace "boosting" nogil:
 
     cdef cppclass ExampleWiseStatisticsProviderFactoryImpl"boosting::ExampleWiseStatisticsProviderFactory"(
             IStatisticsProviderFactory):
