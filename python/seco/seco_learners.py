@@ -1,19 +1,20 @@
 #!/usr/bin/python
 
-from common.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, FullHeadRefinementFactory
-from common.input import CContiguousLabelMatrix
-from common.model import ModelBuilder
-from common.output import Predictor
-from common.post_processing import NoPostProcessor
-from common.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
-from common.statistics import StatisticsProviderFactory
-from seco.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
-from seco.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
-from seco.model import DecisionListBuilder
-from seco.output import LabelWiseClassificationPredictor
-from seco.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
-from seco.statistics_label_wise import LabelWiseStatisticsProviderFactory
-from seco.stopping import CoverageStoppingCriterion
+from common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
+    FullHeadRefinementFactory
+from common.cython.input import CContiguousLabelMatrix
+from common.cython.model import ModelBuilder
+from common.cython.output import Predictor
+from common.cython.post_processing import NoPostProcessor
+from common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
+from common.cython.statistics import StatisticsProviderFactory
+from seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
+from seco.cython.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
+from seco.cython.model import DecisionListBuilder
+from seco.cython.output import LabelWiseClassificationPredictor
+from seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
+from seco.cython.statistics_label_wise import LabelWiseStatisticsProviderFactory
+from seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
 from common.rule_learners import HEAD_REFINEMENT_SINGLE

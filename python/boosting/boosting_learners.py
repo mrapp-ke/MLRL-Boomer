@@ -5,23 +5,24 @@
 
 Provides a scikit-learn implementations of boosting algorithms
 """
-from boosting.losses_example_wise import ExampleWiseLogisticLoss
-from boosting.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
+from boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
+from boosting.cython.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
     LabelWiseSquaredHingeLoss
-from boosting.model import RuleListBuilder
-from boosting.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor
-from boosting.post_processing import ConstantShrinkage
-from boosting.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory
-from boosting.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory
-from boosting.statistics_example_wise import ExampleWiseStatisticsProviderFactory
-from boosting.statistics_label_wise import LabelWiseStatisticsProviderFactory
-from common.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, FullHeadRefinementFactory
-from common.input import CContiguousLabelMatrix
-from common.model import ModelBuilder
-from common.output import Predictor
-from common.post_processing import PostProcessor, NoPostProcessor
-from common.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
-from common.statistics import StatisticsProviderFactory
+from boosting.cython.model import RuleListBuilder
+from boosting.cython.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor
+from boosting.cython.post_processing import ConstantShrinkage
+from boosting.cython.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory
+from boosting.cython.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory
+from boosting.cython.statistics_example_wise import ExampleWiseStatisticsProviderFactory
+from boosting.cython.statistics_label_wise import LabelWiseStatisticsProviderFactory
+from common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
+    FullHeadRefinementFactory
+from common.cython.input import CContiguousLabelMatrix
+from common.cython.model import ModelBuilder
+from common.cython.output import Predictor
+from common.cython.post_processing import PostProcessor, NoPostProcessor
+from common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
+from common.cython.statistics import StatisticsProviderFactory
 from sklearn.base import ClassifierMixin
 
 from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE
