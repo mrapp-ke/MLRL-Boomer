@@ -10,7 +10,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import Dict, List
 
-from common.model import RuleModelFormatter
+from common.cython.model import RuleModelFormatter
 
 from common.learners import Learner
 from testbed.data import MetaData
