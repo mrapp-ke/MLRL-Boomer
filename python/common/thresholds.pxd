@@ -1,7 +1,7 @@
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "cpp/thresholds/thresholds_factory.hpp" nogil:
+cdef extern from "common/thresholds/thresholds_factory.hpp" nogil:
 
     cdef cppclass IThresholdsFactory:
         pass
