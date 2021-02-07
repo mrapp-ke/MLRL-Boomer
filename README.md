@@ -20,9 +20,11 @@ The algorithm that is provided by this project currently supports the following 
 * The conditions of rules can be pruned based on a hold-out set.  
 * The algorithm can natively handle numerical, ordinal and nominal features (without the need for pre-processing techniques such as one-hot encoding).
 * The algorithm is able to deal with missing feature values, i.e., occurrences of NaN in the feature matrix.
+* Different strategies for prediction, which can be tailored to the used loss function, are available.
 
 In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:
- 
+
+* Approximate methods for evaluating potential conditions of rules, based on unsupervised binning methods, can be used.
 * Dense or sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets.
 * Dense or sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets.
 * Multi-threading can be used to parallelize the evaluation of a rule's potential refinements across multiple CPU cores. 
@@ -30,58 +32,67 @@ In addition, the following features that may speed up training or reduce the mem
 ## Project structure
 
 ```
-|-- data                                Directory that contains several benchmark data sets
+|-- data                                Contains several benchmark data sets
     |-- ...
-|-- data-synthetic                      Directory that contains several synthetic data sets
+|-- data-synthetic                      Contains several synthetic data sets
     |-- ...
-|-- python                              Directory that contains the project's source code
-    |-- boomer                          Directory that contains the code for loading data sets and running experiments
-        |-- boosting                    Directory that contains the implementation of boosting algorithms
-            | ...
-        |-- common                      Directory that contains the implementations that all algorithms have in common
-            | ...
-        |-- seco                        Directory that contains the implementation of separate-and-conquer algorithms 
-            | ...
-        | ...
-    |-- main_boomer.py                  Can be used to start an experiment, i.e., to train and evaluate a model, using BOOMER
+|-- cpp                                 Contains the implementation of core algorithms in C++
+    |-- subprojects
+        |-- common                      Contains implementations that all algorithms have in common
+        |-- boosting                    Contains implementations of boosting algorithms
+        |-- seco                        Contains implementations of separate-and-conquer algorithms
+    |-- ...
+|-- python                              Contains Python code for running experiments using different algorithms
+    |-- common                          Contains Python code that is needed to run any kind of algorithms
+        |-- cython                      Contains commonly used Cython wrappers
+        |-- ...
+    |-- boosting                        Contains Python code for running boosting algorithms
+        |-- cython                      Contains boosting-specific Cython wrappers
+        |-- ...
+    |-- seco                            Contains Python code for running separate-and-conquer algorithms
+        |-- cython                      Contains separate-and-conquer-specific Cython wrappers
+        |-- ...
+    |-- testbed                         Contains useful functionality for running experiments, e.g., for cross validation, writing of output files, etc.
+    |-- main_boomer.py                  Can be used to start an experiment using the BOOMER algorithm
+    |-- main_seco.py                    Can be used to start an experiment using the separate-and-conquer algorithm
     |-- main_generate_synthetic_data.py Can be used to generate synthetic data sets
-    |-- main_seco.py                    Can be used to start an experiment, i.e., to train and evaluate a model using the separate-and-conquer algorithm
-    |-- setup.py                        Distutil definition of the library for installation via pip
     |-- ...
-|-- Makefile                            Makefile for compiling the Cython source files and installing a Python virtual environment
-|-- README.md                           This file
-|-- settings.zip                        PyCharm settings for syntax highlighting of Cython code
+|-- Makefile                            Makefile for compilation
 |-- ...
 ```
 
 ## Project setup
 
-The library provided by this project requires Python 3.7 or newer and uses C extensions for Python using [Cython](https://cython.org) to speed up computation and to integrate with parts of the code that are implemented in C++. It is recommended to create a virtual environment using the correct version of Python (which requires that this particular Python version is installed on the host) and providing all dependencies that are required to compile the Cython code (`numpy`, `scipy` and `Cython`). IDEs such as PyCharm may provide an option to create such a virtual environment automatically. For manual installation, the project comes with a Makefile that allows to create a virtual environment via the command
+The algorithm provided by this project is implemented in C++. In addition, a Python wrapper that implements the scikit-learn API is available. To be able to integrate the underlying C++ implementation with Python, [Cython](https://cython.org) is used.
+
+The C++ implementation, as well as the Cython wrappers, must be compiled in order to be able to run the provided algorithm. To facilitate compilation, this project comes with a Makefile that automatically executes the necessary steps.
+
+At first, a virtual Python environment can be created via the following command:
 ```
 make venv
 ```
-This should create a new subdirectory `venv` within the project's root directory.
 
-Unlike pure Python programs, the Cython source files (`.pyx` and `.pxd` files) that are used by the library must be compiled (see [documentation](http://docs.cython.org/en/latest/src/quickstart/build.html) for further details). The compilation can be started using the provided Makefile by running
+As a prerequisite, Python 3.7 (or a more recent version) must be available on the host system. All compile-time dependencies (`numpy`, `scipy`, `Cython`, `meson` and `ninja`) that are required for building the project will automatically be installed into the virtual environment. As a result of executing the above command, a subdirectory `venv` should have been created within the project's root directory.
+
+Afterwards, the compilation can be started by executing the following command:
 ```
 make compile
 ```
-This should result in `.c` files, as well as `.so` files (on Linux) or `.pyd` files (on Windows) be placed in the directory `python/boomer/algorithm/`.
 
-To be able to use the library by any program run inside the virtual environment, it must be installed into the virtual environment together with all of its runtime dependencies (e.g. `scikit-learn`, a full list can be found in `setup.py`). For this purpose, the project's Makefile provides the command 
+Finally, the library must be installed into the virtual environment, together with all of its runtime dependencies (e.g. `scikit-learn`, a full list can be found in `setup.py`). For this purpose, the project's Makefile provides the following command:
 
 ```
 make install
 ```
 
-*Whenever any Cython source files have been modified, they must be recompiled by running the command "make compile" again and updating the installed package via "make install" afterwards! If compiled Cython files do already exist, only the modified files will be recompiled.*
+*Whenever any C++ or Cython source files have been modified, they must be recompiled by running the command `make compile` again! If compilation files do already exist, only the modified files will be recompiled.*
 
-**Cleanup:** To get rid of any compiled C/C++ files, as well as of the virtual environment, the following command can be used:
+**Cleanup:** To get rid of any compilation files, as well as of the virtual environment, the following command can be used:
 ```
 make clean
 ``` 
-For more fine-grained control, the command `make clean_venv` (for deleting the virtual environment) or `make clean_compile` (for deleting the compiled files) can be used.
 
+For more fine-grained control, the command `make clean_venv` (for deleting the virtual environment) or `make clean_compile` (for deleting the compiled files) can be used. If only the compiled Cython files should be removed, the command `make clean_cython` can be used. Accordingly, the command `make clean_cpp` removes the compiled C++ files.
 
 **Syntax highlighting in PyCharm:** Unfortunately, the Community Edition of PyCharm does not come with Cython support. To enable proper syntax highlighting of Cython code, the file `settings.zip` in the project's root directory can be imported via `File -> Import Settings`.
 
