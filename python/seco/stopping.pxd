@@ -2,7 +2,7 @@ from common._types cimport float64
 from common.stopping cimport IStoppingCriterion, StoppingCriterion
 
 
-cdef extern from "cpp/stopping/stopping_criterion_coverage.hpp" nogil:
+cdef extern from "seco/stopping/stopping_criterion_coverage.hpp" nogil:
 
     cdef cppclass CoverageStoppingCriterionImpl"seco::CoverageStoppingCriterion"(IStoppingCriterion):
 

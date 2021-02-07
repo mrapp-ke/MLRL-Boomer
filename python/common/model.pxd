@@ -3,19 +3,19 @@ from common._types cimport uint32, float32, float64
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "cpp/model/body.hpp" nogil:
+cdef extern from "common/model/body.hpp" nogil:
 
     cdef cppclass IBody:
         pass
 
 
-cdef extern from "cpp/model/body_empty.hpp" nogil:
+cdef extern from "common/model/body_empty.hpp" nogil:
 
     cdef cppclass EmptyBodyImpl"EmptyBody"(IBody):
         pass
 
 
-cdef extern from "cpp/model/body_conjunctive.hpp" nogil:
+cdef extern from "common/model/body_conjunctive.hpp" nogil:
 
     cdef cppclass ConjunctiveBodyImpl"ConjunctiveBody"(IBody):
 
@@ -107,13 +107,13 @@ ctypedef void (*EmptyBodyVisitor)(const EmptyBodyImpl&)
 ctypedef void (*ConjunctiveBodyVisitor)(const ConjunctiveBodyImpl&)
 
 
-cdef extern from "cpp/model/head.hpp" nogil:
+cdef extern from "common/model/head.hpp" nogil:
 
     cdef cppclass IHead:
         pass
 
 
-cdef extern from "cpp/model/head_full.hpp" nogil:
+cdef extern from "common/model/head_full.hpp" nogil:
 
     cdef cppclass FullHeadImpl"FullHead"(IHead):
 
@@ -134,7 +134,7 @@ cdef extern from "cpp/model/head_full.hpp" nogil:
         score_const_iterator scores_cend()
 
 
-cdef extern from "cpp/model/head_partial.hpp" nogil:
+cdef extern from "common/model/head_partial.hpp" nogil:
 
     cdef cppclass PartialHeadImpl"PartialHead"(IHead):
 
@@ -172,7 +172,7 @@ ctypedef void (*FullHeadVisitor)(const FullHeadImpl&)
 ctypedef void (*PartialHeadVisitor)(const PartialHeadImpl&)
 
 
-cdef extern from "cpp/model/rule_model.hpp" nogil:
+cdef extern from "common/model/rule_model.hpp" nogil:
 
     cdef cppclass RuleModelImpl"RuleModel":
 
@@ -182,7 +182,7 @@ cdef extern from "cpp/model/rule_model.hpp" nogil:
                    FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor)
 
 
-cdef extern from "cpp/model/model_builder.hpp" nogil:
+cdef extern from "common/model/model_builder.hpp" nogil:
 
     cdef cppclass IModelBuilder:
         pass
@@ -190,8 +190,8 @@ cdef extern from "cpp/model/model_builder.hpp" nogil:
 
 cdef extern from *:
     """
-    #include "cpp/model/body.hpp"
-    #include "cpp/model/head.hpp"
+    #include "common/model/body.hpp"
+    #include "common/model/head.hpp"
 
 
     typedef void (*EmptyBodyCythonVisitor)(void*, const EmptyBody&);

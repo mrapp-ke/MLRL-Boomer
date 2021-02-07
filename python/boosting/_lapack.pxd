@@ -6,7 +6,7 @@ from scipy.linalg.cython_lapack cimport dsysv
 from libcpp.memory cimport unique_ptr, make_unique
 
 
-cdef extern from "cpp/math/lapack.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/math/lapack.hpp" namespace "boosting" nogil:
 
     ctypedef void (*dsysv_t)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info)
 

@@ -1,5 +1,3 @@
-import sys
-
 import numpy
 import setuptools
 from Cython.Build import cythonize
@@ -10,17 +8,33 @@ ANNOTATE = False
 # True, if all Cython compiler optimizations should be disabled
 DEBUG = False
 
-# The compiler/linker argument to enable OpenMP support
-COMPILE_FLAG_OPEN_MP = '/openmp' if sys.platform.startswith('win') else '-fopenmp'
-
 sources = [
     '**/*.pyx'
 ]
 
-extensions = [
-    setuptools.Extension(name='*', sources=sources, language='c++', extra_compile_args=[COMPILE_FLAG_OPEN_MP],
-                         extra_link_args=[COMPILE_FLAG_OPEN_MP],
-                         define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")])
+library_dirs = [
+    '../cpp/build/subprojects/boosting',
+    '../cpp/build/subprojects/seco'
+]
+
+runtime_library_dirs = [
+    'cpp/build/subprojects/boosting',
+    'cpp/build/subprojects/seco'
+]
+
+libraries = [
+    'mlrlboosting',
+    'mlrlseco'
+]
+
+include_dirs = [
+    '../cpp/subprojects/common/include',
+    '../cpp/subprojects/boosting/include',
+    '../cpp/subprojects/seco/include'
+]
+
+define_macros = [
+    ("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")
 ]
 
 compiler_directives = {
@@ -30,6 +44,12 @@ compiler_directives = {
     'initializedcheck': DEBUG
 }
 
+extensions = [
+    setuptools.Extension(name='*', language='c++', sources=sources, library_dirs=library_dirs, libraries=libraries,
+                         runtime_library_dirs=runtime_library_dirs, include_dirs=include_dirs,
+                         define_macros=define_macros)
+]
+
 setuptools.setup(
     name='boomer',
     version='0.4.0',
@@ -38,7 +58,7 @@ setuptools.setup(
     author='Michael Rapp',
     author_email='mrapp@ke.tu-darmstadt.de',
     license='MIT',
-    packages=['boomer'],
+    packages=['boosting', 'seco'],
     install_requires=[
         'numpy>=1.19.0',
         'scipy>=1.5.0',
