@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/losses/loss_label_wise_common.hpp"
+#include "boosting/losses/loss_label_wise.hpp"
 
 
 namespace boosting {
