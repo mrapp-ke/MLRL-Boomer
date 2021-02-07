@@ -13,16 +13,19 @@ sources = [
 ]
 
 library_dirs = [
+    '../cpp/build/subprojects/common',
     '../cpp/build/subprojects/boosting',
     '../cpp/build/subprojects/seco'
 ]
 
 runtime_library_dirs = [
+    'cpp/build/subprojects/common',
     'cpp/build/subprojects/boosting',
     'cpp/build/subprojects/seco'
 ]
 
 libraries = [
+    'mlrlcommon',
     'mlrlboosting',
     'mlrlseco'
 ]
@@ -58,7 +61,7 @@ setuptools.setup(
     author='Michael Rapp',
     author_email='mrapp@ke.tu-darmstadt.de',
     license='MIT',
-    packages=['boosting', 'seco'],
+    packages=['common', 'boosting', 'seco'],
     install_requires=[
         'numpy>=1.19.0',
         'scipy>=1.5.0',
