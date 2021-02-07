@@ -13,6 +13,7 @@ python/**/boosting/*.cpp
 python/**/common/*.cpp
 python/**/seco/*.cpp
 python/**/*.html
+cpp/build/
 python/build/
 *.pyc
 
