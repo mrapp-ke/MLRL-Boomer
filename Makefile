@@ -25,6 +25,10 @@ venv:
 	venv/bin/pip install scipy
 	@echo "Installing compile-time dependency \"Cython\" into virtual environment..."
 	venv/bin/pip install Cython
+	@echo "Installing compile-time dependency \"meson\" into virtual environment..."
+	venv/bin/pip install meson
+	@echo "Installing compile-time dependency \"ninja\" into virtual environment..."
+	venv/bin/pip install ninja
 
 compile: venv
 	@echo "Compiling Cython code..."
