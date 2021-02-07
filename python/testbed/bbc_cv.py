@@ -16,11 +16,11 @@ from sklearn.utils import check_random_state
 
 from boomer.common.learners import Learner
 from boomer.common.types import DTYPE_UINT8, DTYPE_UINT32
-from boomer.data import MetaData
-from boomer.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
-from boomer.interfaces import Randomized
-from boomer.persistence import ModelPersistence
-from boomer.training import CrossValidation, DataSet
+from testbed.data import MetaData
+from testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+from testbed.interfaces import Randomized
+from testbed.persistence import ModelPersistence
+from testbed.training import CrossValidation, DataSet
 
 
 class BbcCvAdapter(CrossValidation):

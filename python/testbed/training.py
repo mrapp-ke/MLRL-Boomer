@@ -14,9 +14,9 @@ from timeit import default_timer as timer
 
 from sklearn.model_selection import KFold
 
-from boomer.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
-from boomer.interfaces import Randomized
-from boomer.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
+from testbed.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
+from testbed.interfaces import Randomized
+from testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
 
 
 class DataSet:

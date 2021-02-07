@@ -11,12 +11,12 @@ from abc import abstractmethod
 
 from sklearn.model_selection import KFold
 
-from boomer.data import MetaData
-from boomer.interfaces import Randomized
-from boomer.io import clear_directory
-from boomer.io import open_readable_csv_file, create_csv_dict_writer
-from boomer.io import open_writable_csv_file, create_csv_dict_reader
-from boomer.training import CrossValidation, DataSet
+from testbed.data import MetaData
+from testbed.interfaces import Randomized
+from testbed.io import clear_directory
+from testbed.io import open_readable_csv_file, create_csv_dict_writer
+from testbed.io import open_writable_csv_file, create_csv_dict_reader
+from testbed.training import CrossValidation, DataSet
 
 
 class ParameterSearch(Randomized, ABC):
