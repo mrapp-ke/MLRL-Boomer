@@ -1,5 +1,5 @@
 #include "common/binning/feature_binning_equal_frequency.hpp"
-#include "binning_common.hpp"
+#include "common/binning/binning_common.hpp"
 
 
 EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
