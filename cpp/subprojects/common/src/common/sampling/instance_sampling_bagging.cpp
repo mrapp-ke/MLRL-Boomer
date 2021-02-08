@@ -22,3 +22,11 @@ std::unique_ptr<IWeightVector> Bagging::subSample(uint32 numExamples, RNG& rng) 
 
     return weightVectorPtr;
 }
+
+std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<SinglePartition> partitionPtr, RNG& rng) const {
+    // TODO
+}
+
+std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<BiPartition> partitionPtr, RNG& rng) const {
+    // TODO
+}
