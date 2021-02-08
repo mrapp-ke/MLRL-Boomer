@@ -54,17 +54,19 @@ static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExampl
     return scoreVector.overallQualityScore;
 }
 
-static inline void recalculatePredictionInternally(const IStatistics& statistics,
+template<class T>
+static inline void recalculatePredictionInternally(T iterator, uint32 numExamples, const CoverageMask& coverageMask,
+                                                   const IStatistics& statistics,
                                                    const IHeadRefinementFactory& headRefinementFactory,
-                                                   const CoverageMask& coverageMask, Refinement& refinement) {
+                                                   Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
-    uint32 numStatistics = statistics.getNumStatistics();
 
-    // TODO Should only use training data, not the holdout set
-    for (uint32 i = 0; i < numStatistics; i++) {
-        if (coverageMask.isCovered(i)) {
-            statisticsSubsetPtr->addToSubset(i, 1);
+    for (uint32 i = 0; i < numExamples; i++) {
+        uint32 exampleIndex = iterator[i];
+
+        if (coverageMask.isCovered(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
 

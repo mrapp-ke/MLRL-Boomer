@@ -460,14 +460,16 @@ class ExactThresholds final : public AbstractThresholds {
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
                                            Refinement& refinement) const override {
-                    recalculatePredictionInternally(thresholds_.statisticsProviderPtr_->get(),
-                                                    *thresholds_.headRefinementFactoryPtr_, coverageMask, refinement);
+                    recalculatePredictionInternally<SinglePartition::const_iterator>(
+                        partition.cbegin(), partition.getNumElements(), coverageMask,
+                        thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, refinement);
                 }
 
                 void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
                                            Refinement& refinement) const override {
-                    recalculatePredictionInternally(thresholds_.statisticsProviderPtr_->get(),
-                                                    *thresholds_.headRefinementFactoryPtr_, coverageMask, refinement);
+                    recalculatePredictionInternally<BiPartition::const_iterator>(
+                        partition.first_cbegin(), partition.getNumFirst(), coverageMask,
+                        thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
