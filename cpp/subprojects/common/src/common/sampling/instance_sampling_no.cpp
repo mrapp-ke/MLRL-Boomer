@@ -26,5 +26,5 @@ std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(std::unique_ptr<
         weightIterator[index] = 1;
     }
 
-    return std::move(weightVectorPtr);
+    return weightVectorPtr;
 }

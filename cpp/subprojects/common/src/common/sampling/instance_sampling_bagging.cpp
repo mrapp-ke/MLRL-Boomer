@@ -37,7 +37,7 @@ std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<SinglePartitio
         weightIterator[randomIndex] += 1;
     }
 
-    return std::move(weightVectorPtr);
+    return weightVectorPtr;
 }
 
 std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<BiPartition> partitionPtr, RNG& rng) const {
@@ -57,5 +57,5 @@ std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<BiPartition> p
         weightIterator[randomIndex] += 1;
     }
 
-    return std::move(weightVectorPtr);
+    return weightVectorPtr;
 }
