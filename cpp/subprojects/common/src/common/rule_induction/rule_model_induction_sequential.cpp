@@ -57,7 +57,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr_->partition(numExamples, rng);
 
     while (shouldContinue(*stoppingCriteriaPtr_, statisticsProviderPtr->get(), numRules)) {
-        std::unique_ptr<IWeightVector> weightsPtr = instanceSubSamplingPtr_->subSample(numExamples, rng);
+        std::unique_ptr<IWeightVector> weightsPtr = partitionPtr->subSample(*instanceSubSamplingPtr_, rng);
         std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr_->subSample(numLabels, rng);
         bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, *labelIndicesPtr, *weightsPtr,
                                                      *featureSubSamplingPtr_, *pruningPtr_, *postProcessorPtr_,
