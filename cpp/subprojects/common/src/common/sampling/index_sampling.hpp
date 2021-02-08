@@ -11,8 +11,8 @@
  * Randomly selects `numSamples` out of `numTotal` indices without replacement by using a set to keep track of the
  * indices that have already been selected. This method is suitable if `numSamples` is much smaller than `numTotal`
  *
- * @tparam T            The type of the iterator that provides random access to the available indices
- * @param iterator      An iterator that provides random access to the available indices
+ * @tparam T            The type of the iterator that provides random access to the available indices to sample from
+ * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
  * @param numSamples    The number of indices to be sampled
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
@@ -48,8 +48,8 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTr
  * Randomly selects `numSamples` out of `numTotal` indices without replacement using a reservoir sampling algorithm.
  * This method is suitable if `numSamples` is almost as large as `numTotal`.
  *
- * @tparam T            The type of the iterator that provides random access to the available indices
- * @param iterator      An iterator that provides random access to the available indices
+ * @tparam T            The type of the iterator that provides random access to the available indices to sample from
+ * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
  * @param numSamples    The number of indices to be sampled
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
@@ -121,8 +121,8 @@ static inline void randomPermutation(FirstIterator firstIterator, SecondIterator
  * Randomly selects `numSamples` out of `numTotal` indices without replacement by first generating a random permutation
  * of the available indices using the Fisher-Yates shuffle and then returning the first `numSamples` indices.
  *
- * @tparam T            The type of the iterator that provides random access to the available indices
- * @param iterator      An iterator that provides random access to the available indices
+ * @tparam T            The type of the iterator that provides random access to the available indices to sample from
+ * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
  * @param numSamples    The number of indices to be sampled
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
@@ -155,8 +155,8 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
  * Randomly selects `numSamples` out of `numTotal` indices without replacement. The method that is used internally is
  * chosen automatically, depending on the ratio `numSamples / numTotal`.
  *
- * @tparam T            The type of the iterator that provides random access to the available indices
- * @param iterator      An iterator that provides random access to the available indices
+ * @tparam T            The type of the iterator that provides random access to the available indices to sample from
+ * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
  * @param numSamples    The number of indices to be sampled
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
