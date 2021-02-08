@@ -47,4 +47,7 @@ class SinglePartition : public IPartition {
          */
         uint32 getNumElements() const;
 
+        std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
+                                                 RNG& rng) const override;
+
 };

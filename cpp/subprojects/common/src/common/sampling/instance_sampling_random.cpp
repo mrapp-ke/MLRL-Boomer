@@ -1,6 +1,8 @@
 #include "common/sampling/instance_sampling_random.hpp"
 #include "common/indices/index_iterator.hpp"
 #include "weight_sampling.hpp"
+#include "common/sampling/partition_bi.hpp"
+#include "common/sampling/partition_single.hpp"
 
 
 RandomInstanceSubsetSelection::RandomInstanceSubsetSelection(float32 sampleSize)

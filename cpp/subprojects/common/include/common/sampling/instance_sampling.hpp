@@ -5,9 +5,11 @@
 
 #include "common/sampling/weight_vector.hpp"
 #include "common/sampling/random.hpp"
-#include "common/sampling/partition_bi.hpp"
-#include "common/sampling/partition_single.hpp"
 #include <memory>
+
+// Forward declarations
+class BiPartition;
+class SinglePartition;
 
 
 /**

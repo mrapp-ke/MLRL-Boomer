@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/sampling/partition.hpp"
+#include "common/sampling/instance_sampling.hpp"
 #include "common/data/vector_dense.hpp"
 
 
@@ -107,5 +108,8 @@ class BiPartition : public IPartition {
          * @return The total number of elements
          */
         uint32 getNumElements() const;
+
+        std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
+                                                 RNG& rng) const override;
 
 };
