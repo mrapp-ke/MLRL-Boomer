@@ -135,7 +135,8 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
     } else {
         if (instanceSubSamplingUsed) {
             // Prune rule...
-            std::unique_ptr<CoverageMask> coverageMaskPtr = pruning.prune(*thresholdsSubsetPtr, conditions, *bestHead);
+            std::unique_ptr<CoverageMask> coverageMaskPtr = pruning.prune(*thresholdsSubsetPtr, partition, conditions,
+                                                                          *bestHead);
 
             // Re-calculate the scores in the head based on the entire training data...
             const CoverageMask& coverageMask =
