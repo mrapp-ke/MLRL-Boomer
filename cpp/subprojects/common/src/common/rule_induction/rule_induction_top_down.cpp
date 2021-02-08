@@ -141,7 +141,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
             // Re-calculate the scores in the head based on the entire training data...
             const CoverageMask& coverageMask =
                 coverageMaskPtr.get() != nullptr ? *coverageMaskPtr : thresholdsSubsetPtr->getCoverageMask();
-            thresholdsSubsetPtr->recalculatePrediction(coverageMask, *bestRefinementPtr);
+            partition.recalculatePrediction(*thresholdsSubsetPtr, coverageMask, *bestRefinementPtr);
         }
 
         // Apply post-processor...

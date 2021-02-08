@@ -1,4 +1,8 @@
 #include "common/sampling/partition_bi.hpp"
+#include "common/sampling/instance_sampling.hpp"
+#include "common/thresholds/coverage_mask.hpp"
+#include "common/thresholds/thresholds_subset.hpp"
+#include "common/rule_refinement/rule_refinement.hpp"
 
 
 BiPartition::BiPartition(uint32 numFirst, uint32 numSecond)
@@ -52,4 +56,9 @@ uint32 BiPartition::getNumElements() const {
 
 std::unique_ptr<IWeightVector> BiPartition::subSample(const IInstanceSubSampling& instanceSubSampling, RNG& rng) const {
     return instanceSubSampling.subSample(*this, rng);
+}
+
+void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+                                        Refinement& refinement) const {
+    return thresholdsSubset.recalculatePrediction(*this, coverageMask, refinement);
 }

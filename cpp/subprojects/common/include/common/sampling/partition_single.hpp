@@ -50,4 +50,7 @@ class SinglePartition : public IPartition {
         std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
                                                  RNG& rng) const override;
 
+        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+                                   Refinement& refinement) const override;
+
 };

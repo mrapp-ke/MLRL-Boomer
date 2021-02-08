@@ -9,6 +9,9 @@
 class IWeightVector;
 class IInstanceSubSampling;
 class RNG;
+class IThresholdsSubset;
+class CoverageMask;
+class Refinement;
 
 
 /**
@@ -33,5 +36,18 @@ class IPartition {
          */
         virtual std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
                                                          RNG& rng) const = 0;
+
+        /**
+         * Recalculates the scores to be predicted by a refinement based on all examples in the training set that are
+         * marked as covered according to a given `CoverageMask` and updates the head of the refinement accordingly.
+         *
+         * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
+         *                          recalculate the scores
+         * @param coverageMask      A reference to an object of type `CoverageMask` that specifies which examples are
+         *                          covered by the refinement
+         * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
+         */
+        virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+                                           Refinement& refinement) const = 0;
 
 };
