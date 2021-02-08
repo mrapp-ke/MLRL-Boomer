@@ -5,6 +5,7 @@
 
 #include "common/thresholds/thresholds_subset.hpp"
 #include "common/sampling/weight_vector.hpp"
+#include "common/sampling/partition.hpp"
 
 
 /**
@@ -22,9 +23,12 @@ class IThresholds {
          *
          * @param weights   A reference to an object of type `IWeightVector` that provides access to the weights of the
          *                  individual training examples
+         * @param partition A reference to an object of type `IPartition` that provides access to the indices of the
+         *                  training examples that belong to the training set and the holdout set, respectively
          * @return          An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
-        virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) = 0;
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights,
+                                                                const IPartition& partition) = 0;
 
         /**
          * Returns the number of available examples.
