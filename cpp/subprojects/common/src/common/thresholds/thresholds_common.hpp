@@ -35,7 +35,7 @@ static inline void updateSampledStatisticsInternally(IStatistics& statistics, co
 }
 
 template<class T>
-static inline float64 evaluateOutOfSampleInternally(const T iterator, uint32 numExamples, const IWeightVector& weights,
+static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
                                                     const CoverageMask& coverageMask, const IStatistics& statistics,
                                                     const IHeadRefinementFactory& headRefinementFactory,
                                                     const AbstractPrediction& prediction) {
