@@ -3,7 +3,8 @@ from common.cython.input cimport NominalFeatureMask, INominalFeatureMask
 from common.cython.input cimport FeatureMatrix, IFeatureMatrix
 from common.cython.input cimport LabelMatrix, ILabelMatrix
 from common.cython.model cimport ModelBuilder, RuleModel, IModelBuilder, RuleModelImpl
-from common.cython.sampling cimport ILabelSubSampling, IInstanceSubSampling, IFeatureSubSampling, RNG
+from common.cython.sampling cimport ILabelSubSampling, IInstanceSubSampling, IFeatureSubSampling, IPartitionSampling, \
+    RNG
 from common.cython.statistics cimport IStatisticsProviderFactory
 from common.cython.stopping cimport IStoppingCriterion
 from common.cython.thresholds cimport IThresholdsFactory
@@ -57,6 +58,7 @@ cdef extern from "common/rule_induction/rule_model_induction_sequential.hpp" nog
                                          shared_ptr[ILabelSubSampling] labelSubSamplingPtr,
                                          shared_ptr[IInstanceSubSampling] instanceSubSamplingPtr,
                                          shared_ptr[IFeatureSubSampling] featureSubSamplingPtr,
+                                         shared_ptr[IPartitionSampling] partitionSamplingPtr,
                                          shared_ptr[IPruning] pruningPtr, shared_ptr[IPostProcessor] postProcessorPtr,
                                          uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
                                          unique_ptr[forward_list[shared_ptr[IStoppingCriterion]]] stoppingCriteriaPtr) except +

@@ -28,8 +28,8 @@ from sklearn.base import ClassifierMixin
 from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE
 from common.rule_learners import MLRuleLearner, SparsePolicy
 from common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
-    create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    create_max_head_refinements, create_num_threads, create_thresholds_factory
+    create_label_sub_sampling, create_partition_sampling, create_max_conditions, create_stopping_criteria, \
+    create_min_coverage, create_max_head_refinements, create_num_threads, create_thresholds_factory
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -211,6 +211,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
+        partition_sampling = create_partition_sampling()
         pruning = create_pruning(self.pruning)
         shrinkage = self.__create_post_processor()
         min_coverage = create_min_coverage(self.min_coverage)
@@ -227,9 +228,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         rule_induction = TopDownRuleInduction(num_threads)
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
-                                            label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
-                                            shrinkage, min_coverage, max_conditions, max_head_refinements,
-                                            stopping_criteria)
+                                            label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                            partition_sampling, pruning, shrinkage, min_coverage, max_conditions,
+                                            max_head_refinements, stopping_criteria)
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)
