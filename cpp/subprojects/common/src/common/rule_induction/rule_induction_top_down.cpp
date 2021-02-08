@@ -65,7 +65,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
     bool foundRefinement = true;
 
     // Create a new subset of the given thresholds...
-    std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = thresholds.createSubset(weights, partition);
+    std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = thresholds.createSubset(weights);
 
     // Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore or
     // the maximum number of conditions has been reached...
