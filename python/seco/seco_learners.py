@@ -63,9 +63,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
                  head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
-                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, feature_binning: str = None,
-                 pruning: str = None, min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1,
-                 num_threads: int = -1):
+                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout_set_size: float = 0.0,
+                 feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
+                 max_head_refinements: int = 1, num_threads: int = -1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -97,6 +97,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     or None, if no sub-sampling should be used. Additional argument may
                                                     be provided as a dictionary, e.g.
                                                     `random-feature-selection{\"sample_size\":0.5}`
+        :param holdout_set_size:                    The fraction of the training examples that should be included in the
+                                                    holdout set. Must be in (0, 1) or 0, if no holdout set should be
+                                                    used
         :param feature_binning:                     The strategy that is used for assigning examples to bins based on
                                                     their feature values. Must be `equal-width`, `equal-frequency` or
                                                     None, if no feature binning should be used. Additional arguments may
@@ -124,6 +127,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
+        self.holdout_set_size = holdout_set_size
         self.feature_binning = feature_binning
         self.pruning = pruning
         self.min_coverage = min_coverage
@@ -144,6 +148,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
         if self.feature_sub_sampling is not None:
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
+        if float(self.holdout_set_size > 0.0):
+            name += '_holdout=' + str(self.holdout_set_size)
         if self.feature_binning is not None:
             name += '_feature-binning=' + str(self.feature_binning)
         if self.pruning is not None:
@@ -173,7 +179,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
-        partition_sampling = create_partition_sampling()
+        partition_sampling = create_partition_sampling(self.holdout_set_size)
         pruning = create_pruning(self.pruning)
         post_processor = NoPostProcessor()
         min_coverage = create_min_coverage(self.min_coverage)
