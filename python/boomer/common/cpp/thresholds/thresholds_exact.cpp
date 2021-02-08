@@ -4,6 +4,9 @@
 #include <unordered_map>
 #include <cmath>
 
+#include "../sampling/weight_vector_dense.h"
+#include <iostream>
+
 
 /**
  * Adjusts the position that separates the examples that are covered by a condition from the ones that are not covered,
@@ -446,6 +449,13 @@ class ExactThresholds final : public AbstractThresholds {
 
                 float64 evaluateOutOfSample(const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
+
+                    // print the weights_ vector
+                    const DenseWeightVector* printWeight = dynamic_cast<const DenseWeightVector*>(&weights_);
+                    for(uint32 i = 0; i < printWeight->getNumElements(); i++) {
+                        std::cout << i << ". weight = " << printWeight->getWeight(i) << "\n";
+                    }
+
                     return evaluateOutOfSampleInternally(*thresholds_.statisticsPtr_, 
                                                          *thresholds_.headRefinementFactoryPtr_, weights_, coverageMask,
                                                          head);

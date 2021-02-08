@@ -67,4 +67,10 @@ class CoverageMask final {
          */
         uint32 target;
 
+        /**
+         * Returns the number of elements in the coverage mask.
+         *
+         * @return the number of elements
+         */
+        uint32 getNumElements() const;
 };

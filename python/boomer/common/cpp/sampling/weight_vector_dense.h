@@ -64,4 +64,11 @@ class DenseWeightVector final : public IWeightVector {
 
         uint32 getSumOfWeights() const override;
 
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return the number of elements in the vector.
+         */
+        uint32 getNumElements() const;
+
 };

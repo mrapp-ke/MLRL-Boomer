@@ -324,6 +324,7 @@ class LabelWiseStatistics final : public ILabelWiseStatistics {
                         uncoveredLabels_[i] = 0;
                     }
                 }
+                // TODO: uncoveredLables_ ausgeben
             }
         }
 

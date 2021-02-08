@@ -95,6 +95,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
                     // If the refinement is better than the current rule...
                     if (head != nullptr) {
+                        //TODO: head.quality score ausgeben (mehrfach)
                         bestHead = head;
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;

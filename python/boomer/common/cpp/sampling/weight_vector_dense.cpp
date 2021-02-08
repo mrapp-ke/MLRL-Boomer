@@ -33,3 +33,7 @@ uint32 DenseWeightVector::getWeight(uint32 pos) const {
 uint32 DenseWeightVector::getSumOfWeights() const {
     return sumOfWeights_;
 }
+
+uint32 DenseWeightVector::getNumElements() const {
+    return vector_.getNumElements();
+}
