@@ -5,6 +5,8 @@
 
 #include "common/sampling/weight_vector.hpp"
 #include "common/sampling/random.hpp"
+#include "common/sampling/partition_bi.hpp"
+#include "common/sampling/partition_single.hpp"
 #include <memory>
 
 
@@ -26,6 +28,33 @@ class IInstanceSubSampling {
          * @return              An unique pointer to an object type `WeightVector` that provides access to the weights
          *                      of the individual training examples
          */
+        // TODO Remove
         virtual std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) const = 0;
+
+        /**
+         * Creates and returns a sub-sample of the examples in a training set.
+         *
+         * @param partitionPtr  An unique pointer to an object of type `SinglePartition` that provides access to the
+         *                      indices of the training examples that are included in the training set
+         * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
+         *                      used
+         * @return              An unique pointer to an object type `WeightVector` that provides access to the weights
+         *                      of the individual training examples
+         */
+        virtual std::unique_ptr<IWeightVector> subSample(std::unique_ptr<SinglePartition> partitionPtr,
+                                                         RNG& rng) const = 0;
+
+        /**
+         * Creates and returns a sub-sample of the examples in a training set.
+         *
+         * @param partitionPtr  An unique pointer to an object of type `BiPartition` that provides access to the indices
+         *                      of the training examples that are included in the training set and the holdout set,
+         *                      respectively
+         * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
+         *                      used
+         * @return              An unique pointer to an object type `WeightVector` that provides access to the weights
+         *                      of the individual training examples
+         */
+        virtual std::unique_ptr<IWeightVector> subSample(std::unique_ptr<BiPartition> partitionPtr, RNG& rng) const = 0;
 
 };
