@@ -1,6 +1,6 @@
 #include "common/sampling/label_sampling_random.hpp"
-#include "common/sampling/index_sampling.hpp"
 #include "common/indices/index_iterator.hpp"
+#include "index_sampling.hpp"
 
 RandomLabelSubsetSelection::RandomLabelSubsetSelection(uint32 numSamples)
     : numSamples_(numSamples) {
