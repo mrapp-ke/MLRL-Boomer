@@ -45,3 +45,7 @@ uint32 BiPartition::getNumFirst() const {
 uint32 BiPartition::getNumSecond() const {
     return vector_.getNumElements() - numFirst_;
 }
+
+uint32 BiPartition::getNumElements() const {
+    return vector_.getNumElements();
+}

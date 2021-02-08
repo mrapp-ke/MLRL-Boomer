@@ -101,4 +101,11 @@ class BiPartition : public IPartition {
          */
         uint32 getNumSecond() const;
 
+        /**
+         * Returns the total number of elements.
+         *
+         * @return The total number of elements
+         */
+        uint32 getNumElements() const;
+
 };
