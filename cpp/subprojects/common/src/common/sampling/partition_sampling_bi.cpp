@@ -1,6 +1,6 @@
 #include "common/sampling/partition_sampling_bi.hpp"
 #include "common/sampling/partition_bi.hpp"
-#include "common/sampling/index_sampling.hpp"
+#include "index_sampling.hpp"
 
 
 BiPartitionSampling::BiPartitionSampling(float32 holdoutSetSize)
