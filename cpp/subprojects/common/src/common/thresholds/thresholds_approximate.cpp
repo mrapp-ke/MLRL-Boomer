@@ -344,6 +344,8 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 const IWeightVector& weights_;
 
+                const IPartition& partition_;
+
                 CoverageMask coverageMask_;
 
                 uint32 numModifications_;
@@ -376,9 +378,13 @@ class ApproximateThresholds final : public AbstractThresholds {
                  *                      thresholds
                  * @param weights       A reference to an object of type `IWeightWeight` that provides access to the
                  *                      weights of individual training examples
+                 * @param partition     A reference to an object of type `IPartition` that provides access to the
+                 *                      indices of the training examples that belong to the training set and the holdout
+                 *                      set, respectively
                  */
-                ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
-                    : thresholds_(thresholds), weights_(weights), 
+                ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights,
+                                 const IPartition& partition)
+                    : thresholds_(thresholds), weights_(weights), partition_(partition),
                       coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
 
                 }
@@ -473,9 +479,10 @@ class ApproximateThresholds final : public AbstractThresholds {
 
         }
 
-        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
+        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights,
+                                                        const IPartition& partition) override {
             updateSampledStatisticsInternally(statisticsProviderPtr_->get(), weights);
-            return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this, weights);
+            return std::make_unique<ApproximateThresholds::ThresholdsSubset>(*this, weights, partition);
         }
 
 };
