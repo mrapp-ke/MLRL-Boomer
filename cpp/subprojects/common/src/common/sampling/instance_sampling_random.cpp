@@ -14,20 +14,18 @@ std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(uint32 n
                                                           numExamples, rng);
 }
 
-std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(std::unique_ptr<SinglePartition> partitionPtr,
+std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(const SinglePartition& partition,
                                                                         RNG& rng) const {
-    uint32 numExamples = partitionPtr->getNumElements();
+    uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
     return sampleWeightsWithoutReplacement<IndexIterator>(IndexIterator(numExamples), numExamples, numSamples,
                                                           numExamples, rng);
 }
 
-std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(std::unique_ptr<BiPartition> partitionPtr,
-                                                                        RNG& rng) const {
-    uint32 numExamples = partitionPtr->getNumElements();
-    uint32 numTrainingExamples = partitionPtr->getNumFirst();
+std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(const BiPartition& partition, RNG& rng) const {
+    uint32 numExamples = partition.getNumElements();
+    uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize_ * numTrainingExamples);
-    return sampleWeightsWithoutReplacement<BiPartition::const_iterator>(partitionPtr->first_cbegin(),
-                                                                        numTrainingExamples, numSamples, numExamples,
-                                                                        rng);
+    return sampleWeightsWithoutReplacement<BiPartition::const_iterator>(partition.first_cbegin(), numTrainingExamples,
+                                                                        numSamples, numExamples, rng);
 }
