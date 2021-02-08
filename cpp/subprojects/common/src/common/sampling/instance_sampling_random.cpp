@@ -16,10 +16,18 @@ std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(uint32 n
 
 std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(std::unique_ptr<SinglePartition> partitionPtr,
                                                                         RNG& rng) const {
-    // TODO
+    uint32 numExamples = partitionPtr->getNumElements();
+    uint32 numSamples = (uint32) (sampleSize_ * numExamples);
+    return sampleWeightsWithoutReplacement<IndexIterator>(IndexIterator(numExamples), numExamples, numSamples,
+                                                          numExamples, rng);
 }
 
 std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(std::unique_ptr<BiPartition> partitionPtr,
                                                                         RNG& rng) const {
-    // TODO
+    uint32 numExamples = partitionPtr->getNumElements();
+    uint32 numTrainingExamples = partitionPtr->getNumFirst();
+    uint32 numSamples = (uint32) (sampleSize_ * numTrainingExamples);
+    return sampleWeightsWithoutReplacement<BiPartition::const_iterator>(partitionPtr->first_cbegin(),
+                                                                        numTrainingExamples, numSamples, numExamples,
+                                                                        rng);
 }
