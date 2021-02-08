@@ -13,7 +13,7 @@
  *
  * @tparam T            The type of the iterator that provides random access to the available indices
  * @param iterator      An iterator that provides random access to the available indices
- * @param numTotal      The total number of available indices
+ * @param numTotal      The total number of available indices to sample from
  * @param numSamples    The number of indices to be sampled
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IIndexVector` that provides access to the indices that
@@ -50,7 +50,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaTr
  *
  * @tparam T            The type of the iterator that provides random access to the available indices
  * @param iterator      An iterator that provides random access to the available indices
- * @param numTotal      The total number of available indices
+ * @param numTotal      The total number of available indices to sample from
  * @param numSamples    The number of indices to be sampled
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              A pointer to an object of type `IIndexVector` that provides access to the indices that are
@@ -89,7 +89,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRe
  * @param firstIterator     The iterator that provides random access to the indices that are contained by the first set
  * @param secondIterator    The iterator that provides random access to the indices that are contained by the second set
  * @param numFirst          The number of indices that are contained by the first set
- * @param numTotal          The total number of indices
+ * @param numTotal          The total number of indices to sample from
  * @param rng               A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class FirstIterator, class SecondIterator>
@@ -123,7 +123,7 @@ static inline void randomPermutation(FirstIterator firstIterator, SecondIterator
  *
  * @tparam T            The type of the iterator that provides random access to the available indices
  * @param iterator      An iterator that provides random access to the available indices
- * @param numTotal      The total number of available indices
+ * @param numTotal      The total number of available indices to sample from
  * @param numSamples    The number of indices to be sampled
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IIndexVector` that provides access to the indices that
@@ -157,7 +157,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
  *
  * @tparam T            The type of the iterator that provides random access to the available indices
  * @param iterator      An iterator that provides random access to the available indices
- * @param numTotal      The total number of available indices
+ * @param numTotal      The total number of available indices to sample from
  * @param numSamples    The number of indices to be sampled
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IIndexVector` that provides access to the indices that
