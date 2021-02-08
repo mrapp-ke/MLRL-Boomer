@@ -80,6 +80,44 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRe
 }
 
 /**
+ * Computes a random permutation of the indices that are contained by two mutually exclusive sets.
+ *
+ * @tparam FirstIterator    The type of the iterator that provides random access to the indices that are contained by
+ *                          the first set
+ * @tparam SecondIterator   The type of the iterator that provides random access to the indices that are contained by
+ *                          the second set
+ * @param firstIterator     The iterator that provides random access to the indices that are contained by the first set
+ * @param secondIterator    The iterator that provides random access to the indices that are contained by the second set
+ * @param numFirst          The number of indices that are contained by the first set
+ * @param numTotal          The total number of indices
+ * @param rng               A reference to an object of type `RNG`, implementing the random number generator to be used
+ */
+template<class FirstIterator, class SecondIterator>
+static inline void randomPermutation(FirstIterator firstIterator, SecondIterator secondIterator, uint32 numFirst,
+                                     uint32 numTotal, RNG& rng) {
+    for (uint32 i = 0; i < numTotal - 2; i++) {
+        // Swap elements at index i and at a randomly selected index...
+        uint32 randomIndex = rng.random(i, numTotal);
+        uint32 tmp1 = i < numFirst ? firstIterator[i] : secondIterator[i - numFirst];
+        uint32 tmp2;
+
+        if (randomIndex < numFirst) {
+            tmp2 = firstIterator[randomIndex];
+            firstIterator[randomIndex] = tmp1;
+        } else {
+            tmp2 = secondIterator[randomIndex - numFirst];
+            secondIterator[randomIndex - numFirst] = tmp1;
+        }
+
+        if (i < numFirst) {
+            firstIterator[i] = tmp2;
+        } else {
+            secondIterator[i - numFirst] = tmp2;
+        }
+    }
+}
+
+/**
  * Randomly selects `numSamples` out of `numTotal` indices without replacement by first generating a random permutation
  * of the available indices using the Fisher-Yates shuffle and then returning the first `numSamples` indices.
  *
@@ -108,27 +146,8 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
         unusedIndices[i - numSamples] = iterator[i];
     }
 
-    for (uint32 i = 0; i < numTotal - 2; i++) {
-        // Swap elements at index i and at a randomly selected index...
-        uint32 randomIndex = rng.random(i, numTotal);
-        uint32 tmp1 = i < numSamples ? sampleIterator[i] : unusedIndices[i - numSamples];
-        uint32 tmp2;
-
-        if (randomIndex < numSamples) {
-            tmp2 = sampleIterator[randomIndex];
-            sampleIterator[randomIndex] = tmp1;
-        } else {
-            tmp2 = unusedIndices[randomIndex - numSamples];
-            unusedIndices[randomIndex - numSamples] = tmp1;
-        }
-
-        if (i < numSamples) {
-            sampleIterator[i] = tmp2;
-        } else {
-            unusedIndices[i - numSamples] = tmp2;
-        }
-    }
-
+    randomPermutation<PartialIndexVector::iterator, uint32*>(sampleIterator, &unusedIndices[0], numSamples, numTotal,
+                                                             rng);
     return indexVectorPtr;
 }
 
