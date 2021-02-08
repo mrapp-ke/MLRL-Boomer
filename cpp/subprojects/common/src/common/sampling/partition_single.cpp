@@ -3,6 +3,7 @@
 #include "common/thresholds/coverage_mask.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 #include "common/rule_refinement/refinement.hpp"
+#include "common/head_refinement/prediction.hpp"
 
 
 SinglePartition::SinglePartition(uint32 numElements)
@@ -25,6 +26,11 @@ uint32 SinglePartition::getNumElements() const {
 std::unique_ptr<IWeightVector> SinglePartition::subSample(const IInstanceSubSampling& instanceSubSampling,
                                                           RNG& rng) const {
     return instanceSubSampling.subSample(*this, rng);
+}
+
+float64 SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
+                                             const CoverageMask& coverageMask, const AbstractPrediction& head) const {
+    return thresholdsSubset.evaluateOutOfSample(*this, coverageMask, head);
 }
 
 void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,

@@ -444,7 +444,14 @@ class ExactThresholds final : public AbstractThresholds {
                     return coverageMask_;
                 }
 
-                float64 evaluateOutOfSample(const CoverageMask& coverageMask,
+                float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageMask,
+                                            const AbstractPrediction& head) const override {
+                    return evaluateOutOfSampleInternally(thresholds_.statisticsProviderPtr_->get(),
+                                                         *thresholds_.headRefinementFactoryPtr_, weights_, coverageMask,
+                                                         head);
+                }
+
+                float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally(thresholds_.statisticsProviderPtr_->get(),
                                                          *thresholds_.headRefinementFactoryPtr_, weights_, coverageMask,

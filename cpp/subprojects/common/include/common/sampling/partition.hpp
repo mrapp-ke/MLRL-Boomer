@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/data/types.hpp"
 #include <memory>
 
 // Forward declarations
@@ -12,6 +13,7 @@ class RNG;
 class IThresholdsSubset;
 class CoverageMask;
 class Refinement;
+class AbstractPrediction;
 
 
 /**
@@ -36,6 +38,21 @@ class IPartition {
          */
         virtual std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
                                                          RNG& rng) const = 0;
+
+        /**
+         * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
+         * do not belong to the current sub-sample and are marked as covered according to a given `CoverageMask`.
+         *
+         * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
+         *                          evaluate the prediction
+         * @param coverageMask      A reference to an object of type `CoverageMask` that specifies which examples are
+         *                          covered by the rule
+         * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
+         *                          are predicted by the rule
+         * @return                  The calculated quality score
+         */
+        virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+                                            const AbstractPrediction& head) const = 0;
 
         /**
          * Recalculates the scores to be predicted by a refinement based on all examples in the training set that are
