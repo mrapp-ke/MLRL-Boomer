@@ -2,7 +2,7 @@
 #include "common/sampling/instance_sampling.hpp"
 #include "common/thresholds/coverage_mask.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
-#include "common/rule_refinement/rule_refinement.hpp"
+#include "common/rule_refinement/refinement.hpp"
 
 
 BiPartition::BiPartition(uint32 numFirst, uint32 numSecond)
