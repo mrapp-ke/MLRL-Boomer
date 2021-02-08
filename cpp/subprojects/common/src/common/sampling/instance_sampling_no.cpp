@@ -5,10 +5,6 @@
 #include "common/sampling/partition_single.hpp"
 
 
-std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(uint32 numExamples, RNG& rng) const {
-    return std::make_unique<EqualWeightVector>(numExamples);
-}
-
 std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(const SinglePartition& partition, RNG& rng) const {
     return std::make_unique<EqualWeightVector>(partition.getNumElements());
 }
