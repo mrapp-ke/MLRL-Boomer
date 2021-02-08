@@ -51,10 +51,10 @@ std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<BiPartition> p
     for (uint32 i = 0; i < numSamples; i++) {
         // Randomly select the index of an example...
         uint32 randomIndex = rng.random(0, numTrainingExamples);
-        randomIndex = indexIterator[randomIndex];
+        uint32 sampledIndex = indexIterator[randomIndex];
 
         // Update weight at the selected index...
-        weightIterator[randomIndex] += 1;
+        weightIterator[sampledIndex] += 1;
     }
 
     return weightVectorPtr;
