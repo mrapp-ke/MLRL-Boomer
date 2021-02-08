@@ -34,17 +34,18 @@ static inline void updateSampledStatisticsInternally(IStatistics& statistics, co
     }
 }
 
-static inline float64 evaluateOutOfSampleInternally(const IStatistics& statistics,
+template<class T>
+static inline float64 evaluateOutOfSampleInternally(const T iterator, uint32 numExamples, const IWeightVector& weights,
+                                                    const CoverageMask& coverageMask, const IStatistics& statistics,
                                                     const IHeadRefinementFactory& headRefinementFactory,
-                                                    const IWeightVector& weights, const CoverageMask& coverageMask,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
-    uint32 numStatistics = statistics.getNumStatistics();
 
-    // TODO Should only use training data, not the holdout set
-    for (uint32 i = 0; i < numStatistics; i++) {
-        if (weights.getWeight(i) == 0 && coverageMask.isCovered(i)) {
-            statisticsSubsetPtr->addToSubset(i, 1);
+    for (uint32 i = 0; i < numExamples; i++) {
+        uint32 exampleIndex = iterator[i];
+
+        if (weights.getWeight(exampleIndex) == 0 && coverageMask.isCovered(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
 
