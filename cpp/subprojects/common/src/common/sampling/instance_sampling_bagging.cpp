@@ -24,9 +24,38 @@ std::unique_ptr<IWeightVector> Bagging::subSample(uint32 numExamples, RNG& rng) 
 }
 
 std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<SinglePartition> partitionPtr, RNG& rng) const {
-    // TODO
+    uint32 numExamples = partitionPtr->getNumElements();
+    uint32 numSamples = (uint32) (sampleSize_ * numExamples);
+    std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numExamples, numSamples);
+    DenseWeightVector::iterator weightIterator = weightVectorPtr->begin();
+
+    for (uint32 i = 0; i < numSamples; i++) {
+        // Randomly select the index of an example...
+        uint32 randomIndex = rng.random(0, numExamples);
+
+        // Update weight at the selected index...
+        weightIterator[randomIndex] += 1;
+    }
+
+    return std::move(weightVectorPtr);
 }
 
 std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<BiPartition> partitionPtr, RNG& rng) const {
-    // TODO
+    uint32 numExamples = partitionPtr->getNumElements();
+    uint32 numTrainingExamples = partitionPtr->getNumFirst();
+    uint32 numSamples = (uint32) (sampleSize_ * numTrainingExamples);
+    BiPartition::const_iterator indexIterator = partitionPtr->first_cbegin();
+    std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numExamples, numSamples);
+    DenseWeightVector::iterator weightIterator = weightVectorPtr->begin();
+
+    for (uint32 i = 0; i < numSamples; i++) {
+        // Randomly select the index of an example...
+        uint32 randomIndex = rng.random(0, numTrainingExamples);
+        randomIndex = indexIterator[randomIndex];
+
+        // Update weight at the selected index...
+        weightIterator[randomIndex] += 1;
+    }
+
+    return std::move(weightVectorPtr);
 }
