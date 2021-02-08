@@ -1,4 +1,4 @@
-#include "common/rule_refinement/rule_refinement.hpp"
+#include "common/rule_refinement/refinement.hpp"
 
 
 bool Refinement::isBetterThan(const Refinement& another) const {

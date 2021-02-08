@@ -41,6 +41,7 @@ static inline float64 evaluateOutOfSampleInternally(const IStatistics& statistic
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
     uint32 numStatistics = statistics.getNumStatistics();
 
+    // TODO Should only use training data, not the holdout set
     for (uint32 i = 0; i < numStatistics; i++) {
         if (weights.getWeight(i) == 0 && coverageMask.isCovered(i)) {
             statisticsSubsetPtr->addToSubset(i, 1);
@@ -59,6 +60,7 @@ static inline void recalculatePredictionInternally(const IStatistics& statistics
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
     uint32 numStatistics = statistics.getNumStatistics();
 
+    // TODO Should only use training data, not the holdout set
     for (uint32 i = 0; i < numStatistics; i++) {
         if (coverageMask.isCovered(i)) {
             statisticsSubsetPtr->addToSubset(i, 1);
