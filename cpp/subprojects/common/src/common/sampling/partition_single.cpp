@@ -1,5 +1,8 @@
 #include "common/sampling/partition_single.hpp"
 #include "common/sampling/instance_sampling.hpp"
+#include "common/thresholds/coverage_mask.hpp"
+#include "common/thresholds/thresholds_subset.hpp"
+#include "common/rule_refinement/rule_refinement.hpp"
 
 
 SinglePartition::SinglePartition(uint32 numElements)
@@ -22,4 +25,9 @@ uint32 SinglePartition::getNumElements() const {
 std::unique_ptr<IWeightVector> SinglePartition::subSample(const IInstanceSubSampling& instanceSubSampling,
                                                           RNG& rng) const {
     return instanceSubSampling.subSample(*this, rng);
+}
+
+void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+                                            Refinement& refinement) const {
+    thresholdsSubset.recalculatePrediction(*this, coverageMask, refinement);
 }

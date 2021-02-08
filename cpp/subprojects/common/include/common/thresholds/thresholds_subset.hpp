@@ -9,6 +9,8 @@
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/head_refinement/prediction.hpp"
 #include "common/model/condition.hpp"
+#include "common/sampling/partition_bi.hpp"
+#include "common/sampling/partition_single.hpp"
 #include <memory>
 
 
@@ -101,17 +103,36 @@ class IThresholdsSubset {
         virtual float64 evaluateOutOfSample(const CoverageMask& coverageMask, const AbstractPrediction& head) const = 0;
 
         /**
-         * Recalculates the scores to be predicted by a refinement based on a given `CoverageMask` and updates the head
-         * of the refinement accordingly.
+         * Recalculates the scores to be predicted by a refinement based on all examples in the training set that are
+         * marked as covered according to a given `CoverageMask` and updates the head of the refinement accordingly.
          *
          * When calculating the updated scores, the weights of the individual training examples are ignored and equally
          * distributed weights are assumed instead.
          *
+         * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
+         *                      of the training examples that belong to the training set
          * @param coverageMask  A reference to an object of type `CoverageMask` that specifies which examples are
          *                      covered by the refinement
          * @param refinement    A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const = 0;
+        virtual void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
+                                           Refinement& refinement) const = 0;
+
+        /**
+         * Recalculates the scores to be predicted by a refinement based on all examples in the training set that are
+         * marked as covered according to a given `CoverageMask` and updates the head of the refinement accordingly.
+         *
+         * When calculating the updated scores, the weights of the individual training examples are ignored and equally
+         * distributed weights are assumed instead.
+         *
+         * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
+         *                      the training examples that belong to the training set
+         * @param coverageMask  A reference to an object of type `CoverageMask` that specifies which examples are
+         *                      covered by the refinement
+         * @param refinement    A reference to an object of type `Refinement`, whose head should be updated
+         */
+        virtual void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
+                                           Refinement& refinement) const = 0;
 
         /**
          * Applies the predictions of a rule to the statistics that correspond to the current subset.

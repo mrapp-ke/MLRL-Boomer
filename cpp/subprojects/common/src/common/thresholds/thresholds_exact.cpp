@@ -451,7 +451,14 @@ class ExactThresholds final : public AbstractThresholds {
                                                          head);
                 }
 
-                void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
+                void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
+                                           Refinement& refinement) const override {
+                    recalculatePredictionInternally(thresholds_.statisticsProviderPtr_->get(),
+                                                    *thresholds_.headRefinementFactoryPtr_, coverageMask, refinement);
+                }
+
+                void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
+                                           Refinement& refinement) const override {
                     recalculatePredictionInternally(thresholds_.statisticsProviderPtr_->get(),
                                                     *thresholds_.headRefinementFactoryPtr_, coverageMask, refinement);
                 }
