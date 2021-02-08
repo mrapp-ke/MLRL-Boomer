@@ -1,6 +1,8 @@
 #include "common/sampling/instance_sampling_no.hpp"
 #include "common/sampling/weight_vector_equal.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
+#include "common/sampling/partition_bi.hpp"
+#include "common/sampling/partition_single.hpp"
 
 
 std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(uint32 numExamples, RNG& rng) const {

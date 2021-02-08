@@ -1,4 +1,5 @@
 #include "common/sampling/partition_single.hpp"
+#include "common/sampling/instance_sampling.hpp"
 
 
 SinglePartition::SinglePartition(uint32 numElements)
@@ -16,4 +17,9 @@ SinglePartition::const_iterator SinglePartition::cend() const {
 
 uint32 SinglePartition::getNumElements() const {
     return numElements_;
+}
+
+std::unique_ptr<IWeightVector> SinglePartition::subSample(const IInstanceSubSampling& instanceSubSampling,
+                                                          RNG& rng) const {
+    return instanceSubSampling.subSample(*this, rng);
 }

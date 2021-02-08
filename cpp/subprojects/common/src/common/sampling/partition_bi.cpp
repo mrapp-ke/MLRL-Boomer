@@ -49,3 +49,7 @@ uint32 BiPartition::getNumSecond() const {
 uint32 BiPartition::getNumElements() const {
     return vector_.getNumElements();
 }
+
+std::unique_ptr<IWeightVector> BiPartition::subSample(const IInstanceSubSampling& instanceSubSampling, RNG& rng) const {
+    return instanceSubSampling.subSample(*this, rng);
+}

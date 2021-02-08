@@ -1,5 +1,7 @@
 #include "common/sampling/instance_sampling_bagging.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
+#include "common/sampling/partition_bi.hpp"
+#include "common/sampling/partition_single.hpp"
 
 
 Bagging::Bagging(float32 sampleSize)
