@@ -23,8 +23,8 @@ std::unique_ptr<IWeightVector> Bagging::subSample(uint32 numExamples, RNG& rng) 
     return weightVectorPtr;
 }
 
-std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<SinglePartition> partitionPtr, RNG& rng) const {
-    uint32 numExamples = partitionPtr->getNumElements();
+std::unique_ptr<IWeightVector> Bagging::subSample(const SinglePartition& partition, RNG& rng) const {
+    uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
     std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numExamples, numSamples);
     DenseWeightVector::iterator weightIterator = weightVectorPtr->begin();
@@ -40,11 +40,11 @@ std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<SinglePartitio
     return weightVectorPtr;
 }
 
-std::unique_ptr<IWeightVector> Bagging::subSample(std::unique_ptr<BiPartition> partitionPtr, RNG& rng) const {
-    uint32 numExamples = partitionPtr->getNumElements();
-    uint32 numTrainingExamples = partitionPtr->getNumFirst();
+std::unique_ptr<IWeightVector> Bagging::subSample(const BiPartition& partition, RNG& rng) const {
+    uint32 numExamples = partition.getNumElements();
+    uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize_ * numTrainingExamples);
-    BiPartition::const_iterator indexIterator = partitionPtr->first_cbegin();
+    BiPartition::const_iterator indexIterator = partition.first_cbegin();
     std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numExamples, numSamples);
     DenseWeightVector::iterator weightIterator = weightVectorPtr->begin();
 

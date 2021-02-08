@@ -16,9 +16,8 @@ class NoInstanceSubSampling final : public IInstanceSubSampling {
 
         std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) const override;
 
-        std::unique_ptr<IWeightVector> subSample(std::unique_ptr<SinglePartition> partitionPtr,
-                                                 RNG& rng) const override;
+        std::unique_ptr<IWeightVector> subSample(const SinglePartition& partition, RNG& rng) const override;
 
-        std::unique_ptr<IWeightVector> subSample(std::unique_ptr<BiPartition> partitionPtr, RNG& rng) const override;
+        std::unique_ptr<IWeightVector> subSample(const BiPartition& partition, RNG& rng) const override;
 
 };
