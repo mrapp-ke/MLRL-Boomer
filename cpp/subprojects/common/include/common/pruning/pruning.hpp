@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/model/condition_list.hpp"
+#include "common/sampling/partition.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
 
@@ -26,6 +27,9 @@ class IPruning {
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset`, which contains the thresholds
          *                          that correspond to the subspace of the instance space that is covered by the
          *                          existing rule
+         * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
+         *                          the training examples that belong to the training set and the holdout set,
+         *                          respectively
          * @param conditions        A reference to an object of type `ConditionList` that stores the conditions of the
          *                          existing rule
          * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
@@ -33,7 +37,8 @@ class IPruning {
          * @return                  An unique pointer to an object of type `CoverageMask` that specifies the examples
          *                          that are covered by the pruned rule or a null pointer if the rule was not pruned
          */
-        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
+        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, const IPartition& partition,
+                                                    ConditionList& conditions,
                                                     const AbstractPrediction& head) const = 0;
 
 };
