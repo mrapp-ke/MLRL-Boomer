@@ -9,6 +9,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * Approximate methods for evaluating potential conditions of rules, based on unsupervised binning methods (currently equal-width- and equal-frequency-binning), have been added.
 * The parameter `--predictor` does now allow to use different algorithms for prediction (`label-wise` or `example-wise`).
 * Multi-threading can be used to parallelize the prediction for different examples across multiple CPU cores.
+* Multi-threading can be used to parallelize the calculation of gradients and Hessians for different examples across multiple CPU cores.
 * The algorithm does now support data sets with missing feature values.
 * The loss function `label-wise-squared-hinge-loss` has been added. 
 * Experiments using single-label data sets are now supported out of the box.
