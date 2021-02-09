@@ -378,7 +378,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  *                      weights of individual training examples
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
-                    : thresholds_(thresholds), weights_(weights), 
+                    : thresholds_(thresholds), weights_(weights),
                       coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
 
                 }
@@ -424,16 +424,32 @@ class ApproximateThresholds final : public AbstractThresholds {
                     return coverageMask_;
                 }
 
-                float64 evaluateOutOfSample(const CoverageMask& coverageMask,
+                float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
-                    return evaluateOutOfSampleInternally(thresholds_.statisticsProviderPtr_->get(),
-                                                         *thresholds_.headRefinementFactoryPtr_, weights_, coverageMask,
-                                                         head);
+                    return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
+                        partition.cbegin(), partition.getNumElements(), weights_, coverageMask,
+                        thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);
                 }
 
-                void recalculatePrediction(const CoverageMask& coverageMask, Refinement& refinement) const override {
-                    recalculatePredictionInternally(thresholds_.statisticsProviderPtr_->get(),
-                                                    *thresholds_.headRefinementFactoryPtr_, coverageMask, refinement);
+                float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageMask,
+                                            const AbstractPrediction& head) const override {
+                    return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
+                        partition.first_cbegin(), partition.getNumFirst(), weights_, coverageMask,
+                        thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);
+                }
+
+                void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
+                                           Refinement& refinement) const override {
+                    recalculatePredictionInternally<SinglePartition::const_iterator>(
+                        partition.cbegin(), partition.getNumElements(), coverageMask,
+                        thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, refinement);
+                }
+
+                void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
+                                           Refinement& refinement) const override {
+                    recalculatePredictionInternally<BiPartition::const_iterator>(
+                        partition.first_cbegin(), partition.getNumFirst(), coverageMask,
+                        thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {

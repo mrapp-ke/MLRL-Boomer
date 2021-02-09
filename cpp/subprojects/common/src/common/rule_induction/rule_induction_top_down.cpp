@@ -40,10 +40,10 @@ void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProv
 }
 
 bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
-                                      const IWeightVector& weights, const IFeatureSubSampling& featureSubSampling,
-                                      const IPruning& pruning, const IPostProcessor& postProcessor, uint32 minCoverage,
-                                      intp maxConditions, intp maxHeadRefinements, RNG& rng,
-                                      IModelBuilder& modelBuilder) const {
+                                      const IWeightVector& weights, const IPartition& partition,
+                                      const IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
+                                      const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
+                                      intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder) const {
     // The total number of features
     uint32 numFeatures = thresholds.getNumFeatures();
     // True, if the rule is learned on a sub-sample of the available training examples, False otherwise
@@ -135,12 +135,13 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
     } else {
         if (instanceSubSamplingUsed) {
             // Prune rule...
-            std::unique_ptr<CoverageMask> coverageMaskPtr = pruning.prune(*thresholdsSubsetPtr, conditions, *bestHead);
+            std::unique_ptr<CoverageMask> coverageMaskPtr = pruning.prune(*thresholdsSubsetPtr, partition, conditions,
+                                                                          *bestHead);
 
             // Re-calculate the scores in the head based on the entire training data...
             const CoverageMask& coverageMask =
                 coverageMaskPtr.get() != nullptr ? *coverageMaskPtr : thresholdsSubsetPtr->getCoverageMask();
-            thresholdsSubsetPtr->recalculatePrediction(coverageMask, *bestRefinementPtr);
+            partition.recalculatePrediction(*thresholdsSubsetPtr, coverageMask, *bestRefinementPtr);
         }
 
         // Apply post-processor...
