@@ -64,6 +64,7 @@ source_files = [
     'src/common/sampling/random.cpp',
     'src/common/sampling/weight_vector_dense.cpp',
     'src/common/sampling/weight_vector_equal.cpp',
+    'src/common/stopping/stopping_criterion_measure.cpp',
     'src/common/stopping/stopping_criterion_size.cpp',
     'src/common/stopping/stopping_criterion_time.cpp',
     'src/common/thresholds/coverage_mask.cpp',
