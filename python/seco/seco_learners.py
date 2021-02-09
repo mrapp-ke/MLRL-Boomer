@@ -65,7 +65,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout_set_size: float = 0.0,
                  feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads: int = 1, num_threads_update: int = 1,
+                 max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
                  num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
@@ -115,12 +115,13 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
-        :param num_threads:                         The number of threads to be used for training or -1, if the number
-                                                    of cores that are available on the machine should be used
-        :param num_threads_update:                  The number of threads to be used for updating statistics or -1, if
-                                                    the number of cores that are available on the machine should be used
-        :param num_threads_prediction:              The number of threads to be used for prediction or -1, if the number
-                                                    of cores that are available on the machine should be used
+        :param num_threads_refinement:              The number of threads to be used to search for potential refinements
+                                                    of rules or -1, if the number of cores that are available on the
+                                                    machine should be used
+        :param num_threads_update:                  The number of threads to be used to update statistics or -1, if the
+                                                    number of cores that are available on the machine should be used
+        :param num_threads_prediction:              The number of threads to be used to make predictions or -1, if the
+                                                    number of cores that are available on the machine should be used
         """
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
@@ -138,7 +139,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
-        self.num_threads = num_threads
+        self.num_threads_refinement = num_threads_refinement
         self.num_threads_update = num_threads_update
         self.num_threads_prediction = num_threads_prediction
 
@@ -179,8 +180,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
         num_threads_update = get_preferred_num_threads(self.num_threads_update)
         thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
-        num_threads = get_preferred_num_threads(self.num_threads)
-        rule_induction = TopDownRuleInduction(num_threads)
+        num_threads_refinement = get_preferred_num_threads(self.num_threads_refinement)
+        rule_induction = TopDownRuleInduction(num_threads_refinement)
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)
