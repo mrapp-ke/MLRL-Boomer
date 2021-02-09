@@ -19,17 +19,21 @@ cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
     A wrapper for the C++ class `LabelWiseClassificationPredictor`.
     """
 
-    def __cinit__(self, uint32 num_labels, float64 threshold):
+    def __cinit__(self, uint32 num_labels, float64 threshold, uint32 num_threads):
         """
         :param num_labels:  The total number of available labels
         :param thresholds:  The threshold to be used for making predictions
+        :param num_threads: The number of CPU threads to be used to make predictions for different query examples in
+                            parallel. Must be at least 1
         """
         self.num_labels = num_labels
         self.threshold = threshold
-        self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[LabelWiseClassificationPredictorImpl](threshold)
+        self.num_threads = num_threads
+        self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[LabelWiseClassificationPredictorImpl](
+            threshold, num_threads)
 
     def __reduce__(self):
-        return (LabelWiseClassificationPredictor, (self.num_labels, self.threshold))
+        return (LabelWiseClassificationPredictor, (self.num_labels, self.threshold, self.num_threads))
 
 
 cdef inline shared_ptr[IMeasure] __get_measure_ptr(object measure):
@@ -54,23 +58,26 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
     A wrapper for the C++ class `ExampleWiseClassificationPredictor`.
     """
 
-    def __cinit__(self, uint32 num_labels, object measure):
+    def __cinit__(self, uint32 num_labels, object measure, uint32 num_threads):
         """
         :param num_labels:  The total number of available labels
         :param measure:     The measure to be used
+        :param num_threads: The number of CPU threads to be used to make predictions for different query examples in
+                            parallel. Must be at least 1
         """
         self.num_labels = num_labels
         self.measure = measure
+        self.num_threads = num_threads
 
     @classmethod
-    def create(cls, CContiguousLabelMatrix label_matrix, object measure):
+    def create(cls, CContiguousLabelMatrix label_matrix, object measure, uint32 num_threads):
         cdef shared_ptr[IMeasure] measure_ptr = __get_measure_ptr(measure)
         cdef shared_ptr[CContiguousLabelMatrixImpl] label_matrix_ptr = dynamic_pointer_cast[CContiguousLabelMatrixImpl, ILabelMatrix](
             label_matrix.label_matrix_ptr)
         cdef uint32 num_rows = label_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = label_matrix_ptr.get().getNumCols()
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
-            measure_ptr)
+            measure_ptr, num_threads)
         cdef unique_ptr[LabelVector] label_vector_ptr
         cdef uint8 value
         cdef uint32 i, j
@@ -87,16 +94,16 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
             predictor_ptr.get().addLabelVector(move(label_vector_ptr))
 
         cdef ExampleWiseClassificationPredictor predictor = ExampleWiseClassificationPredictor.__new__(
-            ExampleWiseClassificationPredictor, num_cols, measure)
+            ExampleWiseClassificationPredictor, num_cols, measure, num_threads)
         predictor.predictor_ptr = <unique_ptr[IPredictor[uint8]]>move(predictor_ptr)
         return predictor
 
     @classmethod
-    def create_lil(cls, uint32 num_labels, list[::1] rows, object measure):
+    def create_lil(cls, uint32 num_labels, list[::1] rows, object measure, uint32 num_threads):
         cdef shared_ptr[IMeasure] measure_ptr = __get_measure_ptr(measure)
         cdef uint32 num_rows = rows.shape[0]
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
-            measure_ptr)
+            measure_ptr, num_threads)
         cdef unique_ptr[LabelVector] label_vector_ptr
         cdef list col_indices
         cdef uint32 i, j
@@ -111,7 +118,7 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
             predictor_ptr.get().addLabelVector(move(label_vector_ptr))
 
         cdef ExampleWiseClassificationPredictor predictor = ExampleWiseClassificationPredictor.__new__(
-            ExampleWiseClassificationPredictor, num_labels, measure)
+            ExampleWiseClassificationPredictor, num_labels, measure, num_threads)
         predictor.predictor_ptr = <unique_ptr[IPredictor[uint8]]>move(predictor_ptr)
         return predictor
 
@@ -119,12 +126,12 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
         cdef ExampleWiseClassificationPredictorSerializer serializer = ExampleWiseClassificationPredictorSerializer.__new__(
             ExampleWiseClassificationPredictorSerializer)
         cdef object state = serializer.serialize(self)
-        return (ExampleWiseClassificationPredictor, (self.num_labels, self.measure), state)
+        return (ExampleWiseClassificationPredictor, (self.num_labels, self.measure, self.num_threads), state)
 
     def __setstate__(self, state):
         cdef ExampleWiseClassificationPredictorSerializer serializer = ExampleWiseClassificationPredictorSerializer.__new__(
             ExampleWiseClassificationPredictorSerializer)
-        serializer.deserialize(self, self.measure, state)
+        serializer.deserialize(self, self.measure, self.num_threads, state)
 
 
 cdef inline unique_ptr[LabelVector] __create_label_vector(list state):
@@ -170,13 +177,15 @@ cdef class ExampleWiseClassificationPredictorSerializer:
         predictor_ptr.visit(wrapLabelVectorVisitor(<void*>self, <LabelVectorCythonVisitor>self.__visit_label_vector))
         return (SERIALIZATION_VERSION, self.state)
 
-    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, object measure, object state):
+    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, object measure, uint32 num_threads,
+                      object state):
         """
         Deserializes the label vectors that are stored by a given state and adds them to an
         `ExampleWiseClassificationPredictor`.
 
         :param predictor:   The predictor, the deserialized rules should be added to
         :param measure:     The measure to be used by the predictor
+        :param num_threads  The number of CPU cores to be used
         :param state:       A state that has previously been created via the function `serialize`
         """
         cdef int version = state[0]
@@ -189,7 +198,7 @@ cdef class ExampleWiseClassificationPredictorSerializer:
         cdef uint32 num_label_vectors = len(label_vector_list)
         cdef shared_ptr[IMeasure] measure_ptr = __get_measure_ptr(measure)
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
-            measure_ptr)
+            measure_ptr, num_threads)
         cdef list label_vector_state
         cdef uint32 i
 
