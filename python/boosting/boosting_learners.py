@@ -29,7 +29,7 @@ from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMP
 from common.rule_learners import MLRuleLearner, SparsePolicy
 from common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    create_max_head_refinements, create_num_threads, create_thresholds_factory
+    create_max_head_refinements, create_num_threads, create_num_threads_prediction, create_thresholds_factory
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -60,7 +60,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  label_sub_sampling: str = None, instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, feature_binning: str = None,
                  pruning: str = None, shrinkage: float = 0.3, l2_regularization_weight: float = 1.0,
-                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1, num_threads: int = -1):
+                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1, num_threads: int = 1,
+                 num_threads_prediction = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -110,7 +111,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
         :param num_threads:                         The number of threads to be used for training or -1, if the number
-                                                    of cores available on the machine should be used
+                                                    of cores that are available on the machine should be used
+        :param num_threads_prediction:              The number of threads to be used for prediction or -1, if the number
+                                                    of cores that are available on the machine should be used
         """
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
@@ -129,6 +132,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
         self.num_threads = num_threads
+        self.num_threads_prediction = num_threads_prediction
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -190,8 +194,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return predictor
 
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
+        num_threads = create_num_threads_prediction(self.num_threads_prediction)
         threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
-        return LabelWiseClassificationPredictor(num_labels=num_labels, threshold=threshold)
+        return LabelWiseClassificationPredictor(num_labels=num_labels, threshold=threshold, num_threads=num_threads)
 
     def __create_example_wise_predictor(self,
                                         label_matrix: CContiguousLabelMatrix) -> ExampleWiseClassificationPredictor:

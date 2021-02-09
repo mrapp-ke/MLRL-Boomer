@@ -1,4 +1,4 @@
-from common.cython._types cimport uint8, float64
+from common.cython._types cimport uint8, uint32, float64
 from common.cython._measures cimport IMeasure
 from common.cython.input cimport LabelVector
 from common.cython.output cimport AbstractClassificationPredictor, IPredictor
@@ -12,7 +12,7 @@ cdef extern from "boosting/output/predictor_classification_label_wise.hpp" names
 
         # Constructors:
 
-        LabelWiseClassificationPredictorImpl(float64 threshold) except +
+        LabelWiseClassificationPredictorImpl(float64 threshold, uint32 numThreads) except +
 
 
 ctypedef void (*LabelVectorVisitor)(const LabelVector&)
@@ -63,6 +63,8 @@ cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
     # Attributes:
 
     cdef float64 threshold
+
+    cdef uint32 num_threads
 
 
 cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
