@@ -8,6 +8,7 @@
 #include "common/input/nominal_feature_mask.hpp"
 #include "common/head_refinement/head_refinement_factory.hpp"
 #include "common/statistics/statistics_provider.hpp"
+#include "omp.h"
 
 
 /**
@@ -76,12 +77,17 @@ static inline void recalculatePredictionInternally(T iterator, uint32 numExample
 }
 
 static inline void updateStatisticsInternally(IStatistics& statistics, const CoverageMask& coverageMask,
-                                              const AbstractPrediction& prediction) {
+                                              const AbstractPrediction& prediction, uint32 numThreads) {
     uint32 numStatistics = statistics.getNumStatistics();
+    const CoverageMask* coverageMaskPtr = &coverageMask;
+    const AbstractPrediction* predictionPtr = &prediction;
+    IStatistics* statisticsPtr = &statistics;
 
+    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+    firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
     for (uint32 i = 0; i < numStatistics; i++) {
-        if (coverageMask.isCovered(i)) {
-            prediction.apply(statistics, i);
+        if (coverageMaskPtr->isCovered(i)) {
+            predictionPtr->apply(*statisticsPtr, i);
         }
     }
 }
