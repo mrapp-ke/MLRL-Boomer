@@ -25,7 +25,7 @@ cdef extern from "boosting/output/predictor_classification_example_wise.hpp" nam
 
         # Constructors:
 
-        ExampleWiseClassificationPredictorImpl(shared_ptr[IMeasure] measurePtr) except +
+        ExampleWiseClassificationPredictorImpl(shared_ptr[IMeasure] measurePtr, uint32 numThreads) except +
 
         # Functions:
 
@@ -73,6 +73,8 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
 
     cdef object measure
 
+    cdef uint32 num_threads
+
 
 cdef class ExampleWiseClassificationPredictorSerializer:
 
@@ -86,4 +88,5 @@ cdef class ExampleWiseClassificationPredictorSerializer:
 
     cpdef object serialize(self, ExampleWiseClassificationPredictor predictor)
 
-    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, object measure, object state)
+    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, object measure, uint32 num_threads,
+                      object state)
