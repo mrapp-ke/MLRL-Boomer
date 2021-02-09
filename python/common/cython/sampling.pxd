@@ -90,6 +90,24 @@ cdef extern from "common/sampling/label_sampling_no.hpp" nogil:
         pass
 
 
+cdef extern from "common/sampling/partition_sampling.hpp" nogil:
+
+    cdef cppclass IPartitionSampling:
+        pass
+
+
+cdef extern from "common/sampling/partition_sampling_no.hpp" nogil:
+
+    cdef cppclass NoPartitionSamplingImpl"NoPartitionSampling"(IPartitionSampling):
+        pass
+
+
+cdef extern from "common/sampling/partition_sampling_bi.hpp" nogil:
+
+    cdef cppclass BiPartitionSamplingImpl"BiPartitionSampling"(IPartitionSampling):
+        pass
+
+
 cdef class InstanceSubSampling:
 
     # Attributes:
@@ -136,4 +154,19 @@ cdef class RandomLabelSubsetSelection(LabelSubSampling):
 
 
 cdef class NoLabelSubSampling(LabelSubSampling):
+    pass
+
+
+cdef class PartitionSampling:
+
+    # Attributes:
+
+    cdef shared_ptr[IPartitionSampling] partition_sampling_ptr
+
+
+cdef class NoPartitionSampling(PartitionSampling):
+    pass
+
+
+cdef class BiPartitionSampling(PartitionSampling):
     pass

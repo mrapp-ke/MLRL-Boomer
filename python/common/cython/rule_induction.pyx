@@ -4,7 +4,7 @@
 from common.cython.head_refinement cimport HeadRefinementFactory
 from common.cython.post_processing cimport PostProcessor
 from common.cython.pruning cimport Pruning
-from common.cython.sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling
+from common.cython.sampling cimport InstanceSubSampling, FeatureSubSampling, LabelSubSampling, PartitionSampling
 from common.cython.statistics cimport StatisticsProviderFactory
 from common.cython.stopping cimport StoppingCriterion
 from common.cython.thresholds cimport ThresholdsFactory
@@ -61,9 +61,9 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
     def __cinit__(self, StatisticsProviderFactory statistics_provider_factory, ThresholdsFactory thresholds_factory,
                   RuleInduction rule_induction, HeadRefinementFactory default_rule_head_refinement_factory,
                   HeadRefinementFactory head_refinement_factory, LabelSubSampling label_sub_sampling,
-                  InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling, Pruning pruning,
-                  PostProcessor post_processor, uint32 min_coverage, intp max_conditions, intp max_head_refinements,
-                  list stopping_criteria):
+                  InstanceSubSampling instance_sub_sampling, FeatureSubSampling feature_sub_sampling,
+                  PartitionSampling partition_sampling, Pruning pruning, PostProcessor post_processor,
+                  uint32 min_coverage, intp max_conditions, intp max_head_refinements, list stopping_criteria):
         """
         :param statistics_provider_factory:             A factory that allows to create a provider that provides access
                                                         to the statistics which serve as the basis for learning rules
@@ -77,16 +77,14 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
                                                         implements the strategy that should be used to find the heads of
                                                         rules
         :param label_sub_sampling:                      The strategy that should be used for sub-sampling the labels
-                                                        each time a new classification rule is learned or None, if no
-                                                        sub-sampling should be used
+                                                        each time a new classification rule is learned
         :param instance_sub_sampling:                   The strategy that should be used for sub-sampling the training
-                                                        examples each time a new classification rule is learned or None,
-                                                        if no sub-sampling should be used
+                                                        examples each time a new classification rule is learned
         :param feature_sub_sampling:                    The strategy that should be used for sub-sampling the features
-                                                        each time a classification rule is refined or None, if no
-                                                        sub-sampling should be used
-        :param pruning:                                 The strategy that should be used for pruning rules or None, if
-                                                        no pruning should be used
+                                                        each time a classification rule is refined
+        :param partition_sampling:                      The strategy that should be used for partitioning the training
+                                                        examples into a training set and a holdout set or
+        :param pruning:                                 The strategy that should be used for pruning rules
         :param post_processor:                          The post-processor that should be used to post-process the rule
                                                         once it has been learned
         :param min_coverage:                            The minimum number of training examples that must be covered by
@@ -116,5 +114,5 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
             rule_induction.rule_induction_ptr, default_rule_head_refinement_factory.head_refinement_factory_ptr,
             head_refinement_factory.head_refinement_factory_ptr, label_sub_sampling.label_sub_sampling_ptr,
             instance_sub_sampling.instance_sub_sampling_ptr, feature_sub_sampling.feature_sub_sampling_ptr,
-            pruning.pruning_ptr, post_processor.post_processor_ptr, min_coverage, max_conditions, max_head_refinements,
-            move(stopping_criteria_ptr))
+            partition_sampling.partition_sampling_ptr, pruning.pruning_ptr, post_processor.post_processor_ptr,
+            min_coverage, max_conditions, max_head_refinements, move(stopping_criteria_ptr))

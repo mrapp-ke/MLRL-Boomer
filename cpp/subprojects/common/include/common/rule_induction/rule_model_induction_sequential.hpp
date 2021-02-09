@@ -8,6 +8,7 @@
 #include "common/sampling/label_sampling.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/sampling/feature_sampling.hpp"
+#include "common/sampling/partition_sampling.hpp"
 #include "common/statistics/statistics_provider_factory.hpp"
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/thresholds/thresholds_factory.hpp"
@@ -37,6 +38,8 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
         std::shared_ptr<IInstanceSubSampling> instanceSubSamplingPtr_;
 
         std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr_;
+
+        std::shared_ptr<IPartitionSampling> partitionSamplingPtr_;
 
         std::shared_ptr<IPruning> pruningPtr_;
 
@@ -76,6 +79,9 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          * @param featureSubSamplingPtr                 A shared pointer to an object of type `IFeatureSubSampling` that
          *                                              should be used to sample the features that may be used by the
          *                                              conditions of a rule
+         * @param partitionSamplingPtr                  A shared pointer to an object of type `IPartitionSampling` that
+         *                                              should be used to partition the training examples into a
+         *                                              training set and a holdout set
          * @param pruningPtr                            A shared pointer to an object of type `IPruning` that should be
          *                                              used to prune the rules
          * @param postProcessorPtr                      A shared pointer to an object of type `IPostProcessor` that
@@ -100,7 +106,8 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
             std::shared_ptr<ILabelSubSampling> labelSubSamplingPtr,
             std::shared_ptr<IInstanceSubSampling> instanceSubSamplingPtr,
-            std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
+            std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr,
+            std::shared_ptr<IPartitionSampling> partitionSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
             std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
             intp maxHeadRefinements,
             std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr);

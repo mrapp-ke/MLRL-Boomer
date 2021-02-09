@@ -34,16 +34,18 @@ static inline void updateSampledStatisticsInternally(IStatistics& statistics, co
     }
 }
 
-static inline float64 evaluateOutOfSampleInternally(const IStatistics& statistics,
+template<class T>
+static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
+                                                    const CoverageMask& coverageMask, const IStatistics& statistics,
                                                     const IHeadRefinementFactory& headRefinementFactory,
-                                                    const IWeightVector& weights, const CoverageMask& coverageMask,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
-    uint32 numStatistics = statistics.getNumStatistics();
 
-    for (uint32 i = 0; i < numStatistics; i++) {
-        if (weights.getWeight(i) == 0 && coverageMask.isCovered(i)) {
-            statisticsSubsetPtr->addToSubset(i, 1);
+    for (uint32 i = 0; i < numExamples; i++) {
+        uint32 exampleIndex = iterator[i];
+
+        if (weights.getWeight(exampleIndex) == 0 && coverageMask.isCovered(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
 
@@ -52,16 +54,19 @@ static inline float64 evaluateOutOfSampleInternally(const IStatistics& statistic
     return scoreVector.overallQualityScore;
 }
 
-static inline void recalculatePredictionInternally(const IStatistics& statistics,
+template<class T>
+static inline void recalculatePredictionInternally(T iterator, uint32 numExamples, const CoverageMask& coverageMask,
+                                                   const IStatistics& statistics,
                                                    const IHeadRefinementFactory& headRefinementFactory,
-                                                   const CoverageMask& coverageMask, Refinement& refinement) {
+                                                   Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
-    uint32 numStatistics = statistics.getNumStatistics();
 
-    for (uint32 i = 0; i < numStatistics; i++) {
-        if (coverageMask.isCovered(i)) {
-            statisticsSubsetPtr->addToSubset(i, 1);
+    for (uint32 i = 0; i < numExamples; i++) {
+        uint32 exampleIndex = iterator[i];
+
+        if (coverageMask.isCovered(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
 
