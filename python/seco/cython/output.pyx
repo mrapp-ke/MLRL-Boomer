@@ -1,8 +1,6 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from common.cython._types cimport uint32
-
 from libcpp.memory cimport unique_ptr, make_unique
 
 

@@ -1,4 +1,4 @@
-from common.cython._types cimport uint8
+from common.cython._types cimport uint8, uint32
 from common.cython.output cimport AbstractClassificationPredictor, IPredictor
 
 
