@@ -6,7 +6,7 @@ namespace boosting {
 
     void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
                                                               const IRandomAccessLabelMatrix& labelMatrix,
-                                                              const DenseNumericMatrix<float64>& scoreMatrix,
+                                                              const CContiguousView<float64>& scoreMatrix,
                                                               DenseExampleWiseStatisticMatrix& statisticMatrix) const {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
@@ -14,7 +14,7 @@ namespace boosting {
         // `exp(x_1 - max) / (exp(x_1 - max) + exp(x_2 - max) + ...)`, where `max = max(x_1, x_2, ...)`. To be able to
         // exploit this equivalence for the calculation of gradients and Hessians, they are calculated as products of
         // fractions of the above form.
-        DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         DenseExampleWiseStatisticMatrix::gradient_iterator gradientIterator =
             statisticMatrix.gradients_row_begin(exampleIndex);
         DenseExampleWiseStatisticMatrix::hessian_iterator hessianIterator =
