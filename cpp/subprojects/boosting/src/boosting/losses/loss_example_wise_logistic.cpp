@@ -98,6 +98,12 @@ namespace boosting {
         }
     }
 
+    float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                              const CContiguousView<float64>& scoreMatrix) const {
+        // TODO
+        return 0;
+    }
+
     float64 ExampleWiseLogisticLoss::evaluate(const LabelVector& labelVector,
                                               CContiguousView<float64>::const_iterator scoresBegin,
                                               CContiguousView<float64>::const_iterator scoresEnd) const {
