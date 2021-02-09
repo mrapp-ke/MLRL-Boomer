@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "common/data/view_c_contiguous.hpp"
 #include "common/input/label_matrix.hpp"
 #include "common/measures/measure.hpp"
-#include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/matrix_dense_example_wise.hpp"
 
 
@@ -26,12 +26,12 @@ namespace boosting {
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
              * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
              *                          access to the labels of the training examples
-             * @param scoreMatrix       A reference to an object of type `DenseNumericMatrix` that stores the currently
+             * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
              *                          predicted scores
              * @param statisticMatrix   A reference to an object of type `DenseExampleWiseStatisticMatrix` to be updated
              */
             virtual void updateExampleWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                                     const DenseNumericMatrix<float64>& scoreMatrix,
+                                                     const CContiguousView<float64>& scoreMatrix,
                                                      DenseExampleWiseStatisticMatrix& statisticMatrix) const = 0;
 
     };
