@@ -61,7 +61,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, holdout_set_size: float = 0.0,
                  feature_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads: int = 1, num_threads_update: int = 1,
+                 max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
                  num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
@@ -114,12 +114,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
-        :param num_threads:                         The number of threads to be used for training or -1, if the number
-                                                    of cores that are available on the machine should be used
-        :param num_threads_update:                  The number of threads to be used for updating statistics or -1, if
-                                                    the number of cores that are available on the machine should be used
-        :param num_threads_prediction:              The number of threads to be used for prediction or -1, if the number
-                                                    of cores that are available on the machine should be used
+        :param num_threads_refinement:              The number of threads to be used to search for potential refinements
+                                                    of rules or -1, if the number of cores that are available on the
+                                                    machine should be used
+        :param num_threads_update:                  The number of threads to be used to update statistics or -1, if the
+                                                    number of cores that are available on the machine should be used
+        :param num_threads_prediction:              The number of threads to be used to make predictions or -1, if the
+                                                    number of cores that are available on the machine should be used
         """
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
@@ -138,7 +139,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
-        self.num_threads = num_threads
+        self.num_threads_refinement = num_threads_refinement
         self.num_threads_update = num_threads_update
         self.num_threads_prediction = num_threads_prediction
 
@@ -242,8 +243,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
         num_threads_update = get_preferred_num_threads(self.num_threads_update)
         thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
-        num_threads = get_preferred_num_threads(self.num_threads)
-        rule_induction = TopDownRuleInduction(num_threads)
+        num_threads_refinement = get_preferred_num_threads(self.num_threads_refinement)
+        rule_induction = TopDownRuleInduction(num_threads_refinement)
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
                                             label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
