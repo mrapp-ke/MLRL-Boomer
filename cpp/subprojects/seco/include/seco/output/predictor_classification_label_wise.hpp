@@ -18,7 +18,17 @@ namespace seco {
      */
     class LabelWiseClassificationPredictor : public IPredictor<uint8> {
 
+        private:
+
+            uint32 numThreads_;
+
         public:
+
+            /**
+             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
+             *                   in parallel. Must be at least 1
+             */
+            LabelWiseClassificationPredictor(uint32 numThreads);
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const RuleModel& model) const override;
