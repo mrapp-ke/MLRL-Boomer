@@ -453,7 +453,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
-                    updateStatisticsInternally(thresholds_.statisticsProviderPtr_->get(), coverageMask_, prediction);
+                    updateStatisticsInternally(thresholds_.statisticsProviderPtr_->get(), coverageMask_, prediction,
+                                               thresholds_.numThreads_);
                 }
 
         };
@@ -461,6 +462,8 @@ class ApproximateThresholds final : public AbstractThresholds {
         NominalFeatureBinning nominalBinning_;
 
         std::shared_ptr<IFeatureBinning> binningPtr_;
+
+        uint32 numThreads_;
 
         std::unordered_map<uint32, std::unique_ptr<BinVector>> cache_;
 
@@ -478,14 +481,15 @@ class ApproximateThresholds final : public AbstractThresholds {
          *                                  rules
          * @param binningPtr                A shared pointer to an object of type `IFeatureBinning` that implements the
          *                                  binning method to be used
+         * @param numThreads                The number of CPU threads to be used to update statistics in parallel
          */
         ApproximateThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                               std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                               std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
                               std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                              std::shared_ptr<IFeatureBinning> binningPtr)
+                              std::shared_ptr<IFeatureBinning> binningPtr, uint32 numThreads)
             : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsProviderPtr,
-                                 headRefinementFactoryPtr), binningPtr_(binningPtr) {
+                                 headRefinementFactoryPtr), binningPtr_(binningPtr), numThreads_(numThreads) {
 
         }
 
@@ -496,8 +500,9 @@ class ApproximateThresholds final : public AbstractThresholds {
 
 };
 
-ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::shared_ptr<IFeatureBinning> binningPtr)
-    : binningPtr_(binningPtr) {
+ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::shared_ptr<IFeatureBinning> binningPtr,
+                                                           uint32 numThreads)
+    : binningPtr_(binningPtr), numThreads_(numThreads) {
 
 }
 
@@ -506,5 +511,5 @@ std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(
         std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const {
     return std::make_unique<ApproximateThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsProviderPtr,
-                                                   headRefinementFactoryPtr, binningPtr_);
+                                                   headRefinementFactoryPtr, binningPtr_, numThreads_);
 }
