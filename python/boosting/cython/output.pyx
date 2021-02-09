@@ -19,17 +19,21 @@ cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
     A wrapper for the C++ class `LabelWiseClassificationPredictor`.
     """
 
-    def __cinit__(self, uint32 num_labels, float64 threshold):
+    def __cinit__(self, uint32 num_labels, float64 threshold, uint32 num_threads):
         """
         :param num_labels:  The total number of available labels
         :param thresholds:  The threshold to be used for making predictions
+        :param num_threads: The number of CPU threads to be used to make predictions for different query examples in
+                            parallel. Must be at least 1
         """
         self.num_labels = num_labels
         self.threshold = threshold
-        self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[LabelWiseClassificationPredictorImpl](threshold)
+        self.num_threads = num_threads
+        self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[LabelWiseClassificationPredictorImpl](
+            threshold, num_threads)
 
     def __reduce__(self):
-        return (LabelWiseClassificationPredictor, (self.num_labels, self.threshold))
+        return (LabelWiseClassificationPredictor, (self.num_labels, self.threshold, self.num_threads))
 
 
 cdef inline shared_ptr[IMeasure] __get_measure_ptr(object measure):
