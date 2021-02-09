@@ -17,7 +17,7 @@ class BoomerRunnable(RuleLearnerRunnable):
                       head_refinement=args.head_refinement, l2_regularization_weight=args.l2_regularization_weight,
                       min_coverage=args.min_coverage, max_conditions=args.max_conditions,
                       max_head_refinements=args.max_head_refinements, num_threads=args.num_threads,
-                      num_threads_prediction=args.num_threads_prediction)
+                      num_threads_update=args.num_threads_update, num_threads_prediction=args.num_threads_prediction)
 
 
 if __name__ == '__main__':

@@ -21,8 +21,8 @@ from common.rule_learners import HEAD_REFINEMENT_SINGLE
 from common.rule_learners import MLRuleLearner, SparsePolicy
 from common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_partition_sampling, create_max_conditions, create_stopping_criteria, \
-    create_min_coverage, create_max_head_refinements, create_num_threads, create_num_threads_prediction, \
-    parse_prefix_and_dict, get_int_argument, get_float_argument, create_thresholds_factory
+    create_min_coverage, create_max_head_refinements, get_preferred_num_threads, parse_prefix_and_dict, \
+    get_int_argument, get_float_argument, create_thresholds_factory
 
 HEAD_REFINEMENT_PARTIAL = 'partial'
 
@@ -65,7 +65,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout_set_size: float = 0.0,
                  feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads: int = 1, num_threads_prediction: int = 1):
+                 max_head_refinements: int = 1, num_threads: int = 1, num_threads_update: int = 1,
+                 num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -116,6 +117,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     -1, if the number of refinements should not be restricted
         :param num_threads:                         The number of threads to be used for training or -1, if the number
                                                     of cores that are available on the machine should be used
+        :param num_threads_update:                  The number of threads to be used for updating statistics or -1, if
+                                                    the number of cores that are available on the machine should be used
         :param num_threads_prediction:              The number of threads to be used for prediction or -1, if the number
                                                     of cores that are available on the machine should be used
         """
@@ -136,6 +139,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
         self.num_threads = num_threads
+        self.num_threads_update = num_threads_update
         self.num_threads_prediction = num_threads_prediction
 
     def get_name(self) -> str:
@@ -173,8 +177,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def _create_rule_model_induction(self, num_labels: int) -> SequentialRuleModelInduction:
         heuristic = self.__create_heuristic()
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
-        thresholds_factory = create_thresholds_factory(self.feature_binning)
-        num_threads = create_num_threads(self.num_threads)
+        num_threads_update = get_preferred_num_threads(self.num_threads_update)
+        thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
+        num_threads = get_preferred_num_threads(self.num_threads)
         rule_induction = TopDownRuleInduction(num_threads)
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
@@ -258,5 +263,5 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         return self.__create_label_wise_predictor(num_labels)
 
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
-        num_threads = create_num_threads_prediction(self.num_threads_prediction)
+        num_threads = get_preferred_num_threads(self.num_threads_prediction)
         return LabelWiseClassificationPredictor(num_labels, num_threads)

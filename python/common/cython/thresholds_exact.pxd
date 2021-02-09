@@ -1,10 +1,14 @@
+from common.cython._types cimport uint32
 from common.cython.thresholds cimport ThresholdsFactory, IThresholdsFactory
 
 
 cdef extern from "common/thresholds/thresholds_exact.hpp" nogil:
 
     cdef cppclass ExactThresholdsFactoryImpl"ExactThresholdsFactory"(IThresholdsFactory):
-        pass
+
+        # Constructors:
+
+        ExactThresholdsFactoryImpl(uint32 numThreads) except +
 
 
 cdef class ExactThresholdsFactory(ThresholdsFactory):
