@@ -6,7 +6,7 @@ namespace boosting {
 
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
                                                           const IRandomAccessLabelMatrix& labelMatrix,
-                                                          const DenseNumericMatrix<float64>& scoreMatrix,
+                                                          const CContiguousView<float64>& scoreMatrix,
                                                           FullIndexVector::const_iterator labelIndicesBegin,
                                                           FullIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const {
@@ -14,7 +14,7 @@ namespace boosting {
             statisticMatrix.gradients_row_begin(exampleIndex);
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
-        DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
 
         for (uint32 i = 0; i < numLabels; i++) {
@@ -26,7 +26,7 @@ namespace boosting {
 
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
                                                           const IRandomAccessLabelMatrix& labelMatrix,
-                                                          const DenseNumericMatrix<float64>& scoreMatrix,
+                                                          const CContiguousView<float64>& scoreMatrix,
                                                           PartialIndexVector::const_iterator labelIndicesBegin,
                                                           PartialIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const {
@@ -34,7 +34,7 @@ namespace boosting {
             statisticMatrix.gradients_row_begin(exampleIndex);
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
-        DenseNumericMatrix<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
 
         for (auto indexIterator = labelIndicesBegin; indexIterator != labelIndicesEnd; indexIterator++) {
             uint32 labelIndex = *indexIterator;
