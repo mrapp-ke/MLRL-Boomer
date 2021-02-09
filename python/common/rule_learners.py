@@ -173,25 +173,15 @@ def create_max_head_refinements(max_head_refinements: int) -> int:
     return max_head_refinements
 
 
-def create_num_threads(num_threads: int) -> int:
+def get_preferred_num_threads(num_threads: int) -> int:
     if num_threads == -1:
         return os.cpu_count()
-    elif num_threads < 1:
-        raise ValueError('Invalid value given for parameter \'num_threads\': ' + str(num_threads))
+    if num_threads < 1:
+        raise ValueError('Invalid number of threads given: ' + str(num_threads))
 
     return num_threads
 
-
-def create_num_threads_prediction(num_threads_prediction: int) -> int:
-    if num_threads_prediction == -1:
-        return os.cpu_count()
-    elif num_threads_prediction < 1:
-        raise ValueError('Invalid value given for parameter \'num_threads_prediction\': ' + str(num_threads_prediction))
-
-    return num_threads_prediction
-
-
-def create_thresholds_factory(feature_binning: str) -> ThresholdsFactory:
+def create_thresholds_factory(feature_binning: str, num_threads: int) -> ThresholdsFactory:
     if feature_binning is None:
         return ExactThresholdsFactory()
     else:
@@ -201,12 +191,13 @@ def create_thresholds_factory(feature_binning: str) -> ThresholdsFactory:
             bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
             min_bins = get_int_argument(args, ARGUMENT_MIN_BINS, 2, lambda x: x >= 2)
             max_bins = get_int_argument(args, ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
-            return ApproximateThresholdsFactory(EqualFrequencyFeatureBinning(bin_ratio, min_bins, max_bins))
+            return ApproximateThresholdsFactory(EqualFrequencyFeatureBinning(bin_ratio, min_bins, max_bins),
+                                                num_threads)
         elif prefix == BINNING_EQUAL_WIDTH:
             bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
             min_bins = get_int_argument(args, ARGUMENT_MIN_BINS, 2, lambda x: x >= 2)
             max_bins = get_int_argument(args, ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
-            return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio, min_bins, max_bins))
+            return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio, min_bins, max_bins), num_threads)
         raise ValueError('Invalid value given for parameter \'feature_binning\': ' + str(feature_binning))
 
 

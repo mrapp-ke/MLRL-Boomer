@@ -140,6 +140,9 @@ class ArgumentParserBuilder:
         parser.add_argument('--num-threads', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads', 1, **kwargs),
                             help='The number of threads to be used for training or -1')
+        parser.add_argument('--num-threads-update', type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_update', 1, **kwargs),
+                            help='The number of threads to be used for updating statistics or -1')
         parser.add_argument('--num-threads-prediction', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
                             help='The number of threads to be used for prediction or -1')
