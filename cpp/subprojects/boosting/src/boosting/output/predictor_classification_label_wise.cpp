@@ -1,6 +1,7 @@
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "common/data/matrix_dense.hpp"
 #include "predictor_common.hpp"
+#include "omp.h"
 
 
 namespace boosting {
@@ -15,66 +16,64 @@ namespace boosting {
         }
     }
 
-    static inline void predictInternally(const RuleModel& model, const CContiguousFeatureMatrix& featureMatrix,
-                                         CContiguousView<float64>& scoreMatrix,
-                                         CContiguousView<uint8>& predictionMatrix, float64 threshold) {
-        uint32 numExamples = featureMatrix.getNumRows();
-        uint32 numLabels = predictionMatrix.getNumCols();
-
-        for (uint32 i = 0; i < numExamples; i++) {
-            for (auto it = model.cbegin(); it != model.cend(); it++) {
-                const Rule& rule = *it;
-                applyRule(rule, featureMatrix.row_cbegin(i), featureMatrix.row_cend(i), scoreMatrix.row_begin(i));
-            }
-
-            applyThreshold(scoreMatrix.row_cbegin(i), predictionMatrix.row_begin(i), numLabels, threshold);
-        }
-    }
-
-    static inline void predictInternally(const RuleModel& model, const CsrFeatureMatrix& featureMatrix,
-                                         CContiguousView<float64>& scoreMatrix,
-                                         CContiguousView<uint8>& predictionMatrix, float64 threshold) {
-        uint32 numExamples = featureMatrix.getNumRows();
-        uint32 numFeatures = featureMatrix.getNumCols();
-        uint32 numLabels = predictionMatrix.getNumCols();
-        float32 tmpArray1[numFeatures];
-        uint32 tmpArray2[numFeatures] = {};
-        uint32 n = 1;
-
-        for (uint32 i = 0; i < numExamples; i++) {
-            for (auto it = model.cbegin(); it != model.cend(); it++) {
-                const Rule& rule = *it;
-                applyRuleCsr(rule, featureMatrix.row_indices_cbegin(i), featureMatrix.row_indices_cend(i),
-                             featureMatrix.row_values_cbegin(i), featureMatrix.row_values_cend(i),
-                             scoreMatrix.row_begin(i), &tmpArray1[0], &tmpArray2[0], n);
-                n++;
-            }
-
-            applyThreshold(scoreMatrix.row_cbegin(i), predictionMatrix.row_begin(i), numLabels, threshold);
-        }
-    }
-
-    LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(float64 threshold)
-        : threshold_(threshold) {
+    LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(float64 threshold, uint32 numThreads)
+        : threshold_(threshold), numThreads_(numThreads) {
 
     }
 
     void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
                                                    CContiguousView<uint8>& predictionMatrix,
                                                    const RuleModel& model) const {
-        uint32 numExamples = predictionMatrix.getNumRows();
+        uint32 numExamples = featureMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
-        DenseMatrix<float64> scoreMatrix(numExamples, numLabels, true);
-        predictInternally(model, featureMatrix, scoreMatrix, predictionMatrix, threshold_);
+        const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+        CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
+        const RuleModel* modelPtr = &model;
+
+        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(threshold_) \
+        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
+        num_threads(numThreads_)
+        for (uint32 i = 0; i < numExamples; i++) {
+            float64 scoreVector[numLabels] = {};
+
+            for (auto it = modelPtr->cbegin(); it != modelPtr->cend(); it++) {
+                const Rule& rule = *it;
+                applyRule(rule, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i), &scoreVector[0]);
+            }
+
+            applyThreshold(&scoreVector[0], predictionMatrixPtr->row_begin(i), numLabels, threshold_);
+        }
     }
 
     void LabelWiseClassificationPredictor::predict(const CsrFeatureMatrix& featureMatrix,
                                                    CContiguousView<uint8>& predictionMatrix,
                                                    const RuleModel& model) const {
-        uint32 numExamples = predictionMatrix.getNumRows();
+        uint32 numExamples = featureMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
-        DenseMatrix<float64> scoreMatrix(numExamples, numLabels, true);
-        predictInternally(model, featureMatrix, scoreMatrix, predictionMatrix, threshold_);
+        uint32 numFeatures = featureMatrix.getNumCols();
+        const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+        CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
+        const RuleModel* modelPtr = &model;
+
+        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(numFeatures) \
+        firstprivate(threshold_) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+        firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
+        for (uint32 i = 0; i < numExamples; i++) {
+            float64 scoreVector[numLabels] = {};
+            float32 tmpArray1[numFeatures];
+            uint32 tmpArray2[numFeatures] = {};
+            uint32 n = 1;
+
+            for (auto it = modelPtr->cbegin(); it != modelPtr->cend(); it++) {
+                const Rule& rule = *it;
+                applyRuleCsr(rule, featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
+                             featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
+                             &scoreVector[0], &tmpArray1[0], &tmpArray2[0], n);
+                n++;
+            }
+
+            applyThreshold(&scoreVector[0], predictionMatrixPtr->row_begin(i), numLabels, threshold_);
+        }
     }
 
 }

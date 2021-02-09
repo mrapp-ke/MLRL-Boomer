@@ -140,6 +140,9 @@ class ArgumentParserBuilder:
         parser.add_argument('--num-threads', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads', 1, **kwargs),
                             help='The number of threads to be used for training or -1')
+        parser.add_argument('--num-threads-prediction', type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
+                            help='The number of threads to be used for prediction or -1')
         parser.add_argument('--max-rules', type=int,
                             default=ArgumentParserBuilder.__get_or_default('max_rules', 500, **kwargs),
                             help='The maximum number of rules to be induced or -1')
@@ -155,6 +158,9 @@ class ArgumentParserBuilder:
         parser.add_argument('--feature-sub-sampling', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('feature_sub_sampling', None, **kwargs),
                             help='The name of the strategy to be used for feature sub-sampling or None')
+        parser.add_argument('--holdout', type=float,
+                            default=ArgumentParserBuilder.__get_or_default('holdout', 0, **kwargs),
+                            help='The fraction of the training data to be included in the holdout set or 0')
         parser.add_argument('--loss', type=str, default=loss, help='The name of the loss function to be used')
         parser.add_argument('--head-refinement', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('head_refinement', None, **kwargs),

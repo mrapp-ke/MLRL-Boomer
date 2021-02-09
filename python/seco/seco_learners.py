@@ -20,9 +20,9 @@ from sklearn.base import ClassifierMixin
 from common.rule_learners import HEAD_REFINEMENT_SINGLE
 from common.rule_learners import MLRuleLearner, SparsePolicy
 from common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
-    create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    create_max_head_refinements, create_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument, \
-    create_thresholds_factory
+    create_label_sub_sampling, create_partition_sampling, create_max_conditions, create_stopping_criteria, \
+    create_min_coverage, create_max_head_refinements, create_num_threads, create_num_threads_prediction, \
+    parse_prefix_and_dict, get_int_argument, get_float_argument, create_thresholds_factory
 
 HEAD_REFINEMENT_PARTIAL = 'partial'
 
@@ -63,9 +63,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
                  head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
-                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, feature_binning: str = None,
-                 pruning: str = None, min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1,
-                 num_threads: int = -1):
+                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout_set_size: float = 0.0,
+                 feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
+                 max_head_refinements: int = 1, num_threads: int = 1, num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -97,6 +97,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     or None, if no sub-sampling should be used. Additional argument may
                                                     be provided as a dictionary, e.g.
                                                     `random-feature-selection{\"sample_size\":0.5}`
+        :param holdout_set_size:                    The fraction of the training examples that should be included in the
+                                                    holdout set. Must be in (0, 1) or 0, if no holdout set should be
+                                                    used
         :param feature_binning:                     The strategy that is used for assigning examples to bins based on
                                                     their feature values. Must be `equal-width`, `equal-frequency` or
                                                     None, if no feature binning should be used. Additional arguments may
@@ -112,7 +115,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
         :param num_threads:                         The number of threads to be used for training or -1, if the number
-                                                    of cores available on the machine should be used
+                                                    of cores that are available on the machine should be used
+        :param num_threads_prediction:              The number of threads to be used for prediction or -1, if the number
+                                                    of cores that are available on the machine should be used
         """
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
@@ -124,12 +129,14 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
+        self.holdout_set_size = holdout_set_size
         self.feature_binning = feature_binning
         self.pruning = pruning
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
         self.num_threads = num_threads
+        self.num_threads_prediction = num_threads_prediction
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -144,6 +151,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
         if self.feature_sub_sampling is not None:
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
+        if float(self.holdout_set_size > 0.0):
+            name += '_holdout=' + str(self.holdout_set_size)
         if self.feature_binning is not None:
             name += '_feature-binning=' + str(self.feature_binning)
         if self.pruning is not None:
@@ -173,6 +182,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
+        partition_sampling = create_partition_sampling(self.holdout_set_size)
         pruning = create_pruning(self.pruning)
         post_processor = NoPostProcessor()
         min_coverage = create_min_coverage(self.min_coverage)
@@ -182,9 +192,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         stopping_criteria.append(CoverageStoppingCriterion(0))
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
-                                            label_sub_sampling, instance_sub_sampling, feature_sub_sampling, pruning,
-                                            post_processor, min_coverage, max_conditions, max_head_refinements,
-                                            stopping_criteria)
+                                            label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                            partition_sampling, pruning, post_processor, min_coverage, max_conditions,
+                                            max_head_refinements, stopping_criteria)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
@@ -248,4 +258,5 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         return self.__create_label_wise_predictor(num_labels)
 
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
-        return LabelWiseClassificationPredictor(num_labels)
+        num_threads = create_num_threads_prediction(self.num_threads_prediction)
+        return LabelWiseClassificationPredictor(num_labels, num_threads)

@@ -1,8 +1,8 @@
 #include "common/pruning/pruning_irep.hpp"
 
 
-std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, ConditionList& conditions,
-                                          const AbstractPrediction& head) const {
+std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, const IPartition& partition,
+                                          ConditionList& conditions, const AbstractPrediction& head) const {
     ConditionList::size_type numConditions = conditions.getNumConditions();
     std::unique_ptr<CoverageMask> bestCoverageMaskPtr;
 
@@ -10,7 +10,7 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, C
     if (numConditions > 1) {
         // Calculate the quality score of the original rule on the prune set...
         const CoverageMask& originalCoverageMask = thresholdsSubset.getCoverageMask();
-        float64 bestQualityScore = thresholdsSubset.evaluateOutOfSample(originalCoverageMask, head);
+        float64 bestQualityScore = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageMask, head);
 
         // Create a copy of the original coverage mask...
         bestCoverageMaskPtr = std::make_unique<CoverageMask>(originalCoverageMask);
@@ -31,7 +31,7 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, C
 
             // Calculate the quality score of a rule that contains the conditions that have been processed so far...
             const CoverageMask& coverageMask = thresholdsSubset.getCoverageMask();
-            float64 qualityScore = thresholdsSubset.evaluateOutOfSample(coverageMask, head);
+            float64 qualityScore = partition.evaluateOutOfSample(thresholdsSubset, coverageMask, head);
 
             // Check if the quality score is better than the best quality score known so far (reaching the same score
             // with fewer conditions is considered an improvement)...
