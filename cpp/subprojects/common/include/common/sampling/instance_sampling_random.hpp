@@ -24,6 +24,8 @@ class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
          */
         RandomInstanceSubsetSelection(float32 sampleSize);
 
-        std::unique_ptr<IWeightVector> subSample(uint32 numExamples, RNG& rng) const override;
+        std::unique_ptr<IWeightVector> subSample(const SinglePartition& partition, RNG& rng) const override;
+
+        std::unique_ptr<IWeightVector> subSample(const BiPartition& partition, RNG& rng) const override;
 
 };

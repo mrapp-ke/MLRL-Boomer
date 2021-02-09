@@ -31,9 +31,11 @@ source_files = [
 
 # Dependencies
 common_dep = subproject('common').get_variable('common_dep')
+openmp_dep = dependency('openmp')
 
 dependencies = [
-    common_dep
+    common_dep,
+    openmp_dep
 ]
 
 # Directory containing public headers

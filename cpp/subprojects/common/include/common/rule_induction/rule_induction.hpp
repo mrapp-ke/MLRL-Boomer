@@ -9,6 +9,7 @@
 #include "common/pruning/pruning.hpp"
 #include "common/sampling/feature_sampling.hpp"
 #include "common/sampling/weight_vector.hpp"
+#include "common/sampling/partition.hpp"
 #include "common/statistics/statistics_provider.hpp"
 #include "common/thresholds/thresholds.hpp"
 
@@ -47,6 +48,9 @@ class IRuleInduction {
          *                              indices of the labels for which the rule may predict
          * @param weights               A reference to an object of type `IWeightVector` that provides access to the
          *                              weights of individual training examples
+         * @param partition             A reference to an object of type `IPartition` that provides access to the
+         *                              indices of the training examples that belong to the training set and the holdout
+         *                              set, respectively
          * @param featureSubSampling    A reference to an object of type `IFeatureSubSampling` that should be used for
          *                              sampling the features that may be used by a new condition
          * @param pruning               A reference to an object of type `IPruning` that should be used to prune the
@@ -66,9 +70,9 @@ class IRuleInduction {
          * @return                      True, if a rule has been induced, false otherwise
          */
         virtual bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
-                                const IWeightVector& weights, const IFeatureSubSampling& featureSubSampling,
-                                const IPruning& pruning, const IPostProcessor& postProcessor, uint32 minCoverage,
-                                intp maxConditions, intp maxHeadRefinements, RNG& rng,
-                                IModelBuilder& modelBuilder) const = 0;
+                                const IWeightVector& weights, const IPartition& partition,
+                                const IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
+                                const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
+                                intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder) const = 0;
 
 };

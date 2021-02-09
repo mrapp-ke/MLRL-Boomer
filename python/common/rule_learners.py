@@ -24,6 +24,7 @@ from common.cython.rule_induction import RuleModelInduction
 from common.cython.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
 from common.cython.sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, NoInstanceSubSampling
 from common.cython.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
+from common.cython.sampling import PartitionSampling, NoPartitionSampling, BiPartitionSampling
 from common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from common.cython.thresholds import ThresholdsFactory
 from common.cython.thresholds_approximate import ApproximateThresholdsFactory
@@ -116,6 +117,15 @@ def create_feature_sub_sampling(feature_sub_sampling: str) -> FeatureSubSampling
         raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
 
 
+def create_partition_sampling(holdout_set_size: float) -> PartitionSampling:
+    if holdout_set_size <= 0.0:
+        return NoPartitionSampling()
+    else:
+        if holdout_set_size < 1.0:
+            return BiPartitionSampling(holdout_set_size)
+        raise ValueError('Invalid value given for parameter \'holdout_set_size\': ' + str(holdout_set_size))
+
+
 def create_pruning(pruning: str) -> Pruning:
     if pruning is None:
         return NoPruning()
@@ -170,6 +180,15 @@ def create_num_threads(num_threads: int) -> int:
         raise ValueError('Invalid value given for parameter \'num_threads\': ' + str(num_threads))
 
     return num_threads
+
+
+def create_num_threads_prediction(num_threads_prediction: int) -> int:
+    if num_threads_prediction == -1:
+        return os.cpu_count()
+    elif num_threads_prediction < 1:
+        raise ValueError('Invalid value given for parameter \'num_threads_prediction\': ' + str(num_threads_prediction))
+
+    return num_threads_prediction
 
 
 def create_thresholds_factory(feature_binning: str) -> ThresholdsFactory:

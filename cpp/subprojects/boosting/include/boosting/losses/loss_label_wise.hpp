@@ -106,8 +106,8 @@ namespace boosting {
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
 
-            float64 evaluate(uint32 exampleIndex, const LabelVector& labelVector,
-                             const CContiguousView<float64>& scoreMatrix) const override final;
+            float64 evaluate(const LabelVector& labelVector, CContiguousView<float64>::const_iterator scoresBegin,
+                             CContiguousView<float64>::const_iterator scoresEnd) const override final;
 
     };
 
