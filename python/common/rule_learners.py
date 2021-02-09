@@ -181,6 +181,7 @@ def get_preferred_num_threads(num_threads: int) -> int:
 
     return num_threads
 
+
 def create_thresholds_factory(feature_binning: str, num_threads: int) -> ThresholdsFactory:
     if feature_binning is None:
         return ExactThresholdsFactory()
