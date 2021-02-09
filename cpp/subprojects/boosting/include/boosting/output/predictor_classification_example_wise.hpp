@@ -73,13 +73,17 @@ namespace boosting {
 
             std::shared_ptr<IMeasure> measurePtr_;
 
+            uint32 numThreads_;
+
         public:
 
             /**
-             * @param measurePtr A shared pointer to an object of type `IMeasure` that should be used to compute the
-             *                   similarity between predictions and known label vectors
+             * @param measurePtr    A shared pointer to an object of type `IMeasure` that should be used to compute the
+             *                      similarity between predictions and known label vectors
+             * @param numThreads    The number of CPU threads to be used to make predictions for different query
+             *                      examples in parallel. Must be at least 1
              */
-            ExampleWiseClassificationPredictor(std::shared_ptr<IMeasure> measurePtr);
+            ExampleWiseClassificationPredictor(std::shared_ptr<IMeasure> measurePtr, uint32 numThreads);
 
             typedef std::function<void(const LabelVector&)> LabelVectorVisitor;
 
