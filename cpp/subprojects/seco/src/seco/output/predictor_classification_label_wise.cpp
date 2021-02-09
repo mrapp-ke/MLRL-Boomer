@@ -1,14 +1,13 @@
 #include "seco/output/predictor_classification_label_wise.hpp"
-#include "common/data/arrays.hpp"
-#include "common/data/vector_dense.hpp"
 #include "common/model/head_full.hpp"
 #include "common/model/head_partial.hpp"
+#include "omp.h"
 
 
 namespace seco {
 
     static inline void applyFullHead(const FullHead& head, CContiguousView<uint8>::iterator begin,
-                                     CContiguousView<uint8>::iterator end, DenseVector<uint8>::iterator mask) {
+                                     CContiguousView<uint8>::iterator end, CContiguousView<uint8>::iterator mask) {
         FullHead::score_const_iterator iterator = head.scores_cbegin();
         uint32 numElements = head.getNumElements();
 
@@ -22,7 +21,7 @@ namespace seco {
     }
 
     static inline void applyPartialHead(const PartialHead& head, CContiguousView<uint8>::iterator begin,
-                                        CContiguousView<uint8>::iterator end, DenseVector<uint8>::iterator mask) {
+                                        CContiguousView<uint8>::iterator end, CContiguousView<uint8>::iterator mask) {
         PartialHead::score_const_iterator scoreIterator = head.scores_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
@@ -38,13 +37,13 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const IHead& head, CContiguousView<uint8>& predictionMatrix, DenseVector<uint8>& mask,
-                                 uint32 row) {
+    static inline void applyHead(const IHead& head, CContiguousView<uint8>& predictionMatrix,
+                                 CContiguousView<uint8>::iterator mask, uint32 row) {
         auto fullHeadVisitor = [&, row](const FullHead& head) {
-            applyFullHead(head, predictionMatrix.row_begin(row), predictionMatrix.row_end(row), mask.begin());
+            applyFullHead(head, predictionMatrix.row_begin(row), predictionMatrix.row_end(row), mask);
         };
         auto partialHeadVisitor = [&, row](const PartialHead& head) {
-            applyPartialHead(head, predictionMatrix.row_begin(row), predictionMatrix.row_end(row), mask.begin());
+            applyPartialHead(head, predictionMatrix.row_begin(row), predictionMatrix.row_end(row), mask);
         };
         head.visit(fullHeadVisitor, partialHeadVisitor);
     }
@@ -59,18 +58,22 @@ namespace seco {
                                                    const RuleModel& model) const {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
-        DenseVector<uint8> mask(numLabels);
+        const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+        CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
+        const RuleModel* modelPtr = &model;
 
+        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
+        firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
-            setArrayToZeros(mask.begin(), numLabels);
+            uint8 mask[numLabels] = {};
 
-            for (auto it = model.cbegin(); it != model.cend(); it++) {
+            for (auto it = modelPtr->cbegin(); it != modelPtr->cend(); it++) {
                 const Rule& rule = *it;
                 const IBody& body = rule.getBody();
                 const IHead& head = rule.getHead();
 
-                if (body.covers(featureMatrix.row_cbegin(i), featureMatrix.row_cend(i))) {
-                    applyHead(head, predictionMatrix, mask, i);
+                if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
+                    applyHead(head, *predictionMatrixPtr, &mask[0], i);
                 }
             }
         }
@@ -82,23 +85,28 @@ namespace seco {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
-        DenseVector<uint8> mask(numLabels);
-        float32 tmpArray1[numFeatures];
-        uint32 tmpArray2[numFeatures] = {};
-        uint32 n = 1;
+        const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+        CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
+        const RuleModel* modelPtr = &model;
 
+        #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
+        num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
-            setArrayToZeros(mask.begin(), numLabels);
+            uint8 mask[numLabels] = {};
+            float32 tmpArray1[numFeatures];
+            uint32 tmpArray2[numFeatures] = {};
+            uint32 n = 1;
 
-            for (auto it = model.cbegin(); it != model.cend(); it++) {
+            for (auto it = modelPtr->cbegin(); it != modelPtr->cend(); it++) {
                 const Rule& rule = *it;
                 const IBody& body = rule.getBody();
                 const IHead& head = rule.getHead();
 
-                if (body.covers(featureMatrix.row_indices_cbegin(i), featureMatrix.row_indices_cend(i),
-                                featureMatrix.row_values_cbegin(i), featureMatrix.row_values_cend(i), &tmpArray1[0],
-                                &tmpArray2[0], n)) {
-                    applyHead(head, predictionMatrix, mask, i);
+                if (body.covers(featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
+                                featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
+                                &tmpArray1[0], &tmpArray2[0], n)) {
+                    applyHead(head, *predictionMatrixPtr, &mask[0], i);
                 }
 
                 n++;
