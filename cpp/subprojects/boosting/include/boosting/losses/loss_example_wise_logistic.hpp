@@ -16,7 +16,7 @@ namespace boosting {
         public:
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                             const DenseNumericMatrix<float64>& scoreMatrix,
+                                             const CContiguousView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
 
             float64 evaluate(const LabelVector& labelVector, CContiguousView<float64>::const_iterator scoresBegin,
