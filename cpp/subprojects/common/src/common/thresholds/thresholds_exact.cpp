@@ -473,10 +473,13 @@ class ExactThresholds final : public AbstractThresholds {
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
-                    updateStatisticsInternally(thresholds_.statisticsProviderPtr_->get(), coverageMask_, prediction);
+                    updateStatisticsInternally(thresholds_.statisticsProviderPtr_->get(), coverageMask_, prediction,
+                                               thresholds_.numThreads_);
                 }
 
         };
+
+        uint32 numThreads_;
 
         std::unordered_map<uint32, std::unique_ptr<FeatureVector>> cache_;
 
@@ -492,13 +495,14 @@ class ExactThresholds final : public AbstractThresholds {
          * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
          *                                  to create instances of the class that should be used to find the heads of
          *                                  rules
+         * @param numThreads                The number of CPU threads to be used to update statistics in parallel
          */
         ExactThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
                         std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
                         std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
-                        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
+                        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr, uint32 numThreads)
             : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsProviderPtr,
-                                 headRefinementFactoryPtr) {
+                                 headRefinementFactoryPtr), numThreads_(numThreads) {
 
         }
 
@@ -509,10 +513,15 @@ class ExactThresholds final : public AbstractThresholds {
 
 };
 
+ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
+    : numThreads_(numThreads) {
+
+}
+
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(
         std::shared_ptr<IFeatureMatrix> featureMatrixPtr, std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
         std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const {
     return std::make_unique<ExactThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsProviderPtr,
-                                             headRefinementFactoryPtr);
+                                             headRefinementFactoryPtr, numThreads_);
 }

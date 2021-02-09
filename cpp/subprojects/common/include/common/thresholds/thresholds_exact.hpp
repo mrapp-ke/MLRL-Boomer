@@ -11,7 +11,16 @@
  */
 class ExactThresholdsFactory final : public IThresholdsFactory {
 
+    private:
+
+        uint32 numThreads_;
+
     public:
+
+        /**
+         * @param numThreads The number of CPU threads to be used to update statistics in parallel. Must be at least 1
+         */
+        ExactThresholdsFactory(uint32 numThreads);
 
         std::unique_ptr<IThresholds> create(
             std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
