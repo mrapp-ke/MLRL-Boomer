@@ -201,12 +201,14 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __create_example_wise_predictor(self,
                                         label_matrix: CContiguousLabelMatrix) -> ExampleWiseClassificationPredictor:
         loss = self.__create_loss_function()
-        return ExampleWiseClassificationPredictor.create(label_matrix, loss)
+        num_threads = create_num_threads_prediction(self.num_threads_prediction)
+        return ExampleWiseClassificationPredictor.create(label_matrix, loss, num_threads)
 
     def __create_example_wise_predictor_lil(self, num_labels: int,
                                             label_matrix: list) -> ExampleWiseClassificationPredictor:
         loss = self.__create_loss_function()
-        return ExampleWiseClassificationPredictor.create_lil(num_labels, label_matrix, loss)
+        num_threads = create_num_threads_prediction(self.num_threads_prediction)
+        return ExampleWiseClassificationPredictor.create_lil(num_labels, label_matrix, loss, num_threads)
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
