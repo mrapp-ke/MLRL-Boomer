@@ -18,8 +18,8 @@ class IMeasure {
         virtual ~IMeasure() { };
 
         /**
-         * Calculates and returns a numerical score that assess the quality of predictions for the example at a specific
-         * index by comparing them to the corresponding ground truth labels.
+         * Calculates and returns a numerical score that assesses the quality of predictions for a single example by
+         * comparing them to the corresponding ground truth labels.
          *
          * @param labelVector   A reference to an object of type `LabelVector` that provides access to the relevant
          *                      labels of the given example
