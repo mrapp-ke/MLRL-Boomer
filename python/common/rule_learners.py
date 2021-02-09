@@ -184,7 +184,7 @@ def get_preferred_num_threads(num_threads: int) -> int:
 
 def create_thresholds_factory(feature_binning: str, num_threads: int) -> ThresholdsFactory:
     if feature_binning is None:
-        return ExactThresholdsFactory()
+        return ExactThresholdsFactory(num_threads)
     else:
         prefix, args = parse_prefix_and_dict(feature_binning, [BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH])
 
