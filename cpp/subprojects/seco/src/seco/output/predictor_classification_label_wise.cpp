@@ -49,6 +49,11 @@ namespace seco {
         head.visit(fullHeadVisitor, partialHeadVisitor);
     }
 
+    LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(uint32 numThreads)
+        : numThreads_(numThreads) {
+
+    }
+
     void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
                                                    CContiguousView<uint8>& predictionMatrix,
                                                    const RuleModel& model) const {

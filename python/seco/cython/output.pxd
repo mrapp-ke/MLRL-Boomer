@@ -5,8 +5,14 @@ from common.cython.output cimport AbstractClassificationPredictor, IPredictor
 cdef extern from "seco/output/predictor_classification_label_wise.hpp" namespace "seco" nogil:
 
     cdef cppclass LabelWiseClassificationPredictorImpl"seco::LabelWiseClassificationPredictor"(IPredictor[uint8]):
-        pass
+
+        # Constructors:
+
+        LabelWiseClassificationPredictorImpl(uint32 numThreads) except +
 
 
 cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
-    pass
+
+    # Attributes:
+
+    cdef uint32 num_threads

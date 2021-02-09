@@ -21,8 +21,8 @@ from common.rule_learners import HEAD_REFINEMENT_SINGLE
 from common.rule_learners import MLRuleLearner, SparsePolicy
 from common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_max_conditions, create_stopping_criteria, create_min_coverage, \
-    create_max_head_refinements, create_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument, \
-    create_thresholds_factory
+    create_max_head_refinements, create_num_threads, create_num_threads_prediction, parse_prefix_and_dict, \
+    get_int_argument, get_float_argument, create_thresholds_factory
 
 HEAD_REFINEMENT_PARTIAL = 'partial'
 
@@ -65,7 +65,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, feature_binning: str = None,
                  pruning: str = None, min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1,
-                 num_threads: int = -1):
+                 num_threads: int = 1, num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -112,7 +112,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
         :param num_threads:                         The number of threads to be used for training or -1, if the number
-                                                    of cores available on the machine should be used
+                                                    of cores that are available on the machine should be used
+        :param num_threads_prediction:              The number of threads to be used for prediction or -1, if the number
+                                                    of cores that are available on the machine should be used
         """
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
@@ -130,6 +132,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
         self.num_threads = num_threads
+        self.num_threads_prediction = num_threads_prediction
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -248,4 +251,5 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         return self.__create_label_wise_predictor(num_labels)
 
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
-        return LabelWiseClassificationPredictor(num_labels)
+        num_threads = create_num_threads_prediction(self.num_threads_prediction)
+        return LabelWiseClassificationPredictor(num_labels, num_threads)
