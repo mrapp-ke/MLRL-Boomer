@@ -45,16 +45,16 @@ namespace boosting {
         }
     }
 
-    float64 AbstractLabelWiseLoss::evaluate(uint32 exampleIndex, const LabelVector& labelVector,
-                                            const CContiguousView<float64>& scoreMatrix) const {
-        uint32 numLabels = scoreMatrix.getNumCols();
-        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+    float64 AbstractLabelWiseLoss::evaluate(const LabelVector& labelVector,
+                                            CContiguousView<float64>::const_iterator scoresBegin,
+                                            CContiguousView<float64>::const_iterator scoresEnd) const {
+        uint32 numLabels = scoresEnd - scoresBegin;
         LabelVector::index_const_iterator indexIterator = labelVector.indices_cbegin();
         LabelVector::index_const_iterator indicesEnd = labelVector.indices_cend();
         float64 mean = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
-            float64 predictedScore = scoreIterator[i];
+            float64 predictedScore = scoresBegin[i];
             bool trueLabel;
 
             if (indexIterator != indicesEnd && *indexIterator == i) {

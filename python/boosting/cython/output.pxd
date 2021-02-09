@@ -1,4 +1,4 @@
-from common.cython._types cimport uint8, float64
+from common.cython._types cimport uint8, uint32, float64
 from common.cython._measures cimport IMeasure
 from common.cython.input cimport LabelVector
 from common.cython.output cimport AbstractClassificationPredictor, IPredictor
@@ -12,7 +12,7 @@ cdef extern from "boosting/output/predictor_classification_label_wise.hpp" names
 
         # Constructors:
 
-        LabelWiseClassificationPredictorImpl(float64 threshold) except +
+        LabelWiseClassificationPredictorImpl(float64 threshold, uint32 numThreads) except +
 
 
 ctypedef void (*LabelVectorVisitor)(const LabelVector&)
@@ -25,7 +25,7 @@ cdef extern from "boosting/output/predictor_classification_example_wise.hpp" nam
 
         # Constructors:
 
-        ExampleWiseClassificationPredictorImpl(shared_ptr[IMeasure] measurePtr) except +
+        ExampleWiseClassificationPredictorImpl(shared_ptr[IMeasure] measurePtr, uint32 numThreads) except +
 
         # Functions:
 
@@ -64,12 +64,16 @@ cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
 
     cdef float64 threshold
 
+    cdef uint32 num_threads
+
 
 cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
 
     # Attributes
 
     cdef object measure
+
+    cdef uint32 num_threads
 
 
 cdef class ExampleWiseClassificationPredictorSerializer:
@@ -84,4 +88,5 @@ cdef class ExampleWiseClassificationPredictorSerializer:
 
     cpdef object serialize(self, ExampleWiseClassificationPredictor predictor)
 
-    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, object measure, object state)
+    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, object measure, uint32 num_threads,
+                      object state)

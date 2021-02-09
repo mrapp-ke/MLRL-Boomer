@@ -172,6 +172,15 @@ def create_num_threads(num_threads: int) -> int:
     return num_threads
 
 
+def create_num_threads_prediction(num_threads_prediction: int) -> int:
+    if num_threads_prediction == -1:
+        return os.cpu_count()
+    elif num_threads_prediction < 1:
+        raise ValueError('Invalid value given for parameter \'num_threads_prediction\': ' + str(num_threads_prediction))
+
+    return num_threads_prediction
+
+
 def create_thresholds_factory(feature_binning: str) -> ThresholdsFactory:
     if feature_binning is None:
         return ExactThresholdsFactory()
