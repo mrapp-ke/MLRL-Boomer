@@ -47,8 +47,18 @@ namespace boosting {
 
     float64 AbstractLabelWiseLoss::evaluate(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                             const CContiguousView<float64>& scoreMatrix) const {
-        // TODO Implement
-        return 0;
+        uint32 numLabels = labelMatrix.getNumCols();
+        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        float64 mean = 0;
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+            float64 predictedScore = scoreIterator[i];
+            float64 score = this->evaluate(trueLabel, predictedScore);
+            mean = iterativeMean<float64>(i + 1, score, mean);
+        }
+
+        return mean;
     }
 
     float64 AbstractLabelWiseLoss::evaluate(const LabelVector& labelVector,
