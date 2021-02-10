@@ -27,6 +27,6 @@ class IStoppingCriterion {
          * @param numRules      The number of rules induced so far
          * @return              True, if additional rules should be induced, false otherwise
          */
-        virtual bool shouldContinue(const IPartition& IPartition, const IStatistics& statistics, uint32 numRules) = 0;
+        virtual bool shouldContinue(const IPartition& partition, const IStatistics& statistics, uint32 numRules) = 0;
 
 };
