@@ -18,13 +18,22 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         std::shared_ptr<IMeasure> measurePtr_;
 
+        uint32 updateInterval_;
+
+        uint32 stopInterval_;
+
     public:
 
         /**
-         * @param measurePtr A shared pointer to an object of type `IMeasure` that should be used to assess the quality
-         *                   of predictions
+         * @param measurePtr        A shared pointer to an object of type `IMeasure` that should be used to assess the
+         *                          quality of a model
+         * @param updateInterval    The interval to be used to update the quality of the current model, e.g., a value of
+         *                          5 means that the model quality is assessed every 5 rules
+         * @param stopInterval      The interval to be used to decide whether the induction of rules should be stopped,
+         *                          e.g., a value of 10 means that the rule induction might be stopped after 10, 20, ...
+         *                          rules. Must be a multiple of `updateInterval`
          */
-        MeasureStoppingCriterion(std::shared_ptr<IMeasure> measurePtr);
+        MeasureStoppingCriterion(std::shared_ptr<IMeasure> measurePtr, uint32 updateInterval, uint32 stopInterval);
 
         bool shouldContinue(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
