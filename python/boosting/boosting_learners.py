@@ -274,7 +274,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         else:
             if early_stopping == EARLY_STOPPING_MEASURE:
                 if self.holdout_set_size <= 0.0:
-                    log.warning('Parameter \'early_stopping\' does not have any effect, because parameter \'holdout\''
+                    log.warning('Parameter \'early_stopping\' does not have any effect, because parameter \'holdout\' '
                                 + 'is set to \'0\'!')
                     return None
                 else:
