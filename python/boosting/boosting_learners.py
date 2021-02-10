@@ -244,7 +244,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
         partition_sampling = create_partition_sampling(self.holdout_set_size)
-        pruning = create_pruning(self.pruning)
+        pruning = create_pruning(self.pruning, self.instance_sub_sampling)
         shrinkage = self.__create_post_processor()
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)

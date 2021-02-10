@@ -5,6 +5,7 @@
 
 Provides base classes for implementing single- or multi-label rule learning algorithms.
 """
+import logging as log
 import os
 from abc import abstractmethod
 from ast import literal_eval
@@ -126,12 +127,17 @@ def create_partition_sampling(holdout_set_size: float) -> PartitionSampling:
         raise ValueError('Invalid value given for parameter \'holdout_set_size\': ' + str(holdout_set_size))
 
 
-def create_pruning(pruning: str) -> Pruning:
+def create_pruning(pruning: str, instance_sub_sampling: str) -> Pruning:
     if pruning is None:
         return NoPruning()
-    if pruning == PRUNING_IREP:
-        return IREP()
-    raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
+    else:
+        if pruning == PRUNING_IREP:
+            if instance_sub_sampling is None:
+                log.warning('Parameter \'pruning\' does not have any effect, because parameter '
+                            + '\'instance_sub_sampling\' is set to \'None\'!')
+                return NoPruning()
+            return IREP()
+        raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
 
 
 def create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCriterion]:
