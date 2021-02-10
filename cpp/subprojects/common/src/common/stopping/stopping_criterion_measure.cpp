@@ -18,8 +18,9 @@ static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const I
     return mean;
 }
 
-MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IMeasure> measurePtr)
-    : measurePtr_(measurePtr) {
+MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IMeasure> measurePtr, uint32 updateInterval,
+                                                   uint32 stopInterval)
+    : measurePtr_(measurePtr), updateInterval_(updateInterval), stopInterval_(stopInterval) {
 
 }
 
