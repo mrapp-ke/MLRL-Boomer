@@ -14,13 +14,12 @@ namespace boosting {
                                                CContiguousView<float64>& predictionMatrix,
                                                const RuleModel& model) const {
         uint32 numExamples = featureMatrix.getNumRows();
-        uint32 numLabels = predictionMatrix.getNumCols();
         const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
         CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
         const RuleModel* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-        firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
+        #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+        firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
             for (auto it = modelPtr->cbegin(); it != modelPtr->cend(); it++) {
                 const Rule& rule = *it;
@@ -35,13 +34,12 @@ namespace boosting {
                                                const RuleModel& model) const {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
-        uint32 numLabels = predictionMatrix.getNumCols();
         const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
         CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
         const RuleModel* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-        firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
+        #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+        firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
             float32 tmpArray1[numFeatures];
             uint32 tmpArray2[numFeatures] = {};
