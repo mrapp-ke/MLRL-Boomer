@@ -35,7 +35,7 @@ cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
         # Constructors:
 
         MeasureStoppingCriterionImpl(shared_ptr[IMeasure] measurePtr, uint32 updateInterval,
-                                     uint32 stopInterval) except +
+                                     uint32 stopInterval, uint32 bufferSize) except +
 
 
 cdef class StoppingCriterion:

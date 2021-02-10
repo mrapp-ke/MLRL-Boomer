@@ -280,7 +280,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 else:
                     loss = self.__create_loss_function()
                     # TODO Parse additional arguments from dictionary
-                    return MeasureStoppingCriterion(loss, update_interval=1, stop_interval=1)
+                    return MeasureStoppingCriterion(loss, update_interval=1, stop_interval=1, buffer_size=10)
             raise ValueError('Invalid value given for parameter \'early_stopping\': ' + str(early_stopping))
 
     def __create_l2_regularization_weight(self) -> float:

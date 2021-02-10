@@ -1,6 +1,7 @@
 #include "common/stopping/stopping_criterion_measure.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/math/math.hpp"
+#include <iostream>
 
 
 static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const IStatistics& statistics,
@@ -19,8 +20,9 @@ static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const I
 }
 
 MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IMeasure> measurePtr, uint32 updateInterval,
-                                                   uint32 stopInterval)
-    : measurePtr_(measurePtr), updateInterval_(updateInterval), stopInterval_(stopInterval) {
+                                                   uint32 stopInterval, uint32 bufferSize)
+    : measurePtr_(measurePtr), updateInterval_(updateInterval), stopInterval_(stopInterval),
+      buffer_(RingBuffer<float64>(bufferSize)) {
 
 }
 
@@ -29,5 +31,6 @@ bool MeasureStoppingCriterion::shouldContinue(const IPartition& partition, const
     const BiPartition& biPartition = static_cast<const BiPartition&>(partition);
     float64 score = evaluateOnHoldoutSet(biPartition, statistics, *measurePtr_);
     // TODO Implement
+    std::cout << score << "\n";
     return true;
 }
