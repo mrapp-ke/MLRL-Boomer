@@ -7,7 +7,6 @@ Provides a scikit-learn implementations of boosting algorithms
 """
 from typing import Optional
 
-from boomer.cython.stopping import MeasureStoppingCriterion
 from boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
 from boosting.cython.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
     LabelWiseSquaredHingeLoss
@@ -26,6 +25,7 @@ from common.cython.output import Predictor
 from common.cython.post_processing import PostProcessor, NoPostProcessor
 from common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from common.cython.statistics import StatisticsProviderFactory
+from common.cython.stopping import MeasureStoppingCriterion
 from sklearn.base import ClassifierMixin
 
 from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE
