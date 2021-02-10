@@ -4,11 +4,13 @@
 from libcpp.memory cimport make_shared
 
 
-cdef class LabelWiseLoss:
+cdef class LabelWiseLoss(Measure):
     """
     A wrapper for the pure virtual C++ class `ILabelWiseLoss`.
     """
-    pass
+
+    cdef shared_ptr[IMeasure] get_measure_ptr(self):
+        return <shared_ptr[IMeasure]>self.loss_function_ptr
 
 
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
