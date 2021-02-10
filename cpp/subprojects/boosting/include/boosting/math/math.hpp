@@ -24,23 +24,6 @@ namespace boosting {
     }
 
     /**
-     * Allows to compute the mean of several floating point values `x_1, ..., x_n` in an iterative manner, which
-     * prevents overflows.
-     *
-     * This function must be invoked for each value as follows:
-     * `mean_1 = iterativeMean(1, x_1, 0); ...; mean_n = iterativeMean(n, x_n, mean_n-1)`
-     *
-     * @tparam T    The type of the values
-     * @param n     The index of the value, starting at 1
-     * @param x     The n-th value
-     * @return      The mean of all values provided so far
-     */
-    template<class T>
-    static inline T iterativeMean(uint32 n, T x, T mean) {
-        return mean + ((x - mean) / (T) n);
-    }
-
-    /**
      * Calculates and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
      *
      * @param n A scalar of type `uint32`, representing the order of the triangular number
