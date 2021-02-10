@@ -1,5 +1,4 @@
 #include "boosting/output/predictor_classification_example_wise.hpp"
-#include "common/data/matrix_dense.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
