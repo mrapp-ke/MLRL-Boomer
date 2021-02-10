@@ -36,9 +36,3 @@ cdef class AbstractClassificationPredictor(Predictor):
     cdef uint32 num_labels
 
     cdef unique_ptr[IPredictor[uint8]] predictor_ptr
-
-    # Functions:
-
-    cpdef object predict(self, CContiguousFeatureMatrix feature_matrix, RuleModel model)
-
-    cpdef object predict_csr(self, CsrFeatureMatrix feature_matrix, RuleModel model)
