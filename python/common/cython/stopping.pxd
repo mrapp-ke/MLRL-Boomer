@@ -1,4 +1,5 @@
 from common.cython._types cimport uint32
+from common.cython._measures cimport IMeasure
 
 from libcpp.memory cimport shared_ptr
 
@@ -25,6 +26,15 @@ cdef extern from "common/stopping/stopping_criterion_time.hpp" nogil:
         # Constructors:
 
         TimeStoppingCriterionImpl(uint32 timeLimit) except +
+
+
+cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
+
+    cdef cppclass MeasureStoppingCriterionImpl"MeasureStoppingCriterion"(IStoppingCriterion):
+
+        # Constructors:
+
+        MeasureStoppingCriterionImpl(shared_ptr[IMeasure] measurePtr) except +
 
 
 cdef class StoppingCriterion:
