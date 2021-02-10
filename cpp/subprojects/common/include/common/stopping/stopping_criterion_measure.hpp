@@ -26,6 +26,6 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          */
         MeasureStoppingCriterion(std::shared_ptr<IMeasure> measurePtr);
 
-        bool shouldContinue(const IStatistics& statistics, uint32 numRules) override;
+        bool shouldContinue(const IPartition& IPartition, const IStatistics& statistics, uint32 numRules) override;
 
 };

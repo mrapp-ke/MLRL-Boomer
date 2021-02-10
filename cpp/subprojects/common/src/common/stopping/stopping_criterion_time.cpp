@@ -7,7 +7,8 @@ TimeStoppingCriterion::TimeStoppingCriterion(uint32 timeLimit)
 
 }
 
-bool TimeStoppingCriterion::shouldContinue(const IStatistics& statistics, uint32 numRules) {
+bool TimeStoppingCriterion::shouldContinue(const IPartition& IPartition, const IStatistics& statistics,
+                                           uint32 numRules) {
     if (timerStarted_) {
         auto currentTime = timer::now();
         auto duration = std::chrono::duration_cast<timer_unit>(currentTime - startTime_);
