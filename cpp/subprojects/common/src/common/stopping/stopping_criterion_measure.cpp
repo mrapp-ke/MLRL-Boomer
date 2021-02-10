@@ -6,7 +6,8 @@ MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IMeasure> mea
 
 }
 
-bool MeasureStoppingCriterion::shouldContinue(const IStatistics& statistics, uint32 numRules) {
+bool MeasureStoppingCriterion::shouldContinue(const IPartition& IPartition, const IStatistics& statistics,
+                                              uint32 numRules) {
     // TODO Implement
     return true;
 }

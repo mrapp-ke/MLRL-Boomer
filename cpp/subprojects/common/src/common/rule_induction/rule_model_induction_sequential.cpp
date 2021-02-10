@@ -2,11 +2,11 @@
 
 
 static inline bool shouldContinue(std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria,
-                                  const IStatistics& statistics, uint32 numRules) {
+                                  const IPartition& partition, const IStatistics& statistics, uint32 numRules) {
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::shared_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
 
-        if (!stoppingCriterionPtr->shouldContinue(statistics, numRules)) {
+        if (!stoppingCriterionPtr->shouldContinue(partition, statistics, numRules)) {
             return false;
         }
     }
@@ -56,7 +56,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     uint32 numLabels = thresholdsPtr->getNumLabels();
     std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr_->partition(numExamples, rng);
 
-    while (shouldContinue(*stoppingCriteriaPtr_, statisticsProviderPtr->get(), numRules)) {
+    while (shouldContinue(*stoppingCriteriaPtr_, *partitionPtr, statisticsProviderPtr->get(), numRules)) {
         std::unique_ptr<IWeightVector> weightsPtr = partitionPtr->subSample(*instanceSubSamplingPtr_, rng);
         std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr_->subSample(numLabels, rng);
         bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, *labelIndicesPtr, *weightsPtr, *partitionPtr,

@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/sampling/partition.hpp"
 #include "common/statistics/statistics.hpp"
 
 
@@ -19,11 +20,13 @@ class IStoppingCriterion {
         /**
          * Returns whether additional rules should be induced or not.
          *
-         * @param statistics    A reference to an object of type `IStatistics`, which will serve as the basis for
-         *                      learning the next rule
+         * @param partition     A reference to an object of type `IPartition` that provides access to the indices of the
+         *                      training examples that belong to the training set and the holdout set, respectively
+         * @param statistics    A reference to an object of type `IStatistics` that will serve as the basis for learning
+         *                      the next rule
          * @param numRules      The number of rules induced so far
          * @return              True, if additional rules should be induced, false otherwise
          */
-        virtual bool shouldContinue(const IStatistics& statistics, uint32 numRules) = 0;
+        virtual bool shouldContinue(const IPartition& IPartition, const IStatistics& statistics, uint32 numRules) = 0;
 
 };
