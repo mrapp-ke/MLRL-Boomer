@@ -50,3 +50,6 @@ cdef class SizeStoppingCriterion(StoppingCriterion):
 
 cdef class TimeStoppingCriterion(StoppingCriterion):
     pass
+
+cdef class MeasureStoppingCriterion(StoppingCriterion):
+    pass

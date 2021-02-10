@@ -1,6 +1,8 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
+from common.cython.measures cimport Measure
+
 from libcpp.memory cimport make_shared
 
 
@@ -33,3 +35,14 @@ cdef class TimeStoppingCriterion(StoppingCriterion):
         :param time_limit: The time limit in seconds
         """
         self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[TimeStoppingCriterionImpl](time_limit)
+
+
+cdef class MeasureStoppingCriterion(StoppingCriterion):
+    """
+    A wrapper for the C++ class `MeasureStoppingCriterion`.
+    """
+
+    def __cinit__(self, Measure measure):
+        cdef shared_ptr[IMeasure] measure_ptr = measure.get_measure_ptr()
+        self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[MeasureStoppingCriterionImpl](
+            measure_ptr)
