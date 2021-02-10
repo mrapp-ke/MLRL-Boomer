@@ -1,5 +1,6 @@
 from common.cython._types cimport uint8, uint32, float64
 from common.cython._measures cimport IMeasure
+from common.cython.measures cimport Measure
 from common.cython.input cimport LabelVector
 from common.cython.output cimport AbstractClassificationPredictor, AbstractRegressionPredictor, IPredictor
 
@@ -87,7 +88,7 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
 
     # Attributes
 
-    cdef object measure
+    cdef Measure measure
 
     cdef uint32 num_threads
 
@@ -104,5 +105,5 @@ cdef class ExampleWiseClassificationPredictorSerializer:
 
     cpdef object serialize(self, ExampleWiseClassificationPredictor predictor)
 
-    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, object measure, uint32 num_threads,
+    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, Measure measure, uint32 num_threads,
                       object state)
