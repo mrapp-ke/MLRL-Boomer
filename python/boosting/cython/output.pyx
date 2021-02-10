@@ -14,6 +14,24 @@ from libcpp.utility cimport move
 SERIALIZATION_VERSION = 1
 
 
+cdef class LabelWiseRegressionPredictor(AbstractRegressionPredictor):
+    """
+    A wrapper for the C++ class `LabelWiseRegressionPredictor`.
+    """
+
+    def __cinit__(self, uint32 num_labels, uint32 num_threads):
+        """
+        :param num_labels:  The total number of available labels
+        :param num_threads: The number of CPU threads to be used to make predictions for different query examples in
+                            parallel. Must be at least 1
+        """
+        self.num_labels = num_labels
+        self.num_threads = num_threads
+
+    def __reduce__(self):
+        return (LabelWiseRegressionPredictor, (self.num_labels, self.num_threads))
+
+
 cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
     """
     A wrapper for the C++ class `LabelWiseClassificationPredictor`.
