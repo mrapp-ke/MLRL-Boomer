@@ -10,7 +10,12 @@
 
 /**
  * A stopping criterion that stops the induction of rules as soon as the quality of a model's predictions for the
- * examples in a validation set do not improve according a certain measure.
+ * examples in a holdout set do not improve according a certain measure.
+ *
+ * This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
+ * the resulting quality score in a buffer that keeps track of the last `bufferSize` scores. Every `stopInterval` rules,
+ * it is decided whether the rule induction should be stopped by aggregating the scores in the buffer according to a
+ * `aggregationFunction` and comparing it to the latest quality score using a `decisionFunction`.
  */
 class MeasureStoppingCriterion final : public IStoppingCriterion {
 
