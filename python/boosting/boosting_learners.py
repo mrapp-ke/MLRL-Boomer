@@ -5,6 +5,7 @@
 
 Provides a scikit-learn implementations of boosting algorithms
 """
+import logging as log
 from typing import Optional
 
 from boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
@@ -272,8 +273,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             return None
         else:
             if early_stopping == EARLY_STOPPING_MEASURE:
-                loss = self.__create_loss_function()
-                return MeasureStoppingCriterion(loss)
+                if self.holdout_set_size <= 0.0:
+                    log.warning('Parameter \'early_stopping\' does not have any effect, because parameter \'holdout\''
+                                + 'is set to \'0\'!')
+                    return None
+                else:
+                    loss = self.__create_loss_function()
+                    return MeasureStoppingCriterion(loss)
             raise ValueError('Invalid value given for parameter \'early_stopping\': ' + str(early_stopping))
 
     def __create_l2_regularization_weight(self) -> float:
