@@ -1,9 +1,18 @@
 from common.cython._types cimport uint8, uint32, float64
 from common.cython._measures cimport IMeasure
 from common.cython.input cimport LabelVector
-from common.cython.output cimport AbstractClassificationPredictor, IPredictor
+from common.cython.output cimport AbstractClassificationPredictor, AbstractRegressionPredictor, IPredictor
 
 from libcpp.memory cimport unique_ptr, shared_ptr
+
+
+cdef extern from "boosting/output/predictor_regression_label_wise.hpp" namespace "boosting" nogil:
+
+    cdef cppclass LabelWiseRegressionPredictorImpl"boosting::LabelWiseRegressionPredictor"(IPredictor[float64]):
+
+        # Constructors:
+
+        LabelWiseRegressionPredictorImpl(uint32 numThreads) except +
 
 
 cdef extern from "boosting/output/predictor_classification_label_wise.hpp" namespace "boosting" nogil:
@@ -56,6 +65,13 @@ cdef extern from * namespace "boosting":
     ctypedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&)
 
     LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
+
+
+cdef class LabelWiseRegressionPredictor(AbstractRegressionPredictor):
+
+    # Attributes
+
+    cdef uint32 num_threads
 
 
 cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
