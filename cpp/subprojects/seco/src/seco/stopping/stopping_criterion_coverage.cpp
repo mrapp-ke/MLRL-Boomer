@@ -9,7 +9,7 @@ namespace seco {
 
     }
 
-    bool CoverageStoppingCriterion::shouldContinue(const IPartition& IPartition, const IStatistics& statistics,
+    bool CoverageStoppingCriterion::shouldContinue(const IPartition& partition, const IStatistics& statistics,
                                                    uint32 numRules) {
         const ICoverageStatistics& coverageStatistics = static_cast<const ICoverageStatistics&>(statistics);
         return coverageStatistics.getSumOfUncoveredLabels() > threshold_;
