@@ -1,4 +1,5 @@
 from common.cython._measures cimport IMeasure
+from common.cython.measures cimport Measure
 
 from libcpp.memory cimport shared_ptr
 
@@ -15,7 +16,7 @@ cdef extern from "boosting/losses/loss_example_wise_logistic.hpp" namespace "boo
         pass
 
 
-cdef class ExampleWiseLoss:
+cdef class ExampleWiseLoss(Measure):
 
     # Attributes:
 
