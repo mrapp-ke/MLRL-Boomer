@@ -1,4 +1,5 @@
 from common.cython._measures cimport IMeasure
+from common.cython.measures cimport Measure
 
 from libcpp.memory cimport shared_ptr
 
@@ -27,7 +28,7 @@ cdef extern from "boosting/losses/loss_label_wise_squared_hinge.hpp" namespace "
         pass
 
 
-cdef class LabelWiseLoss:
+cdef class LabelWiseLoss(Measure):
 
     # Attributes:
 
