@@ -5,6 +5,7 @@
 
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/measures/measure.hpp"
+#include "common/data/ring_buffer.hpp"
 #include <memory>
 
 
@@ -27,6 +28,8 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         uint32 stopInterval_;
 
+        RingBuffer<float64> buffer_;
+
     public:
 
         /**
@@ -37,8 +40,10 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          * @param stopInterval      The interval to be used to decide whether the induction of rules should be stopped,
          *                          e.g., a value of 10 means that the rule induction might be stopped after 10, 20, ...
          *                          rules. Must be a multiple of `updateInterval`
+         * @param bufferSize        The number of quality scores to be stored in a buffer. Must be at least 1
          */
-        MeasureStoppingCriterion(std::shared_ptr<IMeasure> measurePtr, uint32 updateInterval, uint32 stopInterval);
+        MeasureStoppingCriterion(std::shared_ptr<IMeasure> measurePtr, uint32 updateInterval, uint32 stopInterval,
+                                 uint32 bufferSize);
 
         bool shouldContinue(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
