@@ -28,6 +28,34 @@ namespace boosting {
              */
             LabelWiseRegressionPredictor(uint32 numThreads);
 
+            /**
+             * Obtains predictions for all examples in a C-contiguous matrix, using a single rule, and writes them to a
+             * given prediction matrix.
+             *
+             * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the
+             *                          feature values of the examples
+             * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
+             *                          written to. May contain arbitrary values
+             * @param rule              A reference to an object of type `Rule` that should be used to obtain the
+             *                          predictions
+             */
+            void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
+                         const Rule& rule) const;
+
+            /**
+             * Obtains predictions for all examples in a sparse CSR matrix, using a single rule, and writes them to a
+             * given prediction matrix.
+             *
+             * @param featureMatrix     A reference to an object of type `CsrFeatureMatrix` that stores the feature
+             *                          values of the examples
+             * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
+             *                          written to. May contain arbitrary values
+             * @param rule              A reference to an object of type `Rule` that should be used to obtain the
+             *                          predictions
+             */
+            void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
+                         const Rule& rule) const;
+
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
                          const RuleModel& model) const override;
 
