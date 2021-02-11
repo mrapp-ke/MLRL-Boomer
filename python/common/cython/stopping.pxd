@@ -30,12 +30,29 @@ cdef extern from "common/stopping/stopping_criterion_time.hpp" nogil:
 
 cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
 
+    cdef cppclass IAggregationFunction:
+        pass
+
+
+    cdef cppclass MinFunctionImpl"MinFunction"(IAggregationFunction):
+        pass
+
+
+    cdef cppclass MaxFunctionImpl"MaxFunction"(IAggregationFunction):
+        pass
+
+
+    cdef cppclass ArithmeticMeanFunctionImpl"ArithmeticMeanFunction"(IAggregationFunction):
+        pass
+
+
     cdef cppclass MeasureStoppingCriterionImpl"MeasureStoppingCriterion"(IStoppingCriterion):
 
         # Constructors:
 
-        MeasureStoppingCriterionImpl(shared_ptr[IEvaluationMeasure] measurePtr, uint32 minRules, uint32 updateInterval,
-                                     uint32 stopInterval, uint32 bufferSize) except +
+        MeasureStoppingCriterionImpl(shared_ptr[IEvaluationMeasure] measurePtr,
+                                     shared_ptr[IAggregationFunction] aggregationFunctionPtr, uint32 minRules,
+                                     uint32 updateInterval, uint32 stopInterval, uint32 bufferSize) except +
 
 
 cdef class StoppingCriterion:
@@ -51,6 +68,25 @@ cdef class SizeStoppingCriterion(StoppingCriterion):
 
 cdef class TimeStoppingCriterion(StoppingCriterion):
     pass
+
+cdef class AggregationFunction:
+
+    # Attributes:
+
+    cdef shared_ptr[IAggregationFunction] aggregation_function_ptr
+
+
+cdef class MinFunction(AggregationFunction):
+    pass
+
+
+cdef class MaxFunction(AggregationFunction):
+    pass
+
+
+cdef class ArithmeticMeanFunction(AggregationFunction):
+    pass
+
 
 cdef class MeasureStoppingCriterion(StoppingCriterion):
     pass

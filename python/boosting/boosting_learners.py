@@ -26,7 +26,7 @@ from common.cython.output import Predictor
 from common.cython.post_processing import PostProcessor, NoPostProcessor
 from common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from common.cython.statistics import StatisticsProviderFactory
-from common.cython.stopping import MeasureStoppingCriterion
+from common.cython.stopping import MeasureStoppingCriterion, MaxFunction
 from sklearn.base import ClassifierMixin
 
 from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE
@@ -290,13 +290,15 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                     return None
                 else:
                     loss = self.__create_loss_function()
+                    aggregation_function = MaxFunction()  # TODO Obtain from arguments
                     min_rules = get_int_argument(args, ARGUMENT_MIN_RULES, 100, lambda x: 1 <= x)
                     update_interval = get_int_argument(args, ARGUMENT_UPDATE_INTERVAL, 1, lambda x: 1 <= x)
                     stop_interval = get_int_argument(args, ARGUMENT_STOP_INTERVAL, 1,
                                                      lambda x: 1 <= x and x % update_interval == 0)
                     buffer_size = get_int_argument(args, ARGUMENT_BUFFER_SIZE, 25, lambda x: 1 <= x)
-                    return MeasureStoppingCriterion(loss, min_rules=min_rules, update_interval=update_interval,
-                                                    stop_interval=stop_interval, buffer_size=buffer_size)
+                    return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
+                                                    update_interval=update_interval, stop_interval=stop_interval,
+                                                    buffer_size=buffer_size)
             raise ValueError('Invalid value given for parameter \'early_stopping\': ' + str(early_stopping))
 
     def __create_l2_regularization_weight(self) -> float:
