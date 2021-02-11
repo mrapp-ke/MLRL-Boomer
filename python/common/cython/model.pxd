@@ -1,6 +1,7 @@
 from common.cython._types cimport uint32, float32, float64
 
 from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.list cimport list as double_linked_list
 
 
 cdef extern from "common/model/body.hpp" nogil:
@@ -172,9 +173,24 @@ ctypedef void (*FullHeadVisitor)(const FullHeadImpl&)
 ctypedef void (*PartialHeadVisitor)(const PartialHeadImpl&)
 
 
+cdef extern from "common/model/rule.hpp" nogil:
+
+    cdef cppclass RuleImpl"Rule":
+
+        const IBody& getBody()
+
+        const IHead& getHead()
+
+
 cdef extern from "common/model/rule_model.hpp" nogil:
 
     cdef cppclass RuleModelImpl"RuleModel":
+
+        ctypedef double_linked_list[RuleImpl].const_iterator const_iterator
+
+        const_iterator cbegin()
+
+        const_iterator cend()
 
         uint32 getNumRules()
 
