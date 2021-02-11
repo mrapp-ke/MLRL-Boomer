@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from common.cython.measures cimport Measure
+from common.cython.measures cimport EvaluationMeasure
 
 from libcpp.memory cimport make_shared
 
@@ -42,7 +42,7 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
     A wrapper for the C++ class `MeasureStoppingCriterion`.
     """
 
-    def __cinit__(self, Measure measure, uint32 update_interval, uint32 stop_interval, uint32 buffer_size):
+    def __cinit__(self, EvaluationMeasure measure, uint32 update_interval, uint32 stop_interval, uint32 buffer_size):
         """
         :param measure:         The measure that should be used to assess the quality of a model
         :param update_interval: The interval to be used to update the quality of the current model, e.g., a value of 5
@@ -52,6 +52,6 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
                                 rules. Must be a multiple of `updateInterval`
         :param buffer_size:     The number of quality scores to be stored in a buffer. Must be at least 1
         """
-        cdef shared_ptr[IMeasure] measure_ptr = measure.get_measure_ptr()
+        cdef shared_ptr[IEvaluationMeasure] measure_ptr = measure.get_evaluation_measure_ptr()
         self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[MeasureStoppingCriterionImpl](
             measure_ptr, update_interval, stop_interval, buffer_size)

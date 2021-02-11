@@ -5,7 +5,7 @@
 
 
 static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const IStatistics& statistics,
-                                           const IMeasure& measure) {
+                                           const IEvaluationMeasure& measure) {
     uint32 numHoldoutExamples = partition.getNumSecond();
     BiPartition::const_iterator iterator = partition.second_cbegin();
     float64 mean = 0;
@@ -19,8 +19,8 @@ static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const I
     return mean;
 }
 
-MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IMeasure> measurePtr, uint32 updateInterval,
-                                                   uint32 stopInterval, uint32 bufferSize)
+MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
+                                                   uint32 updateInterval, uint32 stopInterval, uint32 bufferSize)
     : measurePtr_(measurePtr), updateInterval_(updateInterval), stopInterval_(stopInterval),
       buffer_(RingBuffer<float64>(bufferSize)) {
 

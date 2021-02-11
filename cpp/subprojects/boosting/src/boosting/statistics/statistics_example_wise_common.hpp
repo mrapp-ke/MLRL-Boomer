@@ -398,7 +398,7 @@ namespace boosting {
                 this->applyPredictionInternally<PartialPrediction>(statisticIndex, prediction);
             }
 
-            float64 evaluatePrediction(uint32 statisticIndex, const IMeasure& measure) const override {
+            float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
                 return measure.evaluate(statisticIndex, *labelMatrixPtr_, *scoreMatrixPtr_);
             }
 
