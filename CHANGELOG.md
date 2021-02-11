@@ -8,6 +8,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * The (label- and example-wise) logistic loss functions have been rewritten to better prevent numerical problems.
 * Approximate methods for evaluating potential conditions of rules, based on unsupervised binning methods (currently equal-width- and equal-frequency-binning), have been added.
 * The parameter `--predictor` does now allow to use different algorithms for prediction (`label-wise` or `example-wise`).
+* An early stopping mechanism has been added, which allows to stop the induction of rules as soon as the quality of the model does not improve on a holdout set.    
 * Multi-threading can be used to parallelize the prediction for different examples across multiple CPU cores.
 * Multi-threading can be used to parallelize the calculation of gradients and Hessians for different examples across multiple CPU cores.
 * The algorithm does now support data sets with missing feature values.
