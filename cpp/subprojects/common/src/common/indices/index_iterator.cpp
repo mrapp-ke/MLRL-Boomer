@@ -1,6 +1,11 @@
 #include "common/indices/index_iterator.hpp"
 
 
+IndexIterator::IndexIterator()
+    : IndexIterator(0) {
+
+}
+
 IndexIterator::IndexIterator(uint32 index)
     : index_(index) {
 
