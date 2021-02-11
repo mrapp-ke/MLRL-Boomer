@@ -7,7 +7,7 @@
 #include "common/indices/index_vector_full.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/input/label_matrix.hpp"
-#include "common/measures/measure.hpp"
+#include "common/measures/measure_similarity.hpp"
 #include "boosting/data/matrix_dense_label_wise.hpp"
 
 
@@ -16,7 +16,7 @@ namespace boosting {
     /**
      * Defines an interface for all (decomposable) loss functions that are applied label-wise.
      */
-    class ILabelWiseLoss : public IMeasure {
+    class ILabelWiseLoss : public ISimilarityMeasure {
 
         public:
 
@@ -108,8 +108,9 @@ namespace boosting {
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
 
-            float64 evaluate(const LabelVector& labelVector, CContiguousView<float64>::const_iterator scoresBegin,
-                             CContiguousView<float64>::const_iterator scoresEnd) const override final;
+            float64 measureSimilarity(const LabelVector& labelVector,
+                                      CContiguousView<float64>::const_iterator scoresBegin,
+                                      CContiguousView<float64>::const_iterator scoresEnd) const override final;
 
     };
 

@@ -1,10 +1,10 @@
-from common.cython._measures cimport IMeasure
+from common.cython._measures cimport ISimilarityMeasure
 
 from libcpp.memory cimport shared_ptr
 
 
-cdef class Measure:
+cdef class SimilarityMeasure:
 
     # Functions:
 
-    cdef shared_ptr[IMeasure] get_measure_ptr(self)
+    cdef shared_ptr[ISimilarityMeasure] get_similarity_measure_ptr(self)
