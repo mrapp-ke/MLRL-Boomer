@@ -70,7 +70,7 @@ class ArithmeticMeanFunction : public IAggregationFunction {
  * the resulting quality score in a buffer that keeps track of the last `bufferSize` scores. Every `stopInterval` rules,
  * it is decided whether the rule induction should be stopped. For this reason, the scores in the buffer are aggregated
  * according to an `aggregationFunction`. If the percentage difference between the current score and the aggregated
- * score is less than a certain `tolerance`, the rule induction is continued, otherwise it is stopped.
+ * score is greater than a certain `tolerance`, the rule induction is continued, otherwise it is stopped.
  */
 class MeasureStoppingCriterion final : public IStoppingCriterion {
 
