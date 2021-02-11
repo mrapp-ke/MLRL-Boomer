@@ -152,9 +152,6 @@ class ArgumentParserBuilder:
         parser.add_argument('--time-limit', type=int,
                             default=ArgumentParserBuilder.__get_or_default('time_limit', -1, **kwargs),
                             help='The duration in seconds after which the induction of rules should be canceled or -1')
-        parser.add_argument('--early-stopping', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('early_stopping', None, **kwargs),
-                            help='The name of the strategy to be used for early stopping or None')
         parser.add_argument('--label-sub-sampling', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('label_sub_sampling', None, **kwargs),
                             help='The name of the strategy to be used for label sub-sampling or None')
@@ -202,6 +199,9 @@ class ArgumentParserBuilder:
                                         instance_sub_sampling=INSTANCE_SUB_SAMPLING_BAGGING,
                                         feature_sub_sampling=FEATURE_SUB_SAMPLING_RANDOM, **kwargs)
         parser = self.parser
+        parser.add_argument('--early-stopping', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('early_stopping', None, **kwargs),
+                            help='The name of the strategy to be used for early stopping or None')
         parser.add_argument('--l2-regularization-weight', type=float,
                             default=ArgumentParserBuilder.__get_or_default('l2_regularization_weight', 1.0, **kwargs),
                             help='The weight of the L2 regularization to be used')
