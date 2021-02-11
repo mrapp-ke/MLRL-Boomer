@@ -18,11 +18,12 @@ namespace seco {
         modelPtr_->addRule(std::make_unique<ConjunctiveBody>(conditions), prediction.toHead());
     }
 
-    std::unique_ptr<RuleModel> DecisionListBuilder::build() {
+    std::unique_ptr<RuleModel> DecisionListBuilder::build(uint32 numUsedRules) {
         if (defaultHeadPtr_.get() != nullptr) {
             modelPtr_->addRule(std::make_unique<EmptyBody>(), std::move(defaultHeadPtr_));
         }
 
+        modelPtr_->setNumUsedRules(numUsedRules);
         return std::move(modelPtr_);
     }
 

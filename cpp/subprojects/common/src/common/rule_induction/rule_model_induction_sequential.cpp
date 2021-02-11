@@ -1,17 +1,29 @@
 #include "common/rule_induction/rule_model_induction_sequential.hpp"
 
 
-static inline bool shouldContinue(std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria,
-                                  const IPartition& partition, const IStatistics& statistics, uint32 numRules) {
+static inline IStoppingCriterion::Result testStoppingCriteria(
+        std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria, const IPartition& partition,
+        const IStatistics& statistics, uint32 numRules) {
+    IStoppingCriterion::Result result = IStoppingCriterion::Result::CONTINUE;
+
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::shared_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
 
-        if (!stoppingCriterionPtr->shouldContinue(partition, statistics, numRules)) {
-            return false;
+        switch (stoppingCriterionPtr->test(statistics, partition, numRules)) {
+            case IStoppingCriterion::Result::FORCE_STOP: {
+                return IStoppingCriterion::Result::FORCE_STOP;
+            }
+            case IStoppingCriterion::Result::STORE_STOP: {
+                result = IStoppingCriterion::Result::STORE_STOP;
+                break;
+            }
+            default: {
+                break;
+            }
         }
     }
 
-    return true;
+    return result;
 }
 
 SequentialRuleModelInduction::SequentialRuleModelInduction(
@@ -42,6 +54,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     // Induce default rule...
     const IHeadRefinementFactory* defaultRuleHeadRefinementFactory = defaultRuleHeadRefinementFactoryPtr_.get();
     uint32 numRules = defaultRuleHeadRefinementFactory != nullptr ? 1 : 0;
+    uint32 numUsedRules = 0;
      std::shared_ptr<IRandomAccessLabelMatrix> randomAccessLabelMatrixPtr =
         std::dynamic_pointer_cast<IRandomAccessLabelMatrix, ILabelMatrix>(labelMatrixPtr);
     std::shared_ptr<IStatisticsProvider> statisticsProviderPtr = statisticsProviderFactoryPtr_->create(
@@ -55,8 +68,15 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     uint32 numExamples = thresholdsPtr->getNumExamples();
     uint32 numLabels = thresholdsPtr->getNumLabels();
     std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr_->partition(numExamples, rng);
+    IStoppingCriterion::Result stoppingCriterionResult;
 
-    while (shouldContinue(*stoppingCriteriaPtr_, *partitionPtr, statisticsProviderPtr->get(), numRules)) {
+    while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, *partitionPtr,
+                                                          statisticsProviderPtr->get(), numRules),
+           stoppingCriterionResult != IStoppingCriterion::Result::FORCE_STOP) {
+        if (stoppingCriterionResult == IStoppingCriterion::Result::STORE_STOP && numUsedRules == 0) {
+            numUsedRules = numRules;
+        }
+
         std::unique_ptr<IWeightVector> weightsPtr = partitionPtr->subSample(*instanceSubSamplingPtr_, rng);
         std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr_->subSample(numLabels, rng);
         bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, *labelIndicesPtr, *weightsPtr, *partitionPtr,
@@ -72,5 +92,5 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     }
 
     // Build and return the final model...
-    return modelBuilder.build();
+    return modelBuilder.build(numUsedRules);
 }

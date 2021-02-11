@@ -37,8 +37,9 @@ class IModelBuilder {
         /**
          * Builds and returns the model.
          *
-         * @return An unique pointer to an object of type `RuleModel` that has been built
+         * @param numUsedRules  The number of used rules
+         * @return              An unique pointer to an object of type `RuleModel` that has been built
          */
-        virtual std::unique_ptr<RuleModel> build() = 0;
+        virtual std::unique_ptr<RuleModel> build(uint32 numUsedRules) = 0;
 
 };
