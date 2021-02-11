@@ -201,6 +201,9 @@ cdef extern from "common/model/rule_model.hpp" nogil:
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                    FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor)
 
+        void visitUsed(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                       FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor)
+
 
 cdef extern from "common/model/model_builder.hpp" nogil:
 
