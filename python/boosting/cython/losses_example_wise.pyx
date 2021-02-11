@@ -4,13 +4,13 @@
 from libcpp.memory cimport make_shared
 
 
-cdef class ExampleWiseLoss(Measure):
+cdef class ExampleWiseLoss(SimilarityMeasure):
     """
     A wrapper for the pure virtual C++ class `IExampleWiseLoss`.
     """
 
-    cdef shared_ptr[IMeasure] get_measure_ptr(self):
-        return <shared_ptr[IMeasure]>self.loss_function_ptr
+    cdef shared_ptr[ISimilarityMeasure] get_similarity_measure_ptr(self):
+        return <shared_ptr[ISimilarityMeasure]>self.loss_function_ptr
 
 
 cdef class ExampleWiseLogisticLoss(ExampleWiseLoss):

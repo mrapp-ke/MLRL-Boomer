@@ -61,9 +61,9 @@ namespace boosting {
         return mean;
     }
 
-    float64 AbstractLabelWiseLoss::evaluate(const LabelVector& labelVector,
-                                            CContiguousView<float64>::const_iterator scoresBegin,
-                                            CContiguousView<float64>::const_iterator scoresEnd) const {
+    float64 AbstractLabelWiseLoss::measureSimilarity(const LabelVector& labelVector,
+                                                     CContiguousView<float64>::const_iterator scoresBegin,
+                                                     CContiguousView<float64>::const_iterator scoresEnd) const {
         uint32 numLabels = scoresEnd - scoresBegin;
         LabelVector::index_const_iterator indexIterator = labelVector.indices_cbegin();
         LabelVector::index_const_iterator indicesEnd = labelVector.indices_cend();

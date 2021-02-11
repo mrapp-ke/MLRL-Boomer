@@ -9,7 +9,7 @@ namespace boosting {
     template<class T>
     static inline void predictClosestLabelVector(uint32 exampleIndex, const float64* scoresBegin,
                                                  const float64* scoresEnd, CContiguousView<uint8>& predictionMatrix,
-                                                 const IMeasure& measure, const T& labelVectors) {
+                                                 const ISimilarityMeasure& measure, const T& labelVectors) {
         std::fill(predictionMatrix.row_begin(exampleIndex), predictionMatrix.row_end(exampleIndex), 0);
         const LabelVector* closestLabelVector = nullptr;
         float64 bestScore = 0;
@@ -19,7 +19,7 @@ namespace boosting {
             const auto& entry = *it;
             const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
             uint32 count = entry.second;
-            float64 score = measure.evaluate(*labelVectorPtr, scoresBegin, scoresEnd);
+            float64 score = measure.measureSimilarity(*labelVectorPtr, scoresBegin, scoresEnd);
 
             if (closestLabelVector == nullptr || score < bestScore || (score == bestScore && count > bestCount)) {
                 closestLabelVector = labelVectorPtr.get();
@@ -38,8 +38,8 @@ namespace boosting {
         }
     }
 
-    ExampleWiseClassificationPredictor::ExampleWiseClassificationPredictor(std::shared_ptr<IMeasure> measurePtr,
-                                                                           uint32 numThreads)
+    ExampleWiseClassificationPredictor::ExampleWiseClassificationPredictor(
+            std::shared_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads)
         : measurePtr_(measurePtr), numThreads_(numThreads) {
 
     }
@@ -64,7 +64,7 @@ namespace boosting {
         const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
         const RuleModel* modelPtr = &model;
-        const IMeasure* measurePtr = measurePtr_.get();
+        const ISimilarityMeasure* measurePtr = measurePtr_.get();
         const auto* labelVectorsPtr = &labelVectors_;
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
@@ -92,7 +92,7 @@ namespace boosting {
         const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
         const RuleModel* modelPtr = &model;
-        const IMeasure* measurePtr = measurePtr_.get();
+        const ISimilarityMeasure* measurePtr = measurePtr_.get();
         const auto* labelVectorsPtr = &labelVectors_;
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
