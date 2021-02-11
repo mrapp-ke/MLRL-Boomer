@@ -53,7 +53,7 @@ cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
         MeasureStoppingCriterionImpl(shared_ptr[IEvaluationMeasure] measurePtr,
                                      shared_ptr[IAggregationFunction] aggregationFunctionPtr, uint32 minRules,
                                      uint32 updateInterval, uint32 stopInterval, uint32 bufferSize,
-                                     float64 tolerance) except +
+                                     float64 minImprovement) except +
 
 
 cdef class StoppingCriterion:

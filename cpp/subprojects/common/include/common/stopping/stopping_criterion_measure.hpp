@@ -70,7 +70,7 @@ class ArithmeticMeanFunction : public IAggregationFunction {
  * the resulting quality score in a buffer that keeps track of the last `bufferSize` scores. Every `stopInterval` rules,
  * it is decided whether the rule induction should be stopped. For this reason, the scores in the buffer are aggregated
  * according to an `aggregationFunction`. If the percentage improvement between the aggregated score and the current
- * score is greater than a certain `tolerance`, the rule induction is continued, otherwise it is stopped.
+ * score is greater than a certain `minImprovement`, the rule induction is continued, otherwise it is stopped.
  */
 class MeasureStoppingCriterion final : public IStoppingCriterion {
 
@@ -86,7 +86,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         uint32 stopInterval_;
 
-        float64 tolerance_;
+        float64 minImprovement_;
 
         RingBuffer<float64> buffer_;
 
@@ -108,12 +108,12 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          *                                  stopped, e.g., a value of 10 means that the rule induction might be stopped
          *                                  after 10, 20, ... rules. Must be a multiple of `updateInterval`
          * @param bufferSize                The number of quality scores to be stored in a buffer. Must be at least 1
-         * @param tolerance                 The tolerance to be used when comparing the percentage difference between
-         *                                  the current score and scores in the buffer. Must be in (0, 1)
+         * @param minImprovement            The minimum improvement in percent that must be reached for the rule
+         *                                  induction to be continued. Must be in [0, 1]
          */
         MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
                                  std::shared_ptr<IAggregationFunction> aggregationFunctionPtr, uint32 minRules,
-                                 uint32 updateInterval, uint32 stopInterval, uint32 bufferSize, float64 tolerance);
+                                 uint32 updateInterval, uint32 stopInterval, uint32 bufferSize, float64 minImprovement);
 
         bool shouldContinue(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
