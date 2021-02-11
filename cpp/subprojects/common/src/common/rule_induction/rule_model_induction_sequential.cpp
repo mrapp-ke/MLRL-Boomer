@@ -5,8 +5,9 @@ static inline bool shouldContinue(std::forward_list<std::shared_ptr<IStoppingCri
                                   const IStatistics& statistics, uint32 numRules) {
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::shared_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
+        IStoppingCriterion::Result result = stoppingCriterionPtr->test(statistics, numRules);
 
-        if (!stoppingCriterionPtr->shouldContinue(statistics, numRules)) {
+        if (result == IStoppingCriterion::Result::FORCE_STOP) {
             return false;
         }
     }

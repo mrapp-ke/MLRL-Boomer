@@ -7,15 +7,14 @@ TimeStoppingCriterion::TimeStoppingCriterion(uint32 timeLimit)
 
 }
 
-bool TimeStoppingCriterion::shouldContinue(const IStatistics& statistics, uint32 numRules) {
+IStoppingCriterion::Result TimeStoppingCriterion::test(const IStatistics& statistics, uint32 numRules) {
     if (timerStarted_) {
         auto currentTime = timer::now();
         auto duration = std::chrono::duration_cast<timer_unit>(currentTime - startTime_);
-        return duration < timeLimit_;
+        return duration < timeLimit_ ? CONTINUE : FORCE_STOP;
     } else {
         startTime_ = timer::now();
         timerStarted_ = true;
-        return true;
+        return CONTINUE;
     }
-
 }
