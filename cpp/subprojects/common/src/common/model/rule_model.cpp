@@ -1,6 +1,11 @@
 #include "common/model/rule_model.hpp"
 
 
+RuleModel::RuleModel()
+    : numUsedRules_(0) {
+
+}
+
 RuleModel::const_iterator RuleModel::cbegin() const {
     return list_.cbegin();
 }
@@ -11,6 +16,14 @@ RuleModel::const_iterator RuleModel::cend() const {
 
 uint32 RuleModel::getNumRules() const {
     return (uint32) list_.size();
+}
+
+uint32 RuleModel::getNumUsedRules() const {
+    return numUsedRules_ > 0 ? numUsedRules_ : this->getNumRules();
+}
+
+void RuleModel::setNumUsedRules(uint32 numUsedRules) {
+    numUsedRules_ = numUsedRules;
 }
 
 void RuleModel::addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) {
