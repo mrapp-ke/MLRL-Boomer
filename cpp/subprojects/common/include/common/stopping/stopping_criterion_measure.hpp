@@ -112,10 +112,14 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          * @param bufferSize                The number of quality scores to be stored in a buffer. Must be at least 1
          * @param minImprovement            The minimum improvement in percent that must be reached for the rule
          *                                  induction to be continued. Must be in [0, 1]
+         * @param forceStop                 True, if the induction of rules should be forced to be stopped, if the
+         *                                  stopping criterion is met, false, if the time of stopping should only be
+         *                                  stored
          */
         MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
                                  std::shared_ptr<IAggregationFunction> aggregationFunctionPtr, uint32 minRules,
-                                 uint32 updateInterval, uint32 stopInterval, uint32 bufferSize, float64 minImprovement);
+                                 uint32 updateInterval, uint32 stopInterval, uint32 bufferSize, float64 minImprovement,
+                                 bool forceStop);
 
         Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 

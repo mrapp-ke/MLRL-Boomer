@@ -77,7 +77,8 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
     """
 
     def __cinit__(self, EvaluationMeasure measure, AggregationFunction aggregation_function, uint32 min_rules,
-                  uint32 update_interval, uint32 stop_interval, uint32 buffer_size, float64 min_improvement):
+                  uint32 update_interval, uint32 stop_interval, uint32 buffer_size, float64 min_improvement,
+                  bint force_stop):
         """
         :param measure:                 The measure that should be used to assess the quality of a model
         :param aggregation_function:    The aggregation function that should be used to aggregate the scores in the
@@ -93,8 +94,10 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
         :param buffer_size:             The number of quality scores to be stored in a buffer. Must be at least 1
         :param min_improvement:         The minimum improvement in percent that must be reached for the rule induction
                                         to be continued. Must be in [0, 1]
+        :param force_stop:              True, if the induction of rules should be forced to be stopped, if the stopping
+                                        criterion is met, False, if the time of stopping should only be stored
         """
         cdef shared_ptr[IEvaluationMeasure] measure_ptr = measure.get_evaluation_measure_ptr()
         self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[MeasureStoppingCriterionImpl](
             measure_ptr, aggregation_function.aggregation_function_ptr, min_rules, update_interval, stop_interval,
-            buffer_size, min_improvement)
+            buffer_size, min_improvement, force_stop)
