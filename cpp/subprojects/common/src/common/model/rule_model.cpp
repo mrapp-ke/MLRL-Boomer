@@ -1,5 +1,33 @@
 #include "common/model/rule_model.hpp"
 
+RuleModel::UsedIterator::UsedIterator(const std::list<Rule>& list, uint32 index)
+    : iterator_(list.cbegin()), index_(index) {
+
+}
+
+RuleModel::UsedIterator::reference RuleModel::UsedIterator::operator*() const {
+    return *iterator_;
+}
+
+RuleModel::UsedIterator& RuleModel::UsedIterator::operator++() {
+    ++iterator_;
+    ++index_;
+    return *this;
+}
+
+RuleModel::UsedIterator& RuleModel::UsedIterator::operator++(int n) {
+    iterator_++;
+    index_++;
+    return *this;
+}
+
+bool RuleModel::UsedIterator::operator!=(const UsedIterator& rhs) const {
+    return index_ != rhs.index_;
+}
+
+RuleModel::UsedIterator::difference_type RuleModel::UsedIterator::operator-(const UsedIterator& rhs) const {
+    return (difference_type) index_ - (difference_type) rhs.index_;
+}
 
 RuleModel::RuleModel()
     : numUsedRules_(0) {
