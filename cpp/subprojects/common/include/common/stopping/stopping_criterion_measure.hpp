@@ -92,6 +92,8 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         uint32 offset_;
 
+        Result stoppingResult_;
+
     public:
 
         /**
@@ -115,6 +117,6 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
                                  std::shared_ptr<IAggregationFunction> aggregationFunctionPtr, uint32 minRules,
                                  uint32 updateInterval, uint32 stopInterval, uint32 bufferSize, float64 minImprovement);
 
-        bool shouldContinue(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
+        Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
 };
