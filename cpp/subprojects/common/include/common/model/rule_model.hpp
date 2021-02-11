@@ -5,6 +5,7 @@
 
 #include "common/model/rule.hpp"
 #include <list>
+#include <iterator>
 
 
 /**
@@ -19,6 +20,43 @@ class RuleModel final {
         uint32 numUsedRules_;
 
     public:
+
+        /**
+         * Allows to iterate only the used rules.
+         */
+        class UsedIterator final {
+
+            private:
+
+                std::list<Rule>::const_iterator iterator_;
+
+                uint32 index_;
+
+            public:
+
+                UsedIterator(const std::list<Rule>& list, uint32 index);
+
+                typedef int difference_type;
+
+                typedef const Rule value_type;
+
+                typedef const Rule* pointer;
+
+                typedef const Rule& reference;
+
+                typedef std::input_iterator_tag iterator_category;
+
+                reference operator*() const;
+
+                UsedIterator& operator++();
+
+                UsedIterator& operator++(int n);
+
+                bool operator!=(const UsedIterator& rhs) const;
+
+                difference_type operator-(const UsedIterator& rhs) const;
+
+        };
 
         RuleModel();
 
