@@ -65,7 +65,7 @@ namespace boosting {
             }
 
             float64 score = this->evaluate(trueLabel, predictedScore);
-            mean = iterativeMean<float64>(i + 1, score, mean);
+            mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
         }
 
         return mean;
