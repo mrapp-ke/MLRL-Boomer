@@ -40,7 +40,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          * @param measurePtr        A shared pointer to an object of type `IEvaluationMeasure` that should be used to
          *                          assess the quality of a model
          * @param minRules          The minimum number of rules that must have been learned until the induction of rules
-         *                          might be stopped
+         *                          might be stopped. Must be at least 1
          * @param updateInterval    The interval to be used to update the quality of the current model, e.g., a value of
          *                          5 means that the model quality is assessed every 5 rules
          * @param stopInterval      The interval to be used to decide whether the induction of rules should be stopped,
