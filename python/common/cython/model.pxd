@@ -194,6 +194,8 @@ cdef extern from "common/model/rule_model.hpp" nogil:
 
         uint32 getNumRules()
 
+        uint32 getNumUsedRules()
+
         void addRule(unique_ptr[IBody] bodyPtr, unique_ptr[IHead] headPtr)
 
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,

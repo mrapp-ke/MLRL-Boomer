@@ -16,7 +16,11 @@ class RuleModel final {
 
         std::list<Rule> list_;
 
+        uint32 numUsedRules_;
+
     public:
+
+        RuleModel();
 
         typedef std::list<Rule>::const_iterator const_iterator;
 
@@ -40,6 +44,20 @@ class RuleModel final {
          * @return The number of rules
          */
         uint32 getNumRules() const;
+
+        /**
+         * Returns the number of used rules.
+         *
+         * @return The number of used rules
+         */
+        uint32 getNumUsedRules() const;
+
+        /**
+         * Sets the number of used rules.
+         *
+         * @param The number of used rules to be set or 0, if all rules are used
+         */
+        void setNumUsedRules(uint32 numUsedRules);
 
         /**
          * Creates a new rule from a given body and head and adds it to the model.
