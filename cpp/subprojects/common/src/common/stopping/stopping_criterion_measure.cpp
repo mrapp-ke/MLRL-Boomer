@@ -13,7 +13,7 @@ static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const I
     for (uint32 i = 0; i < numHoldoutExamples; i++) {
         uint32 exampleIndex = iterator[i];
         float64 score = statistics.evaluatePrediction(exampleIndex, measure);
-        mean = iterativeMean<float64>(i + 1, score, mean);
+        mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
     }
 
     return mean;
@@ -52,7 +52,7 @@ float64 ArithmeticMeanFunction::aggregate(uint32 numElements, RingBuffer<float64
 
     for (uint32 i = 0; i < numElements; i++) {
         float64 value = iterator[i];
-        mean = iterativeMean<float64>(i + 1, value, mean);
+        mean = iterativeArithmeticMean<float64>(i + 1, value, mean);
     }
 
     return mean;
