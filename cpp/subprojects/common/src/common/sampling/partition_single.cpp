@@ -12,7 +12,7 @@ SinglePartition::SinglePartition(uint32 numElements)
 }
 
 SinglePartition::const_iterator SinglePartition::cbegin() const {
-    return IndexIterator(0);
+    return IndexIterator();
 }
 
 SinglePartition::const_iterator SinglePartition::cend() const {
