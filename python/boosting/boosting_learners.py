@@ -304,13 +304,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 else:
                     loss = self.__create_loss_function()
                     aggregation_function = self.__create_aggregation_function(
-                        get_string_argument(args, ARGUMENT_AGGREGATION_FUNCTION, 'min'))
+                        get_string_argument(args, ARGUMENT_AGGREGATION_FUNCTION, 'avg'))
                     min_rules = get_int_argument(args, ARGUMENT_MIN_RULES, 100, lambda x: 1 <= x)
                     update_interval = get_int_argument(args, ARGUMENT_UPDATE_INTERVAL, 1, lambda x: 1 <= x)
                     stop_interval = get_int_argument(args, ARGUMENT_STOP_INTERVAL, 1,
                                                      lambda x: 1 <= x and x % update_interval == 0)
-                    buffer_size = get_int_argument(args, ARGUMENT_BUFFER_SIZE, 25, lambda x: 1 <= x)
-                    min_improvement = get_float_argument(args, ARGUMENT_MIN_IMPROVEMENT, 0.001, lambda x: 0 <= x <= 1)
+                    buffer_size = get_int_argument(args, ARGUMENT_BUFFER_SIZE, 50, lambda x: 1 <= x)
+                    min_improvement = get_float_argument(args, ARGUMENT_MIN_IMPROVEMENT, 0.01, lambda x: 0 <= x <= 1)
                     force_stop = get_bool_argument(args, ARGUMENT_FORCE_STOP, True)
                     return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
                                                     update_interval=update_interval, stop_interval=stop_interval,
