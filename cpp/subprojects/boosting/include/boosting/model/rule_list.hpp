@@ -25,7 +25,7 @@ namespace boosting {
 
             void addRule(const ConditionList& conditions, const AbstractPrediction& prediction) override;
 
-            std::unique_ptr<RuleModel> build() override;
+            std::unique_ptr<RuleModel> build(uint32 numUsedRules) override;
 
     };
 
