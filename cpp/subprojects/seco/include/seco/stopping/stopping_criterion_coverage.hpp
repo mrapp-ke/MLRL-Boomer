@@ -26,7 +26,7 @@ namespace seco {
              */
             CoverageStoppingCriterion(float64 threshold);
 
-            bool shouldContinue(const IStatistics& statistics, uint32 numRules) override;
+            Result test(const IStatistics& statistics, uint32 numRules) override;
 
     };
 

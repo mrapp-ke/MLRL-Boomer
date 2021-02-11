@@ -31,6 +31,6 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
          */
         TimeStoppingCriterion(uint32 timeLimit);
 
-        bool shouldContinue(const IStatistics& statistics, uint32 numRules) override;
+        Result test(const IStatistics& statistics, uint32 numRules) override;
 
 };

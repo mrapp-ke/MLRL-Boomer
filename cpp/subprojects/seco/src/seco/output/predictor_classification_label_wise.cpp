@@ -67,7 +67,7 @@ namespace seco {
         for (uint32 i = 0; i < numExamples; i++) {
             uint8 mask[numLabels] = {};
 
-            for (auto it = modelPtr->cbegin(); it != modelPtr->cend(); it++) {
+            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const Rule& rule = *it;
                 const IBody& body = rule.getBody();
                 const IHead& head = rule.getHead();
@@ -98,7 +98,7 @@ namespace seco {
             uint32 tmpArray2[numFeatures] = {};
             uint32 n = 1;
 
-            for (auto it = modelPtr->cbegin(); it != modelPtr->cend(); it++) {
+            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const Rule& rule = *it;
                 const IBody& body = rule.getBody();
                 const IHead& head = rule.getHead();
