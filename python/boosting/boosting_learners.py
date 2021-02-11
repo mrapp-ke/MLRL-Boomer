@@ -26,7 +26,8 @@ from common.cython.output import Predictor
 from common.cython.post_processing import PostProcessor, NoPostProcessor
 from common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from common.cython.statistics import StatisticsProviderFactory
-from common.cython.stopping import MeasureStoppingCriterion, MaxFunction
+from common.cython.stopping import MeasureStoppingCriterion, AggregationFunction, MinFunction, MaxFunction, \
+    ArithmeticMeanFunction
 from sklearn.base import ClassifierMixin
 
 from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE
@@ -34,9 +35,15 @@ from common.rule_learners import MLRuleLearner, SparsePolicy
 from common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_partition_sampling, create_max_conditions, create_stopping_criteria, \
     create_min_coverage, create_max_head_refinements, get_preferred_num_threads, create_thresholds_factory, \
-    parse_prefix_and_dict, get_int_argument, get_float_argument
+    parse_prefix_and_dict, get_int_argument, get_float_argument, get_string_argument
 
 EARLY_STOPPING_MEASURE = 'measure'
+
+AGGREGATION_FUNCTION_MIN = 'min'
+
+AGGREGATION_FUNCTION_MAX = 'max'
+
+AGGREGATION_FUNCTION_ARITHMETIC_MEAN = 'avg'
 
 ARGUMENT_MIN_RULES = 'min_rules'
 
@@ -47,6 +54,8 @@ ARGUMENT_STOP_INTERVAL = 'stop_interval'
 ARGUMENT_BUFFER_SIZE = 'buffer_size'
 
 ARGUMENT_TOLERANCE = 'tolerance'
+
+ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -292,7 +301,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                     return None
                 else:
                     loss = self.__create_loss_function()
-                    aggregation_function = MaxFunction()  # TODO Obtain from arguments
+                    aggregation_function = self.__create_aggregation_function(
+                        get_string_argument(args, ARGUMENT_AGGREGATION_FUNCTION, 'min'))
                     min_rules = get_int_argument(args, ARGUMENT_MIN_RULES, 100, lambda x: 1 <= x)
                     update_interval = get_int_argument(args, ARGUMENT_UPDATE_INTERVAL, 1, lambda x: 1 <= x)
                     stop_interval = get_int_argument(args, ARGUMENT_STOP_INTERVAL, 1,
@@ -303,6 +313,16 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     update_interval=update_interval, stop_interval=stop_interval,
                                                     buffer_size=buffer_size, tolerance=tolerance)
             raise ValueError('Invalid value given for parameter \'early_stopping\': ' + str(early_stopping))
+
+    def __create_aggregation_function(self, aggregation_function: str) -> AggregationFunction:
+        if aggregation_function == AGGREGATION_FUNCTION_MIN:
+            return MinFunction()
+        elif aggregation_function == AGGREGATION_FUNCTION_MAX:
+            return MaxFunction()
+        elif aggregation_function == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
+            return ArithmeticMeanFunction()
+        raise ValueError('Invalid value given for argument \'' + ARGUMENT_AGGREGATION_FUNCTION + '\': '
+                         + str(aggregation_function))
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)
