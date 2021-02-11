@@ -221,7 +221,19 @@ def parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:
     return None, None
 
 
-def get_int_argument(args: dict, key: str, default: int, validation) -> int:
+def get_string_argument(args: dict, key: str, default: str, validation=None) -> str:
+    if args is not None and key in args:
+        value = str(args[key])
+
+        if validation is not None and not validation(value):
+            raise ValueError('Invalid value given for string argument \'' + key + '\': ' + str(value))
+
+        return value
+
+    return default
+
+
+def get_int_argument(args: dict, key: str, default: int, validation=None) -> int:
     if args is not None and key in args:
         value = int(args[key])
 
@@ -233,7 +245,7 @@ def get_int_argument(args: dict, key: str, default: int, validation) -> int:
     return default
 
 
-def get_float_argument(args: dict, key: str, default: float, validation) -> float:
+def get_float_argument(args: dict, key: str, default: float, validation=None) -> float:
     if args is not None and key in args:
         value = float(args[key])
 
