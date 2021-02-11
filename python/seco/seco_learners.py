@@ -61,8 +61,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
-                 early_stopping: str = None, head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK,
-                 loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
+                 head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
+                 heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout_set_size: float = 0.0,
                  feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
@@ -72,8 +72,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     rule)
         :param time_limit:                          The duration in seconds after which the induction of rules should be
                                                     canceled
-        :param early_stopping:                      The strategy that is used for early stopping. Must be `measure` or
-                                                    None, if no early stopping should be used
         :param head_refinement:                     The strategy that is used to find the heads of rules. Must be
                                                     `single-label`, `partial` or None, if the default strategy should be
                                                     used
@@ -128,7 +126,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
         self.time_limit = time_limit
-        self.early_stopping = early_stopping
         self.head_refinement = head_refinement
         self.lift_function = lift_function
         self.loss = loss
@@ -148,8 +145,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
-        if self.early_stopping is not None:
-            name += '_early-stopping=' + str(self.early_stopping)
         if self.head_refinement is not None:
             name += '_head-refinement=' + str(self.head_refinement)
         name += '_lift-function=' + str(self.lift_function)
@@ -201,7 +196,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(CoverageStoppingCriterion(0))
-        # TODO Add MeasureStoppingCriterion, if necessary
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
                                             label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
