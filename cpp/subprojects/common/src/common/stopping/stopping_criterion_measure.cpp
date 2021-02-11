@@ -82,9 +82,9 @@ bool MeasureStoppingCriterion::shouldContinue(const IPartition& partition, const
 
             if (numBufferedElements > 0) {
                 float64 aggregatedScore = aggregationFunctionPtr_->aggregate(numBufferedElements, buffer_.cbegin());
-                // TODO Implement more generically
-                result = (currentScore + tolerance_) < aggregatedScore;
-                std::cout << numRules << ": (" << currentScore << " + " << tolerance_ << ") < " << aggregatedScore << " = " << result << "\n";
+                float64 percentageImprovement = (aggregatedScore - currentScore) / currentScore;
+                result = percentageImprovement > tolerance_;
+                std::cout << numRules << ": improvement = " << percentageImprovement << " ==> " << (result ? "continue" : "stop") << "\n";
             }
         }
 
