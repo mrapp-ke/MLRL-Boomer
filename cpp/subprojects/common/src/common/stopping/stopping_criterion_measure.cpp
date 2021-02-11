@@ -74,20 +74,20 @@ bool MeasureStoppingCriterion::shouldContinue(const IPartition& partition, const
 
     if (numRules > offset_ && numRules % updateInterval_ == 0) {
         const BiPartition& biPartition = static_cast<const BiPartition&>(partition);
-        float64 score = evaluateOnHoldoutSet(biPartition, statistics, *measurePtr_);
+        float64 currentScore = evaluateOnHoldoutSet(biPartition, statistics, *measurePtr_);
 
         if (numRules >= minRules_ && numRules % stopInterval_ == 0) {
             uint32 numBufferedElements = buffer_.getNumElements();
 
             if (numBufferedElements > 0) {
-                float64 referenceScore = aggregationFunctionPtr_->aggregate(numBufferedElements, buffer_.cbegin());
+                float64 aggregatedScore = aggregationFunctionPtr_->aggregate(numBufferedElements, buffer_.cbegin());
                 // TODO Implement more generically
-                result = (score + 0.0001) < referenceScore;
-                std::cout << numRules << ": (" << score << " + 0.0001) < " << referenceScore << " = " << result << "\n";
+                result = (currentScore + 0.0001) < aggregatedScore;
+                std::cout << numRules << ": (" << currentScore << " + 0.0001) < " << aggregatedScore << " = " << result << "\n";
             }
         }
 
-        buffer_.push(score);
+        buffer_.push(currentScore);
     }
 
     return result;
