@@ -233,6 +233,13 @@ def get_string_argument(args: dict, key: str, default: str, validation=None) -> 
     return default
 
 
+def get_bool_argument(args: dict, key: str, default: bool) -> bool:
+    if args is not None and key in args:
+        return bool(args[key])
+
+    return default
+
+
 def get_int_argument(args: dict, key: str, default: int, validation=None) -> int:
     if args is not None and key in args:
         value = int(args[key])
