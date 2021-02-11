@@ -3,7 +3,7 @@
 """
 
 
-cdef extern from "common/measures/measure.hpp" nogil:
+cdef extern from "common/measures/measure_similarity.hpp" nogil:
 
-    cdef cppclass IMeasure:
+    cdef cppclass ISimilarityMeasure:
         pass

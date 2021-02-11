@@ -5,7 +5,7 @@
 
 #include "common/data/view_c_contiguous.hpp"
 #include "common/input/label_matrix.hpp"
-#include "common/measures/measure.hpp"
+#include "common/measures/measure_similarity.hpp"
 #include "boosting/data/matrix_dense_example_wise.hpp"
 
 
@@ -14,7 +14,7 @@ namespace boosting {
     /**
      * Defines an interface for all (non-decomposable) loss functions that are applied example-wise.
      */
-    class IExampleWiseLoss : public IMeasure {
+    class IExampleWiseLoss : public ISimilarityMeasure {
 
         public:
 

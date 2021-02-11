@@ -135,9 +135,9 @@ namespace boosting {
         return max + std::log(sumExp);
     }
 
-    float64 ExampleWiseLogisticLoss::evaluate(const LabelVector& labelVector,
-                                              CContiguousView<float64>::const_iterator scoresBegin,
-                                              CContiguousView<float64>::const_iterator scoresEnd) const {
+    float64 ExampleWiseLogisticLoss::measureSimilarity(const LabelVector& labelVector,
+                                                       CContiguousView<float64>::const_iterator scoresBegin,
+                                                       CContiguousView<float64>::const_iterator scoresEnd) const {
         // The example-wise logistic loss calculates as
         // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2) + ...)`.
         // In the following, we exploit the identity

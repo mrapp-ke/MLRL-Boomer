@@ -5,7 +5,7 @@
 
 #include "common/output/predictor.hpp"
 #include "common/input/label_vector.hpp"
-#include "common/measures/measure.hpp"
+#include "common/measures/measure_similarity.hpp"
 #include <unordered_map>
 #include <functional>
 
@@ -71,19 +71,19 @@ namespace boosting {
 
             LabelVectorSet labelVectors_;
 
-            std::shared_ptr<IMeasure> measurePtr_;
+            std::shared_ptr<ISimilarityMeasure> measurePtr_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param measurePtr    A shared pointer to an object of type `IMeasure` that should be used to compute the
-             *                      similarity between predictions and known label vectors
+             * @param measurePtr    A shared pointer to an object of type `ISimilarityMeasure` that should be used to
+             *                      quantify the similarity between predictions and known label vectors
              * @param numThreads    The number of CPU threads to be used to make predictions for different query
              *                      examples in parallel. Must be at least 1
              */
-            ExampleWiseClassificationPredictor(std::shared_ptr<IMeasure> measurePtr, uint32 numThreads);
+            ExampleWiseClassificationPredictor(std::shared_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads);
 
             typedef std::function<void(const LabelVector&)> LabelVectorVisitor;
 
