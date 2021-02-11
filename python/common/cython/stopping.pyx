@@ -92,7 +92,7 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
                                         after 10, 20, ... rules. Must be a multiple of `updateInterval`
         :param buffer_size:             The number of quality scores to be stored in a buffer. Must be at least 1
         :param tolerance:               The tolerance to be used when comparing the percentage difference between the
-                                        current score and scores in the buffer
+                                        current score and scores in the buffer. Must be in (0, 1)
         """
         cdef shared_ptr[IEvaluationMeasure] measure_ptr = measure.get_evaluation_measure_ptr()
         self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[MeasureStoppingCriterionImpl](
