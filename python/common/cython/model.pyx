@@ -379,7 +379,7 @@ cdef class RuleModelFormatter:
 
         :param model: The `RuleModel` to be formatted
         """
-        model.model_ptr.get().visit(
+        model.model_ptr.get().visitUsed(
             wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
             wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
             wrapFullHeadVisitor(<void*>self, <FullHeadCythonVisitor>self.__visit_full_head),
