@@ -196,7 +196,8 @@ cdef class RuleModelSerializer:
             wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
             wrapFullHeadVisitor(<void*>self, <FullHeadCythonVisitor>self.__visit_full_head),
             wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
-        return (SERIALIZATION_VERSION, self.state)
+        cdef uint32 num_used_rules = model.model_ptr.get().getNumUsedRules()
+        return (SERIALIZATION_VERSION, (self.state, num_used_rules))
 
     cpdef deserialize(self, RuleModel model, object state):
         """
@@ -211,7 +212,8 @@ cdef class RuleModelSerializer:
             raise AssertionError(
                 'Version of the serialized model is ' + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
 
-        cdef list rule_list = state[1]
+        model_state = state[1]
+        cdef list rule_list = model_state[0]
         cdef uint32 num_rules = len(rule_list)
         cdef unique_ptr[RuleModelImpl] rule_model_ptr = make_unique[RuleModelImpl]()
         cdef object rule_state
@@ -221,6 +223,8 @@ cdef class RuleModelSerializer:
             rule_state = rule_list[i]
             rule_model_ptr.get().addRule(move(__create_body(rule_state[0])), move(__create_head(rule_state[1])))
 
+        cdef uint32 num_used_rules = model_state[1]
+        rule_model_ptr.get().setNumUsedRules(num_used_rules)
         model.model_ptr = move(rule_model_ptr)
 
 
