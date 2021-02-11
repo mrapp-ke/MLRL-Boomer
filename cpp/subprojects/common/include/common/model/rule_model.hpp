@@ -62,6 +62,8 @@ class RuleModel final {
 
         typedef std::list<Rule>::const_iterator const_iterator;
 
+        typedef UsedIterator used_const_iterator;
+
         /**
          * Returns a `const_iterator` to the beginning of the rules.
          *
@@ -75,6 +77,20 @@ class RuleModel final {
          * @return A `const_iterator` to the end
          */
         const_iterator cend() const;
+
+        /**
+         * Returns an `used_const_iterator` to the beginning of the used rules.
+         *
+         * @return An `used_const_iterator` to the beginning
+         */
+        used_const_iterator used_cbegin() const;
+
+        /**
+         * Returns an `used_const_iterator` to the end of the used rules.
+         *
+         * @return An `used_const_iterator` to the end
+         */
+        used_const_iterator used_cend() const;
 
         /**
          * Returns the total number of rules in the model.
