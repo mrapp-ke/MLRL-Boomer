@@ -34,7 +34,7 @@ from common.rule_learners import MLRuleLearner, SparsePolicy
 from common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_partition_sampling, create_max_conditions, create_stopping_criteria, \
     create_min_coverage, create_max_head_refinements, get_preferred_num_threads, create_thresholds_factory, \
-    parse_prefix_and_dict, get_int_argument
+    parse_prefix_and_dict, get_int_argument, get_float_argument
 
 EARLY_STOPPING_MEASURE = 'measure'
 
@@ -45,6 +45,8 @@ ARGUMENT_UPDATE_INTERVAL = 'update_interval'
 ARGUMENT_STOP_INTERVAL = 'stop_interval'
 
 ARGUMENT_BUFFER_SIZE = 'buffer_size'
+
+ARGUMENT_TOLERANCE = 'tolerance'
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -296,7 +298,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                     stop_interval = get_int_argument(args, ARGUMENT_STOP_INTERVAL, 1,
                                                      lambda x: 1 <= x and x % update_interval == 0)
                     buffer_size = get_int_argument(args, ARGUMENT_BUFFER_SIZE, 25, lambda x: 1 <= x)
-                    tolerance = 0.001  # TODO Obtain from arguments
+                    tolerance = get_float_argument(args, ARGUMENT_TOLERANCE, 0.001, lambda x: 0 <= x <= 1)
                     return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
                                                     update_interval=update_interval, stop_interval=stop_interval,
                                                     buffer_size=buffer_size, tolerance=tolerance)
