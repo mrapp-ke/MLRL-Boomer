@@ -79,4 +79,17 @@ class RuleModel final {
         void visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                    IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const;
 
+
+        /**
+         * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
+         * of the used rules that are contained in this model.
+         *
+         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
+         * @param fullHeadVisitor           The visitor function for handling objects of the type `FullHead`
+         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         */
+        void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                       IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const;
+
 };
