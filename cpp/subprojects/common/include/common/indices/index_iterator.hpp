@@ -18,6 +18,8 @@ class IndexIterator final {
 
     public:
 
+        IndexIterator();
+
         IndexIterator(uint32 index);
 
         typedef int difference_type;
