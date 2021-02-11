@@ -37,3 +37,13 @@ void RuleModel::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::Conjuncti
         rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, fullHeadVisitor, partialHeadVisitor);
     }
 }
+
+void RuleModel::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
+                          IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor, IHead::FullHeadVisitor fullHeadVisitor,
+                          IHead::PartialHeadVisitor partialHeadVisitor) const {
+    // TODO use correct iterator
+    for (auto it = list_.cbegin(); it != list_.cend(); it++) {
+        const Rule& rule = *it;
+        rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, fullHeadVisitor, partialHeadVisitor);
+    }
+}
