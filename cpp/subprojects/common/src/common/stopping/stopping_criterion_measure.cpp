@@ -61,9 +61,9 @@ float64 ArithmeticMeanFunction::aggregate(uint32 numElements, RingBuffer<float64
 MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
                                                    std::shared_ptr<IAggregationFunction> aggregationFunctionPtr,
                                                    uint32 minRules, uint32 updateInterval, uint32 stopInterval,
-                                                   uint32 bufferSize, float64 tolerance)
+                                                   uint32 bufferSize, float64 minImprovement)
     : measurePtr_(measurePtr), aggregationFunctionPtr_(aggregationFunctionPtr), minRules_(minRules),
-      updateInterval_(updateInterval), stopInterval_(stopInterval), tolerance_(tolerance),
+      updateInterval_(updateInterval), stopInterval_(stopInterval), minImprovement_(minImprovement),
       buffer_(RingBuffer<float64>(bufferSize)) {
     uint32 bufferInterval = bufferSize * updateInterval;
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
@@ -83,7 +83,7 @@ bool MeasureStoppingCriterion::shouldContinue(const IPartition& partition, const
             if (numBufferedElements > 0) {
                 float64 aggregatedScore = aggregationFunctionPtr_->aggregate(numBufferedElements, buffer_.cbegin());
                 float64 percentageImprovement = (aggregatedScore - currentScore) / currentScore;
-                result = percentageImprovement > tolerance_;
+                result = percentageImprovement > minImprovement_;
                 std::cout << numRules << ": improvement = " << percentageImprovement << " ==> " << (result ? "continue" : "stop") << "\n";
             }
         }

@@ -53,7 +53,7 @@ ARGUMENT_STOP_INTERVAL = 'stop_interval'
 
 ARGUMENT_BUFFER_SIZE = 'buffer_size'
 
-ARGUMENT_TOLERANCE = 'tolerance'
+ARGUMENT_MIN_IMPROVEMENT = 'min_improvement'
 
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
@@ -308,10 +308,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                     stop_interval = get_int_argument(args, ARGUMENT_STOP_INTERVAL, 1,
                                                      lambda x: 1 <= x and x % update_interval == 0)
                     buffer_size = get_int_argument(args, ARGUMENT_BUFFER_SIZE, 25, lambda x: 1 <= x)
-                    tolerance = get_float_argument(args, ARGUMENT_TOLERANCE, 0.001, lambda x: 0 <= x <= 1)
+                    min_improvement = get_float_argument(args, ARGUMENT_MIN_IMPROVEMENT, 0.001, lambda x: 0 <= x <= 1)
                     return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
                                                     update_interval=update_interval, stop_interval=stop_interval,
-                                                    buffer_size=buffer_size, tolerance=tolerance)
+                                                    buffer_size=buffer_size, min_improvement=min_improvement)
             raise ValueError('Invalid value given for parameter \'early_stopping\': ' + str(early_stopping))
 
     def __create_aggregation_function(self, aggregation_function: str) -> AggregationFunction:
