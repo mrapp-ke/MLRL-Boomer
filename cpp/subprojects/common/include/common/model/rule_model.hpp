@@ -5,6 +5,7 @@
 
 #include "common/model/rule.hpp"
 #include <list>
+#include <iterator>
 
 
 /**
@@ -16,9 +17,52 @@ class RuleModel final {
 
         std::list<Rule> list_;
 
+        uint32 numUsedRules_;
+
     public:
 
+        /**
+         * Allows to iterate only the used rules.
+         */
+        class UsedIterator final {
+
+            private:
+
+                std::list<Rule>::const_iterator iterator_;
+
+                uint32 index_;
+
+            public:
+
+                UsedIterator(const std::list<Rule>& list, uint32 index);
+
+                typedef int difference_type;
+
+                typedef const Rule value_type;
+
+                typedef const Rule* pointer;
+
+                typedef const Rule& reference;
+
+                typedef std::input_iterator_tag iterator_category;
+
+                reference operator*() const;
+
+                UsedIterator& operator++();
+
+                UsedIterator& operator++(int n);
+
+                bool operator!=(const UsedIterator& rhs) const;
+
+                difference_type operator-(const UsedIterator& rhs) const;
+
+        };
+
+        RuleModel();
+
         typedef std::list<Rule>::const_iterator const_iterator;
+
+        typedef UsedIterator used_const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the rules.
@@ -33,6 +77,41 @@ class RuleModel final {
          * @return A `const_iterator` to the end
          */
         const_iterator cend() const;
+
+        /**
+         * Returns an `used_const_iterator` to the beginning of the used rules.
+         *
+         * @return An `used_const_iterator` to the beginning
+         */
+        used_const_iterator used_cbegin() const;
+
+        /**
+         * Returns an `used_const_iterator` to the end of the used rules.
+         *
+         * @return An `used_const_iterator` to the end
+         */
+        used_const_iterator used_cend() const;
+
+        /**
+         * Returns the total number of rules in the model.
+         *
+         * @return The number of rules
+         */
+        uint32 getNumRules() const;
+
+        /**
+         * Returns the number of used rules.
+         *
+         * @return The number of used rules
+         */
+        uint32 getNumUsedRules() const;
+
+        /**
+         * Sets the number of used rules.
+         *
+         * @param The number of used rules to be set or 0, if all rules are used
+         */
+        void setNumUsedRules(uint32 numUsedRules);
 
         /**
          * Creates a new rule from a given body and head and adds it to the model.
@@ -53,5 +132,18 @@ class RuleModel final {
          */
         void visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                    IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const;
+
+
+        /**
+         * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
+         * of the used rules that are contained in this model.
+         *
+         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
+         * @param fullHeadVisitor           The visitor function for handling objects of the type `FullHead`
+         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         */
+        void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                       IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const;
 
 };
