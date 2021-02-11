@@ -19,10 +19,51 @@ static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const I
     return mean;
 }
 
-MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr, uint32 minRules,
-                                                   uint32 updateInterval, uint32 stopInterval, uint32 bufferSize)
-    : measurePtr_(measurePtr), minRules_(minRules), updateInterval_(updateInterval), stopInterval_(stopInterval),
-      buffer_(RingBuffer<float64>(bufferSize)) {
+float64 MinFunction::aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const {
+    float64 min = iterator[0];
+
+    for (uint32 i = 1; i < numElements; i++) {
+        float64 value = iterator[i];
+
+        if (value < min) {
+            min = value;
+        }
+    }
+
+    return min;
+}
+
+float64 MaxFunction::aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const {
+    float64 max = iterator[0];
+
+    for (uint32 i = 1; i < numElements; i++) {
+        float64 value = iterator[i];
+
+        if (value > max) {
+            max = value;
+        }
+    }
+
+    return max;
+}
+
+float64 ArithmeticMeanFunction::aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const {
+    float64 mean = 0;
+
+    for (uint32 i = 0; i < numElements; i++) {
+        float64 value = iterator[i];
+        mean = iterativeMean<float64>(i + 1, value, mean);
+    }
+
+    return mean;
+}
+
+MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
+                                                   std::shared_ptr<IAggregationFunction> aggregationFunctionPtr,
+                                                   uint32 minRules, uint32 updateInterval, uint32 stopInterval,
+                                                   uint32 bufferSize)
+    : measurePtr_(measurePtr), aggregationFunctionPtr_(aggregationFunctionPtr), minRules_(minRules),
+      updateInterval_(updateInterval), stopInterval_(stopInterval), buffer_(RingBuffer<float64>(bufferSize)) {
     uint32 bufferInterval = bufferSize * updateInterval;
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
 }
@@ -39,21 +80,10 @@ bool MeasureStoppingCriterion::shouldContinue(const IPartition& partition, const
             uint32 numBufferedElements = buffer_.getNumElements();
 
             if (numBufferedElements > 0) {
-                RingBuffer<float64>::const_iterator iterator = buffer_.cbegin();
-                float64 max = iterator[0];
-
-                for (uint32 i = 1; i < numBufferedElements; i++) {
-                    float64 value = iterator[i];
-
-                    if (value > max) {
-                        max = value;
-                    }
-                }
-
-                // TODO Apply aggregation function
-                // TODO Apply decision function
-                result = (score + 0.0001) < max;
-                std::cout << numRules << ": (" << score << " + 0.0001) < " << max << " = " << result << "\n";
+                float64 referenceScore = aggregationFunctionPtr_->aggregate(numBufferedElements, buffer_.cbegin());
+                // TODO Implement more generically
+                result = (score + 0.0001) < referenceScore;
+                std::cout << numRules << ": (" << score << " + 0.0001) < " << referenceScore << " = " << result << "\n";
             }
         }
 

@@ -21,11 +21,44 @@ class IAggregationFunction {
         /**
          * Aggregates the values that are stored in a buffer.
          *
-         * @param begin An iterator to the beginning of the buffer
-         * @param end   An iterator to the end of the buffer
-         * @return      The aggregated value
+         * @param numElements   The number of values that are stored in the buffer
+         * @param iterator      An iterator that provides access to the values that are stored in the buffer
+         * @return              The aggregated value
          */
-        virtual float64 aggregate(RingBuffer::const_iterator begin, RingBuffer::const_iterator end) const = 0;
+        virtual float64 aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const = 0;
+
+};
+
+/**
+ * Allows to aggregate the values that are stored in a buffer by finding the minimum value.
+ */
+class MinFunction : public IAggregationFunction {
+
+    public:
+
+        float64 aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const override;
+
+};
+
+/**
+ * Allows to aggregate the values that are stored in a buffer by finding the maximum value.
+ */
+class MaxFunction : public IAggregationFunction {
+
+    public:
+
+        float64 aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const override;
+
+};
+
+/**
+ * Allows to aggregate the values that are stored in a buffer by calculating the arithmetic mean.
+ */
+class ArithmeticMeanFunction : public IAggregationFunction {
+
+    public:
+
+        float64 aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const override;
 
 };
 
@@ -44,6 +77,8 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         std::shared_ptr<IEvaluationMeasure> measurePtr_;
 
+        std::shared_ptr<IAggregationFunction> aggregationFunctionPtr_;
+
         uint32 minRules_;
 
         uint32 updateInterval_;
@@ -57,19 +92,23 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
     public:
 
         /**
-         * @param measurePtr        A shared pointer to an object of type `IEvaluationMeasure` that should be used to
-         *                          assess the quality of a model
-         * @param minRules          The minimum number of rules that must have been learned until the induction of rules
-         *                          might be stopped. Must be at least 1
-         * @param updateInterval    The interval to be used to update the quality of the current model, e.g., a value of
-         *                          5 means that the model quality is assessed every 5 rules. Must be at least 1
-         * @param stopInterval      The interval to be used to decide whether the induction of rules should be stopped,
-         *                          e.g., a value of 10 means that the rule induction might be stopped after 10, 20, ...
-         *                          rules. Must be a multiple of `updateInterval`
-         * @param bufferSize        The number of quality scores to be stored in a buffer. Must be at least 1
+         * @param measurePtr                A shared pointer to an object of type `IEvaluationMeasure` that should be
+         *                                  used to assess the quality of a model
+         * @param aggregationFunctionPtr    A shared pointer to an object of type `IAggregationFunction` that should be
+         *                                  used to aggregate the scores in the buffer
+         * @param minRules                  The minimum number of rules that must have been learned until the induction
+         *                                  of rules might be stopped. Must be at least 1
+         * @param updateInterval            The interval to be used to update the quality of the current model, e.g., a
+         *                                  value of 5 means that the model quality is assessed every 5 rules. Must be
+         *                                  at least 1
+         * @param stopInterval              The interval to be used to decide whether the induction of rules should be
+         *                                  stopped, e.g., a value of 10 means that the rule induction might be stopped
+         *                                  after 10, 20, ... rules. Must be a multiple of `updateInterval`
+         * @param bufferSize                The number of quality scores to be stored in a buffer. Must be at least 1
          */
-        MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr, uint32 minRules, uint32 updateInterval,
-                                 uint32 stopInterval, uint32 bufferSize);
+        MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
+                                 std::shared_ptr<IAggregationFunction> aggregationFunctionPtr, uint32 minRules,
+                                 uint32 updateInterval, uint32 stopInterval, uint32 bufferSize);
 
         bool shouldContinue(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
