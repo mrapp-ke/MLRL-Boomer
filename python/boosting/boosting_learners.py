@@ -309,9 +309,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                      lambda x: 1 <= x and x % update_interval == 0)
                     buffer_size = get_int_argument(args, ARGUMENT_BUFFER_SIZE, 25, lambda x: 1 <= x)
                     min_improvement = get_float_argument(args, ARGUMENT_MIN_IMPROVEMENT, 0.001, lambda x: 0 <= x <= 1)
+                    force_stop = True  # TODO Obtain from arguments
                     return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
                                                     update_interval=update_interval, stop_interval=stop_interval,
-                                                    buffer_size=buffer_size, min_improvement=min_improvement)
+                                                    buffer_size=buffer_size, min_improvement=min_improvement,
+                                                    force_stop=force_stop)
             raise ValueError('Invalid value given for parameter \'early_stopping\': ' + str(early_stopping))
 
     def __create_aggregation_function(self, aggregation_function: str) -> AggregationFunction:

@@ -61,10 +61,10 @@ float64 ArithmeticMeanFunction::aggregate(uint32 numElements, RingBuffer<float64
 MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
                                                    std::shared_ptr<IAggregationFunction> aggregationFunctionPtr,
                                                    uint32 minRules, uint32 updateInterval, uint32 stopInterval,
-                                                   uint32 bufferSize, float64 minImprovement)
+                                                   uint32 bufferSize, float64 minImprovement, bool forceStop)
     : measurePtr_(measurePtr), aggregationFunctionPtr_(aggregationFunctionPtr), minRules_(minRules),
       updateInterval_(updateInterval), stopInterval_(stopInterval), minImprovement_(minImprovement),
-      buffer_(RingBuffer<float64>(bufferSize)), stoppingResult_(FORCE_STOP) {
+      buffer_(RingBuffer<float64>(bufferSize)), stoppingResult_(forceStop ? FORCE_STOP : STORE_STOP) {
     uint32 bufferInterval = bufferSize * updateInterval;
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
 }

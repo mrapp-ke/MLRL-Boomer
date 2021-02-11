@@ -1,6 +1,7 @@
 from common.cython._types cimport uint32, float64
 from common.cython._measures cimport IEvaluationMeasure
 
+from libcpp cimport bool
 from libcpp.memory cimport shared_ptr
 
 
@@ -53,7 +54,7 @@ cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
         MeasureStoppingCriterionImpl(shared_ptr[IEvaluationMeasure] measurePtr,
                                      shared_ptr[IAggregationFunction] aggregationFunctionPtr, uint32 minRules,
                                      uint32 updateInterval, uint32 stopInterval, uint32 bufferSize,
-                                     float64 minImprovement) except +
+                                     float64 minImprovement, bool forceStop) except +
 
 
 cdef class StoppingCriterion:
