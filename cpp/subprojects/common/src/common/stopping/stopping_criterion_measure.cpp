@@ -28,9 +28,19 @@ MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IMeasure> mea
 
 bool MeasureStoppingCriterion::shouldContinue(const IPartition& partition, const IStatistics& statistics,
                                               uint32 numRules) {
-    const BiPartition& biPartition = static_cast<const BiPartition&>(partition);
-    float64 score = evaluateOnHoldoutSet(biPartition, statistics, *measurePtr_);
-    // TODO Implement
-    std::cout << score << "\n";
+    if (numRules % updateInterval_ == 0) {
+        const BiPartition& biPartition = static_cast<const BiPartition&>(partition);
+        float64 score = evaluateOnHoldoutSet(biPartition, statistics, *measurePtr_);
+
+        if (numRules % stopInterval_ == 0) {
+            std::cout << score << "\n";
+            // TODO Apply aggregation function
+            // TODO Apply decision function
+            return true;
+        }
+
+        buffer_.push(score);
+    }
+
     return true;
 }
