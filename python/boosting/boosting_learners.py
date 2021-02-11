@@ -33,9 +33,18 @@ from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMP
 from common.rule_learners import MLRuleLearner, SparsePolicy
 from common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_partition_sampling, create_max_conditions, create_stopping_criteria, \
-    create_min_coverage, create_max_head_refinements, get_preferred_num_threads, create_thresholds_factory
+    create_min_coverage, create_max_head_refinements, get_preferred_num_threads, create_thresholds_factory, \
+    parse_prefix_and_dict, get_int_argument
 
 EARLY_STOPPING_MEASURE = 'measure'
+
+ARGUMENT_MIN_RULES = 'min_rules'
+
+ARGUMENT_UPDATE_INTERVAL = 'update_interval'
+
+ARGUMENT_STOP_INTERVAL = 'stop_interval'
+
+ARGUMENT_BUFFER_SIZE = 'buffer_size'
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -272,16 +281,22 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if early_stopping is None:
             return None
         else:
-            if early_stopping == EARLY_STOPPING_MEASURE:
+            prefix, args = parse_prefix_and_dict(early_stopping, [EARLY_STOPPING_MEASURE])
+
+            if prefix == EARLY_STOPPING_MEASURE:
                 if self.holdout_set_size <= 0.0:
                     log.warning('Parameter \'early_stopping\' does not have any effect, because parameter \'holdout\' '
                                 + 'is set to \'0\'!')
                     return None
                 else:
                     loss = self.__create_loss_function()
-                    # TODO Parse additional arguments from dictionary
-                    return MeasureStoppingCriterion(loss, min_rules=100, update_interval=1, stop_interval=1,
-                                                    buffer_size=10)
+                    min_rules = get_int_argument(args, ARGUMENT_MIN_RULES, 100, lambda x: 1 <= x)
+                    update_interval = get_int_argument(args, ARGUMENT_UPDATE_INTERVAL, 1, lambda x: 1 <= x)
+                    stop_interval = get_int_argument(args, ARGUMENT_STOP_INTERVAL, 1,
+                                                     lambda x: 1 <= x and x % update_interval == 0)
+                    buffer_size = get_int_argument(args, ARGUMENT_BUFFER_SIZE, 25, lambda x: 1 <= x)
+                    return MeasureStoppingCriterion(loss, min_rules=min_rules, update_interval=update_interval,
+                                                    stop_interval=stop_interval, buffer_size=buffer_size)
             raise ValueError('Invalid value given for parameter \'early_stopping\': ' + str(early_stopping))
 
     def __create_l2_regularization_weight(self) -> float:
