@@ -35,6 +35,13 @@ class RuleModel final {
         const_iterator cend() const;
 
         /**
+         * Returns the total number of rules in the model.
+         *
+         * @return The number of rules
+         */
+        uint32 getNumRules() const;
+
+        /**
          * Creates a new rule from a given body and head and adds it to the model.
          *
          * @param bodyPtr An unique pointer to an object of type `IBody` that should be used as the body of the rule
