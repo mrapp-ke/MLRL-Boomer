@@ -23,6 +23,11 @@ typename RingBuffer<T>::const_iterator RingBuffer<T>::cend() const {
 }
 
 template<class T>
+uint32 RingBuffer<T>::getCapacity() const {
+    return capacity_;
+}
+
+template<class T>
 uint32 RingBuffer<T>::getNumElements() const {
     return full_ ? capacity_ : pos_;
 }

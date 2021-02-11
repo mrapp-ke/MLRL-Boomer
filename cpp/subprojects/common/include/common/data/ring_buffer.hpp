@@ -50,6 +50,13 @@ class RingBuffer final {
         const_iterator cend() const;
 
         /**
+         * Returns the maximum capacity of the buffer.
+         *
+         * @return The maximum capacity
+         */
+        uint32 getCapacity() const;
+
+        /**
          * Returns the number of values in the buffer.
          *
          * @return The number of values
