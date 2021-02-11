@@ -22,6 +22,6 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
          */
         SizeStoppingCriterion(uint32 maxRules);
 
-        bool shouldContinue(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
+        Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
 };

@@ -26,7 +26,7 @@ uint32 FullIndexVector::getIndex(uint32 pos) const {
 }
 
 FullIndexVector::const_iterator FullIndexVector::cbegin() const {
-    return IndexIterator(0);
+    return IndexIterator();
 }
 
 FullIndexVector::const_iterator FullIndexVector::cend() const {

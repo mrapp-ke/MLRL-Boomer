@@ -6,7 +6,7 @@ SizeStoppingCriterion::SizeStoppingCriterion(uint32 maxRules)
 
 }
 
-bool SizeStoppingCriterion::shouldContinue(const IPartition& partition, const IStatistics& statistics,
-                                           uint32 numRules) {
-    return numRules < maxRules_;
+IStoppingCriterion::Result SizeStoppingCriterion::test(const IPartition& partition, const IStatistics& statistics,
+                                                       uint32 numRules) {
+    return numRules < maxRules_ ? CONTINUE : FORCE_STOP;
 }
