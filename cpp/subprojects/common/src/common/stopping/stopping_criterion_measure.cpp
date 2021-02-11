@@ -61,9 +61,10 @@ float64 ArithmeticMeanFunction::aggregate(uint32 numElements, RingBuffer<float64
 MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
                                                    std::shared_ptr<IAggregationFunction> aggregationFunctionPtr,
                                                    uint32 minRules, uint32 updateInterval, uint32 stopInterval,
-                                                   uint32 bufferSize)
+                                                   uint32 bufferSize, float64 tolerance)
     : measurePtr_(measurePtr), aggregationFunctionPtr_(aggregationFunctionPtr), minRules_(minRules),
-      updateInterval_(updateInterval), stopInterval_(stopInterval), buffer_(RingBuffer<float64>(bufferSize)) {
+      updateInterval_(updateInterval), stopInterval_(stopInterval), tolerance_(tolerance),
+      buffer_(RingBuffer<float64>(bufferSize)) {
     uint32 bufferInterval = bufferSize * updateInterval;
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
 }
@@ -82,8 +83,8 @@ bool MeasureStoppingCriterion::shouldContinue(const IPartition& partition, const
             if (numBufferedElements > 0) {
                 float64 aggregatedScore = aggregationFunctionPtr_->aggregate(numBufferedElements, buffer_.cbegin());
                 // TODO Implement more generically
-                result = (currentScore + 0.0001) < aggregatedScore;
-                std::cout << numRules << ": (" << currentScore << " + 0.0001) < " << aggregatedScore << " = " << result << "\n";
+                result = (currentScore + tolerance_) < aggregatedScore;
+                std::cout << numRules << ": (" << currentScore << " + " << tolerance_ << ") < " << aggregatedScore << " = " << result << "\n";
             }
         }
 

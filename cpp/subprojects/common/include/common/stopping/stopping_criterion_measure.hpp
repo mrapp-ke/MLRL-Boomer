@@ -86,6 +86,8 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         uint32 stopInterval_;
 
+        float64 tolerance_;
+
         RingBuffer<float64> buffer_;
 
         uint32 offset_;
@@ -106,10 +108,12 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          *                                  stopped, e.g., a value of 10 means that the rule induction might be stopped
          *                                  after 10, 20, ... rules. Must be a multiple of `updateInterval`
          * @param bufferSize                The number of quality scores to be stored in a buffer. Must be at least 1
+         * @param tolerance                 The tolerance to be used when comparing the percentage difference between
+         *                                  the current score and scores in the buffer
          */
         MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
                                  std::shared_ptr<IAggregationFunction> aggregationFunctionPtr, uint32 minRules,
-                                 uint32 updateInterval, uint32 stopInterval, uint32 bufferSize);
+                                 uint32 updateInterval, uint32 stopInterval, uint32 bufferSize, float64 tolerance);
 
         bool shouldContinue(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
