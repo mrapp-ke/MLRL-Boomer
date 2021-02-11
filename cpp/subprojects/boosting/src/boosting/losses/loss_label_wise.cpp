@@ -55,7 +55,7 @@ namespace boosting {
             bool trueLabel = labelMatrix.getValue(exampleIndex, i);
             float64 predictedScore = scoreIterator[i];
             float64 score = this->evaluate(trueLabel, predictedScore);
-            mean = iterativeMean<float64>(i + 1, score, mean);
+            mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
         }
 
         return mean;
