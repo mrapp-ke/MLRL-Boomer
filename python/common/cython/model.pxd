@@ -1,5 +1,6 @@
 from common.cython._types cimport uint32, float32, float64
 
+from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 from libcpp.list cimport list as double_linked_list
 
@@ -184,13 +185,30 @@ cdef extern from "common/model/rule.hpp" nogil:
 
 cdef extern from "common/model/rule_model.hpp" nogil:
 
+    cdef cppclass UsedIterator"RuleModel::UsedIterator":
+
+        const RuleImpl& operator*()
+
+        UsedIterator& operator++()
+
+        UsedIterator& operator++(int n)
+
+        bool operator!=(const UsedIterator& rhs)
+
+
     cdef cppclass RuleModelImpl"RuleModel":
 
         ctypedef double_linked_list[RuleImpl].const_iterator const_iterator
 
+        ctypedef UsedIterator used_const_iterator
+
         const_iterator cbegin()
 
         const_iterator cend()
+
+        used_const_iterator used_cbegin()
+
+        used_const_iterator used_cend()
 
         uint32 getNumRules()
 

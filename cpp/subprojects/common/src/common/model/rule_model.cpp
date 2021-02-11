@@ -42,6 +42,14 @@ RuleModel::const_iterator RuleModel::cend() const {
     return list_.cend();
 }
 
+RuleModel::used_const_iterator RuleModel::used_cbegin() const {
+    return UsedIterator(list_, 0);
+}
+
+RuleModel::used_const_iterator RuleModel::used_cend() const {
+    return UsedIterator(list_, this->getNumUsedRules());
+}
+
 uint32 RuleModel::getNumRules() const {
     return (uint32) list_.size();
 }
@@ -69,8 +77,7 @@ void RuleModel::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::Conjuncti
 void RuleModel::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
                           IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor, IHead::FullHeadVisitor fullHeadVisitor,
                           IHead::PartialHeadVisitor partialHeadVisitor) const {
-    // TODO use correct iterator
-    for (auto it = list_.cbegin(); it != list_.cend(); it++) {
+    for (auto it = this->used_cbegin(); it != this->used_cend(); it++) {
         const Rule& rule = *it;
         rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, fullHeadVisitor, partialHeadVisitor);
     }
