@@ -109,7 +109,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          *                                  after 10, 20, ... rules. Must be a multiple of `updateInterval`
          * @param bufferSize                The number of quality scores to be stored in a buffer. Must be at least 1
          * @param tolerance                 The tolerance to be used when comparing the percentage difference between
-         *                                  the current score and scores in the buffer
+         *                                  the current score and scores in the buffer. Must be in (0, 1)
          */
         MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
                                  std::shared_ptr<IAggregationFunction> aggregationFunctionPtr, uint32 minRules,
