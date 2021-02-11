@@ -10,6 +10,26 @@
 
 
 /**
+ * Defines an interface for all classes that allow to aggregate the values that are stored in a buffer.
+ */
+class IAggregationFunction {
+
+    public:
+
+        virtual ~IAggregationFunction() { };
+
+        /**
+         * Aggregates the values that are stored in a buffer.
+         *
+         * @param begin An iterator to the beginning of the buffer
+         * @param end   An iterator to the end of the buffer
+         * @return      The aggregated value
+         */
+        virtual float64 aggregate(RingBuffer::const_iterator begin, RingBuffer::const_iterator end) const = 0;
+
+};
+
+/**
  * A stopping criterion that stops the induction of rules as soon as the quality of a model's predictions for the
  * examples in a holdout set do not improve according a certain measure.
  *
