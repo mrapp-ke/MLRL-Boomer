@@ -68,8 +68,9 @@ class ArithmeticMeanFunction : public IAggregationFunction {
  *
  * This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
  * the resulting quality score in a buffer that keeps track of the last `bufferSize` scores. Every `stopInterval` rules,
- * it is decided whether the rule induction should be stopped by aggregating the scores in the buffer according to a
- * `aggregationFunction` and comparing it to the latest quality score using a `decisionFunction`.
+ * it is decided whether the rule induction should be stopped. For this reason, the scores in the buffer are aggregated
+ * according to an `aggregationFunction`. If the percentage difference between the current score and the aggregated
+ * score is less than a certain `tolerance`, the rule induction is continued, otherwise it is stopped.
  */
 class MeasureStoppingCriterion final : public IStoppingCriterion {
 
