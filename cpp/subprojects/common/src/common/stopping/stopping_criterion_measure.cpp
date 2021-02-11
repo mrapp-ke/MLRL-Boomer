@@ -19,38 +19,42 @@ static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const I
     return mean;
 }
 
-MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
+MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr, uint32 minRules,
                                                    uint32 updateInterval, uint32 stopInterval, uint32 bufferSize)
-    : measurePtr_(measurePtr), updateInterval_(updateInterval), stopInterval_(stopInterval),
+    : measurePtr_(measurePtr), minRules_(minRules), updateInterval_(updateInterval), stopInterval_(stopInterval),
       buffer_(RingBuffer<float64>(bufferSize)) {
-
+    uint32 bufferInterval = bufferSize * updateInterval;
+    offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
 }
 
 bool MeasureStoppingCriterion::shouldContinue(const IPartition& partition, const IStatistics& statistics,
                                               uint32 numRules) {
     bool result = true;
 
-    if (numRules % updateInterval_ == 0) {
+    if (numRules > offset_ && numRules % updateInterval_ == 0) {
         const BiPartition& biPartition = static_cast<const BiPartition&>(partition);
         float64 score = evaluateOnHoldoutSet(biPartition, statistics, *measurePtr_);
-        uint32 numElements = buffer_.getNumElements();
 
-        if (numElements > 0 && numRules % stopInterval_ == 0) {
-            RingBuffer<float64>::const_iterator iterator = buffer_.cbegin();
-            float64 max = iterator[0];
+        if (numRules >= minRules_ && numRules % stopInterval_ == 0) {
+            uint32 numBufferedElements = buffer_.getNumElements();
 
-            for (uint32 i = 1; i < numElements; i++) {
-                float64 value = iterator[i];
+            if (numBufferedElements > 0) {
+                RingBuffer<float64>::const_iterator iterator = buffer_.cbegin();
+                float64 max = iterator[0];
 
-                if (value > max) {
-                    max = value;
+                for (uint32 i = 1; i < numBufferedElements; i++) {
+                    float64 value = iterator[i];
+
+                    if (value > max) {
+                        max = value;
+                    }
                 }
-            }
 
-            // TODO Apply aggregation function
-            // TODO Apply decision function
-            result = (score + 0.0001) < max;
-            std::cout << numRules << ": (" << score << " + 0.0001) < " << max << " = " << result << "\n";
+                // TODO Apply aggregation function
+                // TODO Apply decision function
+                result = (score + 0.0001) < max;
+                std::cout << numRules << ": (" << score << " + 0.0001) < " << max << " = " << result << "\n";
+            }
         }
 
         buffer_.push(score);

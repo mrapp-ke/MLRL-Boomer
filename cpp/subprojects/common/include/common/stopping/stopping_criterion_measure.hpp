@@ -24,17 +24,23 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         std::shared_ptr<IEvaluationMeasure> measurePtr_;
 
+        uint32 minRules_;
+
         uint32 updateInterval_;
 
         uint32 stopInterval_;
 
         RingBuffer<float64> buffer_;
 
+        uint32 offset_;
+
     public:
 
         /**
          * @param measurePtr        A shared pointer to an object of type `IEvaluationMeasure` that should be used to
          *                          assess the quality of a model
+         * @param minRules          The minimum number of rules that must have been learned until the induction of rules
+         *                          might be stopped
          * @param updateInterval    The interval to be used to update the quality of the current model, e.g., a value of
          *                          5 means that the model quality is assessed every 5 rules
          * @param stopInterval      The interval to be used to decide whether the induction of rules should be stopped,
@@ -42,7 +48,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          *                          rules. Must be a multiple of `updateInterval`
          * @param bufferSize        The number of quality scores to be stored in a buffer. Must be at least 1
          */
-        MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr, uint32 updateInterval,
+        MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr, uint32 minRules, uint32 updateInterval,
                                  uint32 stopInterval, uint32 bufferSize);
 
         bool shouldContinue(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
