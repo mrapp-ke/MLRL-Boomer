@@ -2,6 +2,7 @@
 
 #include "../head_refinement/prediction.h"
 #include "../head_refinement/prediction_partial.h"
+#include "../debugging/global.h"
 #include <iostream>
 
 
@@ -16,7 +17,12 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, C
         const CoverageMask& originalCoverageMask = thresholdsSubset.getCoverageMask();
         float64 bestQualityScore = thresholdsSubset.evaluateOutOfSample(originalCoverageMask, head);
 
-        //printing of the coverage mask
+        // printing of the coverage mask
+        // TODO: usage of debug mode
+
+        // test for the debug mode
+        std::cout << (debug_flag == 1 ? "debugging enabled\n" : "debugging not enabled\n");
+
         std::cout << "\nthe original coverage mask:\n";
         for (uint32 i = 0; i < originalCoverageMask.getNumElements(); i++) {
             std::cout << "index " << i <<

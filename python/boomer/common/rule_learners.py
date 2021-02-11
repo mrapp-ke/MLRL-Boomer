@@ -172,6 +172,12 @@ def create_num_threads(num_threads: int) -> int:
     return num_threads
 
 
+def create_debugging(debugging: str) -> str or None:
+    if debugging is not None and debugging != 'full':
+        raise ValueError('Invalid value given for parameter \'debugging\': ' + str(debugging))
+    return debugging
+
+
 def create_thresholds_factory(feature_binning: str) -> ThresholdsFactory:
     if feature_binning is None:
         return ExactThresholdsFactory()

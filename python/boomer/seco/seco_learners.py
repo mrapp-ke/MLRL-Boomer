@@ -63,7 +63,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, feature_binning: str = None,
                  pruning: str = None, min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1,
-                 num_threads: int = -1):
+                 num_threads: int = -1):  # TODO: debugging: str = None
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -111,6 +111,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     -1, if the number of refinements should not be restricted
         :param num_threads:                         The number of threads to be used for training or -1, if the number
                                                     of cores available on the machine should be used
+        :debugging:                                 What kind of debugging text should be printed during execution. Is
+                                                    either 'full' or None, if no debugging text should be printed.
         """
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules

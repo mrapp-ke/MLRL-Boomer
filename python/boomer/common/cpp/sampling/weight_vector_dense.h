@@ -58,12 +58,6 @@ class DenseWeightVector final : public IWeightVector {
          */
         const_iterator cend() const;
 
-        bool hasZeroWeights() const override;
-
-        uint32 getWeight(uint32 pos) const override;
-
-        uint32 getSumOfWeights() const override;
-
         /**
          * Returns the number of elements in the vector.
          *
@@ -71,4 +65,9 @@ class DenseWeightVector final : public IWeightVector {
          */
         uint32 getNumElements() const;
 
+        bool hasZeroWeights() const override;
+
+        uint32 getWeight(uint32 pos) const override;
+
+        uint32 getSumOfWeights() const override;
 };
