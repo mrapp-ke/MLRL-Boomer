@@ -1,6 +1,6 @@
 from common.cython._types cimport uint8, uint32, float64
-from common.cython._measures cimport IMeasure
-from common.cython.measures cimport Measure
+from common.cython._measures cimport ISimilarityMeasure
+from common.cython.measures cimport SimilarityMeasure
 from common.cython.input cimport LabelVector
 from common.cython.output cimport AbstractClassificationPredictor, AbstractRegressionPredictor, IPredictor
 
@@ -35,7 +35,7 @@ cdef extern from "boosting/output/predictor_classification_example_wise.hpp" nam
 
         # Constructors:
 
-        ExampleWiseClassificationPredictorImpl(shared_ptr[IMeasure] measurePtr, uint32 numThreads) except +
+        ExampleWiseClassificationPredictorImpl(shared_ptr[ISimilarityMeasure] measurePtr, uint32 numThreads) except +
 
         # Functions:
 
@@ -88,7 +88,7 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
 
     # Attributes
 
-    cdef Measure measure
+    cdef SimilarityMeasure measure
 
     cdef uint32 num_threads
 
@@ -105,5 +105,5 @@ cdef class ExampleWiseClassificationPredictorSerializer:
 
     cpdef object serialize(self, ExampleWiseClassificationPredictor predictor)
 
-    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, Measure measure, uint32 num_threads,
+    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, SimilarityMeasure measure, uint32 num_threads,
                       object state)

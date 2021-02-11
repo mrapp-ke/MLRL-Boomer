@@ -57,7 +57,7 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
     A wrapper for the C++ class `ExampleWiseClassificationPredictor`.
     """
 
-    def __cinit__(self, uint32 num_labels, Measure measure, uint32 num_threads):
+    def __cinit__(self, uint32 num_labels, SimilarityMeasure measure, uint32 num_threads):
         """
         :param num_labels:  The total number of available labels
         :param measure:     The measure to be used
@@ -69,8 +69,8 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
         self.num_threads = num_threads
 
     @classmethod
-    def create(cls, CContiguousLabelMatrix label_matrix, Measure measure, uint32 num_threads):
-        cdef shared_ptr[IMeasure] measure_ptr = measure.get_measure_ptr()
+    def create(cls, CContiguousLabelMatrix label_matrix, SimilarityMeasure measure, uint32 num_threads):
+        cdef shared_ptr[ISimilarityMeasure] measure_ptr = measure.get_similarity_measure_ptr()
         cdef shared_ptr[CContiguousLabelMatrixImpl] label_matrix_ptr = dynamic_pointer_cast[CContiguousLabelMatrixImpl, ILabelMatrix](
             label_matrix.label_matrix_ptr)
         cdef uint32 num_rows = label_matrix_ptr.get().getNumRows()
@@ -98,8 +98,8 @@ cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
         return predictor
 
     @classmethod
-    def create_lil(cls, uint32 num_labels, list[::1] rows, Measure measure, uint32 num_threads):
-        cdef shared_ptr[IMeasure] measure_ptr = measure.get_measure_ptr()
+    def create_lil(cls, uint32 num_labels, list[::1] rows, SimilarityMeasure measure, uint32 num_threads):
+        cdef shared_ptr[ISimilarityMeasure] measure_ptr = measure.get_similarity_measure_ptr()
         cdef uint32 num_rows = rows.shape[0]
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
             measure_ptr, num_threads)
@@ -176,7 +176,7 @@ cdef class ExampleWiseClassificationPredictorSerializer:
         predictor_ptr.visit(wrapLabelVectorVisitor(<void*>self, <LabelVectorCythonVisitor>self.__visit_label_vector))
         return (SERIALIZATION_VERSION, self.state)
 
-    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, Measure measure, uint32 num_threads,
+    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, SimilarityMeasure measure, uint32 num_threads,
                       object state):
         """
         Deserializes the label vectors that are stored by a given state and adds them to an
@@ -195,7 +195,7 @@ cdef class ExampleWiseClassificationPredictorSerializer:
 
         cdef list label_vector_list = state[1]
         cdef uint32 num_label_vectors = len(label_vector_list)
-        cdef shared_ptr[IMeasure] measure_ptr = measure.get_measure_ptr()
+        cdef shared_ptr[ISimilarityMeasure] measure_ptr = measure.get_similarity_measure_ptr()
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
             measure_ptr, num_threads)
         cdef list label_vector_state
