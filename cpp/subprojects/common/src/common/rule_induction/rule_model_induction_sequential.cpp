@@ -9,7 +9,7 @@ static inline IStoppingCriterion::Result testStoppingCriteria(
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::shared_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
 
-        switch (stoppingCriterionPtr->test(statistics, partition, numRules)) {
+        switch (stoppingCriterionPtr->test(partition, statistics, numRules)) {
             case IStoppingCriterion::Result::FORCE_STOP: {
                 return IStoppingCriterion::Result::FORCE_STOP;
             }
