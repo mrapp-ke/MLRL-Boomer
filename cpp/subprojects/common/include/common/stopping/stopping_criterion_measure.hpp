@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/stopping/stopping_criterion.hpp"
-#include "common/measures/measure.hpp"
+#include "common/measures/measure_evaluation.hpp"
 #include "common/data/ring_buffer.hpp"
 #include <memory>
 
@@ -22,7 +22,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
     private:
 
-        std::shared_ptr<IMeasure> measurePtr_;
+        std::shared_ptr<IEvaluationMeasure> measurePtr_;
 
         uint32 updateInterval_;
 
@@ -33,8 +33,8 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
     public:
 
         /**
-         * @param measurePtr        A shared pointer to an object of type `IMeasure` that should be used to assess the
-         *                          quality of a model
+         * @param measurePtr        A shared pointer to an object of type `IEvaluationMeasure` that should be used to
+         *                          assess the quality of a model
          * @param updateInterval    The interval to be used to update the quality of the current model, e.g., a value of
          *                          5 means that the model quality is assessed every 5 rules
          * @param stopInterval      The interval to be used to decide whether the induction of rules should be stopped,
@@ -42,8 +42,8 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          *                          rules. Must be a multiple of `updateInterval`
          * @param bufferSize        The number of quality scores to be stored in a buffer. Must be at least 1
          */
-        MeasureStoppingCriterion(std::shared_ptr<IMeasure> measurePtr, uint32 updateInterval, uint32 stopInterval,
-                                 uint32 bufferSize);
+        MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr, uint32 updateInterval,
+                                 uint32 stopInterval, uint32 bufferSize);
 
         bool shouldContinue(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 

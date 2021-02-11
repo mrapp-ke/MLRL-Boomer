@@ -7,7 +7,7 @@
 #include "common/statistics/histogram.hpp"
 #include "common/head_refinement/prediction_full.hpp"
 #include "common/head_refinement/prediction_partial.hpp"
-#include "common/measures/measure.hpp"
+#include "common/measures/measure_evaluation.hpp"
 
 
 /**
@@ -149,11 +149,11 @@ class IStatistics : virtual public IImmutableStatistics {
          * statistic in terms of a given measure.
          *
          * @param statisticIndex    The index of the statistic for which the predictions should be evaluated
-         * @param measure           A reference to an object of type `IMeasure` that should be used to assess the
-         *                          quality of the predictions
+         * @param measure           A reference to an object of type `IEvaluationMeasure` that should be used to assess
+         *                          the quality of the predictions
          * @return                  The numeric score that has been calculated
          */
-        virtual float64 evaluatePrediction(uint32 statisticIndex, const IMeasure& measure) const = 0;
+        virtual float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IHistogramBuilder` that allows to build a histogram based on

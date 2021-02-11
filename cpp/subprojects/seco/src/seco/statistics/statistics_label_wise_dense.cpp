@@ -354,7 +354,7 @@ namespace seco {
                 }
             }
 
-            float64 evaluatePrediction(uint32 statisticIndex, const IMeasure& measure) const override {
+            float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
                 // TODO Support evaluation of predictions
                 return 0;
             }
