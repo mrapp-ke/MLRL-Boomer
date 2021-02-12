@@ -23,6 +23,8 @@ namespace boosting {
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
+            uint32 numThreads_;
+
         public:
 
             /**
@@ -33,11 +35,13 @@ namespace boosting {
              *                                  predictions, as well as corresponding quality scores, of rules
              * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
              *                                  provides random access to the labels of the training examples
+             * @param numThreads                The number of CPU threads to be used to calculate the initial statistics
+             *                                  in parallel. Must be at least 1
              */
             DenseExampleWiseStatisticsFactory(
                     std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                     std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                    std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr);
+                    std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, uint32 numThreads);
 
             std::unique_ptr<IExampleWiseStatistics> create() const override;
 
