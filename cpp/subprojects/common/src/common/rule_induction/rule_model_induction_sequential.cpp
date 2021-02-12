@@ -1,21 +1,26 @@
 #include "common/rule_induction/rule_model_induction_sequential.hpp"
 
 
-static inline IStoppingCriterion::Action testStoppingCriteria(
+static inline IStoppingCriterion::Result testStoppingCriteria(
         std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria, const IStatistics& statistics,
         uint32 numRules) {
-    IStoppingCriterion::Action result = IStoppingCriterion::Action::CONTINUE;
+    IStoppingCriterion::Result result;
+    result.action = IStoppingCriterion::Action::CONTINUE;
 
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::shared_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
         IStoppingCriterion::Result stoppingCriterionResult = stoppingCriterionPtr->test(statistics, numRules);
+        IStoppingCriterion::Action action = stoppingCriterionResult.action;
 
-        switch (stoppingCriterionResult.action) {
+        switch (action) {
             case IStoppingCriterion::Action::FORCE_STOP: {
-                return IStoppingCriterion::Action::FORCE_STOP;
+                result.action = action;
+                result.numRules = stoppingCriterionResult.numRules;
+                return result;
             }
             case IStoppingCriterion::Action::STORE_STOP: {
-                result = IStoppingCriterion::Action::STORE_STOP;
+                result.action = action;
+                result.numRules = stoppingCriterionResult.numRules;
                 break;
             }
             default: {
@@ -69,13 +74,13 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     uint32 numExamples = thresholdsPtr->getNumExamples();
     uint32 numLabels = thresholdsPtr->getNumLabels();
     std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr_->partition(numExamples, rng);
-    IStoppingCriterion::Action stoppingCriterionResult;
+    IStoppingCriterion::Result stoppingCriterionResult;
 
     while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, statisticsProviderPtr->get(),
                                                           numRules),
-           stoppingCriterionResult != IStoppingCriterion::Action::FORCE_STOP) {
-        if (stoppingCriterionResult == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
-            numUsedRules = numRules;
+           stoppingCriterionResult.action != IStoppingCriterion::Action::FORCE_STOP) {
+        if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
+            numUsedRules = stoppingCriterionResult.numRules;
         }
 
         std::unique_ptr<IWeightVector> weightsPtr = partitionPtr->subSample(*instanceSubSamplingPtr_, rng);
