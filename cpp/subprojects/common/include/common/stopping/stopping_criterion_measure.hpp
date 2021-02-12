@@ -88,7 +88,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         float64 minImprovement_;
 
-        RingBuffer<float64> buffer_;
+        RingBuffer<float64> pastBuffer_;
 
         uint32 offset_;
 
