@@ -13,7 +13,7 @@ cdef extern from "boosting/output/predictor_probability_label_wise.hpp" namespac
         pass
 
 
-    cdef cppclass LogisticFunction(ILabelWiseTransformationFunction):
+    cdef cppclass LogisticFunctionImpl"boosting::LogisticFunction"(ILabelWiseTransformationFunction):
         pass
 
 
@@ -84,6 +84,26 @@ cdef extern from * namespace "boosting":
     ctypedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&)
 
     LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
+
+
+cdef class LabelWiseTransformationFunction:
+
+    # Attributes:
+
+    cdef shared_ptr[ILabelWiseTransformationFunction] transformation_function_ptr
+
+
+cdef class LogisticFunction(LabelWiseTransformationFunction):
+    pass
+
+
+cdef class LabelWiseProbabilityPredictor(AbstractNumericalPredictor):
+
+    # Attributes:
+
+    cdef LabelWiseTransformationFunction transformation_function
+
+    cdef uint32 num_threads
 
 
 cdef class LabelWiseRegressionPredictor(AbstractNumericalPredictor):
