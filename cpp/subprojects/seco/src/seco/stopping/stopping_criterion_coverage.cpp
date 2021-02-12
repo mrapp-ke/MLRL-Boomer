@@ -11,6 +11,10 @@ namespace seco {
 
     IStoppingCriterion::Result CoverageStoppingCriterion::test(const IStatistics& statistics, uint32 numRules) {
         const ICoverageStatistics& coverageStatistics = static_cast<const ICoverageStatistics&>(statistics);
+        // print out if the seco learner should stop
+        if (coverageStatistics.getSumOfUncoveredLabels() <= threshold_) {
+            std::cout << "should stop\n";
+        }
         return coverageStatistics.getSumOfUncoveredLabels() > threshold_ ? CONTINUE : FORCE_STOP;
     }
 
