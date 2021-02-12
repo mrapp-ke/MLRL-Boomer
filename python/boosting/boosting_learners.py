@@ -340,7 +340,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                      lambda x: 1 <= x and x % update_interval == 0)
                     num_past = get_int_argument(args, ARGUMENT_NUM_PAST, 50, lambda x: 1 <= x)
                     num_recent = get_int_argument(args, ARGUMENT_NUM_RECENT, 50, lambda x: 1 <= x)
-                    min_improvement = get_float_argument(args, ARGUMENT_MIN_IMPROVEMENT, 0.01, lambda x: 0 <= x <= 1)
+                    min_improvement = get_float_argument(args, ARGUMENT_MIN_IMPROVEMENT, 0.005, lambda x: 0 <= x <= 1)
                     force_stop = get_bool_argument(args, ARGUMENT_FORCE_STOP, True)
                     return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
                                                     update_interval=update_interval, stop_interval=stop_interval,
