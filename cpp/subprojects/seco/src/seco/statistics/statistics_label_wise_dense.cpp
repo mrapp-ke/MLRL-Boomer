@@ -322,6 +322,7 @@ namespace seco {
                             uncoveredLabels_[i] = 0;
                         }
                     }
+                    // TODO: uncoveredLables_ ausgeben
                 }
             }
 
