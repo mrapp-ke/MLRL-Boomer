@@ -12,7 +12,7 @@ from libcpp.utility cimport move
 SERIALIZATION_VERSION = 1
 
 
-cdef class LabelWiseRegressionPredictor(AbstractRegressionPredictor):
+cdef class LabelWiseRegressionPredictor(AbstractNumericalPredictor):
     """
     A wrapper for the C++ class `LabelWiseRegressionPredictor`.
     """
@@ -30,7 +30,7 @@ cdef class LabelWiseRegressionPredictor(AbstractRegressionPredictor):
         return (LabelWiseRegressionPredictor, (self.num_labels, self.num_threads))
 
 
-cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
+cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
     """
     A wrapper for the C++ class `LabelWiseClassificationPredictor`.
     """
@@ -52,7 +52,7 @@ cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
         return (LabelWiseClassificationPredictor, (self.num_labels, self.threshold, self.num_threads))
 
 
-cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
+cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
     """
     A wrapper for the C++ class `ExampleWiseClassificationPredictor`.
     """

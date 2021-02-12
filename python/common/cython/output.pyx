@@ -41,9 +41,9 @@ cdef class Predictor:
         pass
 
 
-cdef class AbstractRegressionPredictor(Predictor):
+cdef class AbstractNumericalPredictor(Predictor):
     """
-    A base class for all classes that allow to predict regression scores for given query examples.
+    A base class for all classes that allow to predict numerical scores for given query examples.
     """
 
     cpdef object predict(self, CContiguousFeatureMatrix feature_matrix, RuleModel model):
@@ -69,9 +69,9 @@ cdef class AbstractRegressionPredictor(Predictor):
         return np.asarray(prediction_matrix)
 
 
-cdef class AbstractClassificationPredictor(Predictor):
+cdef class AbstractBinaryPredictor(Predictor):
     """
-    A base class for all classes that allow to predict the labels of given query examples.
+    A base class for all classes that allow to predict binary values for given query examples.
     """
 
     cpdef object predict(self, CContiguousFeatureMatrix feature_matrix, RuleModel model):
