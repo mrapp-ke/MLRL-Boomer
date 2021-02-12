@@ -16,12 +16,22 @@ class IStoppingCriterion {
     public:
 
         /**
-         * An enum that specifies all values that may be returned by a stopping criterion.
+         * An enum that specifies all possible actions that may be executed, based on the result that is returned by a
+         * stopping criterion.
          */
-        enum Result : uint32 {
+        enum Action : uint32 {
             CONTINUE = 0,
             STORE_STOP = 1,
             FORCE_STOP = 2
+        };
+
+        /**
+         * The result that is returned by a stopping criterion. It consists of the action to be executed, as well as the
+         * number of rules to be used, if the action is not `CONTINUE`.
+         */
+        struct Result {
+            Action action;
+            uint32 numRules;
         };
 
         virtual ~IStoppingCriterion() { };
