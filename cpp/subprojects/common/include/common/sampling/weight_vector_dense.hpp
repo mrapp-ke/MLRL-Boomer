@@ -70,4 +70,5 @@ class DenseWeightVector final : public IWeightVector {
         uint32 getWeight(uint32 pos) const override;
 
         uint32 getSumOfWeights() const override;
+
 };
