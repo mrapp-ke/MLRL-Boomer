@@ -10,9 +10,9 @@ namespace boosting {
     DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(
             std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
+            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, uint32 numThreads)
         : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
-          labelMatrixPtr_(labelMatrixPtr) {
+          labelMatrixPtr_(labelMatrixPtr), numThreads_(numThreads) {
 
     }
 

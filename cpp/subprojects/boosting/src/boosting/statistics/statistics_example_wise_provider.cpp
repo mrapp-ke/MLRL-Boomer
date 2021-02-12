@@ -43,16 +43,16 @@ namespace boosting {
     ExampleWiseStatisticsProviderFactory::ExampleWiseStatisticsProviderFactory(
             std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads)
         : lossFunctionPtr_(lossFunctionPtr), defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
-          ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+          ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), numThreads_(numThreads) {
 
     }
 
     std::unique_ptr<IStatisticsProvider> ExampleWiseStatisticsProviderFactory::create(
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) const {
         DenseExampleWiseStatisticsFactory statisticsFactory(lossFunctionPtr_, defaultRuleEvaluationFactoryPtr_,
-                                                            labelMatrixPtr);
+                                                            labelMatrixPtr, numThreads_);
         return std::make_unique<ExampleWiseStatisticsProvider>(ruleEvaluationFactoryPtr_, statisticsFactory.create());
     }
 

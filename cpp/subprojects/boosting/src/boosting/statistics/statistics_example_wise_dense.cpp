@@ -10,9 +10,9 @@ namespace boosting {
     DenseExampleWiseStatisticsFactory::DenseExampleWiseStatisticsFactory(
             std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
+            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, uint32 numThreads)
         : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
-          labelMatrixPtr_(labelMatrixPtr) {
+          labelMatrixPtr_(labelMatrixPtr), numThreads_(numThreads) {
 
     }
 
