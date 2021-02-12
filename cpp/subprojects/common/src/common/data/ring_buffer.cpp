@@ -49,6 +49,8 @@ std::pair<bool, T> RingBuffer<T>::push(T value) {
         pos_ = 0;
         full_ = true;
     }
+
+    return result;
 }
 
 template class RingBuffer<float64>;
