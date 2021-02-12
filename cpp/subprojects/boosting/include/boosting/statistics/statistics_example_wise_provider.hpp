@@ -23,6 +23,8 @@ namespace boosting {
 
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
+            uint32 numThreads_;
+
         public:
 
             /**
@@ -36,11 +38,13 @@ namespace boosting {
              *                                          `IExampleWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, of all remaining rules
+             * @param numThreads                        The number of CPU threads to be used to calculate the initial
+             *                                          statistics in parallel. Must be at least 1
              */
             ExampleWiseStatisticsProviderFactory(
                 std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                 std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-                std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+                std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads);
 
             std::unique_ptr<IStatisticsProvider> create(
                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) const override;
