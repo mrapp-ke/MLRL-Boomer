@@ -92,7 +92,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         uint32 offset_;
 
-        Result stoppingResult_;
+        Action stoppingAction_;
 
     public:
 
