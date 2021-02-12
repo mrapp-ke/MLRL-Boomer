@@ -21,11 +21,12 @@ class IAggregationFunction {
         /**
          * Aggregates the values that are stored in a buffer.
          *
-         * @param numElements   The number of values that are stored in the buffer
-         * @param iterator      An iterator that provides access to the values that are stored in the buffer
-         * @return              The aggregated value
+         * @param begin An iterator to the beginning of the buffer
+         * @param end   An iterator to the end of the buffer
+         * @return      The aggregated value
          */
-        virtual float64 aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const = 0;
+        virtual float64 aggregate(RingBuffer<float64>::const_iterator begin,
+                                  RingBuffer<float64>::const_iterator end) const = 0;
 
 };
 
@@ -36,7 +37,8 @@ class MinFunction : public IAggregationFunction {
 
     public:
 
-        float64 aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const override;
+        float64 aggregate(RingBuffer<float64>::const_iterator begin,
+                          RingBuffer<float64>::const_iterator end) const override;
 
 };
 
@@ -47,7 +49,8 @@ class MaxFunction : public IAggregationFunction {
 
     public:
 
-        float64 aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const override;
+        float64 aggregate(RingBuffer<float64>::const_iterator begin,
+                          RingBuffer<float64>::const_iterator end) const override;
 
 };
 
@@ -58,7 +61,8 @@ class ArithmeticMeanFunction : public IAggregationFunction {
 
     public:
 
-        float64 aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const override;
+        float64 aggregate(RingBuffer<float64>::const_iterator begin,
+                          RingBuffer<float64>::const_iterator end) const override;
 
 };
 
@@ -67,10 +71,13 @@ class ArithmeticMeanFunction : public IAggregationFunction {
  * examples in a holdout set do not improve according a certain measure.
  *
  * This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
- * the resulting quality score in a buffer that keeps track of the last `bufferSize` scores. Every `stopInterval` rules,
- * it is decided whether the rule induction should be stopped. For this reason, the scores in the buffer are aggregated
- * according to an `aggregationFunction`. If the percentage improvement between the aggregated score and the current
- * score is greater than a certain `minImprovement`, the rule induction is continued, otherwise it is stopped.
+ * the resulting quality score in a buffer that keeps track of the last `numRecent` scores. If the capacity of this
+ * buffer is already reached, the oldest score is passed to a buffer of size `numPast`. Every `stopInterval` rules, it
+ * is decided whether the rule induction should be stopped. For this reason, the `numRecent` scores in the first buffer,
+ * as well as the `numPast` scores in the second buffer are aggregated according to a certain `aggregationFunction`. If
+ * the percentage improvement, which results from comparing the more recent scores from the first buffer to the older
+ * scores from the second buffer, is greater than a certain `minImprovement`, the rule induction is continued,
+ * otherwise it is stopped.
  */
 class MeasureStoppingCriterion final : public IStoppingCriterion {
 
@@ -80,8 +87,6 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         std::shared_ptr<IAggregationFunction> aggregationFunctionPtr_;
 
-        uint32 minRules_;
-
         uint32 updateInterval_;
 
         uint32 stopInterval_;
@@ -89,6 +94,8 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
         float64 minImprovement_;
 
         RingBuffer<float64> pastBuffer_;
+
+        RingBuffer<float64> recentBuffer_;
 
         uint32 offset_;
 
@@ -113,7 +120,10 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          * @param stopInterval              The interval to be used to decide whether the induction of rules should be
          *                                  stopped, e.g., a value of 10 means that the rule induction might be stopped
          *                                  after 10, 20, ... rules. Must be a multiple of `updateInterval`
-         * @param bufferSize                The number of quality scores to be stored in a buffer. Must be at least 1
+         * @param numPast                   The number of quality scores of past iterations to be stored in a buffer.
+         *                                  Must be at least 1
+         * @param numRecent                 The number of quality scores of the most recent iterations to be stored in a
+         *                                  buffer. Must be at least 1
          * @param minImprovement            The minimum improvement in percent that must be reached for the rule
          *                                  induction to be continued. Must be in [0, 1]
          * @param forceStop                 True, if the induction of rules should be forced to be stopped, if the
@@ -122,8 +132,8 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          */
         MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
                                  std::shared_ptr<IAggregationFunction> aggregationFunctionPtr, uint32 minRules,
-                                 uint32 updateInterval, uint32 stopInterval, uint32 bufferSize, float64 minImprovement,
-                                 bool forceStop);
+                                 uint32 updateInterval, uint32 stopInterval, uint32 numPast, uint32 numCurrent,
+                                 float64 minImprovement, bool forceStop);
 
         Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 

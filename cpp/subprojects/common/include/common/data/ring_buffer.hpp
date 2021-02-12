@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include <utility>
 
 
 /**
@@ -64,11 +65,21 @@ class RingBuffer final {
         uint32 getNumElements() const;
 
         /**
+         * Returns whether the maximum capacity of the buffer has been reached or not.
+         *
+         * @return True, if the maximum capacity has been reached, false otherwise
+         */
+        bool isFull() const;
+
+        /**
          * Adds a new value to the buffer. If the maximum capacity of the buffer has been reached, the oldest value will
          * be overwritten.
          *
          * @param value The value to be added
+         * @return      A `std::pair`, whose first value indicates whether a value has been overwritten or not. If a
+         *              value has been overwritten, the pair's second value is set to the overwritten value, otherwise
+         *              it is undefined
          */
-        void push(T value);
+        std::pair<bool, T> push(T value);
 
 };
