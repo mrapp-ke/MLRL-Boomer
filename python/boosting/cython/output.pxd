@@ -7,6 +7,24 @@ from common.cython.output cimport AbstractClassificationPredictor, AbstractRegre
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
+cdef extern from "boosting/output/predictor_probability_label_wise.hpp" namespace "boosting" nogil:
+
+    cdef cppclass ILabelWiseTransformationFunction:
+        pass
+
+
+    cdef cppclass LogisticFunction(ILabelWiseTransformationFunction):
+        pass
+
+
+    cdef cppclass LabelWiseProbabilityPredictorImpl"boosting::LabelWiseProbabilityPredictor"(IPredictor[float64]):
+
+        # Constructors:
+
+        LabelWiseProbabilityPredictorImpl(shared_ptr[ILabelWiseTransformationFunction] transformationFunctionPtr,
+                                          uint32 numThreads) except +
+
+
 cdef extern from "boosting/output/predictor_regression_label_wise.hpp" namespace "boosting" nogil:
 
     cdef cppclass LabelWiseRegressionPredictorImpl"boosting::LabelWiseRegressionPredictor"(IPredictor[float64]):
