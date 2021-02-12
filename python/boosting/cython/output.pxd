@@ -2,7 +2,7 @@ from common.cython._types cimport uint8, uint32, float64
 from common.cython._measures cimport ISimilarityMeasure
 from common.cython.measures cimport SimilarityMeasure
 from common.cython.input cimport LabelVector
-from common.cython.output cimport AbstractClassificationPredictor, AbstractRegressionPredictor, IPredictor
+from common.cython.output cimport AbstractBinaryPredictor, AbstractNumericalPredictor, IPredictor
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
@@ -86,14 +86,14 @@ cdef extern from * namespace "boosting":
     LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
 
 
-cdef class LabelWiseRegressionPredictor(AbstractRegressionPredictor):
+cdef class LabelWiseRegressionPredictor(AbstractNumericalPredictor):
 
     # Attributes
 
     cdef uint32 num_threads
 
 
-cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
+cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
 
     # Attributes:
 
@@ -102,7 +102,7 @@ cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
     cdef uint32 num_threads
 
 
-cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
+cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
 
     # Attributes
 

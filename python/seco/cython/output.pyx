@@ -4,7 +4,7 @@
 from libcpp.memory cimport unique_ptr, make_unique
 
 
-cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
+cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
     """
     A wrapper for the C++ class `LabelWiseClassificationPredictor`.
     """
