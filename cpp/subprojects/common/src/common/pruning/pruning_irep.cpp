@@ -1,8 +1,8 @@
 #include "common/pruning/pruning_irep.hpp"
 
-#include "../head_refinement/prediction.h"
-#include "../head_refinement/prediction_partial.h"
-#include "../debugging/global.h"
+#include "common/head_refinement/prediction.hpp"
+#include "common/head_refinement/prediction_partial.hpp"
+#include "common/debugging/global.hpp"
 #include <iostream>
 
 

@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <cmath>
 
-#include "../sampling/weight_vector_dense.h"
+#include "common/sampling/weight_vector_dense.hpp"
 #include <iostream>
 
 

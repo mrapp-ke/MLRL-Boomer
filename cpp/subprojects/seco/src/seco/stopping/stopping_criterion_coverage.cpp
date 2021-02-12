@@ -1,5 +1,6 @@
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 #include "seco/statistics/statistics_coverage.hpp"
+#include <iostream>
 
 
 namespace seco {
