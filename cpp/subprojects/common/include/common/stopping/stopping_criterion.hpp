@@ -15,9 +15,10 @@ class IStoppingCriterion {
     public:
 
         /**
-         * An enum that specifies all values that may be returned by a stopping criterion.
+         * An enum that specifies all possible actions that may be executed, based on the result that is returned by a
+         * stopping criterion.
          */
-        enum Result : uint32 {
+        enum Action : uint32 {
             CONTINUE = 0,
             STORE_STOP = 1,
             FORCE_STOP = 2
@@ -36,6 +37,6 @@ class IStoppingCriterion {
          *                      potential point for stopping while continuing to induce rules (`STORE_STOP`), or if the
          *                      induction of rules should be forced to be stopped (`FORCE_STOP`)
          */
-        virtual Result test(const IStatistics& statistics, uint32 numRules) = 0;
+        virtual Action test(const IStatistics& statistics, uint32 numRules) = 0;
 
 };

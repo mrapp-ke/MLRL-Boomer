@@ -1,20 +1,20 @@
 #include "common/rule_induction/rule_model_induction_sequential.hpp"
 
 
-static inline IStoppingCriterion::Result testStoppingCriteria(
+static inline IStoppingCriterion::Action testStoppingCriteria(
         std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria, const IStatistics& statistics,
         uint32 numRules) {
-    IStoppingCriterion::Result result = IStoppingCriterion::Result::CONTINUE;
+    IStoppingCriterion::Action result = IStoppingCriterion::Action::CONTINUE;
 
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::shared_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
 
         switch (stoppingCriterionPtr->test(statistics, numRules)) {
-            case IStoppingCriterion::Result::FORCE_STOP: {
-                return IStoppingCriterion::Result::FORCE_STOP;
+            case IStoppingCriterion::Action::FORCE_STOP: {
+                return IStoppingCriterion::Action::FORCE_STOP;
             }
-            case IStoppingCriterion::Result::STORE_STOP: {
-                result = IStoppingCriterion::Result::STORE_STOP;
+            case IStoppingCriterion::Action::STORE_STOP: {
+                result = IStoppingCriterion::Action::STORE_STOP;
                 break;
             }
             default: {
@@ -68,12 +68,12 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     uint32 numExamples = thresholdsPtr->getNumExamples();
     uint32 numLabels = thresholdsPtr->getNumLabels();
     std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr_->partition(numExamples, rng);
-    IStoppingCriterion::Result stoppingCriterionResult;
+    IStoppingCriterion::Action stoppingCriterionResult;
 
     while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, statisticsProviderPtr->get(),
                                                           numRules),
-           stoppingCriterionResult != IStoppingCriterion::Result::FORCE_STOP) {
-        if (stoppingCriterionResult == IStoppingCriterion::Result::STORE_STOP && numUsedRules == 0) {
+           stoppingCriterionResult != IStoppingCriterion::Action::FORCE_STOP) {
+        if (stoppingCriterionResult == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
             numUsedRules = numRules;
         }
 
