@@ -65,7 +65,7 @@ MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMe
                                                    uint32 bufferSize, float64 minImprovement, bool forceStop)
     : measurePtr_(measurePtr), aggregationFunctionPtr_(aggregationFunctionPtr), minRules_(minRules),
       updateInterval_(updateInterval), stopInterval_(stopInterval), minImprovement_(minImprovement),
-      buffer_(RingBuffer<float64>(bufferSize)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
+      pastBuffer_(RingBuffer<float64>(bufferSize)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
       bestScore_(std::numeric_limits<float64>::infinity()) {
     uint32 bufferInterval = bufferSize * updateInterval;
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
@@ -86,10 +86,10 @@ IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& part
         }
 
         if (numRules >= minRules_ && numRules % stopInterval_ == 0) {
-            uint32 numBufferedElements = buffer_.getNumElements();
+            uint32 numBufferedElements = pastBuffer_.getNumElements();
 
             if (numBufferedElements > 0) {
-                float64 aggregatedScore = aggregationFunctionPtr_->aggregate(numBufferedElements, buffer_.cbegin());
+                float64 aggregatedScore = aggregationFunctionPtr_->aggregate(numBufferedElements, pastBuffer_.cbegin());
                 float64 percentageImprovement = (aggregatedScore - currentScore) / currentScore;
 
                 if (percentageImprovement <= minImprovement_) {
@@ -101,7 +101,7 @@ IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& part
             }
         }
 
-        buffer_.push(currentScore);
+        pastBuffer_.push(currentScore);
     }
 
     return result;
