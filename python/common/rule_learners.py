@@ -325,7 +325,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
 
     Attributes
-        predictor_ The `Predictor` to be used for making predictions
+        predictor_              The `Predictor` to be used for making predictions
+        probability_predictor_  The `Predictor` to be used for predicting probability estimates
     """
 
     def __init__(self, random_state: int, feature_format: str, label_format: str):
@@ -366,10 +367,12 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         if issparse(y):
             rows = np.ascontiguousarray(y.rows)
             self.predictor_ = self._create_predictor_lil(num_labels, rows)
+            self.probability_predictor_ = self._create_probability_predictor_lil(num_labels, rows)
             label_matrix = DokLabelMatrix(y.shape[0], num_labels, rows)
         else:
             label_matrix = CContiguousLabelMatrix(y)
             self.predictor_ = self._create_predictor(num_labels, label_matrix)
+            self.probability_predictor_ = self._create_probability_predictor(num_labels, label_matrix)
 
         # Induce rules...
         nominal_features = DokNominalFeatureMask(self.nominal_attribute_indices)
@@ -379,6 +382,18 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
                                                  model_builder)
 
     def _predict(self, x):
+        predictor = self.predictor_
+        return self.__predict(predictor, x)
+
+    def _predict_proba(self, x):
+        predictor = self.probability_predictor_
+        
+        if predictor is None:
+            return super()._predict_proba(x)
+        else:
+            return self.__predict(predictor, x)
+        
+    def __predict(self, predictor, x):
         sparse_format = 'csr'
         sparse_policy = create_sparse_policy(self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy)
@@ -386,7 +401,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
                                 accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
         model = self.model_
-        predictor = self.predictor_
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
@@ -421,6 +435,30 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         :return:                The `Predictor` that has been created
         """
         pass
+
+    def _create_probability_predictor(self, num_labels: int, label_matrix: CContiguousLabelMatrix) -> Predictor:
+        """
+        Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
+        estimates based on a C-contiguous label matrix.
+
+        :param num_labels:      The number of labels in the training data set
+        :param label_matrix:    The label matrix that provides access to the labels of the training examples
+        :return:                The `Predictor` that has been created or None, if the prediction of probabilities is not
+                                supported
+        """
+        return None
+
+    def _create_probability_predictor_lil(self, num_labels: int, label_matrix: list) -> Predictor:
+        """
+        Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
+        estimates based on a label matrix in the LIL format.
+
+        :param num_labels:      The number of labels in the training data set
+        :param label_matrix:    The label matrix that provides access to the labels of the training examples
+        :return:                The `Predictor` that has been created or None, if the prediction of probabilities is not
+                                supported
+        """
+        return None
 
     @abstractmethod
     def _create_rule_model_induction(self, num_labels: int) -> RuleModelInduction:
