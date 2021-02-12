@@ -1,6 +1,7 @@
 #include "common/stopping/stopping_criterion_measure.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/math/math.hpp"
+#include <limits>
 #include <iostream>
 
 
@@ -64,7 +65,8 @@ MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMe
                                                    uint32 bufferSize, float64 minImprovement, bool forceStop)
     : measurePtr_(measurePtr), aggregationFunctionPtr_(aggregationFunctionPtr), minRules_(minRules),
       updateInterval_(updateInterval), stopInterval_(stopInterval), minImprovement_(minImprovement),
-      buffer_(RingBuffer<float64>(bufferSize)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP) {
+      buffer_(RingBuffer<float64>(bufferSize)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
+      bestScore_(std::numeric_limits<float64>::infinity()) {
     uint32 bufferInterval = bufferSize * updateInterval;
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
 }
@@ -78,6 +80,11 @@ IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& part
         const BiPartition& biPartition = static_cast<const BiPartition&>(partition);
         float64 currentScore = evaluateOnHoldoutSet(biPartition, statistics, *measurePtr_);
 
+        if (currentScore < bestScore_) {
+            bestScore_ = currentScore;
+            bestNumRules_ = numRules;
+        }
+
         if (numRules >= minRules_ && numRules % stopInterval_ == 0) {
             uint32 numBufferedElements = buffer_.getNumElements();
 
@@ -87,7 +94,7 @@ IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& part
 
                 if (percentageImprovement <= minImprovement_) {
                     result.action = stoppingAction_;
-                    result.numRules = numRules;
+                    result.numRules = bestNumRules_;
                 }
 
                 std::cout << numRules << ": improvement = " << percentageImprovement << " ==> " << (result.action == CONTINUE ? "continue" : "stop") << "\n";
