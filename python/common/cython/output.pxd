@@ -29,7 +29,7 @@ cdef class Predictor:
     cpdef object predict_csr(self, CsrFeatureMatrix feature_matrix, RuleModel model)
 
 
-cdef class AbstractRegressionPredictor(Predictor):
+cdef class AbstractNumericalPredictor(Predictor):
 
     # Attributes:
 
@@ -38,7 +38,7 @@ cdef class AbstractRegressionPredictor(Predictor):
     cdef unique_ptr[IPredictor[float64]] predictor_ptr
 
 
-cdef class AbstractClassificationPredictor(Predictor):
+cdef class AbstractBinaryPredictor(Predictor):
 
     # Attributes:
 

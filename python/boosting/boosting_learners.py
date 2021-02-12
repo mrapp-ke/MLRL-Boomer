@@ -9,7 +9,8 @@ from boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
 from boosting.cython.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
     LabelWiseSquaredHingeLoss
 from boosting.cython.model import RuleListBuilder
-from boosting.cython.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor
+from boosting.cython.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor, \
+    LabelWiseProbabilityPredictor, LabelWiseTransformationFunction, LogisticFunction
 from boosting.cython.post_processing import ConstantShrinkage
 from boosting.cython.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory, \
     EqualWidthBinningExampleWiseRuleEvaluationFactory
@@ -207,6 +208,24 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             return self.__create_example_wise_predictor_lil(num_labels, label_matrix)
         raise ValueError('Invalid value given for parameter \'predictor\': ' + str(predictor))
 
+    def _create_probability_predictor(self, num_labels: int, label_matrix: CContiguousLabelMatrix) -> Predictor:
+        predictor = self.__get_preferred_predictor()
+
+        if predictor == PREDICTOR_LABEL_WISE and self.loss == LOSS_LABEL_WISE_LOGISTIC:
+            transformation_function = LogisticFunction()
+            return self.__create_label_wise_probability_predictor(num_labels, transformation_function)
+
+        return None
+
+    def _create_probability_predictor_lil(self, num_labels: int, label_matrix: list) -> Predictor:
+        predictor = self.__get_preferred_predictor()
+
+        if predictor == PREDICTOR_LABEL_WISE and self.loss == LOSS_LABEL_WISE_LOGISTIC:
+            transformation_function = LogisticFunction()
+            return self.__create_label_wise_probability_predictor(num_labels, transformation_function)
+
+        return None
+
     def __get_preferred_predictor(self) -> str:
         predictor = self.predictor
 
@@ -221,6 +240,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         num_threads = get_preferred_num_threads(self.num_threads_prediction)
         threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
         return LabelWiseClassificationPredictor(num_labels=num_labels, threshold=threshold, num_threads=num_threads)
+
+    def __create_label_wise_probability_predictor(
+            self, num_labels: int,
+            transformation_function: LabelWiseTransformationFunction) -> LabelWiseProbabilityPredictor:
+        num_threads = get_preferred_num_threads(self.num_threads_prediction)
+        return LabelWiseProbabilityPredictor(num_labels=num_labels, transformation_function=transformation_function,
+                                             num_threads=num_threads)
 
     def __create_example_wise_predictor(self,
                                         label_matrix: CContiguousLabelMatrix) -> ExampleWiseClassificationPredictor:
@@ -253,8 +279,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         head_refinement_factory = self.__create_head_refinement_factory()
         l2_regularization_weight = self.__create_l2_regularization_weight()
         rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
-        statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
         num_threads_update = get_preferred_num_threads(self.num_threads_update)
+        statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory,
+                                                                                num_threads_update)
         thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
         num_threads_refinement = get_preferred_num_threads(self.num_threads_refinement)
         rule_induction = TopDownRuleInduction(num_threads_refinement)
@@ -317,11 +344,14 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return prefix, bin_ratio, min_bins, max_bins
             raise ValueError('Invalid value given for parameter \'label_binning\': ' + str(label_binning))
 
-    def __create_statistics_provider_factory(self, loss_function, rule_evaluation_factory) -> StatisticsProviderFactory:
+    def __create_statistics_provider_factory(self, loss_function, rule_evaluation_factory,
+                                             num_threads: int) -> StatisticsProviderFactory:
         if isinstance(loss_function, LabelWiseLoss):
-            return LabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory)
+            return LabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory,
+                                                      num_threads)
         else:
-            return ExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory)
+            return ExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory,
+                                                        num_threads)
 
     def __create_head_refinement_factory(self) -> HeadRefinementFactory:
         head_refinement = self.___get_preferred_head_refinement()

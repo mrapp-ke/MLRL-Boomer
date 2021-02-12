@@ -6,13 +6,45 @@ from common.cython.input cimport CContiguousLabelMatrix, CContiguousLabelMatrixI
 
 from cython.operator cimport dereference, postincrement
 
-from libcpp.memory cimport shared_ptr, make_unique, dynamic_pointer_cast
+from libcpp.memory cimport shared_ptr, make_shared, make_unique, dynamic_pointer_cast
 from libcpp.utility cimport move
 
 SERIALIZATION_VERSION = 1
 
 
-cdef class LabelWiseRegressionPredictor(AbstractRegressionPredictor):
+cdef class LabelWiseTransformationFunction:
+    """
+    A wrapper for the pure virtual C++ class `ILabelWiseTransformationFunction`.
+    """
+    pass
+
+
+cdef class LogisticFunction(LabelWiseTransformationFunction):
+    """
+    A wrapper for the C++ class `LogisticFunction`.
+    """
+
+    def __cinit__(self):
+        self.transformation_function_ptr = <shared_ptr[ILabelWiseTransformationFunction]>make_shared[LogisticFunctionImpl]()
+
+    def __reduce__(self):
+        return (LogisticFunction, ())
+
+
+cdef class LabelWiseProbabilityPredictor(AbstractNumericalPredictor):
+
+    def __cinit__(self, uint32 num_labels, LabelWiseTransformationFunction transformation_function, uint32 num_threads):
+        self.num_labels = num_labels
+        self.transformation_function = transformation_function
+        self.num_threads = num_threads
+        self.predictor_ptr = <unique_ptr[IPredictor[float64]]>make_unique[LabelWiseProbabilityPredictorImpl](
+            transformation_function.transformation_function_ptr, num_threads)
+
+    def __reduce__(self):
+        return (LabelWiseProbabilityPredictor, (self.num_labels, self.transformation_function, self.num_threads))
+
+
+cdef class LabelWiseRegressionPredictor(AbstractNumericalPredictor):
     """
     A wrapper for the C++ class `LabelWiseRegressionPredictor`.
     """
@@ -25,12 +57,13 @@ cdef class LabelWiseRegressionPredictor(AbstractRegressionPredictor):
         """
         self.num_labels = num_labels
         self.num_threads = num_threads
+        self.predictor_ptr = <unique_ptr[IPredictor[float64]]>make_unique[LabelWiseRegressionPredictorImpl](num_threads)
 
     def __reduce__(self):
         return (LabelWiseRegressionPredictor, (self.num_labels, self.num_threads))
 
 
-cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
+cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
     """
     A wrapper for the C++ class `LabelWiseClassificationPredictor`.
     """
@@ -52,7 +85,7 @@ cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
         return (LabelWiseClassificationPredictor, (self.num_labels, self.threshold, self.num_threads))
 
 
-cdef class ExampleWiseClassificationPredictor(AbstractClassificationPredictor):
+cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
     """
     A wrapper for the C++ class `ExampleWiseClassificationPredictor`.
     """
