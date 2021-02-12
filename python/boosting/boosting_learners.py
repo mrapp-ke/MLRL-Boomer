@@ -266,8 +266,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         head_refinement_factory = self.__create_head_refinement_factory()
         l2_regularization_weight = self.__create_l2_regularization_weight()
         rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
-        statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory)
         num_threads_update = get_preferred_num_threads(self.num_threads_update)
+        statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory,
+                                                                                num_threads_update)
         thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
         num_threads_refinement = get_preferred_num_threads(self.num_threads_refinement)
         rule_induction = TopDownRuleInduction(num_threads_refinement)
@@ -305,11 +306,14 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         else:
             return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
 
-    def __create_statistics_provider_factory(self, loss_function, rule_evaluation_factory) -> StatisticsProviderFactory:
+    def __create_statistics_provider_factory(self, loss_function, rule_evaluation_factory,
+                                             num_threads: int) -> StatisticsProviderFactory:
         if isinstance(loss_function, LabelWiseLoss):
-            return LabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory)
+            return LabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory,
+                                                      num_threads)
         else:
-            return ExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory)
+            return ExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory,
+                                                        num_threads)
 
     def __create_head_refinement_factory(self) -> HeadRefinementFactory:
         head_refinement = self.___get_preferred_head_refinement()
