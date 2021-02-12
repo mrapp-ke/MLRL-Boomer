@@ -6,6 +6,8 @@ SizeStoppingCriterion::SizeStoppingCriterion(uint32 maxRules)
 
 }
 
-IStoppingCriterion::Action SizeStoppingCriterion::test(const IStatistics& statistics, uint32 numRules) {
-    return numRules < maxRules_ ? CONTINUE : FORCE_STOP;
+IStoppingCriterion::Result SizeStoppingCriterion::test(const IStatistics& statistics, uint32 numRules) {
+    Result result;
+    result.action = numRules < maxRules_ ? CONTINUE : FORCE_STOP;
+    return result;
 }

@@ -22,6 +22,6 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
          */
         SizeStoppingCriterion(uint32 maxRules);
 
-        Action test(const IStatistics& statistics, uint32 numRules) override;
+        Result test(const IStatistics& statistics, uint32 numRules) override;
 
 };

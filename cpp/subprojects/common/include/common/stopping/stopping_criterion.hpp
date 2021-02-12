@@ -46,6 +46,6 @@ class IStoppingCriterion {
          *                      potential point for stopping while continuing to induce rules (`STORE_STOP`), or if the
          *                      induction of rules should be forced to be stopped (`FORCE_STOP`)
          */
-        virtual Action test(const IStatistics& statistics, uint32 numRules) = 0;
+        virtual Result test(const IStatistics& statistics, uint32 numRules) = 0;
 
 };

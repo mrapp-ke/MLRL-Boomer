@@ -9,9 +9,11 @@ namespace seco {
 
     }
 
-    IStoppingCriterion::Action CoverageStoppingCriterion::test(const IStatistics& statistics, uint32 numRules) {
+    IStoppingCriterion::Result CoverageStoppingCriterion::test(const IStatistics& statistics, uint32 numRules) {
+        Result result;
         const ICoverageStatistics& coverageStatistics = static_cast<const ICoverageStatistics&>(statistics);
-        return coverageStatistics.getSumOfUncoveredLabels() > threshold_ ? CONTINUE : FORCE_STOP;
+        result.action = coverageStatistics.getSumOfUncoveredLabels() > threshold_ ? CONTINUE : FORCE_STOP;
+        return result;
     }
 
 }

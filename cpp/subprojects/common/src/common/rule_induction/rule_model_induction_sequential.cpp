@@ -8,8 +8,9 @@ static inline IStoppingCriterion::Action testStoppingCriteria(
 
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::shared_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
+        IStoppingCriterion::Result stoppingCriterionResult = stoppingCriterionPtr->test(statistics, numRules);
 
-        switch (stoppingCriterionPtr->test(statistics, numRules)) {
+        switch (stoppingCriterionResult.action) {
             case IStoppingCriterion::Action::FORCE_STOP: {
                 return IStoppingCriterion::Action::FORCE_STOP;
             }
