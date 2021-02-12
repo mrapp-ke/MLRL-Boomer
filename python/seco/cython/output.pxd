@@ -1,5 +1,5 @@
 from common.cython._types cimport uint8, uint32
-from common.cython.output cimport AbstractClassificationPredictor, IPredictor
+from common.cython.output cimport AbstractBinaryPredictor, IPredictor
 
 
 cdef extern from "seco/output/predictor_classification_label_wise.hpp" namespace "seco" nogil:
@@ -11,7 +11,7 @@ cdef extern from "seco/output/predictor_classification_label_wise.hpp" namespace
         LabelWiseClassificationPredictorImpl(uint32 numThreads) except +
 
 
-cdef class LabelWiseClassificationPredictor(AbstractClassificationPredictor):
+cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
 
     # Attributes:
 
