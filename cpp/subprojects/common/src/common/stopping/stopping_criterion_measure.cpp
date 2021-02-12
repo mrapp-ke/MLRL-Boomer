@@ -64,14 +64,15 @@ MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMe
                                                    uint32 bufferSize, float64 minImprovement, bool forceStop)
     : measurePtr_(measurePtr), aggregationFunctionPtr_(aggregationFunctionPtr), minRules_(minRules),
       updateInterval_(updateInterval), stopInterval_(stopInterval), minImprovement_(minImprovement),
-      buffer_(RingBuffer<float64>(bufferSize)), stoppingResult_(forceStop ? FORCE_STOP : STORE_STOP) {
+      buffer_(RingBuffer<float64>(bufferSize)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP) {
     uint32 bufferInterval = bufferSize * updateInterval;
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
 }
 
 IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& partition, const IStatistics& statistics,
                                                           uint32 numRules) {
-    Result result = CONTINUE;
+    Result result;
+    result.action = CONTINUE;
 
     if (numRules > offset_ && numRules % updateInterval_ == 0) {
         const BiPartition& biPartition = static_cast<const BiPartition&>(partition);
@@ -83,8 +84,13 @@ IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& part
             if (numBufferedElements > 0) {
                 float64 aggregatedScore = aggregationFunctionPtr_->aggregate(numBufferedElements, buffer_.cbegin());
                 float64 percentageImprovement = (aggregatedScore - currentScore) / currentScore;
-                result = percentageImprovement > minImprovement_ ? CONTINUE : stoppingResult_;
-                std::cout << numRules << ": improvement = " << percentageImprovement << " ==> " << (result == CONTINUE ? "continue" : "stop") << "\n";
+
+                if (percentageImprovement <= minImprovement_) {
+                    result.action = stoppingAction_;
+                    result.numRules = numRules;
+                }
+
+                std::cout << numRules << ": improvement = " << percentageImprovement << " ==> " << (result.action == CONTINUE ? "continue" : "stop") << "\n";
             }
         }
 
