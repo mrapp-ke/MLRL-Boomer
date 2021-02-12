@@ -33,7 +33,15 @@ uint32 RingBuffer<T>::getNumElements() const {
 }
 
 template<class T>
-void RingBuffer<T>::push(T value) {
+bool RingBuffer<T>::isFull() const {
+    return full_;
+}
+
+template<class T>
+std::pair<bool, T> RingBuffer<T>::push(T value) {
+    std::pair<bool, T> result;
+    result.first = full_;
+    result.second = array_[pos_];
     array_[pos_] = value;
     pos_++;
 

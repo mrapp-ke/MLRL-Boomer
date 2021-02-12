@@ -77,8 +77,8 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
     """
 
     def __cinit__(self, EvaluationMeasure measure, AggregationFunction aggregation_function, uint32 min_rules,
-                  uint32 update_interval, uint32 stop_interval, uint32 buffer_size, float64 min_improvement,
-                  bint force_stop):
+                  uint32 update_interval, uint32 stop_interval, uint32 num_past, uint32 num_recent,
+                  float64 min_improvement, bint force_stop):
         """
         :param measure:                 The measure that should be used to assess the quality of a model
         :param aggregation_function:    The aggregation function that should be used to aggregate the scores in the
@@ -91,7 +91,10 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
         :param stop_interval:           The interval to be used to decide whether the induction of rules should be
                                         stopped, e.g., a value of 10 means that the rule induction might be stopped
                                         after 10, 20, ... rules. Must be a multiple of `updateInterval`
-        :param buffer_size:             The number of quality scores to be stored in a buffer. Must be at least 1
+        :param num_past:                The number of quality scores of past iterations to be stored in a buffer. Must
+                                        be at least 1
+        :param num_recent:              The number of quality scores of the most recent iterations to be stored in a
+                                        buffer. Must be at least 1
         :param min_improvement:         The minimum improvement in percent that must be reached for the rule induction
                                         to be continued. Must be in [0, 1]
         :param force_stop:              True, if the induction of rules should be forced to be stopped, if the stopping
@@ -100,4 +103,4 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
         cdef shared_ptr[IEvaluationMeasure] measure_ptr = measure.get_evaluation_measure_ptr()
         self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[MeasureStoppingCriterionImpl](
             measure_ptr, aggregation_function.aggregation_function_ptr, min_rules, update_interval, stop_interval,
-            buffer_size, min_improvement, force_stop)
+            num_past, num_recent, min_improvement, force_stop)

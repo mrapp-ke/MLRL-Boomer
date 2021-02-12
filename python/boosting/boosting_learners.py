@@ -52,7 +52,9 @@ ARGUMENT_UPDATE_INTERVAL = 'update_interval'
 
 ARGUMENT_STOP_INTERVAL = 'stop_interval'
 
-ARGUMENT_BUFFER_SIZE = 'buffer_size'
+ARGUMENT_NUM_PAST = 'num_past'
+
+ARGUMENT_NUM_RECENT = 'num_recent'
 
 ARGUMENT_MIN_IMPROVEMENT = 'min_improvement'
 
@@ -336,13 +338,14 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                     update_interval = get_int_argument(args, ARGUMENT_UPDATE_INTERVAL, 1, lambda x: 1 <= x)
                     stop_interval = get_int_argument(args, ARGUMENT_STOP_INTERVAL, 1,
                                                      lambda x: 1 <= x and x % update_interval == 0)
-                    buffer_size = get_int_argument(args, ARGUMENT_BUFFER_SIZE, 50, lambda x: 1 <= x)
+                    num_past = get_int_argument(args, ARGUMENT_NUM_PAST, 50, lambda x: 1 <= x)
+                    num_recent = get_int_argument(args, ARGUMENT_NUM_RECENT, 50, lambda x: 1 <= x)
                     min_improvement = get_float_argument(args, ARGUMENT_MIN_IMPROVEMENT, 0.01, lambda x: 0 <= x <= 1)
                     force_stop = get_bool_argument(args, ARGUMENT_FORCE_STOP, True)
                     return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
                                                     update_interval=update_interval, stop_interval=stop_interval,
-                                                    buffer_size=buffer_size, min_improvement=min_improvement,
-                                                    force_stop=force_stop)
+                                                    num_past=num_past, num_recent=num_recent,
+                                                    min_improvement=min_improvement, force_stop=force_stop)
             raise ValueError('Invalid value given for parameter \'early_stopping\': ' + str(early_stopping))
 
     def __create_aggregation_function(self, aggregation_function: str) -> AggregationFunction:

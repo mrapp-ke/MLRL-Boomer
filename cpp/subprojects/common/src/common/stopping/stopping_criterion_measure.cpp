@@ -20,11 +20,13 @@ static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const I
     return mean;
 }
 
-float64 MinFunction::aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const {
-    float64 min = iterator[0];
+float64 MinFunction::aggregate(RingBuffer<float64>::const_iterator begin,
+                               RingBuffer<float64>::const_iterator end) const {
+    uint32 numElements = end - begin;
+    float64 min = begin[0];
 
     for (uint32 i = 1; i < numElements; i++) {
-        float64 value = iterator[i];
+        float64 value = begin[i];
 
         if (value < min) {
             min = value;
@@ -34,11 +36,13 @@ float64 MinFunction::aggregate(uint32 numElements, RingBuffer<float64>::const_it
     return min;
 }
 
-float64 MaxFunction::aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const {
-    float64 max = iterator[0];
+float64 MaxFunction::aggregate(RingBuffer<float64>::const_iterator begin,
+                               RingBuffer<float64>::const_iterator end) const {
+    uint32 numElements = end - begin;
+    float64 max = begin[0];
 
     for (uint32 i = 1; i < numElements; i++) {
-        float64 value = iterator[i];
+        float64 value = begin[i];
 
         if (value > max) {
             max = value;
@@ -48,11 +52,13 @@ float64 MaxFunction::aggregate(uint32 numElements, RingBuffer<float64>::const_it
     return max;
 }
 
-float64 ArithmeticMeanFunction::aggregate(uint32 numElements, RingBuffer<float64>::const_iterator iterator) const {
+float64 ArithmeticMeanFunction::aggregate(RingBuffer<float64>::const_iterator begin,
+                                          RingBuffer<float64>::const_iterator end) const {
+    uint32 numElements = end - begin;
     float64 mean = 0;
 
     for (uint32 i = 0; i < numElements; i++) {
-        float64 value = iterator[i];
+        float64 value = begin[i];
         mean = iterativeArithmeticMean<float64>(i + 1, value, mean);
     }
 
@@ -62,12 +68,13 @@ float64 ArithmeticMeanFunction::aggregate(uint32 numElements, RingBuffer<float64
 MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMeasure> measurePtr,
                                                    std::shared_ptr<IAggregationFunction> aggregationFunctionPtr,
                                                    uint32 minRules, uint32 updateInterval, uint32 stopInterval,
-                                                   uint32 bufferSize, float64 minImprovement, bool forceStop)
-    : measurePtr_(measurePtr), aggregationFunctionPtr_(aggregationFunctionPtr), minRules_(minRules),
-      updateInterval_(updateInterval), stopInterval_(stopInterval), minImprovement_(minImprovement),
-      pastBuffer_(RingBuffer<float64>(bufferSize)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
+                                                   uint32 numPast, uint32 numRecent, float64 minImprovement,
+                                                   bool forceStop)
+    : measurePtr_(measurePtr), aggregationFunctionPtr_(aggregationFunctionPtr), updateInterval_(updateInterval),
+      stopInterval_(stopInterval), minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
+      recentBuffer_(RingBuffer<float64>(numRecent)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
       bestScore_(std::numeric_limits<float64>::infinity()) {
-    uint32 bufferInterval = bufferSize * updateInterval;
+    uint32 bufferInterval = (numPast * updateInterval) + (numRecent * updateInterval);
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
 }
 
@@ -85,23 +92,25 @@ IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& part
             bestNumRules_ = numRules;
         }
 
-        if (numRules >= minRules_ && numRules % stopInterval_ == 0) {
-            uint32 numBufferedElements = pastBuffer_.getNumElements();
+        if (pastBuffer_.isFull() && numRules % stopInterval_ == 0) {
+            float64 aggregatedScorePast = aggregationFunctionPtr_->aggregate(pastBuffer_.cbegin(), pastBuffer_.cend());
+            float64 aggregatedScoreRecent = aggregationFunctionPtr_->aggregate(recentBuffer_.cbegin(),
+                                                                               recentBuffer_.cend());
+            float64 percentageImprovement = (aggregatedScorePast - aggregatedScoreRecent) / aggregatedScoreRecent;
 
-            if (numBufferedElements > 0) {
-                float64 aggregatedScore = aggregationFunctionPtr_->aggregate(numBufferedElements, pastBuffer_.cbegin());
-                float64 percentageImprovement = (aggregatedScore - currentScore) / currentScore;
-
-                if (percentageImprovement <= minImprovement_) {
-                    result.action = stoppingAction_;
-                    result.numRules = bestNumRules_;
-                }
-
-                std::cout << numRules << ": improvement = " << percentageImprovement << " ==> " << (result.action == CONTINUE ? "continue" : "stop") << "\n";
+            if (percentageImprovement <= minImprovement_) {
+                result.action = stoppingAction_;
+                result.numRules = bestNumRules_;
             }
+
+            std::cout << numRules << ": improvement = " << percentageImprovement << " ==> " << (result.action == CONTINUE ? "continue" : "stop") << "\n";
         }
 
-        pastBuffer_.push(currentScore);
+        std::pair<bool, float64> pair = recentBuffer_.push(currentScore);
+
+        if (pair.first) {
+            pastBuffer_.push(pair.second);
+        }
     }
 
     return result;
