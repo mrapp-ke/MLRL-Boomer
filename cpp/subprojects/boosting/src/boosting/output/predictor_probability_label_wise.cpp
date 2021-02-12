@@ -16,7 +16,7 @@ namespace boosting {
                                                    const ILabelWiseTransformationFunction& transformationFunction) {
         for (uint32 i = 0; i < numElements; i++) {
             float64 originalValue = originalIterator[i];
-            uint8 transformedValue = transformationFunction.transform(originalValue);
+            float64 transformedValue = transformationFunction.transform(originalValue);
             transformedIterator[i] = transformedValue;
         }
     }
