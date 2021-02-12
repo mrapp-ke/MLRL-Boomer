@@ -94,6 +94,10 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         Action stoppingAction_;
 
+        float64 bestScore_;
+
+        uint32 bestNumRules_;
+
     public:
 
         /**
