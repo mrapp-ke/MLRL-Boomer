@@ -11,9 +11,9 @@ from ast import literal_eval
 
 import sklearn.metrics as metrics
 
-from boomer.boosting.boosting_learners import LOSS_LABEL_WISE_LOGISTIC
-from boomer.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM
-from boomer.seco.seco_learners import HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
+from boosting.boosting_learners import LOSS_LABEL_WISE_LOGISTIC
+from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM
+from seco.seco_learners import HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
 
 
 def log_level(s):
@@ -120,7 +120,7 @@ class ArgumentParserBuilder:
                             help='The cross validation fold to be performed')
         parser.add_argument('--store-predictions', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_predictions', False, **kwargs),
-                            help='True, if the predictions should be stored as CSV files, False otherwise')
+                            help='True, if the predictions should be stored as ARFF files, False otherwise')
         parser.add_argument('--parameter-dir', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('parameter_dir', None, **kwargs),
                             help='The path of the directory, parameter settings should be loaded from')
@@ -137,9 +137,15 @@ class ArgumentParserBuilder:
                             help='The format to be used for the feature matrix or \'auto\'')
         parser.add_argument('--label-format', type=optional_string, default='auto',
                             help='The format to be used for the label matrix or \'auto\'')
-        parser.add_argument('--num-threads', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads', 1, **kwargs),
-                            help='The number of threads to be used for training or -1')
+        parser.add_argument('--num-threads-refinement', type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_refinement', 1, **kwargs),
+                            help='The number of threads to be used to search for potential refinements of rules or -1')
+        parser.add_argument('--num-threads-update', type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_update', 1, **kwargs),
+                            help='The number of threads to be used to update statistics or -1')
+        parser.add_argument('--num-threads-prediction', type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
+                            help='The number of threads to be used to make predictions or -1')
         parser.add_argument('--max-rules', type=int,
                             default=ArgumentParserBuilder.__get_or_default('max_rules', 500, **kwargs),
                             help='The maximum number of rules to be induced or -1')
@@ -155,6 +161,9 @@ class ArgumentParserBuilder:
         parser.add_argument('--feature-sub-sampling', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('feature_sub_sampling', None, **kwargs),
                             help='The name of the strategy to be used for feature sub-sampling or None')
+        parser.add_argument('--holdout', type=float,
+                            default=ArgumentParserBuilder.__get_or_default('holdout', 0, **kwargs),
+                            help='The fraction of the training data to be included in the holdout set or 0')
         parser.add_argument('--loss', type=str, default=loss, help='The name of the loss function to be used')
         parser.add_argument('--head-refinement', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('head_refinement', None, **kwargs),
@@ -179,7 +188,7 @@ class ArgumentParserBuilder:
                             help='A dictionary that specifies options for printing rules')
         parser.add_argument('--store-rules', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_rules', False, **kwargs),
-                            help='True, if the induced rules should be stored in TXT files, False otherwise')
+                            help='True, if the induced rules should be stored in text files, False otherwise')
         parser.add_argument('--feature-binning', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('feature_binning', None, **kwargs),
                             help='The name of the strategy to be used for feature binning or None')
@@ -196,6 +205,9 @@ class ArgumentParserBuilder:
         parser.add_argument('--shrinkage', type=float,
                             default=ArgumentParserBuilder.__get_or_default('shrinkage', 0.3, **kwargs),
                             help='The shrinkage parameter to be used')
+        parser.add_argument('--predictor', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('predictor', None, **kwargs),
+                            help='The name of the strategy to be used for making predictions or None')
         return self
 
     def add_seco_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
