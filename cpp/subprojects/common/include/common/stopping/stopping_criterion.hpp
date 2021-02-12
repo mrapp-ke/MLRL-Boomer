@@ -25,8 +25,8 @@ class IStoppingCriterion {
         };
 
         /**
-         * The result that is returned by a stopping criterion. It consists of the action to be executed, as well as an
-         * (optional) number of rules to be used, if the action is not `CONTINUE`.
+         * The result that is returned by a stopping criterion. It consists of the action to be executed, as well as the
+         * number of rules to be used, if the action is not `CONTINUE`.
          */
         struct Result {
             Action action;
