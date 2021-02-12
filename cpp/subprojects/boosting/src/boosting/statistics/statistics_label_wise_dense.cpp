@@ -3,6 +3,7 @@
 #include "boosting/data/matrix_dense_label_wise.hpp"
 #include "boosting/data/vector_dense_label_wise.hpp"
 #include "statistics_label_wise_common.hpp"
+#include "omp.h"
 
 
 namespace boosting {
@@ -24,12 +25,19 @@ namespace boosting {
         std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =
             std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
         FullIndexVector labelIndices(numLabels);
-        FullIndexVector::const_iterator labelIndicesBegin = labelIndices.cbegin();
-        FullIndexVector::const_iterator labelIndicesEnd = labelIndices.cend();
+        const ILabelWiseLoss* lossFunctionPtr = lossFunctionPtr_.get();
+        const IRandomAccessLabelMatrix* labelMatrixPtr = labelMatrixPtr_.get();
+        const FullIndexVector* labelIndicesPtr = &labelIndices;
+        const CContiguousView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
+        DenseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
-        for (uint32 r = 0; r < numExamples; r++) {
-            lossFunctionPtr_->updateLabelWiseStatistics(r, *labelMatrixPtr_, *scoreMatrixPtr, labelIndicesBegin,
-                                                        labelIndicesEnd, *statisticMatrixPtr);
+        #pragma omp parallel for firstprivate(numExamples) firstprivate(lossFunctionPtr) firstprivate(labelMatrixPtr) \
+        firstprivate(scoreMatrixRawPtr) firstprivate(labelIndicesPtr) firstprivate(statisticMatrixRawPtr) \
+        schedule(dynamic) num_threads(numThreads_)
+        for (uint32 i = 0; i < numExamples; i++) {
+            lossFunctionPtr->updateLabelWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr,
+                                                       labelIndicesPtr->cbegin(), labelIndicesPtr->cend(),
+                                                       *statisticMatrixRawPtr);
         }
 
         return std::make_unique<LabelWiseStatistics<DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
