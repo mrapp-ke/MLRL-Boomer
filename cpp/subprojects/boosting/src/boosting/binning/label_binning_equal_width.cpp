@@ -91,8 +91,8 @@ namespace boosting {
         float64 minNegative = labelInfo.minNegative;
         float64 maxNegative = labelInfo.maxNegative;
 
-        float64 spanPerPositiveBin = minNegative < 0 ? (maxNegative - minNegative) / numPositiveBins : 0;
         float64 spanPerNegativeBin = maxPositive > 0 ? (maxPositive - minPositive) / numNegativeBins : 0;
+        float64 spanPerPositiveBin = minNegative < 0 ? (maxNegative - minNegative) / numPositiveBins : 0;
 
         // Assign labels to bins...
         uint32 numStatistics = gradientsEnd - gradientsBegin;
