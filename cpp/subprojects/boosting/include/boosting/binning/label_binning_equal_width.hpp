@@ -9,13 +9,14 @@
 namespace boosting {
 
     /**
-     * Assigns labels to bins, based on the corresponding gradients, in a way such that each bin contains labels with
-     * gradients from equally sized value ranges.
+     * Assigns labels to bins, based on the corresponding gradients and Hessians, in a way such that each bin contains
+     * labels for which the predicted score is expected to belong to the same value range.
      *
-     * @tparam T The type of the vector that provides access to the gradients
+     * @tparam GradientIterator The type of the iterator that provides access to the gradients
+     * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
      */
-    template<class T>
-    class EqualWidthLabelBinning final : public ILabelBinning<T> {
+    template<class GradientIterator, class HessianIterator>
+    class EqualWidthLabelBinning final : public ILabelBinning<GradientIterator, HessianIterator> {
 
         private:
 
@@ -38,10 +39,14 @@ namespace boosting {
 
             uint32 getMaxBins(uint32 numLabels) const override;
 
-            LabelInfo getLabelInfo(const T& statisticVector) const override;
+            LabelInfo getLabelInfo(GradientIterator gradientsBegin, GradientIterator gradientsEnd,
+                                   HessianIterator hessiansBegin, HessianIterator hessiansEnd) const override;
 
-            void createBins(LabelInfo labelInfo, const T& statisticVector, typename ILabelBinning<T>::Callback callback,
-                            typename ILabelBinning<T>::ZeroCallback zeroCallback) const override;
+            void createBins(
+                LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
+                HessianIterator hessiansBegin, HessianIterator hessiansEnd,
+                typename ILabelBinning<GradientIterator, HessianIterator>::Callback callback,
+                typename ILabelBinning<GradientIterator, HessianIterator>::ZeroCallback zeroCallback) const override;
 
     };
 
