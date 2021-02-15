@@ -1,11 +1,16 @@
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/data/vector_dense_label_wise.hpp"
 #include "boosting/data/vector_dense_example_wise.hpp"
+#include "boosting/math/math.hpp"
 #include "common/binning/binning.hpp"
 #include <limits>
 
 
 namespace boosting {
+
+    static inline float64 calculateStatistic(float64 gradient, float64 hessian, float64 l2RegularizationWeight) {
+        return divideOrZero<float64>(gradient, hessian + l2RegularizationWeight);
+    }
 
     template<class GradientIterator, class HessianIterator>
     EqualWidthLabelBinning<GradientIterator, HessianIterator>::EqualWidthLabelBinning(float32 binRatio, uint32 minBins,
@@ -36,7 +41,7 @@ namespace boosting {
             labelInfo.maxNegative = -std::numeric_limits<float64>::infinity();
 
             for (uint32 i = 0; i < numStatistics; i++) {
-                float64 statistic = gradientsBegin[i];
+                float64 statistic = calculateStatistic(gradientsBegin[i], hessiansBegin[i], l2RegularizationWeight);
 
                 if (statistic < 0) {
                     numNegative++;
@@ -93,7 +98,7 @@ namespace boosting {
         uint32 numStatistics = gradientsEnd - gradientsBegin;
 
         for (uint32 i = 0; i < numStatistics; i++) {
-            float64 statistic = gradientsBegin[i];
+            float64 statistic = calculateStatistic(gradientsBegin[i], hessiansBegin[i], l2RegularizationWeight);
 
             if (statistic > 0) {
                 // Gradient is positive, i.e., label belongs to a negative bin...
