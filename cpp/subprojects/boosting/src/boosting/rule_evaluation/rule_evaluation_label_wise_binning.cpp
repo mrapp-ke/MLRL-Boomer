@@ -74,7 +74,8 @@ namespace boosting {
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector.gradients_cbegin(),
                                                                 statisticVector.gradients_cend(),
                                                                 statisticVector.hessians_cbegin(),
-                                                                statisticVector.hessians_cend());
+                                                                statisticVector.hessians_cend(),
+                                                                l2RegularizationWeight_);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
                 scoreVector_.setNumBins(numBins, false);
 
@@ -95,8 +96,8 @@ namespace boosting {
                     scoreVector_.indices_binned_begin()[labelIndex] = maxBins_;
                 };
                 binningPtr_->createBins(labelInfo, statisticVector.gradients_cbegin(), statisticVector.gradients_cend(),
-                                        statisticVector.hessians_cbegin(), statisticVector.hessians_cend(), callback,
-                                        zeroCallback);
+                                        statisticVector.hessians_cbegin(), statisticVector.hessians_cend(),
+                                        l2RegularizationWeight_, callback, zeroCallback);
 
                 // Compute predictions and quality scores...
                 scoreVector_.overallQualityScore = calculateLabelWisePredictionInternally<

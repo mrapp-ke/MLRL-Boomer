@@ -40,11 +40,12 @@ namespace boosting {
             uint32 getMaxBins(uint32 numLabels) const override;
 
             LabelInfo getLabelInfo(GradientIterator gradientsBegin, GradientIterator gradientsEnd,
-                                   HessianIterator hessiansBegin, HessianIterator hessiansEnd) const override;
+                                   HessianIterator hessiansBegin, HessianIterator hessiansEnd,
+                                   float64 l2RegularizationWeight) const override;
 
             void createBins(
                 LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
-                HessianIterator hessiansBegin, HessianIterator hessiansEnd,
+                HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,
                 typename ILabelBinning<GradientIterator, HessianIterator>::Callback callback,
                 typename ILabelBinning<GradientIterator, HessianIterator>::ZeroCallback zeroCallback) const override;
 
