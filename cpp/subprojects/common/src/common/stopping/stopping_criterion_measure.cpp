@@ -86,20 +86,24 @@ IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& part
         const BiPartition& biPartition = static_cast<const BiPartition&>(partition);
         float64 currentScore = evaluateOnHoldoutSet(biPartition, statistics, *measurePtr_);
 
-        if (currentScore < bestScore_) {
-            bestScore_ = currentScore;
-            bestNumRules_ = numRules;
-        }
+        if (pastBuffer_.isFull()) {
+            if (currentScore < bestScore_) {
+                bestScore_ = currentScore;
+                bestNumRules_ = numRules;
+            }
 
-        if (pastBuffer_.isFull() && numRules % stopInterval_ == 0) {
-            float64 aggregatedScorePast = aggregationFunctionPtr_->aggregate(pastBuffer_.cbegin(), pastBuffer_.cend());
-            float64 aggregatedScoreRecent = aggregationFunctionPtr_->aggregate(recentBuffer_.cbegin(),
-                                                                               recentBuffer_.cend());
-            float64 percentageImprovement = (aggregatedScorePast - aggregatedScoreRecent) / aggregatedScoreRecent;
+            if (numRules % stopInterval_ == 0) {
+                float64 aggregatedScorePast = aggregationFunctionPtr_->aggregate(pastBuffer_.cbegin(),
+                                                                                 pastBuffer_.cend());
+                float64 aggregatedScoreRecent = aggregationFunctionPtr_->aggregate(recentBuffer_.cbegin(),
+                                                                                   recentBuffer_.cend());
+                float64 percentageImprovement = (aggregatedScorePast - aggregatedScoreRecent) / aggregatedScoreRecent;
 
-            if (percentageImprovement <= minImprovement_) {
-                result.action = stoppingAction_;
-                result.numRules = bestNumRules_;
+                if (percentageImprovement <= minImprovement_) {
+                    result.action = stoppingAction_;
+                    result.numRules = bestNumRules_;
+                    stopped_ = true;
+                }
             }
         }
 
