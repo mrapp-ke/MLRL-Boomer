@@ -2,7 +2,6 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/math/math.hpp"
 #include <limits>
-#include <iostream>
 
 
 static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const IStatistics& statistics,
@@ -102,8 +101,6 @@ IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& part
                 result.action = stoppingAction_;
                 result.numRules = bestNumRules_;
             }
-
-            std::cout << numRules << ": improvement = " << percentageImprovement << " ==> " << (result.action == CONTINUE ? "continue" : "stop") << "\n";
         }
 
         std::pair<bool, float64> pair = recentBuffer_.push(currentScore);
