@@ -354,6 +354,11 @@ namespace seco {
                 }
             }
 
+            float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
+                // TODO Support evaluation of predictions
+                return 0;
+            }
+
             std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const override {
                 //TODO Support creation of histograms
                 std::unique_ptr<IHistogramBuilder> result;

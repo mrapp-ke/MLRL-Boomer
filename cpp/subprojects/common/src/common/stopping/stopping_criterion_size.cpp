@@ -6,7 +6,8 @@ SizeStoppingCriterion::SizeStoppingCriterion(uint32 maxRules)
 
 }
 
-IStoppingCriterion::Result SizeStoppingCriterion::test(const IStatistics& statistics, uint32 numRules) {
+IStoppingCriterion::Result SizeStoppingCriterion::test(const IPartition& partition, const IStatistics& statistics,
+                                                       uint32 numRules) {
     Result result;
 
     if (numRules < maxRules_) {

@@ -2,14 +2,15 @@
 
 
 static inline IStoppingCriterion::Result testStoppingCriteria(
-        std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria, const IStatistics& statistics,
-        uint32 numRules) {
+        std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria, const IPartition& partition,
+        const IStatistics& statistics, uint32 numRules) {
     IStoppingCriterion::Result result;
     result.action = IStoppingCriterion::Action::CONTINUE;
 
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::shared_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
-        IStoppingCriterion::Result stoppingCriterionResult = stoppingCriterionPtr->test(statistics, numRules);
+        IStoppingCriterion::Result stoppingCriterionResult = stoppingCriterionPtr->test(partition, statistics,
+                                                                                        numRules);
         IStoppingCriterion::Action action = stoppingCriterionResult.action;
 
         switch (action) {
@@ -76,7 +77,8 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr_->partition(numExamples, rng);
     IStoppingCriterion::Result stoppingCriterionResult;
 
-    while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, statisticsProviderPtr->get(),
+    while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, *partitionPtr,
+                                                          statisticsProviderPtr->get(),
                                                           numRules),
            stoppingCriterionResult.action != IStoppingCriterion::Action::FORCE_STOP) {
         if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
