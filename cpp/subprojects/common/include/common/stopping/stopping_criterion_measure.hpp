@@ -105,6 +105,8 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
         uint32 bestNumRules_;
 
+        bool stopped_;
+
     public:
 
         /**
