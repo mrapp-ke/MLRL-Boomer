@@ -387,6 +387,10 @@ namespace boosting {
                 this->applyPredictionInternally<PartialPrediction>(statisticIndex, prediction);
             }
 
+            float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
+                return measure.evaluate(statisticIndex, *labelMatrixPtr_, *scoreMatrixPtr_);
+            }
+
             std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const override {
                 return std::make_unique<HistogramBuilder>(*this, numBins);
             }
