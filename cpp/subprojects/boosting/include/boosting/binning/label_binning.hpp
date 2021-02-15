@@ -66,29 +66,34 @@ namespace boosting {
              * e.g. sort, the given vector. The `LabelInfo` returned by this function must be passed to the function
              * `createBins` later on.
              *
-             * @param gradientsBegin    An iterator to the beginning of the gradients
-             * @param gradientsEnd      An iterator to the end of the gradients
-             * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator to the end of the Hessians
-             * @return                  A struct of `type `LabelInfo` that stores the information
+             * @param gradientsBegin            An iterator to the beginning of the gradients
+             * @param gradientsEnd              An iterator to the end of the gradients
+             * @param hessiansBegin             An iterator to the beginning of the Hessians
+             * @param hessiansEnd               An iterator to the end of the Hessians
+             * @param l2RegularizationWeight    The weight to be used for L2 regularization
+             * @return                          A struct of `type `LabelInfo` that stores the information
              */
             virtual LabelInfo getLabelInfo(GradientIterator gradientsBegin, GradientIterator gradientsEnd,
-                                           HessianIterator hessiansBegin, HessianIterator hessiansEnd) const = 0;
+                                           HessianIterator hessiansBegin, HessianIterator hessiansEnd,
+                                           float64 l2RegularizationWeight) const = 0;
 
             /**
              * Assigns the labels to bins, based on the corresponding statistics.
              *
-             * @param labelInfo         A struct of type `LabelInfo` that stores information about the statistics in the
-             *                          given vector
-             * @param gradientsBegin    An iterator to the beginning of the gradients
-             * @param gradientsEnd      An iterator to the end of the gradients
-             * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator to the end of the Hessians
-             * @param callback          A callback that is invoked when a label is assigned to a bin
-             * @param zeroCallback      A callback that is invoked when a label with zero statistics is encountered
+             * @param labelInfo                 A struct of type `LabelInfo` that stores information about the
+             *                                  statistics in the given vector
+             * @param gradientsBegin            An iterator to the beginning of the gradients
+             * @param gradientsEnd              An iterator to the end of the gradients
+             * @param hessiansBegin             An iterator to the beginning of the Hessians
+             * @param hessiansEnd               An iterator to the end of the Hessians
+             * @param l2RegularizationWeight    The weight to be used for L2 regularization
+             * @param callback                  A callback that is invoked when a label is assigned to a bin
+             * @param zeroCallback              A callback that is invoked when a label with zero statistics is
+             *                                  encountered
              */
             virtual void createBins(LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
-                                    HessianIterator hessiansBegin, HessianIterator hessiansEnd, Callback callback,
+                                    HessianIterator hessiansBegin, HessianIterator hessiansEnd,
+                                    float64 l2RegularizationWeight, Callback callback,
                                     ZeroCallback zeroCallback) const = 0;
 
     };

@@ -22,7 +22,7 @@ namespace boosting {
     template<class GradientIterator, class HessianIterator>
     LabelInfo EqualWidthLabelBinning<GradientIterator, HessianIterator>::getLabelInfo(
             GradientIterator gradientsBegin, GradientIterator gradientsEnd, HessianIterator hessiansBegin,
-            HessianIterator hessiansEnd) const {
+            HessianIterator hessiansEnd, float64 l2RegularizationWeight) const {
         LabelInfo labelInfo;
         uint32 numStatistics = gradientsEnd - gradientsBegin;
 
@@ -76,7 +76,7 @@ namespace boosting {
     template<class GradientIterator, class HessianIterator>
     void EqualWidthLabelBinning<GradientIterator, HessianIterator>::createBins(
             LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
-            HessianIterator hessiansBegin, HessianIterator hessiansEnd,
+            HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,
             typename ILabelBinning<GradientIterator, HessianIterator>::Callback callback,
             typename ILabelBinning<GradientIterator, HessianIterator>::ZeroCallback zeroCallback) const {
         uint32 numPositiveBins = labelInfo.numPositiveBins;
