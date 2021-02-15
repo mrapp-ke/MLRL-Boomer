@@ -7,21 +7,24 @@
 
 namespace boosting {
 
-    template<class T>
-    EqualWidthLabelBinning<T>::EqualWidthLabelBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
+    template<class GradientIterator, class HessianIterator>
+    EqualWidthLabelBinning<GradientIterator, HessianIterator>::EqualWidthLabelBinning(float32 binRatio, uint32 minBins,
+                                                                                      uint32 maxBins)
         : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
 
     }
 
-    template<class T>
-    uint32 EqualWidthLabelBinning<T>::getMaxBins(uint32 numLabels) const {
+    template<class GradientIterator, class HessianIterator>
+    uint32 EqualWidthLabelBinning<GradientIterator, HessianIterator>::getMaxBins(uint32 numLabels) const {
         return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
     }
 
-    template<class T>
-    LabelInfo EqualWidthLabelBinning<T>::getLabelInfo(const T& statisticVector) const {
+    template<class GradientIterator, class HessianIterator>
+    LabelInfo EqualWidthLabelBinning<GradientIterator, HessianIterator>::getLabelInfo(
+            GradientIterator gradientsBegin, GradientIterator gradientsEnd, HessianIterator hessiansBegin,
+            HessianIterator hessiansEnd) const {
         LabelInfo labelInfo;
-        uint32 numStatistics = statisticVector.getNumElements();
+        uint32 numStatistics = gradientsEnd - gradientsBegin;
 
         if (numStatistics > 0) {
             // Find minimum and maximum among the positive gradients and negative gradients, respectively...
@@ -32,10 +35,8 @@ namespace boosting {
             labelInfo.minNegative = 0;
             labelInfo.maxNegative = -std::numeric_limits<float64>::infinity();
 
-            typename T::gradient_const_iterator iterator = statisticVector.gradients_cbegin();
-
             for (uint32 i = 0; i < numStatistics; i++) {
-                float64 value = iterator[i];
+                float64 value = gradientsBegin[i];
 
                 if (value < 0) {
                     numNegative++;
@@ -72,10 +73,12 @@ namespace boosting {
         return labelInfo;
     }
 
-    template<class T>
-    void EqualWidthLabelBinning<T>::createBins(LabelInfo labelInfo, const T& statisticVector,
-                                               typename ILabelBinning<T>::Callback callback,
-                                               typename ILabelBinning<T>::ZeroCallback zeroCallback) const {
+    template<class GradientIterator, class HessianIterator>
+    void EqualWidthLabelBinning<GradientIterator, HessianIterator>::createBins(
+            LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
+            HessianIterator hessiansBegin, HessianIterator hessiansEnd,
+            typename ILabelBinning<GradientIterator, HessianIterator>::Callback callback,
+            typename ILabelBinning<GradientIterator, HessianIterator>::ZeroCallback zeroCallback) const {
         uint32 numPositiveBins = labelInfo.numPositiveBins;
         float64 minPositive = labelInfo.minPositive;
         float64 maxPositive = labelInfo.maxPositive;
@@ -87,11 +90,10 @@ namespace boosting {
         float64 spanPerNegativeBin = maxPositive > 0 ? (maxPositive - minPositive) / numNegativeBins : 0;
 
         // Assign labels to bins...
-        uint32 numStatistics = statisticVector.getNumElements();
-        typename T::gradient_const_iterator iterator = statisticVector.gradients_cbegin();
+        uint32 numStatistics = gradientsEnd - gradientsBegin;
 
         for (uint32 i = 0; i < numStatistics; i++) {
-            float64 value = iterator[i];
+            float64 value = gradientsBegin[i];
 
             if (value > 0) {
                 // Gradient is positive, i.e., label belongs to a negative bin...
@@ -117,7 +119,9 @@ namespace boosting {
         }
     }
 
-    template class EqualWidthLabelBinning<DenseLabelWiseStatisticVector>;
-    template class EqualWidthLabelBinning<DenseExampleWiseStatisticVector>;
+    template class EqualWidthLabelBinning<DenseLabelWiseStatisticVector::gradient_const_iterator,
+                                          DenseLabelWiseStatisticVector::hessian_const_iterator>;
+    template class EqualWidthLabelBinning<DenseExampleWiseStatisticVector::gradient_const_iterator,
+                                          DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>;
 
 }

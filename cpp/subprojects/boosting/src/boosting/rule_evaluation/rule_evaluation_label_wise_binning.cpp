@@ -8,6 +8,9 @@
 
 namespace boosting {
 
+    typedef ILabelBinning<DenseLabelWiseStatisticVector::gradient_const_iterator,
+                          DenseLabelWiseStatisticVector::hessian_const_iterator> LabelBinningType;
+
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
      * Hessians that have been calculated according to a loss function that is applied label-wise using L2
@@ -24,7 +27,7 @@ namespace boosting {
 
             uint32 maxBins_;
 
-            std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr_;
+            std::unique_ptr<LabelBinningType> binningPtr_;
 
             DenseBinnedLabelWiseScoreVector<T> scoreVector_;
 
@@ -46,7 +49,7 @@ namespace boosting {
              *                                  used to assign labels to bins
              */
             BinningLabelWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight, uint32 maxBins,
-                                           std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr)
+                                           std::unique_ptr<LabelBinningType> binningPtr)
                 : l2RegularizationWeight_(l2RegularizationWeight), maxBins_(maxBins),
                   binningPtr_(std::move(binningPtr)),
                   scoreVector_(DenseBinnedLabelWiseScoreVector<T>(labelIndices, maxBins + 1)),
@@ -68,7 +71,10 @@ namespace boosting {
             const ILabelWiseScoreVector& calculateLabelWisePrediction(
                     const DenseLabelWiseStatisticVector& statisticVector) override {
                 // Obtain information about the bins to be used...
-                LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector);
+                LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector.gradients_cbegin(),
+                                                                statisticVector.gradients_cend(),
+                                                                statisticVector.hessians_cbegin(),
+                                                                statisticVector.hessians_cend());
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
                 scoreVector_.setNumBins(numBins, false);
 
@@ -88,7 +94,9 @@ namespace boosting {
                 auto zeroCallback = [this](uint32 labelIndex) {
                     scoreVector_.indices_binned_begin()[labelIndex] = maxBins_;
                 };
-                binningPtr_->createBins(labelInfo, statisticVector, callback, zeroCallback);
+                binningPtr_->createBins(labelInfo, statisticVector.gradients_cbegin(), statisticVector.gradients_cend(),
+                                        statisticVector.hessians_cbegin(), statisticVector.hessians_cend(), callback,
+                                        zeroCallback);
 
                 // Compute predictions and quality scores...
                 scoreVector_.overallQualityScore = calculateLabelWisePredictionInternally<
@@ -110,8 +118,11 @@ namespace boosting {
 
     std::unique_ptr<ILabelWiseRuleEvaluation> EqualWidthBinningLabelWiseRuleEvaluationFactory::create(
             const FullIndexVector& indexVector) const {
-        std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr =
-            std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector>>(binRatio_, minBins_, maxBins_);
+        std::unique_ptr<LabelBinningType> binningPtr =
+            std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector::gradient_const_iterator,
+                                                    DenseLabelWiseStatisticVector::hessian_const_iterator>>(binRatio_,
+                                                                                                            minBins_,
+                                                                                                            maxBins_);
         uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<BinningLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, l2RegularizationWeight_,
                                                                                  maxBins, std::move(binningPtr));
@@ -119,8 +130,11 @@ namespace boosting {
 
     std::unique_ptr<ILabelWiseRuleEvaluation> EqualWidthBinningLabelWiseRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
-        std::unique_ptr<ILabelBinning<DenseLabelWiseStatisticVector>> binningPtr =
-            std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector>>(binRatio_, minBins_, maxBins_);
+        std::unique_ptr<LabelBinningType> binningPtr =
+            std::make_unique<EqualWidthLabelBinning<DenseLabelWiseStatisticVector::gradient_const_iterator,
+                                                    DenseLabelWiseStatisticVector::hessian_const_iterator>>(binRatio_,
+                                                                                                            minBins_,
+                                                                                                            maxBins_);
         uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<BinningLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                     l2RegularizationWeight_, maxBins,
