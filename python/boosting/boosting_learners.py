@@ -5,6 +5,9 @@
 
 Provides a scikit-learn implementations of boosting algorithms
 """
+import logging as log
+from typing import Optional
+
 from boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
 from boosting.cython.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
     LabelWiseSquaredHingeLoss
@@ -24,13 +27,40 @@ from common.cython.output import Predictor
 from common.cython.post_processing import PostProcessor, NoPostProcessor
 from common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from common.cython.statistics import StatisticsProviderFactory
+from common.cython.stopping import MeasureStoppingCriterion, AggregationFunction, MinFunction, MaxFunction, \
+    ArithmeticMeanFunction
 from sklearn.base import ClassifierMixin
 
 from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE
 from common.rule_learners import MLRuleLearner, SparsePolicy
 from common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_partition_sampling, create_max_conditions, create_stopping_criteria, \
-    create_min_coverage, create_max_head_refinements, get_preferred_num_threads, create_thresholds_factory
+    create_min_coverage, create_max_head_refinements, get_preferred_num_threads, create_thresholds_factory, \
+    parse_prefix_and_dict, get_int_argument, get_float_argument, get_string_argument, get_bool_argument
+
+EARLY_STOPPING_MEASURE = 'measure'
+
+AGGREGATION_FUNCTION_MIN = 'min'
+
+AGGREGATION_FUNCTION_MAX = 'max'
+
+AGGREGATION_FUNCTION_ARITHMETIC_MEAN = 'avg'
+
+ARGUMENT_MIN_RULES = 'min_rules'
+
+ARGUMENT_UPDATE_INTERVAL = 'update_interval'
+
+ARGUMENT_STOP_INTERVAL = 'stop_interval'
+
+ARGUMENT_NUM_PAST = 'num_past'
+
+ARGUMENT_NUM_RECENT = 'num_recent'
+
+ARGUMENT_MIN_IMPROVEMENT = 'min_improvement'
+
+ARGUMENT_FORCE_STOP = 'force_stop'
+
+ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -57,8 +87,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, time_limit: int = -1,
-                 head_refinement: str = None, loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None,
-                 label_sub_sampling: str = None, instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
+                 early_stopping: str = None, head_refinement: str = None, loss: str = LOSS_LABEL_WISE_LOGISTIC,
+                 predictor: str = None, label_sub_sampling: str = None,
+                 instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, holdout_set_size: float = 0.0,
                  feature_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
@@ -69,6 +100,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     rule)
         :param time_limit:                          The duration in seconds after which the induction of rules should be
                                                     canceled
+        :param early_stopping:                      The strategy that is used for early stopping. Must be `measure` or
+                                                    None, if no early stopping should be used
         :param head_refinement:                     The strategy that is used to find the heads of rules. Must be
                                                     `single-label`, `full` or None, if the default strategy should be
                                                     used
@@ -126,6 +159,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
         self.time_limit = time_limit
+        self.early_stopping = early_stopping
         self.head_refinement = head_refinement
         self.loss = loss
         self.predictor = predictor
@@ -146,6 +180,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
+        if self.early_stopping is not None:
+            name += '_early-stopping=' + str(self.early_stopping)
         if self.head_refinement is not None:
             name += '_head-refinement=' + str(self.head_refinement)
         name += '_loss=' + str(self.loss)
@@ -252,6 +288,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def _create_rule_model_induction(self, num_labels: int) -> SequentialRuleModelInduction:
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
+        early_stopping_criterion = self.__create_early_stopping()
+        if early_stopping_criterion is not None:
+            stopping_criteria.append(early_stopping_criterion)
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
         instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
@@ -277,6 +316,47 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
                                             partition_sampling, pruning, shrinkage, min_coverage, max_conditions,
                                             max_head_refinements, stopping_criteria)
+
+    def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
+        early_stopping = self.early_stopping
+
+        if early_stopping is None:
+            return None
+        else:
+            prefix, args = parse_prefix_and_dict(early_stopping, [EARLY_STOPPING_MEASURE])
+
+            if prefix == EARLY_STOPPING_MEASURE:
+                if self.holdout_set_size <= 0.0:
+                    log.warning('Parameter \'early_stopping\' does not have any effect, because parameter \'holdout\' '
+                                + 'is set to \'0\'!')
+                    return None
+                else:
+                    loss = self.__create_loss_function()
+                    aggregation_function = self.__create_aggregation_function(
+                        get_string_argument(args, ARGUMENT_AGGREGATION_FUNCTION, 'avg'))
+                    min_rules = get_int_argument(args, ARGUMENT_MIN_RULES, 100, lambda x: 1 <= x)
+                    update_interval = get_int_argument(args, ARGUMENT_UPDATE_INTERVAL, 1, lambda x: 1 <= x)
+                    stop_interval = get_int_argument(args, ARGUMENT_STOP_INTERVAL, 1,
+                                                     lambda x: 1 <= x and x % update_interval == 0)
+                    num_past = get_int_argument(args, ARGUMENT_NUM_PAST, 50, lambda x: 1 <= x)
+                    num_recent = get_int_argument(args, ARGUMENT_NUM_RECENT, 50, lambda x: 1 <= x)
+                    min_improvement = get_float_argument(args, ARGUMENT_MIN_IMPROVEMENT, 0.005, lambda x: 0 <= x <= 1)
+                    force_stop = get_bool_argument(args, ARGUMENT_FORCE_STOP, True)
+                    return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
+                                                    update_interval=update_interval, stop_interval=stop_interval,
+                                                    num_past=num_past, num_recent=num_recent,
+                                                    min_improvement=min_improvement, force_stop=force_stop)
+            raise ValueError('Invalid value given for parameter \'early_stopping\': ' + str(early_stopping))
+
+    def __create_aggregation_function(self, aggregation_function: str) -> AggregationFunction:
+        if aggregation_function == AGGREGATION_FUNCTION_MIN:
+            return MinFunction()
+        elif aggregation_function == AGGREGATION_FUNCTION_MAX:
+            return MaxFunction()
+        elif aggregation_function == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
+            return ArithmeticMeanFunction()
+        raise ValueError('Invalid value given for argument \'' + ARGUMENT_AGGREGATION_FUNCTION + '\': '
+                         + str(aggregation_function))
 
     def __create_l2_regularization_weight(self) -> float:
         l2_regularization_weight = float(self.l2_regularization_weight)

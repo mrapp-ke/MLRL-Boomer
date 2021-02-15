@@ -9,7 +9,8 @@ namespace seco {
 
     }
 
-    IStoppingCriterion::Result CoverageStoppingCriterion::test(const IStatistics& statistics, uint32 numRules) {
+    IStoppingCriterion::Result CoverageStoppingCriterion::test(const IPartition& partition,
+                                                               const IStatistics& statistics, uint32 numRules) {
         Result result;
         const ICoverageStatistics& coverageStatistics = static_cast<const ICoverageStatistics&>(statistics);
 

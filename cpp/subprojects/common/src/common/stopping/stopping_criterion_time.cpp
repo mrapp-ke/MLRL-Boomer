@@ -7,7 +7,8 @@ TimeStoppingCriterion::TimeStoppingCriterion(uint32 timeLimit)
 
 }
 
-IStoppingCriterion::Result TimeStoppingCriterion::test(const IStatistics& statistics, uint32 numRules) {
+IStoppingCriterion::Result TimeStoppingCriterion::test(const IPartition& partition, const IStatistics& statistics,
+                                                       uint32 numRules) {
     Result result;
 
     if (timerStarted_) {
