@@ -1,12 +1,12 @@
-from common.cython._measures cimport ISimilarityMeasure
-from common.cython.measures cimport SimilarityMeasure
+from common.cython._measures cimport IEvaluationMeasure, ISimilarityMeasure
+from common.cython.measures cimport EvaluationMeasure
 
 from libcpp.memory cimport shared_ptr
 
 
 cdef extern from "boosting/losses/loss_label_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass ILabelWiseLoss(ISimilarityMeasure):
+    cdef cppclass ILabelWiseLoss(IEvaluationMeasure, ISimilarityMeasure):
         pass
 
 
@@ -28,7 +28,7 @@ cdef extern from "boosting/losses/loss_label_wise_squared_hinge.hpp" namespace "
         pass
 
 
-cdef class LabelWiseLoss(SimilarityMeasure):
+cdef class LabelWiseLoss(EvaluationMeasure):
 
     # Attributes:
 
