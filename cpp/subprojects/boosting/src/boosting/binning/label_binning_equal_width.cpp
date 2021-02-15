@@ -36,27 +36,27 @@ namespace boosting {
             labelInfo.maxNegative = -std::numeric_limits<float64>::infinity();
 
             for (uint32 i = 0; i < numStatistics; i++) {
-                float64 value = gradientsBegin[i];
+                float64 statistic = gradientsBegin[i];
 
-                if (value < 0) {
+                if (statistic < 0) {
                     numNegative++;
 
-                    if (value < labelInfo.minNegative) {
-                        labelInfo.minNegative = value;
+                    if (statistic < labelInfo.minNegative) {
+                        labelInfo.minNegative = statistic;
                     }
 
-                    if (value > labelInfo.maxNegative) {
-                        labelInfo.maxNegative = value;
+                    if (statistic > labelInfo.maxNegative) {
+                        labelInfo.maxNegative = statistic;
                     }
-                } else if (value > 0) {
+                } else if (statistic > 0) {
                     numPositive++;
 
-                    if (value < labelInfo.minPositive) {
-                        labelInfo.minPositive = value;
+                    if (statistic < labelInfo.minPositive) {
+                        labelInfo.minPositive = statistic;
                     }
 
-                    if (value > labelInfo.maxPositive) {
-                        labelInfo.maxPositive = value;
+                    if (statistic > labelInfo.maxPositive) {
+                        labelInfo.maxPositive = statistic;
                     }
                 }
             }
@@ -93,26 +93,26 @@ namespace boosting {
         uint32 numStatistics = gradientsEnd - gradientsBegin;
 
         for (uint32 i = 0; i < numStatistics; i++) {
-            float64 value = gradientsBegin[i];
+            float64 statistic = gradientsBegin[i];
 
-            if (value > 0) {
+            if (statistic > 0) {
                 // Gradient is positive, i.e., label belongs to a negative bin...
-                uint32 binIndex = std::floor((value - minPositive) / spanPerNegativeBin);
+                uint32 binIndex = std::floor((statistic - minPositive) / spanPerNegativeBin);
 
                 if (binIndex >= numNegativeBins) {
                     binIndex = numNegativeBins - 1;
                 }
 
-                callback(binIndex, i, value);
-            } else if (value < 0) {
+                callback(binIndex, i, statistic);
+            } else if (statistic < 0) {
                 // Gradient is negative, i.e., label belongs to a positive bin...
-                uint32 binIndex = std::floor((value - minNegative) / spanPerPositiveBin);
+                uint32 binIndex = std::floor((statistic - minNegative) / spanPerPositiveBin);
 
                 if (binIndex >= numPositiveBins) {
                     binIndex = numPositiveBins - 1;
                 }
 
-                callback(numNegativeBins + binIndex, i, value);
+                callback(numNegativeBins + binIndex, i, statistic);
             } else {
                 zeroCallback(i);
             }
