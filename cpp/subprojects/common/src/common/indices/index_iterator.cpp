@@ -44,5 +44,5 @@ bool IndexIterator::operator!=(const IndexIterator& rhs) const {
 }
 
 IndexIterator::difference_type IndexIterator::operator-(const IndexIterator& rhs) const {
-    return (difference_type) index_ != (difference_type) rhs.index_;
+    return (difference_type) index_ - (difference_type) rhs.index_;
 }
