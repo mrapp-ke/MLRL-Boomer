@@ -17,6 +17,15 @@ cdef class RuleModel:
     A wrapper for the C++ class `RuleModel`.
     """
 
+    cpdef int get_num_rules(self):
+        return self.model_ptr.get().getNumRules()
+
+    cpdef int get_num_used_rules(self):
+        return self.model_ptr.get().getNumUsedRules()
+
+    cpdef object set_num_used_rules(self, uint32 num_used_rules):
+        self.model_ptr.get().setNumUsedRules(num_used_rules)
+
     def __getstate__(self):
         cdef RuleModelSerializer serializer = RuleModelSerializer.__new__(RuleModelSerializer)
         cdef object state = serializer.serialize(self)
