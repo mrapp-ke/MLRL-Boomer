@@ -294,6 +294,14 @@ cdef class RuleModel:
 
     cdef unique_ptr[RuleModelImpl] model_ptr
 
+    # Functions:
+
+    cpdef int get_num_rules(self)
+
+    cpdef int get_num_used_rules(self)
+
+    cpdef object set_num_used_rules(self, uint32 num_used_rules)
+
 
 cdef class ModelBuilder:
 
