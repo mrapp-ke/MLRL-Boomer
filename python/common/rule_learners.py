@@ -345,7 +345,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x_sparse_format = 'csc'
         x_sparse_policy = create_sparse_policy(self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy)
-        x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F')),
+        x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F', dtype=DTYPE_FLOAT32)),
                                 accept_sparse=(x_sparse_format if x_enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
 
@@ -397,7 +397,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         sparse_format = 'csr'
         sparse_policy = create_sparse_policy(self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy)
-        x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C'), reset=False,
+        x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C', dtype=DTYPE_FLOAT32), reset=False,
                                 accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
         model = self.model_
