@@ -15,6 +15,7 @@ import sklearn.metrics as metrics
 from sklearn.utils.multiclass import is_multilabel
 
 from common.arrays import enforce_dense
+from common.types import DTYPE_UINT8
 from testbed.data import MetaData, save_arff_file, Label
 from testbed.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, \
     get_file_name_per_fold
@@ -427,8 +428,8 @@ class ClassificationEvaluation(AbstractEvaluation):
             result.put(EX_BASED_F1, metrics.f1_score(ground_truth, predictions, average='samples', zero_division=1),
                        current_fold, num_folds)
         else:
-            predictions = np.ravel(enforce_dense(predictions, order='C'))
-            ground_truth = np.ravel(enforce_dense(ground_truth, order='C'))
+            predictions = np.ravel(enforce_dense(predictions, order='C', dtype=DTYPE_UINT8))
+            ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8))
             accuracy = metrics.accuracy_score(ground_truth, predictions)
             result.put(ACCURACY, accuracy, current_fold, num_folds)
             result.put(ZERO_ONE_LOSS, 1 - accuracy, current_fold, num_folds)
