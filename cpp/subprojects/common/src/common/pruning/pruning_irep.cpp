@@ -21,7 +21,7 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
         // TODO: usage of debug mode
 
         // test for the debug mode
-        std::cout << (debug_flag == 1 ? "debugging enabled\n" : "debugging not enabled\n");
+        std::cout << (debugging_ == 1 ? "debugging enabled\n" : "debugging not enabled\n");
 
         std::cout << "\nthe original coverage mask:\n";
         for (uint32 i = 0; i < originalCoverageMask.getNumElements(); i++) {
@@ -38,7 +38,7 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
         // We process the existing rule's conditions (except for the last one) in the order they have been learned. At
         // each iteration, we calculate the quality score of a rule that only contains the conditions processed so far
         // and keep track of the best rule...
-        ConditionList::const_iterator conditionIterator = conditions.cbegin();
+        auto conditionIterator = conditions.cbegin();
         ConditionList::size_type numPrunedConditions = 0;
 
         for (std::list<Condition>::size_type n = 1; n < numConditions; n++) {
@@ -49,17 +49,17 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
             //printing the rule
             ConditionList::const_iterator& printConditionIterator = conditionIterator;
             std::cout << "\n" << "{";
-            for(std::list<Condition>::size_type n = 1; n <= numConditions; n++) {
-                uint32 comp = static_cast<uint32>(printConditionIterator->comparator);
+            for(std::list<Condition>::size_type m = 1; m <= numConditions; m++) {
+                auto comp = static_cast<uint32>(printConditionIterator->comparator);
                 std::cout << printConditionIterator->featureIndex <<
                     " "<< (comp == 0 ? "<=" : comp == 1 ? ">" : comp == 2 ? "==" : "!=") <<
-                    " " << printConditionIterator->threshold << (n == numConditions ? "" : ", ");
+                    " " << printConditionIterator->threshold << (m == numConditions ? "" : ", ");
                 printConditionIterator++;
             }
             std::cout << "} -> ";
 
             if (head.isPartial()) {
-                const PartialPrediction* pred = dynamic_cast<const PartialPrediction*>(&head);
+                const auto* pred = dynamic_cast<const PartialPrediction*>(&head);
                 for (uint32 i = 0; i < head.getNumElements(); i++) {
                     std::cout << "(" << i << " = " << pred->indices_cbegin()[i] <<
                         (i + 1 == head.getNumElements() ? "" : ", ");

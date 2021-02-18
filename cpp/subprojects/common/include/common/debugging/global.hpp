@@ -5,4 +5,4 @@
 #pragma once
 
 // global variables are initialized to 0
-int debug_flag;
+extern int debugging_;

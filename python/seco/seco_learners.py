@@ -66,7 +66,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout_set_size: float = 0.0,
                  feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
-                 num_threads_prediction: int = 1):  # TODO: debugging: str = None
+                 num_threads_prediction: int = 1, debugging_: str = None):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -144,6 +144,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.num_threads_refinement = num_threads_refinement
         self.num_threads_update = num_threads_update
         self.num_threads_prediction = num_threads_prediction
+        self.debugging_ = debugging_
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -172,6 +173,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_max-head-refinements=' + str(self.max_head_refinements)
         if int(self.random_state) != 1:
             name += '_random_state=' + str(self.random_state)
+        if self.debugging_ is not None:
+            name += '_debugging=' + str(self.debugging_)
         return name
 
     def _create_model_builder(self) -> ModelBuilder:

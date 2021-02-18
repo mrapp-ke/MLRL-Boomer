@@ -17,6 +17,8 @@ from testbed.persistence import ModelPersistence
 from testbed.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
 from testbed.training import DataSet
 
+from common.cython.debug import set_debug_flag
+
 LOG_FORMAT = '%(levelname)s %(message)s'
 
 
@@ -38,6 +40,10 @@ class Runnable(ABC):
         root.addHandler(out_handler)
 
         log.info('Configuration: %s', args)
+
+        if args.debugging_ == 'full':
+            set_debug_flag()
+
         self._run(args)
 
     @abstractmethod

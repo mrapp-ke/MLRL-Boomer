@@ -20,7 +20,8 @@ class SecoRunnable(RuleLearnerRunnable):
                                              max_head_refinements=args.max_head_refinements,
                                              num_threads_refinement=args.num_threads_refinement,
                                              num_threads_update=args.num_threads_update,
-                                             num_threads_prediction=args.num_threads_prediction)
+                                             num_threads_prediction=args.num_threads_prediction,
+                                             debugging_=args.debugging_)
 
 
 if __name__ == '__main__':

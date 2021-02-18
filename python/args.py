@@ -192,6 +192,9 @@ class ArgumentParserBuilder:
         parser.add_argument('--feature-binning', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('feature_binning', None, **kwargs),
                             help='The name of the strategy to be used for feature binning or None')
+        parser.add_argument('--debugging_', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('debugging_', None, **kwargs),
+                            help='If debugging prints should be enabled or not')
         return self
 
     def add_boosting_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
