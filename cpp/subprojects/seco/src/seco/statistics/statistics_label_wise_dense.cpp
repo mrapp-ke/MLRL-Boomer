@@ -355,7 +355,7 @@ namespace seco {
                     }
                 }
                 if (debugging_ == 1) {
-                    std::cout << "\nuncovered labels:\n  ";
+                    std::cout << "uncovered labels:\n  ";
                     for(long unsigned int i = 0; i < sizeof(uncoveredLabels_); i++) {
                         std::cout << uncoveredLabels_[i] << (i < sizeof(uncoveredLabels_) - 1 ? ", " : "");
                     }

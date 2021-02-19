@@ -1,5 +1,8 @@
 #include "common/rule_refinement/rule_refinement_exact.hpp"
 #include "rule_refinement_common.hpp"
+#include "common/debugging/global.hpp"
+
+#include <iostream>
 
 
 template<class T>
@@ -95,7 +98,6 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
                     // If the refinement is better than the current rule...
                     if (head != nullptr) {
-                        //TODO: head.quality score ausgeben (mehrfach)
                         bestHead = head;
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
@@ -454,6 +456,9 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->threshold = calculateThreshold(previousThresholdNegative, previousThreshold);
             }
         }
+    }
+    if (debugging_ == 1) {
+        std::cout << "the current heads score: " << bestHead->overallQualityScore << "\n";
     }
 
     refinementPtr->headPtr = headRefinementPtr_->pollHead();

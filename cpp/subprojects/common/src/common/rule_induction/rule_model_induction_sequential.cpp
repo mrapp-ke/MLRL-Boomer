@@ -56,7 +56,6 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
         std::shared_ptr<ILabelMatrix> labelMatrixPtr, RNG& rng, IModelBuilder& modelBuilder) {
 
     // the start of the debugging output
-    // TODO: will have to be moved if some debugging output happens before this
     if (debugging_ == 1) {
         std::cout << "\n===debugging==========================================================\n";
     }
@@ -87,6 +86,10 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
             numUsedRules = numRules;
         }
 
+        if (debugging_ == 1) {
+            std::cout << "\n";
+        }
+
         std::unique_ptr<IWeightVector> weightsPtr = partitionPtr->subSample(*instanceSubSamplingPtr_, rng);
         std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr_->subSample(numLabels, rng);
         bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, *labelIndicesPtr, *weightsPtr, *partitionPtr,
@@ -96,7 +99,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
 
         if (success) {
             if (debugging_ == 1) {
-                std::cout << "rule has been induced \n";
+                std::cout << "rule has been induced \n\n";
             }
             numRules++;
         } else {
@@ -104,7 +107,6 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
         }
     }
     // the end of the debugging output
-    // TODO: will have to be moved if some debugging output happens after this
     if (debugging_ == 1) {
         std::cout << "\n===end of debugging===================================================\n\n";
     }

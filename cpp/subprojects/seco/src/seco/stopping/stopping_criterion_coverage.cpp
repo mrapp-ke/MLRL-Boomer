@@ -15,7 +15,7 @@ namespace seco {
         const ICoverageStatistics& coverageStatistics = static_cast<const ICoverageStatistics&>(statistics);
         // print out if the seco learner should stop
         if (coverageStatistics.getSumOfUncoveredLabels() <= threshold_ && debugging_ == 1) {
-            std::cout << "\nshould stop\n";
+            std::cout << "should stop\n";
         }
         return coverageStatistics.getSumOfUncoveredLabels() > threshold_ ? CONTINUE : FORCE_STOP;
     }
