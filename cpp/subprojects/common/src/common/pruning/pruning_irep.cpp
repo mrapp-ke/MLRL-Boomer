@@ -13,20 +13,22 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
 
     // Only rules with more than one condition can be pruned...
     if (numConditions > 1) {
+
+        if (debugging_ == 1) {
+            std::cout << "\n";
+        }
+
         // Calculate the quality score of the original rule on the prune set...
         const CoverageMask& originalCoverageMask = thresholdsSubset.getCoverageMask();
         float64 bestQualityScore = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageMask, head);
 
-        // printing of the coverage mask
-        // TODO: usage of debug mode
-
-        // test for the debug mode
-        std::cout << (debugging_ == 1 ? "debugging enabled\n" : "debugging not enabled\n");
-
-        std::cout << "\nthe original coverage mask:\n";
-        for (uint32 i = 0; i < originalCoverageMask.getNumElements(); i++) {
-            std::cout << "index " << i <<
-                (originalCoverageMask.isCovered(i) ? " covered" : " not covered") << "\n";
+        // print the original coverage mask if debugging is enabled
+        if (debugging_ == 1){
+            std::cout << "\nthe original coverage mask:\n";
+            for (uint32 i = 0; i < originalCoverageMask.getNumElements(); i++) {
+                std::cout << "  " << "index " << i << (i < 10 ? " " : "") <<
+                          (originalCoverageMask.isCovered(i) ? " covered" : " not covered") << "\n";
+            }
         }
 
         // Create a copy of the original coverage mask...
@@ -46,40 +48,46 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
             const Condition& condition = *conditionIterator;
             thresholdsSubset.filterThresholds(condition);
 
-            //printing the rule
-            ConditionList::const_iterator& printConditionIterator = conditionIterator;
-            std::cout << "\n" << "{";
-            for(std::list<Condition>::size_type m = 1; m <= numConditions; m++) {
-                auto comp = static_cast<uint32>(printConditionIterator->comparator);
-                std::cout << printConditionIterator->featureIndex <<
-                    " "<< (comp == 0 ? "<=" : comp == 1 ? ">" : comp == 2 ? "==" : "!=") <<
-                    " " << printConditionIterator->threshold << (m == numConditions ? "" : ", ");
-                printConditionIterator++;
-            }
-            std::cout << "} -> ";
 
-            if (head.isPartial()) {
-                const auto* pred = dynamic_cast<const PartialPrediction*>(&head);
-                for (uint32 i = 0; i < head.getNumElements(); i++) {
-                    std::cout << "(" << i << " = " << pred->indices_cbegin()[i] <<
-                        (i + 1 == head.getNumElements() ? "" : ", ");
+            // print the rule if debugging is enabled
+            if (debugging_ == 1) {
+                ConditionList::const_iterator& printConditionIterator = conditionIterator;
+                std::cout << "\nthe rule\n  {";
+                for(std::list<Condition>::size_type m = 1; m <= numConditions; m++) {
+                    auto comp = static_cast<uint32>(printConditionIterator->comparator);
+                    std::cout << printConditionIterator->featureIndex <<
+                              " "<< (comp == 0 ? "<=" : comp == 1 ? ">" : comp == 2 ? "==" : "!=") <<
+                              " " << printConditionIterator->threshold << (m == numConditions ? "" : ", ");
+                    printConditionIterator++;
                 }
+                std::cout << "} -> ";
+
+                // all rules except the base rule are partial rules
+                if (head.isPartial()) {
+                    const auto* pred = dynamic_cast<const PartialPrediction*>(&head);
+                    for (uint32 i = 0; i < head.getNumElements(); i++) {
+                        std::cout << "(" << i << " = " << pred->indices_cbegin()[i] <<
+                                  (i + 1 == head.getNumElements() ? "" : ", ");
+                    }
+                }
+                std::cout << ")\n\n";
             }
-            std::cout << ")\n";
 
             // Calculate the quality score of a rule that contains the conditions that have been processed so far...
             const CoverageMask& coverageMask = thresholdsSubset.getCoverageMask();
             float64 qualityScore = partition.evaluateOutOfSample(thresholdsSubset, coverageMask, head);
 
-            // printing of the iteration coverage mask
-            std::cout << "\nthe " << n << ". coverage mask:\n";
-            for (uint32 i = 0; i < coverageMask.getNumElements(); i++) {
-                std::cout << "index " << i <<
-                          (coverageMask.isCovered(i) ? " covered" : " not covered") << "\n";
+            // printing of the iteration coverage mask if debugging is enabled
+            if (debugging_ == 1) {
+                std::cout << "\nthe " << n << ". coverage mask:\n";
+                for (uint32 i = 0; i < coverageMask.getNumElements(); i++) {
+                    std::cout << "  " << "index " << i << (i < 10 ? " " : "") <<
+                              (coverageMask.isCovered(i) ? " covered" : " not covered") << "\n";
+                }
+                // printing the quality scores
+                std::cout << "\nbest quality score: " << bestQualityScore << "\n";
+                std::cout << "current quality score " << qualityScore << "\n";
             }
-            // printing the quality scores
-            std::cout << "\nbest quality score: " << bestQualityScore << "\n";
-            std::cout << "current quality score " << qualityScore << "\n";
 
             // Check if the quality score is better than the best quality score known so far (reaching the same score
             // with fewer conditions is considered an improvement)...
@@ -89,7 +97,9 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
                 numPrunedConditions = (numConditions - n);
             }
 
-            std::cout << "number of conditions to prune: " << numPrunedConditions << "\n\n";
+            if (debugging_ == 1){
+                std::cout << "number of conditions to prune: " << numPrunedConditions << "\n\n";
+            }
 
             conditionIterator++;
         }

@@ -5,6 +5,7 @@
 #include <cmath>
 
 #include "common/sampling/weight_vector_dense.hpp"
+#include "common/debugging/global.hpp"
 #include <iostream>
 
 
@@ -354,6 +355,18 @@ class ExactThresholds final : public AbstractThresholds {
                                                                 std::move(callbackPtr));
             }
 
+            /**
+             * Prints the weights_ variable for debugging purposes
+             */
+            void printWeights() const {
+                std::cout << "The examples which are still considered\n";
+                const auto* printWeight = dynamic_cast<const DenseWeightVector*>(&weights_);
+                for(uint32 i = 0; i < printWeight->getNumElements(); i++) {
+                    std::cout << "  " << i << (i < 10 ? "  " : " ") <<
+                        (printWeight->getWeight(i) ? "yes" : "no") << "\n";
+                }
+            }
+
             public:
 
                 /**
@@ -449,11 +462,10 @@ class ExactThresholds final : public AbstractThresholds {
 
                 float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
-                    // print the weights_ vector
-                    // TODO: usage of debug mode
-                    const DenseWeightVector* printWeight = dynamic_cast<const DenseWeightVector*>(&weights_);
-                    for(uint32 i = 0; i < printWeight->getNumElements(); i++) {
-                        std::cout << i << ". weight = " << printWeight->getWeight(i) << "\n";
+
+                    // print the weights_ vector if debugging is enabled
+                    if (debugging_ == 1) {
+                        printWeights();
                     }
 
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
@@ -463,11 +475,10 @@ class ExactThresholds final : public AbstractThresholds {
 
                 float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
-                    // print the weights_ vector
-                    // TODO: usage of debug mode
-                    const DenseWeightVector* printWeight = dynamic_cast<const DenseWeightVector*>(&weights_);
-                    for(uint32 i = 0; i < printWeight->getNumElements(); i++) {
-                        std::cout << i << ". weight = " << printWeight->getWeight(i) << "\n";
+
+                    // print the weights_ vector if debugging is enabled
+                    if (debugging_ == 1) {
+                        printWeights();
                     }
 
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(

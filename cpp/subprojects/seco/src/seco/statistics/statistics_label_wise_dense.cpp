@@ -2,6 +2,8 @@
 #include "common/data/arrays.hpp"
 #include "common/statistics/statistics_subset_decomposable.hpp"
 #include "seco/heuristics/confusion_matrices.hpp"
+#include "common/debugging/global.hpp"
+#include <iostream>
 #include <cstdlib>
 
 
@@ -322,7 +324,6 @@ namespace seco {
                             uncoveredLabels_[i] = 0;
                         }
                     }
-                    // TODO: uncoveredLables_ ausgeben
                 }
             }
 
@@ -352,6 +353,13 @@ namespace seco {
                             uncoveredLabels_[i] = 0;
                         }
                     }
+                }
+                if (debugging_ == 1) {
+                    std::cout << "\nuncovered labels:\n  ";
+                    for(long unsigned int i = 0; i < sizeof(uncoveredLabels_); i++) {
+                        std::cout << uncoveredLabels_[i] << (i < sizeof(uncoveredLabels_) - 1 ? ", " : "");
+                    }
+                    std::cout << "\n";
                 }
             }
 

@@ -1,4 +1,7 @@
 #include "common/rule_induction/rule_model_induction_sequential.hpp"
+#include "common/debugging/global.hpp"
+
+#include <iostream>
 
 
 static inline IStoppingCriterion::Result testStoppingCriteria(
@@ -51,6 +54,13 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
 std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
         std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr, std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
         std::shared_ptr<ILabelMatrix> labelMatrixPtr, RNG& rng, IModelBuilder& modelBuilder) {
+
+    // the start of the debugging output
+    // TODO: will have to be moved if some debugging output happens before this
+    if (debugging_ == 1) {
+        std::cout << "\n===debugging==========================================================\n";
+    }
+
     // Induce default rule...
     const IHeadRefinementFactory* defaultRuleHeadRefinementFactory = defaultRuleHeadRefinementFactoryPtr_.get();
     uint32 numRules = defaultRuleHeadRefinementFactory != nullptr ? 1 : 0;
@@ -85,10 +95,18 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
                                                      modelBuilder);
 
         if (success) {
+            if (debugging_ == 1) {
+                std::cout << "rule has been induced \n";
+            }
             numRules++;
         } else {
             break;
         }
+    }
+    // the end of the debugging output
+    // TODO: will have to be moved if some debugging output happens after this
+    if (debugging_ == 1) {
+        std::cout << "\n===end of debugging===================================================\n\n";
     }
 
     // Build and return the final model...
