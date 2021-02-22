@@ -39,7 +39,8 @@ venv:
 
 compile: venv
 	@echo "Compiling C++ code..."
-	cd cpp/ && ../venv/bin/meson setup build -Doptimization=3 && cd build/ && ../../venv/bin/ninja
+	@echo ${PATH}
+	cd cpp/ && PATH=$$PATH:../venv/bin/ ../venv/bin/meson setup build -Doptimization=3 && cd build/ && ../../venv/bin/ninja
 	@echo "Compiling Cython code..."
 	cd python/ && ../venv/bin/python setup.py build_ext --inplace
 
