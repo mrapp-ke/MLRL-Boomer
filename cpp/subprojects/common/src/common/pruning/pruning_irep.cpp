@@ -23,11 +23,11 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
         float64 bestQualityScore = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageMask, head);
 
         // print the original coverage mask if debugging is enabled
-        if (debugging_ == 1){
+        if (debugging_ == 1 and (dFull or dCM)) {
             std::cout << "\nthe original coverage mask:\n";
             for (uint32 i = 0; i < originalCoverageMask.getNumElements(); i++) {
-                std::cout << "  " << "index " << i << (i < 10 ? " " : "") <<
-                          (originalCoverageMask.isCovered(i) ? " covered" : " not covered") << "\n";
+                std::cout << "  " << "index " << i << ": " << (i < 10 ? " " : "") <<
+                          (originalCoverageMask.isCovered(i) ? "    covered" : "not covered") << "\n";
             }
         }
 
@@ -78,11 +78,11 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
             float64 qualityScore = partition.evaluateOutOfSample(thresholdsSubset, coverageMask, head);
 
             // printing of the iteration coverage mask if debugging is enabled
-            if (debugging_ == 1) {
+            if (debugging_ == 1 and (dFull or dCM)) {
                 std::cout << "\nthe " << n << ". coverage mask:\n";
                 for (uint32 i = 0; i < coverageMask.getNumElements(); i++) {
-                    std::cout << "  " << "index " << i << (i < 10 ? " " : "") <<
-                              (coverageMask.isCovered(i) ? " covered" : " not covered") << "\n";
+                    std::cout << "  " << "index " << i << ": " << (i < 10 ? " " : "") <<
+                              (coverageMask.isCovered(i) ? "    covered" : "not covered") << "\n";
                 }
                 // printing the quality scores
                 std::cout << "\nbest quality score: " << bestQualityScore << "\n";
@@ -97,7 +97,7 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
                 numPrunedConditions = (numConditions - n);
             }
 
-            if (debugging_ == 1){
+            if (debugging_ == 1) {
                 std::cout << "number of conditions to prune: " << numPrunedConditions << "\n\n";
             }
 

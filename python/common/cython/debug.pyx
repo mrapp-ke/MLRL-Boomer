@@ -1,4 +1,18 @@
 
-cpdef object set_debug_flag():
-     setDebugFlag()
+cpdef object set_full_flag():
+     setFullFlag()
 
+cpdef object set_cm_flag():
+     setCMFlag()
+
+cpdef object set_weights_flag():
+     setWeightsFlag()
+
+cpdef object set_hs_flag():
+     setHSFlag()
+
+cpdef object set_lc_flag():
+     setLCFlag()
+
+cpdef object set_ar_flag():
+     setARFlag()

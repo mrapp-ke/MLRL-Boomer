@@ -457,7 +457,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             }
         }
     }
-    if (debugging_ == 1) {
+    if (debugging_ == 1 and (dFull or dHS)) {
         std::cout << "the current heads score: " << bestHead->overallQualityScore << "\n";
     }
 

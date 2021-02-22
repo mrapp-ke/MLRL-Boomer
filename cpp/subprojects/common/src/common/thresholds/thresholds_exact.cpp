@@ -359,11 +359,11 @@ class ExactThresholds final : public AbstractThresholds {
              * Prints the weights_ variable for debugging purposes
              */
             void printWeights() const {
-                std::cout << "The examples which are still considered\n";
+                std::cout << "The weight of the examples\n";
                 const auto* printWeight = dynamic_cast<const DenseWeightVector*>(&weights_);
                 for(uint32 i = 0; i < printWeight->getNumElements(); i++) {
                     std::cout << "  " << i << (i < 10 ? "  " : " ") <<
-                        (printWeight->getWeight(i) ? "yes" : "no") << "\n";
+                        printWeight->getWeight(i) << "\n";
                 }
             }
 
@@ -464,7 +464,7 @@ class ExactThresholds final : public AbstractThresholds {
                                             const AbstractPrediction& head) const override {
 
                     // print the weights_ vector if debugging is enabled
-                    if (debugging_ == 1) {
+                    if (debugging_ == 1 and (dFull or dWeights)) {
                         printWeights();
                     }
 
@@ -477,7 +477,7 @@ class ExactThresholds final : public AbstractThresholds {
                                             const AbstractPrediction& head) const override {
 
                     // print the weights_ vector if debugging is enabled
-                    if (debugging_ == 1) {
+                    if (debugging_ == 1 and (dFull or dWeights)) {
                         printWeights();
                     }
 

@@ -17,7 +17,10 @@ from testbed.persistence import ModelPersistence
 from testbed.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
 from testbed.training import DataSet
 
-from common.cython.debug import set_debug_flag
+from common.cython.debug import (
+    set_full_flag, set_cm_flag, set_weights_flag,
+    set_hs_flag, set_lc_flag, set_ar_flag
+)
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
@@ -41,8 +44,19 @@ class Runnable(ABC):
 
         log.info('Configuration: %s', args)
 
-        if args.debugging_ == 'full':
-            set_debug_flag()
+        if 'full' in args.debugging_:
+            set_full_flag()
+        else:
+            if 'cm' in args.debugging_:
+                set_cm_flag()
+            if 'weights' in args.debugging_:
+                set_weights_flag()
+            if 'hs' in args.debugging_:
+                set_hs_flag()
+            if 'lc' in args.debugging_:
+                set_lc_flag()
+            if 'ar' in args.debugging_:
+                set_ar_flag()
 
         self._run(args)
 

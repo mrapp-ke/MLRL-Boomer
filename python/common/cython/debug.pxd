@@ -1,5 +1,13 @@
-cpdef object set_debug_flag()
-
 cdef extern from "common/debugging/debug.hpp":
 
-      cdef void setDebugFlag()
+      cdef void setFullFlag()
+
+      cdef void setCMFlag()
+
+      cdef void setWeightsFlag()
+
+      cdef void setHSFlag()
+
+      cdef void setLCFlag()
+
+      cdef void setARFlag()
