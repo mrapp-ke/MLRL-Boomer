@@ -353,6 +353,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     cacheIteratorOld->second = std::move(std::make_unique<BinVector>(numBins, true));
                                     binVectorOld = cacheIteratorOld->second.get();
                                     auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
+                                        binIndices->begin()[originalIndex] = binIndex;
                                         addValueToBinVector(*binVector, binIndex, originalIndex, value);
                                         addValueToBinVectorOld(*binVectorOld, binIndex, originalIndex, value);
                                     };
