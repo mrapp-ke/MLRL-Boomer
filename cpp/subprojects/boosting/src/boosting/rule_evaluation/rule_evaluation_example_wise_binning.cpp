@@ -2,7 +2,6 @@
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/math/blas.hpp"
 #include "common/data/arrays.hpp"
-#include "common/data/vector_mapping_dense.hpp"
 #include "common/rule_evaluation/score_vector_label_wise_binned_dense.hpp"
 #include "rule_evaluation_label_wise_binning_common.hpp"
 #include "rule_evaluation_example_wise_common.hpp"
@@ -14,95 +13,68 @@ namespace boosting {
     typedef ILabelBinning<DenseExampleWiseStatisticVector::gradient_const_iterator,
                           DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator> LabelBinningType;
 
-    template<class T>
-    static inline uint32 aggregateGradientsAndHessians(const DenseExampleWiseStatisticVector& statisticVector,
-                                                       const DenseMappingVector<uint32>& mapping,
-                                                       uint32* numElementsPerBin,
-                                                       DenseBinnedScoreVector<T>& scoreVector, float64* gradients,
-                                                       float64* hessians, uint32 numBins) {
-        DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
-        DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
-        DenseMappingVector<uint32>::const_iterator mappingIterator = mapping.cbegin();
-        typename DenseBinnedScoreVector<T>::index_binned_iterator binIndexIterator = scoreVector.indices_binned_begin();
-        uint32 binIndex = 0;
+    static inline uint32 removeEmptyBins(uint32* numElementsPerBin, uint32* binIndices, uint32 numBins) {
         uint32 n = 0;
 
-        // Iterate the bins in increasing order...
         for (uint32 i = 0; i < numBins; i++) {
-            const DenseMappingVector<uint32>::Entry& bin = mappingIterator[i];
-            DenseMappingVector<uint32>::Entry::const_iterator end = bin.cend();
+            binIndices[i] = n;
+            uint32 numElements = numElementsPerBin[i];
 
-            // Ignore empty bins...
-            if (bin.cbegin() != end) {
-                uint32 numElements = 0;
-                float64 aggregatedGradients = 0;
-                float64 aggregatedDiagonalHessians = 0;
-
-                for (auto it = bin.cbegin(); it != end; it++) {
-                    uint32 labelIndex = *it;
-                    numElements++;
-
-                    // Map the label at index `labelIndex` to the bin at index `binIndex`...
-                    binIndexIterator[labelIndex] = binIndex;
-
-                    // Add the gradient that corresponds to the label at index `labelIndex`...
-                    aggregatedGradients += gradientIterator[labelIndex];
-
-                    // Add the Hessian on the diagonal of the original Hessian matrix that corresponds to the label at
-                    // index `labelIndex`...
-                    aggregatedDiagonalHessians += hessianIterator[triangularNumber(labelIndex + 1) - 1];
-                }
-
-                // Iterate the column of the aggregated Hessian matrix that corresponds to the current bin (excluding
-                // the last element, which is the one that corresponds to the diagonal of the aggregated Hessian
-                // matrix)...
-                for (uint32 j = 0; j < i; j++) {
-                    const DenseMappingVector<uint32>::Entry& bin2 = mappingIterator[j];
-                    DenseMappingVector<uint32>::Entry::const_iterator end2 = bin2.cend();
-
-                    // Again, ignore empty bins...
-                    if (bin2.cbegin() != end2) {
-                        float64 aggregatedHessians = 0;
-
-                        // Iterate the label indices that belong to the bins at indices `currentBin` and `j`...
-                        for (auto it = bin.cbegin(); it != end; it++) {
-                            for (auto it2 = bin2.cbegin(); it2 != end2; it2++) {
-                                uint32 labelIndex = *it;
-                                uint32 labelIndex2 = *it2;
-                                uint32 r, c;
-
-                                if (labelIndex < labelIndex2) {
-                                    r = labelIndex;
-                                    c = labelIndex2;
-                                } else {
-                                    r = labelIndex2;
-                                    c = labelIndex;
-                                }
-
-                                // Add the hessian at the `r`-th row and `c`-th column of the original Hessian matrix...
-                                aggregatedHessians += hessianIterator[triangularNumber(c) + r];
-                            }
-                        }
-
-                        // Copy the aggregated Hessians for the current row to the output array...
-                        hessians[n] = aggregatedHessians;
-                        n++;
-                    }
-                }
-
-                // Copy the aggregated gradients, as well as the Hessians that belong to the diagonal of the Hessian
-                // matrix, to the output arrays...
-                gradients[binIndex] = aggregatedGradients;
-                hessians[n] = aggregatedDiagonalHessians;
+            if (numElements > 0) {
+                numElementsPerBin[n] = numElements;
                 n++;
-
-                // Store the number of elements in the current bin...
-                numElementsPerBin[binIndex] = numElements;
-                binIndex++;
             }
         }
 
-        return binIndex;
+        return n;
+    }
+
+    template<class T>
+    static inline void aggregateGradientsAndHessians(const DenseExampleWiseStatisticVector& statisticVector,
+                                                     const uint32* binIndices, DenseBinnedScoreVector<T>& scoreVector,
+                                                     float64* gradients, float64* hessians, uint32 numBins) {
+        uint32 numLabels = statisticVector.getNumElements();
+        DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+        DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
+        typename DenseBinnedScoreVector<T>::index_binned_iterator binIndexIterator = scoreVector.indices_binned_begin();
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 binIndex = binIndices[binIndexIterator[i]];
+            binIndexIterator[i] = binIndex;
+
+            // Add the gradient that corresponds to the `i`-th element of the original gradient vector to the
+            // corresponding element of the aggregated gradient vector...
+            gradients[binIndex] += gradientIterator[i];
+
+            // Add the Hessian that corresponds to the `i`-th element on the diagonal of the original Hessian matrix to
+            // the corresponding element of the aggregated Hessian matrix...
+            hessians[triangularNumber(binIndex + 1) - 1] += hessianIterator[triangularNumber(i + 1) - 1];
+        }
+
+        for (uint32 i = 1; i < numLabels; i++) {
+            uint32 binIndex = binIndexIterator[i];
+
+            for (uint32 j = 0; j < i; j++) {
+                uint32 binIndex2 = binIndexIterator[j];
+
+                // Add the hessian at the `i`-th row and `j`-th column of the original Hessian matrix to the
+                // corresponding element of the aggregated Hessian matrix, if the labels at indices `i` and `j` do not
+                // belong to the same bin...
+                if (binIndex != binIndex2) {
+                    uint32 r, c;
+
+                    if (binIndex < binIndex2) {
+                        r = binIndex;
+                        c = binIndex2;
+                    } else {
+                        r = binIndex2;
+                        c = binIndex;
+                    }
+
+                    hessians[triangularNumber(c) + r] += hessianIterator[triangularNumber(i) + j];
+                }
+            }
+        }
     }
 
     /**
@@ -153,7 +125,7 @@ namespace boosting {
 
             uint32* numElementsPerBin_;
 
-            DenseMappingVector<uint32>* mapping_;
+            uint32* binIndices_;
 
         public:
 
@@ -177,7 +149,7 @@ namespace boosting {
                   l2RegularizationWeight_(l2RegularizationWeight), maxBins_(maxBins),
                   binningPtr_(std::move(binningPtr)), blasPtr_(blasPtr), scoreVector_(nullptr),
                   labelWiseScoreVector_(nullptr), tmpGradients_(nullptr), tmpHessians_(nullptr),
-                  numElementsPerBin_(nullptr), mapping_(nullptr) {
+                  numElementsPerBin_(nullptr), binIndices_(nullptr) {
 
             }
 
@@ -187,7 +159,7 @@ namespace boosting {
                 free(tmpGradients_);
                 free(tmpHessians_);
                 free(numElementsPerBin_);
-                delete mapping_;
+                free(binIndices_);
             }
 
             const ILabelWiseScoreVector& calculateLabelWisePrediction(
@@ -220,9 +192,8 @@ namespace boosting {
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 auto callback = [this, &statisticVector](uint32 binIndex, uint32 labelIndex, float64 statistic) {
-                    tmpGradients_[binIndex] += statistic;
-                    float64 hessian = statisticVector.hessians_diagonal_cbegin()[labelIndex];
-                    tmpHessians_[binIndex] += hessian;
+                    tmpGradients_[binIndex] += statisticVector.gradients_cbegin()[labelIndex];
+                    tmpHessians_[binIndex] += statisticVector.hessians_diagonal_cbegin()[labelIndex];
                     numElementsPerBin_[binIndex] += 1;
                     labelWiseScoreVector_->indices_binned_begin()[labelIndex] = binIndex;
                 };
@@ -253,7 +224,7 @@ namespace boosting {
                     tmpGradients_ = (float64*) malloc(maxBins_ * sizeof(float64));
                     tmpHessians_ = (float64*) malloc(triangularNumber(maxBins_) * sizeof(float64));
                     numElementsPerBin_ = (uint32*) malloc(maxBins_ * sizeof(uint32));
-                    mapping_ = new DenseMappingVector<uint32>(maxBins_);
+                    binIndices_ = (uint32*) malloc(maxBins_ * sizeof(uint32));
 
                     // The last bin is used for labels with zero statistics. For this particular bin, the prediction is
                     // always zero.
@@ -270,13 +241,14 @@ namespace boosting {
                 float64 qualityScore;
 
                 if (numBins > 0) {
-                    // Reset mapping...
-                    mapping_->clear();
+                    // Reset arrays to zero...
+                    setArrayToZeros(numElementsPerBin_, numBins);
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
                     auto callback = [this](uint32 binIndex, uint32 labelIndex, float64 statistic) {
-                        mapping_->begin()[binIndex].push_front(labelIndex);
+                        numElementsPerBin_[binIndex] += 1;
+                        scoreVector_->indices_binned_begin()[labelIndex] = binIndex;
                     };
                     auto zeroCallback = [this](uint32 labelIndex) {
                         scoreVector_->indices_binned_begin()[labelIndex] = maxBins_;
@@ -286,9 +258,15 @@ namespace boosting {
                                             statisticVector.hessians_diagonal_cbegin(),
                                             statisticVector.hessians_diagonal_cend(), l2RegularizationWeight_, callback,
                                             zeroCallback);
-                    numBins = aggregateGradientsAndHessians<T>(statisticVector, *mapping_, numElementsPerBin_,
-                                                               *scoreVector_, tmpGradients_, tmpHessians_, numBins);
+                    // Determine number of non-empty bins...
+                    numBins = removeEmptyBins(numElementsPerBin_, binIndices_, numBins);
                     scoreVector_->setNumBins(numBins, false);
+
+                    // Aggregate gradients and Hessians...
+                    setArrayToZeros(tmpGradients_, numBins);
+                    setArrayToZeros(tmpHessians_, triangularNumber(numBins));
+                    aggregateGradientsAndHessians<T>(statisticVector, binIndices_, *scoreVector_, tmpGradients_,
+                                                     tmpHessians_, numBins);
 
                     typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                         scoreVector_->scores_binned_begin();
