@@ -57,27 +57,6 @@ static inline void removeEmptyBins(BinVectorNew& binVector, BinIndexVector& binI
     }
 }
 
-static inline void removeEmptyBinsOld(BinVector& vector) {
-    uint32 numElements = vector.getNumElements();
-    BinVector::bin_iterator binIterator = vector.bins_begin();
-    BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
-    uint32 i = 0;
-
-    for (uint32 r = 0; r < numElements; r++) {
-        const BinVector::ExampleList examples = exampleIterator[r];
-
-        if (examples.cbegin() != examples.cend()) {
-            binIterator[i].index = i;
-            binIterator[i].minValue = binIterator[r].minValue;
-            binIterator[i].maxValue = binIterator[r].maxValue;
-            vector.swapExamples(i, r);
-            i++;
-        }
-    }
-
-    vector.setNumElements(i, true);
-}
-
 static inline void filterCurrentVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, intp conditionEnd,
                                        bool covered, uint32 numConditions, CoverageMask& coverageMask,
                                        IStatistics& statistics, const IWeightVector& weights) {
@@ -247,35 +226,6 @@ static inline void buildHistogram(BinIndexVector& binIndices, IStatistics::IHist
     cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
 }
 
-static inline void buildHistogramOld(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder,
-                                     FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights) {
-    uint32 numElements = vector.getNumElements();
-    uint32 numBins = histogramBuilder.getNumBins();
-    BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
-    BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
-    std::unique_ptr<DenseVector<uint32>> weightVectorPtr = std::make_unique<DenseVector<uint32>>(numBins, false);
-    DenseVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
-
-    for (uint32 i = 0; i < numElements; i++) {
-        const BinVector::ExampleList& examples = exampleIterator[i];
-        uint32 binIndex = binIterator[i].index;
-        uint32 sumOfWeights = 0;
-
-        for (auto it = examples.cbegin(); it != examples.cend(); it++) {
-            BinVector::Example example = *it;
-            uint32 exampleIndex = example.index;
-            uint32 weight = weights.getWeight(exampleIndex);
-            histogramBuilder.addToBin(binIndex, exampleIndex, weight);
-            sumOfWeights += weight;
-        }
-
-        weightIterator[binIndex] = sumOfWeights;
-    }
-
-    cacheEntry.histogramPtr = std::move(histogramBuilder.build());
-    cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
-}
-
 static inline void addValueToBinVector(BinVectorNew& vector, uint32 binIndex, uint32 originalIndex, float64 value) {
     BinVectorNew::iterator iterator = vector.begin();
     iterator[binIndex].numExamples++;
@@ -287,25 +237,6 @@ static inline void addValueToBinVector(BinVectorNew& vector, uint32 binIndex, ui
     if (value > iterator[binIndex].maxValue) {
         iterator[binIndex].maxValue = value;
     }
-}
-
-static inline void addValueToBinVectorOld(BinVector& vector, uint32 binIndex, uint32 originalIndex, float32 value) {
-    BinVector::bin_iterator binIterator = vector.bins_begin();
-
-    if (value < binIterator[binIndex].minValue) {
-        binIterator[binIndex].minValue = value;
-    }
-
-    if (binIterator[binIndex].maxValue < value) {
-        binIterator[binIndex].maxValue = value;
-    }
-
-    IndexedValue<float32> example;
-    example.index = originalIndex;
-    example.value = value;
-    BinVector::example_list_iterator exampleIterator = vector.examples_begin();
-    BinVector::ExampleList& examples = exampleIterator[binIndex];
-    examples.push_front(example);
 }
 
 /**
