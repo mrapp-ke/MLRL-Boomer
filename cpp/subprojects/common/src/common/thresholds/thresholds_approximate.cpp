@@ -365,8 +365,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                                 binVector = cacheIterator->second.binVectorPtr.get();
                                 binIndices = cacheIterator->second.binIndicesPtr.get();
-                                auto cacheIteratorOld = thresholdsSubset_.thresholds_.cacheOld_.find(featureIndex_);
-                                binVectorOld = cacheIteratorOld->second.get();
 
                                 if (binVectorOld == nullptr) {
                                     // Fetch feature vector...
@@ -386,18 +384,14 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     cacheIterator->second.binIndicesPtr = std::make_unique<BinIndexVector>(numExamples);
                                     binVector = cacheIterator->second.binVectorPtr.get();
                                     binIndices = cacheIterator->second.binIndicesPtr.get();
-                                    cacheIteratorOld->second = std::move(std::make_unique<BinVector>(numBins, true));
-                                    binVectorOld = cacheIteratorOld->second.get();
                                     auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
                                         binIndices->begin()[originalIndex] = binIndex;
                                         addValueToBinVector(*binVector, binIndex, originalIndex, value);
-                                        addValueToBinVectorOld(*binVectorOld, binIndex, originalIndex, value);
                                     };
                                     binning.createBins(featureInfo, *featureVectorPtr, callback);
 
                                     if (!nominal_) {
                                         removeEmptyBins(*binVector, *binIndices);
-                                        removeEmptyBinsOld(*binVectorOld);
                                     }
                                 }
 
@@ -448,7 +442,6 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                     if (binVector == nullptr) {
                         thresholds_.cache_.emplace(featureIndex, CacheEntry());
-                        thresholds_.cacheOld_.emplace(featureIndex, std::unique_ptr<BinVector>());
                     }
 
                     bool nominal = thresholds_.nominalFeatureMaskPtr_->isNominal(featureIndex);
@@ -493,12 +486,12 @@ class ApproximateThresholds final : public AbstractThresholds {
                     BinVector* binVector = cacheEntry.vectorPtr.get();
 
                     if (binVector == nullptr) {
-                        auto cacheIterator = thresholds_.cacheOld_.find(featureIndex);
-                        binVector = cacheIterator->second.get();
+                        // TODO auto cacheIterator = thresholds_.cacheOld_.find(featureIndex);
+                        // TODO binVector = cacheIterator->second.get();
                     }
 
-                    filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
-                                        coverageMask_, thresholds_.statisticsProviderPtr_->get(), weights_);
+                    // TODO filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
+                    //                     coverageMask_, thresholds_.statisticsProviderPtr_->get(), weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
@@ -555,8 +548,6 @@ class ApproximateThresholds final : public AbstractThresholds {
         std::shared_ptr<IFeatureBinning> binningPtr_;
 
         uint32 numThreads_;
-
-        std::unordered_map<uint32, std::unique_ptr<BinVector>> cacheOld_;
 
         std::unordered_map<uint32, CacheEntry> cache_;
 
