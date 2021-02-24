@@ -5,7 +5,7 @@
 template<class T>
 ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
         std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex, bool nominal,
-        std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>> callbackPtr)
+        std::unique_ptr<IRuleRefinementCallback<BinVectorNew, DenseVector<uint32>>> callbackPtr)
     : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices), featureIndex_(featureIndex),
       nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
 
@@ -19,13 +19,13 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     const AbstractEvaluatedPrediction* bestHead = currentHead;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>::Result> callbackResultPtr =
+    std::unique_ptr<IRuleRefinementCallback<BinVectorNew, DenseVector<uint32>>::Result> callbackResultPtr =
         callbackPtr_->get();
     const IImmutableStatistics& statistics = callbackResultPtr->statistics_;
     const DenseVector<uint32>& weights = callbackResultPtr->weights_;
     DenseVector<uint32>::const_iterator weightIterator = weights.cbegin();
-    const BinVector& binVector = callbackResultPtr->vector_;
-    BinVector::bin_const_iterator binIterator = binVector.bins_cbegin();
+    const BinVectorNew& binVector = callbackResultPtr->vector_;
+    BinVectorNew::const_iterator binIterator = binVector.cbegin();
     uint32 numBins = binVector.getNumElements();
 
     // Create a new, empty subset of the current statistics when processing a new feature...

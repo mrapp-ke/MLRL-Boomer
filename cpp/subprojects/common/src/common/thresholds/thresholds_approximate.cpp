@@ -329,7 +329,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IRuleRefinementCallback<BinVector, DenseVector<uint32>> {
+                class Callback final : public IRuleRefinementCallback<BinVectorNew, DenseVector<uint32>> {
 
                     private:
 
@@ -360,7 +360,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                             BinVectorNew* binVector = nullptr;
                             BinIndexVector* binIndices = nullptr;
                             std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr;
-                            std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtrOld;
 
                             if (binVectorOld == nullptr) {
                                 auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
@@ -405,9 +404,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 histogramBuilderPtr =
                                     thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogramBuilder(
                                         binVector->getNumElements());
-                                histogramBuilderPtrOld =
-                                    thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogramBuilder(
-                                        binVectorOld->getNumElements());
                             }
 
                             // Filter bins, if necessary...
@@ -427,15 +423,9 @@ class ApproximateThresholds final : public AbstractThresholds {
                                                thresholdsSubset_.coverageMask_);
                             }
 
-                            histogramBuilder = histogramBuilderPtrOld.get();
-
-                            if (histogramBuilder != nullptr) {
-                                buildHistogramOld(*binVectorOld, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
-                            }
-
                             const IHistogram& histogram = *cacheEntry.histogramPtr;
                             const DenseVector<uint32>& weightVector = *cacheEntry.weightVectorPtr;
-                            return std::make_unique<Result>(histogram, weightVector, *binVectorOld);
+                            return std::make_unique<Result>(histogram, weightVector, *binVector);
                         }
 
                 };

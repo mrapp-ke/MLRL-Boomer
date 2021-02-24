@@ -31,7 +31,7 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
 
         bool nominal_;
 
-        std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>> callbackPtr_;
+        std::unique_ptr<IRuleRefinementCallback<BinVectorNew, DenseVector<uint32>>> callbackPtr_;
 
         std::unique_ptr<Refinement> refinementPtr_;
 
@@ -49,7 +49,7 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
          */
         ApproximateRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
                                   uint32 featureIndex, bool nominal,
-                                  std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>> callbackPtr);
+                                  std::unique_ptr<IRuleRefinementCallback<BinVectorNew, DenseVector<uint32>>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
 
