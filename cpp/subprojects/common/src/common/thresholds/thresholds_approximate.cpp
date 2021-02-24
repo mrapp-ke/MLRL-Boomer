@@ -456,6 +456,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     BinVector* binVector = cacheFilteredIterator->second.vectorPtr.get();
 
                     if (binVector == nullptr) {
+                        thresholds_.cache_.emplace(featureIndex, CacheEntry());
                         thresholds_.cacheOld_.emplace(featureIndex, std::unique_ptr<BinVector>());
                     }
 
