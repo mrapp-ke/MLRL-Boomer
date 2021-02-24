@@ -224,6 +224,11 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     cacheEntry.numConditions = numConditions;
 }
 
+static inline void buildHistogram(BinVectorNew& binVector, IStatistics::IHistogramBuilder& histogramBuilder,
+                                  FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights) {
+
+}
+
 static inline void buildHistogramOld(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder,
                                      FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights) {
     uint32 numElements = vector.getNumElements();
@@ -336,6 +341,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             BinVector* binVectorOld = cacheEntry.vectorPtr.get();
                             BinVectorNew* binVector = nullptr;
                             BinIndexVector* binIndices = nullptr;
+                            std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr;
                             std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtrOld;
 
                             if (binVectorOld == nullptr) {
@@ -377,6 +383,9 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     }
                                 }
 
+                                histogramBuilderPtr =
+                                    thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogramBuilder(
+                                        binVector->getNumElements());
                                 histogramBuilderPtrOld =
                                     thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogramBuilder(
                                         binVectorOld->getNumElements());
@@ -392,7 +401,13 @@ class ApproximateThresholds final : public AbstractThresholds {
                             }
 
                             // Build histogram, if necessary...
-                            IStatistics::IHistogramBuilder* histogramBuilder = histogramBuilderPtrOld.get();
+                            IStatistics::IHistogramBuilder* histogramBuilder = histogramBuilderPtr.get();
+
+                            if (histogramBuilder != nullptr) {
+                                buildHistogram(*binVector, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
+                            }
+
+                            histogramBuilder = histogramBuilderPtrOld.get();
 
                             if (histogramBuilder != nullptr) {
                                 buildHistogramOld(*binVectorOld, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
