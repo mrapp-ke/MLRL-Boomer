@@ -284,7 +284,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr;
 
                             if (binVector == nullptr) {
-                                auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
+                                auto cacheIterator = thresholdsSubset_.thresholds_.cacheOld_.find(featureIndex_);
                                 binVector = cacheIterator->second.get();
 
                                 if (binVector == nullptr) {
@@ -357,7 +357,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     BinVector* binVector = cacheFilteredIterator->second.vectorPtr.get();
 
                     if (binVector == nullptr) {
-                        thresholds_.cache_.emplace(featureIndex, std::unique_ptr<BinVector>());
+                        thresholds_.cacheOld_.emplace(featureIndex, std::unique_ptr<BinVector>());
                     }
 
                     bool nominal = thresholds_.nominalFeatureMaskPtr_->isNominal(featureIndex);
@@ -402,7 +402,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     BinVector* binVector = cacheEntry.vectorPtr.get();
 
                     if (binVector == nullptr) {
-                        auto cacheIterator = thresholds_.cache_.find(featureIndex);
+                        auto cacheIterator = thresholds_.cacheOld_.find(featureIndex);
                         binVector = cacheIterator->second.get();
                     }
 
@@ -465,7 +465,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
         uint32 numThreads_;
 
-        std::unordered_map<uint32, std::unique_ptr<BinVector>> cache_;
+        std::unordered_map<uint32, std::unique_ptr<BinVector>> cacheOld_;
 
     public:
 
