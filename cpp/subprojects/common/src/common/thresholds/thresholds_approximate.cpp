@@ -57,7 +57,7 @@ static inline void removeEmptyBins(BinVectorNew& binVector, BinIndexVector& binI
     }
 }
 
-static inline void filterCurrentVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, intp conditionEnd,
+static inline void filterCurrentVectorOld(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, intp conditionEnd,
                                        bool covered, uint32 numConditions, CoverageMask& coverageMask,
                                        IStatistics& statistics, const IWeightVector& weights) {
     uint32 numTotalElements = vector.getNumElements();
@@ -421,7 +421,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                         // TODO binVector = cacheIterator->second.get();
                     }
 
-                    // TODO filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
+                    // TODO filterCurrentVectorOld(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
                     //                     coverageMask_, thresholds_.statisticsProviderPtr_->get(), weights_);
                 }
 
