@@ -213,7 +213,7 @@ static inline void buildHistogram(BinVector& vector, IStatistics::IHistogramBuil
     cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
 }
 
-static inline void addValueToBinVector(BinVector& vector, uint32 binIndex, uint32 originalIndex, float32 value) {
+static inline void addValueToBinVectorOld(BinVector& vector, uint32 binIndex, uint32 originalIndex, float32 value) {
     BinVector::bin_iterator binIterator = vector.bins_begin();
 
     if (value < binIterator[binIndex].minValue) {
@@ -303,7 +303,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     cacheIteratorOld->second = std::move(std::make_unique<BinVector>(numBins, true));
                                     binVector = cacheIteratorOld->second.get();
                                     auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
-                                        addValueToBinVector(*binVector, binIndex, originalIndex, value);
+                                        addValueToBinVectorOld(*binVector, binIndex, originalIndex, value);
                                     };
                                     binning.createBins(featureInfo, *featureVectorPtr, callback);
 
