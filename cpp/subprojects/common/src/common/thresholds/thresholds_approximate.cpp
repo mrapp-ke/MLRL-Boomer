@@ -224,9 +224,27 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void buildHistogram(BinVectorNew& binVector, IStatistics::IHistogramBuilder& histogramBuilder,
-                                  FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights) {
+static inline void buildHistogram(BinIndexVector& binIndices, IStatistics::IHistogramBuilder& histogramBuilder,
+                                  FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights,
+                                  const CoverageMask& coverageMask) {
+    uint32 numExamples = coverageMask.getNumElements();
+    uint32 numBins = histogramBuilder.getNumBins();
+    BinIndexVector::const_iterator indexIterator = binIndices.cbegin();
+    std::unique_ptr<DenseVector<uint32>> weightVectorPtr = std::make_unique<DenseVector<uint32>>(numBins, true);
+    DenseVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
 
+    // TODO Only iterate covered examples once supported by the coverage mask
+    for (uint32 i = 0; i < numExamples; i++) {
+        if (coverageMask.isCovered(i)) {
+            uint32 binIndex = indexIterator[i];
+            uint32 weight = weights.getWeight(i);
+            weightIterator[binIndex] += weight;
+            histogramBuilder.addToBin(binIndex, i, weight);
+        }
+    }
+
+    cacheEntry.histogramPtr = std::move(histogramBuilder.build());
+    cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
 }
 
 static inline void buildHistogramOld(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder,
@@ -404,7 +422,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                             IStatistics::IHistogramBuilder* histogramBuilder = histogramBuilderPtr.get();
 
                             if (histogramBuilder != nullptr) {
-                                buildHistogram(*binVector, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
+                                buildHistogram(*binIndices, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_,
+                                               thresholdsSubset_.coverageMask_);
                             }
 
                             histogramBuilder = histogramBuilderPtrOld.get();
