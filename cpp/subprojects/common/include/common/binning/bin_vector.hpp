@@ -9,7 +9,7 @@
 #include "common/data/bin.hpp"
 
 
-class BinVectorNew final : DenseVector<Bin> {
+class BinVectorNew final : public DenseVector<Bin> {
 
     public:
 
