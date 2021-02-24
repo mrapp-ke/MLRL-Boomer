@@ -213,6 +213,19 @@ static inline void buildHistogram(BinVector& vector, IStatistics::IHistogramBuil
     cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
 }
 
+static inline void addValueToBinVector(BinVectorNew& vector, uint32 binIndex, uint32 originalIndex, float64 value) {
+    BinVectorNew::iterator iterator = vector.begin();
+    iterator[binIndex].numExamples++;
+
+    if (value < iterator[binIndex].minValue) {
+        iterator[binIndex].minValue = value;
+    }
+
+    if (value > iterator[binIndex].maxValue) {
+        iterator[binIndex].maxValue = value;
+    }
+}
+
 static inline void addValueToBinVectorOld(BinVector& vector, uint32 binIndex, uint32 originalIndex, float32 value) {
     BinVector::bin_iterator binIterator = vector.bins_begin();
 
@@ -280,14 +293,17 @@ class ApproximateThresholds final : public AbstractThresholds {
                         std::unique_ptr<Result> get() override {
                             auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
                             FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
-                            BinVector* binVector = cacheEntry.vectorPtr.get();
+                            BinVector* binVectorOld = cacheEntry.vectorPtr.get();
+                            BinVectorNew* binVector = nullptr;
                             std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr;
 
-                            if (binVector == nullptr) {
+                            if (binVectorOld == nullptr) {
+                                auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
+                                binVector = cacheIterator->second.get();
                                 auto cacheIteratorOld = thresholdsSubset_.thresholds_.cacheOld_.find(featureIndex_);
-                                binVector = cacheIteratorOld->second.get();
+                                binVectorOld = cacheIteratorOld->second.get();
 
-                                if (binVector == nullptr) {
+                                if (binVectorOld == nullptr) {
                                     // Fetch feature vector...
                                     std::unique_ptr<FeatureVector> featureVectorPtr;
                                     thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(
@@ -300,42 +316,45 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     IFeatureBinning::FeatureInfo featureInfo =
                                         binning.getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
+                                    cacheIterator->second = std::make_unique<BinVectorNew>(numBins, true);
+                                    binVector = cacheIterator->second.get();
                                     cacheIteratorOld->second = std::move(std::make_unique<BinVector>(numBins, true));
-                                    binVector = cacheIteratorOld->second.get();
+                                    binVectorOld = cacheIteratorOld->second.get();
                                     auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
-                                        addValueToBinVectorOld(*binVector, binIndex, originalIndex, value);
+                                        addValueToBinVector(*binVector, binIndex, originalIndex, value);
+                                        addValueToBinVectorOld(*binVectorOld, binIndex, originalIndex, value);
                                     };
                                     binning.createBins(featureInfo, *featureVectorPtr, callback);
 
                                     if (!nominal_) {
-                                        removeEmptyBins(*binVector);
+                                        removeEmptyBins(*binVectorOld);
                                     }
                                 }
 
                                 histogramBuilderPtr =
                                     thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogramBuilder(
-                                        binVector->getNumElements());
+                                        binVectorOld->getNumElements());
                             }
 
                             // Filter bins, if necessary...
                             uint32 numConditions = thresholdsSubset_.numModifications_;
 
                             if (numConditions > cacheEntry.numConditions) {
-                                filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_,
+                                filterAnyVector(*binVectorOld, cacheEntry, numConditions, thresholdsSubset_.coverageMask_,
                                                 thresholdsSubset_.weights_);
-                                binVector = cacheEntry.vectorPtr.get();
+                                binVectorOld = cacheEntry.vectorPtr.get();
                             }
 
                             // Build histogram, if necessary...
                             IStatistics::IHistogramBuilder* histogramBuilder = histogramBuilderPtr.get();
 
                             if (histogramBuilder != nullptr) {
-                                buildHistogram(*binVector, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
+                                buildHistogram(*binVectorOld, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
                             }
 
                             const IHistogram& histogram = *cacheEntry.histogramPtr;
                             const DenseVector<uint32>& weightVector = *cacheEntry.weightVectorPtr;
-                            return std::make_unique<Result>(histogram, weightVector, *binVector);
+                            return std::make_unique<Result>(histogram, weightVector, *binVectorOld);
                         }
 
                 };
@@ -466,6 +485,8 @@ class ApproximateThresholds final : public AbstractThresholds {
         uint32 numThreads_;
 
         std::unordered_map<uint32, std::unique_ptr<BinVector>> cacheOld_;
+
+        std::unordered_map<uint32, std::unique_ptr<BinVectorNew>> cache_;
 
     public:
 
