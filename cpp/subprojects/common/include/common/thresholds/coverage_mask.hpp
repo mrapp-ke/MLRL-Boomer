@@ -63,6 +63,13 @@ class CoverageMask final {
         bool isCovered(uint32 pos) const;
 
         /**
+         * Returns the number of elements.
+         *
+         * @return The number of elements
+         */
+        uint32 getNumElements() const;
+
+        /**
          * The "target" that corresponds to the elements that are considered to be covered.
          */
         uint32 target;
