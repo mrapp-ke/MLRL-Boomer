@@ -224,8 +224,8 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
     cacheEntry.numConditions = numConditions;
 }
 
-static inline void buildHistogram(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder,
-                                  FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights) {
+static inline void buildHistogramOld(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder,
+                                     FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights) {
     uint32 numElements = vector.getNumElements();
     uint32 numBins = histogramBuilder.getNumBins();
     BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
@@ -395,7 +395,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             IStatistics::IHistogramBuilder* histogramBuilder = histogramBuilderPtr.get();
 
                             if (histogramBuilder != nullptr) {
-                                buildHistogram(*binVectorOld, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
+                                buildHistogramOld(*binVectorOld, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
                             }
 
                             const IHistogram& histogram = *cacheEntry.histogramPtr;
