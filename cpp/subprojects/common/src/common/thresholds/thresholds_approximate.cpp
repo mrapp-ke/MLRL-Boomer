@@ -374,6 +374,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     std::unique_ptr<FeatureVector> featureVectorPtr;
                                     thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(
                                         featureIndex_, featureVectorPtr);
+                                    uint32 numExamples = featureVectorPtr->getNumElements();
 
                                     // Apply binning method...
                                     const IFeatureBinning& binning =
@@ -383,7 +384,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                         binning.getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
                                     cacheIterator->second.binVectorPtr = std::make_unique<BinVectorNew>(numBins, true);
-                                    cacheIterator->second.binIndicesPtr = std::make_unique<BinIndexVector>(numBins);
+                                    cacheIterator->second.binIndicesPtr = std::make_unique<BinIndexVector>(numExamples);
                                     binVector = cacheIterator->second.binVectorPtr.get();
                                     binIndices = cacheIterator->second.binIndicesPtr.get();
                                     cacheIteratorOld->second = std::move(std::make_unique<BinVector>(numBins, true));
