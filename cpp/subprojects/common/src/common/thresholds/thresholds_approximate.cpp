@@ -7,8 +7,12 @@
 #include <limits>
 
 // TODO Comment
+typedef DenseVector<uint32> BinIndexVector;
+
+// TODO Comment
 struct CacheEntry {
     std::unique_ptr<BinVectorNew> binVectorPtr;
+    std::unique_ptr<BinIndexVector> binIndicesPtr;
 };
 
 /**
@@ -319,11 +323,13 @@ class ApproximateThresholds final : public AbstractThresholds {
                             FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
                             BinVector* binVectorOld = cacheEntry.vectorPtr.get();
                             BinVectorNew* binVector = nullptr;
+                            BinIndexVector* binIndices = nullptr;
                             std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr;
 
                             if (binVectorOld == nullptr) {
                                 auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                                 binVector = cacheIterator->second.binVectorPtr.get();
+                                binIndices = cacheIterator->second.binIndicesPtr.get();
                                 auto cacheIteratorOld = thresholdsSubset_.thresholds_.cacheOld_.find(featureIndex_);
                                 binVectorOld = cacheIteratorOld->second.get();
 
@@ -341,7 +347,9 @@ class ApproximateThresholds final : public AbstractThresholds {
                                         binning.getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
                                     cacheIterator->second.binVectorPtr = std::make_unique<BinVectorNew>(numBins, true);
+                                    cacheIterator->second.binIndicesPtr = std::make_unique<BinIndexVector>(numBins);
                                     binVector = cacheIterator->second.binVectorPtr.get();
+                                    binIndices = cacheIterator->second.binIndicesPtr.get();
                                     cacheIteratorOld->second = std::move(std::make_unique<BinVector>(numBins, true));
                                     binVectorOld = cacheIteratorOld->second.get();
                                     auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
