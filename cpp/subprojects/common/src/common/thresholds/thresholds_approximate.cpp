@@ -17,7 +17,7 @@ struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
     std::unique_ptr<DenseVector<uint32>> weightVectorPtr;
 };
 
-static inline void removeEmptyBins(BinVector& vector) {
+static inline void removeEmptyBinsOld(BinVector& vector) {
     uint32 numElements = vector.getNumElements();
     BinVector::bin_iterator binIterator = vector.bins_begin();
     BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
@@ -327,7 +327,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     binning.createBins(featureInfo, *featureVectorPtr, callback);
 
                                     if (!nominal_) {
-                                        removeEmptyBins(*binVectorOld);
+                                        removeEmptyBinsOld(*binVectorOld);
                                     }
                                 }
 
