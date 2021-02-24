@@ -33,3 +33,7 @@ void CoverageMask::reset() {
 bool CoverageMask::isCovered(uint32 pos) const {
     return array_[pos] == target;
 }
+
+uint32 CoverageMask::getNumElements() const {
+    return numElements_;
+}
