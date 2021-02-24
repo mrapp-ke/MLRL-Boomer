@@ -284,8 +284,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                             std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr;
 
                             if (binVector == nullptr) {
-                                auto cacheIterator = thresholdsSubset_.thresholds_.cacheOld_.find(featureIndex_);
-                                binVector = cacheIterator->second.get();
+                                auto cacheIteratorOld = thresholdsSubset_.thresholds_.cacheOld_.find(featureIndex_);
+                                binVector = cacheIteratorOld->second.get();
 
                                 if (binVector == nullptr) {
                                     // Fetch feature vector...
@@ -300,8 +300,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     IFeatureBinning::FeatureInfo featureInfo =
                                         binning.getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
-                                    cacheIterator->second = std::move(std::make_unique<BinVector>(numBins, true));
-                                    binVector = cacheIterator->second.get();
+                                    cacheIteratorOld->second = std::move(std::make_unique<BinVector>(numBins, true));
+                                    binVector = cacheIteratorOld->second.get();
                                     auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
                                         addValueToBinVector(*binVector, binIndex, originalIndex, value);
                                     };
