@@ -9,6 +9,23 @@
 #include "common/data/bin.hpp"
 
 
+class BinVectorNew final : DenseVector<Bin> {
+
+    public:
+
+        /**
+         * @param numElements The number of elements in the vector
+         */
+        BinVectorNew(uint32 numElements);
+
+        /**
+         * @param numElements   The number of elements in the vector
+         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
+         */
+        BinVectorNew(uint32 numElements, bool init);
+
+};
+
 /**
  * An one-dimensional vector that stores a fixed number of bins, as well as the indices and feature values of the
  * examples that belong to the individual bins.
