@@ -11,7 +11,7 @@ typedef DenseVector<uint32> BinIndexVector;
 
 // TODO Comment
 struct CacheEntry {
-    std::unique_ptr<BinVectorNew> binVectorPtr;
+    std::unique_ptr<BinVector> binVectorPtr;
     std::unique_ptr<BinIndexVector> binIndicesPtr;
 };
 
@@ -20,14 +20,14 @@ struct CacheEntry {
  * field `numConditions` specifies how many conditions the rule contained when the vector was updated for the last time.
  * It may be used to check if the vector and histogram are still valid or must be updated.
  */
-struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVectorNew> {
+struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
     std::unique_ptr<IHistogram> histogramPtr;
     std::unique_ptr<DenseVector<uint32>> weightVectorPtr;
 };
 
-static inline void removeEmptyBins(BinVectorNew& binVector, BinIndexVector& binIndices) {
+static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndices) {
     uint32 numElements = binVector.getNumElements();
-    BinVectorNew::iterator binIterator = binVector.begin();
+    BinVector::iterator binIterator = binVector.begin();
     uint32 mapping[numElements];
     uint32 n = 0;
 
@@ -80,16 +80,16 @@ static inline void buildHistogram(BinIndexVector& binIndices, IStatistics::IHist
     cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
 }
 
-static inline void addValueToBinVector(BinVectorNew& vector, uint32 binIndex, uint32 originalIndex, float64 value) {
-    BinVectorNew::iterator iterator = vector.begin();
-    iterator[binIndex].numExamples++;
+static inline void addValueToBinVector(BinVector& binVector, uint32 binIndex, uint32 originalIndex, float64 value) {
+    BinVector::iterator binIterator = binVector.begin();
+    binIterator[binIndex].numExamples++;
 
-    if (value < iterator[binIndex].minValue) {
-        iterator[binIndex].minValue = value;
+    if (value < binIterator[binIndex].minValue) {
+        binIterator[binIndex].minValue = value;
     }
 
-    if (value > iterator[binIndex].maxValue) {
-        iterator[binIndex].maxValue = value;
+    if (value > binIterator[binIndex].maxValue) {
+        binIterator[binIndex].maxValue = value;
     }
 }
 
@@ -114,7 +114,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IRuleRefinementCallback<BinVectorNew, DenseVector<uint32>> {
+                class Callback final : public IRuleRefinementCallback<BinVector, DenseVector<uint32>> {
 
                     private:
 
@@ -141,17 +141,16 @@ class ApproximateThresholds final : public AbstractThresholds {
                         std::unique_ptr<Result> get() override {
                             auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
                             FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
-                            BinVectorNew* binVectorOld = cacheEntry.vectorPtr.get();
-                            BinVectorNew* binVector = nullptr;
+                            BinVector* binVector = cacheEntry.vectorPtr.get();
                             BinIndexVector* binIndices = nullptr;
                             std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr;
 
-                            if (binVectorOld == nullptr) {
+                            if (binVector == nullptr) {
                                 auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                                 binVector = cacheIterator->second.binVectorPtr.get();
                                 binIndices = cacheIterator->second.binIndicesPtr.get();
 
-                                if (binVectorOld == nullptr) {
+                                if (binVector == nullptr) {
                                     // Fetch feature vector...
                                     std::unique_ptr<FeatureVector> featureVectorPtr;
                                     thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(
@@ -165,7 +164,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     IFeatureBinning::FeatureInfo featureInfo =
                                         binning.getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
-                                    cacheIterator->second.binVectorPtr = std::make_unique<BinVectorNew>(numBins, true);
+                                    cacheIterator->second.binVectorPtr = std::make_unique<BinVector>(numBins, true);
                                     cacheIterator->second.binIndicesPtr = std::make_unique<BinIndexVector>(numExamples);
                                     binVector = cacheIterator->second.binVectorPtr.get();
                                     binIndices = cacheIterator->second.binIndicesPtr.get();
@@ -226,7 +225,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                 std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
                                                                                  uint32 featureIndex) {
                     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredBinCacheEntry()).first;
-                    BinVectorNew* binVector = cacheFilteredIterator->second.vectorPtr.get();
+                    BinVector* binVector = cacheFilteredIterator->second.vectorPtr.get();
 
                     if (binVector == nullptr) {
                         thresholds_.cache_.emplace(featureIndex, CacheEntry());

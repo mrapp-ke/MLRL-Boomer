@@ -2,12 +2,12 @@
 #include <iterator>
 
 
-BinVectorNew::BinVectorNew(uint32 numElements)
-    : BinVectorNew(numElements, false) {
+BinVector::BinVector(uint32 numElements)
+    : BinVector(numElements, false) {
 
 }
 
-BinVectorNew::BinVectorNew(uint32 numElements, bool init)
+BinVector::BinVector(uint32 numElements, bool init)
     : DenseVector<Bin>(numElements) {
     if (init) {
         DenseVector<Bin>::iterator iterator = this->begin();
