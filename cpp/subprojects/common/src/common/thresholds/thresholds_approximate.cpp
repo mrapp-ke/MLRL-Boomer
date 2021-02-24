@@ -6,6 +6,10 @@
 #include <unordered_map>
 #include <limits>
 
+// TODO Comment
+struct CacheEntry {
+    std::unique_ptr<BinVectorNew> binVectorPtr;
+};
 
 /**
  * An entry that is stored in the cache and contains unique pointers to a histogram and a vector that stores bins. The
@@ -319,7 +323,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                             if (binVectorOld == nullptr) {
                                 auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
-                                binVector = cacheIterator->second.get();
+                                binVector = cacheIterator->second.binVectorPtr.get();
                                 auto cacheIteratorOld = thresholdsSubset_.thresholds_.cacheOld_.find(featureIndex_);
                                 binVectorOld = cacheIteratorOld->second.get();
 
@@ -336,8 +340,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     IFeatureBinning::FeatureInfo featureInfo =
                                         binning.getFeatureInfo(*featureVectorPtr);
                                     uint32 numBins = featureInfo.numBins;
-                                    cacheIterator->second = std::make_unique<BinVectorNew>(numBins, true);
-                                    binVector = cacheIterator->second.get();
+                                    cacheIterator->second.binVectorPtr = std::make_unique<BinVectorNew>(numBins, true);
+                                    binVector = cacheIterator->second.binVectorPtr.get();
                                     cacheIteratorOld->second = std::move(std::make_unique<BinVector>(numBins, true));
                                     binVectorOld = cacheIteratorOld->second.get();
                                     auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
@@ -507,7 +511,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
         std::unordered_map<uint32, std::unique_ptr<BinVector>> cacheOld_;
 
-        std::unordered_map<uint32, std::unique_ptr<BinVectorNew>> cache_;
+        std::unordered_map<uint32, CacheEntry> cache_;
 
     public:
 
