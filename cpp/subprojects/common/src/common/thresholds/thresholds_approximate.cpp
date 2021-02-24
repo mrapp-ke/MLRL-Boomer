@@ -25,24 +25,36 @@ struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
     std::unique_ptr<DenseVector<uint32>> weightVectorPtr;
 };
 
-static inline void removeEmptyBins(BinVectorNew& vector) {
-    uint32 numElements = vector.getNumElements();
-    BinVectorNew::iterator iterator = vector.begin();
+static inline void removeEmptyBins(BinVectorNew& binVector, BinIndexVector& binIndices) {
+    uint32 numElements = binVector.getNumElements();
+    BinVectorNew::iterator binIterator = binVector.begin();
+    uint32 mapping[numElements];
     uint32 n = 0;
 
+    // Remove empty bins...
     for (uint32 i = 0; i < numElements; i++) {
-        uint32 numExamples = iterator[i].numExamples;
+        mapping[i] = n;
+        uint32 numExamples = binIterator[i].numExamples;
 
         if (numExamples > 0) {
-            iterator[n].index = n;
-            iterator[n].numExamples = numExamples;
-            iterator[n].minValue = iterator[i].minValue;
-            iterator[n].maxValue = iterator[i].maxValue;
+            binIterator[n].index = n;
+            binIterator[n].numExamples = numExamples;
+            binIterator[n].minValue = binIterator[i].minValue;
+            binIterator[n].maxValue = binIterator[i].maxValue;
             n++;
         }
     }
 
-    vector.setNumElements(n, true);
+    binVector.setNumElements(n, true);
+
+    // Adjust bin indices...
+    BinIndexVector::iterator indexIterator = binIndices.begin();
+    uint32 numIndices = binIndices.getNumElements();
+
+    for (uint32 i = 0; i < numIndices; i++) {
+        uint32 binIndex = indexIterator[i];
+        indexIterator[i] = mapping[binIndex];
+    }
 }
 
 static inline void removeEmptyBinsOld(BinVector& vector) {
@@ -360,7 +372,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     binning.createBins(featureInfo, *featureVectorPtr, callback);
 
                                     if (!nominal_) {
-                                        removeEmptyBins(*binVector);
+                                        removeEmptyBins(*binVector, *binIndices);
                                         removeEmptyBinsOld(*binVectorOld);
                                     }
                                 }
