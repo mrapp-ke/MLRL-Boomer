@@ -336,7 +336,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             BinVector* binVectorOld = cacheEntry.vectorPtr.get();
                             BinVectorNew* binVector = nullptr;
                             BinIndexVector* binIndices = nullptr;
-                            std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr;
+                            std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtrOld;
 
                             if (binVectorOld == nullptr) {
                                 auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
@@ -377,7 +377,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     }
                                 }
 
-                                histogramBuilderPtr =
+                                histogramBuilderPtrOld =
                                     thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogramBuilder(
                                         binVectorOld->getNumElements());
                             }
@@ -392,7 +392,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             }
 
                             // Build histogram, if necessary...
-                            IStatistics::IHistogramBuilder* histogramBuilder = histogramBuilderPtr.get();
+                            IStatistics::IHistogramBuilder* histogramBuilder = histogramBuilderPtrOld.get();
 
                             if (histogramBuilder != nullptr) {
                                 buildHistogramOld(*binVectorOld, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
