@@ -57,6 +57,70 @@ static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndi
     }
 }
 
+static inline void filterCurrentVector(const BinVector& binVector, const BinIndexVector& binIndices,
+                                       FilteredBinCacheEntry& cacheEntry, intp conditionEnd, bool covered,
+                                       uint32 numConditions, CoverageMask& coverageMask, IStatistics& statistics,
+                                       const IWeightVector& weights) {
+    // Filter bin vector...
+    uint32 numTotalElements = binVector.getNumElements();
+    uint32 numElements = covered ? conditionEnd : (numTotalElements > conditionEnd ? numTotalElements - conditionEnd : 0);
+    BinVector* filteredVector = cacheEntry.vectorPtr.get();
+
+    if (filteredVector == nullptr) {
+        cacheEntry.vectorPtr = std::make_unique<BinVector>(numElements);
+        filteredVector = cacheEntry.vectorPtr.get();
+    }
+
+    BinVector::const_iterator binIterator = binVector.cbegin();
+    BinVector::iterator filteredBinIterator = filteredVector->begin();
+    intp start, end;
+    uint32 n = 0;
+
+    if (covered) {
+        start = 0;
+        end = conditionEnd;
+    } else {
+        start = conditionEnd;
+        end = numTotalElements;
+    }
+
+    for (intp i = start; i < end; i++) {
+        filteredBinIterator[n].index = binIterator[i].index;
+        filteredBinIterator[n].numExamples = binIterator[i].numExamples;
+        filteredBinIterator[n].minValue = binIterator[i].minValue;
+        filteredBinIterator[n].maxValue = binIterator[i].maxValue;
+        n++;
+    }
+
+    filteredVector->setNumElements(n, true);
+
+    // Update the covered examples...
+    uint32 numExamples = coverageMask.getNumElements();
+    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    BinIndexVector::const_iterator indexIterator = binIndices.cbegin();
+    coverageMask.target = numConditions;
+    statistics.resetCoveredStatistics();
+    uint32 minBinIndex = filteredBinIterator[0].index;
+    uint32 maxBinIndex = filteredBinIterator[n - 1].index;
+
+    // TODO Only iterate covered examples once supported by the coverage mask
+    for (uint32 i = 0; i < numExamples; i++) {
+        if (coverageMask.isCovered(i)) {
+            uint32 binIndex = indexIterator[i];
+
+            // Check if the example is still covered, i.e., if the corresponding bin is contained in the filtered bin
+            // vector...
+            if (binIndex >= minBinIndex && binIndex <= maxBinIndex) {
+                coverageMaskIterator[i] = numConditions;
+                uint32 weight = weights.getWeight(i);
+                statistics.updateCoveredStatistic(i, weight, false);
+            }
+        }
+    }
+
+    cacheEntry.numConditions = numConditions;
+}
+
 static inline void buildHistogram(BinIndexVector& binIndices, IStatistics::IHistogramBuilder& histogramBuilder,
                                   FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights,
                                   const CoverageMask& coverageMask) {
@@ -270,18 +334,17 @@ class ApproximateThresholds final : public AbstractThresholds {
                     uint32 featureIndex = refinement.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
                     FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
-                    // TODO
-                    /*
                     BinVector* binVector = cacheEntry.vectorPtr.get();
+                    auto cacheIterator = thresholds_.cache_.find(featureIndex);
+                    BinIndexVector* binIndices = cacheIterator->second.binIndicesPtr.get();
 
                     if (binVector == nullptr) {
-                        auto cacheIterator = thresholds_.cacheOld_.find(featureIndex);
-                        binVector = cacheIterator->second.get();
+                        binVector = cacheIterator->second.binVectorPtr.get();
                     }
-                    */
 
-                    // TODO filterCurrentVectorOld(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
-                    //                     coverageMask_, thresholds_.statisticsProviderPtr_->get(), weights_);
+                    filterCurrentVector(*binVector, *binIndices, cacheEntry, refinement.end, refinement.covered,
+                                        numModifications_, coverageMask_, thresholds_.statisticsProviderPtr_->get(),
+                                        weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
