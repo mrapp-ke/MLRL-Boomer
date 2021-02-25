@@ -32,7 +32,7 @@ namespace boosting {
     template<class T>
     static inline void aggregateGradientsAndHessians(const DenseExampleWiseStatisticVector& statisticVector,
                                                      const uint32* binIndices, DenseBinnedScoreVector<T>& scoreVector,
-                                                     float64* gradients, float64* hessians, uint32 numBins) {
+                                                     float64* gradients, float64* hessians) {
         uint32 numLabels = statisticVector.getNumElements();
         DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
         DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
@@ -266,7 +266,7 @@ namespace boosting {
                     setArrayToZeros(tmpGradients_, numBins);
                     setArrayToZeros(tmpHessians_, triangularNumber(numBins));
                     aggregateGradientsAndHessians<T>(statisticVector, binIndices_, *scoreVector_, tmpGradients_,
-                                                     tmpHessians_, numBins);
+                                                     tmpHessians_);
 
                     typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                         scoreVector_->scores_binned_begin();
