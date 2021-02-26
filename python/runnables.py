@@ -19,7 +19,7 @@ from testbed.training import DataSet
 
 from common.cython.debug import (
     set_full_flag, set_cm_flag, set_weights_flag,
-    set_hs_flag, set_lc_flag, set_ar_flag
+    set_hs_flag, set_lc_flag, set_ri_flag
 )
 
 LOG_FORMAT = '%(levelname)s %(message)s'
@@ -55,8 +55,8 @@ class Runnable(ABC):
                 set_hs_flag()
             if 'lc' in args.debugging_:
                 set_lc_flag()
-            if 'ar' in args.debugging_:
-                set_ar_flag()
+            if 'ri' in args.debugging_:
+                set_ri_flag()
 
         self._run(args)
 

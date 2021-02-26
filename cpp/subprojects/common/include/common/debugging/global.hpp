@@ -16,5 +16,5 @@ extern int dWeights;
 extern int dHS;
 // print which labels are covered
 extern int dLC;
-// print alternative rules
-extern int dAR;
+// print rule induction
+extern int dRI;

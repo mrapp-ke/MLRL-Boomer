@@ -108,6 +108,8 @@ namespace seco {
                         uint32 numPredictions = labelIndices_.getNumElements();
                         typename T::const_iterator indexIterator = labelIndices_.cbegin();
 
+                        //TODO: was passiert hier
+
                         for (uint32 c = 0; c < numPredictions; c++) {
                             uint32 l = indexIterator[c];
 
@@ -355,9 +357,21 @@ namespace seco {
                     }
                 }
                 if (debugging_ == 1 and (dFull or dLC)) {
-                    std::cout << "uncovered labels:\n  ";
-                    for(long unsigned int i = 0; i < sizeof(uncoveredLabels_); i++) {
-                        std::cout << uncoveredLabels_[i] << (i < sizeof(uncoveredLabels_) - 1 ? ", " : "");
+                    std::cout << "uncovered labels:\n  ex. index" << (numLabels_ > 10 ? " " : "") << " |";
+                    for (long unsigned int i = 0; i < numStatistics_; i++) {
+                        std::cout << (i < 10 ? " ": "") << i << " ";
+                    }
+                    std::cout << "\n ———————————+";
+                    for (long unsigned int i = 0; i < numStatistics_; i++) {
+                        std::cout << "———";
+                    }
+                    std::cout << "\n  ";
+                    for (long unsigned int i = 0; i < numLabels_; i++) {
+                        std::cout << "feature " << i << " | " << (numLabels_ > 10 && i < 10 ? " " : "");
+                        for (long unsigned int j = 0; j < numStatistics_; j++) {
+                            std::cout << uncoveredLabels_[j*numLabels_+i] << (j < numStatistics_ - 1 ? "  " : "");
+                        }
+                        std::cout << "\n  ";
                     }
                     std::cout << "\n";
                 }

@@ -10,4 +10,4 @@ cdef extern from "common/debugging/debug.hpp":
 
       cdef void setLCFlag()
 
-      cdef void setARFlag()
+      cdef void setRIFlag()

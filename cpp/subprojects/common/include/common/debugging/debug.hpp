@@ -32,4 +32,4 @@ void setLCFlag();
 /**
  * Sets the flag if the alternative rules should be included in the debugging prints.
  */
-void setARFlag();
+void setRIFlag();

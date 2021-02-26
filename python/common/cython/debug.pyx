@@ -14,5 +14,5 @@ cpdef object set_hs_flag():
 cpdef object set_lc_flag():
      setLCFlag()
 
-cpdef object set_ar_flag():
-     setARFlag()
+cpdef object set_ri_flag():
+     setRIFlag()

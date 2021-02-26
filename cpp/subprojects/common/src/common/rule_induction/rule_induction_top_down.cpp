@@ -84,6 +84,8 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
             ruleRefinements[featureIndex] = std::move(ruleRefinementPtr);
         }
 
+        //TODO: alle Regeln und quality scores ausgeben
+
         // Search for the best condition among all available features to be added to the current rule...
         #pragma omp parallel for firstprivate(numSampledFeatures) firstprivate(ruleRefinementsPtr) \
         firstprivate(bestHead) schedule(dynamic) num_threads(numThreads_)

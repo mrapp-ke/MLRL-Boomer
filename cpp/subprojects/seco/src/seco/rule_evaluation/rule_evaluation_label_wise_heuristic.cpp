@@ -86,6 +86,9 @@ namespace seco {
                         urp = confusionMatricesTotal[offsetL + RP] - crp;
                     }
 
+                    //TODO: stimmen diese Werte
+                    // codition + confusionsmatrix
+
                     score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
                     qualityScoreIterator[c] = score;
                     overallQualityScore += score;
