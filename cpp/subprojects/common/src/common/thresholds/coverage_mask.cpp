@@ -33,3 +33,7 @@ void CoverageMask::reset() {
 bool CoverageMask::isCovered(uint32 pos) const {
     return array_[pos] == target;
 }
+
+std::unique_ptr<ICoverageState> CoverageMask::copy() const {
+    return std::make_unique<CoverageMask>(*this);
+}

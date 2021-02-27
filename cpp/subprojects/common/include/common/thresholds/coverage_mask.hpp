@@ -68,4 +68,6 @@ class CoverageMask final : public ICoverageState {
          */
         uint32 target;
 
+        std::unique_ptr<ICoverageState> copy() const override;
+
 };
