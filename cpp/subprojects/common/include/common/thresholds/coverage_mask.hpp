@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/thresholds/coverage_state.hpp"
 #include "common/data/types.hpp"
 
 
@@ -11,7 +12,7 @@
  * each element, an integer is stored in a C-contiguous array that may be updated when the rule is refined. The elements
  * that correspond to a number that is equal to the "target" are considered to be covered.
  */
-class CoverageMask final {
+class CoverageMask final : public ICoverageState {
 
     private:
 
