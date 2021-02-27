@@ -8,9 +8,9 @@
 
 
 /**
- * Allows to keep track of the elements, e.g. examples or bins, that are covered by a rule as the rule is refined. For
- * each element, an integer is stored in a C-contiguous array that may be updated when the rule is refined. The elements
- * that correspond to a number that is equal to the "target" are considered to be covered.
+ * Allows to check whether individual examples are covered by a rule or not. For each example, an integer is stored in a
+ * C-contiguous array that may be updated when the rule is refined. If the value that corresponds to a certain example
+ * is equal to the "target", it is considered to be covered.
  */
 class CoverageMask final : public ICoverageState {
 
