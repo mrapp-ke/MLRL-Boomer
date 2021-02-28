@@ -6,6 +6,7 @@
 #include "common/sampling/partition.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/data/vector_dense.hpp"
+#include <unordered_set>
 
 
 /**
@@ -20,6 +21,10 @@ class BiPartition : public IPartition {
 
         uint32 numFirst_;
 
+        std::unordered_set<uint32>* firstSet_;
+
+        std::unordered_set<uint32>* secondSet_;
+
     public:
 
         /**
@@ -27,6 +32,8 @@ class BiPartition : public IPartition {
          * @param numSecond The number of elements that are contained by the second set
          */
         BiPartition(uint32 numFirst, uint32 numSecond);
+
+        ~BiPartition();
 
         typedef DenseVector<uint32>::iterator iterator;
 
@@ -101,6 +108,20 @@ class BiPartition : public IPartition {
          * @return The number of elements that are contained by the second set
          */
         uint32 getNumSecond() const;
+
+        /**
+         * Returns a set that contains the indices of all elements that are contained by the first set.
+         *
+         * @return A reference to an `unordered_set` that contains the indices
+         */
+        const std::unordered_set<uint32>& getFirstSet();
+
+        /**
+         * Returns a set that contains the indices of all elements that are contained by the second set.
+         *
+         * @return A reference to an `unordered_set` that contains the indices
+         */
+        const std::unordered_set<uint32>& getSecondSet();
 
         /**
          * Returns the total number of elements.
