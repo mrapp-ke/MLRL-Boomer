@@ -70,6 +70,7 @@ source_files = [
     'src/common/stopping/stopping_criterion_size.cpp',
     'src/common/stopping/stopping_criterion_time.cpp',
     'src/common/thresholds/coverage_mask.cpp',
+    'src/common/thresholds/coverage_set.cpp',
     'src/common/thresholds/thresholds_approximate.cpp',
     'src/common/thresholds/thresholds_exact.cpp'
 ]
