@@ -465,12 +465,14 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
-                    // TODO
+                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProviderPtr_->get(),
+                                                    *thresholds_.headRefinementFactoryPtr_, refinement);
                 }
 
                 void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
-                    // TODO
+                    recalculatePredictionInternally(coverageState, partition, thresholds_.statisticsProviderPtr_->get(),
+                                                    *thresholds_.headRefinementFactoryPtr_, refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
