@@ -1,6 +1,5 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/instance_sampling.hpp"
-#include "common/thresholds/coverage_mask.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 #include "common/rule_refinement/refinement.hpp"
 #include "common/head_refinement/prediction.hpp"
@@ -59,12 +58,12 @@ std::unique_ptr<IWeightVector> BiPartition::subSample(const IInstanceSubSampling
     return instanceSubSampling.subSample(*this, rng);
 }
 
-float64 BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+float64 BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                          const AbstractPrediction& head) const {
-    return thresholdsSubset.evaluateOutOfSample(*this, coverageMask, head);
+    return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
 }
 
-void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                         Refinement& refinement) const {
-    return thresholdsSubset.recalculatePrediction(*this, coverageMask, refinement);
+    coverageState.recalculatePrediction(thresholdsSubset, *this, refinement);
 }
