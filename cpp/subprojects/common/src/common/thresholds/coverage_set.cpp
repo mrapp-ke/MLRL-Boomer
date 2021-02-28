@@ -64,22 +64,20 @@ std::unique_ptr<ICoverageState> CoverageSet::copy() const {
 
 float64 CoverageSet::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
                                          const AbstractPrediction& head) const {
-    // TODO
-    return 0;
+    return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
 }
 
 float64 CoverageSet::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
                                          const AbstractPrediction& head) const {
-    // TODO
-    return 0;
+    return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
 }
 
 void CoverageSet::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
                                         Refinement& refinement) const {
-    // TODO
+    thresholdsSubset.recalculatePrediction(partition, *this, refinement);
 }
 
 void CoverageSet::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
                                         Refinement& refinement) const {
-    // TODO
+    thresholdsSubset.recalculatePrediction(partition, *this, refinement);
 }
