@@ -437,6 +437,18 @@ class ApproximateThresholds final : public AbstractThresholds {
                         thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);
                 }
 
+                float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
+                                            const AbstractPrediction& head) const override {
+                    // TODO
+                    return 0;
+                }
+
+                float64 evaluateOutOfSample(const BiPartition& partition, const CoverageSet& coverageState,
+                                            const AbstractPrediction& head) const override {
+                    // TODO
+                    return 0;
+                }
+
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
@@ -449,6 +461,16 @@ class ApproximateThresholds final : public AbstractThresholds {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), coverageState,
                         thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, refinement);
+                }
+
+                void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
+                                           Refinement& refinement) const override {
+                    // TODO
+                }
+
+                void recalculatePrediction(const BiPartition& partition, const CoverageSet& coverageState,
+                                           Refinement& refinement) const override {
+                    // TODO
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
