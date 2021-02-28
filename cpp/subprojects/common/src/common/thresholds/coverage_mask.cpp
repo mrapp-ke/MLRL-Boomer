@@ -1,4 +1,7 @@
 #include "common/thresholds/coverage_mask.hpp"
+#include "common/thresholds/thresholds_subset.hpp"
+#include "common/rule_refinement/refinement.hpp"
+#include "common/head_refinement/prediction.hpp"
 #include "common/data/arrays.hpp"
 
 
@@ -36,4 +39,24 @@ bool CoverageMask::isCovered(uint32 pos) const {
 
 std::unique_ptr<ICoverageState> CoverageMask::copy() const {
     return std::make_unique<CoverageMask>(*this);
+}
+
+float64 CoverageMask::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
+                                          const AbstractPrediction& head) const {
+    return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
+}
+
+float64 CoverageMask::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+                                          const AbstractPrediction& head) const {
+    return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
+}
+
+void CoverageMask::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
+                                         Refinement& refinement) const {
+    thresholdsSubset.recalculatePrediction(partition, *this, refinement);
+}
+
+void CoverageMask::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+                                         Refinement& refinement) const {
+    thresholdsSubset.recalculatePrediction(partition, *this, refinement);
 }
