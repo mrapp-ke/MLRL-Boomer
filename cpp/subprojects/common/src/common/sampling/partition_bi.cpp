@@ -59,11 +59,11 @@ std::unique_ptr<IWeightVector> BiPartition::subSample(const IInstanceSubSampling
 }
 
 float64 BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
-                                         const AbstractPrediction& head) const {
+                                         const AbstractPrediction& head) {
     return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
 }
 
 void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
-                                        Refinement& refinement) const {
+                                        Refinement& refinement) {
     coverageState.recalculatePrediction(thresholdsSubset, *this, refinement);
 }

@@ -17,7 +17,7 @@ class IREP final : public IPruning {
 
     public:
 
-        std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, const IPartition& partition,
+        std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
                                               ConditionList& conditions, const AbstractPrediction& head) const override;
 
 };

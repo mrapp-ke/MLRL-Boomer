@@ -464,7 +464,7 @@ class ExactThresholds final : public AbstractThresholds {
                     return 0;
                 }
 
-                float64 evaluateOutOfSample(const BiPartition& partition, const CoverageSet& coverageState,
+                float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
                     // TODO
                     return 0;
@@ -489,7 +489,7 @@ class ExactThresholds final : public AbstractThresholds {
                     // TODO
                 }
 
-                void recalculatePrediction(const BiPartition& partition, const CoverageSet& coverageState,
+                void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
                     // TODO
                 }

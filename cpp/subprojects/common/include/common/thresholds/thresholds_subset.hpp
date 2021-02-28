@@ -163,7 +163,7 @@ class IThresholdsSubset {
          *                      predicted by the rule
          * @return              The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const BiPartition& partition, const CoverageSet& coverageState,
+        virtual float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
         /**
@@ -231,7 +231,7 @@ class IThresholdsSubset {
          *                      covered by the refinement
          * @param refinement    A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(const BiPartition& partition, const CoverageSet& coverageState,
+        virtual void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const = 0;
 
         /**

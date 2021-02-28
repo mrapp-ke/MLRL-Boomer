@@ -97,13 +97,13 @@ class CoverageSet final : public ICoverageState {
         float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
                                     const AbstractPrediction& head) const override;
 
-        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                     const AbstractPrediction& head) const override;
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
                                    Refinement& refinement) const override;
 
-        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                    Refinement& refinement) const override;
 
 };
