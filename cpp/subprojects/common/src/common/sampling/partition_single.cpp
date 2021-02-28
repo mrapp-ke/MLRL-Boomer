@@ -28,12 +28,11 @@ std::unique_ptr<IWeightVector> SinglePartition::subSample(const IInstanceSubSamp
 }
 
 float64 SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
-                                             const ICoverageState& coverageState,
-                                             const AbstractPrediction& head) const {
+                                             const ICoverageState& coverageState, const AbstractPrediction& head) {
     return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
 }
 
 void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
-                                            const ICoverageState& coverageState, Refinement& refinement) const {
+                                            const ICoverageState& coverageState, Refinement& refinement) {
     coverageState.recalculatePrediction(thresholdsSubset, *this, refinement);
 }

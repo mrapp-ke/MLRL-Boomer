@@ -67,7 +67,7 @@ float64 CoverageSet::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubs
     return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
 }
 
-float64 CoverageSet::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+float64 CoverageSet::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                          const AbstractPrediction& head) const {
     return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
 }
@@ -77,7 +77,7 @@ void CoverageSet::recalculatePrediction(const IThresholdsSubset& thresholdsSubse
     thresholdsSubset.recalculatePrediction(partition, *this, refinement);
 }
 
-void CoverageSet::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+void CoverageSet::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                         Refinement& refinement) const {
     thresholdsSubset.recalculatePrediction(partition, *this, refinement);
 }

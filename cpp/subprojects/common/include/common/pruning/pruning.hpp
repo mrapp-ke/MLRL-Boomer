@@ -38,7 +38,7 @@ class IPruning {
          *                          examples that are covered by the pruned rule or a null pointer if the rule was not
          *                          pruned
          */
-        virtual std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, const IPartition& partition,
+        virtual std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
                                                       ConditionList& conditions,
                                                       const AbstractPrediction& head) const = 0;
 

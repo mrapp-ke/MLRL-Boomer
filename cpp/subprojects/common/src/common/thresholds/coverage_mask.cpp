@@ -66,7 +66,7 @@ float64 CoverageMask::evaluateOutOfSample(const IThresholdsSubset& thresholdsSub
     return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
 }
 
-float64 CoverageMask::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+float64 CoverageMask::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                           const AbstractPrediction& head) const {
     return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
 }
@@ -76,7 +76,7 @@ void CoverageMask::recalculatePrediction(const IThresholdsSubset& thresholdsSubs
     thresholdsSubset.recalculatePrediction(partition, *this, refinement);
 }
 
-void CoverageMask::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+void CoverageMask::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                          Refinement& refinement) const {
     thresholdsSubset.recalculatePrediction(partition, *this, refinement);
 }
