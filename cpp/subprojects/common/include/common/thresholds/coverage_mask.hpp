@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/thresholds/coverage_state.hpp"
-#include "common/data/types.hpp"
 
 
 /**
@@ -69,5 +68,17 @@ class CoverageMask final : public ICoverageState {
         uint32 target;
 
         std::unique_ptr<ICoverageState> copy() const override;
+
+        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
+                                    const AbstractPrediction& head) const override;
+
+        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+                                    const AbstractPrediction& head) const override;
+
+        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
+                                   Refinement& refinement) const override;
+
+        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+                                   Refinement& refinement) const override;
 
 };
