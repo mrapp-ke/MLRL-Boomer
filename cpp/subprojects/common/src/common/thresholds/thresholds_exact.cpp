@@ -111,7 +111,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
     }
 
     if (covered) {
-        coverageMask.target = numConditions;
+        coverageMask.setTarget(numConditions);
         statistics.resetCoveredStatistics();
         uint32 i = 0;
 

@@ -19,6 +19,8 @@ class CoverageMask final : public ICoverageState {
 
         uint32 numElements_;
 
+        uint32 target_;
+
     public:
 
         /**
@@ -32,6 +34,8 @@ class CoverageMask final : public ICoverageState {
         CoverageMask(const CoverageMask& coverageMask);
 
         ~CoverageMask();
+
+        typedef const uint32* const_iterator;
 
         typedef uint32* iterator;
 
@@ -50,6 +54,41 @@ class CoverageMask final : public ICoverageState {
         iterator end();
 
         /**
+         * Returns a `const_iterator` to the beginning of the mask.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the mask.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
+
+        /**
+         * Returns the total number of examples
+         *
+         * @return The total number of examples
+         */
+        uint32 getNumElements() const;
+
+        /**
+         * Returns the "target".
+         *
+         * @return The "target"
+         */
+        uint32 getTarget() const;
+
+        /**
+         * Sets the "target".
+         *
+         * @param target The "target" to be set
+         */
+        void setTarget(uint32 target);
+
+        /**
          * Resets the mask and the target such that all examples are marked as covered.
          */
         void reset();
@@ -61,11 +100,6 @@ class CoverageMask final : public ICoverageState {
          * @return      True, if the example at the given index is covered, false otherwise
          */
         bool isCovered(uint32 pos) const;
-
-        /**
-         * The "target" that corresponds to the elements that are considered to be covered.
-         */
-        uint32 target;
 
         std::unique_ptr<ICoverageState> copy() const override;
 
