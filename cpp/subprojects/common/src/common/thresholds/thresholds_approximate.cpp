@@ -58,8 +58,7 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
     BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
     BinVector::example_list_iterator filteredExamplesIterator = filteredVector->examples_begin();
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
-
-    coverageMask.target = numConditions;
+    coverageMask.setTarget(numConditions);
     statistics.resetCoveredStatistics();
     intp start, end;
     uint32 i = 0;
