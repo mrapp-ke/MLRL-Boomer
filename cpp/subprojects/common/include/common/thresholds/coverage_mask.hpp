@@ -22,7 +22,7 @@ class CoverageMask final : public ICoverageState {
     public:
 
         /**
-         * @param numElements The number of elements
+         * @param numElements The total number of examples
          */
         CoverageMask(uint32 numElements);
 
@@ -50,15 +50,15 @@ class CoverageMask final : public ICoverageState {
         iterator end();
 
         /**
-         * Resets the mask by setting all elements and the "target" to zero.
+         * Resets the mask and the target such that all examples are marked as covered.
          */
         void reset();
 
         /**
-         * Returns whether the element at a specific element it covered or not.
+         * Returns whether the example at a specific index is covered or not.
          *
-         * @param pos   The position of the element to be checked
-         * @return      True, if the element at the given position is covered, false otherwise
+         * @param pos   The index of the example
+         * @return      True, if the example at the given index is covered, false otherwise
          */
         bool isCovered(uint32 pos) const;
 
