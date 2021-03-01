@@ -6,6 +6,17 @@
 
 
 /**
+ * An entry that is stored in a cache and contains an unique pointer to a feature vector. The field `numConditions`
+ * specifies how many conditions the rule contained when the vector was updated for the last time. It may be used to
+ * check if the vector is still valid or must be updated.
+ */
+struct FilteredCacheEntry {
+    FilteredCacheEntry() : numConditions(0) { };
+    std::unique_ptr<FeatureVector> vectorPtr;
+    uint32 numConditions;
+};
+
+/**
  * Adjusts the position that separates the examples that are covered by a condition from the ones that are not covered,
  * with respect to those examples that are not contained in the current sub-sample. This requires to look back a certain
  * number of examples to see if they satisfy the new condition or not. I.e., to traverse the examples in ascending or
@@ -78,10 +89,10 @@ static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, 
  * @param weights               A reference to an an object of type `IWeightVector` that provides access to the weights
  *                              of the individual training examples
  */
-static inline void filterCurrentVector(const FeatureVector& vector, FilteredCacheEntry<FeatureVector>& cacheEntry,
-                                       intp conditionStart, intp conditionEnd, Comparator conditionComparator,
-                                       bool covered, uint32 numConditions, CoverageMask& coverageMask,
-                                       IStatistics& statistics, const IWeightVector& weights) {
+static inline void filterCurrentVector(const FeatureVector& vector, FilteredCacheEntry& cacheEntry, intp conditionStart,
+                                       intp conditionEnd, Comparator conditionComparator, bool covered,
+                                       uint32 numConditions, CoverageMask& coverageMask, IStatistics& statistics,
+                                       const IWeightVector& weights) {
     // Determine the number of elements in the filtered vector...
     uint32 numTotalElements = vector.getNumElements();
     uint32 distance = std::abs(conditionStart - conditionEnd);
@@ -207,8 +218,8 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
  * @param coverageMask  A reference to an object of type `CoverageMask` that is used to keep track of the elements that
  *                      are covered by the current rule
  */
-static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEntry<FeatureVector>& cacheEntry,
-                                   uint32 numConditions, const CoverageMask& coverageMask) {
+static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEntry& cacheEntry, uint32 numConditions,
+                                   const CoverageMask& coverageMask) {
     uint32 maxElements = vector.getNumElements();
     FeatureVector* filteredVector = cacheEntry.vectorPtr.get();
 
@@ -288,7 +299,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                     std::unique_ptr<Result> get() override {
                         auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
-                        FilteredCacheEntry<FeatureVector>& cacheEntry = cacheFilteredIterator->second;
+                        FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                         FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
                         if (featureVector == nullptr) {
@@ -327,13 +338,12 @@ class ExactThresholds final : public AbstractThresholds {
 
             uint32 numModifications_;
 
-            std::unordered_map<uint32, FilteredCacheEntry<FeatureVector>> cacheFiltered_;
+            std::unordered_map<uint32, FilteredCacheEntry> cacheFiltered_;
 
             template<class T>
             std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const T& labelIndices, uint32 featureIndex) {
                 // Retrieve the `FilteredCacheEntry` from the cache, or insert a new one if it does not already exist...
-                auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex,
-                                                                    FilteredCacheEntry<FeatureVector>()).first;
+                auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
                 FeatureVector* featureVector = cacheFilteredIterator->second.vectorPtr.get();
 
                 // If the `FilteredCacheEntry` in the cache does not refer to a `FeatureVector`, add an empty
@@ -380,7 +390,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                     uint32 featureIndex = refinement.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
-                    FilteredCacheEntry<FeatureVector>& cacheEntry = cacheFilteredIterator->second;
+                    FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                     FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
                     if (featureVector == nullptr) {
@@ -411,9 +421,8 @@ class ExactThresholds final : public AbstractThresholds {
                     sumOfWeights_ = condition.coveredWeights;
 
                     uint32 featureIndex = condition.featureIndex;
-                    auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex,
-                                                                        FilteredCacheEntry<FeatureVector>()).first;
-                    FilteredCacheEntry<FeatureVector>& cacheEntry = cacheFilteredIterator->second;
+                    auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
+                    FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                     FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
                     if (featureVector == nullptr) {
