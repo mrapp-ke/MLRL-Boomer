@@ -63,8 +63,8 @@ setuptools.setup(
     license='MIT',
     packages=['common', 'boosting', 'seco'],
     install_requires=[
-        'numpy>=1.19.0',
-        'scipy>=1.5.0',
+        'numpy>=1.20.0',
+        'scipy>=1.6.0',
         'Cython>=0.29.0',
         'scikit-learn>=0.23.0',
         'liac-arff>=2.5.0',

@@ -33,6 +33,7 @@ source_files = [
     'src/common/input/label_matrix_c_contiguous.cpp',
     'src/common/input/label_matrix_dok.cpp',
     'src/common/input/nominal_feature_mask_dok.cpp',
+    'src/common/input/nominal_feature_mask_equal.cpp',
     'src/common/model/body_conjunctive.cpp',
     'src/common/model/body_empty.cpp',
     'src/common/model/condition_list.cpp',
@@ -69,6 +70,7 @@ source_files = [
     'src/common/stopping/stopping_criterion_size.cpp',
     'src/common/stopping/stopping_criterion_time.cpp',
     'src/common/thresholds/coverage_mask.cpp',
+    'src/common/thresholds/coverage_set.cpp',
     'src/common/thresholds/thresholds_approximate.cpp',
     'src/common/thresholds/thresholds_exact.cpp'
 ]
