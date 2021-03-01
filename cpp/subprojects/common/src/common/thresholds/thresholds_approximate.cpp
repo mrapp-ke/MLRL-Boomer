@@ -14,6 +14,7 @@ struct CacheEntry {
     std::unique_ptr<BinVector> binVectorPtr;
     std::unique_ptr<BinIndexVector> binIndicesPtr;
     std::unique_ptr<IHistogram> histogramPtr;
+    std::unique_ptr<BinWeightVector> weightVectorPtr;
 };
 
 /**
@@ -246,6 +247,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     cacheIterator->second.histogramPtr =
                                         thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogram(
                                             numBins);
+                                    cacheIterator->second.weightVectorPtr = std::make_unique<BinWeightVector>(numBins);
                                 }
 
                                 histogramBuilderPtr =
