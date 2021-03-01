@@ -216,6 +216,10 @@ namespace boosting {
 
             }
 
+            void setAllToZero() override {
+                this->statisticMatrixPtr_->setAllToZero();
+            }
+
             void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
                 this->statisticMatrixPtr_->addToRow(binIndex,
                                                     originalStatisticMatrix_.gradients_row_cbegin(statisticIndex),

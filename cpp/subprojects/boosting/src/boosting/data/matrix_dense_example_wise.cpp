@@ -1,5 +1,6 @@
 #include "boosting/data/matrix_dense_example_wise.hpp"
 #include "boosting/math/math.hpp"
+#include "common/data/arrays.hpp"
 #include <cstdlib>
 
 
@@ -67,6 +68,11 @@ namespace boosting {
 
     uint32 DenseExampleWiseStatisticMatrix::getNumCols() const {
         return numGradients_;
+    }
+
+    void DenseExampleWiseStatisticMatrix::setAllToZero() {
+        setArrayToZeros(gradients_, numRows_ * numGradients_);
+        setArrayToZeros(hessians_, numRows_ * numHessians_);
     }
 
     void DenseExampleWiseStatisticMatrix::addToRow(uint32 row, gradient_const_iterator gradientsBegin,

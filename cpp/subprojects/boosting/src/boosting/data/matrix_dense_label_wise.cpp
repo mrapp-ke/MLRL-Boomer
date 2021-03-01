@@ -1,4 +1,5 @@
 #include "boosting/data/matrix_dense_label_wise.hpp"
+#include "common/data/arrays.hpp"
 #include <cstdlib>
 
 
@@ -65,6 +66,11 @@ namespace boosting {
 
     uint32 DenseLabelWiseStatisticMatrix::getNumCols() const {
         return numCols_;
+    }
+
+    void DenseLabelWiseStatisticMatrix::setAllToZero() {
+        setArrayToZeros(gradients_, numRows_ * numCols_);
+        setArrayToZeros(hessians_, numRows_ * numCols_);
     }
 
     void DenseLabelWiseStatisticMatrix::addToRow(uint32 row, gradient_const_iterator gradientsBegin,
