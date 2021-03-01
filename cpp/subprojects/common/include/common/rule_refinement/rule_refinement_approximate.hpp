@@ -10,7 +10,9 @@
 #include "common/head_refinement/head_refinement.hpp"
 
 
-// TODO Comment
+/**
+ * A vector that stores the weights of individual bins.
+ */
 typedef DenseVector<uint32> BinWeightVector;
 
 /**
