@@ -59,7 +59,7 @@ static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndi
 
 static inline void filterCurrentVector(const BinVector& binVector, const BinIndexVector& binIndices,
                                        FilteredBinCacheEntry& cacheEntry, intp conditionEnd, bool covered,
-                                       uint32 numConditions, CoverageMask& coverageMask, IStatistics& statistics,
+                                       uint32 numConditions, CoverageSet& coverageSet, IStatistics& statistics,
                                        const IWeightVector& weights) {
     // Filter bin vector...
     uint32 numTotalElements = binVector.getNumElements();
@@ -95,49 +95,48 @@ static inline void filterCurrentVector(const BinVector& binVector, const BinInde
     filteredVector->setNumElements(n, true);
 
     // Update the covered examples...
-    uint32 numExamples = coverageMask.getNumElements();
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::iterator coverageSetIterator = coverageSet.begin();
     BinIndexVector::const_iterator indexIterator = binIndices.cbegin();
-    coverageMask.setTarget(numConditions);
     statistics.resetCoveredStatistics();
     uint32 minBinIndex = filteredBinIterator[0].index;
     uint32 maxBinIndex = filteredBinIterator[n - 1].index;
+    n = 0;
 
-    // TODO Only iterate covered examples once supported by the coverage mask
-    for (uint32 i = 0; i < numExamples; i++) {
-        if (coverageMask.isCovered(i)) {
-            uint32 binIndex = indexIterator[i];
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = coverageSetIterator[i];
+        uint32 binIndex = indexIterator[exampleIndex];
 
-            // Check if the example is still covered, i.e., if the corresponding bin is contained in the filtered bin
-            // vector...
-            if (binIndex >= minBinIndex && binIndex <= maxBinIndex) {
-                coverageMaskIterator[i] = numConditions;
-                uint32 weight = weights.getWeight(i);
-                statistics.updateCoveredStatistic(i, weight, false);
-            }
+        // Check if the example is still covered, i.e., if the corresponding bin is contained in the filtered bin
+        // vector...
+        if (binIndex >= minBinIndex && binIndex <= maxBinIndex) {
+            uint32 weight = weights.getWeight(exampleIndex);
+            statistics.updateCoveredStatistic(exampleIndex, weight, false);
+            coverageSetIterator[n] = exampleIndex;
+            n++;
         }
     }
 
+    coverageSet.setNumCovered(n);
     cacheEntry.numConditions = numConditions;
 }
 
 static inline void buildHistogram(BinIndexVector& binIndices, IStatistics::IHistogramBuilder& histogramBuilder,
                                   FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights,
-                                  const CoverageMask& coverageMask) {
-    uint32 numExamples = coverageMask.getNumElements();
+                                  const CoverageSet& coverageSet) {
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
     uint32 numBins = histogramBuilder.getNumBins();
     BinIndexVector::const_iterator indexIterator = binIndices.cbegin();
     std::unique_ptr<DenseVector<uint32>> weightVectorPtr = std::make_unique<DenseVector<uint32>>(numBins, true);
     DenseVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
 
-    // TODO Only iterate covered examples once supported by the coverage mask
-    for (uint32 i = 0; i < numExamples; i++) {
-        if (coverageMask.isCovered(i)) {
-            uint32 binIndex = indexIterator[i];
-            uint32 weight = weights.getWeight(i);
-            weightIterator[binIndex] += weight;
-            histogramBuilder.addToBin(binIndex, i, weight);
-        }
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = coverageSetIterator[i];
+        uint32 binIndex = indexIterator[exampleIndex];
+        uint32 weight = weights.getWeight(exampleIndex);
+        weightIterator[binIndex] += weight;
+        histogramBuilder.addToBin(binIndex, exampleIndex, weight);
     }
 
     cacheEntry.histogramPtr = std::move(histogramBuilder.build());
@@ -248,13 +247,13 @@ class ApproximateThresholds final : public AbstractThresholds {
                                         binVector->getNumElements());
                             }
 
+                            // TODO
+                            /*
                             // Filter bins, if necessary...
                             uint32 numConditions = thresholdsSubset_.numModifications_;
 
-                            // TODO
-                            /*
                             if (numConditions > cacheEntry.numConditions) {
-                                filterAnyVector(*binVectorOld, cacheEntry, numConditions, thresholdsSubset_.coverageMask_,
+                                filterAnyVector(*binVectorOld, cacheEntry, numConditions, thresholdsSubset_.coverageSet_,
                                                 thresholdsSubset_.weights_);
                                 binVectorOld = cacheEntry.vectorPtr.get();
                             }
@@ -265,7 +264,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                             if (histogramBuilder != nullptr) {
                                 buildHistogram(*binIndices, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_,
-                                               thresholdsSubset_.coverageMask_);
+                                               thresholdsSubset_.coverageSet_);
                             }
 
                             const IHistogram& histogram = *cacheEntry.histogramPtr;
@@ -279,7 +278,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 const IWeightVector& weights_;
 
-                CoverageMask coverageMask_;
+                CoverageSet coverageSet_;
 
                 uint32 numModifications_;
 
@@ -314,7 +313,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
                     : thresholds_(thresholds), weights_(weights),
-                      coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
+                      coverageSet_(CoverageSet(thresholds.getNumExamples())), numModifications_(0) {
 
                 }
 
@@ -343,7 +342,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     }
 
                     filterCurrentVector(*binVector, *binIndices, cacheEntry, refinement.end, refinement.covered,
-                                        numModifications_, coverageMask_, thresholds_.statisticsProviderPtr_->get(),
+                                        numModifications_, coverageSet_, thresholds_.statisticsProviderPtr_->get(),
                                         weights_);
                 }
 
@@ -354,11 +353,11 @@ class ApproximateThresholds final : public AbstractThresholds {
                 void resetThresholds() override {
                     numModifications_ = 0;
                     cacheFiltered_.clear();
-                    coverageMask_.reset();
+                    coverageSet_.reset();
                 }
 
                 const ICoverageState& getCoverageState() const {
-                    return coverageMask_;
+                    return coverageSet_;
                 }
 
                 float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
@@ -416,8 +415,18 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
-                    updateStatisticsInternally(thresholds_.statisticsProviderPtr_->get(), coverageMask_, prediction,
-                                               thresholds_.numThreads_);
+                    uint32 numCovered = coverageSet_.getNumCovered();
+                    CoverageSet::const_iterator iterator = coverageSet_.cbegin();
+                    const AbstractPrediction* predictionPtr = &prediction;
+                    IStatistics* statisticsPtr = &thresholds_.statisticsProviderPtr_->get();
+                    uint32 numThreads = thresholds_.numThreads_;
+
+                    #pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) \
+                    firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+                    for (uint32 i = 0; i < numCovered; i++) {
+                        uint32 exampleIndex = iterator[i];
+                        predictionPtr->apply(*statisticsPtr, exampleIndex);
+                    }
                 }
 
         };
