@@ -5,6 +5,7 @@
 #include "common/data/arrays.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
+#include <cmath>
 
 
 /**
@@ -33,11 +34,10 @@ static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndi
     // Remove empty bins...
     for (uint32 i = 0; i < numElements; i++) {
         mapping[i] = n;
-        uint32 numExamples = binIterator[i].numExamples;
+        float32 minValue = binIterator[i].minValue;
 
-        if (numExamples > 0) {
-            binIterator[n].numExamples = numExamples;
-            binIterator[n].minValue = binIterator[i].minValue;
+        if (std::isfinite(minValue)) {
+            binIterator[n].minValue = minValue;
             binIterator[n].maxValue = binIterator[i].maxValue;
             n++;
         }
@@ -117,7 +117,6 @@ static inline void rebuildHistogram(const BinIndexVector& binIndices, BinWeightV
 
 static inline void addValueToBinVector(BinVector& binVector, uint32 binIndex, uint32 originalIndex, float64 value) {
     BinVector::iterator binIterator = binVector.begin();
-    binIterator[binIndex].numExamples++;
 
     if (value < binIterator[binIndex].minValue) {
         binIterator[binIndex].minValue = value;
