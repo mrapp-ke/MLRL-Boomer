@@ -16,4 +16,14 @@ class IHistogram : virtual public IImmutableStatistics {
 
         virtual ~IHistogram() { };
 
+        /**
+         * Adds the statistic at a specific index to a specific bin.
+         *
+         * @param binIndex          The index of the bin
+         * @param statisticIndex    The index of the statistic
+         * @param weight            The weight of the statistic
+         */
+        virtual void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) = 0;
+
+
 };
