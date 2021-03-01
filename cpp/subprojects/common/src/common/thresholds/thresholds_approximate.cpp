@@ -36,7 +36,6 @@ static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndi
         uint32 numExamples = binIterator[i].numExamples;
 
         if (numExamples > 0) {
-            binIterator[n].index = n;
             binIterator[n].numExamples = numExamples;
             binIterator[n].minValue = binIterator[i].minValue;
             binIterator[n].maxValue = binIterator[i].maxValue;
@@ -59,20 +58,16 @@ static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndi
 static inline void updateCoveredExamples(const BinVector& binVector, const BinIndexVector& binIndices,
                                          intp conditionEnd, bool covered, CoverageSet& coverageSet,
                                          IStatistics& statistics, const IWeightVector& weights) {
-    uint32 numBins = binVector.getNumElements();
-    BinVector::const_iterator binIterator = binVector.cbegin();
-    intp start, end;
+    intp minBinIndex, maxBinIndex;
 
     if (covered) {
-        start = 0;
-        end = conditionEnd;
+        minBinIndex = 0;
+        maxBinIndex = conditionEnd - 1;
     } else {
-        start = conditionEnd;
-        end = numBins;
+        minBinIndex = conditionEnd;
+        maxBinIndex = binVector.getNumElements() - 1;
     }
 
-    uint32 minBinIndex = binIterator[start].index;
-    uint32 maxBinIndex = binIterator[end - 1].index;
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::iterator coverageSetIterator = coverageSet.begin();
     BinIndexVector::const_iterator indexIterator = binIndices.cbegin();
