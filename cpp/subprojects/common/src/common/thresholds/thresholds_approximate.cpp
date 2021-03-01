@@ -190,7 +190,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                              : *thresholdsSubset_.thresholds_.binningPtr_;
                                 IFeatureBinning::FeatureInfo featureInfo = binning.getFeatureInfo(*featureVectorPtr);
                                 uint32 numBins = featureInfo.numBins;
-                                cacheIterator->second.binVectorPtr = std::make_unique<BinVector>(numBins, true);
+                                cacheIterator->second.binVectorPtr = std::make_unique<BinVector>(numBins);
                                 cacheIterator->second.binIndicesPtr = std::make_unique<BinIndexVector>(numExamples);
                                 binVector = cacheIterator->second.binVectorPtr.get();
                                 binIndices = cacheIterator->second.binIndicesPtr.get();

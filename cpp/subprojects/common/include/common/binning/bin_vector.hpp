@@ -19,10 +19,4 @@ class BinVector final : public DenseVector<Bin> {
          */
         BinVector(uint32 numElements);
 
-        /**
-         * @param numElements   The number of elements in the vector
-         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
-         */
-        BinVector(uint32 numElements, bool init);
-
 };
