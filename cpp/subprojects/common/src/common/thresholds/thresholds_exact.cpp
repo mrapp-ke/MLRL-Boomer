@@ -499,8 +499,20 @@ class ExactThresholds final : public AbstractThresholds {
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
-                    updateStatisticsInternally(thresholds_.statisticsProviderPtr_->get(), coverageMask_, prediction,
-                                               thresholds_.numThreads_);
+                    IStatistics& statistics = thresholds_.statisticsProviderPtr_->get();
+                    uint32 numStatistics = statistics.getNumStatistics();
+                    const CoverageMask* coverageMaskPtr = &coverageMask_;
+                    const AbstractPrediction* predictionPtr = &prediction;
+                    IStatistics* statisticsPtr = &statistics;
+                    uint32 numThreads = thresholds_.numThreads_;
+
+                    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) \
+                    firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+                    for (uint32 i = 0; i < numStatistics; i++) {
+                        if (coverageMaskPtr->isCovered(i)) {
+                            predictionPtr->apply(*statisticsPtr, i);
+                        }
+                    }
                 }
 
         };
