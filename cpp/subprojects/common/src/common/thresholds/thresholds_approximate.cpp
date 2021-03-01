@@ -25,6 +25,13 @@ struct CacheEntry {
     std::unique_ptr<BinWeightVector> weightVectorPtr;
 };
 
+/**
+ * Adds a value to a specific bin.
+ *
+ * @param binVector A reference to an object of type `BinVector` that should be updated
+ * @param binIndex  The index of the bin, the value should be added to
+ * @param value     The value to be added to the bin
+ */
 static inline void addValueToBinVector(BinVector& binVector, uint32 binIndex, float64 value) {
     BinVector::iterator binIterator = binVector.begin();
 
