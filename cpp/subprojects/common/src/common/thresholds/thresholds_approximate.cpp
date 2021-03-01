@@ -25,6 +25,18 @@ struct CacheEntry {
     std::unique_ptr<BinWeightVector> weightVectorPtr;
 };
 
+static inline void addValueToBinVector(BinVector& binVector, uint32 binIndex, uint32 originalIndex, float64 value) {
+    BinVector::iterator binIterator = binVector.begin();
+
+    if (value < binIterator[binIndex].minValue) {
+        binIterator[binIndex].minValue = value;
+    }
+
+    if (value > binIterator[binIndex].maxValue) {
+        binIterator[binIndex].maxValue = value;
+    }
+}
+
 /**
  * Removes all empty bins from a given `BinVector` and adjusts the indices of the bins, individual examples belong to,
  * accordingly.
@@ -120,18 +132,6 @@ static inline void rebuildHistogram(const BinIndexVector& binIndices, BinWeightV
         uint32 weight = weights.getWeight(exampleIndex);
         binWeightIterator[binIndex] += weight;
         histogram.addToBin(binIndex, exampleIndex, weight);
-    }
-}
-
-static inline void addValueToBinVector(BinVector& binVector, uint32 binIndex, uint32 originalIndex, float64 value) {
-    BinVector::iterator binIterator = binVector.begin();
-
-    if (value < binIterator[binIndex].minValue) {
-        binIterator[binIndex].minValue = value;
-    }
-
-    if (value > binIterator[binIndex].maxValue) {
-        binIterator[binIndex].maxValue = value;
     }
 }
 
