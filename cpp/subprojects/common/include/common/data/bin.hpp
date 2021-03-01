@@ -13,7 +13,7 @@
 struct Bin {
     Bin() : numExamples(0), minValue(std::numeric_limits<float32>::infinity()),
             maxValue(-std::numeric_limits<float32>::infinity()) { };
-    uint32 index;
+    uint32 index; // TODO Not needed, if bin vectors are never filtered
     uint32 numExamples; // TODO Currently this is only used to check if a bin is empty. Can be removed and the check can be based on minValue or maxValue instead.
     float32 minValue;
     float32 maxValue;
