@@ -4,7 +4,6 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
-#include <limits>
 
 
 // TODO Comment
