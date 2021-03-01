@@ -105,8 +105,6 @@ static inline void updateCoveredExamples(const BinVector& binVector, const BinIn
         uint32 exampleIndex = coverageSetIterator[i];
         uint32 binIndex = binIndexIterator[exampleIndex];
 
-        // Check if the example is still covered, i.e., if the corresponding bin is contained in the filtered bin
-        // vector...
         if (binIndex >= minBinIndex && binIndex <= maxBinIndex) {
             uint32 weight = weights.getWeight(exampleIndex);
             statistics.updateCoveredStatistic(exampleIndex, weight, false);
