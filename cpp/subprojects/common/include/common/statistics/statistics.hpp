@@ -163,4 +163,11 @@ class IStatistics : virtual public IImmutableStatistics {
          */
         virtual std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const = 0;
 
+        /**
+         * Creates and returns a new histogram based on the statistics.
+         *
+         * @return An unique pointer to an object of type `IHistogram` that has been created
+         */
+        virtual std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const = 0;
+
 };
