@@ -2,6 +2,7 @@
 #include "common/binning/bin_vector.hpp"
 #include "common/binning/feature_binning_nominal.hpp"
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
+#include "common/data/arrays.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
 
@@ -97,6 +98,29 @@ static inline void updateCoveredExamples(const BinVector& binVector, const BinIn
     }
 
     coverageSet.setNumCovered(n);
+}
+
+static inline void rebuildHistogram(BinIndexVector& binIndices, BinWeightVector& binWeights, IHistogram& histogram,
+                                    const IWeightVector& weights, const CoverageSet& coverageSet) {
+    // Reset all statistics in the histogram to zero...
+    histogram.setAllToZero();
+
+    // Reset the weights of all bins to zero...
+    BinWeightVector::iterator binWeightIterator = binWeights.begin();
+    setArrayToZeros(binWeightIterator, binWeights.getNumElements());
+
+    // Iterate the covered examples and add their statistics to the corresponding bin...
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
+    BinIndexVector::const_iterator binIndexIterator = binIndices.cbegin();
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = coverageSetIterator[i];
+        uint32 binIndex = binIndexIterator[exampleIndex];
+        uint32 weight = weights.getWeight(exampleIndex);
+        binWeightIterator[binIndex] += weight;
+        histogram.addToBin(binIndex, exampleIndex, weight);
+    }
 }
 
 static inline void buildHistogram(BinIndexVector& binIndices, IStatistics::IHistogramBuilder& histogramBuilder,
