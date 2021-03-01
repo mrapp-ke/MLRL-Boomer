@@ -30,5 +30,4 @@ class IHistogram : virtual public IImmutableStatistics {
          */
         virtual void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) = 0;
 
-
 };
