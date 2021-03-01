@@ -17,6 +17,11 @@ class IHistogram : virtual public IImmutableStatistics {
         virtual ~IHistogram() { };
 
         /**
+         * Sets all statistics in the histogram to zero.
+         */
+        virtual void setAllToZero() = 0;
+
+        /**
          * Adds the statistic at a specific index to a specific bin.
          *
          * @param binIndex          The index of the bin
