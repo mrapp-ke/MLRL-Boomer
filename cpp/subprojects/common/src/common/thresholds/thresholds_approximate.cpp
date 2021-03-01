@@ -248,18 +248,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                                         binVector->getNumElements());
                             }
 
-                            // TODO
-                            /*
-                            // Filter bins, if necessary...
-                            uint32 numConditions = thresholdsSubset_.numModifications_;
-
-                            if (numConditions > cacheEntry.numConditions) {
-                                filterAnyVector(*binVectorOld, cacheEntry, numConditions, thresholdsSubset_.coverageSet_,
-                                                thresholdsSubset_.weights_);
-                                binVectorOld = cacheEntry.vectorPtr.get();
-                            }
-                            */
-
                             // Build histogram, if necessary...
                             IStatistics::IHistogramBuilder* histogramBuilder = histogramBuilderPtr.get();
 
