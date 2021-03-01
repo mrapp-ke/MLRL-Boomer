@@ -135,6 +135,19 @@ static inline void updateCoveredExamples(const BinIndexVector& binIndices, uint3
     coverageSet.setNumCovered(n);
 }
 
+/**
+ * Rebuilds a given histogram such that is contains the statistics of all examples that are currently covered and
+ * updates the weights of the individual bins.
+ *
+ * @param binIndices    A reference to an object of type `BinIndexVector` that stores the indices of the bins,
+ *                      individual examples belong to
+ * @param binWeights    A reference to an object of type `BinWeightVector` that stores the weights of individual bins
+ * @param histogram     A reference to an object of type `IHistogram` that should be rebuild
+ * @param weights       A reference to an an object of type `IWeightVector` that provides access to the weights of the
+ *                      individual training examples
+ * @param coverageSet   A reference to an object of type `CoverageSet` that is used to keep track of the examples that
+ *                      are currently covered
+ */
 static inline void rebuildHistogram(const BinIndexVector& binIndices, BinWeightVector& binWeights,
                                     IHistogram& histogram, const IWeightVector& weights,
                                     const CoverageSet& coverageSet) {
