@@ -7,11 +7,10 @@
 
 
 /**
- * Allows to check whether individual examples are covered by a rule or not. For each example, an integer is stored in a
- * C-contiguous array that may be updated when the rule is refined. If the value that corresponds to a certain example
- * is equal to the "target", it is considered to be covered.
+ * Provides access to the indices of the examples that are covered by a rule. The indices of the covered examples are
+ * stored in a C-contiguous array that may be updated when the rule is refined.
  */
-class CoverageMask final : public ICoverageState {
+class CoverageSet final : public ICoverageState {
 
     private:
 
@@ -19,87 +18,79 @@ class CoverageMask final : public ICoverageState {
 
         uint32 numElements_;
 
-        uint32 target_;
+        uint32 numCovered_;
 
     public:
 
         /**
          * @param numElements The total number of examples
          */
-        CoverageMask(uint32 numElements);
+        CoverageSet(uint32 numElements);
 
         /**
-         * @param coverageMask A reference to an object of type `CoverageMask` to be copied
+         * @param coverageSet A reference to an object of type `CoverageSet` to be copied
          */
-        CoverageMask(const CoverageMask& coverageMask);
+        CoverageSet(const CoverageSet& coverageSet);
 
-        ~CoverageMask();
+        ~CoverageSet();
 
         typedef const uint32* const_iterator;
 
         typedef uint32* iterator;
 
         /**
-         * Returns an `iterator` to the beginning of the mask.
+         * Returns an `iterator` to the beginning of the indices of the covered examples.
          *
          * @return An `iterator` to the beginning
          */
         iterator begin();
 
         /**
-         * Returns an `iterator` to the end of the mask.
+         * Returns an `iterator` to the end of the indices of the covered examples.
          *
          * @return An `iterator` to the end
          */
         iterator end();
 
         /**
-         * Returns a `const_iterator` to the beginning of the mask.
+         * Returns a `const_iterator` to the beginning of the indices of the covered examples.
          *
          * @return A `const_iterator` to the beginning
          */
         const_iterator cbegin() const;
 
         /**
-         * Returns a `const_iterator` to the end of the mask.
+         * Returns a `const_iterator` to the end of the indices of the covered examples.
          *
          * @return A `const_iterator` to the end
          */
         const_iterator cend() const;
 
         /**
-         * Returns the total number of examples
+         * Returns the total number of examples.
          *
          * @return The total number of examples
          */
         uint32 getNumElements() const;
 
         /**
-         * Returns the "target".
+         * Returns the number of covered examples.
          *
-         * @return The "target"
+         * @return The number of covered examples
          */
-        uint32 getTarget() const;
+        uint32 getNumCovered() const;
 
         /**
-         * Sets the "target".
+         * Sets the number of covered examples.
          *
-         * @param target The "target" to be set
+         * @param numCovered The number of covered examples to be set
          */
-        void setTarget(uint32 target);
+        void setNumCovered(uint32 numCovered);
 
         /**
-         * Resets the mask and the target such that all examples are marked as covered.
+         * Resets the number of covered examples and their indices such that all examples are marked as covered.
          */
         void reset();
-
-        /**
-         * Returns whether the example at a specific index is covered or not.
-         *
-         * @param pos   The index of the example
-         * @return      True, if the example at the given index is covered, false otherwise
-         */
-        bool isCovered(uint32 pos) const;
 
         std::unique_ptr<ICoverageState> copy() const override;
 

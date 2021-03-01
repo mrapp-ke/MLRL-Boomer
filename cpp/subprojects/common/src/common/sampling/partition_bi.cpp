@@ -1,14 +1,29 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/instance_sampling.hpp"
-#include "common/thresholds/coverage_mask.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 #include "common/rule_refinement/refinement.hpp"
 #include "common/head_refinement/prediction.hpp"
 
 
-BiPartition::BiPartition(uint32 numFirst, uint32 numSecond)
-    : vector_(DenseVector<uint32>(numFirst + numSecond)), numFirst_(numFirst) {
+static inline std::unordered_set<uint32>* createSet(BiPartition::const_iterator iterator, uint32 numElements) {
+    std::unordered_set<uint32>* set = new std::unordered_set<uint32>();
 
+    for (uint32 i = 0; i < numElements; i++) {
+        uint32 index = iterator[i];
+        set->insert(index);
+    }
+
+    return set;
+}
+
+BiPartition::BiPartition(uint32 numFirst, uint32 numSecond)
+    : vector_(DenseVector<uint32>(numFirst + numSecond)), numFirst_(numFirst), firstSet_(nullptr), secondSet_(nullptr) {
+
+}
+
+BiPartition::~BiPartition() {
+    delete firstSet_;
+    delete secondSet_;
 }
 
 BiPartition::iterator BiPartition::first_begin() {
@@ -55,16 +70,32 @@ uint32 BiPartition::getNumElements() const {
     return vector_.getNumElements();
 }
 
+const std::unordered_set<uint32>& BiPartition::getFirstSet() {
+    if (firstSet_ == nullptr) {
+        firstSet_ = createSet(this->first_cbegin(), this->getNumFirst());
+    }
+
+    return *firstSet_;
+}
+
+const std::unordered_set<uint32>& BiPartition::getSecondSet() {
+    if (secondSet_ == nullptr) {
+        secondSet_ = createSet(this->second_cbegin(), this->getNumSecond());
+    }
+
+    return *secondSet_;
+}
+
 std::unique_ptr<IWeightVector> BiPartition::subSample(const IInstanceSubSampling& instanceSubSampling, RNG& rng) const {
     return instanceSubSampling.subSample(*this, rng);
 }
 
-float64 BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
-                                         const AbstractPrediction& head) const {
-    return thresholdsSubset.evaluateOutOfSample(*this, coverageMask, head);
+float64 BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+                                         const AbstractPrediction& head) {
+    return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
 }
 
-void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
-                                        Refinement& refinement) const {
-    return thresholdsSubset.recalculatePrediction(*this, coverageMask, refinement);
+void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+                                        Refinement& refinement) {
+    coverageState.recalculatePrediction(thresholdsSubset, *this, refinement);
 }

@@ -55,6 +55,49 @@ static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExampl
     return scoreVector.overallQualityScore;
 }
 
+static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
+                                                    const IStatistics& statistics,
+                                                    const IHeadRefinementFactory& headRefinementFactory,
+                                                    const AbstractPrediction& prediction) {
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = iterator[i];
+
+        if (weights.getWeight(exampleIndex) == 0) {
+            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+        }
+    }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    return scoreVector.overallQualityScore;
+}
+
+static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
+                                                    BiPartition& partition, const IStatistics& statistics,
+                                                    const IHeadRefinementFactory& headRefinementFactory,
+                                                    const AbstractPrediction& prediction) {
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
+    const std::unordered_set<uint32>& holdoutSet = partition.getSecondSet();
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = iterator[i];
+
+        if (weights.getWeight(exampleIndex) == 0 && holdoutSet.find(exampleIndex) == holdoutSet.cend()) {
+            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+        }
+    }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    return scoreVector.overallQualityScore;
+}
+
 template<class T>
 static inline void recalculatePredictionInternally(T iterator, uint32 numExamples, const CoverageMask& coverageMask,
                                                    const IStatistics& statistics,
@@ -67,6 +110,47 @@ static inline void recalculatePredictionInternally(T iterator, uint32 numExample
         uint32 exampleIndex = iterator[i];
 
         if (coverageMask.isCovered(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+        }
+    }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    scoreVector.updatePrediction(head);
+}
+
+static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, const IStatistics& statistics,
+                                                   const IHeadRefinementFactory& headRefinementFactory,
+                                                   Refinement& refinement) {
+    AbstractPrediction& head = *refinement.headPtr;
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = iterator[i];
+        statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+    }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    scoreVector.updatePrediction(head);
+}
+
+static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, BiPartition& partition,
+                                                   const IStatistics& statistics,
+                                                   const IHeadRefinementFactory& headRefinementFactory,
+                                                   Refinement& refinement) {
+    AbstractPrediction& head = *refinement.headPtr;
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
+    const std::unordered_set<uint32>& holdoutSet = partition.getSecondSet();
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = iterator[i];
+
+        if (holdoutSet.find(exampleIndex) == holdoutSet.cend()) {
             statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
