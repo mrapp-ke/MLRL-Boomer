@@ -25,6 +25,14 @@ struct CacheEntry {
     std::unique_ptr<BinWeightVector> weightVectorPtr;
 };
 
+/**
+ * Removes all empty bins from a given `BinVector` and adjusts the indices of the bins, individual examples belong to,
+ * accordingly.
+ *
+ * @param binVector     A reference to an object of type `BinVector`, the empty bins should be removed from
+ * @param binIndices    A reference to an object of type `BinIndexVector` that stores the indices of the bins,
+ *                      individual examples belong to
+ */
 static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndices) {
     uint32 numBins = binVector.getNumElements();
     BinVector::iterator binIterator = binVector.begin();
