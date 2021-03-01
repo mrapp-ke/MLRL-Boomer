@@ -232,8 +232,6 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 CoverageSet coverageSet_;
 
-                uint32 numModifications_;
-
                 template<class T>
                 std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
                                                                                  uint32 featureIndex) {
@@ -257,7 +255,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
                     : thresholds_(thresholds), weights_(weights),
-                      coverageSet_(CoverageSet(thresholds.getNumExamples())), numModifications_(0) {
+                      coverageSet_(CoverageSet(thresholds.getNumExamples())) {
 
                 }
 
@@ -272,8 +270,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void filterThresholds(Refinement& refinement) override {
-                    numModifications_++;
-
                     uint32 featureIndex = refinement.featureIndex;
                     auto cacheIterator = thresholds_.cache_.find(featureIndex);
                     const BinVector& binVector = *cacheIterator->second.binVectorPtr;
@@ -287,7 +283,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void resetThresholds() override {
-                    numModifications_ = 0;
                     coverageSet_.reset();
                 }
 
