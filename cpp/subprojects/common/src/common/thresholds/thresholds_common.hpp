@@ -160,22 +160,6 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
     scoreVector.updatePrediction(head);
 }
 
-static inline void updateStatisticsInternally(IStatistics& statistics, const CoverageMask& coverageMask,
-                                              const AbstractPrediction& prediction, uint32 numThreads) {
-    uint32 numStatistics = statistics.getNumStatistics();
-    const CoverageMask* coverageMaskPtr = &coverageMask;
-    const AbstractPrediction* predictionPtr = &prediction;
-    IStatistics* statisticsPtr = &statistics;
-
-    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
-    firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
-    for (uint32 i = 0; i < numStatistics; i++) {
-        if (coverageMaskPtr->isCovered(i)) {
-            predictionPtr->apply(*statisticsPtr, i);
-        }
-    }
-}
-
 /**
  * An abstract base class for all classes that provide access to thresholds that may be used by the first condition of a
  * rule that currently has an empty body and therefore covers the entire instance space.
