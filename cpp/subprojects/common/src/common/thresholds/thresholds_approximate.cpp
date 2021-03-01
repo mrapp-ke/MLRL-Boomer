@@ -82,9 +82,28 @@ static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndi
     }
 }
 
-static inline void updateCoveredExamples(const BinVector& binVector, const BinIndexVector& binIndices,
-                                         intp conditionEnd, bool covered, CoverageSet& coverageSet,
-                                         IStatistics& statistics, const IWeightVector& weights) {
+/**
+ * Updates a given `CoverageSet` after a new condition has been added, such that only the examples that are covered by
+ * the new rule are marked es covered.
+ *
+ * @param binIndices    A reference to an object of type `BinIndexVector` that stores the indices of the bins,
+ *                      individual examples belong to
+ * @param numBins       The total number of bins
+ * @param conditionEnd  The element in `binVector` that corresponds to the last bin (exclusive) that is covered by the
+ *                      condition
+ * @param covered       True, if the bins in range [0, conditionEnd) are covered by the new condition and the remaining
+ *                      ones are not, false, if the elements in said range are not covered, but the remaining ones are
+ * @param coverageSet   A reference to an object of type `CoverageSet` that is used to keep track of the examples that
+ *                      are covered by the previous rule. It will be updated by this function
+ * @param statistics    A reference to an object of type `IStatistics` to be notified about the statistics that must be
+ *                      considered when searching for the next refinement, i.e., the statistics that are covered by the
+ *                      new rule
+ * @param weights       A reference to an an object of type `IWeightVector` that provides access to the weights of the
+ *                      individual training examples
+ */
+static inline void updateCoveredExamples(const BinIndexVector& binIndices, uint32 numBins, intp conditionEnd,
+                                         bool covered, CoverageSet& coverageSet, IStatistics& statistics,
+                                         const IWeightVector& weights) {
     intp minBinIndex, maxBinIndex;
 
     if (covered) {
@@ -92,7 +111,7 @@ static inline void updateCoveredExamples(const BinVector& binVector, const BinIn
         maxBinIndex = conditionEnd - 1;
     } else {
         minBinIndex = conditionEnd;
-        maxBinIndex = binVector.getNumElements() - 1;
+        maxBinIndex = numBins - 1;
     }
 
     uint32 numCovered = coverageSet.getNumCovered();
@@ -283,8 +302,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                     auto cacheIterator = thresholds_.cache_.find(featureIndex);
                     const BinVector& binVector = *cacheIterator->second.binVectorPtr;
                     const BinIndexVector& binIndices = *cacheIterator->second.binIndicesPtr;
-                    updateCoveredExamples(binVector, binIndices, refinement.end, refinement.covered, coverageSet_,
-                                          thresholds_.statisticsProviderPtr_->get(), weights_);
+                    updateCoveredExamples(binIndices, binVector.getNumElements(), refinement.end, refinement.covered,
+                                          coverageSet_, thresholds_.statisticsProviderPtr_->get(), weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
