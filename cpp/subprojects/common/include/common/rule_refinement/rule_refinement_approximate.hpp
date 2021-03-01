@@ -10,6 +10,9 @@
 #include "common/head_refinement/head_refinement.hpp"
 
 
+// TODO Comment
+typedef DenseVector<uint32> BinWeightVector;
+
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
  * certain feature. The thresholds that may be used by the new condition result from the boundaries between the bins
@@ -31,7 +34,7 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
 
         bool nominal_;
 
-        std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>> callbackPtr_;
+        std::unique_ptr<IRuleRefinementCallback<BinVector, BinWeightVector>> callbackPtr_;
 
         std::unique_ptr<Refinement> refinementPtr_;
 
@@ -49,7 +52,7 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
          */
         ApproximateRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
                                   uint32 featureIndex, bool nominal,
-                                  std::unique_ptr<IRuleRefinementCallback<BinVector, DenseVector<uint32>>> callbackPtr);
+                                  std::unique_ptr<IRuleRefinementCallback<BinVector, BinWeightVector>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
 

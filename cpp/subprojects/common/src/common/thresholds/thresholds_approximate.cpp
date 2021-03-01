@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <limits>
 
+
 // TODO Comment
 typedef DenseVector<uint32> BinIndexVector;
 
@@ -22,7 +23,7 @@ struct CacheEntry {
  */
 struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
     std::unique_ptr<IHistogram> histogramPtr;
-    std::unique_ptr<DenseVector<uint32>> weightVectorPtr;
+    std::unique_ptr<BinWeightVector> weightVectorPtr;
 };
 
 static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndices) {
@@ -128,8 +129,8 @@ static inline void buildHistogram(BinIndexVector& binIndices, IStatistics::IHist
     CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
     uint32 numBins = histogramBuilder.getNumBins();
     BinIndexVector::const_iterator indexIterator = binIndices.cbegin();
-    std::unique_ptr<DenseVector<uint32>> weightVectorPtr = std::make_unique<DenseVector<uint32>>(numBins, true);
-    DenseVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
+    std::unique_ptr<BinWeightVector> weightVectorPtr = std::make_unique<BinWeightVector>(numBins, true);
+    BinWeightVector::iterator weightIterator = weightVectorPtr->begin();
 
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = coverageSetIterator[i];
@@ -177,7 +178,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IRuleRefinementCallback<BinVector, DenseVector<uint32>> {
+                class Callback final : public IRuleRefinementCallback<BinVector, BinWeightVector> {
 
                     private:
 
@@ -268,7 +269,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             }
 
                             const IHistogram& histogram = *cacheEntry.histogramPtr;
-                            const DenseVector<uint32>& weightVector = *cacheEntry.weightVectorPtr;
+                            const BinWeightVector& weightVector = *cacheEntry.weightVectorPtr;
                             return std::make_unique<Result>(histogram, weightVector, *binVector);
                         }
 
