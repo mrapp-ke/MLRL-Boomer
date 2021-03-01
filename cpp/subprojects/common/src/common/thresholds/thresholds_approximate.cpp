@@ -48,7 +48,7 @@ static inline void addValueToBinVector(BinVector& binVector, uint32 binIndex, ui
 static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndices) {
     uint32 numBins = binVector.getNumElements();
     BinVector::iterator binIterator = binVector.begin();
-    uint32 mapping[numElements];
+    uint32 mapping[numBins];
     uint32 n = 0;
 
     // Remove empty bins...
