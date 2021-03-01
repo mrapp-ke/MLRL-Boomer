@@ -213,17 +213,17 @@ namespace boosting {
              *                                  the original gradients and Hessians, the histogram was created from
              * @param totalSumVector            A pointer to an object of template type `StatisticVector` that stores
              *                                  the total sums of gradients and Hessians
-             * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
-             *                                  stores the gradients and Hessians
              * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
              *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
              *                                  predictions, as well as corresponding quality scores, of rules
+             * @param numBins                   The number of bins in the histogram
              */
             ExampleWiseHistogram(const StatisticMatrix& originalStatisticMatrix, const StatisticVector* totalSumVector,
-                                 std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
-                                 std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+                                 std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                                 uint32 numBins)
                 : AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
-                      std::move(statisticMatrixPtr), ruleEvaluationFactoryPtr),
+                      std::make_unique<StatisticMatrix>(numBins, originalStatisticMatrix.getNumCols()),
+                      ruleEvaluationFactoryPtr),
                   originalStatisticMatrix_(originalStatisticMatrix), totalSumVector_(totalSumVector) {
 
             }
@@ -361,11 +361,8 @@ namespace boosting {
             }
 
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
-                std::unique_ptr<StatisticMatrix> statisticMatrixPtr = std::make_unique<StatisticMatrix>(
-                    numBins, this->getNumLabels());
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
-                        *this->statisticMatrixPtr_, totalSumVectorPtr_.get(), std::move(statisticMatrixPtr),
-                        this->ruleEvaluationFactoryPtr_);
+                        *this->statisticMatrixPtr_, totalSumVectorPtr_.get(), this->ruleEvaluationFactoryPtr_, numBins);
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
