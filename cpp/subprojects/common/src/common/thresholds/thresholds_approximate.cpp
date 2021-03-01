@@ -26,13 +26,13 @@ struct CacheEntry {
 };
 
 static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndices) {
-    uint32 numElements = binVector.getNumElements();
+    uint32 numBins = binVector.getNumElements();
     BinVector::iterator binIterator = binVector.begin();
     uint32 mapping[numElements];
     uint32 n = 0;
 
     // Remove empty bins...
-    for (uint32 i = 0; i < numElements; i++) {
+    for (uint32 i = 0; i < numBins; i++) {
         mapping[i] = n;
         float32 minValue = binIterator[i].minValue;
 
@@ -47,9 +47,9 @@ static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndi
 
     // Adjust bin indices...
     BinIndexVector::iterator indexIterator = binIndices.begin();
-    uint32 numIndices = binIndices.getNumElements();
+    uint32 numExamples = binIndices.getNumElements();
 
-    for (uint32 i = 0; i < numIndices; i++) {
+    for (uint32 i = 0; i < numExamples; i++) {
         uint32 binIndex = indexIterator[i];
         indexIterator[i] = mapping[binIndex];
     }
