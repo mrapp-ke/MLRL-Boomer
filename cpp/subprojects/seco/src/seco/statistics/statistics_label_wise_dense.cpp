@@ -359,12 +359,6 @@ namespace seco {
                 return 0;
             }
 
-            std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const override {
-                //TODO Support creation of histograms
-                std::unique_ptr<IHistogramBuilder> result;
-                return result;
-            }
-
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
                 //TODO Support creation of histograms
                 return nullptr;

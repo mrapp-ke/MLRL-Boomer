@@ -273,52 +273,6 @@ namespace boosting {
 
         private:
 
-            /**
-             * Allows to build a histogram based on the gradients and Hessians that are stored by an instance of the
-             * class `ExampleWiseStatistics`.
-             */
-            class HistogramBuilder final : public IHistogramBuilder {
-
-                private:
-
-                    const ExampleWiseStatistics& statistics_;
-
-                    std::unique_ptr<StatisticMatrix> statisticMatrixPtr_;
-
-                public:
-
-                /**
-                 * @param statistics    A reference to an object of type `ExampleWiseStatistics` that stores the
-                 *                      gradients and Hessians
-                 * @param numBins       The number of bins, the histogram should consist of
-                 */
-                HistogramBuilder(const ExampleWiseStatistics& statistics, uint32 numBins)
-                    : statistics_(statistics),
-                      statisticMatrixPtr_(std::make_unique<StatisticMatrix>(numBins, statistics.getNumLabels(), true)) {
-
-                }
-
-                uint32 getNumBins() const {
-                    return statisticMatrixPtr_->getNumRows();
-                }
-
-                void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
-                    statisticMatrixPtr_->addToRow(binIndex,
-                                                  statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
-                                                  statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
-                                                  statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                                                  statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex),
-                                                  weight);
-                }
-
-                std::unique_ptr<IHistogram> build() override {
-                    return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
-                        *statistics_.statisticMatrixPtr_, statistics_.totalSumVectorPtr_.get(),
-                        std::move(statisticMatrixPtr_), statistics_.ruleEvaluationFactoryPtr_);
-                }
-
-            };
-
             std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
             std::shared_ptr<IExampleWiseLoss> lossFunctionPtr_;
@@ -404,10 +358,6 @@ namespace boosting {
 
             float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
                 return measure.evaluate(statisticIndex, *labelMatrixPtr_, *scoreMatrixPtr_);
-            }
-
-            std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const override {
-                return std::make_unique<HistogramBuilder>(*this, numBins);
             }
 
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
