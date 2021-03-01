@@ -216,14 +216,6 @@ namespace boosting {
 
             }
 
-            void removeFromBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
-                this->statisticMatrixPtr_->subtractFromRow(
-                    binIndex, originalStatisticMatrix_.gradients_row_cbegin(statisticIndex),
-                    originalStatisticMatrix_.gradients_row_cend(statisticIndex),
-                    originalStatisticMatrix_.hessians_row_cbegin(statisticIndex),
-                    originalStatisticMatrix_.hessians_row_cend(statisticIndex), weight);
-            }
-
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
                     this->ruleEvaluationFactoryPtr_->create(labelIndices);
