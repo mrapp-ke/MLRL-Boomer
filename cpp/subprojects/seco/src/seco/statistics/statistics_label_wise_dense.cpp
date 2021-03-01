@@ -365,6 +365,11 @@ namespace seco {
                 return result;
             }
 
+            std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
+                //TODO Support creation of histograms
+                return nullptr;
+            }
+
     };
 
     DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(

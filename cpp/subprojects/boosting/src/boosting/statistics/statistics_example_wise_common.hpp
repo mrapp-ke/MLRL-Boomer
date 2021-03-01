@@ -410,6 +410,14 @@ namespace boosting {
                 return std::make_unique<HistogramBuilder>(*this, numBins);
             }
 
+            std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
+                std::unique_ptr<StatisticMatrix> statisticMatrixPtr = std::make_unique<StatisticMatrix>(
+                    numBins, this->getNumLabels());
+                return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
+                        *this->statisticMatrixPtr_, totalSumVectorPtr_.get(), std::move(statisticMatrixPtr),
+                        this->ruleEvaluationFactoryPtr_);
+            }
+
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
                 std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                     this->ruleEvaluationFactoryPtr_->create(labelIndices);
