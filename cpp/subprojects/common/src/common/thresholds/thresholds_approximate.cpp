@@ -8,7 +8,7 @@
 
 
 /**
- * A vector that stores the weights of individual bins.
+ * A vector that stores the indices of the bins, individual examples belong to.
  */
 typedef DenseVector<uint32> BinIndexVector;
 
