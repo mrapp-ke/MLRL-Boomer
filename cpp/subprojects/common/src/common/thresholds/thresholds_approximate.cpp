@@ -25,7 +25,7 @@ struct CacheEntry {
     std::unique_ptr<BinWeightVector> weightVectorPtr;
 };
 
-static inline void addValueToBinVector(BinVector& binVector, uint32 binIndex, uint32 originalIndex, float64 value) {
+static inline void addValueToBinVector(BinVector& binVector, uint32 binIndex, float64 value) {
     BinVector::iterator binIterator = binVector.begin();
 
     if (value < binIterator[binIndex].minValue) {
@@ -204,7 +204,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 binIndices = cacheIterator->second.binIndicesPtr.get();
                                 auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
                                     binIndices->begin()[originalIndex] = binIndex;
-                                    addValueToBinVector(*binVector, binIndex, originalIndex, value);
+                                    addValueToBinVector(*binVector, binIndex, value);
                                 };
                                 binning.createBins(featureInfo, *featureVectorPtr, callback);
 
