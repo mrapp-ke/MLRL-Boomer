@@ -38,22 +38,20 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     uint32 sumOfWeights = 0;
 
     for (; r < numBins; r++) {
-        uint32 binIndex = binIterator[r].index;
-        uint32 weight = weightIterator[binIndex];
+        uint32 weight = weightIterator[r];
 
         if (weight > 0) {
             previousValue = binIterator[r].maxValue;
             previousR = r;
             sumOfWeights += weight;
-            statisticsSubsetPtr->addToSubset(binIndex, 1);
+            statisticsSubsetPtr->addToSubset(r, 1);
             break;
         }
     }
 
     if (sumOfWeights > 0) {
         for (r = r + 1; r < numBins; r++) {
-            uint32 binIndex = binIterator[r].index;
-            uint32 weight = weightIterator[binIndex];
+            uint32 weight = weightIterator[r];
 
             if (weight > 0) {
                 float32 currentValue = binIterator[r].minValue;
@@ -98,7 +96,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 previousValue = binIterator[r].maxValue;
                 previousR = r;
                 sumOfWeights += weight;
-                statisticsSubsetPtr->addToSubset(binIndex, 1);
+                statisticsSubsetPtr->addToSubset(r, 1);
 
                 // Reset the subset in case of a nominal feature, as the previous bins will not be covered by the next
                 // condition...
