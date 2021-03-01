@@ -13,6 +13,7 @@ typedef DenseVector<uint32> BinIndexVector;
 struct CacheEntry {
     std::unique_ptr<BinVector> binVectorPtr;
     std::unique_ptr<BinIndexVector> binIndicesPtr;
+    std::unique_ptr<IHistogram> histogramPtr;
 };
 
 /**
@@ -239,7 +240,12 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                                     if (!nominal_) {
                                         removeEmptyBins(*binVector, *binIndices);
+                                        numBins = binVector->getNumElements();
                                     }
+
+                                    cacheIterator->second.histogramPtr =
+                                        thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogram(
+                                            numBins);
                                 }
 
                                 histogramBuilderPtr =
