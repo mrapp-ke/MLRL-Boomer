@@ -11,20 +11,6 @@
 #include "omp.h"
 
 
-/**
- * An entry that is stored in a cache and contains an unique pointer to a vector of arbitrary type. The field
- * `numConditions` specifies how many conditions the rule contained when the vector was updated for the last time. It
- * may be used to check if the vector is still valid or must be updated.
- *
- * @tparam T The type of the vector that is stored by the entry
- */
-template<class T>
-struct FilteredCacheEntry {
-    FilteredCacheEntry<T>() : numConditions(0) { };
-    std::unique_ptr<T> vectorPtr;
-    uint32 numConditions;
-};
-
 static inline void updateSampledStatisticsInternally(IStatistics& statistics, const IWeightVector& weights) {
     uint32 numExamples = statistics.getNumStatistics();
     statistics.resetSampledStatistics();
