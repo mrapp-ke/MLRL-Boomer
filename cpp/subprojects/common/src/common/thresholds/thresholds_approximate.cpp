@@ -7,7 +7,9 @@
 #include <unordered_map>
 
 
-// TODO Comment
+/**
+ * A vector that stores the weights of individual bins.
+ */
 typedef DenseVector<uint32> BinIndexVector;
 
 /**
