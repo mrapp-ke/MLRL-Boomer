@@ -97,13 +97,13 @@ static inline void updateCoveredExamples(const BinVector& binVector, const BinIn
 
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::iterator coverageSetIterator = coverageSet.begin();
-    BinIndexVector::const_iterator indexIterator = binIndices.cbegin();
+    BinIndexVector::const_iterator binIndexIterator = binIndices.cbegin();
     statistics.resetCoveredStatistics();
     uint32 n = 0;
 
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = coverageSetIterator[i];
-        uint32 binIndex = indexIterator[exampleIndex];
+        uint32 binIndex = binIndexIterator[exampleIndex];
 
         // Check if the example is still covered, i.e., if the corresponding bin is contained in the filtered bin
         // vector...
