@@ -33,7 +33,6 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     // Search for the first non-empty bin...
     uint32 r = 0;
-    uint32 previousR = 0;
     float32 previousValue = 0;
 
     for (; r < numBins; r++) {
@@ -41,7 +40,6 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
         if (weight > 0) {
             previousValue = binIterator[r].maxValue;
-            previousR = r;
             statisticsSubsetPtr->addToSubset(r, 1);
             break;
         }
@@ -59,7 +57,6 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->end = r;
-                refinementPtr->previous = previousR;
                 refinementPtr->covered = true;
 
                 if (nominal_) {
@@ -76,7 +73,6 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->end = r;
-                refinementPtr->previous = previousR;
                 refinementPtr->covered = false;
 
                 if (nominal_) {
@@ -89,7 +85,6 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             }
 
             previousValue = binIterator[r].maxValue;
-            previousR = r;
             statisticsSubsetPtr->addToSubset(r, 1);
 
             // Reset the subset in case of a nominal feature, as the previous bins will not be covered by the next
