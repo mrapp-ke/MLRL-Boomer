@@ -1,9 +1,8 @@
+#include <iostream>
 #include "common/pruning/pruning_irep.hpp"
 
 #include "common/head_refinement/prediction.hpp"
-#include "common/head_refinement/prediction_partial.hpp"
 #include "common/debugging/global.hpp"
-#include <iostream>
 
 
 std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, const IPartition& partition,
@@ -14,22 +13,14 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
     // Only rules with more than one condition can be pruned...
     if (numConditions > 1) {
 
-        if (debugging_ == 1) {
-            std::cout << "\n";
-        }
+        Debugger::lb();
 
         // Calculate the quality score of the original rule on the prune set...
         const CoverageMask& originalCoverageMask = thresholdsSubset.getCoverageMask();
         float64 bestQualityScore = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageMask, head);
 
         // print the original coverage mask if debugging is enabled
-        if (debugging_ == 1 and (dFull or dCM)) {
-            std::cout << "\nthe original coverage mask:\n";
-            for (uint32 i = 0; i < originalCoverageMask.getNumElements(); i++) {
-                std::cout << "  " << "index " << i << ": " << (i < 10 ? " " : "") <<
-                          (originalCoverageMask.isCovered(i) ? "    covered" : "not covered") << "\n";
-            }
-        }
+        Debugger::printCoverageMask(originalCoverageMask, true);
 
         // Create a copy of the original coverage mask...
         bestCoverageMaskPtr = std::make_unique<CoverageMask>(originalCoverageMask);
@@ -49,45 +40,17 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
             thresholdsSubset.filterThresholds(condition);
 
 
-            // print the rule if debugging is enabled
-            if (debugging_ == 1) {
-                ConditionList::const_iterator& printConditionIterator = conditionIterator;
-                std::cout << "\nthe rule\n  {";
-                for(std::list<Condition>::size_type m = 1; m <= numConditions; m++) {
-                    auto comp = static_cast<uint32>(printConditionIterator->comparator);
-                    std::cout << printConditionIterator->featureIndex <<
-                              " "<< (comp == 0 ? "<=" : comp == 1 ? ">" : comp == 2 ? "==" : "!=") <<
-                              " " << printConditionIterator->threshold << (m == numConditions ? "" : ", ");
-                    printConditionIterator++;
-                }
-                std::cout << "} -> ";
-
-                // all rules except the base rule are partial rules
-                if (head.isPartial()) {
-                    const auto* pred = dynamic_cast<const PartialPrediction*>(&head);
-                    for (uint32 i = 0; i < head.getNumElements(); i++) {
-                        std::cout << "(" << i << " = " << pred->indices_cbegin()[i] <<
-                                  (i + 1 == head.getNumElements() ? "" : ", ");
-                    }
-                }
-                std::cout << ")\n\n";
-            }
+            // Debugger: print rule
+            Debugger::printRule(conditions.cbegin(), numConditions, head);
 
             // Calculate the quality score of a rule that contains the conditions that have been processed so far...
             const CoverageMask& coverageMask = thresholdsSubset.getCoverageMask();
             float64 qualityScore = partition.evaluateOutOfSample(thresholdsSubset, coverageMask, head);
 
-            // printing of the iteration coverage mask if debugging is enabled
-            if (debugging_ == 1 and (dFull or dCM)) {
-                std::cout << "\nthe " << n << ". coverage mask:\n";
-                for (uint32 i = 0; i < coverageMask.getNumElements(); i++) {
-                    std::cout << "  " << "index " << i << ": " << (i < 10 ? " " : "") <<
-                              (coverageMask.isCovered(i) ? "    covered" : "not covered") << "\n";
-                }
-                // printing the quality scores
-                std::cout << "\nbest quality score: " << bestQualityScore << "\n";
-                std::cout << "current quality score " << qualityScore << "\n";
-            }
+            // Debugger: print iteration mask
+            Debugger::printCoverageMask(originalCoverageMask, false, n);
+            // Debugger: print quality scores
+            Debugger::printQualityScores(bestQualityScore, qualityScore);
 
             // Check if the quality score is better than the best quality score known so far (reaching the same score
             // with fewer conditions is considered an improvement)...
@@ -97,9 +60,8 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
                 numPrunedConditions = (numConditions - n);
             }
 
-            if (debugging_ == 1) {
-                std::cout << "number of conditions to prune: " << numPrunedConditions << "\n\n";
-            }
+            // Debugger: print number of pruned conditions
+            Debugger::printPrunedConditions(numPrunedConditions);
 
             conditionIterator++;
         }

@@ -56,9 +56,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
         std::shared_ptr<ILabelMatrix> labelMatrixPtr, RNG& rng, IModelBuilder& modelBuilder) {
 
     // the start of the debugging output
-    if (debugging_ == 1) {
-        std::cout << "\n===debugging==========================================================\n";
-    }
+    Debugger::printStart();
 
     // Induce default rule...
     const IHeadRefinementFactory* defaultRuleHeadRefinementFactory = defaultRuleHeadRefinementFactoryPtr_.get();
@@ -86,9 +84,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
             numUsedRules = numRules;
         }
 
-        if (debugging_ == 1) {
-            std::cout << "\n";
-        }
+        Debugger::lb();
 
         std::unique_ptr<IWeightVector> weightsPtr = partitionPtr->subSample(*instanceSubSamplingPtr_, rng);
         std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr_->subSample(numLabels, rng);
@@ -98,18 +94,14 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
                                                      modelBuilder);
 
         if (success) {
-            if (debugging_ == 1) {
-                std::cout << "rule has been induced \n\n";
-            }
+            Debugger::printRuleInduction();
             numRules++;
         } else {
             break;
         }
     }
     // the end of the debugging output
-    if (debugging_ == 1) {
-        std::cout << "\n===end of debugging===================================================\n\n";
-    }
+    Debugger::printEnd();
 
     // Build and return the final model...
     return modelBuilder.build(numUsedRules);

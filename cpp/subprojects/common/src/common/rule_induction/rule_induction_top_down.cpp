@@ -2,6 +2,7 @@
 #include "common/indices/index_vector_full.hpp"
 #include "omp.h"
 #include <unordered_map>
+#include <common/debugging/global.hpp>
 
 
 TopDownRuleInduction::TopDownRuleInduction(uint32 numThreads)
@@ -94,6 +95,8 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
             std::unique_ptr<IRuleRefinement>& ruleRefinementPtr = ruleRefinementsPtr->find(featureIndex)->second;
             ruleRefinementPtr->findRefinement(bestHead);
         }
+
+        Debugger::lb();
 
         // Pick the best refinement among the refinements that have been found for the different features...
         for (intp i = 0; i < numSampledFeatures; i++) {

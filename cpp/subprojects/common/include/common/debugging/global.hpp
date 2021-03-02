@@ -2,7 +2,11 @@
  * @author Andreas Seidl Fernandez (aseidlfernandez@gmail.com)
  */
 
+#include "common/debugging/debug.hpp"
+
 #pragma once
+
+extern Debugger debugger;
 
 // global variables are initialized to 0
 extern int debugging_;

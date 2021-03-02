@@ -355,18 +355,6 @@ class ExactThresholds final : public AbstractThresholds {
                                                                 std::move(callbackPtr));
             }
 
-            /**
-             * Prints the weights_ variable for debugging purposes
-             */
-            void printWeights() const {
-                std::cout << "Examples in the pruning set:\n";
-                const auto* printWeight = dynamic_cast<const DenseWeightVector*>(&weights_);
-                for(uint32 i = 0; i < printWeight->getNumElements(); i++) {
-                    std::cout << "  " << i << (i < 10 ? "  " : " ") <<
-                        (printWeight->getWeight(i) == 0 ? "yes" : "no") << "\n";
-                }
-            }
-
             public:
 
                 /**
@@ -463,10 +451,8 @@ class ExactThresholds final : public AbstractThresholds {
                 float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
 
-                    // print the weights_ vector if debugging is enabled
-                    if (debugging_ == 1 and (dFull or dWeights)) {
-                        printWeights();
-                    }
+                    // Debugger: print weights
+                    Debugger::printWeights(weights_);
 
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
                         partition.cbegin(), partition.getNumElements(), weights_, coverageMask,
@@ -476,10 +462,8 @@ class ExactThresholds final : public AbstractThresholds {
                 float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
 
-                    // print the weights_ vector if debugging is enabled
-                    if (debugging_ == 1 and (dFull or dWeights)) {
-                        printWeights();
-                    }
+                    // Debugger: print weights
+                    Debugger::printWeights(weights_);
 
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), weights_, coverageMask,
