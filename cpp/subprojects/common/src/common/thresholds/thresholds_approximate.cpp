@@ -104,14 +104,14 @@ static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndi
 static inline void updateCoveredExamples(const BinIndexVector& binIndices, uint32 numBins, intp conditionEnd,
                                          bool covered, CoverageSet& coverageSet, IStatistics& statistics,
                                          const IWeightVector& weights) {
-    intp minBinIndex, maxBinIndex;
+    intp firstCoveredBinIndex, lastCoveredBinIndex;
 
     if (covered) {
-        minBinIndex = 0;
-        maxBinIndex = conditionEnd - 1;
+        firstCoveredBinIndex = 0;
+        lastCoveredBinIndex = conditionEnd;
     } else {
-        minBinIndex = conditionEnd;
-        maxBinIndex = numBins - 1;
+        firstCoveredBinIndex = conditionEnd;
+        lastCoveredBinIndex = numBins;
     }
 
     uint32 numCovered = coverageSet.getNumCovered();
@@ -124,7 +124,7 @@ static inline void updateCoveredExamples(const BinIndexVector& binIndices, uint3
         uint32 exampleIndex = coverageSetIterator[i];
         uint32 binIndex = binIndexIterator[exampleIndex];
 
-        if (binIndex >= minBinIndex && binIndex <= maxBinIndex) {
+        if (binIndex >= firstCoveredBinIndex && binIndex < lastCoveredBinIndex) {
             uint32 weight = weights.getWeight(exampleIndex);
             statistics.updateCoveredStatistic(exampleIndex, weight, false);
             coverageSetIterator[n] = exampleIndex;
