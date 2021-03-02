@@ -35,7 +35,6 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     uint32 r = 0;
     uint32 previousR = 0;
     float32 previousValue = 0;
-    uint32 sumOfWeights = 0;
 
     for (; r < numBins; r++) {
         uint32 weight = weightIterator[r];
@@ -43,67 +42,60 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         if (weight > 0) {
             previousValue = binIterator[r].maxValue;
             previousR = r;
-            sumOfWeights += weight;
             statisticsSubsetPtr->addToSubset(r, 1);
             break;
         }
     }
 
-    if (sumOfWeights > 0) {
-        for (r = r + 1; r < numBins; r++) {
-            uint32 weight = weightIterator[r];
+    for (r = r + 1; r < numBins; r++) {
+        uint32 weight = weightIterator[r];
 
-            if (weight > 0) {
-                float32 currentValue = binIterator[r].minValue;
+        if (weight > 0) {
+            float32 currentValue = binIterator[r].minValue;
 
-                const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
-                                                                                       false, false);
+            const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
+                                                                                   false, false);
 
-                if (head != nullptr) {
-                    bestHead = head;
-                    refinementPtr->end = r;
-                    refinementPtr->previous = previousR;
-                    refinementPtr->coveredWeights = sumOfWeights;
-                    refinementPtr->covered = true;
+            if (head != nullptr) {
+                bestHead = head;
+                refinementPtr->end = r;
+                refinementPtr->previous = previousR;
+                refinementPtr->covered = true;
 
-                    if (nominal_) {
-                        refinementPtr->comparator = EQ;
-                        refinementPtr->threshold = previousValue;
-                    } else {
-                        refinementPtr->comparator = LEQ;
-                        refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
-                    }
-                }
-
-                head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
-
-                if (head != nullptr) {
-                    bestHead = head;
-                    refinementPtr->end = r;
-                    refinementPtr->previous = previousR;
-                    refinementPtr->coveredWeights = sumOfWeights;
-                    refinementPtr->covered = false;
-
-                    if (nominal_) {
-                        refinementPtr->comparator = NEQ;
-                        refinementPtr->threshold = previousValue;
-                    } else {
-                        refinementPtr->comparator = GR;
-                        refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
-                    }
-                }
-
-                previousValue = binIterator[r].maxValue;
-                previousR = r;
-                sumOfWeights += weight;
-                statisticsSubsetPtr->addToSubset(r, 1);
-
-                // Reset the subset in case of a nominal feature, as the previous bins will not be covered by the next
-                // condition...
                 if (nominal_) {
-                    statisticsSubsetPtr->resetSubset();
-                    sumOfWeights = 0;
+                    refinementPtr->comparator = EQ;
+                    refinementPtr->threshold = previousValue;
+                } else {
+                    refinementPtr->comparator = LEQ;
+                    refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
                 }
+            }
+
+            head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
+
+            if (head != nullptr) {
+                bestHead = head;
+                refinementPtr->end = r;
+                refinementPtr->previous = previousR;
+                refinementPtr->covered = false;
+
+                if (nominal_) {
+                    refinementPtr->comparator = NEQ;
+                    refinementPtr->threshold = previousValue;
+                } else {
+                    refinementPtr->comparator = GR;
+                    refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
+                }
+            }
+
+            previousValue = binIterator[r].maxValue;
+            previousR = r;
+            statisticsSubsetPtr->addToSubset(r, 1);
+
+            // Reset the subset in case of a nominal feature, as the previous bins will not be covered by the next
+            // condition...
+            if (nominal_) {
+                statisticsSubsetPtr->resetSubset();
             }
         }
     }
