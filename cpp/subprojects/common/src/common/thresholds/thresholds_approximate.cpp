@@ -26,13 +26,13 @@ struct CacheEntry {
 };
 
 /**
- * Adds a value to a specific bin.
+ * Adds a value to the bin at a specific index.
  *
  * @param binVector A reference to an object of type `BinVector` that should be updated
  * @param binIndex  The index of the bin, the value should be added to
  * @param value     The value to be added to the bin
  */
-static inline void addValueToBinVector(BinVector& binVector, uint32 binIndex, float64 value) {
+static inline void addValueToBin(BinVector& binVector, uint32 binIndex, float64 value) {
     BinVector::iterator binIterator = binVector.begin();
 
     if (value < binIterator[binIndex].minValue) {
@@ -241,7 +241,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 binIndices = cacheIterator->second.binIndicesPtr.get();
                                 auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
                                     binIndices->begin()[originalIndex] = binIndex;
-                                    addValueToBinVector(*binVector, binIndex, value);
+                                    addValueToBin(*binVector, binIndex, value);
                                 };
                                 binning.createBins(featureInfo, *featureVectorPtr, callback);
 
