@@ -7,7 +7,7 @@
 
 
 /**
- * Calculates the mean of two values `small` and `large`, where `small < large`.
+ * Calculates the arithmetic mean of two values `small` and `large`, where `small < large`.
  *
  * The mean is calculated as `small + ((large - small) * 0.5`, instead of `(small + large) / 2`, to prevent overflows.
  *
@@ -16,7 +16,7 @@
  * @return      The mean that has been calculated
  */
 template<class T>
-static inline T mean(T small, T large) {
+static inline T arithmeticMean(T small, T large) {
     return small + ((large - small) * 0.5);
 }
 

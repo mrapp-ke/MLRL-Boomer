@@ -52,7 +52,7 @@ IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& 
 
             if (currentValue != previousValue) {
                 if (i / numElementsPerBin != binIndex) {
-                    thresholdIterator[binIndex] = mean(previousValue, currentValue);
+                    thresholdIterator[binIndex] = arithmeticMean(previousValue, currentValue);
                     binIndex++;
                 }
 
