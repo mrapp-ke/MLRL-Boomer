@@ -52,7 +52,7 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
     Result result;
     std::tuple<uint32, float32, float32> tuple = preprocess(featureVector, binRatio_, minBins_, maxBins_);
     uint32 numBins = std::get<0>(tuple);
-    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins, true);
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numBins, true);
     uint32 numElements = featureVector.getNumElements();
     result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
 
