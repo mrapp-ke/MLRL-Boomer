@@ -14,7 +14,7 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
-class SparseArrayVector {
+class SparseArrayVector final {
 
     public:
 
