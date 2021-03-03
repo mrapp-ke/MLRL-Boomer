@@ -15,6 +15,7 @@
  */
 struct CacheEntry {
     std::unique_ptr<BinVector> binVectorPtr;
+    std::unique_ptr<ThresholdVector> thresholdVectorPtr;
     std::unique_ptr<BinIndexVector> binIndicesPtr;
     std::unique_ptr<IHistogram> histogramPtr;
     std::unique_ptr<BinWeightVector> weightVectorPtr;
@@ -214,6 +215,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                         std::unique_ptr<Result> get() override {
                             auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                             BinVector* binVector = cacheIterator->second.binVectorPtr.get();
+                            ThresholdVector* thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
                             BinIndexVector* binIndices = cacheIterator->second.binIndicesPtr.get();
 
                             if (binVector == nullptr) {
@@ -237,7 +239,9 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     binIndices->begin()[originalIndex] = binIndex;
                                     addValueToBin(*binVector, binIndex, value);
                                 };
-                                binning.createBins(featureInfo, *featureVectorPtr, callback);
+                                cacheIterator->second.thresholdVectorPtr =
+                                    binning.createBins(featureInfo, *featureVectorPtr, callback);
+                                thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
 
                                 if (!nominal_) {
                                     removeEmptyBins(*binVector, *binIndices);
