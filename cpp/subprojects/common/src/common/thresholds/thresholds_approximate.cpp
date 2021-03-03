@@ -159,14 +159,15 @@ class ApproximateThresholds final : public AbstractThresholds {
                             if (thresholdVector == nullptr) {
                                 // Fetch feature vector...
                                 std::unique_ptr<FeatureVector> featureVectorPtr;
-                                thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
-                                                                                                    featureVectorPtr);
+                                const IFeatureMatrix& featureMatrix = *thresholdsSubset_.thresholds_.featureMatrixPtr_;
+                                uint32 numExamples = featureMatrix.getNumRows();
+                                featureMatrix.fetchFeatureVector(featureIndex_, featureVectorPtr);
 
                                 // Apply binning method...
                                 const IFeatureBinning& binning =
                                     nominal_ ? thresholdsSubset_.thresholds_.nominalBinning_
                                              : *thresholdsSubset_.thresholds_.binningPtr_;
-                                IFeatureBinning::Result result = binning.createBins(*featureVectorPtr);
+                                IFeatureBinning::Result result = binning.createBins(*featureVectorPtr, numExamples);
                                 cacheIterator->second.thresholdVectorPtr = std::move(result.thresholdVectorPtr);
                                 thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
                                 cacheIterator->second.binIndicesPtr = std::move(result.binIndicesPtr);

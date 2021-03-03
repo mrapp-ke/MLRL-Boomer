@@ -31,6 +31,6 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
          */
         EqualWidthFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins);
 
-        Result createBins(FeatureVector& featureVector) const override;
+        Result createBins(FeatureVector& featureVector, uint32 numExamples) const override;
 
 };
