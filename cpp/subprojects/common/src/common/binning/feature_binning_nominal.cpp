@@ -47,9 +47,9 @@ std::unique_ptr<ThresholdVector> NominalFeatureBinning::createBins(FeatureInfo f
             float32 currentValue = featureIterator[i].value;
 
             if (currentValue != previousValue) {
-                previousValue = currentValue;
                 binIndex++;
                 thresholdIterator[binIndex] = currentValue;
+                previousValue = currentValue;
             }
 
             callback(binIndex, featureIterator[i].index, currentValue);
