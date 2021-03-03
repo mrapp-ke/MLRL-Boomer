@@ -244,6 +244,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     numBins = binVector->getNumElements();
                                 }
 
+                                // Create histogram and weight vector...
                                 cacheIterator->second.histogramPtr =
                                     thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogram(
                                         numBins);
