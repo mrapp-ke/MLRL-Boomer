@@ -9,6 +9,12 @@
 #include <memory>
 #include <functional>
 
+
+/**
+ * A vector that stores the indices of the bins, individual examples belong to.
+ */
+typedef DenseVector<uint32> BinIndexVector;
+
 /**
  * Defines an interface for methods that assign feature values to bins.
  */
