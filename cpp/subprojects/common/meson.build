@@ -2,7 +2,6 @@ project('common', 'cpp', version : '0.4.0')
 
 # Source files
 source_files = [
-    'src/common/binning/bin_vector.cpp',
     'src/common/binning/feature_binning_equal_frequency.cpp',
     'src/common/binning/feature_binning_equal_width.cpp',
     'src/common/binning/feature_binning_nominal.cpp',

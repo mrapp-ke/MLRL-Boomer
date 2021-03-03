@@ -1,5 +1,4 @@
 #include "common/data/vector_dense.hpp"
-#include "common/data/bin.hpp"
 #include <cstdlib>
 
 
@@ -70,4 +69,3 @@ template class DenseVector<uint8>;
 template class DenseVector<uint32>;
 template class DenseVector<float32>;
 template class DenseVector<float64>;
-template class DenseVector<Bin>;
