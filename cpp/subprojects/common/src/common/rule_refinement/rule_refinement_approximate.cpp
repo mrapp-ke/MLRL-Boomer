@@ -3,10 +3,12 @@
 
 template<class T>
 ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
-        std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex, bool nominal,
+        std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 totalSumOfWeights,
+        uint32 featureIndex, bool nominal,
         std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr)
-    : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices), featureIndex_(featureIndex),
-      nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
+    : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices),
+      totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex), nominal_(nominal),
+      callbackPtr_(std::move(callbackPtr)) {
 
 }
 
@@ -33,6 +35,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     // Traverse bins in ascending order until the first bin with weight > 0 is encountered...
     uint32 r = 0;
     float32 threshold = 0;
+    uint32 sumOfWeights = 0;
 
     for (; r < numBins; r++) {
         uint32 weight = weightIterator[r];
@@ -41,6 +44,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             // Add the bin to the subset to mark it as covered by upcoming refinements...
             threshold = thresholdIterator[r];
             statisticsSubsetPtr->addToSubset(r, 1);
+            sumOfWeights += weight;
             break;
         }
     }
@@ -60,6 +64,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->end = r;
+                refinementPtr->coveredWeights = sumOfWeights;
                 refinementPtr->covered = true;
                 refinementPtr->threshold = threshold;
                 refinementPtr->comparator = nominal_ ? EQ : LEQ;
@@ -73,6 +78,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->end = r;
+                refinementPtr->coveredWeights = (totalSumOfWeights_ - sumOfWeights);
                 refinementPtr->covered = false;
                 refinementPtr->threshold = threshold;
                 refinementPtr->comparator = nominal_ ? NEQ : GR;
@@ -82,12 +88,14 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             // condition...
             if (nominal_) {
                 statisticsSubsetPtr->resetSubset();
+                sumOfWeights = 0;
             }
 
             threshold = thresholdIterator[r];
 
             // Add the bin to the subset to mark it as covered by upcoming refinements...
             statisticsSubsetPtr->addToSubset(r, 1);
+            sumOfWeights += weight;
         }
     }
 
