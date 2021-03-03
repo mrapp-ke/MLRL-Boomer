@@ -13,8 +13,6 @@ class NominalFeatureBinning final : public IFeatureBinning {
 
     public:
 
-        FeatureInfo getFeatureInfo(FeatureVector& featureVector) const override;
-
-        Result createBins(FeatureInfo featureInfo, FeatureVector& featureVector) const override;
+        Result createBins(FeatureVector& featureVector) const override;
 
 };

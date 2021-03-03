@@ -32,13 +32,7 @@ EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio, uin
 
 }
 
-IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
-    FeatureInfo featureInfo;
-    return featureInfo;
-}
-
-IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo,
-                                                                 FeatureVector& featureVector) const {
+IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& featureVector) const {
     Result result;
     uint32 numBins = preprocess(featureVector, binRatio_, minBins_, maxBins_);
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);

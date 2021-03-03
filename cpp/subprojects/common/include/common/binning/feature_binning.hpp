@@ -31,41 +31,16 @@ class IFeatureBinning {
             std::unique_ptr<BinIndexVector> binIndicesPtr;
         };
 
-        /**
-         * Stores information about the values in a `FeatureVector`. This includes the number of bins, the values should
-         * be assigned to, as well as the minimum and maximum value in the vector.
-         */
-        struct FeatureInfo {
-            uint32 numBins;
-            float32 minValue;
-            float32 maxValue;
-        };
-
         virtual ~IFeatureBinning() { };
-
-        /**
-         * Retrieves and returns information about the values in a given `FeatureVector` that is required to apply the
-         * binning method.
-         *
-         * This function must be called prior to the function `createBins` to obtain information, e.g. the number of
-         * bins to be used, that is required to apply the binning method. This function may also be used to prepare,
-         * e.g. sort, the given `FeatureVector`. The `FeatureInfo` returned by this function must be passed to the
-         * function `createBins` later on.
-         *
-         * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
-         * @return              A struct of `type `FeatureInfo` that stores the information
-         */
-        virtual FeatureInfo getFeatureInfo(FeatureVector& featureVector) const = 0;
 
         /**
          * Assigns the values in a given `FeatureVector` to bins.
          *
-         * @param featureInfo   A struct of type `FeatureInfo` that stores information about the given `FeatureVector`
          * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
          * @return              An object of type `Result` that contains a vector, which stores thresholds that result
          *                      from the boundaries between the bins, as well as a vector that stores the indices of the
          *                      bins, individual values have been assigned to
          */
-        virtual Result createBins(FeatureInfo featureInfo, FeatureVector& featureVector) const = 0;
+        virtual Result createBins(FeatureVector& featureVector) const = 0;
 
 };
