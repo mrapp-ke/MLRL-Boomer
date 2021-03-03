@@ -52,8 +52,7 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
     Result result;
     std::tuple<uint32, float32, float32> info = preprocess(featureVector, binRatio_, minBins_, maxBins_);
     uint32 numBins = std::get<0>(info);
-    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
-    // TODO Set thresholds
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins, true);
     uint32 numElements = featureVector.getNumElements();
     result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
 
@@ -63,6 +62,7 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
         float32 width = (max - min) / numBins;
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
         BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
+        ThresholdVector::iterator thresholdIterator = result.thresholdVectorPtr->begin();
 
         for (uint32 i = 0; i < numElements; i++) {
             float32 currentValue = featureIterator[i].value;
@@ -72,7 +72,29 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
                 binIndex = numBins - 1;
             }
 
+            thresholdIterator[binIndex] = 1;
             binIndexIterator[featureIterator[i].index] = binIndex;
+        }
+
+        // Remove empty bins and calculate thresholds...
+        uint32 mapping[numBins];
+        uint32 n = 0;
+
+        for (uint32 i = 0; i < numBins; i++) {
+            mapping[i] = n;
+
+            if (thresholdIterator[i] > 0) {
+                thresholdIterator[n] = min + ((i + 1) * width);
+                n++;
+            }
+        }
+
+        result.thresholdVectorPtr->setNumElements(n, true);
+
+        // Adjust bin indices...
+        for (uint32 i = 0; i < numElements; i++) {
+            uint32 binIndex = binIndexIterator[i];
+            binIndexIterator[i] = mapping[binIndex];
         }
     }
 
