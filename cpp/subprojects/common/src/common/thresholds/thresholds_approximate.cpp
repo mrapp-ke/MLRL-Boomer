@@ -163,12 +163,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 const IFeatureBinning& binning =
                                     nominal_ ? thresholdsSubset_.thresholds_.nominalBinning_
                                              : *thresholdsSubset_.thresholds_.binningPtr_;
-                                auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
-
-                                };
                                 IFeatureBinning::FeatureInfo featureInfo = binning.getFeatureInfo(*featureVectorPtr);
-                                IFeatureBinning::Result result = binning.createBins(featureInfo, *featureVectorPtr,
-                                                                                    callback);
+                                IFeatureBinning::Result result = binning.createBins(featureInfo, *featureVectorPtr);
                                 cacheIterator->second.thresholdVectorPtr = std::move(result.thresholdVectorPtr);
                                 thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
                                 cacheIterator->second.binIndicesPtr = std::move(result.binIndicesPtr);
