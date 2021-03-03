@@ -54,22 +54,19 @@ std::unique_ptr<ThresholdVector> EqualWidthFeatureBinning::createBins(FeatureInf
     if (numBins > 0) {
         float32 min = featureInfo.minValue;
         float32 max = featureInfo.maxValue;
-        //Defining length of the list, because we'll use it at least four times
-        uint32 length = featureVector.getNumElements();
-        //w stands for width and determines the span of values for a bin
-        float32 spanPerBin = (max - min) / numBins;
+        float32 width = (max - min) / numBins;
+        uint32 numElements = featureVector.getNumElements();
+        FeatureVector::const_iterator featureIterator = featureVector.cbegin();
 
-        FeatureVector::const_iterator iterator = featureVector.cbegin();
+        for (uint32 i = 0; i < numElements; i++) {
+            float32 currentValue = featureIterator[i].value;
+            uint32 binIndex = (uint32) std::floor((currentValue - min) / width);
 
-        for (uint32 i = 0; i < length; i++) {
-            float32 currentValue = iterator[i].value;
-            uint32 binIndex = (uint32) std::floor((currentValue - min) / spanPerBin);
-            //in some cases the calculated index can exceed the last bin, in which case we want the example in the last bin
             if (binIndex >= numBins) {
                 binIndex = numBins - 1;
             }
-            //notify observer
-            callback(binIndex, iterator[i].index, currentValue);
+
+            callback(binIndex, featureIterator[i].index, currentValue);
         }
     }
 
