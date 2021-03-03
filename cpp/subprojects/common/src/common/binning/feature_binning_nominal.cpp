@@ -12,11 +12,11 @@ IFeatureBinning::FeatureInfo NominalFeatureBinning::getFeatureInfo(FeatureVector
         uint32 numDistinctValues = 1;
 
         for (uint32 i = 1; i < numElements; i++) {
-            float32 value = iterator[i].value;
+            float32 currentValue = iterator[i].value;
 
-            if (previousValue != value) {
+            if (currentValue != previousValue) {
                 numDistinctValues++;
-                previousValue = value;
+                previousValue = currentValue;
             }
         }
 
@@ -44,15 +44,15 @@ std::unique_ptr<ThresholdVector> NominalFeatureBinning::createBins(FeatureInfo f
         uint32 binIndex = 0;
 
         for (uint32 i = 1; i < numElements; i++) {
-            float32 value = featureIterator[i].value;
+            float32 currentValue = featureIterator[i].value;
 
-            if (previousValue != value) {
-                previousValue = value;
+            if (currentValue != previousValue) {
+                previousValue = currentValue;
                 binIndex++;
-                thresholdIterator[binIndex] = value;
+                thresholdIterator[binIndex] = currentValue;
             }
 
-            callback(binIndex, featureIterator[i].index, value);
+            callback(binIndex, featureIterator[i].index, currentValue);
         }
     }
 
