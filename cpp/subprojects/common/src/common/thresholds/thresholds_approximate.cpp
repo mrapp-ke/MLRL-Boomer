@@ -200,6 +200,8 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 const IWeightVector& weights_;
 
+                uint32 sumOfWeights_;
+
                 CoverageSet coverageSet_;
 
                 template<class T>
@@ -211,7 +213,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     std::unique_ptr<IHeadRefinement> headRefinementPtr =
                         thresholds_.headRefinementFactoryPtr_->create(labelIndices);
                     return std::make_unique<ApproximateRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
-                                                                          featureIndex, nominal,
+                                                                          sumOfWeights_, featureIndex, nominal,
                                                                           std::move(callbackPtr));
                 }
 
@@ -224,7 +226,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  *                      weights of individual training examples
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
-                    : thresholds_(thresholds), weights_(weights),
+                    : thresholds_(thresholds), weights_(weights), sumOfWeights_(weights.getSumOfWeights()),
                       coverageSet_(CoverageSet(thresholds.getNumExamples())) {
 
                 }
@@ -240,6 +242,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void filterThresholds(Refinement& refinement) override {
+                    sumOfWeights_ = refinement.coveredWeights;
                     uint32 featureIndex = refinement.featureIndex;
                     auto cacheIterator = thresholds_.cache_.find(featureIndex);
                     const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
@@ -254,6 +257,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void resetThresholds() override {
+                    sumOfWeights_ = weights_.getSumOfWeights();
                     coverageSet_.reset();
                 }
 
