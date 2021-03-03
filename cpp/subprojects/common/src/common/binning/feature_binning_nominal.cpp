@@ -1,57 +1,36 @@
 #include "common/binning/feature_binning_nominal.hpp"
+#include <unordered_set>
 
-
-static inline uint32 preprocess(FeatureVector& featureVector) {
-    uint32 numElements = featureVector.getNumElements();
-
-    if (numElements > 0) {
-        featureVector.sortByValues();
-        FeatureVector::const_iterator featureIterator = featureVector.cbegin();
-        float32 previousValue = featureIterator[0].value;
-        uint32 numDistinctValues = 1;
-
-        for (uint32 i = 1; i < numElements; i++) {
-            float32 currentValue = featureIterator[i].value;
-
-            if (currentValue != previousValue) {
-                numDistinctValues++;
-                previousValue = currentValue;
-            }
-        }
-
-        return numDistinctValues > 1 ? numDistinctValues : 0;
-    }
-
-    return 0;
-}
 
 IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& featureVector) const {
     Result result;
-    uint32 numBins = preprocess(featureVector);
-    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
     uint32 numElements = featureVector.getNumElements();
     result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numElements);
 
-    if (numBins > 0) {
+    if (numElements > 0) {
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
         ThresholdVector::iterator thresholdIterator = result.thresholdVectorPtr->begin();
         BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
-        float32 previousValue = featureIterator[0].value;
-        thresholdIterator[0] = previousValue;
-        binIndexIterator[featureIterator[0].index] = 0;
+        std::unordered_set<float32> uniqueValues;
+        uint32 i = 0;
         uint32 binIndex = 0;
+        float32 currentValue = featureIterator[i].value;
+        uniqueValues.emplace(currentValue);
+        thresholdIterator[binIndex] = currentValue;
+        binIndexIterator[featureIterator[i].index] = binIndex;
 
-        for (uint32 i = 1; i < numElements; i++) {
-            float32 currentValue = featureIterator[i].value;
+        for (i = i + 1; i < numElements; i++) {
+            currentValue = featureIterator[i].value;
 
-            if (currentValue != previousValue) {
+            if (uniqueValues.insert(currentValue).second) {
                 binIndex++;
                 thresholdIterator[binIndex] = currentValue;
-                previousValue = currentValue;
+                binIndexIterator[featureIterator[i].index] = binIndex;
             }
-
-            binIndexIterator[featureIterator[i].index] = binIndex;
         }
+
+        result.thresholdVectorPtr->setNumElements(binIndex + 1, true);
     }
 
     return result;
