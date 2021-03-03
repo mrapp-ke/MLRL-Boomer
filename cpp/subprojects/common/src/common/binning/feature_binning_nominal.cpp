@@ -12,18 +12,18 @@ IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& feature
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
         ThresholdVector::iterator thresholdIterator = result.thresholdVectorPtr->begin();
         BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
-        std::unordered_set<float32> uniqueValues;
+        std::unordered_set<float32> distinctValues;
         uint32 i = 0;
         uint32 binIndex = 0;
         float32 currentValue = featureIterator[i].value;
-        uniqueValues.insert(currentValue);
+        distinctValues.insert(currentValue);
         thresholdIterator[binIndex] = currentValue;
         binIndexIterator[featureIterator[i].index] = binIndex;
 
         for (i = i + 1; i < numElements; i++) {
             currentValue = featureIterator[i].value;
 
-            if (uniqueValues.insert(currentValue).second) {
+            if (distinctValues.insert(currentValue).second) {
                 binIndex++;
                 thresholdIterator[binIndex] = currentValue;
                 binIndexIterator[featureIterator[i].index] = binIndex;
