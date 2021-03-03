@@ -41,44 +41,6 @@ static inline void addValueToBin(BinVector& binVector, uint32 binIndex, float64 
 }
 
 /**
- * Removes all empty bins from a given `BinVector` and adjusts the indices of the bins, individual examples belong to,
- * accordingly.
- *
- * @param binVector     A reference to an object of type `BinVector`, the empty bins should be removed from
- * @param binIndices    A reference to an object of type `BinIndexVector` that stores the indices of the bins,
- *                      individual examples belong to
- */
-static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndices) {
-    uint32 numBins = binVector.getNumElements();
-    BinVector::iterator binIterator = binVector.begin();
-    uint32 mapping[numBins];
-    uint32 n = 0;
-
-    // Remove empty bins...
-    for (uint32 i = 0; i < numBins; i++) {
-        mapping[i] = n;
-        float32 minValue = binIterator[i].minValue;
-
-        if (std::isfinite(minValue)) {
-            binIterator[n].minValue = minValue;
-            binIterator[n].maxValue = binIterator[i].maxValue;
-            n++;
-        }
-    }
-
-    binVector.setNumElements(n, true);
-
-    // Adjust bin indices...
-    BinIndexVector::iterator indexIterator = binIndices.begin();
-    uint32 numExamples = binIndices.getNumElements();
-
-    for (uint32 i = 0; i < numExamples; i++) {
-        uint32 binIndex = indexIterator[i];
-        indexIterator[i] = mapping[binIndex];
-    }
-}
-
-/**
  * Updates a given `CoverageSet` after a new condition has been added, such that only the examples that are covered by
  * the new rule are marked es covered.
  *
@@ -218,7 +180,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             ThresholdVector* thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
                             BinIndexVector* binIndices = cacheIterator->second.binIndicesPtr.get();
 
-                            if (binVector == nullptr) {
+                            if (thresholdVector == nullptr) {
                                 // Fetch feature vector...
                                 std::unique_ptr<FeatureVector> featureVectorPtr;
                                 thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
@@ -242,11 +204,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 cacheIterator->second.thresholdVectorPtr =
                                     binning.createBins(featureInfo, *featureVectorPtr, callback);
                                 thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
-
-                                if (!nominal_) {
-                                    removeEmptyBins(*binVector, *binIndices);
-                                    numBins = binVector->getNumElements();
-                                }
 
                                 // Create histogram and weight vector...
                                 cacheIterator->second.histogramPtr =
