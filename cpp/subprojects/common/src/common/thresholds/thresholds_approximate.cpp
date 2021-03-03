@@ -84,8 +84,7 @@ static inline void removeEmptyBins(BinVector& binVector, BinIndexVector& binIndi
  * @param binIndices    A reference to an object of type `BinIndexVector` that stores the indices of the bins,
  *                      individual examples belong to
  * @param numBins       The total number of bins
- * @param conditionEnd  The element in `binVector` that corresponds to the last bin (exclusive) that is covered by the
- *                      condition
+ * @param conditionEnd  The last bin (exclusive) that is covered by the condition
  * @param covered       True, if the bins in range [0, conditionEnd) are covered by the new condition and the remaining
  *                      ones are not, false, if the elements in said range are not covered, but the remaining ones are
  * @param coverageSet   A reference to an object of type `CoverageSet` that is used to keep track of the examples that
