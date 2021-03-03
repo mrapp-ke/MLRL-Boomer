@@ -6,6 +6,7 @@ source_files = [
     'src/common/binning/feature_binning_equal_frequency.cpp',
     'src/common/binning/feature_binning_equal_width.cpp',
     'src/common/binning/feature_binning_nominal.cpp',
+    'src/common/binning/threshold_vector.cpp',
     'src/common/data/matrix_dense.cpp',
     'src/common/data/matrix_dok_binary.cpp',
     'src/common/data/ring_buffer.cpp',
