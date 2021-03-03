@@ -15,6 +15,7 @@ class NominalFeatureBinning final : public IFeatureBinning {
 
         FeatureInfo getFeatureInfo(FeatureVector& featureVector) const override;
 
-        void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector, Callback callback) const override;
+        std::unique_ptr<ThresholdVector> createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
+                                                    Callback callback) const override;
 
 };

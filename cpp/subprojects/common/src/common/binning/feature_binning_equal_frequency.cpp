@@ -35,8 +35,9 @@ IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(Featur
     return featureInfo;
 }
 
-void EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                              Callback callback) const {
+std::unique_ptr<ThresholdVector> EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo,
+                                                                          const FeatureVector& featureVector,
+                                                                          Callback callback) const {
     uint32 numBins = featureInfo.numBins;
 
     if (numBins > 0) {
@@ -59,4 +60,6 @@ void EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo, const Fea
             callback(binIndex, iterator[i].index, currentValue);
         }
     }
+
+    return nullptr;
 }
