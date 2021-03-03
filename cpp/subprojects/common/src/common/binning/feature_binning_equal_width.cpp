@@ -10,24 +10,24 @@ static inline std::tuple<uint32, float32, float32> preprocess(const FeatureVecto
     uint32 numElements = featureVector.getNumElements();
 
     if (numElements > 0) {
-        FeatureVector::const_iterator iterator = featureVector.cbegin();
-        float32 minValue = iterator[0].value;
+        FeatureVector::const_iterator featureIterator = featureVector.cbegin();
+        float32 minValue = featureIterator[0].value;
         float32 maxValue = minValue;
         uint32 numDistinctValues = 1;
         std::unordered_set<float32> distinctValues;
 
         for (uint32 i = 1; i < numElements; i++) {
-            float32 value = iterator[i].value;
+            float32 currentValue = featureIterator[i].value;
 
-            if (distinctValues.insert(value).second) {
+            if (distinctValues.insert(currentValue).second) {
                 numDistinctValues++;
 
-                if (value < minValue) {
-                    minValue = value;
+                if (currentValue < minValue) {
+                    minValue = currentValue;
                 }
 
-                if (maxValue < value) {
-                    maxValue = value;
+                if (currentValue > maxValue) {
+                    maxValue = currentValue;
                 }
             }
         }
