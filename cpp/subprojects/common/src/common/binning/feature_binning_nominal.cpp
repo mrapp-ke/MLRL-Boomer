@@ -13,15 +13,11 @@ IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& feature
         ThresholdVector::iterator thresholdIterator = result.thresholdVectorPtr->begin();
         BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
         std::unordered_map<float32, uint32> mapping;
-        float32 currentValue = featureIterator[0].value;
-        mapping.emplace(currentValue, 0);
-        thresholdIterator[0] = currentValue;
-        binIndexIterator[featureIterator[0].index] = 0;
-        uint32 nextBinIndex = 1;
+        uint32 nextBinIndex = 0;
 
-        for (uint32 i = 1; i < numElements; i++) {
+        for (uint32 i = 0; i < numElements; i++) {
             uint32 index = featureIterator[i].index;
-            currentValue = featureIterator[i].value;
+            float32 currentValue = featureIterator[i].value;
             auto mapIterator = mapping.emplace(currentValue, nextBinIndex);
 
             if (mapIterator.second) {
