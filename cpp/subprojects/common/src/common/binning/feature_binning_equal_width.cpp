@@ -1,15 +1,12 @@
 #include "common/binning/feature_binning_equal_width.hpp"
 #include "common/binning/binning.hpp"
 #include <unordered_set>
+#include <tuple>
 
 
-EqualWidthFeatureBinning::EqualWidthFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
-    : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-
-}
-
-IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
-    FeatureInfo featureInfo;
+static inline std::tuple<uint32, float32, float32> preprocess(const FeatureVector& featureVector, float32 binRatio,
+                                                              uint32 minBins, uint32 maxBins) {
+    std::tuple<uint32, float32, float32> result;
     uint32 numElements = featureVector.getNumElements();
 
     if (numElements > 0) {
@@ -35,29 +32,40 @@ IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVec
             }
         }
 
-        featureInfo.numBins =
-            numDistinctValues > 1 ? calculateNumBins(numDistinctValues, binRatio_, minBins_, maxBins_) : 0;
-        featureInfo.minValue = minValue;
-        featureInfo.maxValue = maxValue;
+        std::get<0>(result) =
+            numDistinctValues > 1 ? calculateNumBins(numDistinctValues, binRatio, minBins, maxBins) : 0;
+        std::get<1>(result) = minValue;
+        std::get<2>(result) = maxValue;
     } else {
-        featureInfo.numBins = 0;
+        std::get<0>(result) = 0;
     }
 
+    return result;
+}
+
+EqualWidthFeatureBinning::EqualWidthFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
+    : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
+
+}
+
+IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
+    FeatureInfo featureInfo;
     return featureInfo;
 }
 
 IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo,
                                                              FeatureVector& featureVector) const {
     Result result;
-    uint32 numBins = featureInfo.numBins;
+    std::tuple<uint32, float32, float32> info = preprocess(featureVector, binRatio_, minBins_, maxBins_);
+    uint32 numBins = std::get<0>(info);
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
     // TODO Set thresholds
     uint32 numElements = featureVector.getNumElements();
     result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
 
     if (numBins > 0) {
-        float32 min = featureInfo.minValue;
-        float32 max = featureInfo.maxValue;
+        float32 min = std::get<1>(info);
+        float32 max = std::get<2>(info);
         float32 width = (max - min) / numBins;
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
         BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
