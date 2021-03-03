@@ -1,5 +1,6 @@
 #include "common/binning/feature_binning_equal_frequency.hpp"
 #include "common/binning/binning.hpp"
+#include "common/math/math.hpp"
 
 
 EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
@@ -39,11 +40,13 @@ std::unique_ptr<ThresholdVector> EqualFrequencyFeatureBinning::createBins(Featur
                                                                           const FeatureVector& featureVector,
                                                                           Callback callback) const {
     uint32 numBins = featureInfo.numBins;
+    std::unique_ptr<ThresholdVector> thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
 
     if (numBins > 0) {
         uint32 numElements = featureVector.getNumElements();
         uint32 numElementsPerBin = (uint32) std::ceil((float) numElements / (float) numBins);
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
+        ThresholdVector::iterator thresholdIterator = thresholdVectorPtr->begin();
         uint32 binIndex = 0;
         float32 previousValue = 0;
 
@@ -51,13 +54,20 @@ std::unique_ptr<ThresholdVector> EqualFrequencyFeatureBinning::createBins(Featur
             float32 currentValue = featureIterator[i].value;
 
             if (currentValue != previousValue) {
-                binIndex = i / numElementsPerBin;
+                if (i / numElementsPerBin != binIndex) {
+                    thresholdIterator[binIndex] = mean(previousValue, currentValue);
+                    binIndex++;
+                }
+
+                thresholdIterator[binIndex] = currentValue;
                 previousValue = currentValue;
             }
 
             callback(binIndex, featureIterator[i].index, currentValue);
         }
+
+        thresholdVectorPtr->setNumElements(binIndex, true);
     }
 
-    return nullptr;
+    return thresholdVectorPtr;
 }
