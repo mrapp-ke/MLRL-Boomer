@@ -5,15 +5,11 @@
 #include "thresholds_common.hpp"
 #include <unordered_map>
 
-
 /**
- * An entry that is stored in the cache and contains unique pointers to vectors that store bins and their corresponding
- * weights. Moreover, it contains unique pointers to a vector that stores the index of the bins individual examples
- * belong to, as well as to an histogram.
+ * An entry that is stored in the cache. It contains the result of a binning method and an unique pointer to an
+ * histogram, well as to a vector that stores the weights of individual bins.
  */
-struct CacheEntry {
-    std::unique_ptr<ThresholdVector> thresholdVectorPtr;
-    std::unique_ptr<BinIndexVector> binIndicesPtr;
+struct CacheEntry : public IFeatureBinning::Result {
     std::unique_ptr<IHistogram> histogramPtr;
     std::unique_ptr<BinWeightVector> weightVectorPtr;
 };
@@ -162,21 +158,21 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 std::unique_ptr<FeatureVector> featureVectorPtr;
                                 thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(featureIndex_,
                                                                                                     featureVectorPtr);
-                                uint32 numExamples = featureVectorPtr->getNumElements();
 
                                 // Apply binning method...
                                 const IFeatureBinning& binning =
                                     nominal_ ? thresholdsSubset_.thresholds_.nominalBinning_
                                              : *thresholdsSubset_.thresholds_.binningPtr_;
-                                cacheIterator->second.binIndicesPtr = std::make_unique<BinIndexVector>(numExamples);
-                                binIndices = cacheIterator->second.binIndicesPtr.get();
                                 auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
-                                    binIndices->begin()[originalIndex] = binIndex;
+
                                 };
                                 IFeatureBinning::FeatureInfo featureInfo = binning.getFeatureInfo(*featureVectorPtr);
-                                cacheIterator->second.thresholdVectorPtr =
-                                    binning.createBins(featureInfo, *featureVectorPtr, callback);
+                                IFeatureBinning::Result result = binning.createBins(featureInfo, *featureVectorPtr,
+                                                                                    callback);
+                                cacheIterator->second.thresholdVectorPtr = std::move(result.thresholdVectorPtr);
                                 thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
+                                cacheIterator->second.binIndicesPtr = std::move(result.binIndicesPtr);
+                                binIndices = cacheIterator->second.binIndicesPtr.get();
 
                                 // Create histogram and weight vector...
                                 uint32 numBins = thresholdVector->getNumElements();

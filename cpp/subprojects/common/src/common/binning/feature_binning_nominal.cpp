@@ -28,16 +28,18 @@ IFeatureBinning::FeatureInfo NominalFeatureBinning::getFeatureInfo(FeatureVector
     return featureInfo;
 }
 
-std::unique_ptr<ThresholdVector> NominalFeatureBinning::createBins(FeatureInfo featureInfo,
-                                                                   const FeatureVector& featureVector,
-                                                                   Callback callback) const {
+IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
+                                                          Callback callback) const {
+    Result result;
     uint32 numBins = featureInfo.numBins;
-    std::unique_ptr<ThresholdVector> thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
+    uint32 numElements = featureVector.getNumElements();
+    result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
 
     if (numBins > 0) {
-        uint32 numElements = featureVector.getNumElements();
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
-        ThresholdVector::iterator thresholdIterator = thresholdVectorPtr->begin();
+        ThresholdVector::iterator thresholdIterator = result.thresholdVectorPtr->begin();
+        BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
         float32 previousValue = featureIterator[0].value;
         thresholdIterator[0] = previousValue;
         callback(0, featureIterator[0].index, previousValue);
@@ -52,9 +54,9 @@ std::unique_ptr<ThresholdVector> NominalFeatureBinning::createBins(FeatureInfo f
                 previousValue = currentValue;
             }
 
-            callback(binIndex, featureIterator[i].index, currentValue);
+            binIndexIterator[featureIterator[i].index] = binIndex;
         }
     }
 
-    return thresholdVectorPtr;
+    return result;
 }

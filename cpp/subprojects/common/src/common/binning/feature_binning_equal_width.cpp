@@ -46,17 +46,22 @@ IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVec
     return featureInfo;
 }
 
-std::unique_ptr<ThresholdVector> EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo,
-                                                                      const FeatureVector& featureVector,
-                                                                      Callback callback) const {
+IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo,
+                                                             const FeatureVector& featureVector,
+                                                             Callback callback) const {
+    Result result;
     uint32 numBins = featureInfo.numBins;
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
+    // TODO Set thresholds
+    uint32 numElements = featureVector.getNumElements();
+    result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
 
     if (numBins > 0) {
         float32 min = featureInfo.minValue;
         float32 max = featureInfo.maxValue;
         float32 width = (max - min) / numBins;
-        uint32 numElements = featureVector.getNumElements();
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
+        BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
 
         for (uint32 i = 0; i < numElements; i++) {
             float32 currentValue = featureIterator[i].value;
@@ -66,10 +71,9 @@ std::unique_ptr<ThresholdVector> EqualWidthFeatureBinning::createBins(FeatureInf
                 binIndex = numBins - 1;
             }
 
-            callback(binIndex, featureIterator[i].index, currentValue);
+            binIndexIterator[featureIterator[i].index] = binIndex;
         }
     }
 
-    // TODO Return actual result
-    return nullptr;
+    return result;
 }

@@ -23,6 +23,16 @@ class IFeatureBinning {
     public:
 
         /**
+         * The result that is returned by a binning method. It contains an unique pointer to a vector that stores the
+         * thresholds that result from the boundaries of the bins, as well as to a vector that stores the indices of the
+         * bins, individual values have been assigned to.
+         */
+        struct Result {
+            std::unique_ptr<ThresholdVector> thresholdVectorPtr;
+            std::unique_ptr<BinIndexVector> binIndicesPtr;
+        };
+
+        /**
          * Stores information about the values in a `FeatureVector`. This includes the number of bins, the values should
          * be assigned to, as well as the minimum and maximum value in the vector.
          */
@@ -60,10 +70,11 @@ class IFeatureBinning {
          * @param featureInfo   A struct of type `FeatureInfo` that stores information about the given `FeatureVector`
          * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
          * @param callback      A callback that is invoked when a value is assigned to a bin
-         * @return              An object of type `ThresholdVector` that stores the thresholds that result from the
-         *                      boundaries between the bins
+         * @return              An object of type `Result` that contains a vector, which stores thresholds that result
+         *                      from the boundaries between the bins, as well as a vector that stores the indices of the
+         *                      bins, individual values have been assigned to
          */
-        virtual std::unique_ptr<ThresholdVector> createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                                            Callback callback) const = 0;
+        virtual Result createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
+                                  Callback callback) const = 0;
 
 };
