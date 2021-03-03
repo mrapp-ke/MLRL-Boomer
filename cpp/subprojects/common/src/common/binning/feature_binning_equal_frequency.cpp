@@ -3,6 +3,30 @@
 #include "common/math/math.hpp"
 
 
+static inline uint32 getNumBins(FeatureVector& featureVector, float32 binRatio, uint32 minBins, uint32 maxBins) {
+    uint32 numElements = featureVector.getNumElements();
+
+    if (numElements > 0) {
+        featureVector.sortByValues();
+        FeatureVector::const_iterator featureIterator = featureVector.cbegin();
+        float32 previousValue = featureIterator[0].value;
+        uint32 numDistinctValues = 1;
+
+        for (uint32 i = 1; i < numElements; i++) {
+            float32 currentValue = featureIterator[i].value;
+
+            if (currentValue != previousValue) {
+                numDistinctValues++;
+                previousValue = currentValue;
+            }
+        }
+
+        return numDistinctValues > 1 ? calculateNumBins(numDistinctValues, binRatio, minBins, maxBins) : 0;
+    }
+
+    return 0;
+}
+
 EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
     : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
 
@@ -10,36 +34,13 @@ EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio, uin
 
 IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
     FeatureInfo featureInfo;
-    uint32 numElements = featureVector.getNumElements();
-
-    if (numElements > 0) {
-        featureVector.sortByValues();
-        FeatureVector::const_iterator iterator = featureVector.cbegin();
-        float32 previousValue = iterator[0].value;
-        uint32 numDistinctValues = 1;
-
-        for (uint32 i = 1; i < numElements; i++) {
-            float32 value = iterator[i].value;
-
-            if (previousValue != value) {
-                numDistinctValues++;
-                previousValue = value;
-            }
-        }
-
-        featureInfo.numBins =
-            numDistinctValues > 1 ? calculateNumBins(numDistinctValues, binRatio_, minBins_, maxBins_) : 0;
-    } else {
-        featureInfo.numBins = 0;
-    }
-
     return featureInfo;
 }
 
 IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo,
                                                                  FeatureVector& featureVector) const {
     Result result;
-    uint32 numBins = featureInfo.numBins;
+    uint32 numBins = getNumBins(featureVector, binRatio_, minBins_, maxBins_);
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
     uint32 numElements = featureVector.getNumElements();
     result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
