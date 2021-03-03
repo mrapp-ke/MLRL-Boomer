@@ -21,7 +21,3 @@ void MissingFeatureVector::addMissingIndex(uint32 index) {
 void MissingFeatureVector::clearMissingIndices() {
     missingIndicesPtr_->setAllToZero();
 }
-
-std::unique_ptr<BinaryDokVector>& MissingFeatureVector::getMissingIndices() {
-    return missingIndicesPtr_;
-}
