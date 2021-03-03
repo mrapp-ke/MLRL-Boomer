@@ -24,22 +24,22 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     const IImmutableStatistics& statistics = callbackResultPtr->statistics_;
     const BinWeightVector& weights = callbackResultPtr->weights_;
     BinWeightVector::const_iterator weightIterator = weights.cbegin();
-    const BinVector& binVector = callbackResultPtr->vector_;
-    BinVector::const_iterator binIterator = binVector.cbegin();
-    uint32 numBins = binVector.getNumElements();
+    const BinVector& thresholdVector = callbackResultPtr->vector_;
+    BinVector::const_iterator thresholdIterator = thresholdVector.cbegin();
+    uint32 numBins = thresholdVector.getNumElements();
 
     // Create a new, empty subset of the current statistics when processing a new feature...
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics);
 
     // Search for the first non-empty bin...
     uint32 r = 0;
-    float32 previousValue = 0;
+    float32 threshold = 0;
 
     for (; r < numBins; r++) {
         uint32 weight = weightIterator[r];
 
         if (weight > 0) {
-            previousValue = binIterator[r].maxValue;
+            threshold = thresholdIterator[r].minValue;
             statisticsSubsetPtr->addToSubset(r, 1);
             break;
         }
@@ -49,8 +49,6 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         uint32 weight = weightIterator[r];
 
         if (weight > 0) {
-            float32 currentValue = binIterator[r].minValue;
-
             const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
                                                                                    false, false);
 
@@ -58,14 +56,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 bestHead = head;
                 refinementPtr->end = r;
                 refinementPtr->covered = true;
-
-                if (nominal_) {
-                    refinementPtr->comparator = EQ;
-                    refinementPtr->threshold = previousValue;
-                } else {
-                    refinementPtr->comparator = LEQ;
-                    refinementPtr->threshold = mean(previousValue, currentValue);
-                }
+                refinementPtr->threshold = threshold;
+                refinementPtr->comparator = nominal_ ? EQ : LEQ;
             }
 
             head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
@@ -74,17 +66,11 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 bestHead = head;
                 refinementPtr->end = r;
                 refinementPtr->covered = false;
-
-                if (nominal_) {
-                    refinementPtr->comparator = NEQ;
-                    refinementPtr->threshold = previousValue;
-                } else {
-                    refinementPtr->comparator = GR;
-                    refinementPtr->threshold = mean(previousValue, currentValue);
-                }
+                refinementPtr->threshold = threshold;
+                refinementPtr->comparator = nominal_ ? NEQ : GR;
             }
 
-            previousValue = binIterator[r].maxValue;
+            threshold = thresholdIterator[r].minValue;
             statisticsSubsetPtr->addToSubset(r, 1);
 
             // Reset the subset in case of a nominal feature, as the previous bins will not be covered by the next
