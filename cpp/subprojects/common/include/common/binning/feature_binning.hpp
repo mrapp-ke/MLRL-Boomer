@@ -31,6 +31,11 @@ class IFeatureBinning {
             std::unique_ptr<BinIndexVector> binIndicesPtr;
         };
 
+        /**
+         * The index of the bin that contains sparse values.
+         */
+        static const uint32 BIN_INDEX_SPARSE = std::numeric_limits<uint32>::max();
+
         virtual ~IFeatureBinning() { };
 
         /**
