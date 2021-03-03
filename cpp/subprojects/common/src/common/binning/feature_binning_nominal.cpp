@@ -1,18 +1,17 @@
 #include "common/binning/feature_binning_nominal.hpp"
 
 
-IFeatureBinning::FeatureInfo NominalFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
-    FeatureInfo featureInfo;
+static inline uint32 preprocess(FeatureVector& featureVector) {
     uint32 numElements = featureVector.getNumElements();
 
     if (numElements > 0) {
         featureVector.sortByValues();
-        FeatureVector::const_iterator iterator = featureVector.cbegin();
-        float32 previousValue = iterator[0].value;
+        FeatureVector::const_iterator featureIterator = featureVector.cbegin();
+        float32 previousValue = featureIterator[0].value;
         uint32 numDistinctValues = 1;
 
         for (uint32 i = 1; i < numElements; i++) {
-            float32 currentValue = iterator[i].value;
+            float32 currentValue = featureIterator[i].value;
 
             if (currentValue != previousValue) {
                 numDistinctValues++;
@@ -20,18 +19,21 @@ IFeatureBinning::FeatureInfo NominalFeatureBinning::getFeatureInfo(FeatureVector
             }
         }
 
-        featureInfo.numBins = numDistinctValues > 1 ? numDistinctValues : 0;
-    } else {
-        featureInfo.numBins = 0;
+        return numDistinctValues > 1 ? numDistinctValues : 0;
     }
 
+    return 0;
+}
+
+IFeatureBinning::FeatureInfo NominalFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
+    FeatureInfo featureInfo;
     return featureInfo;
 }
 
 IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureInfo featureInfo,
                                                           FeatureVector& featureVector) const {
     Result result;
-    uint32 numBins = featureInfo.numBins;
+    uint32 numBins = preprocess(featureVector);
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
     uint32 numElements = featureVector.getNumElements();
     result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
