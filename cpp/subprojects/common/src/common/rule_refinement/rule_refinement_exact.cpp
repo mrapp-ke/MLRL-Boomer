@@ -1,5 +1,5 @@
 #include "common/rule_refinement/rule_refinement_exact.hpp"
-#include "rule_refinement_common.hpp"
+#include "common/math/math.hpp"
 
 
 template<class T>
@@ -107,7 +107,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = LEQ;
-                            refinementPtr->threshold = calculateThreshold(previousThreshold, currentThreshold);
+                            refinementPtr->threshold = mean(previousThreshold, currentThreshold);
                         }
                     }
 
@@ -129,7 +129,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = GR;
-                            refinementPtr->threshold = calculateThreshold(previousThreshold, currentThreshold);
+                            refinementPtr->threshold = mean(previousThreshold, currentThreshold);
                         }
                     }
 
@@ -251,7 +251,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = GR;
-                            refinementPtr->threshold = calculateThreshold(currentThreshold, previousThreshold);
+                            refinementPtr->threshold = mean(currentThreshold, previousThreshold);
                         }
                     }
 
@@ -273,7 +273,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = LEQ;
-                            refinementPtr->threshold = calculateThreshold(currentThreshold, previousThreshold);
+                            refinementPtr->threshold = mean(currentThreshold, previousThreshold);
                         }
                     }
 
@@ -427,7 +427,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->threshold = previousThresholdNegative * 0.5;
             } else {
                 // If the condition separates an example with feature value < 0 from an example with feature value > 0
-                refinementPtr->threshold = calculateThreshold(previousThresholdNegative, previousThreshold);
+                refinementPtr->threshold = mean(previousThresholdNegative, previousThreshold);
             }
         }
 
@@ -450,7 +450,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->threshold = previousThresholdNegative * 0.5;
             } else {
                 // If the condition separates an example with feature value < 0 from an example with feature value > 0
-                refinementPtr->threshold = calculateThreshold(previousThresholdNegative, previousThreshold);
+                refinementPtr->threshold = mean(previousThresholdNegative, previousThreshold);
             }
         }
     }
