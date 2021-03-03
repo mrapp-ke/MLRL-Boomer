@@ -21,6 +21,12 @@ class MissingFeatureVector {
 
         MissingFeatureVector();
 
+        /**
+         * @param missingFeatureVector A reference to an object of type `MissingFeatureVector`, the missing indices
+         *                             should be taken from
+         */
+        MissingFeatureVector(MissingFeatureVector& missingFeatureVector);
+
         typedef BinaryDokVector::index_const_iterator missing_index_const_iterator;
 
         /**
