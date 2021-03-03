@@ -100,9 +100,12 @@ static inline void rebuildHistogram(const BinIndexVector& binIndices, BinWeightV
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = coverageSetIterator[i];
         uint32 binIndex = binIndexIterator[exampleIndex];
-        uint32 weight = weights.getWeight(exampleIndex);
-        binWeightIterator[binIndex] += weight;
-        histogram.addToBin(binIndex, exampleIndex, weight);
+
+        if (binIndex != IFeatureBinning::BIN_INDEX_SPARSE) {
+            uint32 weight = weights.getWeight(exampleIndex);
+            binWeightIterator[binIndex] += weight;
+            histogram.addToBin(binIndex, exampleIndex, weight);
+        }
     }
 }
 
