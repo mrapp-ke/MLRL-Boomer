@@ -9,11 +9,6 @@
 
 
 /**
- * A vector that stores the indices of the bins, individual examples belong to.
- */
-typedef DenseVector<uint32> BinIndexVector;
-
-/**
  * An entry that is stored in the cache and contains unique pointers to vectors that store bins and their corresponding
  * weights. Moreover, it contains unique pointers to a vector that stores the index of the bins individual examples
  * belong to, as well as to an histogram.
