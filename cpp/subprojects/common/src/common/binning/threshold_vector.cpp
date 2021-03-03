@@ -2,6 +2,11 @@
 
 
 ThresholdVector::ThresholdVector(uint32 numElements)
-    : DenseVector<float32>(numElements) {
+    : ThresholdVector(numElements, false) {
+
+}
+
+ThresholdVector::ThresholdVector(uint32 numElements, bool init)
+    : DenseVector<float32>(numElements, init) {
 
 }

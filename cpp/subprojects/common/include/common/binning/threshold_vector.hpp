@@ -18,4 +18,10 @@ class ThresholdVector final : public DenseVector<float32> {
          */
         ThresholdVector(uint32 numElements);
 
+        /**
+         * @param numElements   The number of elements in the vector
+         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
+         */
+        ThresholdVector(uint32 numElements, bool init);
+
 };
