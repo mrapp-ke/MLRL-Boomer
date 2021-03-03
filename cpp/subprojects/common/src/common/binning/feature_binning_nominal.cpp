@@ -25,8 +25,9 @@ IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& feature
             if (distinctValues.insert(currentValue).second) {
                 binIndex++;
                 thresholdIterator[binIndex] = currentValue;
-                binIndexIterator[featureIterator[i].index] = binIndex;
             }
+
+            binIndexIterator[featureIterator[i].index] = binIndex;
         }
 
         result.thresholdVectorPtr->setNumElements(binIndex + 1, true);
