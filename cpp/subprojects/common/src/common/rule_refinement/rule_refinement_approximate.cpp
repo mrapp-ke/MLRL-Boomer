@@ -78,14 +78,16 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 refinementPtr->comparator = nominal_ ? NEQ : GR;
             }
 
-            threshold = thresholdIterator[r];
-            statisticsSubsetPtr->addToSubset(r, 1);
-
             // Reset the subset in case of a nominal feature, as the previous bins will not be covered by the next
             // condition...
             if (nominal_) {
                 statisticsSubsetPtr->resetSubset();
             }
+
+            threshold = thresholdIterator[r];
+
+            // Add the bin to the subset to mark it as covered by upcoming refinements...
+            statisticsSubsetPtr->addToSubset(r, 1);
         }
     }
 
