@@ -36,17 +36,20 @@ IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(Featur
     return featureInfo;
 }
 
-std::unique_ptr<ThresholdVector> EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo,
-                                                                          const FeatureVector& featureVector,
-                                                                          Callback callback) const {
+IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo,
+                                                                 const FeatureVector& featureVector,
+                                                                 Callback callback) const {
+    Result result;
     uint32 numBins = featureInfo.numBins;
-    std::unique_ptr<ThresholdVector> thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
+    uint32 numElements = featureVector.getNumElements();
+    result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
 
     if (numBins > 0) {
-        uint32 numElements = featureVector.getNumElements();
         uint32 numElementsPerBin = (uint32) std::ceil((float) numElements / (float) numBins);
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
-        ThresholdVector::iterator thresholdIterator = thresholdVectorPtr->begin();
+        ThresholdVector::iterator thresholdIterator = result.thresholdVectorPtr->begin();
+        BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
         uint32 binIndex = 0;
         float32 previousValue = 0;
 
@@ -63,11 +66,11 @@ std::unique_ptr<ThresholdVector> EqualFrequencyFeatureBinning::createBins(Featur
                 previousValue = currentValue;
             }
 
-            callback(binIndex, featureIterator[i].index, currentValue);
+            binIndexIterator[featureIterator[i].index] = binIndex;
         }
 
-        thresholdVectorPtr->setNumElements(binIndex + 1, true);
+        result.thresholdVectorPtr->setNumElements(binIndex + 1, true);
     }
 
-    return thresholdVectorPtr;
+    return result;
 }
