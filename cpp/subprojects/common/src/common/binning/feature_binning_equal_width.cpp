@@ -47,7 +47,7 @@ IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVec
 }
 
 IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo,
-                                                             const FeatureVector& featureVector) const {
+                                                             FeatureVector& featureVector) const {
     Result result;
     uint32 numBins = featureInfo.numBins;
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);

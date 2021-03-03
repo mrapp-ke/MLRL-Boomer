@@ -37,7 +37,7 @@ IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(Featur
 }
 
 IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo,
-                                                                 const FeatureVector& featureVector) const {
+                                                                 FeatureVector& featureVector) const {
     Result result;
     uint32 numBins = featureInfo.numBins;
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);

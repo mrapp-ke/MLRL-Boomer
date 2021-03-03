@@ -66,6 +66,6 @@ class IFeatureBinning {
          *                      from the boundaries between the bins, as well as a vector that stores the indices of the
          *                      bins, individual values have been assigned to
          */
-        virtual Result createBins(FeatureInfo featureInfo, const FeatureVector& featureVector) const = 0;
+        virtual Result createBins(FeatureInfo featureInfo, FeatureVector& featureVector) const = 0;
 
 };
