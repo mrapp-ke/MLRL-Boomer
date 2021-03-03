@@ -27,10 +27,10 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     ThresholdVector::const_iterator thresholdIterator = thresholdVector.cbegin();
     uint32 numBins = thresholdVector.getNumElements();
 
-    // Create a new, empty subset of the current statistics when processing a new feature...
+    // Create a new, empty subset of the statistics...
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics);
 
-    // Search for the first non-empty bin...
+    // Traverse bins in ascending order until the first bin with weight > 0 is encountered...
     uint32 r = 0;
     float32 threshold = 0;
 
@@ -38,19 +38,25 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         uint32 weight = weightIterator[r];
 
         if (weight > 0) {
+            // Add the bin to the subset to mark it as covered by upcoming refinements...
             threshold = thresholdIterator[r];
             statisticsSubsetPtr->addToSubset(r, 1);
             break;
         }
     }
 
+    // Traverse the remaining bins in ascending order...
     for (r = r + 1; r < numBins; r++) {
         uint32 weight = weightIterator[r];
 
+        // Do only consider bins that are not empty...
         if (weight > 0) {
+            // Find and evaluate the best head for the current refinement, if a condition that uses the <= operator (or
+            // the == operator in case of a nominal feature) is used...
             const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
                                                                                    false, false);
 
+            // If the refinement is better than the current rule...
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->end = r;
@@ -59,8 +65,11 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 refinementPtr->comparator = nominal_ ? EQ : LEQ;
             }
 
+            // Find and evaluate the best head for the current refinement, if a condition that uses the > operator (or
+            // the != operator in case of a nominal feature) is used...
             head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
 
+            // If the refinement is better than the current rule...
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->end = r;
