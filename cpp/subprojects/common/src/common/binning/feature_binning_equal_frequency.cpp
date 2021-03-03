@@ -3,7 +3,7 @@
 #include "common/math/math.hpp"
 
 
-static inline uint32 getNumBins(FeatureVector& featureVector, float32 binRatio, uint32 minBins, uint32 maxBins) {
+static inline uint32 preprocess(FeatureVector& featureVector, float32 binRatio, uint32 minBins, uint32 maxBins) {
     uint32 numElements = featureVector.getNumElements();
 
     if (numElements > 0) {
@@ -40,7 +40,7 @@ IFeatureBinning::FeatureInfo EqualFrequencyFeatureBinning::getFeatureInfo(Featur
 IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureInfo featureInfo,
                                                                  FeatureVector& featureVector) const {
     Result result;
-    uint32 numBins = getNumBins(featureVector, binRatio_, minBins_, maxBins_);
+    uint32 numBins = preprocess(featureVector, binRatio_, minBins_, maxBins_);
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
     uint32 numElements = featureVector.getNumElements();
     result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
