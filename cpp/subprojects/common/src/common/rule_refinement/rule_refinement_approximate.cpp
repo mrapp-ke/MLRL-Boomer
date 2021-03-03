@@ -1,11 +1,10 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
-#include "common/math/math.hpp"
 
 
 template<class T>
 ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
         std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex, bool nominal,
-        std::unique_ptr<IRuleRefinementCallback<BinVector, BinWeightVector>> callbackPtr)
+        std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr)
     : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices), featureIndex_(featureIndex),
       nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
 
@@ -19,13 +18,13 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     const AbstractEvaluatedPrediction* bestHead = currentHead;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<BinVector, BinWeightVector>::Result> callbackResultPtr =
+    std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>::Result> callbackResultPtr =
         callbackPtr_->get();
     const IImmutableStatistics& statistics = callbackResultPtr->statistics_;
     const BinWeightVector& weights = callbackResultPtr->weights_;
     BinWeightVector::const_iterator weightIterator = weights.cbegin();
-    const BinVector& thresholdVector = callbackResultPtr->vector_;
-    BinVector::const_iterator thresholdIterator = thresholdVector.cbegin();
+    const ThresholdVector& thresholdVector = callbackResultPtr->vector_;
+    ThresholdVector::const_iterator thresholdIterator = thresholdVector.cbegin();
     uint32 numBins = thresholdVector.getNumElements();
 
     // Create a new, empty subset of the current statistics when processing a new feature...
@@ -39,7 +38,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         uint32 weight = weightIterator[r];
 
         if (weight > 0) {
-            threshold = thresholdIterator[r].minValue;
+            threshold = thresholdIterator[r];
             statisticsSubsetPtr->addToSubset(r, 1);
             break;
         }
@@ -70,7 +69,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 refinementPtr->comparator = nominal_ ? NEQ : GR;
             }
 
-            threshold = thresholdIterator[r].minValue;
+            threshold = thresholdIterator[r];
             statisticsSubsetPtr->addToSubset(r, 1);
 
             // Reset the subset in case of a nominal feature, as the previous bins will not be covered by the next
