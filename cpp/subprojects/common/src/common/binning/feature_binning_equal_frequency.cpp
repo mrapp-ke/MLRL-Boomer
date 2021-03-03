@@ -66,7 +66,7 @@ std::unique_ptr<ThresholdVector> EqualFrequencyFeatureBinning::createBins(Featur
             callback(binIndex, featureIterator[i].index, currentValue);
         }
 
-        thresholdVectorPtr->setNumElements(binIndex, true);
+        thresholdVectorPtr->setNumElements(binIndex + 1, true);
     }
 
     return thresholdVectorPtr;
