@@ -1,5 +1,5 @@
 #include "common/binning/feature_binning_nominal.hpp"
-#include <unordered_set>
+#include <unordered_map>
 
 
 IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& featureVector) const {
@@ -12,25 +12,28 @@ IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& feature
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
         ThresholdVector::iterator thresholdIterator = result.thresholdVectorPtr->begin();
         BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
-        std::unordered_set<float32> distinctValues;
-        uint32 binIndex = 0;
+        std::unordered_map<float32, uint32> mapping;
         float32 currentValue = featureIterator[0].value;
-        distinctValues.insert(currentValue);
-        thresholdIterator[binIndex] = currentValue;
-        binIndexIterator[featureIterator[0].index] = binIndex;
+        mapping.emplace(currentValue, 0);
+        thresholdIterator[0] = currentValue;
+        binIndexIterator[featureIterator[0].index] = 0;
+        uint32 nextBinIndex = 1;
 
         for (uint32 i = 1; i < numElements; i++) {
+            uint32 index = featureIterator[i].index;
             currentValue = featureIterator[i].value;
+            auto mapIterator = mapping.emplace(currentValue, nextBinIndex);
 
-            if (distinctValues.insert(currentValue).second) {
-                binIndex++;
-                thresholdIterator[binIndex] = currentValue;
+            if (mapIterator.second) {
+                thresholdIterator[nextBinIndex] = currentValue;
+                binIndexIterator[index] = nextBinIndex;
+                nextBinIndex++;
+            } else {
+                binIndexIterator[index] = mapIterator.first->second;
             }
-
-            binIndexIterator[featureIterator[i].index] = binIndex;
         }
 
-        result.thresholdVectorPtr->setNumElements(binIndex + 1, true);
+        result.thresholdVectorPtr->setNumElements(nextBinIndex, true);
     }
 
     return result;
