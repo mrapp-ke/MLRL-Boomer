@@ -1,5 +1,5 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
-#include "rule_refinement_common.hpp"
+#include "common/math/math.hpp"
 
 
 template<class T>
@@ -73,7 +73,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                         refinementPtr->threshold = previousValue;
                     } else {
                         refinementPtr->comparator = LEQ;
-                        refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
+                        refinementPtr->threshold = arithmeticMean(previousValue, currentValue);
                     }
                 }
 
@@ -91,7 +91,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                         refinementPtr->threshold = previousValue;
                     } else {
                         refinementPtr->comparator = GR;
-                        refinementPtr->threshold = calculateThreshold(previousValue, currentValue);
+                        refinementPtr->threshold = arithmeticMean(previousValue, currentValue);
                     }
                 }
 
