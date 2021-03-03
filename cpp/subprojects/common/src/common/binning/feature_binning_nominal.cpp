@@ -25,13 +25,7 @@ static inline uint32 preprocess(FeatureVector& featureVector) {
     return 0;
 }
 
-IFeatureBinning::FeatureInfo NominalFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
-    FeatureInfo featureInfo;
-    return featureInfo;
-}
-
-IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureInfo featureInfo,
-                                                          FeatureVector& featureVector) const {
+IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& featureVector) const {
     Result result;
     uint32 numBins = preprocess(featureVector);
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);

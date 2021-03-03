@@ -48,13 +48,7 @@ EqualWidthFeatureBinning::EqualWidthFeatureBinning(float32 binRatio, uint32 minB
 
 }
 
-IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
-    FeatureInfo featureInfo;
-    return featureInfo;
-}
-
-IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo,
-                                                             FeatureVector& featureVector) const {
+IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& featureVector) const {
     Result result;
     std::tuple<uint32, float32, float32> info = preprocess(featureVector, binRatio_, minBins_, maxBins_);
     uint32 numBins = std::get<0>(info);
