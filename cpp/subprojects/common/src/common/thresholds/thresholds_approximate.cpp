@@ -1,11 +1,9 @@
 #include "common/thresholds/thresholds_approximate.hpp"
-#include "common/binning/bin_vector.hpp"
 #include "common/binning/feature_binning_nominal.hpp"
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
 #include "common/data/arrays.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
-#include <cmath>
 
 
 /**
@@ -14,31 +12,11 @@
  * belong to, as well as to an histogram.
  */
 struct CacheEntry {
-    std::unique_ptr<BinVector> binVectorPtr;
     std::unique_ptr<ThresholdVector> thresholdVectorPtr;
     std::unique_ptr<BinIndexVector> binIndicesPtr;
     std::unique_ptr<IHistogram> histogramPtr;
     std::unique_ptr<BinWeightVector> weightVectorPtr;
 };
-
-/**
- * Adds a value to the bin at a specific index.
- *
- * @param binVector A reference to an object of type `BinVector` that should be updated
- * @param binIndex  The index of the bin, the value should be added to
- * @param value     The value to be added to the bin
- */
-static inline void addValueToBin(BinVector& binVector, uint32 binIndex, float64 value) {
-    BinVector::iterator binIterator = binVector.begin();
-
-    if (value < binIterator[binIndex].minValue) {
-        binIterator[binIndex].minValue = value;
-    }
-
-    if (value > binIterator[binIndex].maxValue) {
-        binIterator[binIndex].maxValue = value;
-    }
-}
 
 /**
  * Updates a given `CoverageSet` after a new condition has been added, such that only the examples that are covered by
@@ -150,7 +128,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IRuleRefinementCallback<BinVector, BinWeightVector> {
+                class Callback final : public IRuleRefinementCallback<ThresholdVector, BinWeightVector> {
 
                     private:
 
@@ -176,7 +154,6 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                         std::unique_ptr<Result> get() override {
                             auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
-                            BinVector* binVector = cacheIterator->second.binVectorPtr.get();
                             ThresholdVector* thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
                             BinIndexVector* binIndices = cacheIterator->second.binIndicesPtr.get();
 
@@ -191,21 +168,18 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 const IFeatureBinning& binning =
                                     nominal_ ? thresholdsSubset_.thresholds_.nominalBinning_
                                              : *thresholdsSubset_.thresholds_.binningPtr_;
-                                IFeatureBinning::FeatureInfo featureInfo = binning.getFeatureInfo(*featureVectorPtr);
-                                uint32 numBins = featureInfo.numBins;
-                                cacheIterator->second.binVectorPtr = std::make_unique<BinVector>(numBins);
                                 cacheIterator->second.binIndicesPtr = std::make_unique<BinIndexVector>(numExamples);
-                                binVector = cacheIterator->second.binVectorPtr.get();
                                 binIndices = cacheIterator->second.binIndicesPtr.get();
                                 auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
                                     binIndices->begin()[originalIndex] = binIndex;
-                                    addValueToBin(*binVector, binIndex, value);
                                 };
+                                IFeatureBinning::FeatureInfo featureInfo = binning.getFeatureInfo(*featureVectorPtr);
                                 cacheIterator->second.thresholdVectorPtr =
                                     binning.createBins(featureInfo, *featureVectorPtr, callback);
                                 thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
 
                                 // Create histogram and weight vector...
+                                uint32 numBins = thresholdVector->getNumElements();
                                 cacheIterator->second.histogramPtr =
                                     thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogram(
                                         numBins);
@@ -218,7 +192,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             rebuildHistogram(*binIndices, binWeights, histogram, thresholdsSubset_.weights_,
                                              thresholdsSubset_.coverageSet_);
 
-                            return std::make_unique<Result>(histogram, binWeights, *binVector);
+                            return std::make_unique<Result>(histogram, binWeights, *thresholdVector);
                         }
 
                 };
@@ -269,10 +243,11 @@ class ApproximateThresholds final : public AbstractThresholds {
                 void filterThresholds(Refinement& refinement) override {
                     uint32 featureIndex = refinement.featureIndex;
                     auto cacheIterator = thresholds_.cache_.find(featureIndex);
-                    const BinVector& binVector = *cacheIterator->second.binVectorPtr;
+                    const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
                     const BinIndexVector& binIndices = *cacheIterator->second.binIndicesPtr;
-                    updateCoveredExamples(binIndices, binVector.getNumElements(), refinement.end, refinement.covered,
-                                          coverageSet_, thresholds_.statisticsProviderPtr_->get(), weights_);
+                    updateCoveredExamples(binIndices, thresholdVector.getNumElements(), refinement.end,
+                                          refinement.covered, coverageSet_, thresholds_.statisticsProviderPtr_->get(),
+                                          weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
