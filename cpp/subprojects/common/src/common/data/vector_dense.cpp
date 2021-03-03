@@ -68,5 +68,6 @@ void DenseVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
 
 template class DenseVector<uint8>;
 template class DenseVector<uint32>;
+template class DenseVector<float32>;
 template class DenseVector<float64>;
 template class DenseVector<Bin>;
