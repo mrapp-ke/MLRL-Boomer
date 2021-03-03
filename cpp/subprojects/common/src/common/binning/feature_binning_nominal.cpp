@@ -2,7 +2,7 @@
 #include <unordered_map>
 
 
-IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& featureVector) const {
+IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& featureVector, uint32 numExamples) const {
     Result result;
     uint32 numElements = featureVector.getNumElements();
     result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
