@@ -16,7 +16,7 @@ IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& feature
         uint32 i = 0;
         uint32 binIndex = 0;
         float32 currentValue = featureIterator[i].value;
-        uniqueValues.emplace(currentValue);
+        uniqueValues.insert(currentValue);
         thresholdIterator[binIndex] = currentValue;
         binIndexIterator[featureIterator[i].index] = binIndex;
 
