@@ -22,10 +22,11 @@ struct CacheEntry : public IFeatureBinning::Result {
  *                          from the boundaries of the bins
  * @param binIndices        A reference to an object of type `BinIndexVector` that stores the indices of the bins,
  *                          individual examples belong to
- * @param conditionEnd      The last bin (exclusive) that is covered by the condition
- * @param covered           True, if the bins in range [0, conditionEnd) are covered by the new condition and the
- *                          remaining ones are not, false, if the elements in said range are not covered, but the
- *                          remaining ones are
+ * @param conditionStart    The first bin (inclusive) that is covered by the new condition
+ * @param conditionEnd      The last bin (exclusive) that is covered by the new condition
+ * @param covered           True, if the bins in range [conditionStart, conditionEnd) are covered by the new condition
+ *                          and the remaining ones are not, false, if the elements in said range are not covered, but
+ *                          the remaining ones are
  * @param coverageSet       A reference to an object of type `CoverageSet` that is used to keep track of the examples
  *                          that are covered by the previous rule. It will be updated by this function
  * @param statistics        A reference to an object of type `IStatistics` to be notified about the statistics that must
@@ -35,7 +36,7 @@ struct CacheEntry : public IFeatureBinning::Result {
  *                          the individual training examples
  */
 static inline void updateCoveredExamples(const ThresholdVector& thresholdVector, const BinIndexVector& binIndices,
-                                         intp conditionEnd, bool covered, CoverageSet& coverageSet,
+                                         intp conditionStart, intp conditionEnd, bool covered, CoverageSet& coverageSet,
                                          IStatistics& statistics, const IWeightVector& weights) {
     uint32 numBins = thresholdVector.getNumElements();
     intp firstCoveredBinIndex, lastCoveredBinIndex;
@@ -243,8 +244,9 @@ class ApproximateThresholds final : public AbstractThresholds {
                     auto cacheIterator = thresholds_.cache_.find(featureIndex);
                     const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
                     const BinIndexVector& binIndices = *cacheIterator->second.binIndicesPtr;
-                    updateCoveredExamples(thresholdVector, binIndices, refinement.end, refinement.covered, coverageSet_,
-                                          thresholds_.statisticsProviderPtr_->get(), weights_);
+                    updateCoveredExamples(thresholdVector, binIndices, refinement.start, refinement.end,
+                                          refinement.covered, coverageSet_, thresholds_.statisticsProviderPtr_->get(),
+                                          weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
