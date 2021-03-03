@@ -1,13 +1,13 @@
 #include "common/binning/threshold_vector.hpp"
 
 
-ThresholdVector::ThresholdVector(uint32 numElements)
-    : ThresholdVector(numElements, false) {
+ThresholdVector::ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements)
+    : ThresholdVector(missingFeatureVector, numElements, false) {
 
 }
 
-ThresholdVector::ThresholdVector(uint32 numElements, bool init)
-    : vector_(DenseVector<float32>(numElements, init)) {
+ThresholdVector::ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements, bool init)
+    : MissingFeatureVector(missingFeatureVector), vector_(DenseVector<float32>(numElements, init)) {
 
 }
 

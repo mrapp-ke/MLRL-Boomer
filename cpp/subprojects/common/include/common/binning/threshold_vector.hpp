@@ -19,15 +19,19 @@ class ThresholdVector final : public MissingFeatureVector {
     public:
 
         /**
-         * @param numElements The number of elements in the vector
+         * @param missingFeatureVector  A reference to an object of type `MissingFeatureVector` the missing indices
+         *                              should be taken from
+         * @param numElements           The number of elements in the vector
          */
-        ThresholdVector(uint32 numElements);
+        ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements);
 
         /**
-         * @param numElements   The number of elements in the vector
-         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
+         * @param missingFeatureVector  A reference to an object of type `MissingFeatureVector` the missing indices
+         *                              should be taken from
+         * @param numElements           The number of elements in the vector
+         * @param init                  True, if all elements in the vector should be value-initialized, false otherwise
          */
-        ThresholdVector(uint32 numElements, bool init);
+        ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements, bool init);
 
         typedef DenseVector<float32>::iterator iterator;
 
