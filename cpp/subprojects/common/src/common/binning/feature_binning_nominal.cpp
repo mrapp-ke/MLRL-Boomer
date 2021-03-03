@@ -28,8 +28,9 @@ IFeatureBinning::FeatureInfo NominalFeatureBinning::getFeatureInfo(FeatureVector
     return featureInfo;
 }
 
-void NominalFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                       Callback callback) const {
+std::unique_ptr<ThresholdVector> NominalFeatureBinning::createBins(FeatureInfo featureInfo,
+                                                                   const FeatureVector& featureVector,
+                                                                   Callback callback) const {
     uint32 numBins = featureInfo.numBins;
 
     if (numBins > 0) {
@@ -50,4 +51,6 @@ void NominalFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVec
             callback(binIndex, iterator[i].index, value);
         }
     }
+
+    return nullptr;
 }

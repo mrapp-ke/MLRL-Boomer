@@ -46,8 +46,9 @@ IFeatureBinning::FeatureInfo EqualWidthFeatureBinning::getFeatureInfo(FeatureVec
     return featureInfo;
 }
 
-void EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                          Callback callback) const {
+std::unique_ptr<ThresholdVector> EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo,
+                                                                      const FeatureVector& featureVector,
+                                                                      Callback callback) const {
     uint32 numBins = featureInfo.numBins;
 
     if (numBins > 0) {
@@ -71,4 +72,6 @@ void EqualWidthFeatureBinning::createBins(FeatureInfo featureInfo, const Feature
             callback(binIndex, iterator[i].index, currentValue);
         }
     }
+
+    return nullptr;
 }

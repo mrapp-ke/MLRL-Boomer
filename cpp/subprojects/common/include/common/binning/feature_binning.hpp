@@ -5,6 +5,8 @@
 #pragma once
 
 #include "common/input/feature_vector.hpp"
+#include "common/binning/threshold_vector.hpp"
+#include <memory>
 #include <functional>
 
 /**
@@ -52,8 +54,10 @@ class IFeatureBinning {
          * @param featureInfo   A struct of type `FeatureInfo` that stores information about the given `FeatureVector`
          * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
          * @param callback      A callback that is invoked when a value is assigned to a bin
+         * @return              An object of type `ThresholdVector` that stores the thresholds that result from the
+         *                      boundaries between the bins
          */
-        virtual void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                Callback callback) const = 0;
+        virtual std::unique_ptr<ThresholdVector> createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
+                                                            Callback callback) const = 0;
 
 };
