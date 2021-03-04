@@ -162,6 +162,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
                                                                                    false, false);
 
+            // If the refinement is better than the current rule...
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->start = firstR;
@@ -177,6 +178,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             // used...
             head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
 
+            // If the refinement is better than the current rule...
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->start = firstR;
@@ -412,6 +414,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, false,
                                                                                true);
 
+        // If the refinement is better than the current rule...
         if (head != nullptr) {
             bestHead = head;
             refinementPtr->start = 0;
@@ -435,6 +438,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // used...
         head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, true);
 
+        // If the refinement is better than the current rule...
         if (head != nullptr) {
             bestHead = head;
             refinementPtr->start = 0;
