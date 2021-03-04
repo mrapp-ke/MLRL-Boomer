@@ -36,7 +36,7 @@ IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& 
                                                                  uint32 numExamples) const {
     Result result;
     uint32 numBins = getNumBins(featureVector, binRatio_, minBins_, maxBins_);
-    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numBins);
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numBins);
     uint32 numElements = featureVector.getNumElements();
     result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
 

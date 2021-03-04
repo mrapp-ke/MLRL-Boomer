@@ -4,10 +4,10 @@
 template<class T>
 ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
         std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 totalSumOfWeights,
-        uint32 featureIndex, bool nominal,
+        uint32 featureIndex, bool nominal, const IWeightVector& weights,
         std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr)
     : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices),
-      totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex), nominal_(nominal),
+      totalSumOfWeights_(totalSumOfWeights), featureIndex_(featureIndex), nominal_(nominal), weights_(weights),
       callbackPtr_(std::move(callbackPtr)) {
 
 }
@@ -31,6 +31,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     // Create a new, empty subset of the statistics...
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics);
+
+    for (auto it = thresholdVector.missing_indices_cbegin(); it != thresholdVector.missing_indices_cend(); it++) {
+        uint32 i = *it;
+        uint32 weight = weights_.getWeight(i);
+        statisticsSubsetPtr->addToMissing(i, weight);
+    }
 
     // Traverse bins in ascending order until the first bin with weight > 0 is encountered...
     uint32 r = 0;
