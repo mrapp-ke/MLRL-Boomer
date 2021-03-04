@@ -1,4 +1,5 @@
 #include "common/binning/feature_binning_equal_width.hpp"
+#include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/binning.hpp"
 #include <unordered_set>
 #include <tuple>
@@ -54,15 +55,16 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
     uint32 numBins = std::get<0>(tuple);
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numBins, true);
     uint32 numElements = featureVector.getNumElements();
-    result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
+    result.binIndicesPtr = std::make_unique<DenseBinIndexVector>(numElements);
 
     if (numBins > 0) {
+        IBinIndexVector& binIndices = *result.binIndicesPtr;
+        ThresholdVector& thresholdVector = *result.thresholdVectorPtr;
+        FeatureVector::const_iterator featureIterator = featureVector.cbegin();
+        ThresholdVector::iterator thresholdIterator = thresholdVector.begin();
         float32 min = std::get<1>(tuple);
         float32 max = std::get<2>(tuple);
         float32 width = (max - min) / numBins;
-        FeatureVector::const_iterator featureIterator = featureVector.cbegin();
-        BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
-        ThresholdVector::iterator thresholdIterator = result.thresholdVectorPtr->begin();
 
         for (uint32 i = 0; i < numElements; i++) {
             float32 currentValue = featureIterator[i].value;
@@ -73,7 +75,7 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
             }
 
             thresholdIterator[binIndex] = 1;
-            binIndexIterator[featureIterator[i].index] = binIndex;
+            binIndices.setBinIndex(featureIterator[i].index, binIndex);
         }
 
         // Remove empty bins and calculate thresholds...
@@ -89,12 +91,12 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
             }
         }
 
-        result.thresholdVectorPtr->setNumElements(n, true);
+        thresholdVector.setNumElements(n, true);
 
         // Adjust bin indices...
         for (uint32 i = 0; i < numElements; i++) {
-            uint32 binIndex = binIndexIterator[i];
-            binIndexIterator[i] = mapping[binIndex];
+            uint32 binIndex = binIndices.getBinIndex(i);
+            binIndices.setBinIndex(i, mapping[binIndex]);
         }
     }
 
