@@ -13,7 +13,7 @@ IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& feature
     if (sparse) {
         result.binIndicesPtr = std::make_unique<DokBinIndexVector>();
     } else {
-        result.binIndicesPtr = std::make_unique<DenseBinIndexVector>(numExamples);
+        result.binIndicesPtr = std::make_unique<DenseBinIndexVector>(numElements);
     }
 
     if (numElements > 0) {
