@@ -56,7 +56,6 @@ IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& 
                     binIndex++;
                 }
 
-                thresholdIterator[binIndex] = currentValue;
                 previousValue = currentValue;
             }
 
