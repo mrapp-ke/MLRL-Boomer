@@ -21,6 +21,22 @@ class DokBinIndexVector final : public IBinIndexVector {
 
         DokBinIndexVector();
 
+        typedef DokVector<uint32>::iterator iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the vector.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin();
+
+        /**
+         * Returns an `iterator` to the end of the vector.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end();
+
         uint32 getBinIndex(uint32 exampleIndex) const override;
 
         void setBinIndex(uint32 exampleIndex, uint32 binIndex) override;

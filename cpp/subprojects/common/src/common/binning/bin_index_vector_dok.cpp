@@ -6,6 +6,14 @@ DokBinIndexVector::DokBinIndexVector()
 
 }
 
+DokBinIndexVector::iterator DokBinIndexVector::begin() {
+    return vector_.begin();
+}
+
+DokBinIndexVector::iterator DokBinIndexVector::end() {
+    return vector_.end();
+}
+
 uint32 DokBinIndexVector::getBinIndex(uint32 exampleIndex) const {
     return vector_.getValue(exampleIndex);
 }
