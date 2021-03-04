@@ -11,6 +11,7 @@ source_files = [
     'src/common/data/matrix_dok_binary.cpp',
     'src/common/data/ring_buffer.cpp',
     'src/common/data/vector_dense.cpp',
+    'src/common/data/vector_dok.cpp',
     'src/common/data/vector_dok_binary.cpp',
     'src/common/data/vector_sparse_array.cpp',
     'src/common/data/vector_sparse_list_binary.cpp',
