@@ -1,5 +1,6 @@
 #include "common/binning/feature_binning_equal_frequency.hpp"
 #include "common/binning/bin_index_vector_dense.hpp"
+#include "common/binning/bin_index_vector_dok.hpp"
 #include "common/binning/binning.hpp"
 #include "common/math/math.hpp"
 
