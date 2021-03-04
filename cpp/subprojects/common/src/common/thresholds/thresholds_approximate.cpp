@@ -108,7 +108,7 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, cons
         if (!thresholdVector.isMissing(exampleIndex)) {
             uint32 binIndex = binIndices.getBinIndex(exampleIndex);
 
-            if (binIndex != IFeatureBinning::BIN_INDEX_SPARSE) {
+            if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
                 uint32 weight = weights.getWeight(exampleIndex);
                 binWeightIterator[binIndex] += weight;
                 histogram.addToBin(binIndex, exampleIndex, weight);
