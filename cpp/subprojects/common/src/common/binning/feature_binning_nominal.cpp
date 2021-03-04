@@ -7,8 +7,9 @@
 IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& featureVector, uint32 numExamples) const {
     Result result;
     uint32 numElements = featureVector.getNumElements();
-    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numElements);
     bool sparse = numElements < numExamples;
+    uint32 maxBins = sparse ? numElements + 1 : numElements;
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, maxBins);
 
     if (sparse) {
         result.binIndicesPtr = std::make_unique<DokBinIndexVector>();
@@ -23,6 +24,12 @@ IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& feature
         ThresholdVector::iterator thresholdIterator = thresholdVector.begin();
         std::unordered_map<float32, uint32> mapping;
         uint32 nextBinIndex = 0;
+
+        if (sparse) {
+            thresholdVector.setSparseBinIndex(0);
+            thresholdIterator[0] = 0;
+            nextBinIndex++;
+        }
 
         for (uint32 i = 0; i < numElements; i++) {
             float32 currentValue = featureIterator[i].value;
