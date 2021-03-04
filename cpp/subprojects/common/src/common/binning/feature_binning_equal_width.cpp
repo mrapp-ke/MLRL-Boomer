@@ -87,12 +87,15 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
         float32 min = std::get<1>(tuple);
         float32 max = std::get<2>(tuple);
         float32 width = (max - min) / numBins;
+        uint32 sparseBinIndex;
 
         // If there are any sparse values, identify the bin they belong to...
         if (sparse) {
-            uint32 sparseBinIndex = getBinIndex(0, min, width, numBins);
+            sparseBinIndex = getBinIndex(0, min, width, numBins);
             thresholdIterator[sparseBinIndex] = 1;
             thresholdVector.setSparseBinIndex(sparseBinIndex);
+        } else {
+            sparseBinIndex = numBins;
         }
 
         // Iterate all non-sparse feature values and identify the bins they belong to...
@@ -101,8 +104,11 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
 
             if (!sparse || currentValue != 0) {
                 uint32 binIndex = getBinIndex(currentValue, min, width, numBins);
-                thresholdIterator[binIndex] = 1;
-                binIndices.setBinIndex(featureIterator[i].index, binIndex);
+
+                if (binIndex != sparseBinIndex) {
+                    thresholdIterator[binIndex] = 1;
+                    binIndices.setBinIndex(featureIterator[i].index, binIndex);
+                }
             }
         }
 
