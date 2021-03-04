@@ -1,4 +1,5 @@
 #include "common/binning/feature_binning_equal_frequency.hpp"
+#include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/binning.hpp"
 #include "common/math/math.hpp"
 
@@ -38,13 +39,14 @@ IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& 
     uint32 numBins = getNumBins(featureVector, binRatio_, minBins_, maxBins_);
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numBins);
     uint32 numElements = featureVector.getNumElements();
-    result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
+    result.binIndicesPtr = std::make_unique<DenseBinIndexVector>(numElements);
 
     if (numBins > 0) {
-        uint32 numElementsPerBin = (uint32) std::ceil((float) numElements / (float) numBins);
+        IBinIndexVector& binIndices = *result.binIndicesPtr;
+        ThresholdVector& thresholdVector = *result.thresholdVectorPtr;
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
-        ThresholdVector::iterator thresholdIterator = result.thresholdVectorPtr->begin();
-        BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
+        ThresholdVector::iterator thresholdIterator = thresholdVector.begin();
+        uint32 numElementsPerBin = (uint32) std::ceil((float) numElements / (float) numBins);
         uint32 binIndex = 0;
         float32 previousValue = 0;
 
@@ -61,10 +63,10 @@ IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& 
                 previousValue = currentValue;
             }
 
-            binIndexIterator[featureIterator[i].index] = binIndex;
+            binIndices.setBinIndex(featureIterator[i].index, binIndex);
         }
 
-        result.thresholdVectorPtr->setNumElements(binIndex + 1, true);
+        thresholdVector.setNumElements(binIndex + 1, true);
     }
 
     return result;
