@@ -59,7 +59,7 @@ static inline void updateCoveredExamples(const ThresholdVector& thresholdVector,
         uint32 exampleIndex = coverageSetIterator[i];
 
         if (!thresholdVector.isMissing(exampleIndex)) {
-            uint32 binIndex = binIndexIterator[exampleIndex];
+            uint32 binIndex = binIndexIterator[exampleIndex]; // TODO binIndices.getBinIndex(exampleIndex);
 
             if (binIndex >= firstCoveredBinIndex && binIndex < lastCoveredBinIndex) {
                 uint32 weight = weights.getWeight(exampleIndex);
@@ -108,7 +108,7 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, cons
         uint32 exampleIndex = coverageSetIterator[i];
 
         if (!thresholdVector.isMissing(exampleIndex)) {
-            uint32 binIndex = binIndexIterator[exampleIndex];
+            uint32 binIndex = binIndexIterator[exampleIndex]; // TODO binIndices.getBinIndex(exampleIndex);
 
             if (binIndex != IFeatureBinning::BIN_INDEX_SPARSE) {
                 uint32 weight = weights.getWeight(exampleIndex);
