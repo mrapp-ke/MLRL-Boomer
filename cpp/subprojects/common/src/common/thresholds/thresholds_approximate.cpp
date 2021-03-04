@@ -203,7 +203,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     std::unique_ptr<IHeadRefinement> headRefinementPtr =
                         thresholds_.headRefinementFactoryPtr_->create(labelIndices);
                     return std::make_unique<ApproximateRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
-                                                                          featureIndex, nominal,
+                                                                          featureIndex, nominal, weights_,
                                                                           std::move(callbackPtr));
                 }
 
