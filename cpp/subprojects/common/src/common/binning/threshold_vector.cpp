@@ -32,5 +32,5 @@ uint32 ThresholdVector::getNumElements() const {
 }
 
 void ThresholdVector::setNumElements(uint32 numElements, bool freeMemory) {
-    return vector_.setNumElements(numElements, freeMemory);
+    vector_.setNumElements(numElements, freeMemory);
 }
