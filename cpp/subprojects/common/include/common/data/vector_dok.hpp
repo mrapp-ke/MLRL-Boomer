@@ -28,6 +28,22 @@ class DokVector final {
          */
         DokVector(T sparseValue);
 
+        typedef typename std::unordered_map<uint32, T>::const_iterator const_iterator;
+
+        /**
+         * Returns a `const_iterator` to the beginning of the vector.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
+
         /**
          * Returns the value of the element at a specific position.
          *

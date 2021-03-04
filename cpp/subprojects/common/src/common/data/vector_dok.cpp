@@ -7,6 +7,16 @@ DokVector<T>::DokVector(T sparseValue)
 }
 
 template<class T>
+typename DokVector<T>::const_iterator DokVector<T>::cbegin() const {
+    return data_.cbegin();
+}
+
+template<class T>
+typename DokVector<T>::const_iterator DokVector<T>::cend() const {
+    return data_.cend();
+}
+
+template<class T>
 T DokVector<T>::getValue(uint32 pos) const {
     auto it = data_.find(pos);
     return it != data_.cend() ? it->second : sparseValue_;
