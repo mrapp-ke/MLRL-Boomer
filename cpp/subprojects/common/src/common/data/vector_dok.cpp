@@ -7,6 +7,16 @@ DokVector<T>::DokVector(T sparseValue)
 }
 
 template<class T>
+typename DokVector<T>::iterator DokVector<T>::begin() {
+    return data_.begin();
+}
+
+template<class T>
+typename DokVector<T>::iterator DokVector<T>::end() {
+    return data_.end();
+}
+
+template<class T>
 typename DokVector<T>::const_iterator DokVector<T>::cbegin() const {
     return data_.cbegin();
 }
