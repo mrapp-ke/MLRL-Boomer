@@ -31,6 +31,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     // Create a new, empty subset of the statistics...
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics);
 
+    for (auto it = thresholdVector.missing_indices_cbegin(); it != thresholdVector.missing_indices_cend(); it++) {
+        uint32 i = *it;
+        uint32 weight = weights_.getWeight(i);
+        statisticsSubsetPtr->addToMissing(i, weight);
+    }
+
     // Traverse bins in ascending order until the first bin with weight > 0 is encountered...
     uint32 r = 0;
     float32 threshold = 0;
