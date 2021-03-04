@@ -51,7 +51,12 @@ IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& 
     bool sparse = numSparse > 0;
     uint32 numBins = getNumBins(featureVector, sparse, binRatio_, minBins_, maxBins_);
     result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numBins);
-    result.binIndicesPtr = std::make_unique<DenseBinIndexVector>(numElements);
+
+    if (sparse) {
+        result.binIndicesPtr = std::make_unique<DokBinIndexVector>();
+    } else {
+        result.binIndicesPtr = std::make_unique<DenseBinIndexVector>(numElements);
+    }
 
     if (numBins > 0) {
         IBinIndexVector& binIndices = *result.binIndicesPtr;
