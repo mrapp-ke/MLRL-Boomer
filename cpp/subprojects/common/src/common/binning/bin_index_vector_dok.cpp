@@ -6,14 +6,6 @@ DokBinIndexVector::DokBinIndexVector()
 
 }
 
-DokBinIndexVector::const_iterator DokBinIndexVector::cbegin() const {
-    return vector_.cbegin();
-}
-
-DokBinIndexVector::const_iterator DokBinIndexVector::cend() const {
-    return vector_.cend();
-}
-
 uint32 DokBinIndexVector::getBinIndex(uint32 exampleIndex) const {
     return vector_.getValue(exampleIndex);
 }
