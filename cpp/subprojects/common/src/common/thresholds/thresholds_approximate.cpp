@@ -18,23 +18,26 @@ struct CacheEntry : public IFeatureBinning::Result {
  * Updates a given `CoverageSet` after a new condition has been added, such that only the examples that are covered by
  * the new rule are marked es covered.
  *
- * @param binIndices    A reference to an object of type `BinIndexVector` that stores the indices of the bins,
- *                      individual examples belong to
- * @param numBins       The total number of bins
- * @param conditionEnd  The last bin (exclusive) that is covered by the condition
- * @param covered       True, if the bins in range [0, conditionEnd) are covered by the new condition and the remaining
- *                      ones are not, false, if the elements in said range are not covered, but the remaining ones are
- * @param coverageSet   A reference to an object of type `CoverageSet` that is used to keep track of the examples that
- *                      are covered by the previous rule. It will be updated by this function
- * @param statistics    A reference to an object of type `IStatistics` to be notified about the statistics that must be
- *                      considered when searching for the next refinement, i.e., the statistics that are covered by the
- *                      new rule
- * @param weights       A reference to an an object of type `IWeightVector` that provides access to the weights of the
- *                      individual training examples
+ * @param thresholdVector   A reference to an object of type `ThresholdVector` that stores the thresholds that result
+ *                          from the boundaries of the bins
+ * @param binIndices        A reference to an object of type `BinIndexVector` that stores the indices of the bins,
+ *                          individual examples belong to
+ * @param conditionEnd      The last bin (exclusive) that is covered by the new condition
+ * @param covered           True, if the bins in range [0, conditionEnd) are covered by the new condition and the
+ *                          remaining ones are not, false, if the elements in said range are not covered, but the
+ *                          remaining ones are
+ * @param coverageSet       A reference to an object of type `CoverageSet` that is used to keep track of the examples
+ *                          that are covered by the previous rule. It will be updated by this function
+ * @param statistics        A reference to an object of type `IStatistics` to be notified about the statistics that must
+ *                          be considered when searching for the next refinement, i.e., the statistics that are covered
+ *                          by the new rule
+ * @param weights           A reference to an an object of type `IWeightVector` that provides access to the weights of
+ *                          the individual training examples
  */
-static inline void updateCoveredExamples(const BinIndexVector& binIndices, uint32 numBins, intp conditionEnd,
-                                         bool covered, CoverageSet& coverageSet, IStatistics& statistics,
-                                         const IWeightVector& weights) {
+static inline void updateCoveredExamples(const ThresholdVector& thresholdVector, const BinIndexVector& binIndices,
+                                         intp conditionEnd, bool covered, CoverageSet& coverageSet,
+                                         IStatistics& statistics, const IWeightVector& weights) {
+    uint32 numBins = thresholdVector.getNumElements();
     intp firstCoveredBinIndex, lastCoveredBinIndex;
 
     if (covered) {
@@ -53,13 +56,16 @@ static inline void updateCoveredExamples(const BinIndexVector& binIndices, uint3
 
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = coverageSetIterator[i];
-        uint32 binIndex = binIndexIterator[exampleIndex];
 
-        if (binIndex >= firstCoveredBinIndex && binIndex < lastCoveredBinIndex) {
-            uint32 weight = weights.getWeight(exampleIndex);
-            statistics.updateCoveredStatistic(exampleIndex, weight, false);
-            coverageSetIterator[n] = exampleIndex;
-            n++;
+        if (!thresholdVector.isMissing(exampleIndex)) {
+            uint32 binIndex = binIndexIterator[exampleIndex];
+
+            if (binIndex >= firstCoveredBinIndex && binIndex < lastCoveredBinIndex) {
+                uint32 weight = weights.getWeight(exampleIndex);
+                statistics.updateCoveredStatistic(exampleIndex, weight, false);
+                coverageSetIterator[n] = exampleIndex;
+                n++;
+            }
         }
     }
 
@@ -70,17 +76,20 @@ static inline void updateCoveredExamples(const BinIndexVector& binIndices, uint3
  * Rebuilds a given histogram such that is contains the statistics of all examples that are currently covered and
  * updates the weights of the individual bins.
  *
- * @param binIndices    A reference to an object of type `BinIndexVector` that stores the indices of the bins,
- *                      individual examples belong to
- * @param binWeights    A reference to an object of type `BinWeightVector` that stores the weights of individual bins
- * @param histogram     A reference to an object of type `IHistogram` that should be rebuild
- * @param weights       A reference to an an object of type `IWeightVector` that provides access to the weights of the
- *                      individual training examples
- * @param coverageSet   A reference to an object of type `CoverageSet` that is used to keep track of the examples that
- *                      are currently covered
+ * @param thresholdVector   A reference to an object of type `ThresholdVector` that stores the thresholds that result
+ *                          from the boundaries of the bins
+ * @param binIndices        A reference to an object of type `BinIndexVector` that stores the indices of the bins,
+ *                          individual examples belong to
+ * @param binWeights        A reference to an object of type `BinWeightVector` that stores the weights of individual
+ *                          bins
+ * @param histogram         A reference to an object of type `IHistogram` that should be rebuild
+ * @param weights           A reference to an an object of type `IWeightVector` that provides access to the weights of
+ *                          the individual training examples
+ * @param coverageSet       A reference to an object of type `CoverageSet` that is used to keep track of the examples
+ *                          that are currently covered
  */
-static inline void rebuildHistogram(const BinIndexVector& binIndices, BinWeightVector& binWeights,
-                                    IHistogram& histogram, const IWeightVector& weights,
+static inline void rebuildHistogram(const ThresholdVector& thresholdVector, const BinIndexVector& binIndices,
+                                    BinWeightVector& binWeights, IHistogram& histogram, const IWeightVector& weights,
                                     const CoverageSet& coverageSet) {
     // Reset all statistics in the histogram to zero...
     histogram.setAllToZero();
@@ -96,10 +105,13 @@ static inline void rebuildHistogram(const BinIndexVector& binIndices, BinWeightV
 
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = coverageSetIterator[i];
-        uint32 binIndex = binIndexIterator[exampleIndex];
-        uint32 weight = weights.getWeight(exampleIndex);
-        binWeightIterator[binIndex] += weight;
-        histogram.addToBin(binIndex, exampleIndex, weight);
+
+        if (!thresholdVector.isMissing(exampleIndex)) {
+            uint32 binIndex = binIndexIterator[exampleIndex];
+            uint32 weight = weights.getWeight(exampleIndex);
+            binWeightIterator[binIndex] += weight;
+            histogram.addToBin(binIndex, exampleIndex, weight);
+        }
     }
 }
 
@@ -180,8 +192,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                             // Rebuild histogram...
                             IHistogram& histogram = *cacheIterator->second.histogramPtr;
                             BinWeightVector& binWeights = *cacheIterator->second.weightVectorPtr;
-                            rebuildHistogram(*binIndices, binWeights, histogram, thresholdsSubset_.weights_,
-                                             thresholdsSubset_.coverageSet_);
+                            rebuildHistogram(*thresholdVector, *binIndices, binWeights, histogram,
+                                             thresholdsSubset_.weights_, thresholdsSubset_.coverageSet_);
 
                             return std::make_unique<Result>(histogram, binWeights, *thresholdVector);
                         }
@@ -203,7 +215,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     std::unique_ptr<IHeadRefinement> headRefinementPtr =
                         thresholds_.headRefinementFactoryPtr_->create(labelIndices);
                     return std::make_unique<ApproximateRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
-                                                                          featureIndex, nominal,
+                                                                          featureIndex, nominal, weights_,
                                                                           std::move(callbackPtr));
                 }
 
@@ -236,9 +248,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                     auto cacheIterator = thresholds_.cache_.find(featureIndex);
                     const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
                     const BinIndexVector& binIndices = *cacheIterator->second.binIndicesPtr;
-                    updateCoveredExamples(binIndices, thresholdVector.getNumElements(), refinement.end,
-                                          refinement.covered, coverageSet_, thresholds_.statisticsProviderPtr_->get(),
-                                          weights_);
+                    updateCoveredExamples(thresholdVector, binIndices, refinement.end, refinement.covered, coverageSet_,
+                                          thresholds_.statisticsProviderPtr_->get(), weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
