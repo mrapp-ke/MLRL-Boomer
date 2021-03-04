@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include <limits>
 
 
 /**
@@ -13,6 +14,11 @@
 class IBinIndexVector {
 
     public:
+
+        /**
+         * The index of the bin that contains sparse values.
+         */
+        static const uint32 BIN_INDEX_SPARSE = std::numeric_limits<uint32>::max();
 
         virtual ~IBinIndexVector() { };
 
