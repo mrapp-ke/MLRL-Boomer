@@ -7,7 +7,8 @@ ThresholdVector::ThresholdVector(MissingFeatureVector& missingFeatureVector, uin
 }
 
 ThresholdVector::ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements, bool init)
-    : MissingFeatureVector(missingFeatureVector), vector_(DenseVector<float32>(numElements, init)) {
+    : MissingFeatureVector(missingFeatureVector), vector_(DenseVector<float32>(numElements, init)),
+      sparseBinIndex_(numElements) {
 
 }
 
@@ -33,4 +34,26 @@ uint32 ThresholdVector::getNumElements() const {
 
 void ThresholdVector::setNumElements(uint32 numElements, bool freeMemory) {
     vector_.setNumElements(numElements, freeMemory);
+
+    if (sparseBinIndex_ > numElements) {
+        sparseBinIndex_ = numElements;
+    }
+}
+
+uint32 ThresholdVector::getSparseBinIndex() const {
+    return sparseBinIndex_;
+}
+
+void ThresholdVector::setSparseBinIndex(uint32 sparseBinIndex) {
+    uint32 numElements = this->getNumElements();
+
+    if (sparseBinIndex > numElements) {
+        sparseBinIndex_ = numElements;
+    } else {
+        sparseBinIndex_ = sparseBinIndex;
+    }
+}
+
+bool ThresholdVector::hasSparseBin() const {
+    return sparseBinIndex_ < this->getNumElements();
 }

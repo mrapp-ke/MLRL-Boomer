@@ -16,6 +16,8 @@ class ThresholdVector final : public MissingFeatureVector {
 
         DenseVector<float32> vector_;
 
+        uint32 sparseBinIndex_;
+
     public:
 
         /**
@@ -79,5 +81,27 @@ class ThresholdVector final : public MissingFeatureVector {
          * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
         void setNumElements(uint32 numElements, bool freeMemory);
+
+        /**
+         * Returns the index of the bin, sparse values have been assigned to.
+         *
+         * @return The index of the bin, sparse values have been assigned to. If there is no such bin, the returned
+         *         index is equal to `getNumElements()`
+         */
+        uint32 getSparseBinIndex() const;
+
+        /**
+         * Sets the index of the bin, sparse values have been assigned to.
+         *
+         * @param sparseBinIndex The index to be set
+         */
+        void setSparseBinIndex(uint32 sparseBinIndex);
+
+        /**
+         * Returns whether there is a bin, sparse values have been assigned to.
+         *
+         * @return True, if there is a bin, sparse values have been assigned to, false otherwise
+         */
+        bool hasSparseBin() const;
 
 };
