@@ -38,3 +38,7 @@ void DenseBinIndexVector::setNumElements(uint32 numElements, bool freeMemory) {
 uint32 DenseBinIndexVector::getBinIndex(uint32 exampleIndex) const {
     return vector_.getValue(exampleIndex);
 }
+
+void DenseBinIndexVector::setBinIndex(uint32 exampleIndex, uint32 binIndex) {
+    vector_.setValue(exampleIndex, binIndex);
+}

@@ -78,4 +78,6 @@ class DenseBinIndexVector final : public IBinIndexVector {
 
         uint32 getBinIndex(uint32 exampleIndex) const override;
 
+        void setBinIndex(uint32 exampleIndex, uint32 binIndex) override;
+
 };
