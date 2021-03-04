@@ -21,6 +21,12 @@ class MissingFeatureVector {
 
         MissingFeatureVector();
 
+        /**
+         * @param missingFeatureVector A reference to an object of type `MissingFeatureVector`, the missing indices
+         *                             should be taken from
+         */
+        MissingFeatureVector(MissingFeatureVector& missingFeatureVector);
+
         typedef BinaryDokVector::index_const_iterator missing_index_const_iterator;
 
         /**
@@ -43,6 +49,14 @@ class MissingFeatureVector {
          * @param index The index to be added
          */
         void addMissingIndex(uint32 index);
+
+        /**
+         * Returns whether the example at a specific index has a missing feature value.
+         *
+         * @param index The index of the example to be checked
+         * @return      True, if the example at the given index has a missing feature value, false otherwise
+         */
+        bool isMissing(uint32 index) const;
 
         /**
          * Removes all indices of examples with missing feature values.

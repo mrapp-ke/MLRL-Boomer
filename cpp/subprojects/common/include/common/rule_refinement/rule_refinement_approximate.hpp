@@ -7,6 +7,7 @@
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/rule_refinement/rule_refinement_callback.hpp"
 #include "common/binning/threshold_vector.hpp"
+#include "common/sampling/weight_vector.hpp"
 #include "common/head_refinement/head_refinement.hpp"
 
 
@@ -36,6 +37,8 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
 
         bool nominal_;
 
+        const IWeightVector& weights_;
+
         std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr_;
 
         std::unique_ptr<Refinement> refinementPtr_;
@@ -49,12 +52,15 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
          *                          the labels for which the refined rule is allowed to predict
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
+         * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
+         *                          of individual training examples
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback` that allows to
          *                          retrieve the bins for a certain feature
          */
         ApproximateRuleRefinement(
             std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex,
-            bool nominal, std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr);
+            bool nominal, const IWeightVector& weights_,
+            std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
 
