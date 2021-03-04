@@ -23,6 +23,10 @@ void MissingFeatureVector::addMissingIndex(uint32 index) {
     missingIndicesPtr_->setValue(index);
 }
 
+bool MissingFeatureVector::isMissing(uint32 index) const {
+    return missingIndicesPtr_->getValue(index);
+}
+
 void MissingFeatureVector::clearMissingIndices() {
     missingIndicesPtr_->setAllToZero();
 }
