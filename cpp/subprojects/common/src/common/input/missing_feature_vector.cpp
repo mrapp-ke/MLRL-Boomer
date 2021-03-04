@@ -6,6 +6,11 @@ MissingFeatureVector::MissingFeatureVector()
 
 }
 
+MissingFeatureVector::MissingFeatureVector(MissingFeatureVector& missingFeatureVector)
+    : missingIndicesPtr_(std::move(missingFeatureVector.missingIndicesPtr_)) {
+
+}
+
 MissingFeatureVector::missing_index_const_iterator MissingFeatureVector::missing_indices_cbegin() const {
     return missingIndicesPtr_->indices_cbegin();
 }
@@ -18,10 +23,10 @@ void MissingFeatureVector::addMissingIndex(uint32 index) {
     missingIndicesPtr_->setValue(index);
 }
 
-void MissingFeatureVector::clearMissingIndices() {
-    missingIndicesPtr_->setAllToZero();
+bool MissingFeatureVector::isMissing(uint32 index) const {
+    return missingIndicesPtr_->getValue(index);
 }
 
-std::unique_ptr<BinaryDokVector>& MissingFeatureVector::getMissingIndices() {
-    return missingIndicesPtr_;
+void MissingFeatureVector::clearMissingIndices() {
+    missingIndicesPtr_->setAllToZero();
 }

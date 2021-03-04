@@ -7,7 +7,7 @@ IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& feature
     Result result;
     uint32 numElements = featureVector.getNumElements();
     result.binIndicesPtr = std::make_unique<BinIndexVector>(numExamples);
-    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(numElements);
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numElements);
 
     if (numElements > 0) {
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
