@@ -24,4 +24,12 @@ class IBinIndexVector {
          */
         virtual uint32 getBinIndex(uint32 exampleIndex) const = 0;
 
+        /**
+         * Sets the index of the bin, the examples at a specific index should be assigned to.
+         *
+         * @param exampleIndex  The index of the example
+         * @param binIndex      The index of the bin, the example should be assigned to
+         */
+        virtual void setBinIndex(uint32 exampleIndex, uint32 binIndex) = 0;
+
 };
