@@ -49,11 +49,4 @@ class MissingFeatureVector {
          */
         void clearMissingIndices();
 
-        /**
-         * Returns the vector that stores the indices of the examples with missing feature values.
-         *
-         * @return A reference to an unique pointer to an object of type `BinaryDokVector` that stores the indices
-         */
-        std::unique_ptr<BinaryDokVector>& getMissingIndices();
-
 };
