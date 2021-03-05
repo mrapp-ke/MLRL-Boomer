@@ -1,21 +1,33 @@
 #include "common/binning/feature_binning_equal_frequency.hpp"
+#include "common/binning/bin_index_vector_dense.hpp"
+#include "common/binning/bin_index_vector_dok.hpp"
 #include "common/binning/binning.hpp"
 #include "common/math/math.hpp"
 
 
-static inline uint32 getNumBins(FeatureVector& featureVector, float32 binRatio, uint32 minBins, uint32 maxBins) {
+static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float32 binRatio, uint32 minBins,
+                                uint32 maxBins) {
     uint32 numElements = featureVector.getNumElements();
 
     if (numElements > 0) {
         featureVector.sortByValues();
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
-        float32 previousValue = featureIterator[0].value;
         uint32 numDistinctValues = 1;
+        float32 previousValue;
+        uint32 i;
 
-        for (uint32 i = 1; i < numElements; i++) {
+        if (sparse) {
+            previousValue = 0;
+            i = 0;
+        } else {
+            previousValue = featureIterator[0].value;
+            i = 1;
+        }
+
+        for (; i < numElements; i++) {
             float32 currentValue = featureIterator[i].value;
 
-            if (currentValue != previousValue) {
+            if ((!sparse || currentValue != 0) && currentValue != previousValue) {
                 numDistinctValues++;
                 previousValue = currentValue;
             }
@@ -32,23 +44,38 @@ EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio, uin
 
 }
 
-IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& featureVector) const {
+IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& featureVector,
+                                                                 uint32 numExamples) const {
     Result result;
-    uint32 numBins = getNumBins(featureVector, binRatio_, minBins_, maxBins_);
-    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numBins);
     uint32 numElements = featureVector.getNumElements();
-    result.binIndicesPtr = std::make_unique<BinIndexVector>(numElements);
+    uint32 numSparse = numExamples - numElements;
+    bool sparse = numSparse > 0;
+    uint32 numBins = getNumBins(featureVector, sparse, binRatio_, minBins_, maxBins_);
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numBins);
+
+    if (sparse) {
+        result.binIndicesPtr = std::make_unique<DokBinIndexVector>();
+    } else {
+        result.binIndicesPtr = std::make_unique<DenseBinIndexVector>(numElements);
+    }
 
     if (numBins > 0) {
-        uint32 numElementsPerBin = (uint32) std::ceil((float) numElements / (float) numBins);
+        IBinIndexVector& binIndices = *result.binIndicesPtr;
+        ThresholdVector& thresholdVector = *result.thresholdVectorPtr;
         FeatureVector::const_iterator featureIterator = featureVector.cbegin();
-        ThresholdVector::iterator thresholdIterator = result.thresholdVectorPtr->begin();
-        BinIndexVector::iterator binIndexIterator = result.binIndicesPtr->begin();
+        ThresholdVector::iterator thresholdIterator = thresholdVector.begin();
+        uint32 numElementsPerBin = (uint32) std::ceil((float) numElements / (float) numBins);
         uint32 binIndex = 0;
         float32 previousValue = 0;
+        uint32 i = 0;
 
-        for (uint32 i = 0; i < numElements; i++) {
+        // Iterate feature values < 0...
+        for (; i < numElements; i++) {
             float32 currentValue = featureIterator[i].value;
+
+            if (currentValue >= 0) {
+                break;
+            }
 
             if (currentValue != previousValue) {
                 if (i / numElementsPerBin != binIndex) {
@@ -59,10 +86,39 @@ IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& 
                 previousValue = currentValue;
             }
 
-            binIndexIterator[featureIterator[i].index] = binIndex;
+            binIndices.setBinIndex(featureIterator[i].index, binIndex);
         }
 
-        result.thresholdVectorPtr->setNumElements(binIndex + 1, true);
+        // If there are any sparse values, check if they belong to the current one or the next one...
+        if (sparse) {
+            if (i / numElementsPerBin != binIndex) {
+                thresholdIterator[binIndex] = arithmeticMean<float32>(previousValue, 0);
+                binIndex++;
+            }
+
+            thresholdVector.setSparseBinIndex(binIndex);
+            previousValue = 0;
+        }
+
+        // Iterate feature values >= 0...
+        for (; i < numElements; i++) {
+            float32 currentValue = featureIterator[i].value;
+
+            if (!sparse || currentValue != 0) {
+                if (currentValue != previousValue) {
+                    if ((i + numSparse) / numElementsPerBin != binIndex) {
+                        thresholdIterator[binIndex] = arithmeticMean(previousValue, currentValue);
+                        binIndex++;
+                    }
+
+                    previousValue = currentValue;
+                }
+
+                binIndices.setBinIndex(featureIterator[i].index, binIndex);
+            }
+        }
+
+        thresholdVector.setNumElements(binIndex + 1, true);
     }
 
     return result;

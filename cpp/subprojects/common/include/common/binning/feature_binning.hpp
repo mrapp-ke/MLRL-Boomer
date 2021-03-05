@@ -5,14 +5,10 @@
 #pragma once
 
 #include "common/input/feature_vector.hpp"
+#include "common/binning/bin_index_vector.hpp"
 #include "common/binning/threshold_vector.hpp"
 #include <memory>
 
-
-/**
- * A vector that stores the indices of the bins, individual examples belong to.
- */
-typedef DenseVector<uint32> BinIndexVector;
 
 /**
  * Defines an interface for methods that assign feature values to bins.
@@ -28,7 +24,7 @@ class IFeatureBinning {
          */
         struct Result {
             std::unique_ptr<ThresholdVector> thresholdVectorPtr;
-            std::unique_ptr<BinIndexVector> binIndicesPtr;
+            std::unique_ptr<IBinIndexVector> binIndicesPtr;
         };
 
         virtual ~IFeatureBinning() { };
@@ -37,10 +33,11 @@ class IFeatureBinning {
          * Assigns the values in a given `FeatureVector` to bins.
          *
          * @param featureVector A reference to an object of type `FeatureVector` whose values should be assigned to bins
+         * @param numExamples   The total number of available training examples
          * @return              An object of type `Result` that contains a vector, which stores thresholds that result
          *                      from the boundaries between the bins, as well as a vector that stores the indices of the
          *                      bins, individual values have been assigned to
          */
-        virtual Result createBins(FeatureVector& featureVector) const = 0;
+        virtual Result createBins(FeatureVector& featureVector, uint32 numExamples) const = 0;
 
 };

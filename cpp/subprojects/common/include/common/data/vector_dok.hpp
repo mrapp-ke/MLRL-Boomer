@@ -4,42 +4,33 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include <unordered_map>
 
 
 /**
- * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
+ * An one-dimensional sparse vector that stores data using the dictionary of keys (DOK) format.
  *
  * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
-class DenseVector final {
+class DokVector final {
 
     private:
 
-        T* array_;
+        std::unordered_map<uint32, T> data_;
 
-        uint32 numElements_;
-
-        uint32 maxCapacity_;
+        T sparseValue_;
 
     public:
 
         /**
-         * @param numElements The number of elements in the vector
+         * @param sparseValue The value of sparse elements
          */
-        DenseVector(uint32 numElements);
+        DokVector(T sparseValue);
 
-        /**
-         * @param numElements   The number of elements in the vector
-         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
-         */
-        DenseVector(uint32 numElements, bool init);
+        typedef typename std::unordered_map<uint32, T>::iterator iterator;
 
-        virtual ~DenseVector();
-
-        typedef T* iterator;
-
-        typedef const T* const_iterator;
+        typedef typename std::unordered_map<uint32, T>::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the vector.
@@ -70,21 +61,6 @@ class DenseVector final {
         const_iterator cend() const;
 
         /**
-         * Returns the number of elements in the vector.
-         *
-         * @return The number of elements in the vector
-         */
-        uint32 getNumElements() const;
-
-        /**
-         * Sets the number of elements in the vector.
-         *
-         * @param numElements   The number of elements to be set
-         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
-         */
-        void setNumElements(uint32 numElements, bool freeMemory);
-
-        /**
          * Returns the value of the element at a specific position.
          *
          * @param pos   The position of the element. Must be in [0, getNumElements())
@@ -93,11 +69,16 @@ class DenseVector final {
         T getValue(uint32 pos) const;
 
         /**
-         * Sets the value of the element at a specific position.
+         * Sets a value to the element at a specific position.
          *
          * @param pos   The position of the element. Must be in [0, getNumElements())
          * @param value The value to be set
          */
         void setValue(uint32 pos, T value);
+
+        /**
+         * Sets the values of all elements to zero.
+         */
+        void setAllToZero();
 
 };

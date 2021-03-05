@@ -31,6 +31,11 @@ T DenseVector<T>::getValue(uint32 pos) const {
 }
 
 template<class T>
+void DenseVector<T>::setValue(uint32 pos, T value) {
+    array_[pos] = value;
+}
+
+template<class T>
 typename DenseVector<T>::iterator DenseVector<T>::begin() {
     return array_;
 }
