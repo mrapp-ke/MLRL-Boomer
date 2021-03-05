@@ -1,7 +1,7 @@
 @relation Stackex_philosophy
 
-@attribute �.. numeric
-@attribute �.� numeric
+@attribute .. numeric
+@attribute . numeric
 @attribute abil numeric
 @attribute absolut numeric
 @attribute abstract numeric
