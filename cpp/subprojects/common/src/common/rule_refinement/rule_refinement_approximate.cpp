@@ -45,7 +45,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     // Traverse bins in ascending order until the first bin with weight > 0 is encountered...
     for (r = 0; r < sparseBinIndex; r++) {
-        uint32 weight = weightIterator[r];
+        uint8 weight = weightIterator[r];
 
         if (weight > 0) {
             // Add the bin to the subset to mark it as covered by upcoming refinements...
@@ -58,7 +58,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     // Traverse the remaining bins in ascending order...
     if (subsetModified) {
         for (r = r + 1; r < sparseBinIndex; r++) {
-            uint32 weight = weightIterator[r];
+            uint8 weight = weightIterator[r];
 
             // Do only consider bins that are not empty...
             if (weight > 0) {
@@ -148,7 +148,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     // Traverse bins in descending order until the first bin with weight > 0 is encountered...
     for (r = firstR; r > sparseBinIndex; r--) {
-        uint32 weight = weightIterator[r];
+        uint8 weight = weightIterator[r];
 
         if (weight > 0) {
             // Add the bin to the subset to mark it as covered by upcoming refinements...
@@ -161,7 +161,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     // Traverse the remaining bins in descending order...
     if (subsetModified) {
         for (r = r - 1; r > sparseBinIndex; r--) {
-            uint32 weight = weightIterator[r];
+            uint8 weight = weightIterator[r];
 
             // Do only consider bins that are not empty...
             if (weight > 0) {
