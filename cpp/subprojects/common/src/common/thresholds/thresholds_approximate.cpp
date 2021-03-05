@@ -59,6 +59,10 @@ static inline void updateCoveredExamples(const ThresholdVector& thresholdVector,
         if (!thresholdVector.isMissing(exampleIndex)) {
             uint32 binIndex = binIndices.getBinIndex(exampleIndex);
 
+            if (binIndex == IBinIndexVector::BIN_INDEX_SPARSE) {
+                binIndex = thresholdVector.getSparseBinIndex();
+            }
+
             if ((binIndex >= start && binIndex < end) == covered) {
                 uint32 weight = weights.getWeight(exampleIndex);
                 statistics.updateCoveredStatistic(exampleIndex, weight, false);
