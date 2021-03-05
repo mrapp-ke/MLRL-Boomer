@@ -269,7 +269,13 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void filterThresholds(const Condition& condition) override {
-                    // TODO Implement
+                    uint32 featureIndex = condition.featureIndex;
+                    auto cacheIterator = thresholds_.cache_.find(featureIndex);
+                    const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
+                    const IBinIndexVector& binIndices = *cacheIterator->second.binIndicesPtr;
+                    updateCoveredExamples(thresholdVector, binIndices, condition.start, condition.end,
+                                          condition.covered, coverageSet_, thresholds_.statisticsProviderPtr_->get(),
+                                          weights_);
                 }
 
                 void resetThresholds() override {
