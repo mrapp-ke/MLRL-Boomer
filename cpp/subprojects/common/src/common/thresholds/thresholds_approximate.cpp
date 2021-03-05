@@ -38,15 +38,14 @@ struct CacheEntry : public IFeatureBinning::Result {
 static inline void updateCoveredExamples(const ThresholdVector& thresholdVector, const IBinIndexVector& binIndices,
                                          intp conditionStart, intp conditionEnd, bool covered, CoverageSet& coverageSet,
                                          IStatistics& statistics, const IWeightVector& weights) {
-    uint32 numBins = thresholdVector.getNumElements();
-    intp firstCoveredBinIndex, lastCoveredBinIndex;
+    intp start, end;
 
-    if (covered) {
-        firstCoveredBinIndex = 0;
-        lastCoveredBinIndex = conditionEnd;
+    if (conditionEnd < conditionStart) {
+        start = conditionEnd + 1;
+        end = conditionStart + 1;
     } else {
-        firstCoveredBinIndex = conditionEnd;
-        lastCoveredBinIndex = numBins;
+        start = conditionStart;
+        end = conditionEnd;
     }
 
     uint32 numCovered = coverageSet.getNumCovered();
@@ -60,7 +59,7 @@ static inline void updateCoveredExamples(const ThresholdVector& thresholdVector,
         if (!thresholdVector.isMissing(exampleIndex)) {
             uint32 binIndex = binIndices.getBinIndex(exampleIndex);
 
-            if (binIndex >= firstCoveredBinIndex && binIndex < lastCoveredBinIndex) {
+            if ((binIndex >= start && binIndex < end) == covered) {
                 uint32 weight = weights.getWeight(exampleIndex);
                 statistics.updateCoveredStatistic(exampleIndex, weight, false);
                 coverageSetIterator[n] = exampleIndex;
