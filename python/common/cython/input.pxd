@@ -1,5 +1,6 @@
 from common.cython._types cimport uint8, uint32, float32
 
+from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 from libcpp.list cimport list as double_linked_list
 
@@ -126,6 +127,15 @@ cdef extern from "common/input/nominal_feature_mask_dok.hpp" nogil:
         void setNominal(uint32 featureIndex)
 
 
+cdef extern from "common/input/nominal_feature_mask_equal.hpp" nogil:
+
+    cdef cppclass EqualNominalFeatureMaskImpl"EqualNominalFeatureMask"(INominalFeatureMask):
+
+        # Constructors:
+
+        EqualNominalFeatureMaskImpl(bool nominal) except +
+
+
 cdef class LabelMatrix:
 
     # Attributes:
@@ -182,4 +192,8 @@ cdef class NominalFeatureMask:
 
 
 cdef class DokNominalFeatureMask(NominalFeatureMask):
+    pass
+
+
+cdef class EqualNominalFeatureMask(NominalFeatureMask):
     pass
