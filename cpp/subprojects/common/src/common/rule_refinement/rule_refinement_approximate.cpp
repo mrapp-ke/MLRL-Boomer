@@ -150,6 +150,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         statisticsSubsetPtr->resetSubset();
     }
 
+    uint32 accumulatedSumOfWeightsPrevious = accumulatedSumOfWeights;
+
     // We continue by processing the bins in range (sparseBinIndex, numBins)...
     sumOfWeights = 0;
     firstR = ((intp) numBins) - 1;
@@ -166,7 +168,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         }
     }
 
-    accumulatedSumOfWeights += sumOfWeights;
+    accumulatedSumOfWeights = sumOfWeights;
 
     // Traverse the remaining bins in descending order...
     if (sumOfWeights > 0) {
@@ -233,88 +235,90 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 accumulatedSumOfWeights += weight;
             }
         }
-    }
 
-    // If the sum of weights of all bins that have been iterated so far, including the one in range [0, sparseBinIndex),
-    // is less than the sum of weights of all bins, this means that the sparse bin is not empty. In such case, we must
-    // evaluate additional conditions that separate the bins in range (sparseBinIndex, numBins) from the remaining
-    // ones...
-    if (accumulatedSumOfWeights > 0 && accumulatedSumOfWeights < totalSumOfWeights_) {
-        // Find and evaluate the best head for the current refinement, if
-        const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, false,
-                                                                               false);
+        uint32 totalAccumulatedSumOfWeights = accumulatedSumOfWeightsPrevious + accumulatedSumOfWeights;
 
-        // If the refinement is better than the current rule...
-        if (head != nullptr) {
-            bestHead = head;
-            refinementPtr->start = firstR;
-            refinementPtr->end = sparseBinIndex;
-            refinementPtr->coveredWeights = sumOfWeights;
-            refinementPtr->covered = true;
-
-            if (nominal_) {
-                refinementPtr->threshold = thresholdIterator[firstR];
-                refinementPtr->comparator = EQ;
-            } else {
-                refinementPtr->threshold = thresholdIterator[sparseBinIndex];
-                refinementPtr->comparator = GR;
-            }
-        }
-
-        // Find and evaluate the best head for the current refinement, if
-        head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
-
-        // If the refinement is better than the current rule...
-        if (head != nullptr) {
-            bestHead = head;
-            refinementPtr->start = firstR;
-            refinementPtr->end = sparseBinIndex;
-            refinementPtr->coveredWeights = (totalSumOfWeights_ - sumOfWeights);
-            refinementPtr->covered = false;
-
-            if (nominal_) {
-                refinementPtr->threshold = thresholdIterator[firstR];
-                refinementPtr->comparator = NEQ;
-            } else {
-                refinementPtr->threshold = thresholdIterator[sparseBinIndex];
-                refinementPtr->comparator = LEQ;
-            }
-        }
-
-        // If the feature is nominal, we must test additional conditions that separate the sparse bin from the remaining
-        // bins...
-        if (nominal_) {
-            // Reset the subset once again to ensure that the accumulated state includes all bins that have been
-            // processed so far...
-            statisticsSubsetPtr->resetSubset();
-
-            // Find and evaluate the best head for the current refinement, if the condition
-            // `f != thresholdIterator[sparseBinIndex]` is used...
-            head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, false, true);
+        // If the sum of weights of all bins that have been iterated so far, including the one in range
+        // [0, sparseBinIndex), is less than the sum of weights of all bins, this means that the sparse bin is not
+        // empty. In such case, we must evaluate additional conditions that separate the bins in range
+        // (sparseBinIndex, numBins) from the remaining ones...
+        if (totalAccumulatedSumOfWeights > 0 && totalAccumulatedSumOfWeights < totalSumOfWeights_) {
+            // Find and evaluate the best head for the current refinement, if
+            const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
+                                                                                   false, false);
 
             // If the refinement is better than the current rule...
             if (head != nullptr) {
                 bestHead = head;
-                refinementPtr->start = sparseBinIndex;
-                refinementPtr->end = sparseBinIndex + 1;
-                refinementPtr->coveredWeights = accumulatedSumOfWeights;
-                refinementPtr->covered = false;
-                refinementPtr->threshold = thresholdIterator[sparseBinIndex];
-                refinementPtr->comparator = NEQ;
+                refinementPtr->start = firstR;
+                refinementPtr->end = sparseBinIndex;
+                refinementPtr->coveredWeights = sumOfWeights;
+                refinementPtr->covered = true;
+
+                if (nominal_) {
+                    refinementPtr->threshold = thresholdIterator[firstR];
+                    refinementPtr->comparator = EQ;
+                } else {
+                    refinementPtr->threshold = thresholdIterator[sparseBinIndex];
+                    refinementPtr->comparator = GR;
+                }
             }
 
-            // Find and evaluate the best head for the current refinement, if the condition
-            // `f == thresholdIterator[sparseBinIndex]` is used...
-            head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, true);
+            // Find and evaluate the best head for the current refinement, if
+            head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
 
+            // If the refinement is better than the current rule...
             if (head != nullptr) {
                 bestHead = head;
-                refinementPtr->start = sparseBinIndex;
-                refinementPtr->end = sparseBinIndex + 1;
-                refinementPtr->coveredWeights = (totalSumOfWeights_ - accumulatedSumOfWeights);
-                refinementPtr->covered = true;
-                refinementPtr->threshold = thresholdIterator[sparseBinIndex];
-                refinementPtr->comparator = EQ;
+                refinementPtr->start = firstR;
+                refinementPtr->end = sparseBinIndex;
+                refinementPtr->coveredWeights = (totalSumOfWeights_ - sumOfWeights);
+                refinementPtr->covered = false;
+
+                if (nominal_) {
+                    refinementPtr->threshold = thresholdIterator[firstR];
+                    refinementPtr->comparator = NEQ;
+                } else {
+                    refinementPtr->threshold = thresholdIterator[sparseBinIndex];
+                    refinementPtr->comparator = LEQ;
+                }
+            }
+
+            // If the feature is nominal and if any bins in the range [0, sparseBinIndex) have been processed earlier,
+            // we must test additional conditions that separate the sparse bin from the remaining bins...
+            if (nominal_ && accumulatedSumOfWeightsPrevious > 0) {
+                // Reset the subset once again to ensure that the accumulated state includes all bins that have been
+                // processed so far...
+                statisticsSubsetPtr->resetSubset();
+
+                // Find and evaluate the best head for the current refinement, if the condition
+                // `f != thresholdIterator[sparseBinIndex]` is used...
+                head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, false, true);
+
+                // If the refinement is better than the current rule...
+                if (head != nullptr) {
+                    bestHead = head;
+                    refinementPtr->start = sparseBinIndex;
+                    refinementPtr->end = sparseBinIndex + 1;
+                    refinementPtr->coveredWeights = accumulatedSumOfWeights;
+                    refinementPtr->covered = false;
+                    refinementPtr->threshold = thresholdIterator[sparseBinIndex];
+                    refinementPtr->comparator = NEQ;
+                }
+
+                // Find and evaluate the best head for the current refinement, if the condition
+                // `f == thresholdIterator[sparseBinIndex]` is used...
+                head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, true);
+
+                if (head != nullptr) {
+                    bestHead = head;
+                    refinementPtr->start = sparseBinIndex;
+                    refinementPtr->end = sparseBinIndex + 1;
+                    refinementPtr->coveredWeights = (totalSumOfWeights_ - accumulatedSumOfWeights);
+                    refinementPtr->covered = true;
+                    refinementPtr->threshold = thresholdIterator[sparseBinIndex];
+                    refinementPtr->comparator = EQ;
+                }
             }
         }
     }
