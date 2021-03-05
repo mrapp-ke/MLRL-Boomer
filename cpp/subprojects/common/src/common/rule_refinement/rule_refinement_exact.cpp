@@ -162,6 +162,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
                                                                                    false, false);
 
+            // If the refinement is better than the current rule...
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->start = firstR;
@@ -177,6 +178,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             // used...
             head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
 
+            // If the refinement is better than the current rule...
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->start = firstR;
@@ -338,7 +340,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     uint32 totalAccumulatedSumOfWeights = accumulatedSumOfWeightsNegative + accumulatedSumOfWeights;
 
     // If the sum of weights of all examples that have been iterated so far (including those with feature values < 0 and
-    // those with feature values >= 0) is less than the sum of of weights of all examples, this means that there are
+    // those with feature values >= 0) is less than the sum of weights of all examples, this means that there are
     // examples with sparse, i.e. zero, feature values. In such case, we must explicitly test conditions that separate
     // these examples from the ones that have already been iterated...
     if (totalAccumulatedSumOfWeights > 0 && totalAccumulatedSumOfWeights < totalSumOfWeights_) {
@@ -412,6 +414,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, false,
                                                                                true);
 
+        // If the refinement is better than the current rule...
         if (head != nullptr) {
             bestHead = head;
             refinementPtr->start = 0;
@@ -435,6 +438,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // used...
         head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, true);
 
+        // If the refinement is better than the current rule...
         if (head != nullptr) {
             bestHead = head;
             refinementPtr->start = 0;
