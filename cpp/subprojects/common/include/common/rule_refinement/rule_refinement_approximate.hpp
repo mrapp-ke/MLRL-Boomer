@@ -14,7 +14,7 @@
 /**
  * A vector that stores the weights of individual bins.
  */
-typedef DenseVector<uint32> BinWeightVector;
+typedef DenseVector<uint8> BinWeightVector;
 
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
