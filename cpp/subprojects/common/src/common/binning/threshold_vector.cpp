@@ -53,7 +53,3 @@ void ThresholdVector::setSparseBinIndex(uint32 sparseBinIndex) {
         sparseBinIndex_ = sparseBinIndex;
     }
 }
-
-bool ThresholdVector::hasSparseBin() const {
-    return sparseBinIndex_ < this->getNumElements();
-}

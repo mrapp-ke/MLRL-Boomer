@@ -97,11 +97,4 @@ class ThresholdVector final : public MissingFeatureVector {
          */
         void setSparseBinIndex(uint32 sparseBinIndex);
 
-        /**
-         * Returns whether there is a bin, sparse values have been assigned to.
-         *
-         * @return True, if there is a bin, sparse values have been assigned to, false otherwise
-         */
-        bool hasSparseBin() const;
-
 };
