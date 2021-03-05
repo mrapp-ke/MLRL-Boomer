@@ -1,5 +1,5 @@
 #include "common/rule_refinement/rule_refinement_exact.hpp"
-#include "rule_refinement_common.hpp"
+#include "common/math/math.hpp"
 
 
 template<class T>
@@ -107,7 +107,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = LEQ;
-                            refinementPtr->threshold = calculateThreshold(previousThreshold, currentThreshold);
+                            refinementPtr->threshold = arithmeticMean(previousThreshold, currentThreshold);
                         }
                     }
 
@@ -129,7 +129,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = GR;
-                            refinementPtr->threshold = calculateThreshold(previousThreshold, currentThreshold);
+                            refinementPtr->threshold = arithmeticMean(previousThreshold, currentThreshold);
                         }
                     }
 
@@ -162,6 +162,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
                                                                                    false, false);
 
+            // If the refinement is better than the current rule...
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->start = firstR;
@@ -177,6 +178,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             // used...
             head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
 
+            // If the refinement is better than the current rule...
             if (head != nullptr) {
                 bestHead = head;
                 refinementPtr->start = firstR;
@@ -251,7 +253,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = GR;
-                            refinementPtr->threshold = calculateThreshold(currentThreshold, previousThreshold);
+                            refinementPtr->threshold = arithmeticMean(currentThreshold, previousThreshold);
                         }
                     }
 
@@ -273,7 +275,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->threshold = previousThreshold;
                         } else {
                             refinementPtr->comparator = LEQ;
-                            refinementPtr->threshold = calculateThreshold(currentThreshold, previousThreshold);
+                            refinementPtr->threshold = arithmeticMean(currentThreshold, previousThreshold);
                         }
                     }
 
@@ -338,7 +340,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     uint32 totalAccumulatedSumOfWeights = accumulatedSumOfWeightsNegative + accumulatedSumOfWeights;
 
     // If the sum of weights of all examples that have been iterated so far (including those with feature values < 0 and
-    // those with feature values >= 0) is less than the sum of of weights of all examples, this means that there are
+    // those with feature values >= 0) is less than the sum of weights of all examples, this means that there are
     // examples with sparse, i.e. zero, feature values. In such case, we must explicitly test conditions that separate
     // these examples from the ones that have already been iterated...
     if (totalAccumulatedSumOfWeights > 0 && totalAccumulatedSumOfWeights < totalSumOfWeights_) {
@@ -412,6 +414,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, false,
                                                                                true);
 
+        // If the refinement is better than the current rule...
         if (head != nullptr) {
             bestHead = head;
             refinementPtr->start = 0;
@@ -427,7 +430,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->threshold = previousThresholdNegative * 0.5;
             } else {
                 // If the condition separates an example with feature value < 0 from an example with feature value > 0
-                refinementPtr->threshold = calculateThreshold(previousThresholdNegative, previousThreshold);
+                refinementPtr->threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
             }
         }
 
@@ -435,6 +438,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // used...
         head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, true);
 
+        // If the refinement is better than the current rule...
         if (head != nullptr) {
             bestHead = head;
             refinementPtr->start = 0;
@@ -450,7 +454,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->threshold = previousThresholdNegative * 0.5;
             } else {
                 // If the condition separates an example with feature value < 0 from an example with feature value > 0
-                refinementPtr->threshold = calculateThreshold(previousThresholdNegative, previousThreshold);
+                refinementPtr->threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
             }
         }
     }

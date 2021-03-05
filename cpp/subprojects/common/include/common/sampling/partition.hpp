@@ -11,7 +11,7 @@ class IWeightVector;
 class IInstanceSubSampling;
 class RNG;
 class IThresholdsSubset;
-class CoverageMask;
+class ICoverageState;
 class Refinement;
 class AbstractPrediction;
 
@@ -41,30 +41,33 @@ class IPartition {
 
         /**
          * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
-         * do not belong to the current sub-sample and are marked as covered according to a given `CoverageMask`.
+         * do not belong to the current sub-sample and are marked as covered according to a given object of type
+         * `ICoverageState`.
          *
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
          *                          evaluate the prediction
-         * @param coverageMask      A reference to an object of type `CoverageMask` that specifies which examples are
-         *                          covered by the rule
+         * @param coverageState     A reference to an object of type `ICoverageState` that keeps track of the examples
+         *                          that are covered by the rule
          * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
          *                          are predicted by the rule
          * @return                  The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+        virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
+                                            const ICoverageState& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
         /**
          * Recalculates the scores to be predicted by a refinement based on all examples in the training set that are
-         * marked as covered according to a given `CoverageMask` and updates the head of the refinement accordingly.
+         * marked as covered according to a given object of type `ICoverageState` and updates the head of the refinement
+         * accordingly.
          *
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
          *                          recalculate the scores
-         * @param coverageMask      A reference to an object of type `CoverageMask` that specifies which examples are
-         *                          covered by the refinement
+         * @param coverageState     A reference to an object of type `ICoverageState` that keeps track of the examples
+         *                          that are covered by the refinement
          * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
-                                           Refinement& refinement) const = 0;
+        virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
+                                           const ICoverageState& coverageState, Refinement& refinement) const = 0;
 
 };

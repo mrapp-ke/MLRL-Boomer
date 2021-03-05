@@ -4,18 +4,18 @@
 #pragma once
 
 #include "common/data/vector_sparse_array.hpp"
-#include "common/data/vector_dok_binary.hpp"
+#include "common/input/missing_feature_vector.hpp"
 
 
 /**
  * An one-dimensional sparse vector that stores the values of training examples for a certain feature, as well as the
  * indices of examples with missing feature values.
  */
-class FeatureVector final : public SparseArrayVector<float32> {
+class FeatureVector final : public MissingFeatureVector {
 
     private:
 
-        BinaryDokVector missingIndices_;
+        SparseArrayVector<float32> vector_;
 
     public:
 
@@ -24,32 +24,56 @@ class FeatureVector final : public SparseArrayVector<float32> {
          */
         FeatureVector(uint32 numElements);
 
-        typedef BinaryDokVector::index_const_iterator missing_index_const_iterator;
+        typedef SparseArrayVector<float32>::iterator iterator;
+
+        typedef SparseArrayVector<float32>::const_iterator const_iterator;
 
         /**
-         * Returns a `missing_index_const_iterator` to the beginning of the missing indices.
+         * Returns an `iterator` to the beginning of the vector.
          *
-         * @return A `missing_index_const_iterator` to the beginning
+         * @return An `iterator` to the beginning
          */
-        missing_index_const_iterator missing_indices_cbegin() const;
+        iterator begin();
 
         /**
-         * Returns a `missing_index_const_iterator` to the end of the missing indices.
+         * Returns an `iterator` to the end of the vector.
          *
-         * @return A `missing_index_const_iterator` to the end
+         * @return An `iterator` to the end
          */
-        missing_index_const_iterator missing_indices_cend() const;
+        iterator end();
 
         /**
-         * Adds the index of an example with missing feature value.
+         * Returns a `const_iterator` to the beginning of the vector.
          *
-         * @param index The index to be added
+         * @return A `const_iterator` to the beginning
          */
-        void addMissingIndex(uint32 index);
+        const_iterator cbegin() const;
 
         /**
-         * Removes all indices of examples with missing feature values.
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
          */
-        void clearMissingIndices();
+        const_iterator cend() const;
+
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements in the vector
+         */
+        uint32 getNumElements() const;
+
+        /**
+         * Sets the number of elements in the vector.
+         *
+         * @param numElements   The number of elements to be set
+         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
+         */
+        void setNumElements(uint32 numElements, bool freeMemory);
+
+        /**
+         * Sorts the elements in the vector in ascending order based on their values.
+         */
+        void sortByValues();
 
 };

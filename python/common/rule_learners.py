@@ -15,7 +15,7 @@ from typing import List
 import numpy as np
 from common.cython.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
 from common.cython.input import CContiguousLabelMatrix, DokLabelMatrix
-from common.cython.input import DokNominalFeatureMask
+from common.cython.input import DokNominalFeatureMask, EqualNominalFeatureMask
 from common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
 from common.cython.model import ModelBuilder
@@ -348,6 +348,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F', dtype=DTYPE_FLOAT32)),
                                 accept_sparse=(x_sparse_format if x_enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
+        num_features = x.shape[1]
 
         if issparse(x):
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
@@ -374,11 +375,18 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             self.predictor_ = self._create_predictor(num_labels, label_matrix)
             self.probability_predictor_ = self._create_probability_predictor(num_labels, label_matrix)
 
+        # Create a mask that provides access to the information whether individual features are nominal or not...
+        if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
+            nominal_feature_mask = EqualNominalFeatureMask(False)
+        elif len(self.nominal_attribute_indices) == num_features:
+            nominal_feature_mask = EqualNominalFeatureMask(True)
+        else:
+            nominal_feature_mask = DokNominalFeatureMask(self.nominal_attribute_indices)
+
         # Induce rules...
-        nominal_features = DokNominalFeatureMask(self.nominal_attribute_indices)
         rule_model_induction = self._create_rule_model_induction(num_labels)
         model_builder = self._create_model_builder()
-        return rule_model_induction.induce_rules(nominal_features, feature_matrix, label_matrix, self.random_state,
+        return rule_model_induction.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
                                                  model_builder)
 
     def _predict(self, x):
