@@ -1,6 +1,6 @@
 @relation coffee
-@attribute ‚GuionGuion numeric
-@attribute ‚GuionGuionGuion1 numeric
+@attribute GuionGuion numeric
+@attribute GuionGuionGuion1 numeric
 @attribute abroad numeric
 @attribute absorpt numeric
 @attribute academ numeric
@@ -206,7 +206,7 @@
 @attribute cafea numeric
 @attribute cafetier numeric
 @attribute caff numeric
-@attribute caff„ numeric
+@attribute caffe numeric
 @attribute caffein numeric
 @attribute caffeineinformercom numeric
 @attribute calcium numeric
@@ -864,7 +864,7 @@
 @attribute juic numeric
 @attribute juju numeric
 @attribute justifi numeric
-@attribute kahl„a numeric
+@attribute kahlua numeric
 @attribute kcup numeric
 @attribute keep numeric
 @attribute kettl numeric
@@ -879,7 +879,7 @@
 @attribute knock numeric
 @attribute knowledg numeric
 @attribute kopi numeric
-@attribute kr„nung numeric
+@attribute kroenung numeric
 @attribute kyr numeric
 @attribute label numeric
 @attribute laboratori numeric
@@ -1053,7 +1053,7 @@
 @attribute neglig numeric
 @attribute nel numeric
 @attribute nero numeric
-@attribute nescaf„ numeric
+@attribute nescafe numeric
 @attribute nespresso numeric
 @attribute net numeric
 @attribute network numeric
@@ -1249,7 +1249,7 @@
 @attribute push numeric
 @attribute put numeric
 @attribute qualifi numeric
-@attribute qualit„ numeric
+@attribute qualite numeric
 @attribute qualiti numeric
 @attribute quantiti numeric
 @attribute quest numeric
