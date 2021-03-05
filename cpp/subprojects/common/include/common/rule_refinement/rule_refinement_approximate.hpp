@@ -33,8 +33,6 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
 
         const T& labelIndices_;
 
-        uint32 totalSumOfWeights_;
-
         uint32 featureIndex_;
 
         bool nominal_;
@@ -52,8 +50,6 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
          *                          the head of refined rules
          * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
          *                          the labels for which the refined rule is allowed to predict
-         * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
-         *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
@@ -62,8 +58,8 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
          *                          retrieve the bins for a certain feature
          */
         ApproximateRuleRefinement(
-            std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 totalSumOfWeights,
-            uint32 featureIndex, bool nominal, const IWeightVector& weights_,
+            std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex,
+            bool nominal, const IWeightVector& weights_,
             std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;

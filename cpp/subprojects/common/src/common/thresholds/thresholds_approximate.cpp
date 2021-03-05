@@ -104,19 +104,28 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, cons
     // Iterate the covered examples and add their statistics to the corresponding bin...
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
+    uint32 sparseBinWeight = 0;
 
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = coverageSetIterator[i];
 
         if (!thresholdVector.isMissing(exampleIndex)) {
             uint32 binIndex = binIndices.getBinIndex(exampleIndex);
+            uint32 weight = weights.getWeight(exampleIndex);
 
             if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
-                uint32 weight = weights.getWeight(exampleIndex);
                 binWeightIterator[binIndex] += weight;
                 histogram.addToBin(binIndex, exampleIndex, weight);
+            } else {
+                sparseBinWeight += weight;
             }
         }
+    }
+
+    uint32 sparseBinIndex = thresholdVector.getSparseBinIndex();
+
+    if (sparseBinIndex < thresholdVector.getNumElements()) {
+        binWeightIterator[sparseBinIndex] = sparseBinWeight;
     }
 }
 
@@ -210,8 +219,6 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 const IWeightVector& weights_;
 
-                uint32 sumOfWeights_;
-
                 CoverageSet coverageSet_;
 
                 template<class T>
@@ -223,8 +230,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                     std::unique_ptr<IHeadRefinement> headRefinementPtr =
                         thresholds_.headRefinementFactoryPtr_->create(labelIndices);
                     return std::make_unique<ApproximateRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
-                                                                          sumOfWeights_, featureIndex, nominal,
-                                                                          weights_, std::move(callbackPtr));
+                                                                          featureIndex, nominal, weights_,
+                                                                          std::move(callbackPtr));
                 }
 
             public:
@@ -236,7 +243,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  *                      weights of individual training examples
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
-                    : thresholds_(thresholds), weights_(weights), sumOfWeights_(weights.getSumOfWeights()),
+                    : thresholds_(thresholds), weights_(weights),
                       coverageSet_(CoverageSet(thresholds.getNumExamples())) {
 
                 }
@@ -252,7 +259,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void filterThresholds(Refinement& refinement) override {
-                    sumOfWeights_ = refinement.coveredWeights;
                     uint32 featureIndex = refinement.featureIndex;
                     auto cacheIterator = thresholds_.cache_.find(featureIndex);
                     const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
@@ -267,7 +273,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void resetThresholds() override {
-                    sumOfWeights_ = weights_.getSumOfWeights();
                     coverageSet_.reset();
                 }
 
