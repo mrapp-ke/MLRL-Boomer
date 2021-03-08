@@ -79,49 +79,51 @@ class IThresholdsSubset {
         virtual void resetThresholds() = 0;
 
         /**
-         * Returns a `CoverageMask` that specifies which elements are covered by the refinement that has been applied
-         * via the function `applyRefinement`.
+         * Returns an object of type `ICoverageState` that keeps track of the elements that are covered by the
+         * refinement that has been applied via the function `applyRefinement`.
          *
-         * @return A reference to an object of type `CoverageMask` that specifies the elements that are covered by the
-         *         refinement
+         * @return A reference to an object of type `ICoverageState` that keeps track of the elements that are covered
+         *         by the refinement
          */
-        virtual const CoverageMask& getCoverageMask() const = 0;
+        virtual const ICoverageState& getCoverageState() const = 0;
 
         /**
          * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
-         * do not belong to the current sub-sample and are marked as covered according to a given `CoverageMask`.
+         * do not belong to the current sub-sample and are marked as covered according to a given object of type
+         * `CoverageMask`.
          *
          * For calculating the quality score, only examples that belong to the training set and are not included in the
          * current sub-sample, i.e., only examples with zero weights, are considered.
          *
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that belong to the training set
-         * @param coverageMask  A reference to an object of type `CoverageMask` that specifies which examples are
+         * @param coverageState A reference to an object of type `CoverageMask` that specifies which examples are
          *                      covered by the rule
          * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
          *                      predicted by the rule
          * @return              The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageMask,
+        virtual float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
 
         /**
          * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
-         * do not belong to the current sub-sample and are marked as covered according to a given `CoverageMask`.
+         * do not belong to the current sub-sample and are marked as covered according to a given object of type
+         * `CoverageMask`.
          *
          * For calculating the quality score, only examples that belong to the training set and are not included in the
          * current sub-sample, i.e., only examples with zero weights, are considered.
          *
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that belong to the training set
-         * @param coverageMask  A reference to an object of type `CoverageMask` that specifies which examples are
+         * @param coverageState A reference to an object of type `CoverageMask` that specifies which examples are
          *                      covered by the rule
          * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
          *                      predicted by the rule
          * @return              The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageMask,
+        virtual float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
         /**
@@ -133,27 +135,28 @@ class IThresholdsSubset {
          *
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that belong to the training set
-         * @param coverageMask  A reference to an object of type `CoverageMask` that specifies which examples are
+         * @param coverageState A reference to an object of type `CoverageMask` that specifies which examples are
          *                      covered by the refinement
          * @param refinement    A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
+        virtual void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const = 0;
 
         /**
          * Recalculates the scores to be predicted by a refinement based on all examples in the training set that are
-         * marked as covered according to a given `CoverageMask` and updates the head of the refinement accordingly.
+         * marked as covered according to a given object of type `CoverageMask` and updates the head of the refinement
+         * accordingly.
          *
          * When calculating the updated scores, the weights of the individual training examples are ignored and equally
          * distributed weights are assumed instead.
          *
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that belong to the training set
-         * @param coverageMask  A reference to an object of type `CoverageMask` that specifies which examples are
+         * @param coverageState A reference to an object of type `CoverageMask` that specifies which examples are
          *                      covered by the refinement
          * @param refinement    A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
+        virtual void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const = 0;
 
         /**
