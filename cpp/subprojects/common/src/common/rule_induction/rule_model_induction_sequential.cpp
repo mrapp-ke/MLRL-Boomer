@@ -1,5 +1,5 @@
 #include "common/rule_induction/rule_model_induction_sequential.hpp"
-#include "common/debugging/global.hpp"
+#include "common/debugging/debug.hpp"
 
 #include <iostream>
 

@@ -1,6 +1,6 @@
 #include "common/rule_refinement/rule_refinement_exact.hpp"
 #include "rule_refinement_common.hpp"
-#include "common/debugging/global.hpp"
+#include "common/debugging/debug.hpp"
 
 #include <iostream>
 
@@ -18,6 +18,7 @@ ExactRuleRefinement<T>::ExactRuleRefinement(
 
 template<class T>
 void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* currentHead) {
+    std::cout << "find refinement starting now\n";
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
     const AbstractEvaluatedPrediction* bestHead = currentHead;
@@ -112,6 +113,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->comparator = LEQ;
                             refinementPtr->threshold = calculateThreshold(previousThreshold, currentThreshold);
                         }
+                        // Debugger: print rule
+                        Debugger::printRule(*refinementPtr, *bestHead);
+                        // Debugger: print head score
+                        Debugger::printHeadScore(bestHead->overallQualityScore, false);
                     }
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
@@ -134,6 +139,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->comparator = GR;
                             refinementPtr->threshold = calculateThreshold(previousThreshold, currentThreshold);
                         }
+                        // Debugger: print rule
+                        Debugger::printRule(*refinementPtr, *bestHead);
+                        // Debugger: print head score
+                        Debugger::printHeadScore(bestHead->overallQualityScore, false);
                     }
 
                     // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
@@ -174,6 +183,11 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->covered = true;
                 refinementPtr->comparator = EQ;
                 refinementPtr->threshold = previousThreshold;
+
+                // Debugger: print rule
+                Debugger::printRule(*refinementPtr, *bestHead);
+                // Debugger: print head score
+                Debugger::printHeadScore(bestHead->overallQualityScore, false);
             }
 
             // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
@@ -189,6 +203,11 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->covered = false;
                 refinementPtr->comparator = NEQ;
                 refinementPtr->threshold = previousThreshold;
+
+                // Debugger: print rule
+                Debugger::printRule(*refinementPtr, *bestHead);
+                // Debugger: print head score
+                Debugger::printHeadScore(bestHead->overallQualityScore, false);
             }
         }
 
@@ -256,6 +275,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->comparator = GR;
                             refinementPtr->threshold = calculateThreshold(currentThreshold, previousThreshold);
                         }
+                        // Debugger: print rule
+                        Debugger::printRule(*refinementPtr, *bestHead);
+                        // Debugger: print head score
+                        Debugger::printHeadScore(bestHead->overallQualityScore, false);
                     }
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
@@ -278,6 +301,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                             refinementPtr->comparator = LEQ;
                             refinementPtr->threshold = calculateThreshold(currentThreshold, previousThreshold);
                         }
+                        // Debugger: print rule
+                        Debugger::printRule(*refinementPtr, *bestHead);
+                        // Debugger: print head score
+                        Debugger::printHeadScore(bestHead->overallQualityScore, false);
                     }
 
                     // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
@@ -319,6 +346,11 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             refinementPtr->covered = true;
             refinementPtr->comparator = EQ;
             refinementPtr->threshold = previousThreshold;
+
+            // Debugger: print rule
+            Debugger::printRule(*refinementPtr, *bestHead);
+            // Debugger: print head score
+            Debugger::printHeadScore(bestHead->overallQualityScore, false);
         }
 
         // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
@@ -335,6 +367,11 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             refinementPtr->covered = false;
             refinementPtr->comparator = NEQ;
             refinementPtr->threshold = previousThreshold;
+
+            // Debugger: print rule
+            Debugger::printRule(*refinementPtr, *bestHead);
+            // Debugger: print head score
+            Debugger::printHeadScore(bestHead->overallQualityScore, false);
         }
     }
 
@@ -376,6 +413,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->comparator = GR;
                 refinementPtr->threshold = previousThreshold * 0.5;
             }
+            // Debugger: print rule
+            Debugger::printRule(*refinementPtr, *bestHead);
+            // Debugger: print head score
+            Debugger::printHeadScore(bestHead->overallQualityScore, false);
         }
 
         // Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2`
@@ -401,6 +442,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->comparator = LEQ;
                 refinementPtr->threshold = previousThreshold * 0.5;
             }
+            // Debugger: print rule
+            Debugger::printRule(*refinementPtr, *bestHead);
+            // Debugger: print head score
+            Debugger::printHeadScore(bestHead->overallQualityScore, false);
         }
     }
 
@@ -432,6 +477,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 // If the condition separates an example with feature value < 0 from an example with feature value > 0
                 refinementPtr->threshold = calculateThreshold(previousThresholdNegative, previousThreshold);
             }
+            // Debugger: print rule
+            Debugger::printRule(*refinementPtr, *bestHead);
+            // Debugger: print head score
+            Debugger::printHeadScore(bestHead->overallQualityScore, false);
         }
 
         // Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
@@ -455,10 +504,16 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 // If the condition separates an example with feature value < 0 from an example with feature value > 0
                 refinementPtr->threshold = calculateThreshold(previousThresholdNegative, previousThreshold);
             }
+            // Debugger: print rule
+            Debugger::printRule(*refinementPtr, *bestHead);
+            // Debugger: print head score
+            Debugger::printHeadScore(bestHead->overallQualityScore, false);
         }
     }
+    // Debugger: print rule
+    Debugger::printRule(*refinementPtr, *bestHead);
     // Debugger: print head score
-    Debugger::printHeadScore(bestHead->overallQualityScore);
+    Debugger::printHeadScore(bestHead->overallQualityScore, true);
 
     refinementPtr->headPtr = headRefinementPtr_->pollHead();
     refinementPtr_ = std::move(refinementPtr);

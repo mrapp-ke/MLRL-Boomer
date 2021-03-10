@@ -1,7 +1,6 @@
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 #include "seco/statistics/statistics_coverage.hpp"
-#include "common//debugging/global.hpp"
-#include <iostream>
+#include "common/debugging/debug.hpp"
 
 
 namespace seco {

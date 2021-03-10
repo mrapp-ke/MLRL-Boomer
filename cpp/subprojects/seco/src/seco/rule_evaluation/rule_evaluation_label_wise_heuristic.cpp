@@ -1,6 +1,9 @@
+#include <iostream>
 #include "seco/rule_evaluation/rule_evaluation_label_wise_heuristic.hpp"
 #include "seco/heuristics/confusion_matrices.hpp"
 #include "common/rule_evaluation/score_vector_label_wise_dense.hpp"
+
+#include "common/debugging/debug.hpp"
 
 
 namespace seco {
@@ -52,6 +55,13 @@ namespace seco {
                     scoreVector_.quality_scores_begin();
                 float64 overallQualityScore = 0;
 
+                // Debugger: print confusion matrices
+                Debugger::printConfusionMatrices(confusionMatricesTotal,
+                                                 confusionMatricesSubset,
+                                                 confusionMatricesCovered,
+                                                 numPredictions,
+                                                 NUM_CONFUSION_MATRIX_ELEMENTS,
+                                                 uncovered);
                 for (uint32 c = 0; c < numPredictions; c++) {
                     uint32 l = indexIterator[c];
 
@@ -88,6 +98,11 @@ namespace seco {
 
                     //TODO: stimmen diese Werte
                     // codition + confusionsmatrix
+
+
+                    // Debugger: print evaluation metrics
+                    Debugger::printEvaluationConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
+
 
                     score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
                     qualityScoreIterator[c] = score;

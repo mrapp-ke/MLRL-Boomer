@@ -2,8 +2,7 @@
 #include "common/data/arrays.hpp"
 #include "common/statistics/statistics_subset_decomposable.hpp"
 #include "seco/heuristics/confusion_matrices.hpp"
-#include "common/debugging/global.hpp"
-#include <iostream>
+#include "common/debugging/debug.hpp"
 #include <cstdlib>
 
 

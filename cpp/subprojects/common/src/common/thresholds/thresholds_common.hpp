@@ -3,6 +3,8 @@
  */
 #pragma once
 
+#include <iostream>
+#include <common/debugging/debug.hpp>
 #include "common/thresholds/thresholds.hpp"
 #include "common/input/feature_matrix.hpp"
 #include "common/input/nominal_feature_mask.hpp"
@@ -50,6 +52,8 @@ static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExampl
         }
     }
 
+    // Debugger: print ouf of sample
+    Debugger::printOutOfSample();
     std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
     const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
     return scoreVector.overallQualityScore;
@@ -71,6 +75,8 @@ static inline void recalculatePredictionInternally(T iterator, uint32 numExample
         }
     }
 
+    // Debugger: recalculate internally
+    Debugger::printRecalculateInternally();
     std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
     const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
     scoreVector.updatePrediction(head);

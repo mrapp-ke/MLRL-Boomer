@@ -5,8 +5,7 @@
 #include <cmath>
 
 #include "common/sampling/weight_vector_dense.hpp"
-#include "common/debugging/global.hpp"
-#include <iostream>
+#include "common/debugging/debug.hpp"
 
 
 /**

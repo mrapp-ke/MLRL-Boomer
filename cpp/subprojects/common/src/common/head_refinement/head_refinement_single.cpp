@@ -1,3 +1,4 @@
+#include <common/debugging/debug.hpp>
 #include "common/head_refinement/head_refinement_single.hpp"
 #include "common/head_refinement/prediction_partial.hpp"
 #include "common/rule_evaluation/score_processor_label_wise.hpp"
@@ -68,6 +69,9 @@ class SingleLabelHeadRefinement final : public IHeadRefinement, public ILabelWis
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated) override {
+            // Debugger: print the usage of find head
+            Debugger::printFindHead();
+
             const ILabelWiseScoreVector& scoreVector = statisticsSubset.calculateLabelWisePrediction(uncovered,
                                                                                                      accumulated);
             return scoreVector.processScores(bestHead, *this);

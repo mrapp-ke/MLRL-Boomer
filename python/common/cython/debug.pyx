@@ -16,3 +16,6 @@ cpdef object set_lc_flag():
 
 cpdef object set_ri_flag():
      setRIFlag()
+
+cpdef object set_confusion_flag():
+     setConfusionFlag()

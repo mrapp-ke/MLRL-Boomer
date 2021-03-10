@@ -2,7 +2,7 @@
 #include "common/indices/index_vector_full.hpp"
 #include "omp.h"
 #include <unordered_map>
-#include <common/debugging/global.hpp>
+#include <common/debugging/debug.hpp>
 
 
 TopDownRuleInduction::TopDownRuleInduction(uint32 numThreads)
@@ -84,8 +84,6 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
                 *thresholdsSubsetPtr, featureIndex);
             ruleRefinements[featureIndex] = std::move(ruleRefinementPtr);
         }
-
-        //TODO: alle Regeln und quality scores ausgeben
 
         // Search for the best condition among all available features to be added to the current rule...
         #pragma omp parallel for firstprivate(numSampledFeatures) firstprivate(ruleRefinementsPtr) \

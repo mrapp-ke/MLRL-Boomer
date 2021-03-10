@@ -2,7 +2,7 @@
 #include "common/pruning/pruning_irep.hpp"
 
 #include "common/head_refinement/prediction.hpp"
-#include "common/debugging/global.hpp"
+#include "common/debugging/debug.hpp"
 
 
 std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, const IPartition& partition,
