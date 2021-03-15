@@ -25,14 +25,17 @@ class ParameterSearch(Randomized, ABC):
     """
 
     @abstractmethod
-    def search(self, x, y, current_fold: int, num_folds: int):
+    def search(self, meta_data: MetaData, x, y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         """
         Tests different parameter settings given a training data set.
 
+        :param meta_data:       The meta data of the training data set
         :param x:               The feature matrix of the training examples
         :param y:               The label matrix of the training examples
-        :param current_fold:    The current fold starting at 0
-        :param num_folds:       The total number of cross validation folds
+        :param first_fold:      The first fold or 0, if no cross validation is used
+        :param current_fold:    The current fold starting at 0, or 0 if no cross validation is used
+        :param last_fold:       The last fold or 0, if no cross validation is used
+        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
         """
         pass
 
@@ -66,9 +69,11 @@ class NestedCrossValidation(ParameterSearch):
         """
         self.num_nested_folds = num_nested_folds
 
-    def search(self, x, y, current_fold: int, num_folds: int):
+    def search(self, meta_data: MetaData, x, y, first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         num_nested_folds = self.num_nested_folds
         random_state = self.random_state
+        first_nested_fold = 0
+        last_nested_fold = num_nested_folds - 1
         i = 0
         k_fold = KFold(n_splits=num_nested_folds, random_state=random_state, shuffle=True)
 
@@ -83,25 +88,35 @@ class NestedCrossValidation(ParameterSearch):
             test_x = x[test]
             test_y = y[test]
 
-            self._test_parameters(train_x, train_y, test_x, test_y, current_outer_fold=current_fold,
-                                  num_outer_folds=num_folds, current_nested_fold=i, num_nested_folds=num_nested_folds)
+            self._test_parameters(meta_data, train_x, train_y, test_x, test_y, first_outer_fold=first_fold,
+                                  current_outer_fold=current_fold, last_outer_fold=last_fold, num_outer_folds=num_folds,
+                                  first_nested_fold=first_nested_fold, current_nested_fold=i,
+                                  last_nested_fold=last_nested_fold, num_nested_folds=num_nested_folds)
             i += 1
 
     @abstractmethod
-    def _test_parameters(self, train_x, train_y, test_x, test_y, current_outer_fold: int, num_outer_folds: int,
-                         current_nested_fold: int, num_nested_folds: int):
+    def _test_parameters(self, meta_data: MetaData, train_x, train_y, test_x, test_y, first_outer_fold: int,
+                         current_outer_fold: int, last_outer_fold: int, num_outer_folds: int, first_nested_fold: int,
+                         current_nested_fold: int, last_nested_fold: int, num_nested_folds: int):
         """
         Must be implemented by subclasses in order to test different parameter settings on a given training data set and
         evaluate them on a test data set.
 
+        :param meta_data:       The meta data of the training data set
         :param train_x:                The feature matrix of the training examples
         :param train_y:                The label matrix of the training examples
         :param test_x:                 The feature matrix of the test examples
         :param test_y:                 The label matrix of the test examples
-        :param current_outer_fold:     The current (outer) fold starting at 0
-        :param num_outer_folds:        The total number of (outer) cross validation folds
-        :param current_nested_fold:    The current (nested) fold starting at 0
-        :param num_nested_folds:       The total number of (nested) cross validation folds
+        :param first_outer_fold:       The first (outer) fold or 0, if no cross validation is used
+        :param current_outer_fold:     The current (outer) fold starting at 0, or 0 if no cross validation is used
+        :param last_outer_fold:        The last (outer) fold or 0, if no cross validation is used
+        :param num_outer_folds:        The total number of (outer) cross validation folds or 1, if no cross validation
+                                       is used
+        :param first_nested_fold:      The first (nested) fold or 0, if no cross validation is used
+        :param current_nested_fold:    The current (nested) fold starting at 0, or 0 if no cross validation is used
+        :param last_nested_fold:       The last (nested) fold or 0, if no cross validation is used
+        :param num_nested_folds:       The total number of (nested) cross validation folds or 1, if no cross validation
+                                       is used
         """
         pass
 
@@ -223,7 +238,8 @@ class ParameterTuning(CrossValidation):
                             first_fold: int, current_fold: int, last_fold: int, num_folds: int):
         parameter_search = self.parameter_search
         parameter_search.random_state = self.random_state
-        parameter_search.search(train_x, train_y, current_fold=current_fold, num_folds=num_folds)
+        parameter_search.search(meta_data, train_x, train_y, first_fold=first_fold, current_fold=current_fold,
+                                last_fold=last_fold, num_folds=num_folds)
         parameters = parameter_search.get_params()
         score = parameter_search.get_score()
 
