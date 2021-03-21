@@ -2,16 +2,18 @@ project('common', 'cpp', version : '0.4.0')
 
 # Source files
 source_files = [
-    'src/common/binning/bin_vector.cpp',
+    'src/common/binning/bin_index_vector_dense.cpp',
+    'src/common/binning/bin_index_vector_dok.cpp',
     'src/common/binning/feature_binning_equal_frequency.cpp',
     'src/common/binning/feature_binning_equal_width.cpp',
     'src/common/binning/feature_binning_nominal.cpp',
+    'src/common/binning/threshold_vector.cpp',
     'src/common/data/matrix_dense.cpp',
     'src/common/data/matrix_dok_binary.cpp',
     'src/common/data/ring_buffer.cpp',
     'src/common/data/vector_dense.cpp',
+    'src/common/data/vector_dok.cpp',
     'src/common/data/vector_dok_binary.cpp',
-    'src/common/data/vector_mapping_dense.cpp',
     'src/common/data/vector_sparse_array.cpp',
     'src/common/data/vector_sparse_list_binary.cpp',
     'src/common/data/view_c_contiguous.cpp',
@@ -71,6 +73,7 @@ source_files = [
     'src/common/stopping/stopping_criterion_size.cpp',
     'src/common/stopping/stopping_criterion_time.cpp',
     'src/common/thresholds/coverage_mask.cpp',
+    'src/common/thresholds/coverage_set.cpp',
     'src/common/thresholds/thresholds_approximate.cpp',
     'src/common/thresholds/thresholds_exact.cpp'
 ]

@@ -57,7 +57,7 @@ class ICoverageState {
          *                          are predicted by the rule
          * @return                  The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+        virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                             const AbstractPrediction& head) const = 0;
 
         /**
@@ -83,7 +83,7 @@ class ICoverageState {
          *                          of the training examples that belong to the training set
          * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
          */
-        virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const BiPartition& partition,
+        virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                            Refinement& refinement) const = 0;
 
 };

@@ -1,7 +1,7 @@
 #include "common/pruning/pruning_irep.hpp"
 
 
-std::unique_ptr<ICoverageState> IREP::prune(IThresholdsSubset& thresholdsSubset, const IPartition& partition,
+std::unique_ptr<ICoverageState> IREP::prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
                                             ConditionList& conditions, const AbstractPrediction& head) const {
     ConditionList::size_type numConditions = conditions.getNumConditions();
     std::unique_ptr<ICoverageState> bestCoverageStatePtr;
