@@ -1,53 +1,55 @@
 #include "common/binning/feature_binning_nominal.hpp"
+#include "common/binning/bin_index_vector_dense.hpp"
+#include "common/binning/bin_index_vector_dok.hpp"
+#include <unordered_map>
 
 
-IFeatureBinning::FeatureInfo NominalFeatureBinning::getFeatureInfo(FeatureVector& featureVector) const {
-    FeatureInfo featureInfo;
+IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& featureVector, uint32 numExamples) const {
+    Result result;
     uint32 numElements = featureVector.getNumElements();
+    bool sparse = numElements < numExamples;
+    uint32 maxBins = sparse ? numElements + 1 : numElements;
+    result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, maxBins);
+
+    if (sparse) {
+        result.binIndicesPtr = std::make_unique<DokBinIndexVector>();
+    } else {
+        result.binIndicesPtr = std::make_unique<DenseBinIndexVector>(numElements);
+    }
 
     if (numElements > 0) {
-        featureVector.sortByValues();
-        FeatureVector::const_iterator iterator = featureVector.cbegin();
-        float32 previousValue = iterator[0].value;
-        uint32 numDistinctValues = 1;
+        IBinIndexVector& binIndices = *result.binIndicesPtr;
+        ThresholdVector& thresholdVector = *result.thresholdVectorPtr;
+        FeatureVector::const_iterator featureIterator = featureVector.cbegin();
+        ThresholdVector::iterator thresholdIterator = thresholdVector.begin();
+        std::unordered_map<float32, uint32> mapping;
+        uint32 nextBinIndex = 0;
 
-        for (uint32 i = 1; i < numElements; i++) {
-            float32 value = iterator[i].value;
+        if (sparse) {
+            thresholdVector.setSparseBinIndex(0);
+            thresholdIterator[0] = 0;
+            nextBinIndex++;
+        }
 
-            if (previousValue != value) {
-                numDistinctValues++;
-                previousValue = value;
+        for (uint32 i = 0; i < numElements; i++) {
+            float32 currentValue = featureIterator[i].value;
+
+            if (!sparse || currentValue != 0) {
+                uint32 index = featureIterator[i].index;
+                auto mapIterator = mapping.emplace(currentValue, nextBinIndex);
+
+                if (mapIterator.second) {
+                    thresholdIterator[nextBinIndex] = currentValue;
+                    binIndices.setBinIndex(index, nextBinIndex);
+                    nextBinIndex++;
+                } else {
+                    binIndices.setBinIndex(index, mapIterator.first->second);
+                }
             }
         }
 
-        featureInfo.numBins = numDistinctValues > 1 ? numDistinctValues : 0;
-    } else {
-        featureInfo.numBins = 0;
+        thresholdVector.setNumElements(nextBinIndex, true);
     }
 
-    return featureInfo;
-}
-
-void NominalFeatureBinning::createBins(FeatureInfo featureInfo, const FeatureVector& featureVector,
-                                       Callback callback) const {
-    uint32 numBins = featureInfo.numBins;
-
-    if (numBins > 0) {
-        uint32 numElements = featureVector.getNumElements();
-        FeatureVector::const_iterator iterator = featureVector.cbegin();
-        float32 previousValue = iterator[0].value;
-        callback(0, iterator[0].index, previousValue);
-        uint32 binIndex = 0;
-
-        for (uint32 i = 1; i < numElements; i++) {
-            float32 value = iterator[i].value;
-
-            if (previousValue != value) {
-                previousValue = value;
-                binIndex++;
-            }
-
-            callback(binIndex, iterator[i].index, value);
-        }
-    }
+    return result;
 }

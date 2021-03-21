@@ -54,7 +54,7 @@ class IPartition {
          */
         virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
                                             const ICoverageState& coverageState,
-                                            const AbstractPrediction& head) const = 0;
+                                            const AbstractPrediction& head) = 0;
 
         /**
          * Recalculates the scores to be predicted by a refinement based on all examples in the training set that are
@@ -68,6 +68,6 @@ class IPartition {
          * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
          */
         virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
-                                           const ICoverageState& coverageState, Refinement& refinement) const = 0;
+                                           const ICoverageState& coverageState, Refinement& refinement) = 0;
 
 };

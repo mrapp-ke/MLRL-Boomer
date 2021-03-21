@@ -51,9 +51,9 @@ class SinglePartition : public IPartition {
                                                  RNG& rng) const override;
 
         float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
-                                    const AbstractPrediction& head) const override;
+                                    const AbstractPrediction& head) override;
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
-                                   Refinement& refinement) const override;
+                                   Refinement& refinement) override;
 
 };
