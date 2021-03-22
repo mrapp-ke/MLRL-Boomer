@@ -36,46 +36,52 @@ namespace boosting {
     template<class T>
     static inline void aggregateGradientsAndHessians(const DenseExampleWiseStatisticVector& statisticVector,
                                                      const uint32* binIndices, DenseBinnedScoreVector<T>& scoreVector,
-                                                     float64* gradients, float64* hessians, uint32 numBins) {
+                                                     float64* gradients, float64* hessians, uint32 maxBins) {
         uint32 numLabels = statisticVector.getNumElements();
         DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
         DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator = statisticVector.hessians_cbegin();
         typename DenseBinnedScoreVector<T>::index_binned_iterator binIndexIterator = scoreVector.indices_binned_begin();
 
         for (uint32 i = 0; i < numLabels; i++) {
-            uint32 binIndex = binIndices[binIndexIterator[i]];
-            binIndexIterator[i] = binIndex;
+            uint32 originalBinIndex = binIndexIterator[i];
 
-            // Add the gradient that corresponds to the `i`-th element of the original gradient vector to the
-            // corresponding element of the aggregated gradient vector...
-            gradients[binIndex] += gradientIterator[i];
+            if (originalBinIndex != maxBins) {
+                uint32 binIndex = binIndices[originalBinIndex];
+                binIndexIterator[i] = binIndex;
 
-            // Add the Hessian that corresponds to the `i`-th element on the diagonal of the original Hessian matrix to
-            // the corresponding element of the aggregated Hessian matrix...
-            hessians[triangularNumber(binIndex + 1) - 1] += hessianIterator[triangularNumber(i + 1) - 1];
+                // Add the gradient that corresponds to the `i`-th element of the original gradient vector to the
+                // corresponding element of the aggregated gradient vector...
+                gradients[binIndex] += gradientIterator[i];
+
+                // Add the Hessian that corresponds to the `i`-th element on the diagonal of the original Hessian matrix to
+                // the corresponding element of the aggregated Hessian matrix...
+                hessians[triangularNumber(binIndex + 1) - 1] += hessianIterator[triangularNumber(i + 1) - 1];
+            }
         }
 
         for (uint32 i = 1; i < numLabels; i++) {
             uint32 binIndex = binIndexIterator[i];
 
-            for (uint32 j = 0; j < i; j++) {
-                uint32 binIndex2 = binIndexIterator[j];
+            if (binIndex != maxBins) {
+                for (uint32 j = 0; j < i; j++) {
+                    uint32 binIndex2 = binIndexIterator[j];
 
-                // Add the hessian at the `i`-th row and `j`-th column of the original Hessian matrix to the
-                // corresponding element of the aggregated Hessian matrix, if the labels at indices `i` and `j` do not
-                // belong to the same bin...
-                if (binIndex != binIndex2) {
-                    uint32 r, c;
+                    // Add the hessian at the `i`-th row and `j`-th column of the original Hessian matrix to the
+                    // corresponding element of the aggregated Hessian matrix, if the labels at indices `i` and `j` do not
+                    // belong to the same bin...
+                    if (binIndex2 != maxBins && binIndex != binIndex2) {
+                        uint32 r, c;
 
-                    if (binIndex < binIndex2) {
-                        r = binIndex;
-                        c = binIndex2;
-                    } else {
-                        r = binIndex2;
-                        c = binIndex;
+                        if (binIndex < binIndex2) {
+                            r = binIndex;
+                            c = binIndex2;
+                        } else {
+                            r = binIndex2;
+                            c = binIndex;
+                        }
+
+                        hessians[triangularNumber(c) + r] += hessianIterator[triangularNumber(i) + j];
                     }
-
-                    hessians[triangularNumber(c) + r] += hessianIterator[triangularNumber(i) + j];
                 }
             }
         }
@@ -270,7 +276,7 @@ namespace boosting {
                     setArrayToZeros(tmpGradients_, numBins);
                     setArrayToZeros(tmpHessians_, triangularNumber(numBins));
                     aggregateGradientsAndHessians<T>(statisticVector, binIndices_, *scoreVector_, tmpGradients_,
-                                                     tmpHessians_, numBins);
+                                                     tmpHessians_, maxBins_);
 
                     typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                         scoreVector_->scores_binned_begin();
