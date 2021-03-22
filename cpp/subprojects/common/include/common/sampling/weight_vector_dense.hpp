@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -26,8 +26,14 @@ class DenseWeightVector final : public IWeightVector {
          */
         DenseWeightVector(uint32 numElements, uint32 sumOfWeights);
 
+        /**
+         * An iterator that provides access to the weights in the vector and allows to modify them.
+         */
         typedef DenseVector<uint32>::iterator iterator;
 
+        /**
+         * An iterator that provides read-only access to the weights in the vector.
+         */
         typedef DenseVector<uint32>::const_iterator const_iterator;
 
         /**

@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -42,32 +42,94 @@ namespace boosting {
 
                 public:
 
+                    /**
+                     * @param vector    A reference to the vector that stores the Hessians
+                     * @param index     The index to start at
+                     */
                     HessianDiagonalIterator(const DenseExampleWiseStatisticVector& vector, uint32 index);
 
+                    /**
+                     * The type that is used to represent the difference between two iterators.
+                     */
                     typedef int difference_type;
 
+                    /**
+                     * The type of the elements, the iterator provides access to.
+                     */
                     typedef float64 value_type;
 
+                    /**
+                     * The type of a pointer to an element, the iterator provides access to.
+                     */
                     typedef float64* pointer;
 
+                    /**
+                     * The type of a reference to an element, the iterator provides access to.
+                     */
                     typedef float64 reference;
 
+                    /**
+                     * The tag that specifies the capabilities of the iterator.
+                     */
                     typedef std::random_access_iterator_tag iterator_category;
 
+                    /**
+                     * Returns the element at a specific index.
+                     *
+                     * @param index The index of the element to be returned
+                     * @return      The element at the given index
+                     */
                     reference operator[](uint32 index) const;
 
+                    /**
+                     * Returns the element, the iterator currently refers to.
+                     *
+                     * @return The element, the iterator currently refers to
+                     */
                     reference operator*() const;
 
+                    /**
+                     * Returns an iterator to the next element.
+                     *
+                     * @return A reference to an iterator to the next element
+                     */
                     HessianDiagonalIterator& operator++();
 
+                    /**
+                     * Returns an iterator to the next element.
+                     *
+                     * @return A reference to an iterator to the next element
+                     */
                     HessianDiagonalIterator& operator++(int n);
 
+                    /**
+                     * Returns an iterator to the previous element.
+                     *
+                     * @return A reference to an iterator to the previous element
+                     */
                     HessianDiagonalIterator& operator--();
 
+                    /**
+                     * Returns an iterator to the previous element.
+                     *
+                     * @return A reference to an iterator to the previous element
+                     */
                     HessianDiagonalIterator& operator--(int n);
 
+                    /**
+                     * Returns whether this iterator and another one refer to the same element.
+                     *
+                     * @param rhs   A reference to another iterator
+                     * @return      True, if the iterators refer to the same element, false otherwise
+                     */
                     bool operator!=(const HessianDiagonalIterator& rhs) const;
 
+                    /**
+                     * Returns the difference between this iterator and another one.
+                     *
+                     * @param rhs   A reference to another iterator
+                     * @return      The difference between the iterators
+                     */
                     difference_type operator-(const HessianDiagonalIterator& rhs) const;
 
             };
@@ -91,14 +153,30 @@ namespace boosting {
 
             ~DenseExampleWiseStatisticVector();
 
+            /**
+             * An iterator that provides access to the gradients in the vector and allows to modify them.
+             */
             typedef float64* gradient_iterator;
 
+            /**
+             * An iterator that provides read-only access to the gradients in the vector.
+             */
             typedef const float64* gradient_const_iterator;
 
+            /**
+             * An iterator that provides access to the Hessians in the vector and allows to modify them.
+             */
             typedef float64* hessian_iterator;
 
+            /**
+             * An iterator that provides read-only access to the Hessians in the vector.
+             */
             typedef const float64* hessian_const_iterator;
 
+            /**
+             * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
+             * matrix.
+             */
             typedef HessianDiagonalIterator hessian_diagonal_const_iterator;
 
             /**
@@ -158,14 +236,16 @@ namespace boosting {
             hessian_const_iterator hessians_cend() const;
 
             /**
-             * Returns a `hessian_diagonal_const_iterator` to the beginning of the Hessians on the diagonal.
+             * Returns a `hessian_diagonal_const_iterator` to the beginning of the Hessians that correspond to the
+             * diagonal of the Hessian matrix.
              *
              * @return A `hessian_diagonal_const_iterator` to the beginning
              */
             hessian_diagonal_const_iterator hessians_diagonal_cbegin() const;
 
             /**
-             * Returns a `hessian_diagonal_const_iterator` to the end of the Hessians on the diagonal.
+             * Returns a `hessian_diagonal_const_iterator` to the end of the Hessians that correspond to the diagonal of
+             * the Hessian matrix.
              *
              * @return A `hessian_diagonal_const_iterator` to the end
              */

@@ -1,4 +1,4 @@
-/**
+/*
  * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -23,8 +23,19 @@ class IFeatureBinning {
          * bins, individual values have been assigned to.
          */
         struct Result {
+
+            /**
+             * An unique pointer to an object of type `ThresholdVector` that provides access to the thresholds that
+             * result from the boundaries of the bins.
+             */
             std::unique_ptr<ThresholdVector> thresholdVectorPtr;
+
+            /**
+             * An unique pointer to an object of type `IBinIndexVector` that provides access to the indices of the bins,
+             * individual values have been assigned to.
+             */
             std::unique_ptr<IBinIndexVector> binIndicesPtr;
+
         };
 
         virtual ~IFeatureBinning() { };

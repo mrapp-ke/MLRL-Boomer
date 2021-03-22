@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -24,6 +24,9 @@ class SinglePartition : public IPartition {
          */
         SinglePartition(uint32 numElements);
 
+        /**
+         * An iterator that provides read-only access to the indices of the elements that are included in the partition.
+         */
         typedef IndexIterator const_iterator;
 
         /**

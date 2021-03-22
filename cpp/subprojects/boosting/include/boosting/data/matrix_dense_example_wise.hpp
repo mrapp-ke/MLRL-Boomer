@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -46,12 +46,24 @@ namespace boosting {
 
             ~DenseExampleWiseStatisticMatrix();
 
+            /**
+             * An iterator that provides access to the gradients in the matrix and allows to modify them.
+             */
             typedef float64* gradient_iterator;
 
+            /**
+             * An iterator that provides read-only access to the gradients in the matrix.
+             */
             typedef const float64* gradient_const_iterator;
 
+            /**
+             * An iterator that provides access to the Hessians in the matrix and allows to modify them.
+             */
             typedef float64* hessian_iterator;
 
+            /**
+             * An iterator that provides read-only access to the Hessians in the matrix.
+             */
             typedef const float64* hessian_const_iterator;
 
             /**

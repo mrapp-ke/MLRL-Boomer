@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -86,20 +86,47 @@ namespace boosting {
 
         protected:
 
+            /**
+             * A reference to an object of template type `T` that provides access to the labels for which predictions
+             * should be calculated.
+             */
             const T& labelIndices_;
 
+            /**
+             * A shared pointer to an object of type `Lapack` that allows to execute different LAPACK routines.
+             */
             std::shared_ptr<Lapack> lapackPtr_;
 
+            /**
+             * The `lwork` parameter that is used for executing the LAPACK routine DSYSV.
+             */
             int dsysvLwork_;
 
+            /**
+             * A pointer to a temporary array that is used for executing the LAPACK routine DSYSV.
+             */
             float64* dsysvTmpArray1_;
 
+            /**
+             * A pointer to a second temporary array that is used for executing the LAPACK routine DSYSV.
+             */
             int* dsysvTmpArray2_;
 
+            /**
+             * A pointer to a third temporary array that is used for executing the LAPACK routine DSYSV.
+             */
             double* dsysvTmpArray3_;
 
+            /**
+             * A pointer to a temporary array that is used for executing the LAPACK routine DSPMV.
+             */
             float64* dspmvTmpArray_;
 
+            /**
+             * Initializes the temporary arrays that are used for executing LAPACK routines.
+             *
+             * @param numPredictions The number of predictions that should be calculated
+             */
             void initializeTmpArrays(uint32 numPredictions) {
                 dsysvTmpArray1_ = (float64*) malloc(numPredictions * numPredictions * sizeof(float64));
                 dsysvTmpArray2_ = (int*) malloc(numPredictions * sizeof(int));

@@ -131,8 +131,14 @@ namespace boosting {
 
             };
 
+            /**
+             * The type of a vector that provides access to the indices of all available labels.
+             */
             typedef StatisticsSubset<FullIndexVector> FullSubset;
 
+            /**
+             * The type of a vector that provides access to the indices of a subset of the available labels.
+             */
             typedef StatisticsSubset<PartialIndexVector> PartialSubset;
 
         private:
@@ -143,8 +149,15 @@ namespace boosting {
 
         protected:
 
+            /**
+             * An unique pointer to an object of template type `StatisticMatrix` that stores the gradients and Hessians.
+             */
             std::unique_ptr<StatisticMatrix> statisticMatrixPtr_;
 
+            /**
+             * A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory` to be used for calculating the
+             * predictions, as well as corresponding quality scores, of rules.
+             */
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
         public:

@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -21,6 +21,9 @@ class DokBinIndexVector final : public IBinIndexVector {
 
         DokBinIndexVector();
 
+        /**
+         * An iterator that provides access to the elements in the vector.
+         */
         typedef DokVector<uint32>::iterator iterator;
 
         /**

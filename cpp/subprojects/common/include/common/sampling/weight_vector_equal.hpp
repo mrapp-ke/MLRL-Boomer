@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -18,7 +18,7 @@ class EqualWeightVector final : public IWeightVector {
     public:
 
         /**
-         * @param numTotalElements The number of elements in the vector. Must be at least 1
+         * @param numElements The number of elements in the vector. Must be at least 1
          */
         EqualWeightVector(uint32 numElements);
 

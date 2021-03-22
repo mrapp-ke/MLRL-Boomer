@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -35,8 +35,14 @@ class ThresholdVector final : public MissingFeatureVector {
          */
         ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements, bool init);
 
+        /**
+         * An iterator that provides access to the thresholds in the vector and allows to modify them.
+         */
         typedef DenseVector<float32>::iterator iterator;
 
+        /**
+         * An iterator that provides read-only access to the thresholds in the vector.
+         */
         typedef const DenseVector<float32>::const_iterator const_iterator;
 
         /**
