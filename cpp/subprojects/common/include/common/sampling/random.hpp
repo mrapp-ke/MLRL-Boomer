@@ -1,6 +1,4 @@
-/**
- * Provides classes that allow to generate random numbers.
- *
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once

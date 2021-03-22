@@ -158,11 +158,11 @@ cdef class DokNominalFeatureMask(NominalFeatureMask):
     A wrapper for the C++ class `DokNominalFeatureMask`.
     """
 
-    """
-    :param nominal_feature_indices: A list which contains the indices of all nominal features or None, if no nominal
-                                    features are available
-    """
     def __cinit__(self, list nominal_feature_indices):
+        """
+        :param nominal_feature_indices: A list which contains the indices of all nominal features or None, if no nominal
+                                        features are available
+        """
         cdef uint32 num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
         cdef unique_ptr[DokNominalFeatureMaskImpl] ptr = make_unique[DokNominalFeatureMaskImpl]()
         cdef uint32 i
@@ -172,3 +172,16 @@ cdef class DokNominalFeatureMask(NominalFeatureMask):
                 ptr.get().setNominal(i)
 
         self.nominal_feature_mask_ptr = <shared_ptr[INominalFeatureMask]>move(ptr)
+
+
+cdef class EqualNominalFeatureMask(NominalFeatureMask):
+    """
+    A wrapper for the C++ class `EqualNominalFeatureMask`.
+    """
+
+    def __cinit__(self, bint nominal):
+        """
+        :param nominal: True, if all features are nominal, false, if all features are not nominal
+        """
+        self.nominal_feature_mask_ptr = <shared_ptr[INominalFeatureMask]>make_shared[EqualNominalFeatureMaskImpl](
+            nominal)

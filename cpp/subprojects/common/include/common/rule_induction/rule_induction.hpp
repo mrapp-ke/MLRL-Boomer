@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -70,7 +70,7 @@ class IRuleInduction {
          * @return                      True, if a rule has been induced, false otherwise
          */
         virtual bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
-                                const IWeightVector& weights, const IPartition& partition,
+                                const IWeightVector& weights, IPartition& partition,
                                 const IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
                                 const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
                                 intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder) const = 0;

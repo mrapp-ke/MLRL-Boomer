@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -30,10 +30,19 @@ class DenseScoreVector : virtual public IScoreVector {
          */
         DenseScoreVector(const T& labelIndices);
 
+        /**
+         * An iterator that provides read-only access to the indices.
+         */
         typedef typename T::const_iterator index_const_iterator;
 
+        /**
+         * An iterator that provides access to the predicted scores and allows to modify them.
+         */
         typedef DenseVector<float64>::iterator score_iterator;
 
+        /**
+         * An iterator that provides read-only access to the predicted scores.
+         */
         typedef DenseVector<float64>::const_iterator score_const_iterator;
 
         /**

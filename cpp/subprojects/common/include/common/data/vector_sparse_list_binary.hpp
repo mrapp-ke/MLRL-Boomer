@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -19,6 +19,9 @@ class BinarySparseListVector {
 
     public:
 
+        /**
+         * An iterator that provides read-only access to the indices in the vector.
+         */
         typedef std::list<uint32>::const_iterator index_const_iterator;
 
         /**

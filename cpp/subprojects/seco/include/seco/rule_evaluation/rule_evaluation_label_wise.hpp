@@ -1,4 +1,4 @@
-/**
+/*
  * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -43,7 +43,7 @@ namespace seco {
              * @param uncovered                 False, if the confusion matrices in `confusion_matrices_covered`
              *                                  correspond to the examples that are covered by rule, True, if they
              *                                  correspond to the examples that are not covered by the rule
-             * @param return                    A reference to an object of type `ILabelWiseScoreVector` that stores the
+             * @return                          A reference to an object of type `ILabelWiseScoreVector` that stores the
              *                                  predicted scores and quality scores
              */
             virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(const uint8* minorityLabels,

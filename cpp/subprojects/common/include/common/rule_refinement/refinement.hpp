@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -17,13 +17,21 @@ class Refinement final : public Condition {
         /**
          * Returns whether this refinement is better than another one.
          *
-         * @param   A reference to an object of type `Refinement` to be compared to
-         * @return  True, if this refinement is better than the given one, false otherwise
+         * @param another   A reference to an object of type `Refinement` to be compared to
+         * @return          True, if this refinement is better than the given one, false otherwise
          */
         bool isBetterThan(const Refinement& another) const;
 
+        /**
+         * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the scores that are
+         * predicted by the refined rules, as well as a corresponding quality score.
+         */
         std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
 
+        /**
+         * The index of the last element, e.g., example or bin, that has been processed when evaluating the refined
+         * rule.
+         */
         intp previous;
 
 };

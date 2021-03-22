@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -24,6 +24,9 @@ class SinglePartition : public IPartition {
          */
         SinglePartition(uint32 numElements);
 
+        /**
+         * An iterator that provides read-only access to the indices of the elements that are included in the partition.
+         */
         typedef IndexIterator const_iterator;
 
         /**
@@ -50,10 +53,10 @@ class SinglePartition : public IPartition {
         std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
                                                  RNG& rng) const override;
 
-        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
-                                    const AbstractPrediction& head) const override;
+        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+                                    const AbstractPrediction& head) override;
 
-        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
-                                   Refinement& refinement) const override;
+        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+                                   Refinement& refinement) override;
 
 };

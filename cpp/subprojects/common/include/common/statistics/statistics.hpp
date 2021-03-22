@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
@@ -18,41 +18,6 @@
 class IStatistics : virtual public IImmutableStatistics {
 
     public:
-
-        /**
-         * Defines an interface for all classes that allow to build histograms by aggregating the statistics that
-         * correspond to the same bins.
-         */
-        class IHistogramBuilder {
-
-            public:
-
-                virtual ~IHistogramBuilder() { };
-
-                /**
-                 * Returns the number of bins.
-                 *
-                 * @return The number of bins
-                 */
-                virtual uint32 getNumBins() const = 0;
-
-                /**
-                 * Adds the statistic at a specific index to a specific bin.
-                 *
-                 * @param binIndex          The index of the bin
-                 * @param statisticIndex    The index of the statistic
-                 * @param weight            The weight of the statistic
-                 */
-                virtual void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) = 0;
-
-                /**
-                 * Creates and returns a new instance of the class `IHistogram` that stores the aggregated statistics.
-                 *
-                 * @return An unique pointer to an object of type `IHistogram` that has been created
-                 */
-                virtual std::unique_ptr<IHistogram> build() = 0;
-
-        };
 
         virtual ~IStatistics() { };
 
@@ -156,11 +121,10 @@ class IStatistics : virtual public IImmutableStatistics {
         virtual float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `IHistogramBuilder` that allows to build a histogram based on
-         * the statistics.
+         * Creates and returns a new histogram based on the statistics.
          *
-         * @return An unique pointer to an object of type `IHistogramBuilder` that has been created
+         * @return An unique pointer to an object of type `IHistogram` that has been created
          */
-        virtual std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const = 0;
+        virtual std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const = 0;
 
 };

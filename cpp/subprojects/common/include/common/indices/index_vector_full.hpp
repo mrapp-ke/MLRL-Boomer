@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -23,6 +23,9 @@ class FullIndexVector final : public IIndexVector {
          */
         FullIndexVector(uint32 numElements);
 
+        /**
+         * An iterator that provides read-only access to the indices in the vector.
+         */
         typedef IndexIterator const_iterator;
 
         /**
