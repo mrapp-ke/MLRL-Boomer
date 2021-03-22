@@ -2,22 +2,34 @@
 
 
 FeatureVector::FeatureVector(uint32 numElements)
-    : SparseArrayVector<float32>(numElements) {
+    : vector_(SparseArrayVector<float32>(numElements)) {
 
 }
 
-FeatureVector::missing_index_const_iterator FeatureVector::missing_indices_cbegin() const {
-    return missingIndices_.indices_cbegin();
+FeatureVector::iterator FeatureVector::begin() {
+    return vector_.begin();
 }
 
-FeatureVector::missing_index_const_iterator FeatureVector::missing_indices_cend() const {
-    return missingIndices_.indices_cend();
+FeatureVector::iterator FeatureVector::end() {
+    return vector_.end();
 }
 
-void FeatureVector::addMissingIndex(uint32 index) {
-    missingIndices_.setValue(index);
+FeatureVector::const_iterator FeatureVector::cbegin() const {
+    return vector_.cbegin();
 }
 
-void FeatureVector::clearMissingIndices() {
-    missingIndices_.setAllToZero();
+FeatureVector::const_iterator FeatureVector::cend() const {
+    return vector_.cend();
+}
+
+uint32 FeatureVector::getNumElements() const {
+    return vector_.getNumElements();
+}
+
+void FeatureVector::setNumElements(uint32 numElements, bool freeMemory) {
+    return vector_.setNumElements(numElements, freeMemory);
+}
+
+void FeatureVector::sortByValues() {
+    vector_.sortByValues();
 }

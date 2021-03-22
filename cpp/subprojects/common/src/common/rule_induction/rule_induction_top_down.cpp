@@ -40,7 +40,7 @@ void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProv
 }
 
 bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
-                                      const IWeightVector& weights, const IPartition& partition,
+                                      const IWeightVector& weights, IPartition& partition,
                                       const IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
                                       const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
                                       intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder) const {
@@ -135,13 +135,13 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
     } else {
         if (instanceSubSamplingUsed) {
             // Prune rule...
-            std::unique_ptr<CoverageMask> coverageMaskPtr = pruning.prune(*thresholdsSubsetPtr, partition, conditions,
-                                                                          *bestHead);
+            std::unique_ptr<ICoverageState> coverageStatePtr = pruning.prune(*thresholdsSubsetPtr, partition,
+                                                                             conditions, *bestHead);
 
             // Re-calculate the scores in the head based on the entire training data...
-            const CoverageMask& coverageMask =
-                coverageMaskPtr.get() != nullptr ? *coverageMaskPtr : thresholdsSubsetPtr->getCoverageMask();
-            partition.recalculatePrediction(*thresholdsSubsetPtr, coverageMask, *bestRefinementPtr);
+            const ICoverageState& coverageState =
+                coverageStatePtr.get() != nullptr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
+            partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *bestRefinementPtr);
         }
 
         // Apply post-processor...

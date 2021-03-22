@@ -1,4 +1,4 @@
-/**
+/*
  * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -31,8 +31,6 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
          */
         EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins);
 
-        FeatureInfo getFeatureInfo(FeatureVector& featureVector) const override;
-
-        void createBins(FeatureInfo featureInfo, const FeatureVector& featureVector, Callback callback) const override;
+        Result createBins(FeatureVector& featureVector, uint32 numExamples) const override;
 
 };

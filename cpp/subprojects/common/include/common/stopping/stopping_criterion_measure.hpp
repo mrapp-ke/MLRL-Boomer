@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -124,7 +124,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          *                                  after 10, 20, ... rules. Must be a multiple of `updateInterval`
          * @param numPast                   The number of quality scores of past iterations to be stored in a buffer.
          *                                  Must be at least 1
-         * @param numRecent                 The number of quality scores of the most recent iterations to be stored in a
+         * @param numCurrent                The number of quality scores of the most recent iterations to be stored in a
          *                                  buffer. Must be at least 1
          * @param minImprovement            The minimum improvement in percent that must be reached for the rule
          *                                  induction to be continued. Must be in [0, 1]

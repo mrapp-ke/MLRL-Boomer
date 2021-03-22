@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -14,10 +14,13 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
-class SparseArrayVector {
+class SparseArrayVector final {
 
     public:
 
+        /**
+         * The type of an element that is contained by the vector.
+         */
         typedef IndexedValue<T> Entry;
 
 
@@ -38,8 +41,14 @@ class SparseArrayVector {
 
         virtual ~SparseArrayVector();
 
+        /**
+         * An iterator that provides access to the elements in the vector and allows to modify them.
+         */
         typedef Entry* iterator;
 
+        /**
+         * An iterator that provides read-only access to the elements in the vector.
+         */
         typedef const Entry* const_iterator;
 
         /**

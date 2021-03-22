@@ -1,5 +1,4 @@
 #include "common/data/vector_dense.hpp"
-#include "common/data/bin.hpp"
 #include <cstdlib>
 
 
@@ -29,6 +28,11 @@ uint32 DenseVector<T>::getNumElements() const {
 template<class T>
 T DenseVector<T>::getValue(uint32 pos) const {
     return array_[pos];
+}
+
+template<class T>
+void DenseVector<T>::setValue(uint32 pos, T value) {
+    array_[pos] = value;
 }
 
 template<class T>
@@ -68,5 +72,5 @@ void DenseVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
 
 template class DenseVector<uint8>;
 template class DenseVector<uint32>;
+template class DenseVector<float32>;
 template class DenseVector<float64>;
-template class DenseVector<Bin>;

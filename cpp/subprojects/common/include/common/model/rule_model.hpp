@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -34,34 +34,86 @@ class RuleModel final {
 
             public:
 
+                /**
+                 * @param list  A reference to the list that stores all available rules
+                 * @param index The index to start at
+                 */
                 UsedIterator(const std::list<Rule>& list, uint32 index);
 
+                /**
+                 * The type that is used to represent the difference between two iterators.
+                 */
                 typedef int difference_type;
 
+                /**
+                 * The type of the elements, the iterator provides access to.
+                 */
                 typedef const Rule value_type;
 
+                /**
+                 * The type of a pointer to an element, the iterator provides access to.
+                 */
                 typedef const Rule* pointer;
 
+                /**
+                 * The type of a reference to an element, the iterator provides access to.
+                 */
                 typedef const Rule& reference;
 
+                /**
+                 * The tag that specifies the capabilities of the iterator.
+                 */
                 typedef std::input_iterator_tag iterator_category;
 
+                /**
+                 * Returns the element, the iterator currently refers to.
+                 *
+                 * @return The element, the iterator currently refers to
+                 */
                 reference operator*() const;
 
+                /**
+                 * Returns an iterator that refers to the next element.
+                 *
+                 * @return A reference to an iterator that refers to the next element
+                 */
                 UsedIterator& operator++();
 
+                /**
+                 * Returns an iterator that refers to the next element.
+                 *
+                 * @return A reference to an iterator that refers to the next element
+                 */
                 UsedIterator& operator++(int n);
 
+                /**
+                 * Returns whether this iterator and another one refer to the same element.
+                 *
+                 * @param rhs   A reference to another iterator
+                 * @return      True, if the iterators refer to the same element, false otherwise
+                 */
                 bool operator!=(const UsedIterator& rhs) const;
 
+                /**
+                 * Returns the difference between this iterator and another one.
+                 *
+                 * @param rhs   A reference to another iterator
+                 * @return      The difference between the iterators
+                 */
                 difference_type operator-(const UsedIterator& rhs) const;
 
         };
 
         RuleModel();
 
+        /**
+         * An iterator that provides read-only access to all rules.
+         */
         typedef std::list<Rule>::const_iterator const_iterator;
 
+        /**
+         * An iterator that provides read-only access to the used rules.
+         */
         typedef UsedIterator used_const_iterator;
 
         /**
@@ -109,7 +161,7 @@ class RuleModel final {
         /**
          * Sets the number of used rules.
          *
-         * @param The number of used rules to be set or 0, if all rules are used
+         * @param numUsedRules The number of used rules to be set or 0, if all rules are used
          */
         void setNumUsedRules(uint32 numUsedRules);
 

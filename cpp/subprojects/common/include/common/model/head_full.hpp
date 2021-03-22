@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -33,8 +33,14 @@ class FullHead final : public IHead {
 
         ~FullHead();
 
+        /**
+         * An iterator that provides access to the scores the are contained by the head and allows to modify them.
+         */
         typedef float64* score_iterator;
 
+        /**
+         * An iterator that provides read-only access to the scores that are contained by the head.
+         */
         typedef const float64* score_const_iterator;
 
         /**
