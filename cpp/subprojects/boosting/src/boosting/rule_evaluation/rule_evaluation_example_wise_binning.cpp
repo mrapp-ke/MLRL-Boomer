@@ -10,6 +10,10 @@
 
 namespace boosting {
 
+    /**
+     * The type of the class that allows to assign labels to bins, based on the gradients and Hessians that are stored
+     * in a `DenseExampleWiseStatisticVector`.
+     */
     typedef ILabelBinning<DenseExampleWiseStatisticVector::gradient_const_iterator,
                           DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator> LabelBinningType;
 

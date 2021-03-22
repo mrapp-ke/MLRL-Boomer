@@ -15,12 +15,37 @@ namespace boosting {
      * statistic in the vector.
      */
     struct LabelInfo {
+
+        /**
+         * The number of positive bins.
+         */
         uint32 numPositiveBins;
+
+        /**
+         * The minimum among all statistics that belong to the positive bins.
+         */
         float64 minPositive;
+
+        /**
+         * The maximum among all statistics that belong to the positive bins.
+         */
         float64 maxPositive;
+
+        /**
+         * The number of negative bins.
+         */
         uint32 numNegativeBins;
+
+        /**
+         * The minimum among all statistics that belong to the negative bins.
+         */
         float64 minNegative;
+
+        /**
+         * The maximum among all statistics that belong to the negative bins.
+         */
         float64 maxNegative;
+
     };
 
     /**
