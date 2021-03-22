@@ -43,11 +43,11 @@ namespace boosting {
                                    HessianIterator hessiansBegin, HessianIterator hessiansEnd,
                                    float64 l2RegularizationWeight) const override;
 
-            void createBins(LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
-                            HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,
-                            typename ILabelBinning<GradientIterator, HessianIterator>::Callback callback,
-                            typename ILabelBinning<GradientIterator,
-                            HessianIterator>::ZeroCallback zeroCallback) const override;
+            void createBins(
+                LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
+                HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,
+                typename ILabelBinning<GradientIterator, HessianIterator>::Callback callback,
+                typename ILabelBinning<GradientIterator, HessianIterator>::ZeroCallback zeroCallback) const override;
 
     };
 
