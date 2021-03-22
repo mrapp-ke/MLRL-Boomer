@@ -19,8 +19,14 @@ class IHead {
 
         virtual ~IHead() { };
 
+        /**
+         * A visitor function for handling objects of the type `FullHead`.
+         */
         typedef std::function<void(const FullHead&)> FullHeadVisitor;
 
+        /**
+         * A visitor function for handling objects of the type `PartialHead`.
+         */
         typedef std::function<void(const PartialHead&)> PartialHeadVisitor;
 
         /**

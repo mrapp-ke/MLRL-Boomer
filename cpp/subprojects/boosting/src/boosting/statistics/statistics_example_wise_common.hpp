@@ -49,6 +49,8 @@ namespace boosting {
                     /**
                      * @param statistics        A reference to an object of type `AbstractExampleWiseStatistics` that
                      *                          stores the gradients and Hessians
+                     * @param totalSumVector    A pointer to an object of template type `StatisticVector` that stores
+                     *                          the total sums of gradients and Hessians
                      * @param ruleEvaluationPtr An unique pointer to an object of type `IExampleWiseRuleEvaluation` that
                      *                          should be used to calculate the predictions, as well as corresponding
                      *                          quality scores, of rules
@@ -145,8 +147,14 @@ namespace boosting {
 
             };
 
+            /**
+             * The type of a vector that provides access to the indices of all available labels.
+             */
             typedef StatisticsSubset<FullIndexVector> FullSubset;
 
+            /**
+             * The type of a vector that provides access to the indices of a subset of the available labels.
+             */
             typedef StatisticsSubset<PartialIndexVector> PartialSubset;
 
         private:
@@ -157,8 +165,15 @@ namespace boosting {
 
         protected:
 
+            /**
+             * An unique pointer to an object of template type `StatisticMatrix` that stores the gradients and Hessians.
+             */
             std::unique_ptr<StatisticMatrix> statisticMatrixPtr_;
 
+            /**
+             * A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory` to be used for calculating the
+             * predictions, as well as corresponding quality scores, of rules.
+             */
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
         public:

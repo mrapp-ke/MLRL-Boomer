@@ -23,8 +23,14 @@ class PartialIndexVector final : public IIndexVector {
          */
         PartialIndexVector(uint32 numElements);
 
+        /**
+         * An iterator that provides access to the indices in the vector and allows to modify them.
+         */
         typedef DenseVector<uint32>::iterator iterator;
 
+        /**
+         * An iterator that provides read-only access to the indices in the vector.
+         */
         typedef DenseVector<uint32>::const_iterator const_iterator;
 
         /**

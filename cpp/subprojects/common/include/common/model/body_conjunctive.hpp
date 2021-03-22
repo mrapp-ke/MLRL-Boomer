@@ -57,12 +57,27 @@ class ConjunctiveBody final : public IBody {
 
         ~ConjunctiveBody();
 
+        /**
+         * An iterator that provides access to the thresholds that are used by the conditions in the body and allows to
+         * modify them.
+         */
         typedef float32* threshold_iterator;
 
+        /**
+         * An iterator that provides read-only access to the thresholds that are used by the conditions in the body.
+         */
         typedef const float32* threshold_const_iterator;
 
+        /**
+         * An iterator that provides access to the feature indices that correspond to the conditions in the body and
+         * allows to modify them.
+         */
         typedef uint32* index_iterator;
 
+        /**
+         * An iterator that provides read-only access to the feature indices that correspond to the conditions in the
+         * body.
+         */
         typedef const uint32* index_const_iterator;
 
         /**

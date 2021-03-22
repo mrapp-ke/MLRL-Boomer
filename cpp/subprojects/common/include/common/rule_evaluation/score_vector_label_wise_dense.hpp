@@ -28,8 +28,14 @@ class DenseLabelWiseScoreVector final : public DenseScoreVector<T>, virtual publ
          */
         DenseLabelWiseScoreVector(const T& labelIndices);
 
+        /**
+         * An iterator that provides access to the quality scores and allows to modify them.
+         */
         typedef DenseVector<float64>::iterator quality_score_iterator;
 
+        /**
+         * An iterator that provides read-only access to the quality scores.
+         */
         typedef DenseVector<float64>::const_iterator quality_score_const_iterator;
 
         /**

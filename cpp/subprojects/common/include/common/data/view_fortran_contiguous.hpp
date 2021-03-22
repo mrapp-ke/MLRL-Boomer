@@ -33,8 +33,14 @@ class FortranContiguousView final {
          */
         FortranContiguousView(uint32 numRows, uint32 numCols, T* array);
 
+        /**
+         * An iterator that provides access to the values in the view and allows to modify them.
+         */
         typedef T* iterator;
 
+        /**
+         * An iterator that provides read-only access to the values in the view.
+         */
         typedef const T* const_iterator;
 
         /**

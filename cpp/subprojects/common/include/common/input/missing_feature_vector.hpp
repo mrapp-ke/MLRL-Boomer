@@ -27,6 +27,9 @@ class MissingFeatureVector {
          */
         MissingFeatureVector(MissingFeatureVector& missingFeatureVector);
 
+        /**
+         * An iterator that provides read-only access to the missing indices.
+         */
         typedef BinaryDokVector::index_const_iterator missing_index_const_iterator;
 
         /**

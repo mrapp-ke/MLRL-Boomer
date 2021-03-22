@@ -34,6 +34,9 @@ class RingBuffer final {
 
         ~RingBuffer();
 
+        /**
+         * An iterator that provides read-only access to the elements in the buffer.
+         */
         typedef const T* const_iterator;
 
         /**

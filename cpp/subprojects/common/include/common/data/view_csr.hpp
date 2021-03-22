@@ -42,8 +42,14 @@ class CsrView final {
          */
         CsrView(uint32 numRows, uint32 numCols, const T* data, const uint32* rowIndices, const uint32* colIndices);
 
+        /**
+         * An iterator that provides read-only access to the values in the view.
+         */
         typedef const float32* value_const_iterator;
 
+        /**
+         * An iterator that provides read-only access to the indices in the view.
+         */
         typedef const uint32* index_const_iterator;
 
         /**

@@ -21,8 +21,14 @@ class IBody {
 
         virtual ~IBody() { };
 
+        /**
+         * A visitor function for handling objects of the type `EmptyBody`.
+         */
         typedef std::function<void(const EmptyBody&)> EmptyBodyVisitor;
 
+        /**
+         * A visitor function for handling objects of the type `ConjunctiveBody`.
+         */
         typedef std::function<void(const ConjunctiveBody&)> ConjunctiveBodyVisitor;
 
         /**
