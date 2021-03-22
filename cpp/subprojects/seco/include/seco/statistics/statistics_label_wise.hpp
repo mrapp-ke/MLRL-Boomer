@@ -1,7 +1,4 @@
-/**
- * Provides classes that allow to store the elements of confusion matrices that are computed independently for each
- * label.
- *
+/*
  * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */

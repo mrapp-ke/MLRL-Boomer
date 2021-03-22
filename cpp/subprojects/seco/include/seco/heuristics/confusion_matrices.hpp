@@ -1,6 +1,4 @@
-/**
- * Provides commonly used data structures and functions for handling confusion matrices.
- *
+/*
  * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
