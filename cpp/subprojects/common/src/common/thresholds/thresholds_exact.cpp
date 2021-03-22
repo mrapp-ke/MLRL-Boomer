@@ -11,9 +11,19 @@
  * check if the vector is still valid or must be updated.
  */
 struct FilteredCacheEntry {
-    FilteredCacheEntry() : numConditions(0) { };
+
+    FilteredCacheEntry(): numConditions(0) { };
+
+    /**
+     * An unique pointer to an object of type `FeatureVector` that stores feature values.
+     */
     std::unique_ptr<FeatureVector> vectorPtr;
+
+    /**
+     * The number of conditions that were contained by the rule when the cache was updated for the last time.
+     */
     uint32 numConditions;
+
 };
 
 /**

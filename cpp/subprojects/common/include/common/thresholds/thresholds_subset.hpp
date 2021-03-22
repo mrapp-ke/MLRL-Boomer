@@ -69,7 +69,7 @@ class IThresholdsSubset {
          * Unlike the function `filterThresholds(Refinement)`, the given condition must not have been found by an
          * instance of `IRuleRefinement` and the function `resetThresholds` may have been called before.
          *
-         * @param  A reference to an object of type `Refinement` that stores information about the condition
+         * @param condition A reference to an object of type `Refinement` that stores information about the condition
          */
         virtual void filterThresholds(const Condition& condition) = 0;
 

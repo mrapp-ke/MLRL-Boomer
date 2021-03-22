@@ -28,8 +28,14 @@ class AbstractPrediction : public IIndexVector {
          */
         AbstractPrediction(uint32 numElements);
 
+        /**
+         * An iterator that provides access to the predicted scores and allows to modify them.
+         */
         typedef DenseVector<float64>::iterator score_iterator;
 
+        /**
+         * An iterator that provides read-only access to the predicted scores.
+         */
         typedef DenseVector<float64>::const_iterator score_const_iterator;
 
         /**

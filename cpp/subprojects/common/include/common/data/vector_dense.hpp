@@ -37,8 +37,14 @@ class DenseVector final {
 
         virtual ~DenseVector();
 
+        /**
+         * An iterator that provides access to the elements in the vector and allows to modify them.
+         */
         typedef T* iterator;
 
+        /**
+         * An iterator that provides read-only access to the elements in the vector.
+         */
         typedef const T* const_iterator;
 
         /**

@@ -11,6 +11,15 @@
  */
 template<class T>
 struct IndexedValue {
+
+    /**
+     * The index.
+     */
     uint32 index;
+
+    /**
+     * The value.
+     */
     T value;
+
 };

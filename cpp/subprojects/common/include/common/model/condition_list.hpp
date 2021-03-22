@@ -21,12 +21,28 @@ class ConditionList final {
 
     public:
 
+        /**
+         * The type that is used to store the size of the list.
+         */
         typedef std::list<Condition>::size_type size_type;
 
+        /**
+         * An iterator that provides read-only access to the conditions in the list.
+         */
         typedef std::list<Condition>::const_iterator const_iterator;
 
+        /**
+         * Returns a `const_iterator` to the beginning of the list.
+         *
+         * @return A `const_iterator` to the beginning
+         */
         const_iterator cbegin() const;
 
+        /**
+         * Returns a `const_iterator` to the end of the list.
+         *
+         * @return A `const_iterator` to the end
+         */
         const_iterator cend() const;
 
         /**

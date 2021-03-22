@@ -30,6 +30,7 @@ static inline T arithmeticMean(T small, T large) {
  * @tparam T    The type of the values
  * @param n     The index of the value, starting at 1
  * @param x     The n-th value
+ * @param mean  The arithmetic mean of all previously provided values
  * @return      The arithmetic mean of all values provided so far
  */
 template<class T>

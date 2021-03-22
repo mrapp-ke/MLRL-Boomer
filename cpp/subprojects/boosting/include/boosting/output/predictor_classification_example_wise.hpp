@@ -85,6 +85,9 @@ namespace boosting {
              */
             ExampleWiseClassificationPredictor(std::shared_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads);
 
+            /**
+             * A visitor function for handling objects of the type `LabelVector`.
+             */
             typedef std::function<void(const LabelVector&)> LabelVectorVisitor;
 
             /**

@@ -18,7 +18,7 @@ class RandomLabelSubsetSelection final : public ILabelSubSampling {
     public:
 
         /**
-         * @param The number of labels to be included in the sample
+         * @param numSamples The number of labels to be included in the sample
          */
         RandomLabelSubsetSelection(uint32 numSamples);
 

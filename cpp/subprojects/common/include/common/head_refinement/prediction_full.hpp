@@ -26,17 +26,20 @@ class FullPrediction final : public AbstractEvaluatedPrediction {
          */
         FullPrediction(uint32 numElements);
 
+        /**
+         * An iterator that provides read-only access to the indices of the labels for which the rule predicts.
+         */
         typedef FullIndexVector::const_iterator index_const_iterator;
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the indices.
+         * Returns an `index_const_iterator` to the beginning of the indices of the labels for which the rule predicts.
          *
          * @return An `index_const_iterator` to the beginning
          */
         index_const_iterator indices_cbegin() const;
 
         /**
-         * Returns an `index_const_iterator` to the end of the indices.
+         * Returns an `index_const_iterator` to the end of the indices of the labels for which the rule predicts.
          *
          * @return An `index_const_iterator` to the end
          */

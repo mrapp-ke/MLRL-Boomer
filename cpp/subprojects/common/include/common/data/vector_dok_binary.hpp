@@ -18,6 +18,9 @@ class BinaryDokVector final {
 
     public:
 
+        /**
+         * An iterator that provides read-only access to the elements in the vector.
+         */
         typedef std::unordered_set<uint32>::const_iterator index_const_iterator;
 
         /**

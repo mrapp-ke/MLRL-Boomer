@@ -57,10 +57,10 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback` that allows to
          *                          retrieve the bins for a certain feature
          */
-        ApproximateRuleRefinement(
-            std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex,
-            bool nominal, const IWeightVector& weights_,
-            std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr);
+        ApproximateRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
+                                  uint32 featureIndex, bool nominal, const IWeightVector& weights,
+                                  std::unique_ptr<IRuleRefinementCallback<ThresholdVector,
+                                  BinWeightVector>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
 

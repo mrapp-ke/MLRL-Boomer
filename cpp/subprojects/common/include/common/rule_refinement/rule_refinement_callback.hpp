@@ -40,10 +40,22 @@ class IRuleRefinementCallback {
 
                 }
 
+                /**
+                 * A reference to an object of type `IImmutableStatistics` that should be used to search for potential
+                 * refinements.
+                 */
                 const IImmutableStatistics& statistics_;
 
+                /**
+                 * A reference to an object of type `WeightVector` that provides access to the weights of the elements
+                 * in `vector_`.
+                 */
                 const WeightVector& weights_;
 
+                /**
+                 * A reference to an object of template type `Vector` that should be used to search for potential
+                 * refinements.
+                 */
                 const Vector& vector_;
 
         };
