@@ -78,8 +78,8 @@ class AbstractPrediction : public IIndexVector {
         /**
          * Sets the predicted scores in another vector to this vector.
          *
-         * @param begin A `DenseBinnedVector<float64>::const_iterator` to the beginning of the predicted scores
-         * @param end   A `DenseBinnedVector<float64>::const_iterator` to the end of the predicted scores
+         * @param begin An iterator to the beginning of the predicted scores
+         * @param end   An iterator to the end of the predicted scores
          */
         void set(DenseBinnedVector<float64>::const_iterator begin, DenseBinnedVector<float64>::const_iterator end);
 
