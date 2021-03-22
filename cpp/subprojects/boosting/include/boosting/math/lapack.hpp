@@ -1,6 +1,4 @@
-/**
- * Implements a wrapper that allows to execute different LAPACK routines.
- *
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once

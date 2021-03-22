@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -35,9 +35,15 @@ class CoverageMask final : public ICoverageState {
 
         ~CoverageMask();
 
-        typedef const uint32* const_iterator;
-
+        /**
+         * An iterator that provides access to the values in the mask and allows to modify them.
+         */
         typedef uint32* iterator;
+
+        /**
+         * An iterator that provides read-only access to the values in the mask.
+         */
+        typedef const uint32* const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the mask.

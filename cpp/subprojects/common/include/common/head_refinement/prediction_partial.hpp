@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -26,33 +26,39 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
          */
         PartialPrediction(uint32 numElements);
 
+        /**
+         * An iterator that provides access to the indices for which the rule predicts and allows to modify them.
+         */
         typedef PartialIndexVector::iterator index_iterator;
 
+        /**
+         * An iterator that provides read-only access to the indices for which the rule predicts.
+         */
         typedef PartialIndexVector::const_iterator index_const_iterator;
 
         /**
-         * Returns an `index_iterator` to the beginning of the indices.
+         * Returns an `index_iterator` to the beginning of the indices for which the rule predicts.
          *
          * @return An `index_iterator` to the beginning
          */
         index_iterator indices_begin();
 
         /**
-         * Returns an `index_iterator` to the end of the indices.
+         * Returns an `index_iterator` to the end of the indices for which the rule predicts.
          *
          * @return An `index_iterator` to the end
          */
         index_iterator indices_end();
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the indices.
+         * Returns an `index_const_iterator` to the beginning of the indices for which the rule predicts.
          *
          * @return An `index_const_iterator` to the beginning
          */
         index_const_iterator indices_cbegin() const;
 
         /**
-         * Returns an `index_const_iterator` to the end of the indices.
+         * Returns an `index_const_iterator` to the end of the indices for which the rule predicts.
          *
          * @return An `index_const_iterator` to the end
          */

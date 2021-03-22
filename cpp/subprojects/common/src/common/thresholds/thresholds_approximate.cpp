@@ -10,8 +10,17 @@
  * histogram, well as to a vector that stores the weights of individual bins.
  */
 struct CacheEntry : public IFeatureBinning::Result {
+
+    /**
+     * An unique pointer to an object of type `IHistogram` that provides access to the values stored in a histogram.
+     */
     std::unique_ptr<IHistogram> histogramPtr;
+
+    /**
+     * An unique pointer to an object of type `BinWeightVector` that provides access to the weights of individual bins.
+     */
     std::unique_ptr<BinWeightVector> weightVectorPtr;
+
 };
 
 /**

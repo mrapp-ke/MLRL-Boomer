@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -24,8 +24,14 @@ class FeatureVector final : public MissingFeatureVector {
          */
         FeatureVector(uint32 numElements);
 
+        /**
+         * An iterator that provides access to the feature values in the vector and allows to modify them.
+         */
         typedef SparseArrayVector<float32>::iterator iterator;
 
+        /**
+         * An iterator that provides read-only access to the feature values in the vector.
+         */
         typedef SparseArrayVector<float32>::const_iterator const_iterator;
 
         /**

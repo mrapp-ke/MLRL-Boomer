@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -30,8 +30,17 @@ class IStoppingCriterion {
          * number of rules to be used, if the action is not `CONTINUE`.
          */
         struct Result {
+
+            /**
+             * The action to be executed.
+             */
             Action action;
+
+            /**
+             * The number of rules to be used.
+             */
             uint32 numRules;
+
         };
 
         virtual ~IStoppingCriterion() { };

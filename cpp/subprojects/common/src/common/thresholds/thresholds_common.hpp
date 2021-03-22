@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -154,12 +154,28 @@ class AbstractThresholds : public IThresholds {
 
     protected:
 
+        /**
+         * A shared pointer to an object of type `IFeatureMatrix` that provides access to the feature values of the
+         * training examples.
+         */
         std::shared_ptr<IFeatureMatrix> featureMatrixPtr_;
 
+        /**
+         * A shared pointer to an object of type `INominalFeatureMask` that provides access to the information whether
+         * individual feature are nominal or not.
+         */
         std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr_;
 
+        /**
+         * A shared pointer to an object of type `IStatisticsProvider` that provides access to statistics about the
+         * labels of the training examples.
+         */
         std::shared_ptr<IStatisticsProvider> statisticsProviderPtr_;
 
+        /**
+         * A shared pointer to an object of type `IHeadRefinementFactory` that allows to create instances of the class
+         * that should be used to find the heads of rules.
+         */
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr_;
 
     public:
@@ -169,7 +185,7 @@ class AbstractThresholds : public IThresholds {
          *                                  to the feature values of the training examples
          * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
          *                                  access to the information whether individual features are nominal or not
-         * @param statisticsPtr             A shared pointer to an object of type `IStatisticsProvider` that provides
+         * @param statisticsProviderPtr     A shared pointer to an object of type `IStatisticsProvider` that provides
                                             access to statistics about the labels of the training examples
          * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
          *                                  to create instances of the class that should be used to find the heads of

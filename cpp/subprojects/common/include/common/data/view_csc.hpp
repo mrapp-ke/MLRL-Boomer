@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -34,16 +34,22 @@ class CscView final {
          * @param numCols       The number of cols in the view
          * @param data          A pointer to an array of template type `T`, shape `(num_non_zero_values)`, that stores
          *                      all non-zero values
-         * @param rolIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
+         * @param rowIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
          *                      row-indices, the values in `data` correspond to
-         * @param cowIndices    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
+         * @param colIndices    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
          *                      of the first element in `data` and `rowIndices` that corresponds to a certain column.
          *                      The index at the last position is equal to `num_non_zero_values`
          */
         CscView(uint32 numRows, uint32 numCols, const T* data, const uint32* rowIndices, const uint32* colIndices);
 
+        /**
+         * An iterator that provides read-only access to the values in the view.
+         */
         typedef const float32* value_const_iterator;
 
+        /**
+         * An iterator that provides read-only access to the indices in the view.
+         */
         typedef const uint32* index_const_iterator;
 
         /**

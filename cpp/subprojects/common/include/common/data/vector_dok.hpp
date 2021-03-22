@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -28,8 +28,14 @@ class DokVector final {
          */
         DokVector(T sparseValue);
 
+        /**
+         * An iterator that provides access to the elements in the vector and allows to modify them.
+         */
         typedef typename std::unordered_map<uint32, T>::iterator iterator;
 
+        /**
+         * An iterator that provides read-only access to the elements in the vector.
+         */
         typedef typename std::unordered_map<uint32, T>::const_iterator const_iterator;
 
         /**

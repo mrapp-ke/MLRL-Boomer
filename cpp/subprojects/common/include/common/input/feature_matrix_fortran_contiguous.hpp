@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -22,7 +22,7 @@ class FortranContiguousFeatureMatrix final : public IFeatureMatrix {
         /**
          * @param numRows   The number of rows in the feature matrix
          * @param numCols   The number of columns in the feature matrix
-         * @param x         A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
+         * @param array     A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
          */
         FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, float32* array);
 

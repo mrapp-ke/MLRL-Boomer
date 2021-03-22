@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -34,9 +34,15 @@ class CoverageSet final : public ICoverageState {
 
         ~CoverageSet();
 
-        typedef const uint32* const_iterator;
-
+        /**
+         * An iterator that provides access to the indices of the covered examples and allows to modify them.
+         */
         typedef uint32* iterator;
+
+        /**
+         * An iterator that provides read-only access to the indices of the covered examples.
+         */
+        typedef const uint32* const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the indices of the covered examples.
