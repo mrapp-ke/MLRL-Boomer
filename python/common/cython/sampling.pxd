@@ -42,6 +42,15 @@ cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
         RandomInstanceSubsetSelectionImpl(float32 sampleSize)
 
 
+cdef extern from "common/sampling/instance_sampling_stratification.hpp" nogil:
+
+    cdef cppclass StratificationImpl"Stratification"(IInstanceSubSampling):
+
+        # Constructors:
+
+        StratificationImpl(float32 sampleSize) except +
+
+
 cdef extern from "common/sampling/instance_sampling_no.hpp" nogil:
 
     cdef cppclass NoInstanceSubSamplingImpl"NoInstanceSubSampling"(IInstanceSubSampling):

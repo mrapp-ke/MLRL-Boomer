@@ -23,8 +23,8 @@ uint32 SinglePartition::getNumElements() const {
 }
 
 std::unique_ptr<IWeightVector> SinglePartition::subSample(const IInstanceSubSampling& instanceSubSampling,
-                                                          RNG& rng) const {
-    return instanceSubSampling.subSample(*this, rng);
+                                                          RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const {
+    return instanceSubSampling.subSample(*this, rng, labelMatrix);
 }
 
 float64 SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,

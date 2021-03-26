@@ -2,7 +2,7 @@
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
-
+#include "common/input/label_matrix.hpp"
 #include "common/sampling/weight_vector.hpp"
 #include "common/sampling/random.hpp"
 #include <memory>
@@ -30,7 +30,7 @@ class IInstanceSubSampling {
          * @return          An unique pointer to an object type `WeightVector` that provides access to the weights of
          *                  the individual training examples
          */
-        virtual std::unique_ptr<IWeightVector> subSample(const SinglePartition& partition, RNG& rng) const = 0;
+        virtual std::unique_ptr<IWeightVector> subSample(const SinglePartition& partition, RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const = 0;
 
         /**
          * Creates and returns a sub-sample of the examples in a training set.
@@ -42,6 +42,6 @@ class IInstanceSubSampling {
          * @return          An unique pointer to an object type `WeightVector` that provides access to the weights of
          *                  the individual training examples
          */
-        virtual std::unique_ptr<IWeightVector> subSample(const BiPartition& partition, RNG& rng) const = 0;
+        virtual std::unique_ptr<IWeightVector> subSample(const BiPartition& partition, RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const = 0;
 
 };

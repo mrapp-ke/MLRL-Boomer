@@ -54,8 +54,9 @@ uint32 BiPartition::getNumElements() const {
     return vector_.getNumElements();
 }
 
-std::unique_ptr<IWeightVector> BiPartition::subSample(const IInstanceSubSampling& instanceSubSampling, RNG& rng) const {
-    return instanceSubSampling.subSample(*this, rng);
+std::unique_ptr<IWeightVector> BiPartition::subSample(const IInstanceSubSampling& instanceSubSampling, RNG& rng,
+                                                      const IRandomAccessLabelMatrix& labelMatrix) const {
+    return instanceSubSampling.subSample(*this, rng, labelMatrix);
 }
 
 float64 BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,

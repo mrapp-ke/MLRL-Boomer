@@ -24,6 +24,7 @@ from common.cython.pruning import Pruning, NoPruning, IREP
 from common.cython.rule_induction import RuleModelInduction
 from common.cython.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
 from common.cython.sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, NoInstanceSubSampling
+from common.cython.sampling import Stratification
 from common.cython.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
 from common.cython.sampling import PartitionSampling, NoPartitionSampling, BiPartitionSampling
 from common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
@@ -44,6 +45,8 @@ LABEL_SUB_SAMPLING_RANDOM = 'random-label-selection'
 INSTANCE_SUB_SAMPLING_RANDOM = 'random-instance-selection'
 
 INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
+
+INSTANCE_SUB_SAMPLING_STRATIFICATION = "stratification"
 
 FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
 
@@ -95,7 +98,7 @@ def create_instance_sub_sampling(instance_sub_sampling: str) -> InstanceSubSampl
         return NoInstanceSubSampling()
     else:
         prefix, args = parse_prefix_and_dict(instance_sub_sampling,
-                                             [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM])
+                                             [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM, INSTANCE_SUB_SAMPLING_STRATIFICATION])
 
         if prefix == INSTANCE_SUB_SAMPLING_BAGGING:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
@@ -103,6 +106,9 @@ def create_instance_sub_sampling(instance_sub_sampling: str) -> InstanceSubSampl
         elif prefix == INSTANCE_SUB_SAMPLING_RANDOM:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return RandomInstanceSubsetSelection(sample_size)
+        elif prefix == INSTANCE_SUB_SAMPLING_STRATIFICATION:
+            sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
+            return Stratification(sample_size)
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
 

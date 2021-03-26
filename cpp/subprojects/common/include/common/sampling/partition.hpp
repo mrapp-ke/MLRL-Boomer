@@ -14,6 +14,7 @@ class IThresholdsSubset;
 class ICoverageState;
 class Refinement;
 class AbstractPrediction;
+class IRandomAccessLabelMatrix;
 
 
 /**
@@ -37,7 +38,7 @@ class IPartition {
          *                              weights of the individual training examples
          */
         virtual std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
-                                                         RNG& rng) const = 0;
+                                                         RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const = 0;
 
         /**
          * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that

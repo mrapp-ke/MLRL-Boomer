@@ -11,14 +11,15 @@ RandomInstanceSubsetSelection::RandomInstanceSubsetSelection(float32 sampleSize)
 }
 
 std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(const SinglePartition& partition,
-                                                                        RNG& rng) const {
+                                                                        RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
     return sampleWeightsWithoutReplacement<IndexIterator>(IndexIterator(numExamples), numExamples, numSamples,
                                                           numExamples, rng);
 }
 
-std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(const BiPartition& partition, RNG& rng) const {
+std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(const BiPartition& partition, RNG& rng,
+                                                                        const IRandomAccessLabelMatrix& labelMatrix) const {
     uint32 numExamples = partition.getNumElements();
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize_ * numTrainingExamples);

@@ -1,18 +1,14 @@
-/**
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
- */
 #pragma once
-
+#include "common/data/types.hpp"
 #include "common/sampling/instance_sampling.hpp"
 
 
-/**
- * An implementation of the class `IInstanceSubSampling` that does not perform any sampling, but assigns equal weights
- * to all examples.
- */
-class NoInstanceSubSampling final : public IInstanceSubSampling {
+class Stratification final : public IInstanceSubSampling {
+    private:
+        float32 sampleSize_;
 
     public:
+        Stratification(float32 sampleSize);
 
         std::unique_ptr<IWeightVector> subSample(const SinglePartition& partition, RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const override;
 
