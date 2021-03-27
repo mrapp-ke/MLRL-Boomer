@@ -61,7 +61,7 @@ setuptools.setup(
     author='Michael Rapp',
     author_email='mrapp@ke.tu-darmstadt.de',
     license='MIT',
-    packages=['common', 'boosting', 'seco', 'testbed'],
+    packages=['mlrl.common', 'mlrl.boosting', 'mlrl.seco', 'mlrl.testbed'],
     install_requires=[
         'numpy>=1.20.0',
         'scipy>=1.6.0',
