@@ -36,6 +36,8 @@ venv:
 	venv/bin/pip install meson
 	@echo "Installing compile-time dependency \"ninja\" into virtual environment..."
 	venv/bin/pip install ninja
+	@echo "Installing compile-time dependency \"wheel\" into virtual environment..."
+	venv/bin/pip install wheel
 
 compile: venv
 	@echo "Compiling C++ code..."
