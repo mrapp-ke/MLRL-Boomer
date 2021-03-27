@@ -1,4 +1,4 @@
-project('seco', 'cpp', version : '0.4.0')
+project('seco', 'cpp', version : '0.5.0')
 
 # Source files
 source_files = [
@@ -31,4 +31,4 @@ dependencies = [
 include_directories = include_directories('include')
 
 seco_lib = library('mlrlseco', source_files, include_directories : include_directories, dependencies : dependencies,
-                   version : '0.4.0')
+                   version : '0.5.0')
