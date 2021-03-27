@@ -61,14 +61,13 @@ setuptools.setup(
     author='Michael Rapp',
     author_email='mrapp@ke.tu-darmstadt.de',
     license='MIT',
-    packages=['common', 'boosting', 'seco'],
+    packages=['mlrl.common', 'mlrl.boosting', 'mlrl.seco', 'mlrl.testbed'],
     install_requires=[
         'numpy>=1.20.0',
         'scipy>=1.6.0',
         'Cython>=0.29.0',
-        'scikit-learn>=0.23.0',
-        'liac-arff>=2.5.0',
-        'requests>=2.25.0'
+        'scikit-learn>=0.24.0',
+        'liac-arff>=2.5.0'
     ],
     python_requires='>=3.7',
     ext_modules=cythonize(extensions, language_level='3', annotate=ANNOTATE, compiler_directives=compiler_directives),

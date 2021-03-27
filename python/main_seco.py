@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 from args import ArgumentParserBuilder
+from mlrl.seco.seco_learners import SeparateAndConquerRuleLearner
 from runnables import RuleLearnerRunnable
-from seco.seco_learners import SeparateAndConquerRuleLearner
 
 
 class SecoRunnable(RuleLearnerRunnable):
