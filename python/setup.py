@@ -61,7 +61,7 @@ setuptools.setup(
     author='Michael Rapp',
     author_email='mrapp@ke.tu-darmstadt.de',
     license='MIT',
-    packages=['common', 'boosting', 'seco'],
+    packages=['common', 'boosting', 'seco', 'testbed'],
     install_requires=[
         'numpy>=1.20.0',
         'scipy>=1.6.0',
