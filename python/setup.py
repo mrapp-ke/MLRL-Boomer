@@ -66,7 +66,7 @@ setuptools.setup(
         'numpy>=1.20.0',
         'scipy>=1.6.0',
         'Cython>=0.29.0',
-        'scikit-learn>=0.23.0',
+        'scikit-learn>=0.24.0',
         'liac-arff>=2.5.0',
         'requests>=2.25.0'
     ],
