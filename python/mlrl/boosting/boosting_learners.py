@@ -417,7 +417,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             prefix, args = parse_prefix_and_dict(label_binning, [LABEL_BINNING_EQUAL_WIDTH])
 
             if prefix == LABEL_BINNING_EQUAL_WIDTH:
-                bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
+                bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.04, lambda x: 0 < x < 1)
                 min_bins = get_int_argument(args, ARGUMENT_MIN_BINS, 1, lambda x: x >= 1)
                 max_bins = get_int_argument(args, ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
                 return prefix, bin_ratio, min_bins, max_bins
