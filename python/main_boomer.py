@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from args import ArgumentParserBuilder
-from boosting.boosting_learners import Boomer
+from mlrl.boosting.boosting_learners import Boomer
 from runnables import RuleLearnerRunnable
 
 
