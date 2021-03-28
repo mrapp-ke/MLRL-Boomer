@@ -31,7 +31,7 @@ class CscView final {
 
         /**
          * @param numRows       The number of rows in the view
-         * @param numCols       The number of cols in the view
+         * @param numCols       The number of columns in the view
          * @param data          A pointer to an array of template type `T`, shape `(num_non_zero_values)`, that stores
          *                      all non-zero values
          * @param rowIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
