@@ -1,6 +1,6 @@
 # Changelog
 
-### Version 0.5.0 (to be released)
+### Version 0.5.0 (Mar 28, 2021)
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
