@@ -12,9 +12,9 @@
 namespace boosting {
 
     /**
-     * A two-dimensional matrix that provides random access to a fixed number of numbers stored in a C-contiguous array.
+     * A two-dimensional matrix that provides random access to a fixed number of values stored in a C-contiguous array.
      *
-     * @tparam T The type of the numbers that are stored in the matrix
+     * @tparam T The type of the values that are stored in the matrix
      */
     template<class T>
     class DenseNumericMatrix final : public DenseMatrix<T> {
@@ -35,7 +35,7 @@ namespace boosting {
             DenseNumericMatrix(uint32 numRows, uint32 numCols, bool init);
 
             /**
-             * Adds all numbers in another vector to certain elements, whose positions are given as a `FullIndexVector`,
+             * Adds all values in another vector to certain elements, whose positions are given as a `FullIndexVector`,
              * at a specific row of this matrix.
              *
              * @param row           The row
@@ -50,7 +50,7 @@ namespace boosting {
                                     FullIndexVector::const_iterator indicesEnd);
 
             /**
-             * Adds all numbers in another vector to certain elements, whose positions are given as a
+             * Adds all values in another vector to certain elements, whose positions are given as a
              * `PartialIndexVector`, at a specific row of this matrix.
              *
              * @param row           The row
