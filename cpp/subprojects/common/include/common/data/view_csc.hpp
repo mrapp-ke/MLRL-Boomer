@@ -45,7 +45,7 @@ class CscView final {
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        typedef const float32* value_const_iterator;
+        typedef const T* value_const_iterator;
 
         /**
          * An iterator that provides read-only access to the indices in the view.
