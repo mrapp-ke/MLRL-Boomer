@@ -1,4 +1,5 @@
 #include "boosting/data/matrix_dense_label_wise.hpp"
+#include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 
@@ -78,12 +79,8 @@ namespace boosting {
                                                  hessian_const_iterator hessiansBegin,
                                                  hessian_const_iterator hessiansEnd, float64 weight) {
         uint32 offset = row * numCols_;
-
-        for (uint32 i = 0; i < numCols_; i++) {
-            uint32 index = offset + i;
-            gradients_[index] += (gradientsBegin[i] * weight);
-            hessians_[index] += (hessiansBegin[i] * weight);
-        }
+        addToArray(&gradients_[offset], gradientsBegin, numCols_, weight);
+        addToArray(&hessians_[offset], hessiansBegin, numCols_, weight);
     }
 
 }

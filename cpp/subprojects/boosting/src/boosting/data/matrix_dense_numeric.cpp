@@ -20,10 +20,11 @@ namespace boosting {
                                                    typename DenseVector<T>::const_iterator end,
                                                    FullIndexVector::const_iterator indicesBegin,
                                                    FullIndexVector::const_iterator indicesEnd) {
-        uint32 offset = row * DenseMatrix<T>::numCols_;
+        typename DenseNumericMatrix<T>::iterator iterator = this->row_begin(row);
+        uint32 numCols = this->getNumCols();
 
-        for (uint32 i = 0; i < DenseMatrix<T>::numCols_; i++) {
-            DenseMatrix<T>::array_[offset + i] += begin[i];
+        for (uint32 i = 0; i < numCols; i++) {
+            iterator[i] += begin[i];
         }
     }
 
@@ -32,13 +33,12 @@ namespace boosting {
                                                    typename DenseVector<T>::const_iterator end,
                                                    PartialIndexVector::const_iterator indicesBegin,
                                                    PartialIndexVector::const_iterator indicesEnd) {
-        uint32 offset = row * DenseMatrix<T>::numCols_;
-        typename DenseVector<T>::const_iterator valueIterator = begin;
+        typename DenseNumericMatrix<T>::iterator iterator = this->row_begin(row);
+        uint32 numCols = indicesEnd - indicesBegin;
 
-        for (auto indexIterator = indicesBegin; indexIterator != indicesEnd; indexIterator++) {
-            uint32 index = *indexIterator;
-            DenseMatrix<T>::array_[offset + index] += *valueIterator;
-            valueIterator++;
+        for (uint32 i = 0; i < numCols; i++) {
+            uint32 index = indicesBegin[i];
+            iterator[index] += begin[i];
         }
     }
 
