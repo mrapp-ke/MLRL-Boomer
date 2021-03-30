@@ -1,5 +1,6 @@
 #include "boosting/data/matrix_dense_example_wise.hpp"
 #include "boosting/math/math.hpp"
+#include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 
@@ -79,17 +80,8 @@ namespace boosting {
                                                    gradient_const_iterator gradientsEnd,
                                                    hessian_const_iterator hessiansBegin,
                                                    hessian_const_iterator hessiansEnd, float64 weight) {
-        uint32 offset = row * numGradients_;
-
-        for (uint32 i = 0; i < numGradients_; i++) {
-            gradients_[offset + i] += (gradientsBegin[i] * weight);
-        }
-
-        offset = row * numHessians_;
-
-        for (uint32 i = 0; i < numHessians_; i++) {
-            hessians_[offset + i] += (hessiansBegin[i] * weight);
-        }
+        addToArray(&gradients_[row * numGradients_], gradientsBegin, numGradients_, weight);
+        addToArray(&hessians_[row * numHessians_], hessiansBegin, numHessians_, weight);
     }
 
 }
