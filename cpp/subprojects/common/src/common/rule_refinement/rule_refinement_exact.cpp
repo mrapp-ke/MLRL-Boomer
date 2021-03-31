@@ -99,7 +99,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
-                        refinementPtr->coveredWeights = sumOfWeights;
+                        refinementPtr->numCovered = sumOfWeights;
                         refinementPtr->covered = true;
 
                         if (nominal_) {
@@ -121,7 +121,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
-                        refinementPtr->coveredWeights = (totalSumOfWeights_ - sumOfWeights);
+                        refinementPtr->numCovered = (totalSumOfWeights_ - sumOfWeights);
                         refinementPtr->covered = false;
 
                         if (nominal_) {
@@ -168,7 +168,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->start = firstR;
                 refinementPtr->end = (lastNegativeR + 1);
                 refinementPtr->previous = previousR;
-                refinementPtr->coveredWeights = sumOfWeights;
+                refinementPtr->numCovered = sumOfWeights;
                 refinementPtr->covered = true;
                 refinementPtr->comparator = EQ;
                 refinementPtr->threshold = previousThreshold;
@@ -184,7 +184,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 refinementPtr->start = firstR;
                 refinementPtr->end = (lastNegativeR + 1);
                 refinementPtr->previous = previousR;
-                refinementPtr->coveredWeights = (totalSumOfWeights_ - sumOfWeights);
+                refinementPtr->numCovered = (totalSumOfWeights_ - sumOfWeights);
                 refinementPtr->covered = false;
                 refinementPtr->comparator = NEQ;
                 refinementPtr->threshold = previousThreshold;
@@ -245,7 +245,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
-                        refinementPtr->coveredWeights = sumOfWeights;
+                        refinementPtr->numCovered = sumOfWeights;
                         refinementPtr->covered = true;
 
                         if (nominal_) {
@@ -267,7 +267,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
-                        refinementPtr->coveredWeights = (totalSumOfWeights_ - sumOfWeights);
+                        refinementPtr->numCovered = (totalSumOfWeights_ - sumOfWeights);
                         refinementPtr->covered = false;
 
                         if (nominal_) {
@@ -314,7 +314,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             refinementPtr->start = firstR;
             refinementPtr->end = lastNegativeR;
             refinementPtr->previous = previousR;
-            refinementPtr->coveredWeights = sumOfWeights;
+            refinementPtr->numCovered = sumOfWeights;
             refinementPtr->covered = true;
             refinementPtr->comparator = EQ;
             refinementPtr->threshold = previousThreshold;
@@ -330,7 +330,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             refinementPtr->start = firstR;
             refinementPtr->end = lastNegativeR;
             refinementPtr->previous = previousR;
-            refinementPtr->coveredWeights = (totalSumOfWeights_ - sumOfWeights);
+            refinementPtr->numCovered = (totalSumOfWeights_ - sumOfWeights);
             refinementPtr->covered = false;
             refinementPtr->comparator = NEQ;
             refinementPtr->threshold = previousThreshold;
@@ -365,13 +365,13 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             if (nominal_) {
                 refinementPtr->end = -1;
                 refinementPtr->previous = -1;
-                refinementPtr->coveredWeights = totalAccumulatedSumOfWeights;
+                refinementPtr->numCovered = totalAccumulatedSumOfWeights;
                 refinementPtr->comparator = NEQ;
                 refinementPtr->threshold = 0.0;
             } else {
                 refinementPtr->end = lastNegativeR;
                 refinementPtr->previous = previousR;
-                refinementPtr->coveredWeights = accumulatedSumOfWeights;
+                refinementPtr->numCovered = accumulatedSumOfWeights;
                 refinementPtr->comparator = GR;
                 refinementPtr->threshold = previousThreshold * 0.5;
             }
@@ -390,13 +390,13 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             if (nominal_) {
                 refinementPtr->end = -1;
                 refinementPtr->previous = -1;
-                refinementPtr->coveredWeights = (totalSumOfWeights_ - totalAccumulatedSumOfWeights);
+                refinementPtr->numCovered = (totalSumOfWeights_ - totalAccumulatedSumOfWeights);
                 refinementPtr->comparator = EQ;
                 refinementPtr->threshold = 0.0;
             } else {
                 refinementPtr->end = lastNegativeR;
                 refinementPtr->previous = previousR;
-                refinementPtr->coveredWeights = (totalSumOfWeights_ - accumulatedSumOfWeights);
+                refinementPtr->numCovered = (totalSumOfWeights_ - accumulatedSumOfWeights);
                 refinementPtr->comparator = LEQ;
                 refinementPtr->threshold = previousThreshold * 0.5;
             }
@@ -420,7 +420,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             refinementPtr->start = 0;
             refinementPtr->end = (lastNegativeR + 1);
             refinementPtr->previous = previousRNegative;
-            refinementPtr->coveredWeights = accumulatedSumOfWeightsNegative;
+            refinementPtr->numCovered = accumulatedSumOfWeightsNegative;
             refinementPtr->covered = true;
             refinementPtr->comparator = LEQ;
 
@@ -444,7 +444,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             refinementPtr->start = 0;
             refinementPtr->end = (lastNegativeR + 1);
             refinementPtr->previous = previousRNegative;
-            refinementPtr->coveredWeights = (totalSumOfWeights_ - accumulatedSumOfWeightsNegative);
+            refinementPtr->numCovered = (totalSumOfWeights_ - accumulatedSumOfWeightsNegative);
             refinementPtr->covered = false;
             refinementPtr->comparator = GR;
 
