@@ -396,7 +396,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 void filterThresholds(Refinement& refinement) override {
                     numModifications_++;
-                    sumOfWeights_ = refinement.coveredWeights;
+                    sumOfWeights_ = refinement.numCovered;
 
                     uint32 featureIndex = refinement.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
@@ -428,7 +428,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 void filterThresholds(const Condition& condition) override {
                     numModifications_++;
-                    sumOfWeights_ = condition.coveredWeights;
+                    sumOfWeights_ = condition.numCovered;
 
                     uint32 featureIndex = condition.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
