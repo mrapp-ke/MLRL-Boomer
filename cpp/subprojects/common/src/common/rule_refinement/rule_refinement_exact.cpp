@@ -60,7 +60,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
             statisticsSubsetPtr->addToSubset(i, weight);
-            numExamples += weight;
+            numExamples++;
             previousThreshold = currentThreshold;
             previousR = r;
             break;
@@ -146,8 +146,8 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
                 // Add the example to the subset to mark it as covered by upcoming refinements...
                 statisticsSubsetPtr->addToSubset(i, weight);
-                numExamples += weight;
-                accumulatedNumExamples += weight;
+                numExamples++;
+                accumulatedNumExamples++;
             }
         }
 
@@ -211,7 +211,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
             statisticsSubsetPtr->addToSubset(i, weight);
-            numExamples += weight;
+            numExamples++;
             previousThreshold = iterator[r].value;
             previousR = r;
             break;
@@ -292,8 +292,8 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
                 // Add the example to the subset to mark it as covered by upcoming refinements...
                 statisticsSubsetPtr->addToSubset(i, weight);
-                numExamples += weight;
-                accumulatedNumExamples += weight;
+                numExamples++;
+                accumulatedNumExamples++;
             }
         }
     }
