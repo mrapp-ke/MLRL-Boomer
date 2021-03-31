@@ -2,7 +2,7 @@
 
 
 DenseWeightVector::DenseWeightVector(uint32 numElements)
-    : vector_(DenseVector<uint32>(numElements, true)), numNonZeroWeights_(0) {
+    : vector_(DenseVector<float64>(numElements, true)), numNonZeroWeights_(0) {
 
 }
 
@@ -34,6 +34,6 @@ bool DenseWeightVector::hasZeroWeights() const {
     return numNonZeroWeights_ < vector_.getNumElements();
 }
 
-uint32 DenseWeightVector::getWeight(uint32 pos) const {
+float64 DenseWeightVector::getWeight(uint32 pos) const {
     return vector_.getValue(pos);
 }

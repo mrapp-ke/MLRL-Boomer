@@ -35,6 +35,6 @@ class IWeightVector {
          * @param pos   The index of the example
          * @return      The weight of the example at the given index
          */
-        virtual uint32 getWeight(uint32 pos) const = 0;
+        virtual float64 getWeight(uint32 pos) const = 0;
 
 };
