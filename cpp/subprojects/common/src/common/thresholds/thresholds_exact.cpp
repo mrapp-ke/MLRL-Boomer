@@ -379,7 +379,7 @@ class ExactThresholds final : public AbstractThresholds {
                  *                      weights of the individual training examples
                  */
                 ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
-                    : thresholds_(thresholds), weights_(weights), numCoveredExamples_(weights.getSumOfWeights()),
+                    : thresholds_(thresholds), weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
                       coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
 
                 }
@@ -454,7 +454,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 void resetThresholds() override {
                     numModifications_ = 0;
-                    numCoveredExamples_ = weights_.getSumOfWeights();
+                    numCoveredExamples_ = weights_.getNumNonZeroWeights();
                     cacheFiltered_.clear();
                     coverageMask_.reset();
                 }

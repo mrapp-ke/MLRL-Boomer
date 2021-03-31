@@ -16,18 +16,18 @@ class IWeightVector {
         virtual ~IWeightVector() { };
 
         /**
+         * Returns the number of non-zero weights.
+         *
+         * @return The number of non-zero weights
+         */
+        virtual uint32 getNumNonZeroWeights() const = 0;
+
+        /**
          * Returns whether the vector contains any zero weights or not.
          *
          * @return True, if the vector contains any zero weights, false otherwise
          */
         virtual bool hasZeroWeights() const = 0;
-
-        /**
-         * Returns the sum of the weights in the vector.
-         *
-         * @return The sum of the weights
-         */
-        virtual uint32 getSumOfWeights() const = 0;
 
         /**
          * Returns the weight of the example at a specific index.

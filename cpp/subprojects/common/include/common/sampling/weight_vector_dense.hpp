@@ -16,15 +16,14 @@ class DenseWeightVector final : public IWeightVector {
 
         DenseVector<uint32> vector_;
 
-        uint32 sumOfWeights_;
+        uint32 numNonZeroWeights_;
 
     public:
 
         /**
-         * @param numElements   The number of elements in the vector. Must be at least 1
-         * @param sumOfWeights  The sum of the weights in the vector
+         * @param numElements The number of elements in the vector. Must be at least 1
          */
-        DenseWeightVector(uint32 numElements, uint32 sumOfWeights);
+        DenseWeightVector(uint32 numElements);
 
         /**
          * An iterator that provides access to the weights in the vector and allows to modify them.
@@ -64,10 +63,17 @@ class DenseWeightVector final : public IWeightVector {
          */
         const_iterator cend() const;
 
+        /**
+         * Sets the number of non-zero weights.
+         *
+         * @param numNonZeroWeights The number of non-zero weights to be set
+         */
+        void setNumNonZeroWeights(uint32 numNonZeroWeights);
+
+        uint32 getNumNonZeroWeights() const override;
+
         bool hasZeroWeights() const override;
 
         uint32 getWeight(uint32 pos) const override;
-
-        uint32 getSumOfWeights() const override;
 
 };

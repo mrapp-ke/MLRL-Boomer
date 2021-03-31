@@ -13,8 +13,7 @@ std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(const BiPartitio
     uint32 numExamples = partition.getNumElements();
     uint32 numTrainingExamples = partition.getNumFirst();
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
-    std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numExamples,
-                                                                                             numTrainingExamples);
+    std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numExamples);
     DenseWeightVector::iterator weightIterator = weightVectorPtr->begin();
 
     for (uint32 i = 0; i < numTrainingExamples; i++) {
@@ -22,5 +21,6 @@ std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(const BiPartitio
         weightIterator[index] = 1;
     }
 
+    weightVectorPtr->setNumNonZeroWeights(numTrainingExamples);
     return weightVectorPtr;
 }
