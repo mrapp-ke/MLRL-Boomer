@@ -143,7 +143,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
             coverageMaskIterator[index] = numConditions;
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
-            uint32 weight = weights.getWeight(index);
+            float64 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, false);
             i++;
         }
@@ -177,7 +177,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         for (intp r = start; r < end; r++) {
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
-            uint32 weight = weights.getWeight(index);
+            float64 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, true);
         }
 
@@ -208,7 +208,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         for (auto it = vector.missing_indices_cbegin(); it != vector.missing_indices_cend(); it++) {
             uint32 index = *it;
             coverageMaskIterator[index] = numConditions;
-            uint32 weight = weights.getWeight(index);
+            float64 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, true);
         }
     }

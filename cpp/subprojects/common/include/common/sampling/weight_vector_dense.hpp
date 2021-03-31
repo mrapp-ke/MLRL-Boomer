@@ -14,7 +14,7 @@ class DenseWeightVector final : public IWeightVector {
 
     private:
 
-        DenseVector<uint32> vector_;
+        DenseVector<float64> vector_;
 
         uint32 numNonZeroWeights_;
 
@@ -28,12 +28,12 @@ class DenseWeightVector final : public IWeightVector {
         /**
          * An iterator that provides access to the weights in the vector and allows to modify them.
          */
-        typedef DenseVector<uint32>::iterator iterator;
+        typedef DenseVector<float64>::iterator iterator;
 
         /**
          * An iterator that provides read-only access to the weights in the vector.
          */
-        typedef DenseVector<uint32>::const_iterator const_iterator;
+        typedef DenseVector<float64>::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the vector.
@@ -74,6 +74,6 @@ class DenseWeightVector final : public IWeightVector {
 
         bool hasZeroWeights() const override;
 
-        uint32 getWeight(uint32 pos) const override;
+        float64 getWeight(uint32 pos) const override;
 
 };

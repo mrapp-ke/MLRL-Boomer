@@ -73,7 +73,7 @@ static inline void updateCoveredExamples(const ThresholdVector& thresholdVector,
             }
 
             if ((binIndex >= start && binIndex < end) == covered) {
-                uint32 weight = weights.getWeight(exampleIndex);
+                float64 weight = weights.getWeight(exampleIndex);
                 statistics.updateCoveredStatistic(exampleIndex, weight, false);
                 coverageSetIterator[n] = exampleIndex;
                 n++;
@@ -120,7 +120,7 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, cons
 
         if (!thresholdVector.isMissing(exampleIndex)) {
             uint32 binIndex = binIndices.getBinIndex(exampleIndex);
-            uint32 weight = weights.getWeight(exampleIndex);
+            float64 weight = weights.getWeight(exampleIndex);
 
             if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
                 binWeightIterator[binIndex] |= (weight > 0);

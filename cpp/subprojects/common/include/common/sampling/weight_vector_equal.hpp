@@ -26,6 +26,6 @@ class EqualWeightVector final : public IWeightVector {
 
         bool hasZeroWeights() const override;
 
-        uint32 getWeight(uint32 pos) const override;
+        float64 getWeight(uint32 pos) const override;
 
 };

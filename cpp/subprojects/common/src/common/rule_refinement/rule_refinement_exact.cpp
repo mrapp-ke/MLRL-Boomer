@@ -32,7 +32,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
     for (auto it = featureVector.missing_indices_cbegin(); it != featureVector.missing_indices_cend(); it++) {
         uint32 i = *it;
-        uint32 weight = weights.getWeight(i);
+        float64 weight = weights.getWeight(i);
         statisticsSubsetPtr->addToMissing(i, weight);
     }
 
@@ -55,7 +55,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
         lastNegativeR = r;
         uint32 i = iterator[r].index;
-        uint32 weight = weights.getWeight(i);
+        float64 weight = weights.getWeight(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -80,7 +80,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
             lastNegativeR = r;
             uint32 i = iterator[r].index;
-            uint32 weight = weights.getWeight(i);
+            float64 weight = weights.getWeight(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
@@ -206,7 +206,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     // encountered...
     for (r = firstR; r > lastNegativeR; r--) {
         uint32 i = iterator[r].index;
-        uint32 weight = weights.getWeight(i);
+        float64 weight = weights.getWeight(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -224,7 +224,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     if (numExamples > 0) {
         for (r = r - 1; r > lastNegativeR; r--) {
             uint32 i = iterator[r].index;
-            uint32 weight = weights.getWeight(i);
+            float64 weight = weights.getWeight(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
