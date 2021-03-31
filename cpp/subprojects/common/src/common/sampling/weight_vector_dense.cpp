@@ -1,39 +1,50 @@
 #include "common/sampling/weight_vector_dense.hpp"
 
 
-DenseWeightVector::DenseWeightVector(uint32 numElements)
-    : vector_(DenseVector<float64>(numElements, true)), numNonZeroWeights_(0) {
+template<class T>
+DenseWeightVector<T>::DenseWeightVector(uint32 numElements)
+    : vector_(DenseVector<T>(numElements, true)), numNonZeroWeights_(0) {
 
 }
 
-DenseWeightVector::iterator DenseWeightVector::begin() {
+template<class T>
+typename DenseWeightVector<T>::iterator DenseWeightVector<T>::begin() {
     return vector_.begin();
 }
 
-DenseWeightVector::iterator DenseWeightVector::end() {
+template<class T>
+typename DenseWeightVector<T>::iterator DenseWeightVector<T>::end() {
     return vector_.end();
 }
 
-DenseWeightVector::const_iterator DenseWeightVector::cbegin() const {
+template<class T>
+typename DenseWeightVector<T>::const_iterator DenseWeightVector<T>::cbegin() const {
     return vector_.cbegin();
 }
 
-DenseWeightVector::const_iterator DenseWeightVector::cend() const {
+template<class T>
+typename DenseWeightVector<T>::const_iterator DenseWeightVector<T>::cend() const {
     return vector_.cend();
 }
 
-uint32 DenseWeightVector::getNumNonZeroWeights() const {
+template<class T>
+uint32 DenseWeightVector<T>::getNumNonZeroWeights() const {
     return numNonZeroWeights_;
 }
 
-void DenseWeightVector::setNumNonZeroWeights(uint32 numNonZeroWeights) {
+template<class T>
+void DenseWeightVector<T>::setNumNonZeroWeights(uint32 numNonZeroWeights) {
     numNonZeroWeights_ = numNonZeroWeights;
 }
 
-bool DenseWeightVector::hasZeroWeights() const {
+template<class T>
+bool DenseWeightVector<T>::hasZeroWeights() const {
     return numNonZeroWeights_ < vector_.getNumElements();
 }
 
-float64 DenseWeightVector::getWeight(uint32 pos) const {
-    return vector_.getValue(pos);
+template<class T>
+float64 DenseWeightVector<T>::getWeight(uint32 pos) const {
+    return (float64) vector_.getValue(pos);
 }
+
+template class DenseWeightVector<uint32>;

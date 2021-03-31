@@ -9,12 +9,15 @@
 
 /**
  * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
+ *
+ * @tparam T The type of the weights
  */
+template<class T>
 class DenseWeightVector final : public IWeightVector {
 
     private:
 
-        DenseVector<float64> vector_;
+        DenseVector<T> vector_;
 
         uint32 numNonZeroWeights_;
 
@@ -28,12 +31,12 @@ class DenseWeightVector final : public IWeightVector {
         /**
          * An iterator that provides access to the weights in the vector and allows to modify them.
          */
-        typedef DenseVector<float64>::iterator iterator;
+        typedef typename DenseVector<T>::iterator iterator;
 
         /**
          * An iterator that provides read-only access to the weights in the vector.
          */
-        typedef DenseVector<float64>::const_iterator const_iterator;
+        typedef typename DenseVector<T>::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the vector.
