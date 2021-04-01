@@ -50,8 +50,8 @@ namespace seco {
                 uint32 numPredictions = scoreVector.getNumElements();
                 typename T2::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
                 std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr;
-                uint32 bestNumPredictions = 0;
-                float64 bestOverallQualityScore = 0;
+                uint32 bestNumPredictions;
+                float64 bestOverallQualityScore;
 
                 if (keepLabels_) {
                     float64 sumOfQualityScores = 0;
@@ -67,16 +67,18 @@ namespace seco {
                     sortedVectorPtr = argsort(qualityScoreIterator, numPredictions);
                     SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
                     float64 maximumLift = liftFunctionPtr_->getMaxLift();
-                    float64 sumOfQualityScores = 0;
+                    float64 sumOfQualityScores = 1 - qualityScoreIterator[sortedIterator[0].index];
+                    bestOverallQualityScore = calculateOverallQualityScore(sumOfQualityScores, 1, *liftFunctionPtr_);
+                    bestNumPredictions = 1;
 
-                    for (uint32 i = 0; i < numPredictions; i++) {
+                    for (uint32 i = 1; i < numPredictions; i++) {
                         sumOfQualityScores += 1 - qualityScoreIterator[sortedIterator[i].index];
                         uint32 currentNumPredictions = i + 1;
                         float64 overallQualityScore = calculateOverallQualityScore(sumOfQualityScores,
                                                                                    currentNumPredictions,
                                                                                    *liftFunctionPtr_);
 
-                        if (i == 0 || overallQualityScore < bestOverallQualityScore) {
+                        if (overallQualityScore < bestOverallQualityScore) {
                             bestNumPredictions = currentNumPredictions;
                             bestOverallQualityScore = overallQualityScore;
                         }
