@@ -6,7 +6,7 @@
 #include "common/data/view_c_contiguous.hpp"
 #include "common/indices/index_vector_full.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "common/input/label_matrix.hpp"
+#include "common/input/label_matrix_csr.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
 #include "boosting/data/matrix_dense_label_wise.hpp"
@@ -60,6 +60,8 @@ namespace boosting {
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+
+            // TODO Add methods that work with a `CsrLabelMatrix`
 
     };
 
