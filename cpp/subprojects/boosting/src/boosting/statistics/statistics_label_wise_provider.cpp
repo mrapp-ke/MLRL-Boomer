@@ -1,5 +1,6 @@
 #include "boosting/statistics/statistics_label_wise_provider.hpp"
 #include "boosting/statistics/statistics_label_wise_dense.hpp"
+#include "boosting/statistics/statistics_label_wise_sparse.hpp"
 
 
 namespace boosting {
@@ -57,8 +58,9 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
             std::shared_ptr<CsrLabelMatrix> labelMatrixPtr) const {
-        // TODO Implement
-        return nullptr;
+        SparseLabelWiseStatisticsFactory statisticsFactory(lossFunctionPtr_, defaultRuleEvaluationFactoryPtr_,
+                                                           labelMatrixPtr, numThreads_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_, statisticsFactory.create());
     }
 
 }
