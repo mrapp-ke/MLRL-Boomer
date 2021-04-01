@@ -104,7 +104,7 @@ namespace seco {
                         }
                     }
 
-                    headPtr_->overallQualityScore = bestQualityScore;
+                    headPtr_->overallQualityScore = bestOverallQualityScore;
                     return headPtr_.get();
                 }
 
