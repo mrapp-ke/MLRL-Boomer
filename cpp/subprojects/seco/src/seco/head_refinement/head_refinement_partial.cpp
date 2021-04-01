@@ -22,6 +22,11 @@ namespace seco {
         return sortedVectorPtr;
     }
 
+    static inline float64 calculateOverallQualityScore(float64 sumOfQualityScores, uint32 numPredictions,
+                                                       const ILiftFunction& liftFunction) {
+        return 1 - ((sumOfQualityScores / numPredictions) * liftFunction.calculateLift(numPredictions));
+    }
+
     /**
      * Allows to find the best head that predicts for one or several labels depending on a lift function.
      *
@@ -54,8 +59,8 @@ namespace seco {
                         sumOfQualityScores += 1 - qualityScoreIterator[i];
                     }
 
-                    bestOverallQualityScore =
-                        1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
+                    bestOverallQualityScore = calculateOverallQualityScore(sumOfQualityScores, numPredictions,
+                                                                           *liftFunctionPtr_);
                     bestNumPredictions = numPredictions;
                 } else {
                     sortedVectorPtr = argsort(qualityScoreIterator, numPredictions);
@@ -65,8 +70,9 @@ namespace seco {
                     for (uint32 i = 0; i < numPredictions; i++) {
                         sumOfQualityScores += 1 - qualityScoreIterator[sortedIterator[i].index];
                         uint32 currentNumPredictions = i + 1;
-                        float64 overallQualityScore = 1 - (sumOfQualityScores / (currentNumPredictions))
-                                                      * liftFunctionPtr_->calculateLift(currentNumPredictions);
+                        float64 overallQualityScore = calculateOverallQualityScore(sumOfQualityScores,
+                                                                                   currentNumPredictions,
+                                                                                   *liftFunctionPtr_);
 
                         if (i == 0 || overallQualityScore < bestOverallQualityScore) {
                             bestNumPredictions = currentNumPredictions;
