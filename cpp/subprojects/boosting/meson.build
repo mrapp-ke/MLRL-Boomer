@@ -28,7 +28,8 @@ source_files = [
     'src/boosting/statistics/statistics_example_wise_dense.cpp',
     'src/boosting/statistics/statistics_example_wise_provider.cpp',
     'src/boosting/statistics/statistics_label_wise_dense.cpp',
-    'src/boosting/statistics/statistics_label_wise_provider.cpp'
+    'src/boosting/statistics/statistics_label_wise_provider.cpp',
+    'src/boosting/statistics/statistics_label_wise_sparse.cpp'
 ]
 
 # Dependencies
