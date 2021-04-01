@@ -32,6 +32,15 @@ cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
         CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, uint8* array) except +
 
 
+cdef extern from "common/input/label_matrix_csr.hpp" nogil:
+
+    cdef cppclass CsrLabelMatrixImpl"CsrLabelMatrix"(ILabelMatrix):
+
+        # Constructors:
+
+        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices) except +
+
+
 cdef extern from "common/input/label_matrix_dok.hpp" nogil:
 
     cdef cppclass DokLabelMatrixImpl"DokLabelMatrix"(IRandomAccessLabelMatrix):
@@ -148,6 +157,10 @@ cdef class RandomAccessLabelMatrix(LabelMatrix):
 
 
 cdef class CContiguousLabelMatrix(RandomAccessLabelMatrix):
+    pass
+
+
+cdef class CsrLabelMatrix(LabelMatrix):
     pass
 
 

@@ -36,6 +36,27 @@ cdef class CContiguousLabelMatrix(RandomAccessLabelMatrix):
                                                                                                   &array[0, 0])
 
 
+cdef class CsrLabelMatrix(LabelMatrix):
+    """
+    A wrapper for the C++ class `CsrLabelMatrix`.
+    """
+
+    def __cinit__(self, uint32 num_examples, uint32 num_labels, const uint32[::1] row_indices,
+                  const uint32[::1] col_indices):
+        """
+        :param num_examples:    The total number of examples
+        :param num_labels:      The total number of labels
+        :param row_indices:     An array of type `uint32`, shape `(num_examples + 1)`, that stores the indices of the
+                                first element in `col_indices` that corresponds to a certain example. The index at the
+                                last position is equal to `num_non_zero_values`
+        :param col_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
+                                column-indices, the relevant labels correspond to
+        """
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[CsrLabelMatrixImpl](num_examples, num_labels,
+                                                                                          &row_indices[0],
+                                                                                          &col_indices[0])
+
+
 cdef class DokLabelMatrix(RandomAccessLabelMatrix):
     """
     A wrapper for the C++ class `DokLabelMatrix`.
