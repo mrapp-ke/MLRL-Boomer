@@ -22,6 +22,11 @@ namespace seco {
         return sortedVectorPtr;
     }
 
+    static inline float64 calculateOverallQualityScore(float64 sumOfQualityScores, uint32 numPredictions,
+                                                       const ILiftFunction& liftFunction) {
+        return 1 - ((sumOfQualityScores / numPredictions) * liftFunction.calculateLift(numPredictions));
+    }
+
     /**
      * Allows to find the best head that predicts for one or several labels depending on a lift function.
      *
@@ -45,30 +50,35 @@ namespace seco {
                 uint32 numPredictions = scoreVector.getNumElements();
                 typename T2::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
                 std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr;
-                float64 sumOfQualityScores = 0;
-                uint32 bestNumPredictions = 0;
-                float64 bestOverallQualityScore = 0;
+                uint32 bestNumPredictions;
+                float64 bestOverallQualityScore;
 
                 if (keepLabels_) {
+                    float64 sumOfQualityScores = 0;
+
                     for (uint32 i = 0; i < numPredictions; i++) {
                         sumOfQualityScores += 1 - qualityScoreIterator[i];
                     }
 
-                    bestOverallQualityScore =
-                        1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
+                    bestOverallQualityScore = calculateOverallQualityScore(sumOfQualityScores, numPredictions,
+                                                                           *liftFunctionPtr_);
                     bestNumPredictions = numPredictions;
                 } else {
                     sortedVectorPtr = argsort(qualityScoreIterator, numPredictions);
                     SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
                     float64 maximumLift = liftFunctionPtr_->getMaxLift();
+                    float64 sumOfQualityScores = 1 - qualityScoreIterator[sortedIterator[0].index];
+                    bestOverallQualityScore = calculateOverallQualityScore(sumOfQualityScores, 1, *liftFunctionPtr_);
+                    bestNumPredictions = 1;
 
-                    for (uint32 i = 0; i < numPredictions; i++) {
+                    for (uint32 i = 1; i < numPredictions; i++) {
                         sumOfQualityScores += 1 - qualityScoreIterator[sortedIterator[i].index];
                         uint32 currentNumPredictions = i + 1;
-                        float64 overallQualityScore = 1 - (sumOfQualityScores / (currentNumPredictions))
-                                                      * liftFunctionPtr_->calculateLift(currentNumPredictions);
+                        float64 overallQualityScore = calculateOverallQualityScore(sumOfQualityScores,
+                                                                                   currentNumPredictions,
+                                                                                   *liftFunctionPtr_);
 
-                        if (i == 0 || overallQualityScore < bestOverallQualityScore) {
+                        if (overallQualityScore < bestOverallQualityScore) {
                             bestNumPredictions = currentNumPredictions;
                             bestOverallQualityScore = overallQualityScore;
                         }
@@ -91,16 +101,23 @@ namespace seco {
                         std::copy(scoreVector.indices_cbegin(), scoreVector.indices_cend(), headPtr_->indices_begin());
                         std::copy(scoreVector.scores_cbegin(), scoreVector.scores_cend(), headPtr_->scores_begin());
                     } else {
-                        SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
                         typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
                         typename T2::index_const_iterator indexIterator = scoreVector.indices_cbegin();
                         PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
                         PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
+                        float64 worstQualityScore = sortedVectorPtr->cbegin()[bestNumPredictions - 1].value;
+                        uint32 n = 0;
 
-                        for (uint32 c = 0; c < bestNumPredictions; c++) {
-                            uint32 i = sortedIterator[c].index;
-                            headIndexIterator[c] = indexIterator[i];
-                            headScoreIterator[c] = scoreIterator[i];
+                        for (uint32 i = 0; i < numPredictions; i++) {
+                            if (qualityScoreIterator[i] <= worstQualityScore) {
+                                headIndexIterator[n] = indexIterator[i];
+                                headScoreIterator[n] = scoreIterator[i];
+                                n++;
+
+                                if (n == bestNumPredictions) {
+                                    break;
+                                }
+                            }
                         }
                     }
 
