@@ -50,8 +50,8 @@ namespace seco {
                 float64 bestQualityScore = 0;
 
                 if (keepLabels_) {
-                    for (uint32 c = 0; c < numPredictions; c++) {
-                        sumOfQualityScores += 1 - qualityScoreIterator[c];
+                    for (uint32 i = 0; i < numPredictions; i++) {
+                        sumOfQualityScores += 1 - qualityScoreIterator[i];
                     }
 
                     bestQualityScore =
@@ -62,13 +62,14 @@ namespace seco {
                     SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
                     float64 maximumLift = liftFunctionPtr_->getMaxLift();
 
-                    for (uint32 c = 0; c < numPredictions; c++) {
-                        sumOfQualityScores += 1 - qualityScoreIterator[sortedIterator[c].index];
-                        float64 qualityScore = 1 - (sumOfQualityScores / (c + 1))
-                                               * liftFunctionPtr_->calculateLift(c + 1);
+                    for (uint32 i = 0; i < numPredictions; i++) {
+                        sumOfQualityScores += 1 - qualityScoreIterator[sortedIterator[i].index];
+                        uint32 currentNumPredictions = i + 1;
+                        float64 qualityScore = 1 - (sumOfQualityScores / (currentNumPredictions))
+                                               * liftFunctionPtr_->calculateLift(currentNumPredictions);
 
-                        if (c == 0 || qualityScore < bestQualityScore) {
-                            bestNumPredictions = c + 1;
+                        if (i == 0 || qualityScore < bestQualityScore) {
+                            bestNumPredictions = currentNumPredictions;
                             bestQualityScore = qualityScore;
                         }
 
