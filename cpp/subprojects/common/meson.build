@@ -20,6 +20,7 @@ source_files = [
     'src/common/data/view_c_contiguous.cpp',
     'src/common/data/view_csc.cpp',
     'src/common/data/view_csr.cpp',
+    'src/common/data/view_csr_binary.cpp',
     'src/common/data/view_fortran_contiguous.cpp',
     'src/common/head_refinement/head_refinement_full.cpp',
     'src/common/head_refinement/head_refinement_single.cpp',
