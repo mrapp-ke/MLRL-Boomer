@@ -24,19 +24,17 @@ namespace boosting {
             std::make_unique<DenseLabelWiseStatisticMatrix>(numExamples, numLabels);
         std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =
             std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
-        FullIndexVector labelIndices(numLabels);
         const ILabelWiseLoss* lossFunctionPtr = lossFunctionPtr_.get();
         const IRandomAccessLabelMatrix* labelMatrixPtr = labelMatrixPtr_.get();
-        const FullIndexVector* labelIndicesPtr = &labelIndices;
         const CContiguousView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(lossFunctionPtr) firstprivate(labelMatrixPtr) \
-        firstprivate(scoreMatrixRawPtr) firstprivate(labelIndicesPtr) firstprivate(statisticMatrixRawPtr) \
+        firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) \
         schedule(dynamic) num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
-            lossFunctionPtr->updateLabelWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr,
-                                                       labelIndicesPtr->cbegin(), labelIndicesPtr->cend(),
+            lossFunctionPtr->updateLabelWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, IndexIterator(),
+                                                       IndexIterator(labelMatrixPtr->getNumCols()),
                                                        *statisticMatrixRawPtr);
         }
 
