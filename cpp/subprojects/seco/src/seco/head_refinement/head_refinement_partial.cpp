@@ -47,14 +47,14 @@ namespace seco {
                 std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr;
                 float64 sumOfQualityScores = 0;
                 uint32 bestNumPredictions = 0;
-                float64 bestQualityScore = 0;
+                float64 bestOverallQualityScore = 0;
 
                 if (keepLabels_) {
                     for (uint32 i = 0; i < numPredictions; i++) {
                         sumOfQualityScores += 1 - qualityScoreIterator[i];
                     }
 
-                    bestQualityScore =
+                    bestOverallQualityScore =
                         1 - (sumOfQualityScores / numPredictions) * liftFunctionPtr_->calculateLift(numPredictions);
                     bestNumPredictions = numPredictions;
                 } else {
@@ -68,19 +68,19 @@ namespace seco {
                         float64 qualityScore = 1 - (sumOfQualityScores / (currentNumPredictions))
                                                * liftFunctionPtr_->calculateLift(currentNumPredictions);
 
-                        if (i == 0 || qualityScore < bestQualityScore) {
+                        if (i == 0 || qualityScore < bestOverallQualityScore) {
                             bestNumPredictions = currentNumPredictions;
-                            bestQualityScore = qualityScore;
+                            bestOverallQualityScore = qualityScore;
                         }
 
-                        if (qualityScore * maximumLift < bestQualityScore) {
+                        if (qualityScore * maximumLift < bestOverallQualityScore) {
                             // Prunable by decomposition...
                             break;
                         }
                     }
                 }
 
-                if (bestHead == nullptr || bestQualityScore < bestHead->overallQualityScore) {
+                if (bestHead == nullptr || bestOverallQualityScore < bestHead->overallQualityScore) {
                     if (headPtr_.get() == nullptr) {
                         headPtr_ = std::make_unique<PartialPrediction>(bestNumPredictions);
                     } else if (headPtr_->getNumElements() != bestNumPredictions) {
