@@ -76,12 +76,4 @@ class BinaryCsrView {
          */
         uint32 getNumCols() const;
 
-        /**
-         * Returns the number of elements at a specific row that correspond to a non-zero value.
-         *
-         * @param row   The row
-         * @return      The number of non-zero elements
-         */
-        uint32 getNumNonZeroElements(uint32 row) const;
-
 };

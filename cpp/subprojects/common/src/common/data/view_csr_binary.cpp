@@ -21,7 +21,3 @@ uint32 BinaryCsrView::getNumRows() const {
 uint32 BinaryCsrView::getNumCols() const {
     return numCols_;
 }
-
-uint32 BinaryCsrView::getNumNonZeroElements(uint32 row) const {
-    return rowIndices_[row + 1] - rowIndices_[row];
-}
