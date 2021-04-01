@@ -101,16 +101,23 @@ namespace seco {
                         std::copy(scoreVector.indices_cbegin(), scoreVector.indices_cend(), headPtr_->indices_begin());
                         std::copy(scoreVector.scores_cbegin(), scoreVector.scores_cend(), headPtr_->scores_begin());
                     } else {
-                        SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
                         typename T2::score_const_iterator scoreIterator = scoreVector.scores_cbegin();
                         typename T2::index_const_iterator indexIterator = scoreVector.indices_cbegin();
                         PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
                         PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
+                        float64 worstQualityScore = sortedVectorPtr->cbegin()[bestNumPredictions - 1].value;
+                        uint32 n = 0;
 
-                        for (uint32 c = 0; c < bestNumPredictions; c++) {
-                            uint32 i = sortedIterator[c].index;
-                            headIndexIterator[c] = indexIterator[i];
-                            headScoreIterator[c] = scoreIterator[i];
+                        for (uint32 i = 0; i < numPredictions; i++) {
+                            if (qualityScoreIterator[i] <= worstQualityScore) {
+                                headIndexIterator[n] = indexIterator[i];
+                                headScoreIterator[n] = scoreIterator[i];
+                                n++;
+
+                                if (n == bestNumPredictions) {
+                                    break;
+                                }
+                            }
                         }
                     }
 
