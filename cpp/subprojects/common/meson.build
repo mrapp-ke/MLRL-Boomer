@@ -35,6 +35,7 @@ source_files = [
     'src/common/input/feature_matrix_fortran_contiguous.cpp',
     'src/common/input/feature_vector.cpp',
     'src/common/input/label_matrix_c_contiguous.cpp',
+    'src/common/input/label_matrix_csr.cpp',
     'src/common/input/label_matrix_dok.cpp',
     'src/common/input/missing_feature_vector.cpp',
     'src/common/input/nominal_feature_mask_dok.cpp',
