@@ -62,6 +62,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     const IHeadRefinementFactory* defaultRuleHeadRefinementFactory = defaultRuleHeadRefinementFactoryPtr_.get();
     uint32 numRules = defaultRuleHeadRefinementFactory != nullptr ? 1 : 0;
     uint32 numUsedRules = 0;
+    // TODO: Implement dispatch mechanism instead of using a typecast
      std::shared_ptr<IRandomAccessLabelMatrix> randomAccessLabelMatrixPtr =
         std::dynamic_pointer_cast<IRandomAccessLabelMatrix, ILabelMatrix>(labelMatrixPtr);
     std::shared_ptr<IStatisticsProvider> statisticsProviderPtr = statisticsProviderFactoryPtr_->create(
