@@ -21,8 +21,8 @@ from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWise
     EqualWidthBinningLabelWiseRuleEvaluationFactory
 from mlrl.boosting.cython.statistics_example_wise import ExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import LabelWiseStatisticsProviderFactory
-from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
-    FullHeadRefinementFactory
+from mlrl.common.cython.head_refinement import HeadRefinementFactory, NoHeadRefinementFactory, \
+    SingleLabelHeadRefinementFactory, FullHeadRefinementFactory
 from mlrl.common.cython.input import CContiguousLabelMatrix
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
@@ -315,7 +315,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         loss_function = self.__create_loss_function()
-        default_rule_head_refinement_factory = FullHeadRefinementFactory()
+        default_rule_head_refinement_factory = FullHeadRefinementFactory() if self.default_rule \
+            else NoHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory()
         l2_regularization_weight = self.__create_l2_regularization_weight()
         rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
