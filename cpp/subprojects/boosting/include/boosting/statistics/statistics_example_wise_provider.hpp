@@ -49,6 +49,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsProvider> create(
                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) const override;
 
+            std::unique_ptr<IStatisticsProvider> create(std::shared_ptr<CsrLabelMatrix> labelMatrixPtr) const override;
+
     };
 
 }

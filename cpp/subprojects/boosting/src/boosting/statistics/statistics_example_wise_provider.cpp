@@ -56,4 +56,10 @@ namespace boosting {
         return std::make_unique<ExampleWiseStatisticsProvider>(ruleEvaluationFactoryPtr_, statisticsFactory.create());
     }
 
+    std::unique_ptr<IStatisticsProvider> ExampleWiseStatisticsProviderFactory::create(
+            std::shared_ptr<CsrLabelMatrix> labelMatrixPtr) const {
+        // TODO Implement
+        return nullptr;
+    }
+
 }
