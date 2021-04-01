@@ -22,10 +22,10 @@ class EqualWeightVector final : public IWeightVector {
          */
         EqualWeightVector(uint32 numElements);
 
+        uint32 getNumNonZeroWeights() const override;
+
         bool hasZeroWeights() const override;
 
-        uint32 getWeight(uint32 pos) const override;
-
-        uint32 getSumOfWeights() const override;
+        float64 getWeight(uint32 pos) const override;
 
 };

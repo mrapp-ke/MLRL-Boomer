@@ -27,8 +27,9 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaT
                                                                                                  uint32 numSamples,
                                                                                                  uint32 numElements,
                                                                                                  RNG& rng) {
-    std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numElements, numSamples);
-    DenseWeightVector::iterator sampleIterator = weightVectorPtr->begin();
+    std::unique_ptr<DenseWeightVector<uint32>> weightVectorPtr = std::make_unique<DenseWeightVector<uint32>>(
+        numElements);
+    typename DenseWeightVector<uint32>::iterator sampleIterator = weightVectorPtr->begin();
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -44,6 +45,7 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaT
         sampleIterator[sampledIndex] = 1;
     }
 
+    weightVectorPtr->setNumNonZeroWeights(numSamples);
     return weightVectorPtr;
 }
 
@@ -64,8 +66,9 @@ template<class T>
 static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaPool(T iterator, uint32 numTotal,
                                                                                     uint32 numSamples,
                                                                                     uint32 numElements, RNG& rng) {
-    std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numElements, numSamples);
-    DenseWeightVector::iterator sampleIterator = weightVectorPtr->begin();
+    std::unique_ptr<DenseWeightVector<uint32>> weightVectorPtr = std::make_unique<DenseWeightVector<uint32>>(
+        numElements);
+    typename DenseWeightVector<uint32>::iterator sampleIterator = weightVectorPtr->begin();
     uint32 pool[numTotal];
 
     // Initialize pool...
@@ -85,6 +88,7 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaP
         pool[randomIndex] = pool[numTotal - i - 1];
     }
 
+    weightVectorPtr->setNumNonZeroWeights(numSamples);
     return weightVectorPtr;
 }
 

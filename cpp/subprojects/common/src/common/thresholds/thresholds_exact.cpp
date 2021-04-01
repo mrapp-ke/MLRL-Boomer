@@ -143,7 +143,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
             coverageMaskIterator[index] = numConditions;
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
-            uint32 weight = weights.getWeight(index);
+            float64 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, false);
             i++;
         }
@@ -177,7 +177,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         for (intp r = start; r < end; r++) {
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
-            uint32 weight = weights.getWeight(index);
+            float64 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, true);
         }
 
@@ -208,7 +208,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         for (auto it = vector.missing_indices_cbegin(); it != vector.missing_indices_cend(); it++) {
             uint32 index = *it;
             coverageMaskIterator[index] = numConditions;
-            uint32 weight = weights.getWeight(index);
+            float64 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, true);
         }
     }
@@ -342,7 +342,7 @@ class ExactThresholds final : public AbstractThresholds {
 
             const IWeightVector& weights_;
 
-            uint32 sumOfWeights_;
+            uint32 numCoveredExamples_;
 
             CoverageMask coverageMask_;
 
@@ -367,7 +367,7 @@ class ExactThresholds final : public AbstractThresholds {
                     thresholds_.headRefinementFactoryPtr_->create(labelIndices);
                 std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
                 return std::make_unique<ExactRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
-                                                                sumOfWeights_, featureIndex, nominal,
+                                                                numCoveredExamples_, featureIndex, nominal,
                                                                 std::move(callbackPtr));
             }
 
@@ -379,7 +379,7 @@ class ExactThresholds final : public AbstractThresholds {
                  *                      weights of the individual training examples
                  */
                 ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
-                    : thresholds_(thresholds), weights_(weights), sumOfWeights_(weights.getSumOfWeights()),
+                    : thresholds_(thresholds), weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
                       coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
 
                 }
@@ -396,7 +396,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 void filterThresholds(Refinement& refinement) override {
                     numModifications_++;
-                    sumOfWeights_ = refinement.coveredWeights;
+                    numCoveredExamples_ = refinement.numCovered;
 
                     uint32 featureIndex = refinement.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
@@ -428,7 +428,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 void filterThresholds(const Condition& condition) override {
                     numModifications_++;
-                    sumOfWeights_ = condition.coveredWeights;
+                    numCoveredExamples_ = condition.numCovered;
 
                     uint32 featureIndex = condition.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
@@ -454,7 +454,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 void resetThresholds() override {
                     numModifications_ = 0;
-                    sumOfWeights_ = weights_.getSumOfWeights();
+                    numCoveredExamples_ = weights_.getNumNonZeroWeights();
                     cacheFiltered_.clear();
                     coverageMask_.reset();
                 }
