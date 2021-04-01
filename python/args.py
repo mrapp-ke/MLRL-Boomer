@@ -199,6 +199,9 @@ class ArgumentParserBuilder:
                                         instance_sub_sampling=INSTANCE_SUB_SAMPLING_BAGGING,
                                         feature_sub_sampling=FEATURE_SUB_SAMPLING_RANDOM, **kwargs)
         parser = self.parser
+        parser.add_argument('--default-rule', type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('default_rule', True, **kwargs),
+                            help='True, if the first rule should be a default rule, False otherwise')
         parser.add_argument('--early-stopping', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('early_stopping', None, **kwargs),
                             help='The name of the strategy to be used for early stopping or None')

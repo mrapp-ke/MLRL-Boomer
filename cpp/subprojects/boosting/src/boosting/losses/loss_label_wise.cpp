@@ -35,9 +35,10 @@ namespace boosting {
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
 
-        for (auto indexIterator = labelIndicesBegin; indexIterator != labelIndicesEnd; indexIterator++) {
-            uint32 labelIndex = *indexIterator;
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 labelIndex = labelIndicesBegin[i];
             bool trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
             float64 predictedScore = scoreIterator[labelIndex];
             this->updateGradientAndHessian(&gradientIterator[labelIndex], &hessianIterator[labelIndex], trueLabel,

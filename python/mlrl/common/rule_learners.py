@@ -265,7 +265,7 @@ def get_float_argument(args: dict, key: str, default: float, validation=None) ->
     return default
 
 
-def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy) -> bool:
+def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy, dtype) -> bool:
     """
     Returns whether it is preferable to convert a given matrix into a `scipy.sparse.csr_matrix`,
     `scipy.sparse.csc_matrix` or `scipy.sparse.dok_matrix`, depending on the format of the given matrix and a given
@@ -285,6 +285,7 @@ def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy) -> bool:
     :param m:               A `np.ndarray` or `scipy.sparse.matrix` to be checked
     :param sparse_format:   The sparse format to be used. Must be 'csr', 'csc', or `dok`
     :param policy:          The `SparsePolicy` to be used
+    :param dtype            The type of the values that should be stored in the matrix
     :return:                True, if it is preferable to convert the matrix into a sparse matrix of the given format,
                             False otherwise
     """
@@ -309,9 +310,9 @@ def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy) -> bool:
             else:
                 num_pointers = m.shape[1 if sparse_format == 'csc' else 0]
                 size_int = np.dtype(DTYPE_UINT32).itemsize
-                size_float = np.dtype(DTYPE_FLOAT32).itemsize
-                size_sparse = (num_non_zero * size_float) + (num_non_zero * size_int) + (num_pointers * size_int)
-                size_dense = np.prod(m.shape) * size_float
+                size_data = np.dtype(dtype).itemsize
+                size_sparse = (num_non_zero * size_data) + (num_non_zero * size_int) + (num_pointers * size_int)
+                size_dense = np.prod(m.shape) * size_data
 
             return size_sparse < size_dense
         else:
@@ -345,7 +346,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = 'csc'
         x_sparse_policy = create_sparse_policy(self.feature_format)
-        x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy)
+        x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy,
+                                                 dtype=DTYPE_FLOAT32)
         x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F', dtype=DTYPE_FLOAT32)),
                                 accept_sparse=(x_sparse_format if x_enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
@@ -361,7 +363,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_policy = create_sparse_policy(self.label_format)
-        y_enforce_sparse = should_enforce_sparse(y, sparse_format='dok', policy=y_sparse_policy)
+        y_enforce_sparse = should_enforce_sparse(y, sparse_format='dok', policy=y_sparse_policy, dtype=DTYPE_UINT8)
         y = check_array((y if y_enforce_sparse else y.toarray(order='C')),
                         accept_sparse=('lil' if y_enforce_sparse else False), ensure_2d=False, dtype=DTYPE_UINT8)
         num_labels = y.shape[1]
@@ -405,7 +407,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
     def __predict(self, predictor, x):
         sparse_format = 'csr'
         sparse_policy = create_sparse_policy(self.feature_format)
-        enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy)
+        enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
+                                               dtype=DTYPE_FLOAT32)
         x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C', dtype=DTYPE_FLOAT32), reset=False,
                                 accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
