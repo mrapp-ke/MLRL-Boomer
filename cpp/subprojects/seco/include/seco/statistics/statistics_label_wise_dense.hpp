@@ -11,7 +11,7 @@
 namespace seco {
 
     /**
-     * A factory that allows to create new instances of the class `DenseLabelWiseStatistics`.
+     * A factory that allows to create new instances of the type `ILabelWiseStatistics` that use dense data structures.
      */
     class DenseLabelWiseStatisticsFactory final : public ILabelWiseStatisticsFactory {
 

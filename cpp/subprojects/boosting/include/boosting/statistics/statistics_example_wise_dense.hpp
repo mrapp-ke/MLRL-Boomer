@@ -11,7 +11,8 @@
 namespace boosting {
 
     /**
-     * A factory that allows to create new instances of the class `ExampleWiseStatistics`.
+     * A factory that allows to create new instances of the type `IExampleWiseStatistics` that use dense data
+     * structures.
      */
     class DenseExampleWiseStatisticsFactory final : public IExampleWiseStatisticsFactory {
 
