@@ -1,4 +1,5 @@
 #include "boosting/losses/loss_label_wise.hpp"
+#include "common/data/arrays.hpp"
 #include "common/math/math.hpp"
 
 
@@ -40,6 +41,71 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 labelIndex = labelIndicesBegin[i];
             bool trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
+            float64 predictedScore = scoreIterator[labelIndex];
+            this->updateGradientAndHessian(&gradientIterator[labelIndex], &hessianIterator[labelIndex], trueLabel,
+                                           predictedScore);
+        }
+    }
+
+    void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
+                                                          const CsrLabelMatrix& labelMatrix,
+                                                          const CContiguousView<float64>& scoreMatrix,
+                                                          FullIndexVector::const_iterator labelIndicesBegin,
+                                                          FullIndexVector::const_iterator labelIndicesEnd,
+                                                          DenseLabelWiseStatisticMatrix& statisticMatrix) const {
+        DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
+            statisticMatrix.gradients_row_begin(exampleIndex);
+        DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
+            statisticMatrix.hessians_row_begin(exampleIndex);
+        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        uint32 numLabels = labelMatrix.getNumCols();
+        CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
+        CsrLabelMatrix::index_const_iterator indicesEnd = labelMatrix.row_indices_cend(exampleIndex);
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            bool trueLabel;
+
+            if (indexIterator != indicesEnd && *indexIterator == i) {
+                indexIterator++;
+                trueLabel = true;
+            } else {
+                trueLabel = false;
+            }
+
+            float64 predictedScore = scoreIterator[i];
+            this->updateGradientAndHessian(&gradientIterator[i], &hessianIterator[i], trueLabel, predictedScore);
+        }
+    }
+
+    void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                          const CContiguousView<float64> scoreMatrix,
+                                                          PartialIndexVector::const_iterator labelIndicesBegin,
+                                                          PartialIndexVector::const_iterator labelIndicesEnd,
+                                                          DenseLabelWiseStatisticMatrix& statisticMatrix) const {
+        DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
+            statisticMatrix.gradients_row_begin(exampleIndex);
+        DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
+            statisticMatrix.hessians_row_begin(exampleIndex);
+        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
+        CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
+        CsrLabelMatrix::index_const_iterator indicesEnd = labelMatrix.row_indices_cend(exampleIndex);
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 labelIndex = labelIndicesBegin[i];
+            bool trueLabel;
+
+            while (indexIterator != indicesEnd && *indexIterator < labelIndex) {
+                indexIterator++;
+            }
+
+            if (indexIterator != indicesEnd && *indexIterator == labelIndex) {
+                indexIterator++;
+                trueLabel = true;
+            } else {
+                trueLabel = false;
+            }
+
             float64 predictedScore = scoreIterator[labelIndex];
             this->updateGradientAndHessian(&gradientIterator[labelIndex], &hessianIterator[labelIndex], trueLabel,
                                            predictedScore);
