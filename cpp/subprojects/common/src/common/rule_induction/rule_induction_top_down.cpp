@@ -110,7 +110,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
 
             // Filter the current subset of thresholds by applying the best refinement that has been found...
             thresholdsSubsetPtr->filterThresholds(*bestRefinementPtr);
-            uint32 numCoveredExamples = bestRefinementPtr->coveredWeights;
+            uint32 numCoveredExamples = bestRefinementPtr->numCovered;
 
             // Add the new condition...
             conditions.addCondition(*bestRefinementPtr);

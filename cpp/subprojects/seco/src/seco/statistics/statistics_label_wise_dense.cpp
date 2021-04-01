@@ -71,7 +71,7 @@ namespace seco {
                         free(confusionMatricesCoverableSubset_);
                     }
 
-                    void addToMissing(uint32 statisticIndex, uint32 weight) override {
+                    void addToMissing(uint32 statisticIndex, float64 weight) override {
                         uint32 numLabels = statistics_.getNumLabels();
 
                         // Allocate arrays for storing the totals sums of gradients and Hessians, if necessary...
@@ -100,7 +100,7 @@ namespace seco {
                         }
                     }
 
-                    void addToSubset(uint32 statisticIndex, uint32 weight) override {
+                    void addToSubset(uint32 statisticIndex, float64 weight) override {
                         uint32 numLabels = statistics_.getNumLabels();
                         uint32 offset = statisticIndex * numLabels;
                         uint32 numPredictions = labelIndices_.getNumElements();
@@ -236,7 +236,7 @@ namespace seco {
                 setArrayToZeros(confusionMatricesSubset_, numElements);
             }
 
-            void addSampledStatistic(uint32 statisticIndex, uint32 weight) override {
+            void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
                 uint32 numLabels = this->getNumLabels();
                 uint32 offset = statisticIndex * numLabels;
 
@@ -264,10 +264,10 @@ namespace seco {
                 setArrayToZeros(confusionMatricesSubset_, numElements);
             }
 
-            void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
+            void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
                 uint32 numLabels = this->getNumLabels();
                 uint32 offset = statisticIndex * numLabels;
-                float64 signedWeight = remove ? -((float64) weight) : weight;
+                float64 signedWeight = remove ? -weight : weight;
 
                 for (uint32 c = 0; c < numLabels; c++) {
                     float64 labelWeight = uncoveredLabels_[offset + c];

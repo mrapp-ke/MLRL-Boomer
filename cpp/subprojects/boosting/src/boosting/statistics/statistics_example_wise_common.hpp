@@ -74,7 +74,7 @@ namespace boosting {
                         delete totalCoverableSumVector_;
                     }
 
-                    void addToMissing(uint32 statisticIndex, uint32 weight) override {
+                    void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                         if (totalCoverableSumVector_ == nullptr) {
                             totalCoverableSumVector_ = new StatisticVector(*totalSumVector_);
@@ -90,7 +90,7 @@ namespace boosting {
                             statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex), weight);
                     }
 
-                    void addToSubset(uint32 statisticIndex, uint32 weight) override {
+                    void addToSubset(uint32 statisticIndex, float64 weight) override {
                         sumVector_.addToSubset(statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
                                                statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
                                                statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
@@ -346,7 +346,7 @@ namespace boosting {
                 this->resetCoveredStatistics();
             }
 
-            void addSampledStatistic(uint32 statisticIndex, uint32 weight) override {
+            void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
                 // This function is equivalent to the function `updateCoveredStatistic`...
                 this->updateCoveredStatistic(statisticIndex, weight, false);
             }
@@ -355,8 +355,8 @@ namespace boosting {
                 totalSumVectorPtr_->setAllToZero();
             }
 
-            void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) override {
-                float64 signedWeight = remove ? -((float64) weight) : weight;
+            void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
+                float64 signedWeight = remove ? -weight : weight;
                 totalSumVectorPtr_->add(this->statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
                                         this->statisticMatrixPtr_->gradients_row_cend(statisticIndex),
                                         this->statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),

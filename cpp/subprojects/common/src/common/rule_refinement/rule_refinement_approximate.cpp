@@ -34,7 +34,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     for (auto it = thresholdVector.missing_indices_cbegin(); it != thresholdVector.missing_indices_cend(); it++) {
         uint32 i = *it;
-        uint32 weight = weights_.getWeight(i);
+        float64 weight = weights_.getWeight(i);
         statisticsSubsetPtr->addToMissing(i, weight);
     }
 
