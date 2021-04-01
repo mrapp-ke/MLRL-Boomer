@@ -9,9 +9,9 @@ class BoomerRunnable(RuleLearnerRunnable):
 
     def _create_learner(self, args):
         return Boomer(random_state=args.random_state, feature_format=args.feature_format,
-                      label_format=args.label_format, max_rules=args.max_rules, time_limit=args.time_limit,
-                      early_stopping=args.early_stopping, loss=args.loss, predictor=args.predictor,
-                      pruning=args.pruning, label_sub_sampling=args.label_sub_sampling,
+                      label_format=args.label_format, max_rules=args.max_rules, default_rule=args.default_rule,
+                      time_limit=args.time_limit, early_stopping=args.early_stopping, loss=args.loss,
+                      predictor=args.predictor, pruning=args.pruning, label_sub_sampling=args.label_sub_sampling,
                       instance_sub_sampling=args.instance_sub_sampling, shrinkage=args.shrinkage,
                       feature_sub_sampling=args.feature_sub_sampling, holdout_set_size=args.holdout,
                       feature_binning=args.feature_binning, label_binning=args.label_binning,
