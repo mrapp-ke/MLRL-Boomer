@@ -91,9 +91,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     """
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
-                 label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, time_limit: int = -1,
-                 early_stopping: str = None, head_refinement: str = None, loss: str = LOSS_LABEL_WISE_LOGISTIC,
-                 predictor: str = None, label_sub_sampling: str = None,
+                 label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
+                 time_limit: int = -1, early_stopping: str = None, head_refinement: str = None,
+                 loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sub_sampling: str = None,
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, holdout_set_size: float = 0.0,
                  feature_binning: str = None, label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
@@ -103,6 +103,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
+        :param default_rule:                        True, if the first rule should be a default rule, False otherwise
         :param time_limit:                          The duration in seconds after which the induction of rules should be
                                                     canceled
         :param early_stopping:                      The strategy that is used for early stopping. Must be `measure` or
@@ -167,6 +168,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         """
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
+        self.default_rule = default_rule
         self.time_limit = time_limit
         self.early_stopping = early_stopping
         self.head_refinement = head_refinement
