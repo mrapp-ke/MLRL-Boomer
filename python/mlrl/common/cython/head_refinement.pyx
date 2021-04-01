@@ -11,6 +11,13 @@ cdef class HeadRefinementFactory:
     pass
 
 
+cdef class NoHeadRefinementRefinementFactory(HeadRefinementFactory):
+    """
+    A `HeadRefinementFactory` that stores a null pointer.
+    """
+    pass
+
+
 cdef class SingleLabelHeadRefinementFactory(HeadRefinementFactory):
     """
     A wrapper for the C++ class `SingleLabelHeadRefinementFactory`.
