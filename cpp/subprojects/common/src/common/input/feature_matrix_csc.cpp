@@ -17,8 +17,9 @@ uint32 CscFeatureMatrix::getNumCols() const {
 
 void CscFeatureMatrix::fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const {
     CscView<float32>::index_const_iterator indexIterator = view_.column_indices_cbegin(featureIndex);
+    CscView<float32>::index_const_iterator indicesEnd = view_.column_indices_cend(featureIndex);
     CscView<float32>::value_const_iterator valueIterator = view_.column_values_cbegin(featureIndex);
-    uint32 numElements = view_.getNumNonZeroElements(featureIndex);
+    uint32 numElements = indicesEnd - indexIterator;
     featureVectorPtr = std::make_unique<FeatureVector>(numElements);
     FeatureVector::iterator vectorIterator = featureVectorPtr->begin();
     uint32 i = 0;
