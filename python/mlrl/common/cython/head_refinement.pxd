@@ -26,6 +26,10 @@ cdef class HeadRefinementFactory:
     cdef shared_ptr[IHeadRefinementFactory] head_refinement_factory_ptr
 
 
+cdef class NoHeadRefinementFactory(HeadRefinementFactory):
+    pass
+
+
 cdef class SingleLabelHeadRefinementFactory(HeadRefinementFactory):
     pass
 
