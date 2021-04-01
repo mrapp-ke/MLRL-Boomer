@@ -50,11 +50,12 @@ namespace seco {
                 uint32 numPredictions = scoreVector.getNumElements();
                 typename T2::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
                 std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr;
-                float64 sumOfQualityScores = 0;
                 uint32 bestNumPredictions = 0;
                 float64 bestOverallQualityScore = 0;
 
                 if (keepLabels_) {
+                    float64 sumOfQualityScores = 0;
+
                     for (uint32 i = 0; i < numPredictions; i++) {
                         sumOfQualityScores += 1 - qualityScoreIterator[i];
                     }
@@ -66,6 +67,7 @@ namespace seco {
                     sortedVectorPtr = argsort(qualityScoreIterator, numPredictions);
                     SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
                     float64 maximumLift = liftFunctionPtr_->getMaxLift();
+                    float64 sumOfQualityScores = 0;
 
                     for (uint32 i = 0; i < numPredictions; i++) {
                         sumOfQualityScores += 1 - qualityScoreIterator[sortedIterator[i].index];
