@@ -17,15 +17,15 @@ class SingleLabelHeadRefinement final : public IHeadRefinement, public ILabelWis
                                                                    const T& scoreVector) {
             uint32 numPredictions = scoreVector.getNumElements();
             typename T::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
-            uint32 bestC = 0;
-            float64 bestQualityScore = qualityScoreIterator[bestC];
+            uint32 bestIndex = 0;
+            float64 bestQualityScore = qualityScoreIterator[bestIndex];
 
-            for (uint32 c = 1; c < numPredictions; c++) {
-                float64 qualityScore = qualityScoreIterator[c];
+            for (uint32 i = 1; i < numPredictions; i++) {
+                float64 qualityScore = qualityScoreIterator[i];
 
                 if (qualityScore < bestQualityScore) {
                     bestQualityScore = qualityScore;
-                    bestC = c;
+                    bestIndex = i;
                 }
             }
 
@@ -40,8 +40,8 @@ class SingleLabelHeadRefinement final : public IHeadRefinement, public ILabelWis
 
                 PartialPrediction::score_iterator headScoreIterator = headPtr_->scores_begin();
                 PartialPrediction::index_iterator headIndexIterator = headPtr_->indices_begin();
-                headScoreIterator[0] = scoreIterator[bestC];
-                headIndexIterator[0] = indexIterator[bestC];
+                headScoreIterator[0] = scoreIterator[bestIndex];
+                headIndexIterator[0] = indexIterator[bestIndex];
                 headPtr_->overallQualityScore = bestQualityScore;
                 return headPtr_.get();
             }
