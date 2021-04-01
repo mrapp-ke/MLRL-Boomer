@@ -65,15 +65,15 @@ namespace seco {
                     for (uint32 i = 0; i < numPredictions; i++) {
                         sumOfQualityScores += 1 - qualityScoreIterator[sortedIterator[i].index];
                         uint32 currentNumPredictions = i + 1;
-                        float64 qualityScore = 1 - (sumOfQualityScores / (currentNumPredictions))
-                                               * liftFunctionPtr_->calculateLift(currentNumPredictions);
+                        float64 overallQualityScore = 1 - (sumOfQualityScores / (currentNumPredictions))
+                                                      * liftFunctionPtr_->calculateLift(currentNumPredictions);
 
-                        if (i == 0 || qualityScore < bestOverallQualityScore) {
+                        if (i == 0 || overallQualityScore < bestOverallQualityScore) {
                             bestNumPredictions = currentNumPredictions;
-                            bestOverallQualityScore = qualityScore;
+                            bestOverallQualityScore = overallQualityScore;
                         }
 
-                        if (qualityScore * maximumLift < bestOverallQualityScore) {
+                        if (overallQualityScore * maximumLift < bestOverallQualityScore) {
                             // Prunable by decomposition...
                             break;
                         }
