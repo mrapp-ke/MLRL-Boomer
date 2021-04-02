@@ -30,10 +30,12 @@ namespace boosting {
             struct HashFunction {
 
                 inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
-                    std::size_t hash = (std::size_t) v->getNumElements();
+                    uint32 numElements = v->getNumElements();
+                    LabelVector::const_iterator it = v->cbegin();
+                    std::size_t hash = (std::size_t) numElements;
 
-                    for (auto it = v->indices_cbegin(); it != v->indices_cend(); it++) {
-                        hash ^= *it + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+                    for (uint32 i = 0; i < numElements; i++) {
+                        hash ^= it[i] + 0x9e3779b9 + (hash << 6) + (hash >> 2);
                     }
 
                     return hash;
@@ -48,18 +50,19 @@ namespace boosting {
 
                 inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
                                        const std::unique_ptr<LabelVector>& rhs) const {
-                    if (lhs->getNumElements() != rhs->getNumElements()) {
+                    uint32 numElements = lhs->getNumElements();
+
+                    if (numElements != rhs->getNumElements()) {
                         return false;
                     }
 
-                    auto it1 = lhs->indices_cbegin();
+                    LabelVector::const_iterator it1 = lhs->cbegin();
+                    LabelVector::const_iterator it2 = rhs->cbegin();
 
-                    for (auto it2 = rhs->indices_cbegin(); it2 != rhs->indices_cend(); it2++) {
-                        if (*it1 != *it2) {
+                    for (uint32 i = 0; i < numElements; i++) {
+                        if (it1[i] != it2[i]) {
                             return false;
                         }
-
-                        it1++;
                     }
 
                     return true;

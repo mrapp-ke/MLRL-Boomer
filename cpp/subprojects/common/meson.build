@@ -16,7 +16,6 @@ source_files = [
     'src/common/data/vector_dok.cpp',
     'src/common/data/vector_dok_binary.cpp',
     'src/common/data/vector_sparse_array.cpp',
-    'src/common/data/vector_sparse_list_binary.cpp',
     'src/common/data/view_c_contiguous.cpp',
     'src/common/data/view_csc.cpp',
     'src/common/data/view_csr.cpp',

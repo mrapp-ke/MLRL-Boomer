@@ -2,7 +2,6 @@ from mlrl.common.cython._types cimport uint8, uint32, float32
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
-from libcpp.list cimport list as double_linked_list
 
 
 cdef extern from "common/input/label_matrix.hpp" nogil:
@@ -58,15 +57,27 @@ cdef extern from "common/input/label_vector.hpp" nogil:
 
     cdef cppclass LabelVector:
 
-        ctypedef double_linked_list[uint32].const_iterator index_const_iterator
+        ctypedef uint32* iterator
+
+        ctypedef const uint32* const_iterator
+
+        # Constructors:
+
+        LabelVector(uint32 numElements)
 
         # Functions:
 
-        index_const_iterator indices_cbegin()
+        iterator begin()
 
-        index_const_iterator indices_cend()
+        iterator end()
 
-        void setValue(uint32 pos)
+        const_iterator cbegin()
+
+        const_iterator cend()
+
+        uint32 getNumElements()
+
+        void setNumElements(uint32 numElements, bool freeMemory)
 
 
 cdef extern from "common/input/feature_matrix.hpp" nogil:
