@@ -4,8 +4,6 @@
 from mlrl.common.cython._types cimport uint32
 from mlrl.common.cython.input cimport CContiguousLabelMatrix, CContiguousLabelMatrixImpl, ILabelMatrix
 
-from cython.operator cimport dereference, postincrement
-
 from libcpp.memory cimport shared_ptr, make_shared, make_unique, dynamic_pointer_cast
 from libcpp.utility cimport move
 
@@ -111,18 +109,23 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
             measure_ptr, num_threads)
         cdef unique_ptr[LabelVector] label_vector_ptr
+        cdef LabelVector.iterator iterator
         cdef uint8 value
-        cdef uint32 i, j
+        cdef uint32 i, j, n
 
         for i in range(num_rows):
-            label_vector_ptr = make_unique[LabelVector]()
+            label_vector_ptr = make_unique[LabelVector](num_cols)
+            iterator = label_vector_ptr.get().begin()
+            n = 0
 
             for j in range(num_cols):
                 value = label_matrix_ptr.get().getValue(i, j)
 
                 if value:
-                    label_vector_ptr.get().setValue(j)
+                    iterator[n] = j
+                    n += 1
 
+            label_vector_ptr.get().setNumElements(n, True)
             predictor_ptr.get().addLabelVector(move(label_vector_ptr))
 
         cdef ExampleWiseClassificationPredictor predictor = ExampleWiseClassificationPredictor.__new__(
@@ -137,15 +140,19 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
             measure_ptr, num_threads)
         cdef unique_ptr[LabelVector] label_vector_ptr
+        cdef LabelVector.iterator iterator
         cdef list col_indices
-        cdef uint32 i, j
+        cdef uint32 num_cols, label_index, i, j
 
         for i in range(num_rows):
-            label_vector_ptr = make_unique[LabelVector]()
             col_indices = rows[i]
+            num_cols = len(col_indices)
+            label_vector_ptr = make_unique[LabelVector](num_cols)
+            iterator = label_vector_ptr.get().begin()
 
-            for j in col_indices:
-                label_vector_ptr.get().setValue(j)
+            for j in range(num_cols):
+                label_index = col_indices[j]
+                iterator[j] = label_index
 
             predictor_ptr.get().addLabelVector(move(label_vector_ptr))
 
@@ -167,13 +174,14 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
 
 
 cdef inline unique_ptr[LabelVector] __create_label_vector(list state):
-    cdef unique_ptr[LabelVector] label_vector_ptr = make_unique[LabelVector]()
     cdef uint32 num_elements = len(state)
+    cdef unique_ptr[LabelVector] label_vector_ptr = make_unique[LabelVector](num_elements)
+    cdef LabelVector.iterator iterator = label_vector_ptr.get().begin()
     cdef uint32 i, label_index
 
     for i in range(num_elements):
         label_index = state[i]
-        label_vector_ptr.get().setValue(label_index)
+        iterator[i] = label_index
 
     return move(label_vector_ptr)
 
@@ -185,14 +193,13 @@ cdef class ExampleWiseClassificationPredictorSerializer:
 
     cdef __visit_label_vector(self, const LabelVector& label_vector):
         cdef list label_vector_state = []
-        cdef LabelVector.index_const_iterator iterator = label_vector.indices_cbegin()
-        cdef LabelVector.index_const_iterator end = label_vector.indices_cend()
-        cdef uint32 label_index
+        cdef uint32 num_elements = label_vector.getNumElements()
+        cdef LabelVector.const_iterator iterator = label_vector.cbegin()
+        cdef uint32 i, label_index
 
-        while iterator != end:
-            label_index = dereference(iterator)
+        for i in range(num_elements):
+            label_index = iterator[i]
             label_vector_state.append(label_index)
-            postincrement(iterator)
 
         self.state.append(label_vector_state)
 

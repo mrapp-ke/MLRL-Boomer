@@ -29,11 +29,13 @@ namespace boosting {
         }
 
         if (closestLabelVector != nullptr) {
-            CContiguousView<uint8>::iterator iterator = predictionMatrix.row_begin(exampleIndex);
+            uint32 numElements = closestLabelVector->getNumElements();
+            LabelVector::const_iterator iterator = closestLabelVector->cbegin();
+            CContiguousView<uint8>::iterator predictionIterator = predictionMatrix.row_begin(exampleIndex);
 
-            for (auto it = closestLabelVector->indices_cbegin(); it != closestLabelVector->indices_cend(); it++) {
-                uint32 labelIndex = *it;
-                iterator[labelIndex] = 1;
+            for (uint32 i = 0; i < numElements; i++) {
+                uint32 labelIndex = iterator[i];
+                predictionIterator[labelIndex] = 1;
             }
         }
     }
