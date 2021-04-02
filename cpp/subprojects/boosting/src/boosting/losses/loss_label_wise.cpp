@@ -66,8 +66,8 @@ namespace boosting {
                                                      CContiguousView<float64>::const_iterator scoresBegin,
                                                      CContiguousView<float64>::const_iterator scoresEnd) const {
         uint32 numLabels = scoresEnd - scoresBegin;
-        LabelVector::index_const_iterator indexIterator = labelVector.indices_cbegin();
-        LabelVector::index_const_iterator indicesEnd = labelVector.indices_cend();
+        LabelVector::const_iterator indexIterator = labelVector.cbegin();
+        LabelVector::const_iterator indicesEnd = labelVector.cend();
         float64 mean = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
