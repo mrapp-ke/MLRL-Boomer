@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/data/view_c_contiguous.hpp"
-#include "common/input/label_matrix.hpp"
+#include "common/input/label_matrix_csr.hpp"
 
 
 /**
@@ -29,6 +29,10 @@ class IEvaluationMeasure {
          * @return              The numerical score that has been calculated
          */
         virtual float64 evaluate(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+
+        // TODO Comment
+        virtual float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                  const CContiguousView<float64>& scoreMatrix) const = 0;
 
 };
