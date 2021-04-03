@@ -405,8 +405,6 @@ namespace seco {
         uint32 numRelevantPerLabel[numLabels] = {};
 
         for (uint32 i = 0; i < numExamples; i++) {
-            DenseWeightMatrix::iterator weightIterator = weightMatrixPtr->row_begin(i);
-
             for (uint32 j = 0; j < numLabels; j++) {
                 uint8 trueLabel = labelMatrixPtr_->getValue(i, j);
                 numRelevantPerLabel[j] += trueLabel;
