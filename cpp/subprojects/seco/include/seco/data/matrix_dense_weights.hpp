@@ -16,11 +16,13 @@ namespace seco {
     template<class T>
     class DenseWeightMatrix final : public DenseMatrix<T> {
 
-        /**
-         * @param numRows   The number of rows in the matrix
-         * @param numCols   The number of columns in the matrix
-         */
-        DenseWeightMatrix(uint32 numRows, uint32 numCols);
+        public:
+
+            /**
+             * @param numRows   The number of rows in the matrix
+             * @param numCols   The number of columns in the matrix
+             */
+            DenseWeightMatrix(uint32 numRows, uint32 numCols);
 
     };
 
