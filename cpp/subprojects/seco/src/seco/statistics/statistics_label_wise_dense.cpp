@@ -339,20 +339,14 @@ namespace seco {
     }
 
     std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create() const {
-        // The number of examples
         uint32 numExamples = labelMatrixPtr_->getNumRows();
-        // The number of labels
         uint32 numLabels = labelMatrixPtr_->getNumCols();
-        // A matrix that stores the weights of individual examples and labels
         std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(numExamples,
                                                                                                  numLabels);
-        // The sum of the weights of all examples and labels that remain to be covered
-        uint32 sumOfUncoveredWeights = 0;
-        // A vector that stores the prediction of the default rule
         std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr = std::make_unique<DenseVector<uint8>>(numLabels);
         DenseVector<uint8>::iterator majorityIterator = majorityLabelVectorPtr->begin();
-        // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
         float64 threshold = numExamples / 2.0;
+        uint32 sumOfUncoveredWeights = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 numRelevant = 0;
