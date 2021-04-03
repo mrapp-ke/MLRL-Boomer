@@ -13,11 +13,11 @@ namespace seco {
      * data structures.
      *
      * @tparam WeightMatrix The type of the matrix that stores the weights of individual examples and labels
-     * @tparam WeightType   The type of the weights that are stored by a matrix of type `WeightMatrix`
+     * @tparam Weight       The type of the weights that are stored by a matrix of type `WeightMatrix`
      * @tparam WeightSum    The type that is used to store the sum of the weights that are stored by a matrix of type
      *                      `WeightMatrix`
      */
-    template<class WeightMatrix, class WeightType, class WeightSum>
+    template<class WeightMatrix, class Weight, class WeightSum>
     class LabelWiseStatistics final : public ILabelWiseStatistics {
 
         private:
@@ -94,7 +94,7 @@ namespace seco {
                             statisticIndex);
 
                         for (uint32 c = 0; c < numLabels; c++) {
-                            WeightType labelWeight = weightIterator[c];
+                            Weight labelWeight = weightIterator[c];
 
                             // Only uncovered labels must be considered...
                             if (labelWeight > 0) {
@@ -250,7 +250,7 @@ namespace seco {
                 typename WeightMatrix::const_iterator weightIterator = weightMatrixPtr_->row_cbegin(statisticIndex);
 
                 for (uint32 c = 0; c < numLabels; c++) {
-                    WeightType labelWeight = weightIterator[c];
+                    Weight labelWeight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
                     if (labelWeight > 0) {
@@ -279,7 +279,7 @@ namespace seco {
                 typename WeightMatrix::const_iterator weightIterator = weightMatrixPtr_->row_cbegin(statisticIndex);
 
                 for (uint32 c = 0; c < numLabels; c++) {
-                    WeightType labelWeight = weightIterator[c];
+                    Weight labelWeight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
                     if (labelWeight > 0) {
@@ -320,7 +320,7 @@ namespace seco {
 
                     // Do only consider predictions that are different from the default rule's predictions...
                     if (predictedLabel == minorityLabel) {
-                        WeightType labelWeight = weightIterator[c];
+                        Weight labelWeight = weightIterator[c];
 
                         if (labelWeight > 0) {
                             // Decrement the total sum of uncovered labels...
@@ -348,7 +348,7 @@ namespace seco {
 
                     // Do only consider predictions that are different from the default rule's predictions...
                     if (predictedLabel == minorityLabel) {
-                        WeightType labelWeight = weightIterator[l];
+                        Weight labelWeight = weightIterator[l];
 
                         if (labelWeight > 0) {
                             // Decrement the total sum of uncovered labels...
