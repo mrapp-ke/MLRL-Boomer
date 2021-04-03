@@ -263,11 +263,12 @@ namespace boosting {
      * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
      * applied label-wise and allows to update the gradients and Hessians after a new rule has been learned.
      *
+     * @tparam LabelMatrix      The type of the matrix that provides access to the labels of the training examples
      * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticMatrix  The type of the matrices that are used to store gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
-    template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
+    template<class LabelMatrix, class StatisticVector, class StatisticMatrix, class ScoreMatrix>
     class LabelWiseStatistics final : public AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
                                       virtual public ILabelWiseStatistics {
 
@@ -277,7 +278,7 @@ namespace boosting {
 
             std::shared_ptr<ILabelWiseLoss> lossFunctionPtr_;
 
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
+            std::shared_ptr<LabelMatrix> labelMatrixPtr_;
 
             std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
 
@@ -303,8 +304,8 @@ namespace boosting {
              *                                  that allows to create instances of the class that is used for
              *                                  calculating the predictions, as well as corresponding quality scores, of
              *                                  rules
-             * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
-             *                                  provides random access to the labels of the training examples
+             * @param labelMatrixPtr            A shared pointer to an object of template type `LabelMatrix` that
+             *                                  provides access to the labels of the training examples
              * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
              *                                  stores the gradients and Hessians
              * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that
@@ -312,7 +313,7 @@ namespace boosting {
              */
             LabelWiseStatistics(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
                                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
+                                std::shared_ptr<LabelMatrix> labelMatrixPtr,
                                 std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                 std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(

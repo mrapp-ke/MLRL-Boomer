@@ -38,7 +38,7 @@ namespace boosting {
                                                        *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<LabelWiseStatistics<DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
+        return std::make_unique<LabelWiseStatistics<IRandomAccessLabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
             lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(statisticMatrixPtr),
             std::move(scoreMatrixPtr));
     }
