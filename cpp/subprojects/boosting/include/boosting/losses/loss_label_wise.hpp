@@ -138,6 +138,9 @@ namespace boosting {
             float64 evaluate(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override final;
 
+            float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                             const CContiguousView<float64>& scoreMatrix) const override final;
+
             float64 measureSimilarity(const LabelVector& labelVector,
                                       CContiguousView<float64>::const_iterator scoresBegin,
                                       CContiguousView<float64>::const_iterator scoresEnd) const override final;

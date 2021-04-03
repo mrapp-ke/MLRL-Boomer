@@ -118,8 +118,34 @@ namespace boosting {
         float64 mean = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
-            bool trueLabel = labelMatrix.getValue(exampleIndex, i);
             float64 predictedScore = scoreIterator[i];
+            bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+            float64 score = this->evaluate(trueLabel, predictedScore);
+            mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
+        }
+
+        return mean;
+    }
+
+    float64 AbstractLabelWiseLoss::evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                            const CContiguousView<float64>& scoreMatrix) const {
+        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
+        CsrLabelMatrix::index_const_iterator indicesEnd = labelMatrix.row_indices_cend(exampleIndex);
+        uint32 numLabels = labelMatrix.getNumCols();
+        float64 mean = 0;
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            float64 predictedScore = scoreIterator[i];
+            bool trueLabel;
+
+            if (indexIterator != indicesEnd && *indexIterator == i) {
+                indexIterator++;
+                trueLabel = true;
+            } else {
+                trueLabel = false;
+            }
+
             float64 score = this->evaluate(trueLabel, predictedScore);
             mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
         }

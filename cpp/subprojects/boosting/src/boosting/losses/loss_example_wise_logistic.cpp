@@ -141,6 +141,12 @@ namespace boosting {
         return max + std::log(sumExp);
     }
 
+    float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                              const CContiguousView<float64>& scoreMatrix) const {
+        // TODO Implement
+        return 0;
+    }
+
     float64 ExampleWiseLogisticLoss::measureSimilarity(const LabelVector& labelVector,
                                                        CContiguousView<float64>::const_iterator scoresBegin,
                                                        CContiguousView<float64>::const_iterator scoresEnd) const {
