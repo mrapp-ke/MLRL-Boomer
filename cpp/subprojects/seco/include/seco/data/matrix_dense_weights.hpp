@@ -10,11 +10,8 @@ namespace seco {
 
     /**
      * A two-dimensional matrix that stores the weights of individual examples and labels in a C-contiguous array.
-     *
-     * @tparam T The type of the weights
      */
-    template<class T>
-    class DenseWeightMatrix final : public DenseMatrix<T> {
+    class DenseWeightMatrix final : public DenseMatrix<uint8> {
 
         public:
 
