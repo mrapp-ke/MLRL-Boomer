@@ -108,7 +108,6 @@ namespace seco {
                     }
 
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
-                        uint32 numLabels = statistics_.getNumLabels();
                         uint32 numPredictions = labelIndices_.getNumElements();
                         typename T::const_iterator indexIterator = labelIndices_.cbegin();
                         typename WeightMatrix::const_iterator weightIterator = statistics_.weightMatrixPtr_->row_cbegin(
