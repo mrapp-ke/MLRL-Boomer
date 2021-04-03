@@ -19,6 +19,10 @@ namespace boosting {
                                              const CContiguousView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
 
+            void updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                             const CContiguousView<float64>& scoreMatrix,
+                                             DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
+
             float64 evaluate(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override;
 
