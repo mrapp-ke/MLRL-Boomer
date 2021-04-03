@@ -353,17 +353,14 @@ namespace seco {
         DenseVector<uint8>::iterator majorityIterator = majorityLabelVectorPtr->begin();
         // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
         float64 threshold = numExamples / 2.0;
-        uint32 numRelevantPerLabel[numLabels] = {};
-
-        for (uint32 i = 0; i < numExamples; i++) {
-            for (uint32 j = 0; j < numLabels; j++) {
-                uint8 trueLabel = labelMatrixPtr_->getValue(i, j);
-                numRelevantPerLabel[j] += trueLabel;
-            }
-        }
 
         for (uint32 i = 0; i < numLabels; i++) {
-            uint32 numRelevant = numRelevantPerLabel[i];
+            uint32 numRelevant = 0;
+
+            for (uint32 j = 0; j < numExamples; j++) {
+                uint8 trueLabel = labelMatrixPtr_->getValue(i, j);
+                numRelevant += trueLabel;
+            }
 
             if (numRelevant > threshold) {
                 majorityIterator[i] = 1;
