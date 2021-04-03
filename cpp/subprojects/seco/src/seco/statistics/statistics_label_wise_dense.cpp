@@ -13,11 +13,8 @@ namespace seco {
      * data structures.
      *
      * @tparam WeightMatrix The type of the matrix that stores the weights of individual examples and labels
-     * @tparam Weight       The type of the weights that are stored by a matrix of type `WeightMatrix`
-     * @tparam WeightSum    The type that is used to store the sum of the weights that are stored by a matrix of type
-     *                      `WeightMatrix`
      */
-    template<class WeightMatrix, class Weight, class WeightSum>
+    template<class WeightMatrix>
     class LabelWiseStatistics final : public ILabelWiseStatistics {
 
         private:
@@ -94,7 +91,7 @@ namespace seco {
                             statisticIndex);
 
                         for (uint32 c = 0; c < numLabels; c++) {
-                            Weight labelWeight = weightIterator[c];
+                            uint8 labelWeight = weightIterator[c];
 
                             // Only uncovered labels must be considered...
                             if (labelWeight > 0) {
@@ -166,7 +163,7 @@ namespace seco {
 
             uint32 numLabels_;
 
-            WeightSum sumUncoveredLabels_;
+            uint32 sumUncoveredLabels_;
 
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
@@ -198,7 +195,7 @@ namespace seco {
              */
             LabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                std::unique_ptr<WeightMatrix> weightMatrixPtr, WeightSum sumUncoveredLabels,
+                                std::unique_ptr<WeightMatrix> weightMatrixPtr, uint32 sumUncoveredLabels,
                                 uint8* minorityLabels)
                 : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),
                   sumUncoveredLabels_(sumUncoveredLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
@@ -250,7 +247,7 @@ namespace seco {
                 typename WeightMatrix::const_iterator weightIterator = weightMatrixPtr_->row_cbegin(statisticIndex);
 
                 for (uint32 c = 0; c < numLabels; c++) {
-                    Weight labelWeight = weightIterator[c];
+                    uint8 labelWeight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
                     if (labelWeight > 0) {
@@ -279,7 +276,7 @@ namespace seco {
                 typename WeightMatrix::const_iterator weightIterator = weightMatrixPtr_->row_cbegin(statisticIndex);
 
                 for (uint32 c = 0; c < numLabels; c++) {
-                    Weight labelWeight = weightIterator[c];
+                    uint8 labelWeight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
                     if (labelWeight > 0) {
@@ -320,7 +317,7 @@ namespace seco {
 
                     // Do only consider predictions that are different from the default rule's predictions...
                     if (predictedLabel == minorityLabel) {
-                        Weight labelWeight = weightIterator[c];
+                        uint8 labelWeight = weightIterator[c];
 
                         if (labelWeight > 0) {
                             // Decrement the total sum of uncovered labels...
@@ -348,7 +345,7 @@ namespace seco {
 
                     // Do only consider predictions that are different from the default rule's predictions...
                     if (predictedLabel == minorityLabel) {
-                        Weight labelWeight = weightIterator[l];
+                        uint8 labelWeight = weightIterator[l];
 
                         if (labelWeight > 0) {
                             // Decrement the total sum of uncovered labels...
@@ -386,8 +383,8 @@ namespace seco {
         // The number of labels
         uint32 numLabels = labelMatrixPtr_->getNumCols();
         // A matrix that stores the weights of individual examples and labels
-        std::unique_ptr<DenseWeightMatrix<uint8>> weightMatrixPtr = std::make_unique<DenseWeightMatrix<uint8>>(
-            numExamples, numLabels);
+        std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(numExamples,
+                                                                                                 numLabels);
         // The sum of weights of all examples and labels that remain to be covered
         uint32 sumUncoveredLabels = 0;
         // An array that stores whether rules should predict individual labels as relevant (1) or irrelevant (0)
@@ -397,7 +394,7 @@ namespace seco {
         uint32 numRelevantPerLabel[numLabels] = {};
 
         for (uint32 i = 0; i < numExamples; i++) {
-            DenseWeightMatrix<uint8>::iterator weightIterator = weightMatrixPtr->row_begin(i);
+            DenseWeightMatrix::iterator weightIterator = weightMatrixPtr->row_begin(i);
 
             for (uint32 j = 0; j < numLabels; j++) {
                 uint8 trueLabel = labelMatrixPtr_->getValue(i, j);
@@ -417,7 +414,7 @@ namespace seco {
             }
         }
 
-        return std::make_unique<LabelWiseStatistics<DenseWeightMatrix<uint8>, uint8, uint32>>(
+        return std::make_unique<LabelWiseStatistics<DenseWeightMatrix>>(
             ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(weightMatrixPtr), sumUncoveredLabels, minorityLabels);
     }
 
