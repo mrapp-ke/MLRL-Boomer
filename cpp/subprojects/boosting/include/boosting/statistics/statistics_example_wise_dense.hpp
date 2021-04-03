@@ -12,7 +12,10 @@ namespace boosting {
 
     /**
      * A factory that allows to create new instances of the class `ExampleWiseStatistics`.
+     *
+     * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
+    template<class LabelMatrix>
     class DenseExampleWiseStatisticsFactory final : public IExampleWiseStatisticsFactory {
 
         private:
@@ -21,7 +24,7 @@ namespace boosting {
 
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
+            std::shared_ptr<LabelMatrix> labelMatrixPtr_;
 
             uint32 numThreads_;
 
@@ -33,15 +36,15 @@ namespace boosting {
              * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
              *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
              *                                  predictions, as well as corresponding quality scores, of rules
-             * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
-             *                                  provides random access to the labels of the training examples
+             * @param labelMatrixPtr            A shared pointer to an object of template type `LabelMatrix` that
+             *                                  provides access to the labels of the training examples
              * @param numThreads                The number of CPU threads to be used to calculate the initial statistics
              *                                  in parallel. Must be at least 1
              */
             DenseExampleWiseStatisticsFactory(
                     std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                     std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                    std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, uint32 numThreads);
+                    std::shared_ptr<LabelMatrix> labelMatrixPtr, uint32 numThreads);
 
             std::unique_ptr<IExampleWiseStatistics> create() const override;
 

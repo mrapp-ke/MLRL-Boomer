@@ -8,16 +8,18 @@
 
 namespace boosting {
 
-    DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(
+    template<class LabelMatrix>
+    DenseLabelWiseStatisticsFactory<LabelMatrix>::DenseLabelWiseStatisticsFactory(
             std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, uint32 numThreads)
+            std::shared_ptr<LabelMatrix> labelMatrixPtr, uint32 numThreads)
         : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
           labelMatrixPtr_(labelMatrixPtr), numThreads_(numThreads) {
 
     }
 
-    std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create() const {
+    template<class LabelMatrix>
+    std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory<LabelMatrix>::create() const {
         uint32 numExamples = labelMatrixPtr_->getNumRows();
         uint32 numLabels = labelMatrixPtr_->getNumCols();
         std::unique_ptr<DenseLabelWiseStatisticMatrix> statisticMatrixPtr =
@@ -25,7 +27,7 @@ namespace boosting {
         std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =
             std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
         const ILabelWiseLoss* lossFunctionPtr = lossFunctionPtr_.get();
-        const IRandomAccessLabelMatrix* labelMatrixPtr = labelMatrixPtr_.get();
+        const LabelMatrix* labelMatrixPtr = labelMatrixPtr_.get();
         const CContiguousView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
@@ -38,9 +40,12 @@ namespace boosting {
                                                        *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<LabelWiseStatistics<IRandomAccessLabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
+        return std::make_unique<LabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
             lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(statisticMatrixPtr),
             std::move(scoreMatrixPtr));
     }
+
+    template class DenseLabelWiseStatisticsFactory<IRandomAccessLabelMatrix>;
+    template class DenseLabelWiseStatisticsFactory<CsrLabelMatrix>;
 
 }
