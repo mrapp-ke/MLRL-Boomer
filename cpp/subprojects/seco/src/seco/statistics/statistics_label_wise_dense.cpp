@@ -86,7 +86,7 @@ namespace seco {
                         uint32 offset = statisticIndex * numLabels;
 
                         for (uint32 c = 0; c < numLabels; c++) {
-                            float64 labelWeight = statistics_.uncoveredLabels_[offset + c];
+                            float64 labelWeight = statistics_.weightMatrix_[offset + c];
 
                             // Only uncovered labels must be considered...
                             if (labelWeight > 0) {
@@ -110,7 +110,7 @@ namespace seco {
                             uint32 l = indexIterator[c];
 
                             // Only uncovered labels must be considered...
-                            if (statistics_.uncoveredLabels_[offset + l] > 0) {
+                            if (statistics_.weightMatrix_[offset + l] > 0) {
                                 // Add the current example and label to the confusion matrix for the current label...
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, l);
                                 uint8 predictedLabel = statistics_.minorityLabels_[l];
@@ -163,7 +163,7 @@ namespace seco {
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-            float64* uncoveredLabels_;
+            float64* weightMatrix_;
 
             uint8* minorityLabels_;
 
@@ -193,7 +193,7 @@ namespace seco {
                                 float64 sumUncoveredLabels, uint8* minorityLabels)
                 : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),
                   sumUncoveredLabels_(sumUncoveredLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
-                  labelMatrixPtr_(labelMatrixPtr), uncoveredLabels_(uncoveredLabels), minorityLabels_(minorityLabels) {
+                  labelMatrixPtr_(labelMatrixPtr), weightMatrix_(uncoveredLabels), minorityLabels_(minorityLabels) {
                 // The number of labels
                 uint32 numLabels = this->getNumLabels();
                 // A matrix that stores a confusion matrix, which takes into account all examples, for each label
@@ -206,7 +206,7 @@ namespace seco {
             }
 
             ~LabelWiseStatistics() {
-                free(uncoveredLabels_);
+                free(weightMatrix_);
                 free(minorityLabels_);
                 free(confusionMatricesTotal_);
                 free(confusionMatricesSubset_);
@@ -241,7 +241,7 @@ namespace seco {
                 uint32 offset = statisticIndex * numLabels;
 
                 for (uint32 c = 0; c < numLabels; c++) {
-                    float64 labelWeight = uncoveredLabels_[offset + c];
+                    float64 labelWeight = weightMatrix_[offset + c];
 
                     // Only uncovered labels must be considered...
                     if (labelWeight > 0) {
@@ -270,7 +270,7 @@ namespace seco {
                 float64 signedWeight = remove ? -weight : weight;
 
                 for (uint32 c = 0; c < numLabels; c++) {
-                    float64 labelWeight = uncoveredLabels_[offset + c];
+                    float64 labelWeight = weightMatrix_[offset + c];
 
                     // Only uncovered labels must be considered...
                     if (labelWeight > 0) {
@@ -312,14 +312,14 @@ namespace seco {
                     // Do only consider predictions that are different from the default rule's predictions...
                     if (predictedLabel == minorityLabel) {
                         uint32 i = offset + c;
-                        float64 labelWeight = uncoveredLabels_[i];
+                        float64 labelWeight = weightMatrix_[i];
 
                         if (labelWeight > 0) {
                             // Decrement the total sum of uncovered labels...
                             sumUncoveredLabels_ -= labelWeight;
 
                             // Mark the current example and label as covered...
-                            uncoveredLabels_[i] = 0;
+                            weightMatrix_[i] = 0;
                         }
                     }
                 }
@@ -341,14 +341,14 @@ namespace seco {
                     // Do only consider predictions that are different from the default rule's predictions...
                     if (predictedLabel == minorityLabel) {
                         uint32 i = offset + l;
-                        float64 labelWeight = uncoveredLabels_[i];
+                        float64 labelWeight = weightMatrix_[i];
 
                         if (labelWeight > 0) {
                             // Decrement the total sum of uncovered labels...
                             sumUncoveredLabels_ -= labelWeight;
 
                             // Mark the current example and label as covered...
-                            uncoveredLabels_[i] = 0;
+                            weightMatrix_[i] = 0;
                         }
                     }
                 }
