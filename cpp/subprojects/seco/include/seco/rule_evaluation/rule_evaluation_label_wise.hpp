@@ -26,9 +26,8 @@ namespace seco {
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on
              * confusion matrices.
              *
-             * @param minorityLabels            A pointer to an array of type `uint8`, shape `(num_labels)`, indicating
-             *                                  whether the rule should predict individual labels as positive (1) or
-             *                                  negative (0)
+             * @param majorityLabelVector       A reference to an object of type `DenseVector` that stores the
+             *                                  predictions of the default rule
              * @param confusionMatricesTotal    A pointer to a C-contiguous array of type `float64`, shape
              *                                  `(num_labels, NUM_CONFUSION_MATRIX_ELEMENTS)`, storing a confusion
              *                                  matrix that takes into account all examples for each label
@@ -46,11 +45,9 @@ namespace seco {
              * @return                          A reference to an object of type `ILabelWiseScoreVector` that stores the
              *                                  predicted scores and quality scores
              */
-            virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(const uint8* minorityLabels,
-                                                                              const float64* confusionMatricesTotal,
-                                                                              const float64* confusionMatricesSubset,
-                                                                              const float64* confusionMatricesCovered,
-                                                                              bool uncovered) = 0;
+            virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(
+                const DenseVector<uint8>& majorityLabelVector, const float64* confusionMatricesTotal,
+                const float64* confusionMatricesSubset, const float64* confusionMatricesCovered, bool uncovered) = 0;
 
     };
 

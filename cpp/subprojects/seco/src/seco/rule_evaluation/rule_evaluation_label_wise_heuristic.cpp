@@ -39,7 +39,7 @@ namespace seco {
 
             }
 
-            const ILabelWiseScoreVector& calculateLabelWisePrediction(const uint8* minorityLabels,
+            const ILabelWiseScoreVector& calculateLabelWisePrediction(const DenseVector<uint8>& majorityLabelVector,
                                                                       const float64* confusionMatricesTotal,
                                                                       const float64* confusionMatricesSubset,
                                                                       const float64* confusionMatricesCovered,
@@ -50,14 +50,15 @@ namespace seco {
                     scoreVector_.indices_cbegin();
                 typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
                     scoreVector_.quality_scores_begin();
+                DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVector.cbegin();
                 float64 overallQualityScore = 0;
 
                 for (uint32 c = 0; c < numPredictions; c++) {
                     uint32 l = indexIterator[c];
 
                     // Set the score to be predicted for the current label...
-                    uint8 minorityLabel = minorityLabels[l];
-                    float64 score = (float64) (predictMajority_ ? (minorityLabel > 0 ? 0 : 1) : minorityLabel);
+                    uint8 majorityLabel = majorityIterator[l];
+                    float64 score = (float64) (predictMajority_ ? majorityLabel : (majorityLabel ? 0 : 1));
                     scoreIterator[c] = score;
 
                     // Calculate the quality score for the current label...

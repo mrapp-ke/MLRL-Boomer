@@ -89,6 +89,8 @@ namespace seco {
                         // by the given weight) from the total sum of gradients and Hessians...
                         typename WeightMatrix::const_iterator weightIterator = statistics_.weightMatrixPtr_->row_cbegin(
                             statisticIndex);
+                        DenseVector<uint8>::const_iterator majorityIterator =
+                            statistics_.majorityLabelVectorPtr_->cbegin();
 
                         for (uint32 c = 0; c < numLabels; c++) {
                             uint8 labelWeight = weightIterator[c];
@@ -98,7 +100,7 @@ namespace seco {
                                 // Remove the current example and label from the confusion matrix that corresponds to
                                 // the current label...
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, c);
-                                uint8 predictedLabel = statistics_.minorityLabels_[c];
+                                uint8 predictedLabel = majorityIterator[c] ? 0 : 1;
                                 uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
                                 confusionMatricesSubset_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] -= weight;
                             }
@@ -111,6 +113,8 @@ namespace seco {
                         typename T::const_iterator indexIterator = labelIndices_.cbegin();
                         typename WeightMatrix::const_iterator weightIterator = statistics_.weightMatrixPtr_->row_cbegin(
                             statisticIndex);
+                        DenseVector<uint8>::const_iterator majorityIterator =
+                            statistics_.majorityLabelVectorPtr_->cbegin();
 
                         for (uint32 c = 0; c < numPredictions; c++) {
                             uint32 l = indexIterator[c];
@@ -119,7 +123,7 @@ namespace seco {
                             if (weightIterator[l] > 0) {
                                 // Add the current example and label to the confusion matrix for the current label...
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, l);
-                                uint8 predictedLabel = statistics_.minorityLabels_[l];
+                                uint8 predictedLabel = majorityIterator[l] ? 0 : 1;
                                 uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
                                 confusionMatricesCovered_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] += weight;
                             }
@@ -151,7 +155,7 @@ namespace seco {
                                                                               bool accumulated) override {
                         float64* confusionMatricesCovered =
                             accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
-                        return ruleEvaluationPtr_->calculateLabelWisePrediction(statistics_.minorityLabels_,
+                        return ruleEvaluationPtr_->calculateLabelWisePrediction(*statistics_.majorityLabelVectorPtr_,
                                                                                 statistics_.confusionMatricesTotal_,
                                                                                 confusionMatricesSubset_,
                                                                                 confusionMatricesCovered, uncovered);
@@ -171,7 +175,8 @@ namespace seco {
 
             std::unique_ptr<WeightMatrix> weightMatrixPtr_;
 
-            uint8* minorityLabels_;
+            // TODO Use sparse vector
+            std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr_;
 
             float64* confusionMatricesTotal_;
 
@@ -189,18 +194,17 @@ namespace seco {
              * @param weightMatrixPtr           An unique pointer to an object of template type `WeightMatrix` that
              *                                  stores the weights of individual examples and labels
              * @param sumUncoveredLabels        The sum of weights of all labels that remain to be covered
-             * @param minorityLabels            A pointer to an array of type `uint8`, shape `(numLabels)`, indicating
-             *                                  whether rules should predict individual labels as relevant (1) or
-             *                                  irrelevant (0)
+             * @param majorityLabelVectorPtr    An unique pointer to an object of type `DenseVector` that stores the
+             *                                  predictions of the default rule
              */
             LabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                                 std::unique_ptr<WeightMatrix> weightMatrixPtr, uint32 sumUncoveredLabels,
-                                uint8* minorityLabels)
+                                std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),
                   sumUncoveredLabels_(sumUncoveredLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
                   labelMatrixPtr_(labelMatrixPtr), weightMatrixPtr_(std::move(weightMatrixPtr)),
-                  minorityLabels_(minorityLabels) {
+                  majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)) {
                 // The number of labels
                 uint32 numLabels = this->getNumLabels();
                 // A matrix that stores a confusion matrix, which takes into account all examples, for each label
@@ -213,7 +217,6 @@ namespace seco {
             }
 
             ~LabelWiseStatistics() {
-                free(minorityLabels_);
                 free(confusionMatricesTotal_);
                 free(confusionMatricesSubset_);
             }
@@ -245,6 +248,7 @@ namespace seco {
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
                 uint32 numLabels = this->getNumLabels();
                 typename WeightMatrix::const_iterator weightIterator = weightMatrixPtr_->row_cbegin(statisticIndex);
+                DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 for (uint32 c = 0; c < numLabels; c++) {
                     uint8 labelWeight = weightIterator[c];
@@ -254,7 +258,7 @@ namespace seco {
                         // Add the current example and label to the confusion matrix that corresponds to the current
                         // label...
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
-                        uint8 predictedLabel = minorityLabels_[c];
+                        uint8 predictedLabel = majorityIterator[c] ? 0 : 1;
                         uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
                         uint32 i = c * NUM_CONFUSION_MATRIX_ELEMENTS + element;
                         confusionMatricesTotal_[i] += weight;
@@ -274,6 +278,7 @@ namespace seco {
                 uint32 numLabels = this->getNumLabels();
                 float64 signedWeight = remove ? -weight : weight;
                 typename WeightMatrix::const_iterator weightIterator = weightMatrixPtr_->row_cbegin(statisticIndex);
+                DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 for (uint32 c = 0; c < numLabels; c++) {
                     uint8 labelWeight = weightIterator[c];
@@ -283,7 +288,7 @@ namespace seco {
                         // Add the current example and label to the confusion matrix that corresponds to the current
                         // label...
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
-                        uint8 predictedLabel = minorityLabels_[c];
+                        uint8 predictedLabel = majorityIterator[c] ? 0 : 1;
                         uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
                         confusionMatricesSubset_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] += signedWeight;
                     }
@@ -309,14 +314,15 @@ namespace seco {
                 uint32 numPredictions = prediction.getNumElements();
                 FullPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
                 typename WeightMatrix::iterator weightIterator = weightMatrixPtr_->row_begin(statisticIndex);
+                DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 // Only the labels that are predicted by the new rule must be considered...
                 for (uint32 c = 0; c < numPredictions; c++) {
                     uint8 predictedLabel = scoreIterator[c];
-                    uint8 minorityLabel = minorityLabels_[c];
+                    uint8 majorityLabel = majorityIterator[c];
 
                     // Do only consider predictions that are different from the default rule's predictions...
-                    if (predictedLabel == minorityLabel) {
+                    if (predictedLabel != majorityLabel) {
                         uint8 labelWeight = weightIterator[c];
 
                         if (labelWeight > 0) {
@@ -336,15 +342,16 @@ namespace seco {
                 PartialPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
                 PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
                 typename WeightMatrix::iterator weightIterator = weightMatrixPtr_->row_begin(statisticIndex);
+                DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 // Only the labels that are predicted by the new rule must be considered...
                 for (uint32 c = 0; c < numPredictions; c++) {
                     uint32 l = indexIterator[c];
                     uint8 predictedLabel = scoreIterator[c];
-                    uint8 minorityLabel = minorityLabels_[l];
+                    uint8 majorityLabel = majorityIterator[l];
 
                     // Do only consider predictions that are different from the default rule's predictions...
-                    if (predictedLabel == minorityLabel) {
+                    if (predictedLabel != majorityLabel) {
                         uint8 labelWeight = weightIterator[l];
 
                         if (labelWeight > 0) {
@@ -387,8 +394,9 @@ namespace seco {
                                                                                                  numLabels);
         // The sum of weights of all examples and labels that remain to be covered
         uint32 sumUncoveredLabels = 0;
-        // An array that stores whether rules should predict individual labels as relevant (1) or irrelevant (0)
-        uint8* minorityLabels = (uint8*) malloc(numLabels * sizeof(uint8));
+        // A vector that stores the prediction of the default rule
+        std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr = std::make_unique<DenseVector<uint8>>(numLabels);
+        DenseVector<uint8>::iterator majorityIterator = majorityLabelVectorPtr->begin();
         // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
         float64 threshold = numExamples / 2.0;
         uint32 numRelevantPerLabel[numLabels] = {};
@@ -406,16 +414,17 @@ namespace seco {
             uint32 numRelevant = numRelevantPerLabel[i];
 
             if (numRelevant > threshold) {
-                minorityLabels[i] = 0;
+                majorityIterator[i] = 1;
                 sumUncoveredLabels += (numExamples - numRelevant);
             } else {
-                minorityLabels[i] = 1;
+                majorityIterator[i] = 0;
                 sumUncoveredLabels += numRelevant;
             }
         }
 
         return std::make_unique<LabelWiseStatistics<DenseWeightMatrix>>(
-            ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(weightMatrixPtr), sumUncoveredLabels, minorityLabels);
+            ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(weightMatrixPtr), sumUncoveredLabels,
+            std::move(majorityLabelVectorPtr));
     }
 
 }
