@@ -179,6 +179,12 @@ namespace seco {
 
             float64* confusionMatricesSubset_;
 
+            template<class T>
+            void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
+                weightMatrixPtr_->updateRow(statisticIndex, *majorityLabelVectorPtr_, prediction.scores_cbegin(),
+                    prediction.scores_cend(), prediction.indices_cbegin(), prediction.indices_cend());
+            }
+
         public:
 
             /**
@@ -306,65 +312,11 @@ namespace seco {
             }
 
             void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-                uint32 numLabels = this->getNumLabels();
-                uint32 numPredictions = prediction.getNumElements();
-                FullPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
-                typename WeightMatrix::iterator weightIterator = weightMatrixPtr_->row_begin(statisticIndex);
-                uint32 sumOfUncoveredWeights = weightMatrixPtr_->getSumOfUncoveredWeights();
-                DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
-
-                // Only the labels that are predicted by the new rule must be considered...
-                for (uint32 c = 0; c < numPredictions; c++) {
-                    uint8 predictedLabel = scoreIterator[c];
-                    uint8 majorityLabel = majorityIterator[c];
-
-                    // Do only consider predictions that are different from the default rule's predictions...
-                    if (predictedLabel != majorityLabel) {
-                        uint8 labelWeight = weightIterator[c];
-
-                        if (labelWeight > 0) {
-                            // Decrement the total sum of uncovered labels...
-                            sumOfUncoveredWeights -= labelWeight;
-
-                            // Mark the current example and label as covered...
-                            weightIterator[c] = 0;
-                        }
-                    }
-                }
-
-                weightMatrixPtr_->setSumOfUncoveredWeights(sumOfUncoveredWeights);
+                this->applyPredictionInternally<FullPrediction>(statisticIndex, prediction);
             }
 
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
-                uint32 numLabels = this->getNumLabels();
-                uint32 numPredictions = prediction.getNumElements();
-                PartialPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
-                PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
-                typename WeightMatrix::iterator weightIterator = weightMatrixPtr_->row_begin(statisticIndex);
-                uint32 sumOfUncoveredWeights = weightMatrixPtr_->getSumOfUncoveredWeights();
-                DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
-
-                // Only the labels that are predicted by the new rule must be considered...
-                for (uint32 c = 0; c < numPredictions; c++) {
-                    uint32 l = indexIterator[c];
-                    uint8 predictedLabel = scoreIterator[c];
-                    uint8 majorityLabel = majorityIterator[l];
-
-                    // Do only consider predictions that are different from the default rule's predictions...
-                    if (predictedLabel != majorityLabel) {
-                        uint8 labelWeight = weightIterator[l];
-
-                        if (labelWeight > 0) {
-                            // Decrement the total sum of uncovered labels...
-                            sumOfUncoveredWeights -= labelWeight;
-
-                            // Mark the current example and label as covered...
-                            weightIterator[l] = 0;
-                        }
-                    }
-                }
-
-                weightMatrixPtr_->setSumOfUncoveredWeights(sumOfUncoveredWeights);
+                this->applyPredictionInternally<PartialPrediction>(statisticIndex, prediction);
             }
 
             float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
