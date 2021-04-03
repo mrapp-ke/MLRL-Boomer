@@ -6,7 +6,7 @@
 #include "common/data/view_c_contiguous.hpp"
 #include "common/indices/index_vector_full.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "common/input/label_matrix.hpp"
+#include "common/input/label_matrix_csr.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
 #include "boosting/data/matrix_dense_label_wise.hpp"
@@ -61,6 +61,20 @@ namespace boosting {
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
 
+            // TODO Comment
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                   const CContiguousView<float64>& scoreMatrix,
+                                                   FullIndexVector::const_iterator labelIndicesBegin,
+                                                   FullIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+
+            // TODO Comment
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                   const CContiguousView<float64> scoreMatrix,
+                                                   PartialIndexVector::const_iterator labelIndicesBegin,
+                                                   PartialIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+
     };
 
     /**
@@ -108,6 +122,18 @@ namespace boosting {
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
+
+            void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                           const CContiguousView<float64>& scoreMatrix,
+                                           FullIndexVector::const_iterator labelIndicesBegin,
+                                           FullIndexVector::const_iterator labelIndicesEnd,
+                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
+
+            void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                            const CContiguousView<float64> scoreMatrix,
+                                            PartialIndexVector::const_iterator labelIndicesBegin,
+                                            PartialIndexVector::const_iterator labelIndicesEnd,
+                                            DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
 
             float64 evaluate(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override final;
