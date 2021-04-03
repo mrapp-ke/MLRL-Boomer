@@ -167,8 +167,6 @@ namespace seco {
 
             uint32 numLabels_;
 
-            uint32 sumUncoveredLabels_;
-
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
@@ -193,17 +191,16 @@ namespace seco {
              *                                  provides random access to the labels of the training examples
              * @param weightMatrixPtr           An unique pointer to an object of template type `WeightMatrix` that
              *                                  stores the weights of individual examples and labels
-             * @param sumUncoveredLabels        The sum of weights of all labels that remain to be covered
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `DenseVector` that stores the
              *                                  predictions of the default rule
              */
             LabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                std::unique_ptr<WeightMatrix> weightMatrixPtr, uint32 sumUncoveredLabels,
+                                std::unique_ptr<WeightMatrix> weightMatrixPtr,
                                 std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),
-                  sumUncoveredLabels_(sumUncoveredLabels), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
-                  labelMatrixPtr_(labelMatrixPtr), weightMatrixPtr_(std::move(weightMatrixPtr)),
+                  ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrixPtr_(labelMatrixPtr),
+                  weightMatrixPtr_(std::move(weightMatrixPtr)),
                   majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)) {
                 // The number of labels
                 uint32 numLabels = this->getNumLabels();
@@ -229,8 +226,8 @@ namespace seco {
                 return numLabels_;
             }
 
-            float64 getSumOfUncoveredLabels() const override {
-                return (float64) sumUncoveredLabels_;
+            float64 getSumOfUncoveredWeights() const override {
+                return (float64) weightMatrixPtr_->getSumOfUncoveredWeights();
             }
 
             void setRuleEvaluationFactory(
@@ -314,6 +311,7 @@ namespace seco {
                 uint32 numPredictions = prediction.getNumElements();
                 FullPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
                 typename WeightMatrix::iterator weightIterator = weightMatrixPtr_->row_begin(statisticIndex);
+                uint32 sumOfUncoveredWeights = weightMatrixPtr_->getSumOfUncoveredWeights();
                 DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 // Only the labels that are predicted by the new rule must be considered...
@@ -327,13 +325,15 @@ namespace seco {
 
                         if (labelWeight > 0) {
                             // Decrement the total sum of uncovered labels...
-                            sumUncoveredLabels_ -= labelWeight;
+                            sumOfUncoveredWeights -= labelWeight;
 
                             // Mark the current example and label as covered...
                             weightIterator[c] = 0;
                         }
                     }
                 }
+
+                weightMatrixPtr_->setSumOfUncoveredWeights(sumOfUncoveredWeights);
             }
 
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
@@ -342,6 +342,7 @@ namespace seco {
                 PartialPrediction::score_const_iterator scoreIterator = prediction.scores_cbegin();
                 PartialPrediction::index_const_iterator indexIterator = prediction.indices_cbegin();
                 typename WeightMatrix::iterator weightIterator = weightMatrixPtr_->row_begin(statisticIndex);
+                uint32 sumOfUncoveredWeights = weightMatrixPtr_->getSumOfUncoveredWeights();
                 DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 // Only the labels that are predicted by the new rule must be considered...
@@ -356,13 +357,15 @@ namespace seco {
 
                         if (labelWeight > 0) {
                             // Decrement the total sum of uncovered labels...
-                            sumUncoveredLabels_ -= labelWeight;
+                            sumOfUncoveredWeights -= labelWeight;
 
                             // Mark the current example and label as covered...
                             weightIterator[l] = 0;
                         }
                     }
                 }
+
+                weightMatrixPtr_->setSumOfUncoveredWeights(sumOfUncoveredWeights);
             }
 
             float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
@@ -392,8 +395,8 @@ namespace seco {
         // A matrix that stores the weights of individual examples and labels
         std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(numExamples,
                                                                                                  numLabels);
-        // The sum of weights of all examples and labels that remain to be covered
-        uint32 sumUncoveredLabels = 0;
+        // The sum of the weights of all examples and labels that remain to be covered
+        uint32 sumOfUncoveredWeights = 0;
         // A vector that stores the prediction of the default rule
         std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr = std::make_unique<DenseVector<uint8>>(numLabels);
         DenseVector<uint8>::iterator majorityIterator = majorityLabelVectorPtr->begin();
@@ -415,16 +418,16 @@ namespace seco {
 
             if (numRelevant > threshold) {
                 majorityIterator[i] = 1;
-                sumUncoveredLabels += (numExamples - numRelevant);
+                sumOfUncoveredWeights += (numExamples - numRelevant);
             } else {
                 majorityIterator[i] = 0;
-                sumUncoveredLabels += numRelevant;
+                sumOfUncoveredWeights += numRelevant;
             }
         }
 
+        weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
         return std::make_unique<LabelWiseStatistics<DenseWeightMatrix>>(
-            ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(weightMatrixPtr), sumUncoveredLabels,
-            std::move(majorityLabelVectorPtr));
+            ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
 }
