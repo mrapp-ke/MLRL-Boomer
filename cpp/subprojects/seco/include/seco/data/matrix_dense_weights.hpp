@@ -13,6 +13,10 @@ namespace seco {
      */
     class DenseWeightMatrix final : public DenseMatrix<uint8> {
 
+        private:
+
+            uint32 sumOfUncoveredWeights_;
+
         public:
 
             /**
@@ -20,6 +24,20 @@ namespace seco {
              * @param numCols   The number of columns in the matrix
              */
             DenseWeightMatrix(uint32 numRows, uint32 numCols);
+
+            /**
+             * Returns the sum of the weights of all labels that remain to be covered.
+             *
+             * @return The sum of the weights
+             */
+            uint32 getSumOfUncoveredWeights() const;
+
+            /**
+             * Sets the sum of the weights of all labels that remain to be covered.
+             *
+             * @param sumOfUncoveredWeights The sum of weights to be set
+             */
+            void setSumOfUncoveredWeights(uint32 sumOfUncoveredWeights);
 
     };
 
