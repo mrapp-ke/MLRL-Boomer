@@ -53,4 +53,10 @@ namespace seco {
         return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_, statisticsFactory.create());
     }
 
+    std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
+            std::shared_ptr<CsrLabelMatrix> labelMatrixPtr) const {
+        // TODO Implement
+        return nullptr;
+    }
+
 }
