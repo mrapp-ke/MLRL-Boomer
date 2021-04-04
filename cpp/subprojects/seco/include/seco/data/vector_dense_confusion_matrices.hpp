@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/input/label_matrix.hpp"
+#include "seco/data/matrix_dense_weights.hpp"
 
 
 namespace seco {
@@ -120,6 +121,18 @@ namespace seco {
              * Sets the elements of all confusion matrices to zero.
              */
             void setAllToZero();
+
+            // TODO Comment
+            void addToSubset(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
+                             const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
+                             FullIndexVector::const_iterator indicesBegin, FullIndexVector::const_iterator indicesEnd,
+                             float64 weight);
+
+            // TODO Comment
+            void addToSubset(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
+                             const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
+                             PartialIndexVector::const_iterator indicesBegin,
+                             PartialIndexVector::const_iterator indicesEnd, float64 weight);
 
     };
 
