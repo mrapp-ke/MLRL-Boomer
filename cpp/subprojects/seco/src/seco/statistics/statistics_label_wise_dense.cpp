@@ -11,10 +11,7 @@ namespace seco {
     /**
      * Provides access to the elements of confusion matrices that are computed independently for each label using dense
      * data structures.
-     *
-     * @tparam WeightMatrix The type of the matrix that stores the weights of individual examples and labels
      */
-    template<class WeightMatrix>
     class LabelWiseStatistics final : public ILabelWiseStatistics {
 
         private:
@@ -88,8 +85,8 @@ namespace seco {
 
                         // For each label, subtract the gradient and Hessian of the example at the given index (weighted
                         // by the given weight) from the total sum of gradients and Hessians...
-                        typename WeightMatrix::const_iterator weightIterator = statistics_.weightMatrixPtr_->row_cbegin(
-                            statisticIndex);
+                        typename DenseWeightMatrix::const_iterator weightIterator =
+                            statistics_.weightMatrixPtr_->row_cbegin(statisticIndex);
                         DenseVector<uint8>::const_iterator majorityIterator =
                             statistics_.majorityLabelVectorPtr_->cbegin();
 
@@ -111,8 +108,8 @@ namespace seco {
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
                         uint32 numPredictions = labelIndices_.getNumElements();
                         typename T::const_iterator indexIterator = labelIndices_.cbegin();
-                        typename WeightMatrix::const_iterator weightIterator = statistics_.weightMatrixPtr_->row_cbegin(
-                            statisticIndex);
+                        typename DenseWeightMatrix::const_iterator weightIterator =
+                            statistics_.weightMatrixPtr_->row_cbegin(statisticIndex);
                         DenseVector<uint8>::const_iterator majorityIterator =
                             statistics_.majorityLabelVectorPtr_->cbegin();
 
@@ -171,7 +168,7 @@ namespace seco {
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-            std::unique_ptr<WeightMatrix> weightMatrixPtr_;
+            std::unique_ptr<DenseWeightMatrix> weightMatrixPtr_;
 
             // TODO Use sparse vector
             std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr_;
@@ -195,14 +192,14 @@ namespace seco {
              *                                  rules
              * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
              *                                  provides random access to the labels of the training examples
-             * @param weightMatrixPtr           An unique pointer to an object of template type `WeightMatrix` that
-             *                                  stores the weights of individual examples and labels
+             * @param weightMatrixPtr           An unique pointer to an object of type `DenseWeightMatrix` that stores
+             *                                  the weights of individual examples and labels
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `DenseVector` that stores the
              *                                  predictions of the default rule
              */
             LabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                std::unique_ptr<WeightMatrix> weightMatrixPtr,
+                                std::unique_ptr<DenseWeightMatrix> weightMatrixPtr,
                                 std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),
                   ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrixPtr_(labelMatrixPtr),
@@ -250,7 +247,8 @@ namespace seco {
 
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
                 uint32 numLabels = this->getNumLabels();
-                typename WeightMatrix::const_iterator weightIterator = weightMatrixPtr_->row_cbegin(statisticIndex);
+                typename DenseWeightMatrix::const_iterator weightIterator =
+                    weightMatrixPtr_->row_cbegin(statisticIndex);
                 DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 for (uint32 c = 0; c < numLabels; c++) {
@@ -280,7 +278,8 @@ namespace seco {
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
                 uint32 numLabels = this->getNumLabels();
                 float64 signedWeight = remove ? -weight : weight;
-                typename WeightMatrix::const_iterator weightIterator = weightMatrixPtr_->row_cbegin(statisticIndex);
+                typename DenseWeightMatrix::const_iterator weightIterator =
+                    weightMatrixPtr_->row_cbegin(statisticIndex);
                 DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 for (uint32 c = 0; c < numLabels; c++) {
@@ -367,8 +366,8 @@ namespace seco {
         }
 
         weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
-        return std::make_unique<LabelWiseStatistics<DenseWeightMatrix>>(
-            ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
+        return std::make_unique<LabelWiseStatistics>(ruleEvaluationFactoryPtr_, labelMatrixPtr_,
+                                                     std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
 }
