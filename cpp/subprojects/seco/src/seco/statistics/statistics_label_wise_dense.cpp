@@ -10,7 +10,12 @@ namespace seco {
     /**
      * Provides access to the elements of confusion matrices that are computed independently for each label using dense
      * data structures.
+     *
+     * @tparam WeightMatrix             The type of the matrix that is used to store the weights of individual examples
+     *                                  and labels
+     * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
      */
+    template<class WeightMatrix, class ConfusionMatrixVector>
     class LabelWiseStatistics final : public ILabelWiseStatistics {
 
         private:
@@ -29,17 +34,17 @@ namespace seco {
 
                     const LabelWiseStatistics& statistics_;
 
-                    const DenseConfusionMatrixVector* totalSumVector_;
+                    const ConfusionMatrixVector* totalSumVector_;
 
                     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
                     const T& labelIndices_;
 
-                    DenseConfusionMatrixVector sumVector_;
+                    ConfusionMatrixVector sumVector_;
 
-                    DenseConfusionMatrixVector* accumulatedSumVector_;
+                    ConfusionMatrixVector* accumulatedSumVector_;
 
-                    DenseConfusionMatrixVector* totalCoverableSumVector_;
+                    ConfusionMatrixVector* totalCoverableSumVector_;
 
                 public:
 
@@ -56,7 +61,7 @@ namespace seco {
                                      std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                         : statistics_(statistics), totalSumVector_(&statistics_.subsetSumVector_),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
-                          sumVector_(DenseConfusionMatrixVector(labelIndices.getNumElements(), true)),
+                          sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)),
                           accumulatedSumVector_(nullptr), totalCoverableSumVector_(nullptr) {
 
                     }
@@ -69,7 +74,7 @@ namespace seco {
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
                         if (totalCoverableSumVector_ == nullptr) {
-                            totalCoverableSumVector_ = new DenseConfusionMatrixVector(*totalSumVector_);
+                            totalCoverableSumVector_ = new ConfusionMatrixVector(*totalSumVector_);
                             totalSumVector_ = totalCoverableSumVector_;
                         }
 
@@ -90,7 +95,7 @@ namespace seco {
                         // Allocate a vector for storing the accumulated confusion matrices, if necessary...
                         if (accumulatedSumVector_ == nullptr) {
                             uint32 numPredictions = labelIndices_.getNumElements();
-                            accumulatedSumVector_ = new DenseConfusionMatrixVector(numPredictions, true);
+                            accumulatedSumVector_ = new ConfusionMatrixVector(numPredictions, true);
                         }
 
                         // Reset the confusion matrix for each label to zero and add its elements to the accumulated
@@ -101,7 +106,7 @@ namespace seco {
 
                     const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
                                                                               bool accumulated) override {
-                        const DenseConfusionMatrixVector& sumsOfConfusionMatrices =
+                        const ConfusionMatrixVector& sumsOfConfusionMatrices =
                             accumulated ? *accumulatedSumVector_ : sumVector_;
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*statistics_.majorityLabelVectorPtr_,
                                                                                 statistics_.totalSumVector_,
@@ -119,14 +124,14 @@ namespace seco {
 
             std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
 
-            std::unique_ptr<DenseWeightMatrix> weightMatrixPtr_;
+            std::unique_ptr<WeightMatrix> weightMatrixPtr_;
 
             // TODO Use sparse vector
             std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr_;
 
-            DenseConfusionMatrixVector totalSumVector_;
+            ConfusionMatrixVector totalSumVector_;
 
-            DenseConfusionMatrixVector subsetSumVector_;
+            ConfusionMatrixVector subsetSumVector_;
 
             template<class T>
             void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
@@ -143,21 +148,21 @@ namespace seco {
              *                                  rules
              * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
              *                                  provides random access to the labels of the training examples
-             * @param weightMatrixPtr           An unique pointer to an object of type `DenseWeightMatrix` that stores
-             *                                  the weights of individual examples and labels
+             * @param weightMatrixPtr           An unique pointer to an object of template type `WeightMatrix` that
+             *                                  stores the weights of individual examples and labels
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `DenseVector` that stores the
              *                                  predictions of the default rule
              */
             LabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                std::unique_ptr<DenseWeightMatrix> weightMatrixPtr,
+                                std::unique_ptr<WeightMatrix> weightMatrixPtr,
                                 std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),
                   ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrixPtr_(labelMatrixPtr),
                   weightMatrixPtr_(std::move(weightMatrixPtr)),
                   majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
-                  totalSumVector_(DenseConfusionMatrixVector(numLabels_)),
-                  subsetSumVector_(DenseConfusionMatrixVector(numLabels_)) {
+                  totalSumVector_(ConfusionMatrixVector(numLabels_)),
+                  subsetSumVector_(ConfusionMatrixVector(numLabels_)) {
 
             }
 
@@ -269,8 +274,8 @@ namespace seco {
         }
 
         weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
-        return std::make_unique<LabelWiseStatistics>(ruleEvaluationFactoryPtr_, labelMatrixPtr_,
-                                                     std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
+        return std::make_unique<LabelWiseStatistics<DenseWeightMatrix, DenseConfusionMatrixVector>>(
+            ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
 }
