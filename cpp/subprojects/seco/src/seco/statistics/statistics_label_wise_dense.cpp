@@ -76,8 +76,6 @@ namespace seco {
                     }
 
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
-                        uint32 numLabels = statistics_.getNumLabels();
-
                         // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
                         if (confusionMatricesCoverableSubset_ == nullptr) {
                             confusionMatricesCoverableSubset_ =
@@ -91,6 +89,7 @@ namespace seco {
                             statistics_.weightMatrixPtr_->row_cbegin(statisticIndex);
                         DenseVector<uint8>::const_iterator majorityIterator =
                             statistics_.majorityLabelVectorPtr_->cbegin();
+                        uint32 numLabels = statistics_.getNumLabels();
 
                         for (uint32 c = 0; c < numLabels; c++) {
                             DenseConfusionMatrixVector::iterator confusionMatrixIterator =
@@ -110,12 +109,12 @@ namespace seco {
                     }
 
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
-                        uint32 numPredictions = labelIndices_.getNumElements();
                         typename T::const_iterator indexIterator = labelIndices_.cbegin();
                         typename DenseWeightMatrix::const_iterator weightIterator =
                             statistics_.weightMatrixPtr_->row_cbegin(statisticIndex);
                         DenseVector<uint8>::const_iterator majorityIterator =
                             statistics_.majorityLabelVectorPtr_->cbegin();
+                        uint32 numPredictions = labelIndices_.getNumElements();
 
                         for (uint32 c = 0; c < numPredictions; c++) {
                             DenseConfusionMatrixVector::iterator confusionMatrixIterator =
