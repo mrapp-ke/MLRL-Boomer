@@ -95,10 +95,10 @@ namespace seco {
                         for (uint32 c = 0; c < numLabels; c++) {
                             DenseConfusionMatrixVector::iterator confusionMatrixIterator =
                                 confusionMatricesCoverableSubset_->confusion_matrix_begin(c);
-                            uint8 weight = weightIterator[c];
+                            float64 labelWeight = weightIterator[c];
 
                             // Only uncovered labels must be considered...
-                            if (weight) {
+                            if (labelWeight > 0) {
                                 // Remove the current example and label from the confusion matrix that corresponds to
                                 // the current label...
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, c);
@@ -121,9 +121,10 @@ namespace seco {
                             DenseConfusionMatrixVector::iterator confusionMatrixIterator =
                                 confusionMatricesCovered_.confusion_matrix_begin(c);
                             uint32 l = indexIterator[c];
+                            float64 labelWeight = weightIterator[l];
 
                             // Only uncovered labels must be considered...
-                            if (weightIterator[l] > 0) {
+                            if (labelWeight > 0) {
                                 // Add the current example and label to the confusion matrix for the current label...
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, l);
                                 uint8 majorityLabel = majorityIterator[l];
@@ -226,7 +227,7 @@ namespace seco {
             }
 
             float64 getSumOfUncoveredWeights() const override {
-                return (float64) weightMatrixPtr_->getSumOfUncoveredWeights();
+                return weightMatrixPtr_->getSumOfUncoveredWeights();
             }
 
             void setRuleEvaluationFactory(
@@ -250,10 +251,10 @@ namespace seco {
                         confusionMatricesTotal_.confusion_matrix_begin(c);
                     DenseConfusionMatrixVector::iterator subsetIterator =
                         confusionMatricesSubset_.confusion_matrix_begin(c);
-                    uint8 weight = weightIterator[c];
+                    float64 labelWeight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
-                    if (weight) {
+                    if (labelWeight > 0) {
                         // Add the current example and label to the confusion matrix that corresponds to the current
                         // label...
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
@@ -279,10 +280,10 @@ namespace seco {
                 for (uint32 c = 0; c < numLabels; c++) {
                     DenseConfusionMatrixVector::iterator subsetIterator =
                         confusionMatricesSubset_.confusion_matrix_begin(c);
-                    uint8 weight = weightIterator[c];
+                    float64 labelWeight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
-                    if (weight) {
+                    if (labelWeight > 0) {
                         // Add the current example and label to the confusion matrix that corresponds to the current
                         // label...
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
@@ -342,7 +343,7 @@ namespace seco {
         std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr = std::make_unique<DenseVector<uint8>>(numLabels);
         DenseVector<uint8>::iterator majorityIterator = majorityLabelVectorPtr->begin();
         float64 threshold = numExamples / 2.0;
-        uint32 sumOfUncoveredWeights = 0;
+        float64 sumOfUncoveredWeights = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 numRelevant = 0;

@@ -5,15 +5,15 @@
 namespace seco {
 
     DenseWeightMatrix::DenseWeightMatrix(uint32 numRows, uint32 numCols)
-        : DenseMatrix<uint8>(numRows, numCols), sumOfUncoveredWeights_(0) {
-        setArrayToValue<uint8>(this->array_, numRows * numCols, 1);
+        : DenseMatrix<float64>(numRows, numCols), sumOfUncoveredWeights_(0) {
+        setArrayToValue<float64>(this->array_, numRows * numCols, 1);
     }
 
-    uint32 DenseWeightMatrix::getSumOfUncoveredWeights() const {
+    float64 DenseWeightMatrix::getSumOfUncoveredWeights() const {
         return sumOfUncoveredWeights_;
     }
 
-    void DenseWeightMatrix::setSumOfUncoveredWeights(uint32 sumOfUncoveredWeights) {
+    void DenseWeightMatrix::setSumOfUncoveredWeights(float64 sumOfUncoveredWeights) {
         sumOfUncoveredWeights_ = sumOfUncoveredWeights;
     }
 
@@ -31,10 +31,10 @@ namespace seco {
             uint8 majorityLabel = majorityIterator[i];
 
             if (predictedLabel != majorityLabel) {
-                uint8 weight = weightIterator[i];
+                float64 labelWeight = weightIterator[i];
 
-                if (weight) {
-                    sumOfUncoveredWeights_ -= weight;
+                if (labelWeight > 0) {
+                    sumOfUncoveredWeights_ -= labelWeight;
                     weightIterator[i] = 0;
                 }
             }
@@ -56,10 +56,10 @@ namespace seco {
             uint8 majorityLabel = majorityIterator[index];
 
             if (predictedLabel != majorityLabel) {
-                uint8 weight = weightIterator[index];
+                float64 labelWeight = weightIterator[index];
 
-                if (weight) {
-                    sumOfUncoveredWeights_ -= weight;
+                if (labelWeight > 0) {
+                    sumOfUncoveredWeights_ -= labelWeight;
                     weightIterator[index] = 0;
                 }
             }
