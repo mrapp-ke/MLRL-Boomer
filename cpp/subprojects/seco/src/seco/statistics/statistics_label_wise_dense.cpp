@@ -59,14 +59,15 @@ namespace seco {
                     StatisticsSubset(const LabelWiseStatistics& statistics,
                                      std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                         : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
-                          labelIndices_(labelIndices) {
-                        uint32 numPredictions = labelIndices.getNumElements();
-                        confusionMatricesCovered_ =
-                            (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-                        setArrayToZeros(confusionMatricesCovered_, numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
-                        accumulatedConfusionMatricesCovered_ = nullptr;
-                        confusionMatricesSubset_ = statistics_.confusionMatricesSubset_;
-                        confusionMatricesCoverableSubset_ = nullptr;
+                          labelIndices_(labelIndices),
+                          confusionMatricesCovered_((float64*) malloc(labelIndices.getNumElements()
+                                                                      * NUM_CONFUSION_MATRIX_ELEMENTS
+                                                                      * sizeof(float64))),
+                          accumulatedConfusionMatricesCovered_(nullptr),
+                          confusionMatricesSubset_(statistics_.confusionMatricesSubset_),
+                          confusionMatricesCoverableSubset_(nullptr) {
+                        setArrayToZeros(confusionMatricesCovered_,
+                                        labelIndices_.getNumElements() * NUM_CONFUSION_MATRIX_ELEMENTS);
                     }
 
                     ~StatisticsSubset() {
