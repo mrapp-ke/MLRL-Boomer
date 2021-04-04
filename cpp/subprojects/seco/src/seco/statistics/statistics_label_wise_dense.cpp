@@ -135,12 +135,15 @@ namespace seco {
                             accumulatedConfusionMatricesCovered_ = new DenseConfusionMatrixVector(numPredictions, true);
                         }
 
-                        // Reset the confusion matrix for each label to zero and copy its elements to the accumulated
+                        // Reset the confusion matrix for each label to zero and add its elements to the accumulated
                         // confusion matrix...
-                        for (uint32 c = 0; c < numPredictions; c++) {
-                            uint32 offset = c * NUM_CONFUSION_MATRIX_ELEMENTS;
-                            copyArray(&confusionMatricesCovered_.cbegin()[offset], &accumulatedConfusionMatricesCovered_->begin()[offset],
-                                      NUM_CONFUSION_MATRIX_ELEMENTS);
+                        DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered_.cbegin();
+                        DenseConfusionMatrixVector::iterator accumulatedIterator =
+                            accumulatedConfusionMatricesCovered_->begin();
+                        uint32 numElements = accumulatedConfusionMatricesCovered_->end() - accumulatedIterator;
+
+                        for (uint32 i = 0; i < numElements; i++) {
+                            accumulatedIterator[i] += coveredIterator[i];
                         }
 
                         confusionMatricesCovered_.setAllToZero();
