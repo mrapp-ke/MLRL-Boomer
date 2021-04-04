@@ -32,7 +32,7 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::end() {
-        return &array_[numElements_];
+        return &array_[numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS];
     }
 
     DenseConfusionMatrixVector::const_iterator DenseConfusionMatrixVector::cbegin() const {
@@ -40,7 +40,7 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::const_iterator DenseConfusionMatrixVector::cend() const {
-        return &array_[numElements_];
+        return &array_[numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS];
     }
 
     DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::confusion_matrix_begin(uint32 pos) {
