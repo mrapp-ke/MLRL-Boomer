@@ -77,27 +77,9 @@ namespace seco {
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
-                        typename DenseWeightMatrix::const_iterator weightIterator =
-                            statistics_.weightMatrixPtr_->row_cbegin(statisticIndex);
-                        DenseVector<uint8>::const_iterator majorityIterator =
-                            statistics_.majorityLabelVectorPtr_->cbegin();
-                        uint32 numLabels = statistics_.getNumLabels();
-
-                        for (uint32 c = 0; c < numLabels; c++) {
-                            DenseConfusionMatrixVector::iterator confusionMatrixIterator =
-                                confusionMatricesCoverableSubset_->confusion_matrix_begin(c);
-                            float64 labelWeight = weightIterator[c];
-
-                            // Only uncovered labels must be considered...
-                            if (labelWeight > 0) {
-                                // Remove the current example and label from the confusion matrix that corresponds to
-                                // the current label...
-                                uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, c);
-                                uint8 majorityLabel = majorityIterator[c];
-                                uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
-                                confusionMatrixIterator[element] -= weight;
-                            }
-                        }
+                        confusionMatricesCoverableSubset_->add(statisticIndex, *statistics_.labelMatrixPtr_,
+                                                               *statistics_.majorityLabelVectorPtr_,
+                                                               *statistics_.weightMatrixPtr_, -weight);
                     }
 
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
