@@ -1,5 +1,4 @@
 #include "seco/data/vector_dense_confusion_matrices.hpp"
-#include "seco/heuristics/confusion_matrices.hpp"
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 
