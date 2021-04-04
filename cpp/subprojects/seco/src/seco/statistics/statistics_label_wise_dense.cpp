@@ -353,7 +353,7 @@ namespace seco {
             uint32 numRelevant = 0;
 
             for (uint32 j = 0; j < numExamples; j++) {
-                uint8 trueLabel = labelMatrixPtr_->getValue(i, j);
+                uint8 trueLabel = labelMatrixPtr_->getValue(j, i);
                 numRelevant += trueLabel;
             }
 
