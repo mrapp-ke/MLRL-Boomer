@@ -7,9 +7,36 @@
 namespace seco {
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements)
-        : array_((float64*) malloc(numElements * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64))),
+        : DenseConfusionMatrixVector(numElements, false) {
+
+    }
+
+    DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements, bool init)
+        : array_(init ? (float64*) malloc(numElements * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64))
+                      : (float64*) calloc(numElements * NUM_CONFUSION_MATRIX_ELEMENTS, sizeof(float64))),
           numElements_(numElements) {
 
+    }
+
+    DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
+        : DenseConfusionMatrixVector(other.numElements_) {
+        copyArray(other.cbegin(), this->begin(), numElements_);
+    }
+
+    DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::begin() {
+        return array_;
+    }
+
+    DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::end() {
+        return &array_[numElements_];
+    }
+
+    DenseConfusionMatrixVector::const_iterator DenseConfusionMatrixVector::cbegin() const {
+        return array_;
+    }
+
+    DenseConfusionMatrixVector::const_iterator DenseConfusionMatrixVector::cend() const {
+        return &array_[numElements_];
     }
 
     DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::confusion_matrix_begin(uint32 pos) {

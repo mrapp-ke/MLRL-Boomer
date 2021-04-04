@@ -27,6 +27,17 @@ namespace seco {
             DenseConfusionMatrixVector(uint32 numElements);
 
             /**
+             * @param numElements   The number of elements in the vector
+             * @param init          True, if the elements of all confusion matrices should be value-initialized
+             */
+            DenseConfusionMatrixVector(uint32 numElements, bool init);
+
+            /**
+             * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
+             */
+            DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other);
+
+            /**
              * An iterator that provides access to the elements in a confusion matrix and allows to modify them.
              */
             typedef float64* iterator;
@@ -35,6 +46,34 @@ namespace seco {
              * An iterator that provides read-only access to the elements in a confusion matrix.
              */
             typedef const float64* const_iterator;
+
+            /**
+             * Returns an `iterator` to the beginning of the vector.
+             *
+             * @return An `iterator` to the beginning
+             */
+            iterator begin();
+
+            /**
+             * Returns an `iterator` to the end of the vector.
+             *
+             * @return An `iterator` to the end
+             */
+            iterator end();
+
+            /**
+             * Returns a `const_iterator` to the beginning of the vector.
+             *
+             * @return A `const_iterator` to the beginning
+             */
+            const_iterator cbegin() const;
+
+            /**
+             * Returns a `const_iterator` to the end of the vector.
+             *
+             * @return A `const_iterator` to the end
+             */
+            const_iterator cend() const;
 
             /**
              * Returns an `iterator` to the beginning of the confusion matrix at a specific position.
