@@ -1,20 +1,12 @@
 #include "seco/data/vector_dense_confusion_matrices.hpp"
-#include "seco/heuristics/confusion_matrix_element.hpp"
 #include "common/data/arrays.hpp"
+#include "confusion_matrices.hpp"
 #include <cstdlib>
 
 #define NUM_CONFUSION_MATRIX_ELEMENTS 4
 
 
 namespace seco {
-
-    static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 majorityLabel) {
-        if (trueLabel) {
-            return majorityLabel ? RN : RP;
-        } else {
-            return majorityLabel ? IN : IP;
-        }
-    }
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements)
         : DenseConfusionMatrixVector(numElements, false) {

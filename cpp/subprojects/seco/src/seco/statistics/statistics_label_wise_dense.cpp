@@ -1,19 +1,11 @@
 #include "seco/statistics/statistics_label_wise_dense.hpp"
 #include "seco/data/matrix_dense_weights.hpp"
 #include "seco/data/vector_dense_confusion_matrices.hpp"
-#include "seco/heuristics/confusion_matrix_element.hpp"
 #include "common/statistics/statistics_subset_decomposable.hpp"
+#include "../data/confusion_matrices.hpp"
 
 
 namespace seco {
-
-    static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 majorityLabel) {
-        if (trueLabel) {
-            return majorityLabel ? RN : RP;
-        } else {
-            return majorityLabel ? IN : IP;
-        }
-    }
 
     /**
      * Provides access to the elements of confusion matrices that are computed independently for each label using dense
