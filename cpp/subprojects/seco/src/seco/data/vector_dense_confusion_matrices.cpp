@@ -20,7 +20,7 @@ namespace seco {
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.numElements_) {
-        copyArray(other.cbegin(), this->begin(), numElements_);
+        copyArray(other.array_, array_, numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS);
     }
 
     DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::begin() {
