@@ -123,6 +123,11 @@ namespace seco {
             void setAllToZero();
 
             // TODO Comment
+            void add(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
+                     const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
+                     float64 weight);
+
+            // TODO Comment
             void addToSubset(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
                              const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                              FullIndexVector::const_iterator indicesBegin, FullIndexVector::const_iterator indicesEnd,
