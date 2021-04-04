@@ -37,11 +37,11 @@ namespace seco {
 
                     DenseConfusionMatrixVector confusionMatricesCovered_;
 
-                    float64* accumulatedConfusionMatricesCovered_;
+                    DenseConfusionMatrixVector* accumulatedConfusionMatricesCovered_;
 
                     const float64* confusionMatricesSubset_;
 
-                    float64* confusionMatricesCoverableSubset_;
+                    DenseConfusionMatrixVector* confusionMatricesCoverableSubset_;
 
                 public:
 
@@ -66,28 +66,30 @@ namespace seco {
                     }
 
                     ~StatisticsSubset() {
-                        free(accumulatedConfusionMatricesCovered_);
-                        free(confusionMatricesCoverableSubset_);
+                        delete accumulatedConfusionMatricesCovered_;
+                        delete confusionMatricesCoverableSubset_;
                     }
 
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         uint32 numLabels = statistics_.getNumLabels();
 
-                        // Allocate arrays for storing the totals sums of gradients and Hessians, if necessary...
+                        // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
                         if (confusionMatricesCoverableSubset_ == nullptr) {
-                            confusionMatricesCoverableSubset_ = (float64*) malloc(numLabels * sizeof(float64));
-                            copyArray(confusionMatricesSubset_, confusionMatricesCoverableSubset_, numLabels);
-                            confusionMatricesSubset_ = confusionMatricesCoverableSubset_;
+                            confusionMatricesCoverableSubset_ = new DenseConfusionMatrixVector(numLabels);
+                            copyArray(confusionMatricesSubset_, confusionMatricesCoverableSubset_->begin(), numLabels);
+                            confusionMatricesSubset_ = confusionMatricesCoverableSubset_->cbegin();
                         }
 
-                        // For each label, subtract the gradient and Hessian of the example at the given index (weighted
-                        // by the given weight) from the total sum of gradients and Hessians...
+                        // For each label, subtract the confusion matrices of the example at the given index (weighted
+                        // by the given weight) from the total sum of confusion matrices...
                         typename DenseWeightMatrix::const_iterator weightIterator =
                             statistics_.weightMatrixPtr_->row_cbegin(statisticIndex);
                         DenseVector<uint8>::const_iterator majorityIterator =
                             statistics_.majorityLabelVectorPtr_->cbegin();
 
                         for (uint32 c = 0; c < numLabels; c++) {
+                            DenseConfusionMatrixVector::iterator confusionMatrixIterator =
+                                confusionMatricesCoverableSubset_->confusion_matrix_begin(c);
                             uint8 labelWeight = weightIterator[c];
 
                             // Only uncovered labels must be considered...
@@ -97,7 +99,7 @@ namespace seco {
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, c);
                                 uint8 predictedLabel = majorityIterator[c] ? 0 : 1;
                                 uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
-                                confusionMatricesCoverableSubset_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] -= weight;
+                                confusionMatrixIterator[element] -= weight;
                             }
                         }
                     }
@@ -129,19 +131,16 @@ namespace seco {
                     void resetSubset() override {
                         uint32 numPredictions = labelIndices_.getNumElements();
 
-                        // Allocate an array for storing the accumulated confusion matrices, if necessary...
+                        // Allocate a vector for storing the accumulated confusion matrices, if necessary...
                         if (accumulatedConfusionMatricesCovered_ == nullptr) {
-                            accumulatedConfusionMatricesCovered_ =
-                                (float64*) malloc(numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-                            setArrayToZeros(accumulatedConfusionMatricesCovered_,
-                                            numPredictions * NUM_CONFUSION_MATRIX_ELEMENTS);
+                            accumulatedConfusionMatricesCovered_ = new DenseConfusionMatrixVector(numPredictions, true);
                         }
 
-                        // Reset the confusion matrix for each label to zero and add its elements to the accumulated
+                        // Reset the confusion matrix for each label to zero and copy its elements to the accumulated
                         // confusion matrix...
                         for (uint32 c = 0; c < numPredictions; c++) {
                             uint32 offset = c * NUM_CONFUSION_MATRIX_ELEMENTS;
-                            copyArray(&confusionMatricesCovered_.cbegin()[offset], &accumulatedConfusionMatricesCovered_[offset],
+                            copyArray(&confusionMatricesCovered_.cbegin()[offset], &accumulatedConfusionMatricesCovered_->begin()[offset],
                                       NUM_CONFUSION_MATRIX_ELEMENTS);
                         }
 
@@ -151,7 +150,7 @@ namespace seco {
                     const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
                                                                               bool accumulated) override {
                         float64* confusionMatricesCovered =
-                            accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_.begin();
+                            accumulated ? accumulatedConfusionMatricesCovered_->begin() : confusionMatricesCovered_.begin();
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*statistics_.majorityLabelVectorPtr_,
                                                                                 statistics_.confusionMatricesTotal_.cbegin(),
                                                                                 confusionMatricesSubset_,
