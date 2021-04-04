@@ -35,7 +35,7 @@ namespace seco {
 
                     const T& labelIndices_;
 
-                    float64* confusionMatricesCovered_;
+                    DenseConfusionMatrixVector confusionMatricesCovered_;
 
                     float64* accumulatedConfusionMatricesCovered_;
 
@@ -58,18 +58,14 @@ namespace seco {
                                      std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                         : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                           labelIndices_(labelIndices),
-                          confusionMatricesCovered_((float64*) malloc(labelIndices.getNumElements()
-                                                                      * NUM_CONFUSION_MATRIX_ELEMENTS
-                                                                      * sizeof(float64))),
+                          confusionMatricesCovered_(DenseConfusionMatrixVector(labelIndices.getNumElements(), true)),
                           accumulatedConfusionMatricesCovered_(nullptr),
                           confusionMatricesSubset_(statistics_.confusionMatricesSubset_.cbegin()),
                           confusionMatricesCoverableSubset_(nullptr) {
-                        setArrayToZeros(confusionMatricesCovered_,
-                                        labelIndices_.getNumElements() * NUM_CONFUSION_MATRIX_ELEMENTS);
+
                     }
 
                     ~StatisticsSubset() {
-                        free(confusionMatricesCovered_);
                         free(accumulatedConfusionMatricesCovered_);
                         free(confusionMatricesCoverableSubset_);
                     }
@@ -115,6 +111,8 @@ namespace seco {
                             statistics_.majorityLabelVectorPtr_->cbegin();
 
                         for (uint32 c = 0; c < numPredictions; c++) {
+                            DenseConfusionMatrixVector::iterator confusionMatrixIterator =
+                                confusionMatricesCovered_.confusion_matrix_begin(c);
                             uint32 l = indexIterator[c];
 
                             // Only uncovered labels must be considered...
@@ -123,7 +121,7 @@ namespace seco {
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, l);
                                 uint8 predictedLabel = majorityIterator[l] ? 0 : 1;
                                 uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
-                                confusionMatricesCovered_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] += weight;
+                                confusionMatrixIterator[element] += weight;
                             }
                         }
                     }
@@ -143,16 +141,17 @@ namespace seco {
                         // confusion matrix...
                         for (uint32 c = 0; c < numPredictions; c++) {
                             uint32 offset = c * NUM_CONFUSION_MATRIX_ELEMENTS;
-                            copyArray(&confusionMatricesCovered_[offset], &accumulatedConfusionMatricesCovered_[offset],
+                            copyArray(&confusionMatricesCovered_.cbegin()[offset], &accumulatedConfusionMatricesCovered_[offset],
                                       NUM_CONFUSION_MATRIX_ELEMENTS);
-                            setArrayToZeros(&confusionMatricesCovered_[offset], NUM_CONFUSION_MATRIX_ELEMENTS);
                         }
+
+                        confusionMatricesCovered_.setAllToZero();
                     }
 
                     const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
                                                                               bool accumulated) override {
                         float64* confusionMatricesCovered =
-                            accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
+                            accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_.begin();
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*statistics_.majorityLabelVectorPtr_,
                                                                                 statistics_.confusionMatricesTotal_.cbegin(),
                                                                                 confusionMatricesSubset_,
