@@ -123,6 +123,9 @@ namespace seco {
             void setAllToZero();
 
             // TODO Comment
+            void add(const_iterator begin, const_iterator end);
+
+            // TODO Comment
             void add(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
                      const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                      float64 weight);

@@ -69,6 +69,14 @@ namespace seco {
         setArrayToZeros(array_, numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS);
     }
 
+    void DenseConfusionMatrixVector::add(const_iterator begin, const_iterator end) {
+        uint32 numElements = numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS;
+
+        for (uint32 i = 0; i < numElements; i++) {
+            array_[i] += begin[i];
+        }
+    }
+
     void DenseConfusionMatrixVector::add(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
                                          const DenseVector<uint8>& majorityLabelVector,
                                          const DenseWeightMatrix& weightMatrix, float64 weight) {
