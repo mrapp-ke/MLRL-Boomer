@@ -3,6 +3,8 @@
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 
+#define NUM_CONFUSION_MATRIX_ELEMENTS 4
+
 
 namespace seco {
 
