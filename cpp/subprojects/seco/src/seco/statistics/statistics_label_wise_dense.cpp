@@ -1,5 +1,6 @@
 #include "seco/statistics/statistics_label_wise_dense.hpp"
 #include "seco/data/matrix_dense_weights.hpp"
+#include "seco/data/vector_dense_confusion_matrices.hpp"
 #include "seco/heuristics/confusion_matrices.hpp"
 #include "common/data/arrays.hpp"
 #include "common/statistics/statistics_subset_decomposable.hpp"
@@ -38,7 +39,7 @@ namespace seco {
 
                     float64* accumulatedConfusionMatricesCovered_;
 
-                    float64* confusionMatricesSubset_;
+                    const float64* confusionMatricesSubset_;
 
                     float64* confusionMatricesCoverableSubset_;
 
@@ -61,7 +62,7 @@ namespace seco {
                                                                       * NUM_CONFUSION_MATRIX_ELEMENTS
                                                                       * sizeof(float64))),
                           accumulatedConfusionMatricesCovered_(nullptr),
-                          confusionMatricesSubset_(statistics_.confusionMatricesSubset_),
+                          confusionMatricesSubset_(statistics_.confusionMatricesSubset_.cbegin()),
                           confusionMatricesCoverableSubset_(nullptr) {
                         setArrayToZeros(confusionMatricesCovered_,
                                         labelIndices_.getNumElements() * NUM_CONFUSION_MATRIX_ELEMENTS);
@@ -100,7 +101,7 @@ namespace seco {
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, c);
                                 uint8 predictedLabel = majorityIterator[c] ? 0 : 1;
                                 uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
-                                confusionMatricesSubset_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] -= weight;
+                                confusionMatricesCoverableSubset_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] -= weight;
                             }
                         }
                     }
@@ -153,7 +154,7 @@ namespace seco {
                         float64* confusionMatricesCovered =
                             accumulated ? accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*statistics_.majorityLabelVectorPtr_,
-                                                                                statistics_.confusionMatricesTotal_,
+                                                                                statistics_.confusionMatricesTotal_.cbegin(),
                                                                                 confusionMatricesSubset_,
                                                                                 confusionMatricesCovered, uncovered);
                     }
@@ -173,9 +174,9 @@ namespace seco {
             // TODO Use sparse vector
             std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr_;
 
-            float64* confusionMatricesTotal_;
+            DenseConfusionMatrixVector confusionMatricesTotal_;
 
-            float64* confusionMatricesSubset_;
+            DenseConfusionMatrixVector confusionMatricesSubset_;
 
             template<class T>
             void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
@@ -204,21 +205,10 @@ namespace seco {
                 : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),
                   ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrixPtr_(labelMatrixPtr),
                   weightMatrixPtr_(std::move(weightMatrixPtr)),
-                  majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)) {
-                // The number of labels
-                uint32 numLabels = this->getNumLabels();
-                // A matrix that stores a confusion matrix, which takes into account all examples, for each label
-                confusionMatricesTotal_ =
-                    (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-                // A matrix that stores a confusion matrix, which takes into account the examples covered by the
-                // previous refinement of a rule, for each label
-                confusionMatricesSubset_ =
-                    (float64*) malloc(numLabels * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64));
-            }
+                  majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
+                  confusionMatricesTotal_(DenseConfusionMatrixVector(numLabels_)),
+                  confusionMatricesSubset_(DenseConfusionMatrixVector(numLabels_)) {
 
-            ~LabelWiseStatistics() {
-                free(confusionMatricesTotal_);
-                free(confusionMatricesSubset_);
             }
 
             uint32 getNumStatistics() const override {
@@ -239,10 +229,8 @@ namespace seco {
             }
 
             void resetSampledStatistics() override {
-                uint32 numLabels = this->getNumLabels();
-                uint32 numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
-                setArrayToZeros(confusionMatricesTotal_, numElements);
-                setArrayToZeros(confusionMatricesSubset_, numElements);
+                confusionMatricesTotal_.setAllToZero();
+                confusionMatricesSubset_.setAllToZero();
             }
 
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
@@ -252,6 +240,10 @@ namespace seco {
                 DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 for (uint32 c = 0; c < numLabels; c++) {
+                    DenseConfusionMatrixVector::iterator totalIterator =
+                        confusionMatricesTotal_.confusion_matrix_begin(c);
+                    DenseConfusionMatrixVector::iterator subsetIterator =
+                        confusionMatricesSubset_.confusion_matrix_begin(c);
                     uint8 labelWeight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
@@ -261,18 +253,14 @@ namespace seco {
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
                         uint8 predictedLabel = majorityIterator[c] ? 0 : 1;
                         uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
-                        uint32 i = c * NUM_CONFUSION_MATRIX_ELEMENTS + element;
-                        confusionMatricesTotal_[i] += weight;
-                        confusionMatricesSubset_[i] += weight;
+                        totalIterator[element] += weight;
+                        subsetIterator[element] += weight;
                     }
                 }
             }
 
             void resetCoveredStatistics() override {
-                // Reset confusion matrices to 0...
-                uint32 numLabels = this->getNumLabels();
-                uint32 numElements = numLabels * NUM_CONFUSION_MATRIX_ELEMENTS;
-                setArrayToZeros(confusionMatricesSubset_, numElements);
+                confusionMatricesSubset_.setAllToZero();
             }
 
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
@@ -283,6 +271,8 @@ namespace seco {
                 DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 for (uint32 c = 0; c < numLabels; c++) {
+                    DenseConfusionMatrixVector::iterator subsetIterator =
+                        confusionMatricesSubset_.confusion_matrix_begin(c);
                     uint8 labelWeight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
@@ -292,7 +282,7 @@ namespace seco {
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
                         uint8 predictedLabel = majorityIterator[c] ? 0 : 1;
                         uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
-                        confusionMatricesSubset_[c * NUM_CONFUSION_MATRIX_ELEMENTS + element] += signedWeight;
+                        subsetIterator[element] += signedWeight;
                     }
                 }
             }
