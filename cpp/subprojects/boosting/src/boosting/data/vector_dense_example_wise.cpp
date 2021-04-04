@@ -144,15 +144,6 @@ namespace boosting {
         addToArray(hessians_, hessiansBegin, numHessians_, weight);
     }
 
-    void DenseExampleWiseStatisticVector::subtract(gradient_const_iterator gradientsBegin,
-                                                   gradient_const_iterator gradientsEnd,
-                                                   hessian_const_iterator hessiansBegin,
-                                                   hessian_const_iterator hessiansEnd, float64 weight) {
-        float64 invertedWeight = -weight;
-        addToArray(gradients_, gradientsBegin, numGradients_, invertedWeight);
-        addToArray(hessians_, hessiansBegin, numHessians_, invertedWeight);
-    }
-
     void DenseExampleWiseStatisticVector::addToSubset(gradient_const_iterator gradientsBegin,
                                                       gradient_const_iterator gradientsEnd,
                                                       hessian_const_iterator hessiansBegin,
