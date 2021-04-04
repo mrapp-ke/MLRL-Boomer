@@ -148,11 +148,11 @@ namespace seco {
 
                     const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
                                                                               bool accumulated) override {
-                        float64* confusionMatricesCovered =
-                            accumulated ? accumulatedConfusionMatricesCovered_->begin() : confusionMatricesCovered_.begin();
+                        const DenseConfusionMatrixVector& confusionMatricesCovered =
+                            accumulated ? *accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*statistics_.majorityLabelVectorPtr_,
-                                                                                statistics_.confusionMatricesTotal_.cbegin(),
-                                                                                confusionMatricesSubset_->cbegin(),
+                                                                                statistics_.confusionMatricesTotal_,
+                                                                                *confusionMatricesSubset_,
                                                                                 confusionMatricesCovered, uncovered);
                     }
 
