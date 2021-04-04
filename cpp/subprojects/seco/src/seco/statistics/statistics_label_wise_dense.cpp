@@ -37,9 +37,9 @@ namespace seco {
 
                     DenseConfusionMatrixVector confusionMatricesCovered_;
 
-                    DenseConfusionMatrixVector* accumulatedConfusionMatricesCovered_;
+                    const DenseConfusionMatrixVector* confusionMatricesSubset_;
 
-                    const float64* confusionMatricesSubset_;
+                    DenseConfusionMatrixVector* accumulatedConfusionMatricesCovered_;
 
                     DenseConfusionMatrixVector* confusionMatricesCoverableSubset_;
 
@@ -59,9 +59,8 @@ namespace seco {
                         : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                           labelIndices_(labelIndices),
                           confusionMatricesCovered_(DenseConfusionMatrixVector(labelIndices.getNumElements(), true)),
-                          accumulatedConfusionMatricesCovered_(nullptr),
-                          confusionMatricesSubset_(statistics_.confusionMatricesSubset_.cbegin()),
-                          confusionMatricesCoverableSubset_(nullptr) {
+                          confusionMatricesSubset_(&statistics_.confusionMatricesSubset_),
+                          accumulatedConfusionMatricesCovered_(nullptr), confusionMatricesCoverableSubset_(nullptr) {
 
                     }
 
@@ -75,9 +74,9 @@ namespace seco {
 
                         // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
                         if (confusionMatricesCoverableSubset_ == nullptr) {
-                            confusionMatricesCoverableSubset_ = new DenseConfusionMatrixVector(numLabels);
-                            copyArray(confusionMatricesSubset_, confusionMatricesCoverableSubset_->begin(), numLabels);
-                            confusionMatricesSubset_ = confusionMatricesCoverableSubset_->cbegin();
+                            confusionMatricesCoverableSubset_ =
+                                new DenseConfusionMatrixVector(*confusionMatricesSubset_);
+                            confusionMatricesSubset_ = confusionMatricesCoverableSubset_;
                         }
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
@@ -153,7 +152,7 @@ namespace seco {
                             accumulated ? accumulatedConfusionMatricesCovered_->begin() : confusionMatricesCovered_.begin();
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*statistics_.majorityLabelVectorPtr_,
                                                                                 statistics_.confusionMatricesTotal_.cbegin(),
-                                                                                confusionMatricesSubset_,
+                                                                                confusionMatricesSubset_->cbegin(),
                                                                                 confusionMatricesCovered, uncovered);
                     }
 
