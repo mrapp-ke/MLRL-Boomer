@@ -95,10 +95,10 @@ namespace seco {
                         for (uint32 c = 0; c < numLabels; c++) {
                             DenseConfusionMatrixVector::iterator confusionMatrixIterator =
                                 confusionMatricesCoverableSubset_->confusion_matrix_begin(c);
-                            uint8 labelWeight = weightIterator[c];
+                            uint8 weight = weightIterator[c];
 
                             // Only uncovered labels must be considered...
-                            if (labelWeight > 0) {
+                            if (weight) {
                                 // Remove the current example and label from the confusion matrix that corresponds to
                                 // the current label...
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, c);
@@ -250,10 +250,10 @@ namespace seco {
                         confusionMatricesTotal_.confusion_matrix_begin(c);
                     DenseConfusionMatrixVector::iterator subsetIterator =
                         confusionMatricesSubset_.confusion_matrix_begin(c);
-                    uint8 labelWeight = weightIterator[c];
+                    uint8 weight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
-                    if (labelWeight > 0) {
+                    if (weight) {
                         // Add the current example and label to the confusion matrix that corresponds to the current
                         // label...
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
@@ -279,10 +279,10 @@ namespace seco {
                 for (uint32 c = 0; c < numLabels; c++) {
                     DenseConfusionMatrixVector::iterator subsetIterator =
                         confusionMatricesSubset_.confusion_matrix_begin(c);
-                    uint8 labelWeight = weightIterator[c];
+                    uint8 weight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
-                    if (labelWeight > 0) {
+                    if (weight) {
                         // Add the current example and label to the confusion matrix that corresponds to the current
                         // label...
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
