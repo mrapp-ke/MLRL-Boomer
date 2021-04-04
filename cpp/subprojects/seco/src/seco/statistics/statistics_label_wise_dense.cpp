@@ -9,11 +9,11 @@
 
 namespace seco {
 
-    static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 predictedLabel) {
+    static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 majorityLabel) {
         if (trueLabel) {
-            return predictedLabel ? RP : RN;
+            return majorityLabel ? RN : RP;
         } else {
-            return predictedLabel ? IP : IN;
+            return majorityLabel ? IN : IP;
         }
     }
 
@@ -104,8 +104,8 @@ namespace seco {
                                 // Remove the current example and label from the confusion matrix that corresponds to
                                 // the current label...
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, c);
-                                uint8 predictedLabel = majorityIterator[c] ? 0 : 1;
-                                uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
+                                uint8 majorityLabel = majorityIterator[c];
+                                uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                                 confusionMatrixIterator[element] -= weight;
                             }
                         }
@@ -128,8 +128,8 @@ namespace seco {
                             if (weightIterator[l] > 0) {
                                 // Add the current example and label to the confusion matrix for the current label...
                                 uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, l);
-                                uint8 predictedLabel = majorityIterator[l] ? 0 : 1;
-                                uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
+                                uint8 majorityLabel = majorityIterator[l];
+                                uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                                 confusionMatrixIterator[element] += weight;
                             }
                         }
@@ -259,8 +259,8 @@ namespace seco {
                         // Add the current example and label to the confusion matrix that corresponds to the current
                         // label...
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
-                        uint8 predictedLabel = majorityIterator[c] ? 0 : 1;
-                        uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
+                        uint8 majorityLabel = majorityIterator[c];
+                        uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                         totalIterator[element] += weight;
                         subsetIterator[element] += weight;
                     }
@@ -288,8 +288,8 @@ namespace seco {
                         // Add the current example and label to the confusion matrix that corresponds to the current
                         // label...
                         uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
-                        uint8 predictedLabel = majorityIterator[c] ? 0 : 1;
-                        uint32 element = getConfusionMatrixElement(trueLabel, predictedLabel);
+                        uint8 majorityLabel = majorityIterator[c];
+                        uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                         subsetIterator[element] += signedWeight;
                     }
                 }
