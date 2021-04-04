@@ -90,24 +90,16 @@ namespace seco {
                     }
 
                     void resetSubset() override {
-                        uint32 numPredictions = labelIndices_.getNumElements();
-
                         // Allocate a vector for storing the accumulated confusion matrices, if necessary...
                         if (accumulatedConfusionMatricesCovered_ == nullptr) {
+                            uint32 numPredictions = labelIndices_.getNumElements();
                             accumulatedConfusionMatricesCovered_ = new DenseConfusionMatrixVector(numPredictions, true);
                         }
 
                         // Reset the confusion matrix for each label to zero and add its elements to the accumulated
                         // confusion matrix...
-                        DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered_.cbegin();
-                        DenseConfusionMatrixVector::iterator accumulatedIterator =
-                            accumulatedConfusionMatricesCovered_->begin();
-                        uint32 numElements = accumulatedConfusionMatricesCovered_->end() - accumulatedIterator;
-
-                        for (uint32 i = 0; i < numElements; i++) {
-                            accumulatedIterator[i] += coveredIterator[i];
-                        }
-
+                        accumulatedConfusionMatricesCovered_->add(confusionMatricesCovered_.cbegin(),
+                                                                  confusionMatricesCovered_.cend());
                         confusionMatricesCovered_.setAllToZero();
                     }
 
