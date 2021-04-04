@@ -14,11 +14,11 @@ namespace seco {
     /**
      * A two-dimensional matrix that stores the weights of individual examples and labels in a C-contiguous array.
      */
-    class DenseWeightMatrix final : public DenseMatrix<uint8> {
+    class DenseWeightMatrix final : public DenseMatrix<float64> {
 
         private:
 
-            uint32 sumOfUncoveredWeights_;
+            float64 sumOfUncoveredWeights_;
 
         public:
 
@@ -33,14 +33,14 @@ namespace seco {
              *
              * @return The sum of the weights
              */
-            uint32 getSumOfUncoveredWeights() const;
+            float64 getSumOfUncoveredWeights() const;
 
             /**
              * Sets the sum of the weights of all labels that remain to be covered.
              *
              * @param sumOfUncoveredWeights The sum of weights to be set
              */
-            void setSumOfUncoveredWeights(uint32 sumOfUncoveredWeights);
+            void setSumOfUncoveredWeights(float64 sumOfUncoveredWeights);
 
             /**
              * Updates the weights at a specific row of this matrix, given the predictions for certain labels.

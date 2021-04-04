@@ -20,5 +20,4 @@ DenseMatrix<T>::~DenseMatrix() {
     free(CContiguousView<T>::array_);
 }
 
-template class DenseMatrix<uint8>;
 template class DenseMatrix<float64>;
