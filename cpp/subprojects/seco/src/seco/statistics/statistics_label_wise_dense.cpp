@@ -2,9 +2,7 @@
 #include "seco/data/matrix_dense_weights.hpp"
 #include "seco/data/vector_dense_confusion_matrices.hpp"
 #include "seco/heuristics/confusion_matrix_element.hpp"
-#include "common/data/arrays.hpp"
 #include "common/statistics/statistics_subset_decomposable.hpp"
-#include <cstdlib>
 
 
 namespace seco {
