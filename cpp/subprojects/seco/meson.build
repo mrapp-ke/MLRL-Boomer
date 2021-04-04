@@ -3,6 +3,7 @@ project('seco', 'cpp', version : '0.6.0')
 # Source files
 source_files = [
     'src/seco/data/matrix_dense_weights.cpp',
+    'src/seco/data/vector_dense_confusion_matrices.cpp',
     'src/seco/head_refinement/head_refinement_partial.cpp',
     'src/seco/head_refinement/lift_function_peak.cpp',
     'src/seco/heuristics/heuristic_f_measure.cpp',
