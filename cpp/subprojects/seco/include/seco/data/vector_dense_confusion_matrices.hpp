@@ -122,25 +122,68 @@ namespace seco {
              */
             void setAllToZero();
 
-            // TODO Comment
+            /**
+             * Adds all confusion matrix elements in another vector to this vector.
+             *
+             * @param begin A `const_iterator` to the beginning of the other vector
+             * @param end   A `const_iterator` to the end of the other vector
+             */
             void add(const_iterator begin, const_iterator end);
 
-            // TODO Comment
-            void add(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
+            /**
+             * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
+             * confusion matrix elements to be added are multiplied by a specific weight.
+             *
+             * @param exampleIndex          The index of the example
+             * @param labelMatrix           A reference to an object of type `IRandomAccessLabelMatrix` that provides
+             *                              access to the labels of the training examples
+             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the predictions
+             *                              of the default rule
+             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
+             *                              of individual examples and labels
+             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             */
+            void add(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                      const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                      float64 weight);
 
-            // TODO Comment
-            void addToSubset(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
+            /**
+             * Adds certain confusion matrix elements in another vector, whose positions are given as a
+             * `FullIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a specific
+             * weight.
+             *
+             * @param exampleIndex          The index of the example
+             * @param labelMatrix           A reference to an object of type `IRandomAccessLabelMatrix` that provides
+             *                              access to the labels of the training examples
+             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the predictions
+             *                              of the default rule
+             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
+             *                              of individual examples and labels
+             * @param indices               A reference to a `FullIndexVector' that provides access to the indices
+             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             */
+            void addToSubset(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                              const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
-                             FullIndexVector::const_iterator indicesBegin, FullIndexVector::const_iterator indicesEnd,
-                             float64 weight);
+                             FullIndexVector indices, float64 weight);
 
-            // TODO Comment
-            void addToSubset(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
+            /**
+             * Adds certain confusion matrix elements in another vector, whose positions are given as a
+             * `FullIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a specific
+             * weight.
+             *
+             * @param exampleIndex          The index of the example
+             * @param labelMatrix           A reference to an object of type `IRandomAccessLabelMatrix` that provides
+             *                              access to the labels of the training examples
+             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the predictions
+             *                              of the default rule
+             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
+             *                              of individual examples and labels
+             * @param indices               A reference to a `PartialIndexVector' that provides access to the indices
+             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             */
+            void addToSubset(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                              const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
-                             PartialIndexVector::const_iterator indicesBegin,
-                             PartialIndexVector::const_iterator indicesEnd, float64 weight);
+                             PartialIndexVector indices, float64 weight);
 
     };
 
