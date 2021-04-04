@@ -17,19 +17,4 @@ namespace seco {
         RP = 3
     };
 
-    /**
-     * Returns the confusion matrix element, a label corresponds to, depending on the ground truth an a prediction.
-     *
-     * @param trueLabel         The true label according to the ground truth
-     * @param predictedLabel    The predicted label
-     * @return                  The confusion matrix element
-     */
-    static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 predictedLabel) {
-        if (trueLabel) {
-            return predictedLabel ? RP : RN;
-        } else {
-            return predictedLabel ? IP : IN;
-        }
-    }
-
 }
