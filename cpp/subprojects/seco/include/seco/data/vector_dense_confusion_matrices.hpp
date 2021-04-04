@@ -37,6 +37,8 @@ namespace seco {
              */
             DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other);
 
+            ~DenseConfusionMatrixVector();
+
             /**
              * An iterator that provides access to the elements in a confusion matrix and allows to modify them.
              */

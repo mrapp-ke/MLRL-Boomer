@@ -23,6 +23,10 @@ namespace seco {
         copyArray(other.array_, array_, numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS);
     }
 
+    DenseConfusionMatrixVector::~DenseConfusionMatrixVector() {
+        free(array_);
+    }
+
     DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::begin() {
         return array_;
     }
