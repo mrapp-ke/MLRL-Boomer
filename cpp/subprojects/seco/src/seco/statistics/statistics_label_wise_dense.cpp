@@ -29,17 +29,17 @@ namespace seco {
 
                     const LabelWiseStatistics& statistics_;
 
+                    const DenseConfusionMatrixVector* totalSumVector_;
+
                     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
 
                     const T& labelIndices_;
 
-                    DenseConfusionMatrixVector confusionMatricesCovered_;
+                    DenseConfusionMatrixVector sumVector_;
 
-                    const DenseConfusionMatrixVector* confusionMatricesSubset_;
+                    DenseConfusionMatrixVector* accumulatedSumVector_;
 
-                    DenseConfusionMatrixVector* accumulatedConfusionMatricesCovered_;
-
-                    DenseConfusionMatrixVector* confusionMatricesCoverableSubset_;
+                    DenseConfusionMatrixVector* totalCoverableSumVector_;
 
                 public:
 
@@ -54,63 +54,59 @@ namespace seco {
                      */
                     StatisticsSubset(const LabelWiseStatistics& statistics,
                                      std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
-                        : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
-                          labelIndices_(labelIndices),
-                          confusionMatricesCovered_(DenseConfusionMatrixVector(labelIndices.getNumElements(), true)),
-                          confusionMatricesSubset_(&statistics_.confusionMatricesSubset_),
-                          accumulatedConfusionMatricesCovered_(nullptr), confusionMatricesCoverableSubset_(nullptr) {
+                        : statistics_(statistics), totalSumVector_(&statistics_.subsetSumVector_),
+                          ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
+                          sumVector_(DenseConfusionMatrixVector(labelIndices.getNumElements(), true)),
+                          accumulatedSumVector_(nullptr), totalCoverableSumVector_(nullptr) {
 
                     }
 
                     ~StatisticsSubset() {
-                        delete accumulatedConfusionMatricesCovered_;
-                        delete confusionMatricesCoverableSubset_;
+                        delete accumulatedSumVector_;
+                        delete totalCoverableSumVector_;
                     }
 
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
-                        if (confusionMatricesCoverableSubset_ == nullptr) {
-                            confusionMatricesCoverableSubset_ =
-                                new DenseConfusionMatrixVector(*confusionMatricesSubset_);
-                            confusionMatricesSubset_ = confusionMatricesCoverableSubset_;
+                        if (totalCoverableSumVector_ == nullptr) {
+                            totalCoverableSumVector_ = new DenseConfusionMatrixVector(*totalSumVector_);
+                            totalSumVector_ = totalCoverableSumVector_;
                         }
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
-                        confusionMatricesCoverableSubset_->add(statisticIndex, *statistics_.labelMatrixPtr_,
-                                                               *statistics_.majorityLabelVectorPtr_,
-                                                               *statistics_.weightMatrixPtr_, -weight);
+                        totalCoverableSumVector_->add(statisticIndex, *statistics_.labelMatrixPtr_,
+                                                      *statistics_.majorityLabelVectorPtr_,
+                                                      *statistics_.weightMatrixPtr_, -weight);
                     }
 
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
-                        confusionMatricesCovered_.addToSubset(statisticIndex, *statistics_.labelMatrixPtr_,
-                                                              *statistics_.majorityLabelVectorPtr_,
-                                                              *statistics_.weightMatrixPtr_, labelIndices_.cbegin(),
-                                                              labelIndices_.cend(), weight);
+                        sumVector_.addToSubset(statisticIndex, *statistics_.labelMatrixPtr_,
+                                               *statistics_.majorityLabelVectorPtr_, *statistics_.weightMatrixPtr_,
+                                               labelIndices_.cbegin(), labelIndices_.cend(), weight);
                     }
 
                     void resetSubset() override {
                         // Allocate a vector for storing the accumulated confusion matrices, if necessary...
-                        if (accumulatedConfusionMatricesCovered_ == nullptr) {
+                        if (accumulatedSumVector_ == nullptr) {
                             uint32 numPredictions = labelIndices_.getNumElements();
-                            accumulatedConfusionMatricesCovered_ = new DenseConfusionMatrixVector(numPredictions, true);
+                            accumulatedSumVector_ = new DenseConfusionMatrixVector(numPredictions, true);
                         }
 
                         // Reset the confusion matrix for each label to zero and add its elements to the accumulated
                         // confusion matrix...
-                        accumulatedConfusionMatricesCovered_->add(confusionMatricesCovered_.cbegin(),
-                                                                  confusionMatricesCovered_.cend());
-                        confusionMatricesCovered_.setAllToZero();
+                        accumulatedSumVector_->add(sumVector_.cbegin(), sumVector_.cend());
+                        sumVector_.setAllToZero();
                     }
 
                     const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
                                                                               bool accumulated) override {
-                        const DenseConfusionMatrixVector& confusionMatricesCovered =
-                            accumulated ? *accumulatedConfusionMatricesCovered_ : confusionMatricesCovered_;
+                        const DenseConfusionMatrixVector& sumsOfConfusionMatrices =
+                            accumulated ? *accumulatedSumVector_ : sumVector_;
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*statistics_.majorityLabelVectorPtr_,
-                                                                                statistics_.confusionMatricesTotal_,
-                                                                                *confusionMatricesSubset_,
-                                                                                confusionMatricesCovered, uncovered);
+                                                                                statistics_.totalSumVector_,
+                                                                                *totalSumVector_,
+                                                                                sumsOfConfusionMatrices, uncovered);
                     }
 
             };
@@ -128,9 +124,9 @@ namespace seco {
             // TODO Use sparse vector
             std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr_;
 
-            DenseConfusionMatrixVector confusionMatricesTotal_;
+            DenseConfusionMatrixVector totalSumVector_;
 
-            DenseConfusionMatrixVector confusionMatricesSubset_;
+            DenseConfusionMatrixVector subsetSumVector_;
 
             template<class T>
             void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
@@ -160,8 +156,8 @@ namespace seco {
                   ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrixPtr_(labelMatrixPtr),
                   weightMatrixPtr_(std::move(weightMatrixPtr)),
                   majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
-                  confusionMatricesTotal_(DenseConfusionMatrixVector(numLabels_)),
-                  confusionMatricesSubset_(DenseConfusionMatrixVector(numLabels_)) {
+                  totalSumVector_(DenseConfusionMatrixVector(numLabels_)),
+                  subsetSumVector_(DenseConfusionMatrixVector(numLabels_)) {
 
             }
 
@@ -183,8 +179,8 @@ namespace seco {
             }
 
             void resetSampledStatistics() override {
-                confusionMatricesTotal_.setAllToZero();
-                confusionMatricesSubset_.setAllToZero();
+                totalSumVector_.setAllToZero();
+                subsetSumVector_.setAllToZero();
             }
 
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
@@ -194,10 +190,8 @@ namespace seco {
                 DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 for (uint32 c = 0; c < numLabels; c++) {
-                    DenseConfusionMatrixVector::iterator totalIterator =
-                        confusionMatricesTotal_.confusion_matrix_begin(c);
-                    DenseConfusionMatrixVector::iterator subsetIterator =
-                        confusionMatricesSubset_.confusion_matrix_begin(c);
+                    DenseConfusionMatrixVector::iterator totalIterator = totalSumVector_.confusion_matrix_begin(c);
+                    DenseConfusionMatrixVector::iterator subsetIterator = subsetSumVector_.confusion_matrix_begin(c);
                     float64 labelWeight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
@@ -214,7 +208,7 @@ namespace seco {
             }
 
             void resetCoveredStatistics() override {
-                confusionMatricesSubset_.setAllToZero();
+                subsetSumVector_.setAllToZero();
             }
 
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
@@ -225,8 +219,7 @@ namespace seco {
                 DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
 
                 for (uint32 c = 0; c < numLabels; c++) {
-                    DenseConfusionMatrixVector::iterator subsetIterator =
-                        confusionMatricesSubset_.confusion_matrix_begin(c);
+                    DenseConfusionMatrixVector::iterator subsetIterator = subsetSumVector_.confusion_matrix_begin(c);
                     float64 labelWeight = weightIterator[c];
 
                     // Only uncovered labels must be considered...
