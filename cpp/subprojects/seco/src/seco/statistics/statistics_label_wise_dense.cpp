@@ -109,28 +109,10 @@ namespace seco {
                     }
 
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
-                        typename T::const_iterator indexIterator = labelIndices_.cbegin();
-                        typename DenseWeightMatrix::const_iterator weightIterator =
-                            statistics_.weightMatrixPtr_->row_cbegin(statisticIndex);
-                        DenseVector<uint8>::const_iterator majorityIterator =
-                            statistics_.majorityLabelVectorPtr_->cbegin();
-                        uint32 numPredictions = labelIndices_.getNumElements();
-
-                        for (uint32 c = 0; c < numPredictions; c++) {
-                            DenseConfusionMatrixVector::iterator confusionMatrixIterator =
-                                confusionMatricesCovered_.confusion_matrix_begin(c);
-                            uint32 l = indexIterator[c];
-                            float64 labelWeight = weightIterator[l];
-
-                            // Only uncovered labels must be considered...
-                            if (labelWeight > 0) {
-                                // Add the current example and label to the confusion matrix for the current label...
-                                uint8 trueLabel = statistics_.labelMatrixPtr_->getValue(statisticIndex, l);
-                                uint8 majorityLabel = majorityIterator[l];
-                                uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
-                                confusionMatrixIterator[element] += weight;
-                            }
-                        }
+                        confusionMatricesCovered_.addToSubset(statisticIndex, *statistics_.labelMatrixPtr_,
+                                                              *statistics_.majorityLabelVectorPtr_,
+                                                              *statistics_.weightMatrixPtr_, labelIndices_.cbegin(),
+                                                              labelIndices_.cend(), weight);
                     }
 
                     void resetSubset() override {

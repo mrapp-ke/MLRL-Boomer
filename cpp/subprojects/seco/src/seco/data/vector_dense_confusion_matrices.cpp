@@ -1,4 +1,5 @@
 #include "seco/data/vector_dense_confusion_matrices.hpp"
+#include "seco/heuristics/confusion_matrix_element.hpp"
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 
@@ -6,6 +7,14 @@
 
 
 namespace seco {
+
+    static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 majorityLabel) {
+        if (trueLabel) {
+            return majorityLabel ? RN : RP;
+        } else {
+            return majorityLabel ? IN : IP;
+        }
+    }
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements)
         : DenseConfusionMatrixVector(numElements, false) {
@@ -66,6 +75,50 @@ namespace seco {
 
     void DenseConfusionMatrixVector::setAllToZero() {
         setArrayToZeros(array_, numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS);
+    }
+
+    void DenseConfusionMatrixVector::addToSubset(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
+                                                 const DenseVector<uint8>& majorityLabelVector,
+                                                 const DenseWeightMatrix& weightMatrix,
+                                                 FullIndexVector::const_iterator indicesBegin,
+                                                 FullIndexVector::const_iterator indicesEnd, float64 weight) {
+        DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVector.cbegin();
+        typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(row);
+
+        for (uint32 i = 0; i < numElements_; i++) {
+            iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
+            float64 labelWeight = weightIterator[i];
+
+            if (labelWeight > 0) {
+                uint8 trueLabel = labelMatrix.getValue(row, i);
+                uint8 majorityLabel = majorityIterator[i];
+                uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
+                confusionMatrixIterator[element] += (labelWeight * weight);
+            }
+        }
+    }
+
+    void DenseConfusionMatrixVector::addToSubset(uint32 row, const IRandomAccessLabelMatrix& labelMatrix,
+                                                 const DenseVector<uint8>& majorityLabelVector,
+                                                 const DenseWeightMatrix& weightMatrix,
+                                                 PartialIndexVector::const_iterator indicesBegin,
+                                                 PartialIndexVector::const_iterator indicesEnd, float64 weight) {
+        DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVector.cbegin();
+        typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(row);
+        uint32 numElements = indicesEnd - indicesBegin;
+
+        for (uint32 i = 0; i < numElements; i++) {
+            iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
+            uint32 index = indicesBegin[i];
+            float64 labelWeight = weightIterator[index];
+
+            if (labelWeight > 0) {
+                uint8 trueLabel = labelMatrix.getValue(row, index);
+                uint8 majorityLabel = majorityIterator[index];
+                uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
+                confusionMatrixIterator[element] += (labelWeight * weight);
+            }
+        }
     }
 
 }
