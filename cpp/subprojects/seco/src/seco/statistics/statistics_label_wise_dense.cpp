@@ -184,27 +184,10 @@ namespace seco {
             }
 
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
-                uint32 numLabels = this->getNumLabels();
-                typename DenseWeightMatrix::const_iterator weightIterator =
-                    weightMatrixPtr_->row_cbegin(statisticIndex);
-                DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
-
-                for (uint32 c = 0; c < numLabels; c++) {
-                    DenseConfusionMatrixVector::iterator totalIterator = totalSumVector_.confusion_matrix_begin(c);
-                    DenseConfusionMatrixVector::iterator subsetIterator = subsetSumVector_.confusion_matrix_begin(c);
-                    float64 labelWeight = weightIterator[c];
-
-                    // Only uncovered labels must be considered...
-                    if (labelWeight > 0) {
-                        // Add the current example and label to the confusion matrix that corresponds to the current
-                        // label...
-                        uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
-                        uint8 majorityLabel = majorityIterator[c];
-                        uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
-                        totalIterator[element] += weight;
-                        subsetIterator[element] += weight;
-                    }
-                }
+                totalSumVector_.add(statisticIndex, *labelMatrixPtr_, *majorityLabelVectorPtr_, *weightMatrixPtr_,
+                                    weight);
+                subsetSumVector_.add(statisticIndex, *labelMatrixPtr_, *majorityLabelVectorPtr_, *weightMatrixPtr_,
+                                     weight);
             }
 
             void resetCoveredStatistics() override {
@@ -212,26 +195,9 @@ namespace seco {
             }
 
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
-                uint32 numLabels = this->getNumLabels();
                 float64 signedWeight = remove ? -weight : weight;
-                typename DenseWeightMatrix::const_iterator weightIterator =
-                    weightMatrixPtr_->row_cbegin(statisticIndex);
-                DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVectorPtr_->cbegin();
-
-                for (uint32 c = 0; c < numLabels; c++) {
-                    DenseConfusionMatrixVector::iterator subsetIterator = subsetSumVector_.confusion_matrix_begin(c);
-                    float64 labelWeight = weightIterator[c];
-
-                    // Only uncovered labels must be considered...
-                    if (labelWeight > 0) {
-                        // Add the current example and label to the confusion matrix that corresponds to the current
-                        // label...
-                        uint8 trueLabel = labelMatrixPtr_->getValue(statisticIndex, c);
-                        uint8 majorityLabel = majorityIterator[c];
-                        uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
-                        subsetIterator[element] += signedWeight;
-                    }
-                }
+                subsetSumVector_.add(statisticIndex, *labelMatrixPtr_, *majorityLabelVectorPtr_, *weightMatrixPtr_,
+                                     signedWeight);
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
