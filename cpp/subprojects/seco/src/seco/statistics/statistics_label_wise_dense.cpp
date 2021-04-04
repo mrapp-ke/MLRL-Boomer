@@ -9,6 +9,14 @@
 
 namespace seco {
 
+    static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 predictedLabel) {
+        if (trueLabel) {
+            return predictedLabel ? RP : RN;
+        } else {
+            return predictedLabel ? IP : IN;
+        }
+    }
+
     /**
      * Provides access to the elements of confusion matrices that are computed independently for each label using dense
      * data structures.
