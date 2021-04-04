@@ -12,8 +12,8 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements, bool init)
-        : array_(init ? (float64*) malloc(numElements * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64))
-                      : (float64*) calloc(numElements * NUM_CONFUSION_MATRIX_ELEMENTS, sizeof(float64))),
+        : array_(init ? (float64*) calloc(numElements * NUM_CONFUSION_MATRIX_ELEMENTS, sizeof(float64))
+                      : (float64*) malloc(numElements * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64))),
           numElements_(numElements) {
 
     }
