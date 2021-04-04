@@ -84,15 +84,6 @@ namespace boosting {
         addToArray(hessians_, hessiansBegin, numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::subtract(gradient_const_iterator gradientsBegin,
-                                                 gradient_const_iterator gradientsEnd,
-                                                 hessian_const_iterator hessiansBegin,
-                                                 hessian_const_iterator hessiansEnd, float64 weight) {
-        float64 invertedWeight = -weight;
-        addToArray(gradients_, gradientsBegin, numElements_, invertedWeight);
-        addToArray(hessians_, hessiansBegin, numElements_, invertedWeight);
-    }
-
     void DenseLabelWiseStatisticVector::addToSubset(gradient_const_iterator gradientsBegin,
                                                     gradient_const_iterator gradientsEnd,
                                                     hessian_const_iterator hessiansBegin,
