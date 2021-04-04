@@ -85,7 +85,7 @@ namespace seco {
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
                         sumVector_.addToSubset(statisticIndex, *statistics_.labelMatrixPtr_,
                                                *statistics_.majorityLabelVectorPtr_, *statistics_.weightMatrixPtr_,
-                                               labelIndices_.cbegin(), labelIndices_.cend(), weight);
+                                               labelIndices_, weight);
                     }
 
                     void resetSubset() override {
