@@ -57,9 +57,9 @@ namespace boosting {
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
-        uint32 numLabels = labelMatrix.getNumCols();
         CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
         CsrLabelMatrix::index_const_iterator indicesEnd = labelMatrix.row_indices_cend(exampleIndex);
+        uint32 numLabels = labelMatrix.getNumCols();
 
         for (uint32 i = 0; i < numLabels; i++) {
             bool trueLabel;
@@ -86,9 +86,9 @@ namespace boosting {
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
-        uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
         CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
         CsrLabelMatrix::index_const_iterator indicesEnd = labelMatrix.row_indices_cend(exampleIndex);
+        uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 labelIndex = labelIndicesBegin[i];
@@ -113,8 +113,8 @@ namespace boosting {
 
     float64 AbstractLabelWiseLoss::evaluate(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
                                             const CContiguousView<float64>& scoreMatrix) const {
-        uint32 numLabels = labelMatrix.getNumCols();
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        uint32 numLabels = labelMatrix.getNumCols();
         float64 mean = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
