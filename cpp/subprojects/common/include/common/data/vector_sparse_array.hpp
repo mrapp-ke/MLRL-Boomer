@@ -39,7 +39,7 @@ class SparseArrayVector final {
          */
         SparseArrayVector(uint32 numElements);
 
-        virtual ~SparseArrayVector();
+        ~SparseArrayVector();
 
         /**
          * An iterator that provides access to the elements in the vector and allows to modify them.
