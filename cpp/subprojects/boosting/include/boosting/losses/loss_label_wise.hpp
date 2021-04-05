@@ -61,14 +61,38 @@ namespace boosting {
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
 
-            // TODO Comment
+            /**
+             * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
+             * provided by a `FullIndexVector`.
+             *
+             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
+             * @param labelMatrix       A reference to an object of type `CsrLabelMatrix` that provides row-wise access
+             *                          to the labels of the training examples
+             * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
+             *                          predicted scores
+             * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
+             * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
+             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    FullIndexVector::const_iterator labelIndicesBegin,
                                                    FullIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
 
-            // TODO Comment
+            /**
+             * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
+             * provided by a `PartialIndexVector`.
+             *
+             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
+             * @param labelMatrix       A reference to an object of type `CsrLabelMatrix` that provides row-wise access
+             *                          to the labels of the training examples
+             * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
+             *                          predicted scores
+             * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
+             * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
+             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                    const CContiguousView<float64> scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
