@@ -31,7 +31,7 @@ namespace boosting {
 
                 inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
                     uint32 numElements = v->getNumElements();
-                    LabelVector::const_iterator it = v->cbegin();
+                    LabelVector::index_const_iterator it = v->indices_cbegin();
                     std::size_t hash = (std::size_t) numElements;
 
                     for (uint32 i = 0; i < numElements; i++) {
@@ -56,8 +56,8 @@ namespace boosting {
                         return false;
                     }
 
-                    LabelVector::const_iterator it1 = lhs->cbegin();
-                    LabelVector::const_iterator it2 = rhs->cbegin();
+                    LabelVector::index_const_iterator it1 = lhs->indices_cbegin();
+                    LabelVector::index_const_iterator it2 = rhs->indices_cbegin();
 
                     for (uint32 i = 0; i < numElements; i++) {
                         if (it1[i] != it2[i]) {
