@@ -30,11 +30,11 @@ namespace boosting {
 
         if (closestLabelVector != nullptr) {
             uint32 numElements = closestLabelVector->getNumElements();
-            LabelVector::const_iterator iterator = closestLabelVector->cbegin();
+            LabelVector::index_const_iterator indexIterator = closestLabelVector->indices_cbegin();
             CContiguousView<uint8>::iterator predictionIterator = predictionMatrix.row_begin(exampleIndex);
 
             for (uint32 i = 0; i < numElements; i++) {
-                uint32 labelIndex = iterator[i];
+                uint32 labelIndex = indexIterator[i];
                 predictionIterator[labelIndex] = 1;
             }
         }
