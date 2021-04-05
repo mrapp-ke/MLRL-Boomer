@@ -48,9 +48,9 @@ cdef extern from "common/input/label_vector.hpp" nogil:
 
     cdef cppclass LabelVector:
 
-        ctypedef uint32* iterator
+        ctypedef uint32* index_iterator
 
-        ctypedef const uint32* const_iterator
+        ctypedef const uint32* index_const_iterator
 
         # Constructors:
 
@@ -58,13 +58,13 @@ cdef extern from "common/input/label_vector.hpp" nogil:
 
         # Functions:
 
-        iterator begin()
+        index_iterator indices_begin()
 
-        iterator end()
+        index_iterator indices_end()
 
-        const_iterator cbegin()
+        index_const_iterator indices_cbegin()
 
-        const_iterator cend()
+        index_const_iterator indices_cend()
 
         uint32 getNumElements()
 
