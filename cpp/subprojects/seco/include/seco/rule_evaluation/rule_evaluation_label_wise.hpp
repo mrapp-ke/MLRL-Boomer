@@ -44,7 +44,8 @@ namespace seco {
              *                                  predicted scores and quality scores
              */
             virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(
-                const DenseVector<uint8>& majorityLabelVector, const DenseConfusionMatrixVector& confusionMatricesTotal,
+                const BinarySparseArrayVector& majorityLabelVector,
+                const DenseConfusionMatrixVector& confusionMatricesTotal,
                 const DenseConfusionMatrixVector& confusionMatricesSubset,
                 const DenseConfusionMatrixVector& confusionMatricesCovered, bool uncovered) = 0;
 

@@ -144,7 +144,7 @@ namespace seco {
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void add(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                     const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
+                     const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                      float64 weight);
 
             /**
@@ -163,7 +163,7 @@ namespace seco {
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                             const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
+                             const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                              FullIndexVector indices, float64 weight);
 
             /**
@@ -182,7 +182,7 @@ namespace seco {
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                             const DenseVector<uint8>& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
+                             const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                              PartialIndexVector indices, float64 weight);
 
     };
