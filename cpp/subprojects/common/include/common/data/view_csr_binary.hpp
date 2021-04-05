@@ -10,7 +10,7 @@
  * Implements row-wise read-only access to binary values that are stored in a pre-allocated matrix in the compressed
  * sparse row (CSR) format.
  */
-class BinaryCsrView {
+class BinaryCsrView final {
 
     private:
 
@@ -18,15 +18,9 @@ class BinaryCsrView {
 
         uint32 numCols_;
 
-        const uint32* colIndices_;
-
-    protected:
-
-        /**
-         * A pointer to an array that stores the indices of the first element in `colIndices_` that corresponds to a
-         * certain row.
-         */
         const uint32* rowIndices_;
+
+        const uint32* colIndices_;
 
     public:
 
