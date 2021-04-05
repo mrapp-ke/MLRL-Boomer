@@ -157,23 +157,15 @@ namespace boosting {
                                                      CContiguousView<float64>::const_iterator scoresBegin,
                                                      CContiguousView<float64>::const_iterator scoresEnd) const {
         uint32 numLabels = scoresEnd - scoresBegin;
-        LabelVector::const_iterator indexIterator = labelVector.cbegin();
-        LabelVector::const_iterator indicesEnd = labelVector.cend();
+        LabelVector::value_const_iterator labelIterator = labelVector.values_cbegin();
         float64 mean = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
             float64 predictedScore = scoresBegin[i];
-            bool trueLabel;
-
-            if (indexIterator != indicesEnd && *indexIterator == i) {
-                indexIterator++;
-                trueLabel = true;
-            } else {
-                trueLabel = false;
-            }
-
+            bool trueLabel = *labelIterator;
             float64 score = this->evaluate(trueLabel, predictedScore);
             mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
+            labelIterator++;
         }
 
         return mean;

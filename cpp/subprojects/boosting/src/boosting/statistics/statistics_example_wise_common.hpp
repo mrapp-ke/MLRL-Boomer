@@ -83,11 +83,11 @@ namespace boosting {
 
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
-                        totalCoverableSumVector_->subtract(
+                        totalCoverableSumVector_->add(
                             statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
                             statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
                             statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                            statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex), weight);
+                            statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex), -weight);
                     }
 
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
@@ -148,12 +148,12 @@ namespace boosting {
             };
 
             /**
-             * The type of a vector that provides access to the indices of all available labels.
+             * The type of a `StatisticsSubset` that corresponds to all available labels.
              */
             typedef StatisticsSubset<FullIndexVector> FullSubset;
 
             /**
-             * The type of a vector that provides access to the indices of a subset of the available labels.
+             * The type of a `StatisticsSubset` that corresponds to a subset of the available labels.
              */
             typedef StatisticsSubset<PartialIndexVector> PartialSubset;
 

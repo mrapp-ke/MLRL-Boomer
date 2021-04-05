@@ -157,44 +157,33 @@ namespace boosting {
         // `max = max(x_1, x_2, ...)`, to increase numerical stability (see, e.g., section "Log-sum-exp for computing
         // the log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
         uint32 numLabels = scoresEnd - scoresBegin;
-        LabelVector::const_iterator indexIterator = labelVector.cbegin();
-        LabelVector::const_iterator indicesEnd = labelVector.cend();
+        LabelVector::value_const_iterator labelIterator = labelVector.values_cbegin();
         float64 max = 0;
 
         // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value (that must
         // be greater than 0, because `exp(1) = 0`) among all of them...
         for (uint32 i = 0; i < numLabels; i++) {
             float64 predictedScore = scoresBegin[i];
-            float64 x;
-
-            if (indexIterator != indicesEnd && *indexIterator == i) {
-                indexIterator++;
-                x = -predictedScore;
-            } else {
-                x = predictedScore;
-            }
+            bool trueLabel = *labelIterator;
+            float64 x = trueLabel ? -predictedScore : predictedScore;
 
             if (x > max) {
                 max = x;
             }
+
+            labelIterator++;
         }
 
         // Calculate the example-wise loss as `max + log(exp(0 - max) + exp(x_1 - max) + ...)`...
         float64 sumExp = std::exp(0 - max);
-        indexIterator = labelVector.cbegin();
+        labelIterator = labelVector.values_cbegin();
 
         for (uint32 i = 0; i < numLabels; i++) {
             float64 predictedScore = scoresBegin[i];
-            float64 x;
-
-            if (indexIterator != indicesEnd && *indexIterator == i) {
-                indexIterator++;
-                x = -predictedScore;
-            } else {
-                x = predictedScore;
-            }
-
+            bool trueLabel = *labelIterator;
+            float64 x = trueLabel ? -predictedScore : predictedScore;
             sumExp += std::exp(x - max);
+            labelIterator++;
         }
 
         return max + std::log(sumExp);
