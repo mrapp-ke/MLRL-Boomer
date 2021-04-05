@@ -26,7 +26,6 @@ source_files = [
     'src/common/head_refinement/prediction_full.cpp',
     'src/common/head_refinement/prediction_partial.cpp',
     'src/common/head_refinement/prediction.cpp',
-    'src/common/indices/index_forward_iterator.cpp',
     'src/common/indices/index_iterator.cpp',
     'src/common/indices/index_vector_full.cpp',
     'src/common/indices/index_vector_partial.cpp',
