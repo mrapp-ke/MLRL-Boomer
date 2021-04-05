@@ -8,11 +8,6 @@
 namespace seco {
 
     /**
-     * The number of elements in a confusion matrix.
-     */
-    const uint32 NUM_CONFUSION_MATRIX_ELEMENTS = 4;
-
-    /**
      * An enum that specifies all positive elements of a confusion matrix.
      */
     enum ConfusionMatrixElement : uint32 {
@@ -26,14 +21,14 @@ namespace seco {
      * Returns the confusion matrix element, a label corresponds to, depending on the ground truth an a prediction.
      *
      * @param trueLabel         The true label according to the ground truth
-     * @param predictedLabel    The predicted label
+     * @param majorityLabel     The prediction of the default rule. The prediction is assumed to be the inverse
      * @return                  The confusion matrix element
      */
-    static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 predictedLabel) {
+    static inline ConfusionMatrixElement getConfusionMatrixElement(bool trueLabel, bool majorityLabel) {
         if (trueLabel) {
-            return predictedLabel ? RP : RN;
+            return majorityLabel ? RN : RP;
         } else {
-            return predictedLabel ? IP : IN;
+            return majorityLabel ? IN : IP;
         }
     }
 
