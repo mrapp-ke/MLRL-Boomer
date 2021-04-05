@@ -18,10 +18,12 @@ namespace seco {
         uint32 numLabels = labelMatrixPtr_->getNumCols();
         std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(numExamples,
                                                                                                  numLabels);
-        std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr = std::make_unique<DenseVector<uint8>>(numLabels);
-        DenseVector<uint8>::iterator majorityIterator = majorityLabelVectorPtr->begin();
+        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr = std::make_unique<BinarySparseArrayVector>(
+            numLabels);
+        BinarySparseArrayVector::index_iterator majorityIterator = majorityLabelVectorPtr->indices_begin();
         float64 threshold = numExamples / 2.0;
         float64 sumOfUncoveredWeights = 0;
+        uint32 n = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 numRelevant = 0;
@@ -32,14 +34,15 @@ namespace seco {
             }
 
             if (numRelevant > threshold) {
-                majorityIterator[i] = 1;
                 sumOfUncoveredWeights += (numExamples - numRelevant);
+                majorityIterator[n] = i;
+                n++;
             } else {
-                majorityIterator[i] = 0;
                 sumOfUncoveredWeights += numRelevant;
             }
         }
 
+        majorityLabelVectorPtr->setNumElements(n, true);
         weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
         return std::make_unique<LabelWiseStatistics<DenseWeightMatrix, DenseConfusionMatrixVector>>(
             ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));

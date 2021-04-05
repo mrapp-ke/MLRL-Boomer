@@ -40,7 +40,7 @@ namespace seco {
             }
 
             const ILabelWiseScoreVector& calculateLabelWisePrediction(
-                    const DenseVector<uint8>& majorityLabelVector,
+                    const BinarySparseArrayVector& majorityLabelVector,
                     const DenseConfusionMatrixVector& confusionMatricesTotal,
                     const DenseConfusionMatrixVector& confusionMatricesSubset,
                     const DenseConfusionMatrixVector& confusionMatricesCovered, bool uncovered) override {
@@ -50,14 +50,14 @@ namespace seco {
                     scoreVector_.indices_cbegin();
                 typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
                     scoreVector_.quality_scores_begin();
-                DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVector.cbegin();
+                BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
                 float64 overallQualityScore = 0;
 
                 for (uint32 i = 0; i < numPredictions; i++) {
                     uint32 index = indexIterator[i];
 
                     // Set the score to be predicted for the current label...
-                    bool majorityLabel = majorityIterator[index];
+                    bool majorityLabel = *majorityIterator;
                     float64 score = (float64) (predictMajority_ ? majorityLabel : !majorityLabel);
                     scoreIterator[i] = score;
 
@@ -95,6 +95,7 @@ namespace seco {
                     score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
                     qualityScoreIterator[i] = score;
                     overallQualityScore += score;
+                    majorityIterator++;
                 }
 
                 overallQualityScore /= numPredictions;

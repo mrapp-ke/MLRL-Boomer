@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/data/matrix_dense.hpp"
-#include "common/data/vector_dense.hpp"
+#include "common/data/vector_sparse_array_binary.hpp"
 #include "common/indices/index_vector_full.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
@@ -53,7 +53,7 @@ namespace seco {
              * @param indicesBegin          An iterator to the beginning of the label indices
              * @param indicesEnd            An iterator to the end of the label indices
              */
-            void updateRow(uint32 row, const DenseVector<uint8>& majorityLabelVector,
+            void updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,
                            DenseVector<float64>::const_iterator predictionBegin,
                            DenseVector<float64>::const_iterator predictionEnd,
                            FullIndexVector::const_iterator indicesBegin,
@@ -70,7 +70,7 @@ namespace seco {
              * @param indicesBegin          An iterator to the beginning of the label indices
              * @param indicesEnd            An iterator to the end of the label indices
              */
-            void updateRow(uint32 row, const DenseVector<uint8>& majorityLabelVector,
+            void updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,
                            DenseVector<float64>::const_iterator predictionBegin,
                            DenseVector<float64>::const_iterator predictionEnd,
                            PartialIndexVector::const_iterator indicesBegin,

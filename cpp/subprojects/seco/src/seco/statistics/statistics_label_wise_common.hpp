@@ -123,8 +123,7 @@ namespace seco {
 
             std::unique_ptr<WeightMatrix> weightMatrixPtr_;
 
-            // TODO Use sparse vector
-            std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr_;
+            std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr_;
 
             ConfusionMatrixVector totalSumVector_;
 
@@ -147,13 +146,13 @@ namespace seco {
              *                                  provides random access to the labels of the training examples
              * @param weightMatrixPtr           An unique pointer to an object of template type `WeightMatrix` that
              *                                  stores the weights of individual examples and labels
-             * @param majorityLabelVectorPtr    An unique pointer to an object of type `DenseVector` that stores the
-             *                                  predictions of the default rule
+             * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
+             *                                  stores the predictions of the default rule
              */
             LabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                 std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
                                 std::unique_ptr<WeightMatrix> weightMatrixPtr,
-                                std::unique_ptr<DenseVector<uint8>> majorityLabelVectorPtr)
+                                std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),
                   ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrixPtr_(labelMatrixPtr),
                   weightMatrixPtr_(std::move(weightMatrixPtr)),
