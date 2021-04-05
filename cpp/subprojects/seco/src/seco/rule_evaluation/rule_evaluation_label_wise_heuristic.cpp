@@ -57,8 +57,8 @@ namespace seco {
                     uint32 index = indexIterator[i];
 
                     // Set the score to be predicted for the current label...
-                    uint8 majorityLabel = majorityIterator[index];
-                    float64 score = (float64) (predictMajority_ ? majorityLabel : (majorityLabel ? 0 : 1));
+                    bool majorityLabel = majorityIterator[index];
+                    float64 score = (float64) (predictMajority_ ? majorityLabel : !majorityLabel);
                     scoreIterator[i] = score;
 
                     // Calculate the quality score for the current label...

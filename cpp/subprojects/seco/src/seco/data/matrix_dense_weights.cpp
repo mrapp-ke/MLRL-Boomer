@@ -27,8 +27,8 @@ namespace seco {
         DenseVector<uint8>::const_iterator majorityIterator = majorityLabelVector.cbegin();
 
         for (uint32 i = 0; i < numCols; i++) {
-            uint8 predictedLabel = (uint8) predictionBegin[i];
-            uint8 majorityLabel = majorityIterator[i];
+            bool predictedLabel = predictionBegin[i];
+            bool majorityLabel = majorityIterator[i];
 
             if (predictedLabel != majorityLabel) {
                 float64 labelWeight = weightIterator[i];
@@ -52,8 +52,8 @@ namespace seco {
 
         for (uint32 i = 0; i < numPredictions; i++) {
             uint32 index = indicesBegin[i];
-            uint8 predictedLabel = (uint8) predictionBegin[i];
-            uint8 majorityLabel = majorityIterator[index];
+            bool predictedLabel = predictionBegin[i];
+            bool majorityLabel = majorityIterator[index];
 
             if (predictedLabel != majorityLabel) {
                 float64 labelWeight = weightIterator[index];

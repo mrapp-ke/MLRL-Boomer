@@ -24,7 +24,7 @@ namespace seco {
      * @param majorityLabel     The prediction of the default rule. The prediction is assumed to be the inverse
      * @return                  The confusion matrix element
      */
-    static inline ConfusionMatrixElement getConfusionMatrixElement(uint8 trueLabel, uint8 majorityLabel) {
+    static inline ConfusionMatrixElement getConfusionMatrixElement(bool trueLabel, bool majorityLabel) {
         if (trueLabel) {
             return majorityLabel ? RN : RP;
         } else {
