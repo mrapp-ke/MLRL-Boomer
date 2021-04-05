@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/data/types.hpp"
 #include <iterator>
 
 
@@ -22,16 +23,17 @@ class IndexForwardIterator final {
 
         T end_;
 
-        T::value_type index_;
+        uint32 index_;
 
     public:
 
         /**
          * @param begin An iterator to the beginning of the indices
          * @param end   An iterator to the end of the indices
+         * @param index The index to start at
          */
-        IndexForwardIterator(T begin, T end)
-            : iterator_(begin), end_(end), index_(0) {
+        IndexForwardIterator(T begin, T end, uint32 index)
+            : iterator_(begin), end_(end), index_(index) {
 
         }
 
@@ -111,8 +113,9 @@ class IndexForwardIterator final {
  *
  * @param begin An iterator to the beginning of the indices
  * @param end   An iterator to the end of the indices
+ * @param index The index to start at
  */
 template<class T>
-static inline IndexForwardIterator<T> make_index_forward_iterator(T begin, T end) {
-    return IndexForwardIterator<T>(begin, end);
+static inline IndexForwardIterator<T> make_index_forward_iterator(T begin, T end, uint32 index = 0) {
+    return IndexForwardIterator<T>(begin, end, 0);
 }
