@@ -8,11 +8,13 @@ namespace seco {
      * Provides access to the elements of confusion matrices that are computed independently for each label using dense
      * data structures.
      *
+     * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
+     *                                  examples
      * @tparam WeightMatrix             The type of the matrix that is used to store the weights of individual examples
      *                                  and labels
      * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
      */
-    template<class WeightMatrix, class ConfusionMatrixVector>
+    template<class LabelMatrix, class WeightMatrix, class ConfusionMatrixVector>
     class LabelWiseStatistics final : public ILabelWiseStatistics {
 
         private:
@@ -119,7 +121,7 @@ namespace seco {
 
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
+            std::shared_ptr<LabelMatrix> labelMatrixPtr_;
 
             std::unique_ptr<WeightMatrix> weightMatrixPtr_;
 
@@ -142,15 +144,15 @@ namespace seco {
              *                                  that allows to create instances of the class that is used for
              *                                  calculating the predictions, as well as corresponding quality scores, of
              *                                  rules
-             * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
-             *                                  provides random access to the labels of the training examples
+             * @param labelMatrixPtr            A shared pointer to an object of template type `LabelMatrix` that
+             *                                  provides access to the labels of the training examples
              * @param weightMatrixPtr           An unique pointer to an object of template type `WeightMatrix` that
              *                                  stores the weights of individual examples and labels
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
              */
             LabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
+                                std::shared_ptr<LabelMatrix> labelMatrixPtr,
                                 std::unique_ptr<WeightMatrix> weightMatrixPtr,
                                 std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),

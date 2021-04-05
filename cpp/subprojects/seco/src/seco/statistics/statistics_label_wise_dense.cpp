@@ -44,7 +44,7 @@ namespace seco {
 
         majorityLabelVectorPtr->setNumElements(n, true);
         weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
-        return std::make_unique<LabelWiseStatistics<DenseWeightMatrix, DenseConfusionMatrixVector>>(
+        return std::make_unique<LabelWiseStatistics<IRandomAccessLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
             ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
