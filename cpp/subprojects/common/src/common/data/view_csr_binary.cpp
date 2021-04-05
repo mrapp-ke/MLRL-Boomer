@@ -2,7 +2,7 @@
 
 
 BinaryCsrView::BinaryCsrView(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices)
-    : numRows_(numRows), numCols_(numCols), colIndices_(colIndices), rowIndices_(rowIndices) {
+    : numRows_(numRows), numCols_(numCols), rowIndices_(rowIndices), colIndices_(colIndices) {
 
 }
 
