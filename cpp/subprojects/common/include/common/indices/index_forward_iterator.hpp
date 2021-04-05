@@ -38,6 +38,11 @@ class IndexForwardIterator final {
         }
 
         /**
+         * The type that is used to represent the difference between two iterators.
+         */
+        typedef int difference_type;
+
+        /**
          * The type of the elements, the iterator provides access to.
          */
         typedef bool value_type;
@@ -104,6 +109,16 @@ class IndexForwardIterator final {
          */
         bool operator!=(const IndexForwardIterator& rhs) const {
             return index_ != rhs.index_;
+        }
+
+        /**
+         * Returns the difference between this iterator and another one.
+         *
+         * @param rhs   A reference to another iterator
+         * @return      The difference between the iterators
+         */
+        difference_type operator-(const IndexForwardIterator& rhs) const {
+            return (difference_type) index_ - (difference_type) rhs.index_;
         }
 
 };
