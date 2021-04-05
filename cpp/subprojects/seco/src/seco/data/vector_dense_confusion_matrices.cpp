@@ -84,12 +84,12 @@ namespace seco {
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
 
         for (uint32 i = 0; i < numElements_; i++) {
-            iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
             float64 labelWeight = weightIterator[i];
 
             if (labelWeight > 0) {
-                uint8 trueLabel = labelMatrix.getValue(exampleIndex, i);
-                uint8 majorityLabel = majorityIterator[i];
+                bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+                bool majorityLabel = majorityIterator[i];
+                iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
                 uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                 confusionMatrixIterator[element] += (labelWeight * weight);
             }
@@ -104,12 +104,12 @@ namespace seco {
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
 
         for (uint32 i = 0; i < numElements_; i++) {
-            iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
             float64 labelWeight = weightIterator[i];
 
             if (labelWeight > 0) {
-                uint8 trueLabel = labelMatrix.getValue(exampleIndex, i);
-                uint8 majorityLabel = majorityIterator[i];
+                bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+                bool majorityLabel = majorityIterator[i];
+                iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
                 uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                 confusionMatrixIterator[element] += (labelWeight * weight);
             }
@@ -126,13 +126,13 @@ namespace seco {
         uint32 numElements = indices.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
-            iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
             uint32 index = indexIterator[i];
             float64 labelWeight = weightIterator[index];
 
             if (labelWeight > 0) {
-                uint8 trueLabel = labelMatrix.getValue(exampleIndex, index);
-                uint8 majorityLabel = majorityIterator[index];
+                bool trueLabel = labelMatrix.getValue(exampleIndex, index);
+                bool majorityLabel = majorityIterator[index];
+                iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
                 uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                 confusionMatrixIterator[element] += (labelWeight * weight);
             }
