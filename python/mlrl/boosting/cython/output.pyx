@@ -109,13 +109,13 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
             measure_ptr, num_threads)
         cdef unique_ptr[LabelVector] label_vector_ptr
-        cdef LabelVector.iterator iterator
+        cdef LabelVector.index_iterator iterator
         cdef uint8 value
         cdef uint32 i, j, n
 
         for i in range(num_rows):
             label_vector_ptr = make_unique[LabelVector](num_cols)
-            iterator = label_vector_ptr.get().begin()
+            iterator = label_vector_ptr.get().indices_begin()
             n = 0
 
             for j in range(num_cols):
@@ -140,7 +140,7 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
             measure_ptr, num_threads)
         cdef unique_ptr[LabelVector] label_vector_ptr
-        cdef LabelVector.iterator iterator
+        cdef LabelVector.index_iterator iterator
         cdef list col_indices
         cdef uint32 num_cols, label_index, i, j
 
@@ -148,7 +148,7 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
             col_indices = rows[i]
             num_cols = len(col_indices)
             label_vector_ptr = make_unique[LabelVector](num_cols)
-            iterator = label_vector_ptr.get().begin()
+            iterator = label_vector_ptr.get().indices_begin()
 
             for j in range(num_cols):
                 label_index = col_indices[j]
@@ -176,7 +176,7 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
 cdef inline unique_ptr[LabelVector] __create_label_vector(list state):
     cdef uint32 num_elements = len(state)
     cdef unique_ptr[LabelVector] label_vector_ptr = make_unique[LabelVector](num_elements)
-    cdef LabelVector.iterator iterator = label_vector_ptr.get().begin()
+    cdef LabelVector.index_iterator iterator = label_vector_ptr.get().indices_begin()
     cdef uint32 i, label_index
 
     for i in range(num_elements):
@@ -194,7 +194,7 @@ cdef class ExampleWiseClassificationPredictorSerializer:
     cdef __visit_label_vector(self, const LabelVector& label_vector):
         cdef list label_vector_state = []
         cdef uint32 num_elements = label_vector.getNumElements()
-        cdef LabelVector.const_iterator iterator = label_vector.cbegin()
+        cdef LabelVector.index_const_iterator iterator = label_vector.indices_cbegin()
         cdef uint32 i, label_index
 
         for i in range(num_elements):
