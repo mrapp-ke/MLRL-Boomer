@@ -132,12 +132,12 @@ namespace boosting {
             };
 
             /**
-             * The type of a vector that provides access to the indices of all available labels.
+             * The type of a `StatisticsSubset` that corresponds to all available labels.
              */
             typedef StatisticsSubset<FullIndexVector> FullSubset;
 
             /**
-             * The type of a vector that provides access to the indices of a subset of the available labels.
+             * The type of a `StatisticsSubset` that corresponds to a subset of the available labels.
              */
             typedef StatisticsSubset<PartialIndexVector> PartialSubset;
 
