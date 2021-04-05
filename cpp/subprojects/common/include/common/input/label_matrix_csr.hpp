@@ -36,6 +36,11 @@ class CsrLabelMatrix final : public ILabelMatrix {
         typedef BinaryCsrView::index_const_iterator index_const_iterator;
 
         /**
+         * An iterator that provides read-only access to the values in the label matrix.
+         */
+        typedef BinaryCsrView::value_const_iterator value_const_iterator;
+
+        /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific row.
          *
          * @param row   The row
@@ -50,6 +55,22 @@ class CsrLabelMatrix final : public ILabelMatrix {
          * @return      An `index_const_iterator` to the end of the indices
          */
         index_const_iterator row_indices_cend(uint32 row) const;
+
+        /**
+         * Returns a `value_const_iterator` to the beginning of the values at a specific row.
+         *
+         * @param row   The row
+         * @return      A `value_const_iterator` to the beginning of the values
+         */
+        value_const_iterator row_values_cbegin(uint32 row) const;
+
+        /**
+         * Returns a `value_const_iterator` to the end of the values at a specific row.
+         *
+         * @param row   The row
+         * @return      A `value_const_iterator` to the end of the values
+         */
+        value_const_iterator row_values_cend(uint32 row) const;
 
         uint32 getNumRows() const override;
 

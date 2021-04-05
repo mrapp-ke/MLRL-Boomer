@@ -14,6 +14,14 @@ CsrLabelMatrix::index_const_iterator CsrLabelMatrix::row_indices_cend(uint32 row
     return view_.row_indices_cend(row);
 }
 
+CsrLabelMatrix::value_const_iterator CsrLabelMatrix::row_values_cbegin(uint32 row) const {
+    return view_.row_values_cbegin(row);
+}
+
+CsrLabelMatrix::value_const_iterator CsrLabelMatrix::row_values_cend(uint32 row) const {
+    return view_.row_values_cend(row);
+}
+
 uint32 CsrLabelMatrix::getNumRows() const {
     return view_.getNumRows();
 }
