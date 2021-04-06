@@ -22,7 +22,7 @@ void setCMFlag();
 /**
  * Sets the flag if the example weights should be included in the debugging prints.
  */
-void setWeightsFlag();
+void setDistFlag();
 
 /**
  * Sets the flag if the head scores should be included in the debugging prints.
@@ -111,7 +111,7 @@ class Debugger {
          *
          * @param weights of the examples
          */
-        static void printWeights(const IWeightVector& weights);
+        static void printDistribution(const IWeightVector& weights);
 
         /**
          * Prints a matrix of which examples are covered by which feature.
@@ -190,15 +190,21 @@ class Debugger {
          *              for which the prediction in the rule's head is negative (N)
          * @param urp   The number of uncovered (U) labels that are relevant (R) according to the ground truth and
          *              for which the prediction in the rule's head is positive (P)
+         * @param score score of the label given these metrics
          */
         static void printEvaluationConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp,
-                                                   float64 uin, float64 uip, float64 urn, float64 urp);
+                                                   float64 uin, float64 uip, float64 urn, float64 urp, float64 score);
 
         /**
          * Prints "find head" when single head refinement find head is called. Useful to see the function of the
          * confusion matrices printed in printConfusionMatrices.
          */
         static void printFindHead();
+
+        /**
+         * Print "find refinement" when the refinement process is started.
+         */
+        static void printFindRefinement();
 
         /**
          * Prints "out of sample" to signal the confusion matrices printed in printConfusionMatrices are

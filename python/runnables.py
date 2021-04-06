@@ -18,7 +18,7 @@ from testbed.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxt
 from testbed.training import DataSet
 
 from common.cython.debug import (
-    set_full_flag, set_cm_flag, set_weights_flag,
+    set_full_flag, set_cm_flag, set_dist_flag,
     set_hs_flag, set_lc_flag, set_ri_flag, set_confusion_flag
 )
 
@@ -50,8 +50,8 @@ class Runnable(ABC):
             else:
                 if 'cm' in args.debugging_:
                     set_cm_flag()
-                if 'weights' in args.debugging_:
-                    set_weights_flag()
+                if 'dist' in args.debugging_:
+                    set_dist_flag()
                 if 'hs' in args.debugging_:
                     set_hs_flag()
                 if 'lc' in args.debugging_:

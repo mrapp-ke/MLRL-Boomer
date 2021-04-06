@@ -5,8 +5,8 @@ cpdef object set_full_flag():
 cpdef object set_cm_flag():
      setCMFlag()
 
-cpdef object set_weights_flag():
-     setWeightsFlag()
+cpdef object set_dist_flag():
+     setDistFlag()
 
 cpdef object set_hs_flag():
      setHSFlag()

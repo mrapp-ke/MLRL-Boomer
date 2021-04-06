@@ -62,6 +62,7 @@ namespace seco {
                                                  numPredictions,
                                                  NUM_CONFUSION_MATRIX_ELEMENTS,
                                                  uncovered);
+
                 for (uint32 c = 0; c < numPredictions; c++) {
                     uint32 l = indexIterator[c];
 
@@ -96,15 +97,10 @@ namespace seco {
                         urp = confusionMatricesTotal[offsetL + RP] - crp;
                     }
 
-                    //TODO: stimmen diese Werte
-                    // codition + confusionsmatrix
-
+                    score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
 
                     // Debugger: print evaluation metrics
-                    Debugger::printEvaluationConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
-
-
-                    score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
+                    Debugger::printEvaluationConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp, score);
                     qualityScoreIterator[c] = score;
                     overallQualityScore += score;
                 }

@@ -18,7 +18,8 @@ ExactRuleRefinement<T>::ExactRuleRefinement(
 
 template<class T>
 void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* currentHead) {
-    std::cout << "find refinement starting now\n";
+    // Debugger: print 'head refinement'
+    Debugger::printFindRefinement();
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
     const AbstractEvaluatedPrediction* bestHead = currentHead;

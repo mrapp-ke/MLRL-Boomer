@@ -6,11 +6,13 @@
 int debugging_ = 0;
 int dFull = 0;
 int dCM = 0;
-int dWeights = 0;
+int dDist = 0;
 int dHS = 0;
 int dLC = 0;
 int dConfusion = 0;
 int dRI = 0;
+
+float64 metrics[9];
 
 void setFullFlag() {
     debugging_ = 1;
@@ -22,9 +24,9 @@ void setCMFlag() {
     dCM = 1;
 }
 
-void setWeightsFlag() {
+void setDistFlag() {
     debugging_ = 1;
-    dWeights = 1;
+    dDist = 1;
 }
 
 void setHSFlag() {
@@ -106,7 +108,7 @@ void Debugger::printRule(std::_List_const_iterator<Condition> conditionIterator,
     if (head.isPartial()) {
         const auto *pred = dynamic_cast<const PartialPrediction *>(&head);
         for (uint32 i = 0; i < head.getNumElements(); i++) {
-            std::cout << "(" << i << " = " << pred->indices_cbegin()[i] <<
+            std::cout << "(" << pred->indices_cbegin()[i] << " = " << pred->scores_cbegin()[i] <<
                       (i + 1 == head.getNumElements() ? "" : ", ");
         }
     }
@@ -119,9 +121,9 @@ void Debugger::printPrunedConditions(unsigned long numPrunedConditions) {
     }
 }
 
-void Debugger::printWeights(const IWeightVector &weights) {
+void Debugger::printDistribution(const IWeightVector &weights) {
     // Do nothing if the necessary flags are missing.
-    if (not debugging_ or not(dFull or dWeights)) {
+    if (not debugging_ or not(dFull or dDist)) {
         return;
     }
 
@@ -218,7 +220,7 @@ void Debugger::printConfusionMatrices(const float64 *confusionMatricesTotal, con
 }
 
 void Debugger::printEvaluationConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp,
-                                              float64 uin, float64 uip, float64 urn, float64 urp) {
+                                              float64 uin, float64 uip, float64 urn, float64 urp, float64 score) {
     // Do nothing if the necessary flags are missing.
     if (not debugging_ or not(dFull or dConfusion)) {
         return;
@@ -229,10 +231,11 @@ void Debugger::printEvaluationConfusionMatrix(float64 cin, float64 cip, float64 
         ", cip: " << (cip < 10 ? " " : "") << cip <<
         ", crn: " << (crn < 10 ? " " : "") << crn <<
         ", crp: " << (crp < 10 ? " " : "") << crp <<
-        ", uin: " << (uin < 10 ? " " : "") << uin <<
+        ",   uin: " << (uin < 10 ? " " : "") << uin <<
         ", uip: " << (uip < 10 ? " " : "") << uip <<
         ", urn: " << (urn < 10 ? " " : "") << urn <<
         ", urp: " << (urp < 10 ? " " : "") << urp <<
+        ",   score: " << score <<
         "\n";
 
     // format
@@ -247,6 +250,14 @@ void Debugger::printFindHead() {
         return;
     }
     std::cout << "\nfind head \n";
+}
+
+void Debugger::printFindRefinement() {
+    //Do nothing if the necessary flags are missing.
+    if (not debugging_) {
+        return;
+    }
+    std::cout << "find refinement starting now\n";
 }
 
 void Debugger::printOutOfSample() {

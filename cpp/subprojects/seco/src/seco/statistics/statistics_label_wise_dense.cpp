@@ -4,6 +4,7 @@
 #include "seco/heuristics/confusion_matrices.hpp"
 #include "common/debugging/debug.hpp"
 #include <cstdlib>
+#include <iostream>
 
 
 namespace seco {
@@ -106,8 +107,6 @@ namespace seco {
                         uint32 offset = statisticIndex * numLabels;
                         uint32 numPredictions = labelIndices_.getNumElements();
                         typename T::const_iterator indexIterator = labelIndices_.cbegin();
-
-                        //TODO: was passiert hier
 
                         for (uint32 c = 0; c < numPredictions; c++) {
                             uint32 l = indexIterator[c];

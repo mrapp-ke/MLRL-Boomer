@@ -4,7 +4,7 @@ cdef extern from "common/debugging/debug.hpp":
 
       cdef void setCMFlag()
 
-      cdef void setWeightsFlag()
+      cdef void setDistFlag()
 
       cdef void setHSFlag()
 

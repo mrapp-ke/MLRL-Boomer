@@ -449,10 +449,6 @@ class ExactThresholds final : public AbstractThresholds {
 
                 float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
-
-                    // Debugger: print weights
-                    Debugger::printWeights(weights_);
-
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
                         partition.cbegin(), partition.getNumElements(), weights_, coverageMask,
                         thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);
@@ -460,10 +456,6 @@ class ExactThresholds final : public AbstractThresholds {
 
                 float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageMask,
                                             const AbstractPrediction& head) const override {
-
-                    // Debugger: print weights
-                    Debugger::printWeights(weights_);
-
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), weights_, coverageMask,
                         thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);

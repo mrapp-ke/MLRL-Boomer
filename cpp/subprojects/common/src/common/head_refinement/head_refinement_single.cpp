@@ -17,7 +17,6 @@ class SingleLabelHeadRefinement final : public IHeadRefinement, public ILabelWis
         const AbstractEvaluatedPrediction* processScoresInternally(const AbstractEvaluatedPrediction* bestHead,
                                                                    const T& scoreVector) {
 
-            //TODO: wird ausgerufen bei findHead
             uint32 numPredictions = scoreVector.getNumElements();
             typename T::quality_score_const_iterator qualityScoreIterator = scoreVector.quality_scores_cbegin();
             uint32 bestC = 0;
