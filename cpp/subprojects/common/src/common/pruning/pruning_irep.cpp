@@ -19,7 +19,7 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
         const CoverageMask& originalCoverageMask = thresholdsSubset.getCoverageMask();
         float64 bestQualityScore = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageMask, head);
 
-        // print the original coverage mask if debugging is enabled
+        // Debugger: print the original coverage mask
         Debugger::printCoverageMask(originalCoverageMask, true);
 
         // Create a copy of the original coverage mask...
