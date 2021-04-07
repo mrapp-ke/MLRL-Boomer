@@ -10,6 +10,11 @@ python/build/
 cpp/build/
 __pycache__/
 
+# Documentation files
+doc/_build/**/*
+doc/apidoc/**/*
+doc/doxygen/**/*
+
 # Virtual Environment
 venv/
 
