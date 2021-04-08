@@ -63,19 +63,6 @@ cdef extern from "common/input/label_matrix_csr.hpp" nogil:
         CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices) except +
 
 
-cdef extern from "common/input/label_matrix_dok.hpp" nogil:
-
-    cdef cppclass DokLabelMatrixImpl"DokLabelMatrix"(IRandomAccessLabelMatrix):
-
-        # Constructors:
-
-        DokLabelMatrixImpl(uint32 numRows, uint32 numCols) except +
-
-        # Functions:
-
-        void setValue(uint32 exampleIndex, uint32 rowIndex)
-
-
 cdef extern from "common/input/feature_matrix.hpp" nogil:
 
     cdef cppclass IFeatureMatrix:
