@@ -1,4 +1,5 @@
 #include "common/input/label_matrix_csr.hpp"
+#include "common/data/arrays.hpp"
 
 
 CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices)
@@ -28,4 +29,14 @@ uint32 CsrLabelMatrix::getNumRows() const {
 
 uint32 CsrLabelMatrix::getNumCols() const {
     return view_.getNumCols();
+}
+
+std::unique_ptr<LabelVector> CsrLabelMatrix::getLabelVector(uint32 row) const {
+    index_const_iterator indexIterator = this->row_indices_cbegin(row);
+    index_const_iterator indicesEnd = this->row_indices_cend(row);
+    uint32 numElements = indicesEnd - indexIterator;
+    std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numElements);
+    LabelVector::index_iterator iterator = labelVectorPtr->indices_begin();
+    copyArray(indexIterator, iterator, numElements);
+    return labelVectorPtr;
 }
