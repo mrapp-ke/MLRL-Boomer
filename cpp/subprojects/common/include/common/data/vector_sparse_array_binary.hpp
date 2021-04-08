@@ -27,6 +27,12 @@ class BinarySparseArrayVector final {
          */
         BinarySparseArrayVector(uint32 numElements);
 
+        /**
+         * @param numElements   The number of elements in the vector
+         * @param init          True, if all values in the vector should be value-initialized, false otherwise
+         */
+        BinarySparseArrayVector(uint32 numElements, bool init);
+
         ~BinarySparseArrayVector();
 
         /**
