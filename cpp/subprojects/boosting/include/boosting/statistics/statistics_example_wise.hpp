@@ -3,6 +3,8 @@
  */
 #pragma once
 
+#include "common/input/label_matrix_c_contiguous.hpp"
+#include "common/input/label_matrix_csr.hpp"
 #include "common/statistics/statistics.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 
@@ -41,11 +43,26 @@ namespace boosting {
             virtual ~IExampleWiseStatisticsFactory() { };
 
             /**
-             * Creates a new instance of the type `IExampleWiseStatistics`.
+             * Creates a new instance of the type `IExampleWiseStatistics`, based on a matrix that provides random
+             * access to the labels of the training examples.
              *
-             * @return An unique pointer to an object of type `IExampleWiseStatistics` that has been created
+             * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides random
+             *                      access to the labels of the training examples
+             * @return              An unique pointer to an object of type `IExampleWiseStatistics` that has been
+             *                      created
              */
-            virtual std::unique_ptr<IExampleWiseStatistics> create() const = 0;
+            virtual std::unique_ptr<IExampleWiseStatistics> create(const CContiguousLabelMatrix& labelMatrix) const = 0;
+
+            /**
+             * Creates a new instance of the type `IExampleWiseStatistics`, based on a matrix that provides row-wise
+             * access to the labels of the training examples.
+             *
+             * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` that provides row-wise access to
+             *                      the labels of the training examples
+             * @return              An unique pointer to an object of type `IExampleWiseStatistics` that has been
+             *                      created
+             */
+            virtual std::unique_ptr<IExampleWiseStatistics> create(const CsrLabelMatrix& labelMatrix) const = 0;
 
     };
 

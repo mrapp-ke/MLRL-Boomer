@@ -7,15 +7,15 @@
 namespace seco {
 
     DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-            const CContiguousLabelMatrix& labelMatrix)
-        : ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrix_(labelMatrix) {
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+        : ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
     }
 
-    std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create() const {
-        uint32 numExamples = labelMatrix_.getNumRows();
-        uint32 numLabels = labelMatrix_.getNumCols();
+    std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create(
+            const CContiguousLabelMatrix& labelMatrix) const {
+        uint32 numExamples = labelMatrix.getNumRows();
+        uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(numExamples,
                                                                                                  numLabels);
         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr = std::make_unique<BinarySparseArrayVector>(
@@ -29,7 +29,7 @@ namespace seco {
             uint32 numRelevant = 0;
 
             for (uint32 j = 0; j < numExamples; j++) {
-                uint8 trueLabel = labelMatrix_.row_values_cbegin(j)[i];
+                uint8 trueLabel = labelMatrix.row_values_cbegin(j)[i];
                 numRelevant += trueLabel;
             }
 
@@ -45,7 +45,13 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
         return std::make_unique<LabelWiseStatistics<CContiguousLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
-            ruleEvaluationFactoryPtr_, labelMatrix_, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
+            ruleEvaluationFactoryPtr_, labelMatrix, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
+    }
+
+    std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create(
+            const CsrLabelMatrix& labelMatrix) const {
+        // TODO Implement
+        return nullptr;
     }
 
 }

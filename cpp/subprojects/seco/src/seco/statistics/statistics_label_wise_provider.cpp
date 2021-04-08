@@ -49,14 +49,16 @@ namespace seco {
 
     std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
             const CContiguousLabelMatrix& labelMatrix) const {
-        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_, labelMatrix);
-        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_, statisticsFactory.create());
+        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                             statisticsFactory.create(labelMatrix));
     }
 
     std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
             const CsrLabelMatrix& labelMatrix) const {
-        // TODO Implement
-        return nullptr;
+        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                             statisticsFactory.create(labelMatrix));
     }
 
 }

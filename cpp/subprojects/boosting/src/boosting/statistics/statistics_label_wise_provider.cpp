@@ -50,18 +50,18 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
             const CContiguousLabelMatrix& labelMatrix) const {
-        DenseLabelWiseStatisticsFactory<CContiguousLabelMatrix> statisticsFactory(lossFunctionPtr_,
-                                                                                  defaultRuleEvaluationFactoryPtr_,
-                                                                                  labelMatrix, numThreads_);
-        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_, statisticsFactory.create());
+        DenseLabelWiseStatisticsFactory statisticsFactory(lossFunctionPtr_, defaultRuleEvaluationFactoryPtr_,
+                                                          numThreads_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                             statisticsFactory.create(labelMatrix));
     }
 
     std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
             const CsrLabelMatrix& labelMatrix) const {
-        DenseLabelWiseStatisticsFactory<CsrLabelMatrix> statisticsFactory(lossFunctionPtr_,
-                                                                          defaultRuleEvaluationFactoryPtr_, labelMatrix,
-                                                                          numThreads_);
-        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_, statisticsFactory.create());
+        DenseLabelWiseStatisticsFactory statisticsFactory(lossFunctionPtr_, defaultRuleEvaluationFactoryPtr_,
+                                                          numThreads_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                             statisticsFactory.create(labelMatrix));
     }
 
 }
