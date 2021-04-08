@@ -1,13 +1,18 @@
-.. BOOMER documentation master file, created by
-   sphinx-quickstart on Sun Mar 21 21:50:12 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Welcome to BOOMER's documentation!
+==================================
 
-Overview
-========
+BOOMER is an algorithm for learning gradient boosted multi-label classification rules. It allows to train a machine learning model on labeled training data, which can afterwards be used to make predictions for unseen data. In contrast to prominent boosting algorithms like `XGBoost <https://xgboost.readthedocs.io/en/latest/>`_ or `LightGBM <https://lightgbm.readthedocs.io/en/latest/>`_, the algorithm is aimed at multi label classification problems, where individual data examples are not only associated with a single class, but may correspond to several labels at the same time.
+
+This document is intented for users and developers that are interested in the algorithm's implementation. For a detailed description of the used methodology, please refer to the following `paper <https://link.springer.com/chapter/10.1007/978-3-030-67664-3_8>`_.
+
+*Rapp M., Loza Mencía E., Fürnkranz J., Nguyen VL., Hüllermeier E. (2020) Learning Gradient Boosted Multi-label Classification Rules. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2020. Lecture Notes in Computer Science, pp. 124-140, vol 12459. Springer, Cham*
+
+A preprint version is publicly available on `arxiv.org <https://arxiv.org/pdf/2006.13346.pdf>`_. If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
+
+   quickstart/index
 
    apidoc/index
