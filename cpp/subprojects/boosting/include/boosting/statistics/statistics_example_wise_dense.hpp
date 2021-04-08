@@ -24,7 +24,7 @@ namespace boosting {
 
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
-            std::shared_ptr<LabelMatrix> labelMatrixPtr_;
+            const LabelMatrix& labelMatrix_;
 
             uint32 numThreads_;
 
@@ -36,15 +36,15 @@ namespace boosting {
              * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
              *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
              *                                  predictions, as well as corresponding quality scores, of rules
-             * @param labelMatrixPtr            A shared pointer to an object of template type `LabelMatrix` that
-             *                                  provides access to the labels of the training examples
+             * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
+             *                                  access to the labels of the training examples
              * @param numThreads                The number of CPU threads to be used to calculate the initial statistics
              *                                  in parallel. Must be at least 1
              */
             DenseExampleWiseStatisticsFactory(
                     std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                     std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                    std::shared_ptr<LabelMatrix> labelMatrixPtr, uint32 numThreads);
+                    const LabelMatrix& labelMatrix, uint32 numThreads);
 
             std::unique_ptr<IExampleWiseStatistics> create() const override;
 

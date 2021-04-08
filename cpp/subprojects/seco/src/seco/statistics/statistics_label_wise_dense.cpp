@@ -8,14 +8,14 @@ namespace seco {
 
     DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
-        : ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrixPtr_(labelMatrixPtr) {
+            const IRandomAccessLabelMatrix& labelMatrix)
+        : ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrix_(labelMatrix) {
 
     }
 
     std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create() const {
-        uint32 numExamples = labelMatrixPtr_->getNumRows();
-        uint32 numLabels = labelMatrixPtr_->getNumCols();
+        uint32 numExamples = labelMatrix_.getNumRows();
+        uint32 numLabels = labelMatrix_.getNumCols();
         std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(numExamples,
                                                                                                  numLabels);
         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr = std::make_unique<BinarySparseArrayVector>(
@@ -29,7 +29,7 @@ namespace seco {
             uint32 numRelevant = 0;
 
             for (uint32 j = 0; j < numExamples; j++) {
-                uint8 trueLabel = labelMatrixPtr_->getValue(j, i);
+                uint8 trueLabel = labelMatrix_.getValue(j, i);
                 numRelevant += trueLabel;
             }
 
@@ -45,7 +45,7 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
         return std::make_unique<LabelWiseStatistics<IRandomAccessLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
-            ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
+            ruleEvaluationFactoryPtr_, labelMatrix_, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
 }

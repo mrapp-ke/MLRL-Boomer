@@ -11,23 +11,23 @@ namespace boosting {
     template<class LabelMatrix>
     DenseExampleWiseStatisticsFactory<LabelMatrix>::DenseExampleWiseStatisticsFactory(
             std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-            std::shared_ptr<LabelMatrix> labelMatrixPtr, uint32 numThreads)
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, const LabelMatrix& labelMatrix,
+            uint32 numThreads)
         : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
-          labelMatrixPtr_(labelMatrixPtr), numThreads_(numThreads) {
+          labelMatrix_(labelMatrix), numThreads_(numThreads) {
 
     }
 
     template<class LabelMatrix>
     std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactory<LabelMatrix>::create() const {
-        uint32 numExamples = labelMatrixPtr_->getNumRows();
-        uint32 numLabels = labelMatrixPtr_->getNumCols();
+        uint32 numExamples = labelMatrix_.getNumRows();
+        uint32 numLabels = labelMatrix_.getNumCols();
         std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr =
             std::make_unique<DenseExampleWiseStatisticMatrix>(numExamples, numLabels);
         std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =
             std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
         const IExampleWiseLoss* lossFunctionPtr = lossFunctionPtr_.get();
-        const LabelMatrix* labelMatrixPtr = labelMatrixPtr_.get();
+        const LabelMatrix* labelMatrixPtr = &labelMatrix_;
         const CContiguousView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseExampleWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
@@ -39,7 +39,7 @@ namespace boosting {
         }
 
         return std::make_unique<ExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector, DenseExampleWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
-            lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(statisticMatrixPtr),
+            lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrix_, std::move(statisticMatrixPtr),
             std::move(scoreMatrixPtr));
     }
 

@@ -293,7 +293,7 @@ namespace boosting {
 
             std::shared_ptr<IExampleWiseLoss> lossFunctionPtr_;
 
-            std::shared_ptr<LabelMatrix> labelMatrixPtr_;
+            const LabelMatrix& labelMatrix_;
 
             std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
 
@@ -305,7 +305,7 @@ namespace boosting {
                                                     prediction.indices_cend());
 
                 // Update the gradients and Hessians for the example at the given index...
-                lossFunctionPtr_->updateExampleWiseStatistics(statisticIndex, *labelMatrixPtr_, *scoreMatrixPtr_,
+                lossFunctionPtr_->updateExampleWiseStatistics(statisticIndex, labelMatrix_, *scoreMatrixPtr_,
                                                               *this->statisticMatrixPtr_);
             }
 
@@ -317,8 +317,8 @@ namespace boosting {
              * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
              *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
              *                                  predictions, as well as corresponding quality scores, of rules
-             * @param labelMatrixPtr            A shared pointer to an object of template type `LabelMatrix` that
-             *                                  provides access to the labels of the training examples
+             * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
+             *                                  access to the labels of the training examples
              * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
              *                                  stores the gradients and Hessians
              * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that
@@ -326,13 +326,12 @@ namespace boosting {
              */
             ExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                                   std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                  std::shared_ptr<LabelMatrix> labelMatrixPtr,
-                                  std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                                  const LabelMatrix& labelMatrix, std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                   std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
                       std::move(statisticMatrixPtr), ruleEvaluationFactoryPtr),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticMatrixPtr_->getNumCols())),
-                  lossFunctionPtr_(lossFunctionPtr), labelMatrixPtr_(labelMatrixPtr),
+                  lossFunctionPtr_(lossFunctionPtr), labelMatrix_(labelMatrix),
                   scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
 
             }
@@ -373,7 +372,7 @@ namespace boosting {
             }
 
             float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
-                return measure.evaluate(statisticIndex, *labelMatrixPtr_, *scoreMatrixPtr_);
+                return measure.evaluate(statisticIndex, labelMatrix_, *scoreMatrixPtr_);
             }
 
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
