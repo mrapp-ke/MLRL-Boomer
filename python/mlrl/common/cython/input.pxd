@@ -38,16 +38,9 @@ cdef extern from "common/input/label_matrix.hpp" nogil:
         unique_ptr[LabelVector] getLabelVector(uint32 row)
 
 
-    cdef cppclass IRandomAccessLabelMatrix(ILabelMatrix):
-
-        # Functions:
-
-        uint8 getValue(uint32 row, uint32 col)
-
-
 cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
 
-    cdef cppclass CContiguousLabelMatrixImpl"CContiguousLabelMatrix"(IRandomAccessLabelMatrix):
+    cdef cppclass CContiguousLabelMatrixImpl"CContiguousLabelMatrix"(ILabelMatrix):
 
         # Constructors:
 
@@ -146,11 +139,7 @@ cdef class LabelMatrix:
     cdef shared_ptr[ILabelMatrix] label_matrix_ptr
 
 
-cdef class RandomAccessLabelMatrix(LabelMatrix):
-    pass
-
-
-cdef class CContiguousLabelMatrix(RandomAccessLabelMatrix):
+cdef class CContiguousLabelMatrix(LabelMatrix):
     pass
 
 
@@ -158,7 +147,7 @@ cdef class CsrLabelMatrix(LabelMatrix):
     pass
 
 
-cdef class DokLabelMatrix(RandomAccessLabelMatrix):
+cdef class DokLabelMatrix(LabelMatrix):
     pass
 
 

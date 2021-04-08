@@ -43,7 +43,7 @@ namespace boosting {
             std::move(scoreMatrixPtr));
     }
 
-    template class DenseExampleWiseStatisticsFactory<IRandomAccessLabelMatrix>;
+    template class DenseExampleWiseStatisticsFactory<CContiguousLabelMatrix>;
     template class DenseExampleWiseStatisticsFactory<CsrLabelMatrix>;
 
 }

@@ -5,7 +5,7 @@
 namespace boosting {
 
     void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
-                                                              const IRandomAccessLabelMatrix& labelMatrix,
+                                                              const CContiguousLabelMatrix& labelMatrix,
                                                               const CContiguousView<float64>& scoreMatrix,
                                                               DenseExampleWiseStatisticMatrix& statisticMatrix) const {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
@@ -15,6 +15,7 @@ namespace boosting {
         // exploit this equivalence for the calculation of gradients and Hessians, they are calculated as products of
         // fractions of the above form.
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
         DenseExampleWiseStatisticMatrix::gradient_iterator gradientIterator =
             statisticMatrix.gradients_row_begin(exampleIndex);
         DenseExampleWiseStatisticMatrix::hessian_iterator hessianIterator =
@@ -28,7 +29,7 @@ namespace boosting {
 
         for (uint32 c = 0; c < numLabels; c++) {
             float64 predictedScore = scoreIterator[c];
-            uint32 trueLabel = labelMatrix.getValue(exampleIndex, c);
+            uint32 trueLabel = labelIterator[c];
             float64 x = trueLabel ? -predictedScore : predictedScore;
             gradientIterator[c] = x;  // Temporarily store `x` in the array of gradients
 
@@ -64,7 +65,7 @@ namespace boosting {
         intp i = triangularNumber(numLabels) - 1;
 
         for (intp c = numLabels - 1; c >= 0; c--) {
-            uint8 trueLabel = labelMatrix.getValue(exampleIndex, c);
+            uint8 trueLabel = labelIterator[c];
             float64 invertedExpectedScore = trueLabel ? -1 : 1;
             float64 x = gradientIterator[c];
 
@@ -86,7 +87,7 @@ namespace boosting {
             // `-expectedScore_c * expectedScore_r * exp(x_c + x_r) / (1 + exp(x_1) + exp(x_2) + ...)^2`, or as
             // `-expectedScore_c * expectedScore_r * (exp(x_c + x_r - max) / sumExp) * (exp(0 - max) / sumExp)`
             for (intp r = c - 1; r >= 0; r--) {
-                uint32 trueLabel2 = labelMatrix.getValue(exampleIndex, r);
+                uint32 trueLabel2 = labelIterator[r];
                 float64 expectedScore2 = trueLabel2 ? 1 : -1;
                 float64 x2 = gradientIterator[r];
                 hessianIterator[i] = invertedExpectedScore * expectedScore2
@@ -104,7 +105,7 @@ namespace boosting {
         // TODO Implement
     }
 
-    float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+    float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                               const CContiguousView<float64>& scoreMatrix) const {
         // The example-wise logistic loss calculates as
         // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2) + ...)`.
@@ -114,12 +115,13 @@ namespace boosting {
         // the log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
         uint32 numLabels = labelMatrix.getNumCols();
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
         float64 max = 0;
 
         // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value (that must
         // be greater than 0, because `exp(1) = 0`) among all of them...
         for (uint32 i = 0; i < numLabels; i++) {
-            bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+            bool trueLabel = labelIterator[i];
             float64 predictedScore = scoreIterator[i];
             float64 x = trueLabel ? -predictedScore : predictedScore;
 
@@ -132,7 +134,7 @@ namespace boosting {
         float64 sumExp = std::exp(0 - max);
 
         for (uint32 i = 0; i < numLabels; i++) {
-            bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+            bool trueLabel = labelIterator[i];
             float64 predictedScore = scoreIterator[i];
             float64 x = trueLabel ? -predictedScore : predictedScore;
             sumExp += std::exp(x - max);

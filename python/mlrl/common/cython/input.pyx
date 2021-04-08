@@ -12,14 +12,7 @@ cdef class LabelMatrix:
     pass
 
 
-cdef class RandomAccessLabelMatrix(LabelMatrix):
-    """
-    A wrapper for the pure virtual C++ class `IRandomAccessLabelMatrix`.
-    """
-    pass
-
-
-cdef class CContiguousLabelMatrix(RandomAccessLabelMatrix):
+cdef class CContiguousLabelMatrix(LabelMatrix):
     """
     A wrapper for the C++ class `CContiguousLabelMatrix`.
     """
