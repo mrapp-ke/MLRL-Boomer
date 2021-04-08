@@ -182,7 +182,7 @@ namespace seco {
              */
             void addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                              const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
-                             FullIndexVector indices, float64 weight);
+                             const FullIndexVector& indices, float64 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -201,7 +201,7 @@ namespace seco {
              */
             void addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                              const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
-                             FullIndexVector indices, float64 weight);
+                             const FullIndexVector& indices, float64 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -220,7 +220,7 @@ namespace seco {
              */
             void addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                              const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
-                             PartialIndexVector indices, float64 weight);
+                             const PartialIndexVector& indices, float64 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -239,7 +239,7 @@ namespace seco {
              */
             void addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                              const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
-                             PartialIndexVector indices, float64 weight);
+                             const PartialIndexVector& indices, float64 weight);
 
     };
 
