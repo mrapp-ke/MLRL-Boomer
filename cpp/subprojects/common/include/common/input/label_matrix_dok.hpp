@@ -41,6 +41,8 @@ class DokLabelMatrix : public IRandomAccessLabelMatrix {
 
         uint32 getNumCols() const override;
 
+        std::unique_ptr<LabelVector> getLabelVector(uint32 row) const override;
+
         uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
 
 };
