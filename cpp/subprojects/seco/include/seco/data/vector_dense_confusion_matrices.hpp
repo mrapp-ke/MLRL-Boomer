@@ -224,8 +224,8 @@ namespace seco {
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
-             * `FullIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a specific
-             * weight.
+             * `PartialIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
+             * specific weight.
              *
              * @param exampleIndex          The index of the example
              * @param labelMatrix           A reference to an object of type `CsrLabelMatrix` that provides row-wise
