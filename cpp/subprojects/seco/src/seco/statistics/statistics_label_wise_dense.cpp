@@ -16,8 +16,8 @@ namespace seco {
             const CContiguousLabelMatrix& labelMatrix) const {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
-        std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(numExamples,
-                                                                                                 numLabels);
+        std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(
+            numExamples, numLabels);
         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr = std::make_unique<BinarySparseArrayVector>(
             numLabels);
         BinarySparseArrayVector::index_iterator majorityIterator = majorityLabelVectorPtr->indices_begin();
@@ -50,8 +50,44 @@ namespace seco {
 
     std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create(
             const CsrLabelMatrix& labelMatrix) const {
-        // TODO Implement
-        return nullptr;
+        uint32 numExamples = labelMatrix.getNumRows();
+        uint32 numLabels = labelMatrix.getNumCols();
+        std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(
+            numExamples, numLabels);
+        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr = std::make_unique<BinarySparseArrayVector>(
+            numLabels, true);
+        BinarySparseArrayVector::index_iterator majorityIterator = majorityLabelVectorPtr->indices_begin();
+
+        for (uint32 i = 0; i < numExamples; i++) {
+            CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(i);
+            uint32 numElements = labelMatrix.row_indices_cbegin(i) - indexIterator;
+
+            for (uint32 j = 0; j < numElements; j++) {
+                uint32 index = indexIterator[j];
+                majorityIterator[index] += 1;
+            }
+        }
+
+        float64 threshold = numExamples / 2.0;
+        float64 sumOfUncoveredWeights = 0;
+        uint32 n = 0;
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 numRelevant = majorityIterator[i];
+
+            if (numRelevant > threshold) {
+                sumOfUncoveredWeights += (numExamples - numRelevant);
+                majorityIterator[n] = i;
+                n++;
+            } else {
+                sumOfUncoveredWeights += numRelevant;
+            }
+        }
+
+        majorityLabelVectorPtr->setNumElements(n, true);
+        weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
+        return std::make_unique<LabelWiseStatistics<CsrLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
+            ruleEvaluationFactoryPtr_, labelMatrix, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
 }
