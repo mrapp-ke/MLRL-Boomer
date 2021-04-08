@@ -3,8 +3,6 @@
  */
 #pragma once
 
-#include "common/data/view_c_contiguous.hpp"
-#include "common/input/label_matrix_csr.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
 #include "boosting/data/matrix_dense_example_wise.hpp"
