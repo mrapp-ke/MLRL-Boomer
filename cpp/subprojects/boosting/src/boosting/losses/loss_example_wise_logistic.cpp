@@ -65,16 +65,17 @@ namespace boosting {
         intp i = triangularNumber(numLabels) - 1;
 
         for (intp c = numLabels - 1; c >= 0; c--) {
+            float64 predictedScore = scoreIterator[c];
             uint8 trueLabel = labelIterator[c];
             float64 invertedExpectedScore = trueLabel ? -1 : 1;
-            float64 x = gradientIterator[c];
+            float64 x = predictedScore * invertedExpectedScore;
 
             // Calculate the gradient that corresponds to the current label. The gradient calculates as
             // `-expectedScore_c * exp(x_c) / (1 + exp(x_1) + exp(x_2) + ...)`, which can be rewritten as
             // `-expectedScore_c * (exp(x_c - max) / sumExp)`
             float64 xExp = std::exp(x - max);
             float64 tmp = divideOrZero<float64>(xExp, sumExp);
-            float64 gradient = invertedExpectedScore * tmp;
+            gradientIterator[c] = invertedExpectedScore * tmp;
 
             // Calculate the Hessian on the diagonal of the Hessian matrix that corresponds to the current label. Such
             // Hessian calculates as `exp(x_c) * (1 + exp(x_1) + exp(x_2) + ...) / (1 + exp(x_1) + exp(x_2) + ...)^2`,
@@ -87,15 +88,14 @@ namespace boosting {
             // `-expectedScore_c * expectedScore_r * exp(x_c + x_r) / (1 + exp(x_1) + exp(x_2) + ...)^2`, or as
             // `-expectedScore_c * expectedScore_r * (exp(x_c + x_r - max) / sumExp) * (exp(0 - max) / sumExp)`
             for (intp r = c - 1; r >= 0; r--) {
+                float64 predictedScore2 = scoreIterator[r];
                 uint32 trueLabel2 = labelIterator[r];
                 float64 expectedScore2 = trueLabel2 ? 1 : -1;
-                float64 x2 = gradientIterator[r];
+                float64 x2 = predictedScore2 * -expectedScore2;
                 hessianIterator[i] = invertedExpectedScore * expectedScore2
                                      * divideOrZero<float64>(std::exp(x + x2 - max2), sumExp2) * zeroExp;
                 i--;
             }
-
-            gradientIterator[c] = gradient;
         }
     }
 
