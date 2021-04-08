@@ -12,10 +12,6 @@ cdef extern from "common/input/label_vector.hpp" nogil:
 
         ctypedef const uint32* index_const_iterator
 
-        # Constructors:
-
-        LabelVector(uint32 numElements)
-
         # Functions:
 
         index_iterator indices_begin()
@@ -27,8 +23,6 @@ cdef extern from "common/input/label_vector.hpp" nogil:
         index_const_iterator indices_cend()
 
         uint32 getNumElements()
-
-        void setNumElements(uint32 numElements, bool freeMemory)
 
 
 cdef extern from "common/input/label_matrix.hpp" nogil:

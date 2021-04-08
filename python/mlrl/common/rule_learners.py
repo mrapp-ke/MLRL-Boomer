@@ -14,10 +14,10 @@ from typing import List
 
 import numpy as np
 from mlrl.common.cython.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
-from mlrl.common.cython.input import CContiguousLabelMatrix, DokLabelMatrix
 from mlrl.common.cython.input import DokNominalFeatureMask, EqualNominalFeatureMask
 from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
+from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, DokLabelMatrix
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
@@ -370,13 +370,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         if issparse(y):
             rows = np.ascontiguousarray(y.rows)
-            self.predictor_ = self._create_predictor_lil(num_labels, rows)
-            self.probability_predictor_ = self._create_probability_predictor_lil(num_labels, rows)
             label_matrix = DokLabelMatrix(y.shape[0], num_labels, rows)
         else:
             label_matrix = CContiguousLabelMatrix(y)
-            self.predictor_ = self._create_predictor(num_labels, label_matrix)
-            self.probability_predictor_ = self._create_probability_predictor(num_labels, label_matrix)
+
+        # Create predictors...
+        self.predictor_ = self._create_predictor(num_labels, label_matrix)
+        self.probability_predictor_ = self._create_probability_predictor(num_labels, label_matrix)
 
         # Create a mask that provides access to the information whether individual features are nominal or not...
         if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
@@ -425,10 +425,9 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             return predictor.predict(feature_matrix, model)
 
     @abstractmethod
-    def _create_predictor(self, num_labels: int, label_matrix: CContiguousLabelMatrix) -> Predictor:
+    def _create_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> Predictor:
         """
-        Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions based on
-        a C-contiguous label matrix.
+        Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
 
         :param num_labels:      The number of labels in the training data set
         :param label_matrix:    The label matrix that provides access to the labels of the training examples
@@ -436,34 +435,10 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         pass
 
-    @abstractmethod
-    def _create_predictor_lil(self, num_labels: int, label_matrix: list) -> Predictor:
-        """
-        Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions based on
-        a label matrix in the LIL format.
-
-        :param num_labels:      The number of labels in the training data set
-        :param label_matrix:    The label matrix that provides access to the labels of the training examples
-        :return:                The `Predictor` that has been created
-        """
-        pass
-
-    def _create_probability_predictor(self, num_labels: int, label_matrix: CContiguousLabelMatrix) -> Predictor:
+    def _create_probability_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
-        estimates based on a C-contiguous label matrix.
-
-        :param num_labels:      The number of labels in the training data set
-        :param label_matrix:    The label matrix that provides access to the labels of the training examples
-        :return:                The `Predictor` that has been created or None, if the prediction of probabilities is not
-                                supported
-        """
-        return None
-
-    def _create_probability_predictor_lil(self, num_labels: int, label_matrix: list) -> Predictor:
-        """
-        Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
-        estimates based on a label matrix in the LIL format.
+        estimates.
 
         :param num_labels:      The number of labels in the training data set
         :param label_matrix:    The label matrix that provides access to the labels of the training examples
