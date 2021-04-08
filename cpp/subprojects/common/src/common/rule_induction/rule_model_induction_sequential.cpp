@@ -62,10 +62,8 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     const IHeadRefinementFactory* defaultRuleHeadRefinementFactory = defaultRuleHeadRefinementFactoryPtr_.get();
     uint32 numRules = defaultRuleHeadRefinementFactory != nullptr ? 1 : 0;
     uint32 numUsedRules = 0;
-     std::shared_ptr<IRandomAccessLabelMatrix> randomAccessLabelMatrixPtr =
-        std::dynamic_pointer_cast<IRandomAccessLabelMatrix, ILabelMatrix>(labelMatrixPtr);
-    std::shared_ptr<IStatisticsProvider> statisticsProviderPtr = statisticsProviderFactoryPtr_->create(
-        *randomAccessLabelMatrixPtr);
+    std::shared_ptr<IStatisticsProvider> statisticsProviderPtr =
+        labelMatrixPtr->createStatisticsProvider(*statisticsProviderFactoryPtr_);
     ruleInductionPtr_->induceDefaultRule(*statisticsProviderPtr, defaultRuleHeadRefinementFactory, modelBuilder);
 
     // Induce the remaining rules...
