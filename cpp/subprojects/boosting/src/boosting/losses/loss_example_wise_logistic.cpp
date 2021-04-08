@@ -64,7 +64,6 @@ namespace boosting {
 
         // Calculate the gradients and Hessians...
         labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
-        uint32 i = 0;
 
         for (uint32 c = 0; c < numLabels; c++) {
             float64 predictedScore = scoreIterator[c];
@@ -90,18 +89,18 @@ namespace boosting {
                 uint32 trueLabel2 = *labelIterator2;
                 float64 expectedScore2 = trueLabel2 ? 1 : -1;
                 float64 x2 = predictedScore2 * -expectedScore2;
-                hessianIterator[i] = invertedExpectedScore * expectedScore2
-                                     * divideOrZero<float64>(std::exp(x + x2 - max2), sumExp2) * zeroExp;
+                *hessianIterator = invertedExpectedScore * expectedScore2
+                                   * divideOrZero<float64>(std::exp(x + x2 - max2), sumExp2) * zeroExp;
+                hessianIterator++;
                 labelIterator2++;
-                i++;
             }
 
             // Calculate the Hessian on the diagonal of the Hessian matrix that corresponds to the current label. Such
             // Hessian calculates as `exp(x_c) * (1 + exp(x_1) + exp(x_2) + ...) / (1 + exp(x_1) + exp(x_2) + ...)^2`,
             // or as `(exp(x_c - max) / sumExp) * (1 - exp(x_c - max) / sumExp)`
-            hessianIterator[i] = tmp * (1 - tmp);
+            *hessianIterator = tmp * (1 - tmp);
+            hessianIterator++;
             labelIterator++;
-            i++;
         }
     }
 
