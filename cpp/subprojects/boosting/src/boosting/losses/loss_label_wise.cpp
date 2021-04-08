@@ -5,7 +5,7 @@
 namespace boosting {
 
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
-                                                          const IRandomAccessLabelMatrix& labelMatrix,
+                                                          const CContiguousLabelMatrix& labelMatrix,
                                                           const CContiguousView<float64>& scoreMatrix,
                                                           FullIndexVector::const_iterator labelIndicesBegin,
                                                           FullIndexVector::const_iterator labelIndicesEnd,
@@ -15,17 +15,18 @@ namespace boosting {
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
 
         for (uint32 i = 0; i < numLabels; i++) {
-            bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+            bool trueLabel = labelIterator[i];
             float64 predictedScore = scoreIterator[i];
             this->updateGradientAndHessian(&gradientIterator[i], &hessianIterator[i], trueLabel, predictedScore);
         }
     }
 
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
-                                                          const IRandomAccessLabelMatrix& labelMatrix,
+                                                          const CContiguousLabelMatrix& labelMatrix,
                                                           const CContiguousView<float64>& scoreMatrix,
                                                           PartialIndexVector::const_iterator labelIndicesBegin,
                                                           PartialIndexVector::const_iterator labelIndicesEnd,
@@ -35,11 +36,12 @@ namespace boosting {
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
         uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 labelIndex = labelIndicesBegin[i];
-            bool trueLabel = labelMatrix.getValue(exampleIndex, labelIndex);
+            bool trueLabel = labelIterator[labelIndex];
             float64 predictedScore = scoreIterator[labelIndex];
             this->updateGradientAndHessian(&gradientIterator[labelIndex], &hessianIterator[labelIndex], trueLabel,
                                            predictedScore);
@@ -93,15 +95,16 @@ namespace boosting {
         }
     }
 
-    float64 AbstractLabelWiseLoss::evaluate(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+    float64 AbstractLabelWiseLoss::evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                             const CContiguousView<float64>& scoreMatrix) const {
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
         float64 mean = 0;
 
         for (uint32 i = 0; i < numLabels; i++) {
             float64 predictedScore = scoreIterator[i];
-            bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+            bool trueLabel = labelIterator[i];
             float64 score = this->evaluate(trueLabel, predictedScore);
             mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
         }

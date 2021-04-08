@@ -25,13 +25,13 @@ namespace boosting {
              * Updates the statistics of the example at a specific index.
              *
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix       A reference to an object of type `IRandomAccessLabelMatrix` that provides random
+             * @param labelMatrix       A reference to an object of type `CContiguousLabelMatrix` that provides random
              *                          access to the labels of the training examples
              * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
              *                          predicted scores
              * @param statisticMatrix   A reference to an object of type `DenseExampleWiseStatisticMatrix` to be updated
              */
-            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                      const CContiguousView<float64>& scoreMatrix,
                                                      DenseExampleWiseStatisticMatrix& statisticMatrix) const = 0;
 

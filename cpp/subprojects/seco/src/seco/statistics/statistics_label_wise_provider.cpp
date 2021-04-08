@@ -48,7 +48,7 @@ namespace seco {
     }
 
     std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
-            const IRandomAccessLabelMatrix& labelMatrix) const {
+            const CContiguousLabelMatrix& labelMatrix) const {
         DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_, statisticsFactory.create());
     }

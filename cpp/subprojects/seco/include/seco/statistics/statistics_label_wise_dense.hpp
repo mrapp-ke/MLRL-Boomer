@@ -5,7 +5,7 @@
 #pragma once
 
 #include "seco/statistics/statistics_label_wise.hpp"
-#include "common/input/label_matrix.hpp"
+#include "common/input/label_matrix_c_contiguous.hpp"
 
 
 namespace seco {
@@ -19,7 +19,7 @@ namespace seco {
 
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
-            const IRandomAccessLabelMatrix& labelMatrix_;
+            const CContiguousLabelMatrix& labelMatrix_;
 
         public:
 
@@ -28,11 +28,11 @@ namespace seco {
              *                                  that allows to create instances of the class that is used for
              *                                  calculating the predictions, as well as corresponding quality scores, of
              *                                  rules
-             * @param labelMatrix               A reference to an object of type `IRandomAccessLabelMatrix` that
-             *                                  provides random access to the labels of the training examples
+             * @param labelMatrix               A reference to an object of type `CContiguousLabelMatrix` that provides
+             *                                  random access to the labels of the training examples
              */
             DenseLabelWiseStatisticsFactory(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                            const IRandomAccessLabelMatrix& labelMatrix);
+                                            const CContiguousLabelMatrix& labelMatrix);
 
             std::unique_ptr<ILabelWiseStatistics> create() const override;
 

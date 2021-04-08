@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/statistics/statistics_provider.hpp"
+#include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
 
 
@@ -20,11 +21,11 @@ class IStatisticsProviderFactory {
          * Creates and returns a new instance of the class `IStatisticsProvider`, based on a label matrix that provides
          * random access to the labels of the training examples.
          *
-         * @param labelMatrix   A reference to an object of type `IRandomAccessLabelMatrix` that provides random access
+         * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides random access
          *                      to the labels of the training examples
          * @return              An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
-        virtual std::unique_ptr<IStatisticsProvider> create(const IRandomAccessLabelMatrix& labelMatrix) const = 0;
+        virtual std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IStatisticsProvider`, based on a sparse label matrix that

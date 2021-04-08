@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/view_c_contiguous.hpp"
+#include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
 
 
@@ -23,13 +23,13 @@ class IEvaluationMeasure {
          * provides random access to the labels of the training examples.
          *
          * @param exampleIndex  The index of the example for which the predictions should be evaluated
-         * @param labelMatrix   A reference to an object of type `IRandomAccessMatrix` that provides random access to
+         * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides random access to
          *                      the labels of the training examples
          * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently predicted
          *                      scores
          * @return              The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+        virtual float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                  const CContiguousView<float64>& scoreMatrix) const = 0;
 
         /**

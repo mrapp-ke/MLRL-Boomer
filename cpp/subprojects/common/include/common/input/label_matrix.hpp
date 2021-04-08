@@ -53,23 +53,3 @@ class ILabelMatrix {
             const IStatisticsProviderFactory& factory) const = 0;
 
 };
-
-/**
- * Defines an interface for all label matrices that provide random access to the labels of the training examples.
- */
-class IRandomAccessLabelMatrix : public ILabelMatrix {
-
-    public:
-
-        virtual ~IRandomAccessLabelMatrix() { };
-
-        /**
-         * Returns the value of a specific label.
-         *
-         * @param exampleIndex  The index of the example
-         * @param labelIndex    The index of the label
-         * @return              The value of the label
-         */
-        virtual uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const = 0;
-
-};

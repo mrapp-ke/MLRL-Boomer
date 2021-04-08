@@ -8,7 +8,7 @@ namespace seco {
 
     DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-            const IRandomAccessLabelMatrix& labelMatrix)
+            const CContiguousLabelMatrix& labelMatrix)
         : ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrix_(labelMatrix) {
 
     }
@@ -29,7 +29,7 @@ namespace seco {
             uint32 numRelevant = 0;
 
             for (uint32 j = 0; j < numExamples; j++) {
-                uint8 trueLabel = labelMatrix_.getValue(j, i);
+                uint8 trueLabel = labelMatrix_.row_cbegin(j)[i];
                 numRelevant += trueLabel;
             }
 
@@ -44,7 +44,7 @@ namespace seco {
 
         majorityLabelVectorPtr->setNumElements(n, true);
         weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
-        return std::make_unique<LabelWiseStatistics<IRandomAccessLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
+        return std::make_unique<LabelWiseStatistics<CContiguousLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
             ruleEvaluationFactoryPtr_, labelMatrix_, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 

@@ -77,17 +77,18 @@ namespace seco {
         }
     }
 
-    void DenseConfusionMatrixVector::add(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+    void DenseConfusionMatrixVector::add(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                          const BinarySparseArrayVector& majorityLabelVector,
                                          const DenseWeightMatrix& weightMatrix, float64 weight) {
         BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
 
         for (uint32 i = 0; i < numElements_; i++) {
             float64 labelWeight = weightIterator[i];
 
             if (labelWeight > 0) {
-                bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+                bool trueLabel = labelIterator[i];
                 bool majorityLabel = *majorityIterator;
                 iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
                 uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
@@ -98,18 +99,19 @@ namespace seco {
         }
     }
 
-    void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+    void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
                                                  const DenseWeightMatrix& weightMatrix, FullIndexVector indices,
                                                  float64 weight) {
         BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
 
         for (uint32 i = 0; i < numElements_; i++) {
             float64 labelWeight = weightIterator[i];
 
             if (labelWeight > 0) {
-                bool trueLabel = labelMatrix.getValue(exampleIndex, i);
+                bool trueLabel = labelIterator[i];
                 bool majorityLabel = *majorityIterator;
                 iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
                 uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
@@ -120,12 +122,13 @@ namespace seco {
         }
     }
 
-    void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
+    void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
                                                  const DenseWeightMatrix& weightMatrix, PartialIndexVector indices,
                                                  float64 weight) {
         BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
 
@@ -134,7 +137,7 @@ namespace seco {
             float64 labelWeight = weightIterator[index];
 
             if (labelWeight > 0) {
-                bool trueLabel = labelMatrix.getValue(exampleIndex, index);
+                bool trueLabel = labelIterator[index];
                 bool majorityLabel = *majorityIterator;
                 iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
                 uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
