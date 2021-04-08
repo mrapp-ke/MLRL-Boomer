@@ -23,7 +23,7 @@ from mlrl.boosting.cython.statistics_example_wise import ExampleWiseStatisticsPr
 from mlrl.boosting.cython.statistics_label_wise import LabelWiseStatisticsProviderFactory
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, NoHeadRefinementFactory, \
     SingleLabelHeadRefinementFactory, FullHeadRefinementFactory
-from mlrl.common.cython.input import CContiguousLabelMatrix
+from mlrl.common.cython.input import LabelMatrix
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
@@ -227,7 +227,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_predictor(self, num_labels: int, label_matrix: CContiguousLabelMatrix) -> Predictor:
+    def _create_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> Predictor:
         predictor = self.__get_preferred_predictor()
 
         if predictor == PREDICTOR_LABEL_WISE:
@@ -236,25 +236,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             return self.__create_example_wise_predictor(label_matrix)
         raise ValueError('Invalid value given for parameter \'predictor\': ' + str(predictor))
 
-    def _create_predictor_lil(self, num_labels: int, label_matrix: list) -> Predictor:
-        predictor = self.__get_preferred_predictor()
-
-        if predictor == PREDICTOR_LABEL_WISE:
-            return self.__create_label_wise_predictor(num_labels)
-        elif predictor == PREDICTOR_EXAMPLE_WISE:
-            return self.__create_example_wise_predictor_lil(num_labels, label_matrix)
-        raise ValueError('Invalid value given for parameter \'predictor\': ' + str(predictor))
-
-    def _create_probability_predictor(self, num_labels: int, label_matrix: CContiguousLabelMatrix) -> Predictor:
-        predictor = self.__get_preferred_predictor()
-
-        if predictor == PREDICTOR_LABEL_WISE and self.loss == LOSS_LABEL_WISE_LOGISTIC:
-            transformation_function = LogisticFunction()
-            return self.__create_label_wise_probability_predictor(num_labels, transformation_function)
-
-        return None
-
-    def _create_probability_predictor_lil(self, num_labels: int, label_matrix: list) -> Predictor:
+    def _create_probability_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> Predictor:
         predictor = self.__get_preferred_predictor()
 
         if predictor == PREDICTOR_LABEL_WISE and self.loss == LOSS_LABEL_WISE_LOGISTIC:
@@ -285,17 +267,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return LabelWiseProbabilityPredictor(num_labels=num_labels, transformation_function=transformation_function,
                                              num_threads=num_threads)
 
-    def __create_example_wise_predictor(self,
-                                        label_matrix: CContiguousLabelMatrix) -> ExampleWiseClassificationPredictor:
+    def __create_example_wise_predictor(self, label_matrix: LabelMatrix) -> ExampleWiseClassificationPredictor:
         loss = self.__create_loss_function()
         num_threads = get_preferred_num_threads(self.num_threads_prediction)
         return ExampleWiseClassificationPredictor.create(label_matrix, loss, num_threads)
-
-    def __create_example_wise_predictor_lil(self, num_labels: int,
-                                            label_matrix: list) -> ExampleWiseClassificationPredictor:
-        loss = self.__create_loss_function()
-        num_threads = get_preferred_num_threads(self.num_threads_prediction)
-        return ExampleWiseClassificationPredictor.create_lil(num_labels, label_matrix, loss, num_threads)
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()

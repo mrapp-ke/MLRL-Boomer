@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/input/label_vector.hpp"
+#include <memory>
 
 
 /**
@@ -28,6 +29,14 @@ class ILabelMatrix {
          * @return The number of labels
          */
         virtual uint32 getNumCols() const = 0;
+
+        /**
+         * Creates and returns a label vector that corresponds to a specific row in the label matrix.
+         *
+         * @param row   The row
+         * @return      An unique pointer to an object of type `LabelVector` that has been created
+         */
+        virtual std::unique_ptr<LabelVector> getLabelVector(uint32 row) const = 0;
 
 };
 
