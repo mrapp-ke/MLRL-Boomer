@@ -60,7 +60,7 @@ namespace seco {
 
         for (uint32 i = 0; i < numExamples; i++) {
             CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(i);
-            uint32 numElements = labelMatrix.row_indices_cbegin(i) - indexIterator;
+            uint32 numElements = labelMatrix.row_indices_cend(i) - indexIterator;
 
             for (uint32 j = 0; j < numElements; j++) {
                 uint32 index = indexIterator[j];
