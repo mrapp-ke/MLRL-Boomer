@@ -25,6 +25,8 @@ class IndexForwardIterator final {
 
         uint32 index_;
 
+        uint32 iteratorIndex_;
+
     public:
 
         /**
@@ -33,7 +35,7 @@ class IndexForwardIterator final {
          * @param index The index to start at
          */
         IndexForwardIterator(T begin, T end, uint32 index)
-            : iterator_(begin), end_(end), index_(index) {
+            : iterator_(begin), end_(end), index_(index), iteratorIndex_(iterator_ != end_ ? *iterator_ : 0) {
 
         }
 
@@ -68,7 +70,7 @@ class IndexForwardIterator final {
          * @return The element, the iterator currently refers to
          */
         reference operator*() const {
-            return iterator_ != end_ && *iterator_ == index_;
+            return iterator_ != end_ && iteratorIndex_ == index_;
         }
 
         /**
@@ -79,8 +81,9 @@ class IndexForwardIterator final {
         IndexForwardIterator& operator++() {
             ++index_;
 
-            if (iterator_ != end_) {
+            if (iterator_ != end_ && iteratorIndex_ < index_) {
                 iterator_++;
+                iteratorIndex_ = *iterator_;
             }
 
             return *this;
@@ -94,8 +97,9 @@ class IndexForwardIterator final {
         IndexForwardIterator& operator++(int n) {
             index_++;
 
-            if (iterator_ != end_) {
+            if (iterator_ != end_ && iteratorIndex_ < index_) {
                 iterator_++;
+                iteratorIndex_ = *iterator_;
             }
 
             return *this;
