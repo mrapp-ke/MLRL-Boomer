@@ -4,6 +4,33 @@ from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
+cdef extern from "common/input/label_vector.hpp" nogil:
+
+    cdef cppclass LabelVector:
+
+        ctypedef uint32* index_iterator
+
+        ctypedef const uint32* index_const_iterator
+
+        # Constructors:
+
+        LabelVector(uint32 numElements)
+
+        # Functions:
+
+        index_iterator indices_begin()
+
+        index_iterator indices_end()
+
+        index_const_iterator indices_cbegin()
+
+        index_const_iterator indices_cend()
+
+        uint32 getNumElements()
+
+        void setNumElements(uint32 numElements, bool freeMemory)
+
+
 cdef extern from "common/input/label_matrix.hpp" nogil:
 
     cdef cppclass ILabelMatrix:
@@ -13,6 +40,8 @@ cdef extern from "common/input/label_matrix.hpp" nogil:
         uint32 getNumRows()
 
         uint32 getNumCols()
+
+        unique_ptr[LabelVector] getLabelVector(uint32 row)
 
 
     cdef cppclass IRandomAccessLabelMatrix(ILabelMatrix):
@@ -42,33 +71,6 @@ cdef extern from "common/input/label_matrix_dok.hpp" nogil:
         # Functions:
 
         void setValue(uint32 exampleIndex, uint32 rowIndex)
-
-
-cdef extern from "common/input/label_vector.hpp" nogil:
-
-    cdef cppclass LabelVector:
-
-        ctypedef uint32* index_iterator
-
-        ctypedef const uint32* index_const_iterator
-
-        # Constructors:
-
-        LabelVector(uint32 numElements)
-
-        # Functions:
-
-        index_iterator indices_begin()
-
-        index_iterator indices_end()
-
-        index_const_iterator indices_cbegin()
-
-        index_const_iterator indices_cend()
-
-        uint32 getNumElements()
-
-        void setNumElements(uint32 numElements, bool freeMemory)
 
 
 cdef extern from "common/input/feature_matrix.hpp" nogil:
