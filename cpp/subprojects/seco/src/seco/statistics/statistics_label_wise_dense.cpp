@@ -29,7 +29,7 @@ namespace seco {
             uint32 numRelevant = 0;
 
             for (uint32 j = 0; j < numExamples; j++) {
-                uint8 trueLabel = labelMatrix_.row_cbegin(j)[i];
+                uint8 trueLabel = labelMatrix_.row_values_cbegin(j)[i];
                 numRelevant += trueLabel;
             }
 

@@ -7,11 +7,11 @@ CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, u
 
 }
 
-CContiguousLabelMatrix::const_iterator CContiguousLabelMatrix::row_cbegin(uint32 row) const {
+CContiguousLabelMatrix::value_const_iterator CContiguousLabelMatrix::row_values_cbegin(uint32 row) const {
     return view_.row_cbegin(row);
 }
 
-CContiguousLabelMatrix::const_iterator CContiguousLabelMatrix::row_cend(uint32 row) const {
+CContiguousLabelMatrix::value_const_iterator CContiguousLabelMatrix::row_values_cend(uint32 row) const {
     return view_.row_cend(row);
 }
 
@@ -27,7 +27,7 @@ std::unique_ptr<LabelVector> CContiguousLabelMatrix::getLabelVector(uint32 row) 
     uint32 numCols = this->getNumCols();
     std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numCols);
     LabelVector::index_iterator iterator = labelVectorPtr->indices_begin();
-    const_iterator labelIterator = this->row_cbegin(row);
+    value_const_iterator labelIterator = this->row_values_cbegin(row);
     uint32 n = 0;
 
     for (uint32 i = 0; i < numCols; i++) {

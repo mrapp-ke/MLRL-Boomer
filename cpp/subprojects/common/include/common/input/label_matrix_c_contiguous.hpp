@@ -29,7 +29,7 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
         /**
          * An iterator that provides read-only access to the values in the label matrix.
          */
-        typedef CContiguousView<uint8>::const_iterator const_iterator;
+        typedef CContiguousView<uint8>::const_iterator value_const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of a specific row.
@@ -37,7 +37,7 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
          * @param row   The row
          * @return      A `const_iterator` to the beginning of the given row
          */
-        const_iterator row_cbegin(uint32 row) const;
+        value_const_iterator row_values_cbegin(uint32 row) const;
 
         /**
          * Returns a `const_iterator` to the end of a specific row.
@@ -45,7 +45,7 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
          * @param row   The row
          * @return      A `const_iterator` to the end of the given row
          */
-        const_iterator row_cend(uint32 row) const;
+        value_const_iterator row_values_cend(uint32 row) const;
 
         uint32 getNumRows() const override;
 
