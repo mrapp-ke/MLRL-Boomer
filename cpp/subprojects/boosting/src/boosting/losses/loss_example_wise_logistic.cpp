@@ -15,7 +15,7 @@ namespace boosting {
         // exploit this equivalence for the calculation of gradients and Hessians, they are calculated as products of
         // fractions of the above form.
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
-        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         DenseExampleWiseStatisticMatrix::gradient_iterator gradientIterator =
             statisticMatrix.gradients_row_begin(exampleIndex);
         DenseExampleWiseStatisticMatrix::hessian_iterator hessianIterator =
@@ -115,7 +115,7 @@ namespace boosting {
         // the log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
         uint32 numLabels = labelMatrix.getNumCols();
         CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
-        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         float64 max = 0;
 
         // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value (that must

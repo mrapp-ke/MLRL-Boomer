@@ -82,7 +82,7 @@ namespace seco {
                                          const DenseWeightMatrix& weightMatrix, float64 weight) {
         BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
-        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
 
         for (uint32 i = 0; i < numElements_; i++) {
             float64 labelWeight = weightIterator[i];
@@ -105,7 +105,7 @@ namespace seco {
                                                  float64 weight) {
         BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
-        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
 
         for (uint32 i = 0; i < numElements_; i++) {
             float64 labelWeight = weightIterator[i];
@@ -128,7 +128,7 @@ namespace seco {
                                                  float64 weight) {
         BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
-        CContiguousLabelMatrix::const_iterator labelIterator = labelMatrix.row_cbegin(exampleIndex);
+        CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
 
