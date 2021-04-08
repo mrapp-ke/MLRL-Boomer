@@ -57,32 +57,6 @@ cdef class CsrLabelMatrix(LabelMatrix):
                                                                                           &col_indices[0])
 
 
-cdef class DokLabelMatrix(RandomAccessLabelMatrix):
-    """
-    A wrapper for the C++ class `DokLabelMatrix`.
-    """
-
-    def __cinit__(self, uint32 num_examples, uint32 num_labels, list[::1] rows):
-        """
-        :param num_examples:    The total number of examples
-        :param num_labels:      The total number of labels
-        :param rows:            An array of type `list`, shape `(num_rows)`, that stores a list for each example, which
-                                contains the column indices of all non-zero labels
-        """
-        cdef unique_ptr[DokLabelMatrixImpl] ptr = make_unique[DokLabelMatrixImpl](num_examples, num_labels)
-        cdef uint32 num_rows = rows.shape[0]
-        cdef list col_indices
-        cdef uint32 r, c
-
-        for r in range(num_rows):
-            col_indices = rows[r]
-
-            for c in col_indices:
-                ptr.get().setValue(r, c)
-
-        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>move(ptr)
-
-
 cdef class FeatureMatrix:
     """
     A wrapper for the pure virtual C++ class `IFeatureMatrix`.
