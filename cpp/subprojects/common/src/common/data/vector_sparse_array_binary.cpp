@@ -3,7 +3,13 @@
 
 
 BinarySparseArrayVector::BinarySparseArrayVector(uint32 numElements)
-    : array_((uint32*) malloc(numElements * sizeof(uint32))), numElements_(numElements), maxCapacity_(numElements) {
+    : BinarySparseArrayVector(numElements, false) {
+
+}
+
+BinarySparseArrayVector::BinarySparseArrayVector(uint32 numElements, bool init)
+    : array_((uint32*) (init ? calloc(numElements, sizeof(uint32)) : malloc(numElements * sizeof(uint32)))),
+      numElements_(numElements), maxCapacity_(numElements) {
 
 }
 
