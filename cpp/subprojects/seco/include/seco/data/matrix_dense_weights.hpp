@@ -48,8 +48,8 @@ namespace seco {
              * @param row                   The row
              * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the prediction of
              *                              the default rule
-             * @param begin                 An iterator to the beginning of the predictions
-             * @param end                   An iterator to the end of the predictions
+             * @param predictionBegin       An iterator to the beginning of the predictions
+             * @param predictionEnd         An iterator to the end of the predictions
              * @param indicesBegin          An iterator to the beginning of the label indices
              * @param indicesEnd            An iterator to the end of the label indices
              */
@@ -65,8 +65,8 @@ namespace seco {
              * @param row                   The row
              * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the prediction of
              *                              the default rule
-             * @param begin                 An iterator to the beginning of the predictions
-             * @param end                   An iterator to the end of the predictions
+             * @param predictionBegin       An iterator to the beginning of the predictions
+             * @param predictionEnd         An iterator to the end of the predictions
              * @param indicesBegin          An iterator to the beginning of the label indices
              * @param indicesEnd            An iterator to the end of the label indices
              */

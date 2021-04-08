@@ -1,5 +1,5 @@
 default_target: compile
-.PHONY: clean_venv clean_cpp clean_cython clean_compile clean install doc
+.PHONY: clean_venv clean_cpp clean_cython clean_compile clean_doc clean install doc
 
 clean_venv:
 	@echo "Removing virtual Python environment..."
@@ -21,7 +21,13 @@ clean_cython:
 
 clean_compile: clean_cpp clean_cython
 
-clean: clean_compile clean_venv
+clean_doc:
+	@echo "Removing documentation..."
+	rm -rf doc/_build/*
+	rm -rf doc/apidoc/*
+	rm -rf doc/doxygen/*
+
+clean: clean_doc clean_compile clean_venv
 
 venv:
 	@echo "Creating virtual Python environment..."
