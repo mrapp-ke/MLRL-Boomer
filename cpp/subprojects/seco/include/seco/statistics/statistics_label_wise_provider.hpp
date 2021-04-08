@@ -36,10 +36,9 @@ namespace seco {
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
 
-            std::unique_ptr<IStatisticsProvider> create(
-                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) const override;
+            std::unique_ptr<IStatisticsProvider> create(const IRandomAccessLabelMatrix& labelMatrix) const override;
 
-            std::unique_ptr<IStatisticsProvider> create(std::shared_ptr<CsrLabelMatrix> labelMatrixPtr) const override;
+            std::unique_ptr<IStatisticsProvider> create(const CsrLabelMatrix& labelMatrix) const override;
 
     };
 
