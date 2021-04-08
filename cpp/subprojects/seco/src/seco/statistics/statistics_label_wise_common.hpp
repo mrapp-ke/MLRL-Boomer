@@ -4,6 +4,14 @@
 
 namespace seco {
 
+    template<class Prediction, class WeightMatrix>
+    static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                 WeightMatrix& weightMatrix,
+                                                 const BinarySparseArrayVector& majorityLabelVector) {
+        weightMatrix.updateRow(statisticIndex, majorityLabelVector, prediction.scores_cbegin(),
+                               prediction.scores_cend(), prediction.indices_cbegin(), prediction.indices_cend());
+    }
+
     /**
      * Provides access to the elements of confusion matrices that are computed independently for each label using dense
      * data structures.
@@ -131,12 +139,6 @@ namespace seco {
 
             ConfusionMatrixVector subsetSumVector_;
 
-            template<class T>
-            void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
-                weightMatrixPtr_->updateRow(statisticIndex, *majorityLabelVectorPtr_, prediction.scores_cbegin(),
-                    prediction.scores_cend(), prediction.indices_cbegin(), prediction.indices_cend());
-            }
-
         public:
 
             /**
@@ -215,11 +217,13 @@ namespace seco {
             }
 
             void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-                this->applyPredictionInternally<FullPrediction>(statisticIndex, prediction);
+                applyPredictionInternally<FullPrediction, WeightMatrix>(statisticIndex, prediction, *weightMatrixPtr_,
+                                                                        *majorityLabelVectorPtr_);
             }
 
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
-                this->applyPredictionInternally<PartialPrediction>(statisticIndex, prediction);
+                applyPredictionInternally<PartialPrediction, WeightMatrix>(statisticIndex, prediction,
+                                                                           *weightMatrixPtr_, *majorityLabelVectorPtr_);
             }
 
             float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
