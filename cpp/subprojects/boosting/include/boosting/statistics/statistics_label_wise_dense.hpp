@@ -12,10 +12,7 @@ namespace boosting {
 
     /**
      * A factory that allows to create new instances of the class `LabelWiseStatistics`.
-     *
-     * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
-    template<class LabelMatrix>
     class DenseLabelWiseStatisticsFactory final : public ILabelWiseStatisticsFactory {
 
         private:
@@ -23,8 +20,6 @@ namespace boosting {
             std::shared_ptr<ILabelWiseLoss> lossFunctionPtr_;
 
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
-
-            const LabelMatrix& labelMatrix_;
 
             uint32 numThreads_;
 
@@ -36,16 +31,16 @@ namespace boosting {
              * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
              *                                  that allows to create instances of the class that is used to calculate
              *                                  the predictions, as well as corresponding quality scores, of rules
-             * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
-             *                                  access to the labels of the training examples
              * @param numThreads                The number of CPU threads to be used to calculate the initial statistics
              *                                  in parallel. Must be at least 1
              */
             DenseLabelWiseStatisticsFactory(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
                                             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                            const LabelMatrix& labelMatrix, uint32 numThreads);
+                                            uint32 numThreads);
 
-            std::unique_ptr<ILabelWiseStatistics> create() const override;
+            std::unique_ptr<ILabelWiseStatistics> create(const CContiguousLabelMatrix& labelMatrix) const override;
+
+            std::unique_ptr<ILabelWiseStatistics> create(const CsrLabelMatrix& labelMatrix) const override;
 
     };
 
