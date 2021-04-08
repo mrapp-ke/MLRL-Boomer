@@ -1,4 +1,5 @@
 #include "common/input/label_matrix_dok.hpp"
+#include "common/statistics/statistics_provider_factory.hpp"
 
 
 DokLabelMatrix::DokLabelMatrix(uint32 numRows, uint32 numCols)
@@ -36,4 +37,9 @@ uint8 DokLabelMatrix::getValue(uint32 exampleIndex, uint32 labelIndex) const {
 
 void DokLabelMatrix::setValue(uint32 exampleIndex, uint32 labelIndex) {
     matrix_.setValue(exampleIndex, labelIndex);
+}
+
+std::unique_ptr<IStatisticsProvider> DokLabelMatrix::createStatisticsProvider(
+        const IStatisticsProviderFactory& factory) const {
+    return factory.create(*this);
 }

@@ -78,4 +78,7 @@ class CsrLabelMatrix final : public ILabelMatrix {
 
         std::unique_ptr<LabelVector> getLabelVector(uint32 row) const override;
 
+        std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
+            const IStatisticsProviderFactory& factory) const override;
+
 };

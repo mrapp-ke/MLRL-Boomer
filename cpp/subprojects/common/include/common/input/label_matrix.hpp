@@ -6,6 +6,10 @@
 #include "common/input/label_vector.hpp"
 #include <memory>
 
+// Forward declarations
+class IStatisticsProvider;
+class IStatisticsProviderFactory;
+
 
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
@@ -37,6 +41,16 @@ class ILabelMatrix {
          * @return      An unique pointer to an object of type `LabelVector` that has been created
          */
         virtual std::unique_ptr<LabelVector> getLabelVector(uint32 row) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IStatisticsProvider`, based on the type of the label matrix.
+         *
+         * @param factory A reference to an object of type `IStatisticsProviderFactory` that should be used to create
+         *                the instance
+         * @return        An unique pointer to an object of type `IStatisticsProvider` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
+            const IStatisticsProviderFactory& factory) const = 0;
 
 };
 

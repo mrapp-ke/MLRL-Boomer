@@ -1,4 +1,5 @@
 #include "common/input/label_matrix_c_contiguous.hpp"
+#include "common/statistics/statistics_provider_factory.hpp"
 
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, uint8* array)
@@ -33,4 +34,9 @@ std::unique_ptr<LabelVector> CContiguousLabelMatrix::getLabelVector(uint32 row) 
 
 uint8 CContiguousLabelMatrix::getValue(uint32 exampleIndex, uint32 labelIndex) const {
     return view_.row_cbegin(exampleIndex)[labelIndex];
+}
+
+std::unique_ptr<IStatisticsProvider> CContiguousLabelMatrix::createStatisticsProvider(
+        const IStatisticsProviderFactory& factory) const {
+    return factory.create(*this);
 }
