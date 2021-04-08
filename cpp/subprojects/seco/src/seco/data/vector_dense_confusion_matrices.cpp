@@ -107,7 +107,7 @@ namespace seco {
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
-                                                 const DenseWeightMatrix& weightMatrix, FullIndexVector indices,
+                                                 const DenseWeightMatrix& weightMatrix, const FullIndexVector& indices,
                                                  float64 weight) {
         BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
@@ -130,15 +130,15 @@ namespace seco {
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
-                                                 const DenseWeightMatrix& weightMatrix, FullIndexVector indices,
+                                                 const DenseWeightMatrix& weightMatrix, const FullIndexVector& indices,
                                                  float64 weight) {
         // TODO Implement
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
-                                                 const DenseWeightMatrix& weightMatrix, PartialIndexVector indices,
-                                                 float64 weight) {
+                                                 const DenseWeightMatrix& weightMatrix,
+                                                 const PartialIndexVector& indices, float64 weight) {
         BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
@@ -163,8 +163,8 @@ namespace seco {
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
-                                                 const DenseWeightMatrix& weightMatrix, PartialIndexVector indices,
-                                                 float64 weight) {
+                                                 const DenseWeightMatrix& weightMatrix,
+                                                 const PartialIndexVector& indices, float64 weight) {
         // TODO Implement
     }
 
