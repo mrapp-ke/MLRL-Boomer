@@ -17,7 +17,7 @@ from mlrl.common.cython.binning import EqualWidthFeatureBinning, EqualFrequencyF
 from mlrl.common.cython.input import DokNominalFeatureMask, EqualNominalFeatureMask
 from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
-from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, DokLabelMatrix
+from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
@@ -363,15 +363,19 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             feature_matrix = FortranContiguousFeatureMatrix(x)
 
         # Validate label matrix and convert it to the preferred format...
+        y_sparse_format = 'csr'
         y_sparse_policy = create_sparse_policy(self.label_format)
-        y_enforce_sparse = should_enforce_sparse(y, sparse_format='dok', policy=y_sparse_policy, dtype=DTYPE_UINT8)
+        y_enforce_sparse = should_enforce_sparse(y, sparse_format=y_sparse_format, policy=y_sparse_policy,
+                                                 dtype=DTYPE_UINT8, sparse_values=False)
         y = check_array((y if y_enforce_sparse else y.toarray(order='C')),
-                        accept_sparse=('lil' if y_enforce_sparse else False), ensure_2d=False, dtype=DTYPE_UINT8)
+                        accept_sparse=(y_sparse_format if y_enforce_sparse else False), ensure_2d=False,
+                        dtype=DTYPE_UINT8)
         num_labels = y.shape[1]
 
         if issparse(y):
-            rows = np.ascontiguousarray(y.rows)
-            label_matrix = DokLabelMatrix(y.shape[0], num_labels, rows)
+            y_row_indices = np.ascontiguousarray(y.indptr, dtype=DTYPE_UINT32)
+            y_col_indices = np.ascontiguousarray(y.indices, dtype=DTYPE_UINT32)
+            label_matrix = CsrLabelMatrix(y.shape[0], y.shape[1], y_row_indices, y_col_indices)
         else:
             label_matrix = CContiguousLabelMatrix(y)
 
