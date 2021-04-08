@@ -43,7 +43,7 @@ exhale_args = {
     'rootFileTitle': 'API Documentation',
     'doxygenStripFromPath': '..',
     'createTreeView': True,
-    'exhaleExecutesDoxygen': True,
+    'exhaleExecutesDoxygen': False,
     'exhaleDoxygenStdin': 'INPUT = ../cpp/'
 }
 primary_domain = 'cpp'
