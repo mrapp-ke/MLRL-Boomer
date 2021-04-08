@@ -99,6 +99,12 @@ namespace seco {
         }
     }
 
+    void DenseConfusionMatrixVector::add(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                         const BinarySparseArrayVector& majorityLabelVector,
+                                         const DenseWeightMatrix& weightMatrix, float64 weight) {
+        // TODO Implement
+    }
+
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
                                                  const DenseWeightMatrix& weightMatrix, FullIndexVector indices,
@@ -120,6 +126,13 @@ namespace seco {
 
             majorityIterator++;
         }
+    }
+
+    void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                 const BinarySparseArrayVector& majorityLabelVector,
+                                                 const DenseWeightMatrix& weightMatrix, FullIndexVector indices,
+                                                 float64 weight) {
+        // TODO Implement
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
@@ -146,6 +159,13 @@ namespace seco {
 
             majorityIterator++;
         }
+    }
+
+    void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                 const BinarySparseArrayVector& majorityLabelVector,
+                                                 const DenseWeightMatrix& weightMatrix, PartialIndexVector indices,
+                                                 float64 weight) {
+        // TODO Implement
     }
 
 }
