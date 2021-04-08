@@ -158,7 +158,7 @@ namespace boosting {
     void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                               const CContiguousView<float64>& scoreMatrix,
                                                               DenseExampleWiseStatisticMatrix& statisticMatrix) const {
-        // TODO Implement
+        updateExampleWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix, statisticMatrix);
     }
 
     float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
