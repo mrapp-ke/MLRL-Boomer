@@ -71,6 +71,11 @@ class SparsePolicy(Enum):
     FORCE_DENSE = 'dense'
 
 
+class SparseFormat(Enum):
+    CSC = 'csc'
+    CSR = 'csr'
+
+
 def create_sparse_policy(policy: str) -> SparsePolicy:
     try:
         return SparsePolicy(policy)
@@ -265,7 +270,8 @@ def get_float_argument(args: dict, key: str, default: float, validation=None) ->
     return default
 
 
-def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy, dtype, sparse_values: bool = True) -> bool:
+def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, dtype,
+                          sparse_values: bool = True) -> bool:
     """
     Returns whether it is preferable to convert a given matrix into a `scipy.sparse.csr_matrix`,
     `scipy.sparse.csc_matrix` or `scipy.sparse.dok_matrix`, depending on the format of the given matrix and a given
@@ -283,38 +289,30 @@ def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy, dtype, sp
     - If the given policy is `SparsePolicy.FORCE_SPARSE`, the matrix will always be converted into a dense matrix.
 
     :param m:               A `np.ndarray` or `scipy.sparse.matrix` to be checked
-    :param sparse_format:   The sparse format to be used. Must be 'csr', 'csc', or `dok`
+    :param sparse_format:   The `SparseFormat` to be used
     :param policy:          The `SparsePolicy` to be used
     :param dtype            The type of the values that should be stored in the matrix
     :param sparse_values:   True, if the values must explicitly be stored when using a sparse format, False otherwise
     :return:                True, if it is preferable to convert the matrix into a sparse matrix of the given format,
                             False otherwise
     """
-    if sparse_format != 'csr' and sparse_format != 'csc' and sparse_format != 'dok':
-        raise ValueError('Invalid sparse format given: ' + str(sparse_format))
-
     if not issparse(m):
         # Given matrix is dense
         if policy != SparsePolicy.FORCE_SPARSE:
             return False
-    elif (isspmatrix_csr(m) and sparse_format == 'csr') or (isspmatrix_csc(m) and sparse_format == 'csc'):
+    elif (isspmatrix_csr(m) and sparse_format == SparseFormat.CSR) or (
+            isspmatrix_csc(m) and sparse_format == SparseFormat.CSC):
         # Matrix is a `scipy.sparse.csr_matrix` or `scipy.sparse.csc_matrix` and is already in the given sparse format
         return policy != SparsePolicy.FORCE_DENSE
     elif isspmatrix_lil(m) or isspmatrix_coo(m) or isspmatrix_dok(m):
         # Given matrix is in a format that might be converted into the specified sparse format
         if policy == SparsePolicy.AUTO:
+            num_pointers = m.shape[1 if sparse_format == SparseFormat.CSC else 0]
+            size_int = np.dtype(DTYPE_UINT32).itemsize
+            size_data = np.dtype(dtype).itemsize if sparse_values else 0
             num_non_zero = m.nnz
-
-            if sparse_format == 'dok':
-                size_sparse = np.dtype(DTYPE_UINT32).itemsize * 2 * num_non_zero
-                size_dense = np.prod(m.shape) * np.dtype(DTYPE_UINT8).itemsize
-            else:
-                num_pointers = m.shape[1 if sparse_format == 'csc' else 0]
-                size_int = np.dtype(DTYPE_UINT32).itemsize
-                size_data = np.dtype(dtype).itemsize if sparse_values else 0
-                size_sparse = (num_non_zero * size_data) + (num_non_zero * size_int) + (num_pointers * size_int)
-                size_dense = np.prod(m.shape) * size_data
-
+            size_sparse = (num_non_zero * size_data) + (num_non_zero * size_int) + (num_pointers * size_int)
+            size_dense = np.prod(m.shape) * size_data
             return size_sparse < size_dense
         else:
             return policy == SparsePolicy.FORCE_SPARSE
@@ -345,13 +343,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def _fit(self, x, y):
         # Validate feature matrix and convert it to the preferred format...
-        x_sparse_format = 'csc'
+        x_sparse_format = SparseFormat.CSC
         x_sparse_policy = create_sparse_policy(self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy,
                                                  dtype=DTYPE_FLOAT32)
         x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F', dtype=DTYPE_FLOAT32)),
-                                accept_sparse=(x_sparse_format if x_enforce_sparse else False), dtype=DTYPE_FLOAT32,
-                                force_all_finite='allow-nan')
+                                accept_sparse=(x_sparse_format.value if x_enforce_sparse else False),
+                                dtype=DTYPE_FLOAT32, force_all_finite='allow-nan')
         num_features = x.shape[1]
 
         if issparse(x):
@@ -363,12 +361,12 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             feature_matrix = FortranContiguousFeatureMatrix(x)
 
         # Validate label matrix and convert it to the preferred format...
-        y_sparse_format = 'csr'
+        y_sparse_format = SparseFormat.CSR
         y_sparse_policy = create_sparse_policy(self.label_format)
         y_enforce_sparse = should_enforce_sparse(y, sparse_format=y_sparse_format, policy=y_sparse_policy,
                                                  dtype=DTYPE_UINT8, sparse_values=False)
         y = check_array((y if y_enforce_sparse else y.toarray(order='C')),
-                        accept_sparse=(y_sparse_format if y_enforce_sparse else False), ensure_2d=False,
+                        accept_sparse=(y_sparse_format.value if y_enforce_sparse else False), ensure_2d=False,
                         dtype=DTYPE_UINT8)
         num_labels = y.shape[1]
 
@@ -403,19 +401,19 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def _predict_proba(self, x):
         predictor = self.probability_predictor_
-        
+
         if predictor is None:
             return super()._predict_proba(x)
         else:
             return self.__predict(predictor, x)
-        
+
     def __predict(self, predictor, x):
-        sparse_format = 'csr'
+        sparse_format = SparseFormat.CSR
         sparse_policy = create_sparse_policy(self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
                                                dtype=DTYPE_FLOAT32)
         x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C', dtype=DTYPE_FLOAT32), reset=False,
-                                accept_sparse=(sparse_format if enforce_sparse else False), dtype=DTYPE_FLOAT32,
+                                accept_sparse=(sparse_format.value if enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
         model = self.model_
 
