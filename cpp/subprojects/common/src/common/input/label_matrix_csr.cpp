@@ -1,4 +1,5 @@
 #include "common/input/label_matrix_csr.hpp"
+#include "common/statistics/statistics_provider_factory.hpp"
 #include "common/data/arrays.hpp"
 
 
@@ -39,4 +40,9 @@ std::unique_ptr<LabelVector> CsrLabelMatrix::getLabelVector(uint32 row) const {
     LabelVector::index_iterator iterator = labelVectorPtr->indices_begin();
     copyArray(indexIterator, iterator, numElements);
     return labelVectorPtr;
+}
+
+std::unique_ptr<IStatisticsProvider> CsrLabelMatrix::createStatisticsProvider(
+        const IStatisticsProviderFactory& factory) const {
+    return factory.create(*this);
 }

@@ -32,6 +32,9 @@ class CContiguousLabelMatrix final : public IRandomAccessLabelMatrix {
 
         std::unique_ptr<LabelVector> getLabelVector(uint32 row) const override;
 
+        std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
+            const IStatisticsProviderFactory& factory) const override;
+
         uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
 
 };
