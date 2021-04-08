@@ -29,7 +29,7 @@ namespace boosting {
 
         for (uint32 c = 0; c < numLabels; c++) {
             float64 predictedScore = scoreIterator[c];
-            uint32 trueLabel = labelIterator[c];
+            uint32 trueLabel = *labelIterator;
             float64 x = trueLabel ? -predictedScore : predictedScore;
             gradientIterator[c] = x;  // Temporarily store `x` in the array of gradients
 
@@ -39,6 +39,8 @@ namespace boosting {
             } else if (x > max2) {
                 max2 = x;
             }
+
+            labelIterator++;
         }
 
         // In the following, the largest value the exponential function may be applied to is `max + max2`, which happens
@@ -61,11 +63,12 @@ namespace boosting {
         zeroExp = divideOrZero<float64>(zeroExp, sumExp2);
 
         // Calculate the gradients and Hessians...
+        labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 i = 0;
 
         for (uint32 c = 0; c < numLabels; c++) {
             float64 predictedScore = scoreIterator[c];
-            uint8 trueLabel = labelIterator[c];
+            uint8 trueLabel = *labelIterator;
             float64 invertedExpectedScore = trueLabel ? -1 : 1;
             float64 x = predictedScore * invertedExpectedScore;
 
@@ -80,13 +83,16 @@ namespace boosting {
             // the current label. Such Hessian calculates as
             // `-expectedScore_c * expectedScore_r * exp(x_c + x_r) / (1 + exp(x_1) + exp(x_2) + ...)^2`, or as
             // `-expectedScore_c * expectedScore_r * (exp(x_c + x_r - max) / sumExp) * (exp(0 - max) / sumExp)`
+            typename LabelMatrix::value_const_iterator labelIterator2 = labelMatrix.row_values_cbegin(exampleIndex);
+
             for (uint32 r = 0; r < c; r++) {
                 float64 predictedScore2 = scoreIterator[r];
-                uint32 trueLabel2 = labelIterator[r];
+                uint32 trueLabel2 = *labelIterator2;
                 float64 expectedScore2 = trueLabel2 ? 1 : -1;
                 float64 x2 = predictedScore2 * -expectedScore2;
                 hessianIterator[i] = invertedExpectedScore * expectedScore2
                                      * divideOrZero<float64>(std::exp(x + x2 - max2), sumExp2) * zeroExp;
+                labelIterator2++;
                 i++;
             }
 
@@ -94,6 +100,7 @@ namespace boosting {
             // Hessian calculates as `exp(x_c) * (1 + exp(x_1) + exp(x_2) + ...) / (1 + exp(x_1) + exp(x_2) + ...)^2`,
             // or as `(exp(x_c - max) / sumExp) * (1 - exp(x_c - max) / sumExp)`
             hessianIterator[i] = tmp * (1 - tmp);
+            labelIterator++;
             i++;
         }
     }
