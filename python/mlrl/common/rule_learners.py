@@ -265,7 +265,7 @@ def get_float_argument(args: dict, key: str, default: float, validation=None) ->
     return default
 
 
-def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy, dtype) -> bool:
+def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy, dtype, sparse_values: bool = True) -> bool:
     """
     Returns whether it is preferable to convert a given matrix into a `scipy.sparse.csr_matrix`,
     `scipy.sparse.csc_matrix` or `scipy.sparse.dok_matrix`, depending on the format of the given matrix and a given
@@ -286,6 +286,7 @@ def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy, dtype) ->
     :param sparse_format:   The sparse format to be used. Must be 'csr', 'csc', or `dok`
     :param policy:          The `SparsePolicy` to be used
     :param dtype            The type of the values that should be stored in the matrix
+    :param sparse_values:   True, if the values must explicitly be stored when using a sparse format, False otherwise
     :return:                True, if it is preferable to convert the matrix into a sparse matrix of the given format,
                             False otherwise
     """
@@ -310,7 +311,7 @@ def should_enforce_sparse(m, sparse_format: str, policy: SparsePolicy, dtype) ->
             else:
                 num_pointers = m.shape[1 if sparse_format == 'csc' else 0]
                 size_int = np.dtype(DTYPE_UINT32).itemsize
-                size_data = np.dtype(dtype).itemsize
+                size_data = np.dtype(dtype).itemsize if sparse_values else 0
                 size_sparse = (num_non_zero * size_data) + (num_non_zero * size_int) + (num_pointers * size_int)
                 size_dense = np.prod(m.shape) * size_data
 
