@@ -12,14 +12,7 @@ cdef class LabelMatrix:
     pass
 
 
-cdef class RandomAccessLabelMatrix(LabelMatrix):
-    """
-    A wrapper for the pure virtual C++ class `IRandomAccessLabelMatrix`.
-    """
-    pass
-
-
-cdef class CContiguousLabelMatrix(RandomAccessLabelMatrix):
+cdef class CContiguousLabelMatrix(LabelMatrix):
     """
     A wrapper for the C++ class `CContiguousLabelMatrix`.
     """
@@ -36,30 +29,25 @@ cdef class CContiguousLabelMatrix(RandomAccessLabelMatrix):
                                                                                                   &array[0, 0])
 
 
-cdef class DokLabelMatrix(RandomAccessLabelMatrix):
+cdef class CsrLabelMatrix(LabelMatrix):
     """
-    A wrapper for the C++ class `DokLabelMatrix`.
+    A wrapper for the C++ class `CsrLabelMatrix`.
     """
 
-    def __cinit__(self, uint32 num_examples, uint32 num_labels, list[::1] rows):
+    def __cinit__(self, uint32 num_examples, uint32 num_labels, const uint32[::1] row_indices,
+                  const uint32[::1] col_indices):
         """
         :param num_examples:    The total number of examples
         :param num_labels:      The total number of labels
-        :param rows:            An array of type `list`, shape `(num_rows)`, that stores a list for each example, which
-                                contains the column indices of all non-zero labels
+        :param row_indices:     An array of type `uint32`, shape `(num_examples + 1)`, that stores the indices of the
+                                first element in `col_indices` that corresponds to a certain example. The index at the
+                                last position is equal to `num_non_zero_values`
+        :param col_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
+                                column-indices, the relevant labels correspond to
         """
-        cdef unique_ptr[DokLabelMatrixImpl] ptr = make_unique[DokLabelMatrixImpl](num_examples, num_labels)
-        cdef uint32 num_rows = rows.shape[0]
-        cdef list col_indices
-        cdef uint32 r, c
-
-        for r in range(num_rows):
-            col_indices = rows[r]
-
-            for c in col_indices:
-                ptr.get().setValue(r, c)
-
-        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>move(ptr)
+        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[CsrLabelMatrixImpl](num_examples, num_labels,
+                                                                                          &row_indices[0],
+                                                                                          &col_indices[0])
 
 
 cdef class FeatureMatrix:

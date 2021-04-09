@@ -4,46 +4,6 @@ from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 
 
-cdef extern from "common/input/label_matrix.hpp" nogil:
-
-    cdef cppclass ILabelMatrix:
-
-        # Functions:
-
-        uint32 getNumRows()
-
-        uint32 getNumCols()
-
-
-    cdef cppclass IRandomAccessLabelMatrix(ILabelMatrix):
-
-        # Functions:
-
-        uint8 getValue(uint32 row, uint32 col)
-
-
-cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
-
-    cdef cppclass CContiguousLabelMatrixImpl"CContiguousLabelMatrix"(IRandomAccessLabelMatrix):
-
-        # Constructors:
-
-        CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, uint8* array) except +
-
-
-cdef extern from "common/input/label_matrix_dok.hpp" nogil:
-
-    cdef cppclass DokLabelMatrixImpl"DokLabelMatrix"(IRandomAccessLabelMatrix):
-
-        # Constructors:
-
-        DokLabelMatrixImpl(uint32 numRows, uint32 numCols) except +
-
-        # Functions:
-
-        void setValue(uint32 exampleIndex, uint32 rowIndex)
-
-
 cdef extern from "common/input/label_vector.hpp" nogil:
 
     cdef cppclass LabelVector:
@@ -51,10 +11,6 @@ cdef extern from "common/input/label_vector.hpp" nogil:
         ctypedef uint32* index_iterator
 
         ctypedef const uint32* index_const_iterator
-
-        # Constructors:
-
-        LabelVector(uint32 numElements)
 
         # Functions:
 
@@ -68,7 +24,36 @@ cdef extern from "common/input/label_vector.hpp" nogil:
 
         uint32 getNumElements()
 
-        void setNumElements(uint32 numElements, bool freeMemory)
+
+cdef extern from "common/input/label_matrix.hpp" nogil:
+
+    cdef cppclass ILabelMatrix:
+
+        # Functions:
+
+        uint32 getNumRows()
+
+        uint32 getNumCols()
+
+        unique_ptr[LabelVector] getLabelVector(uint32 row)
+
+
+cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
+
+    cdef cppclass CContiguousLabelMatrixImpl"CContiguousLabelMatrix"(ILabelMatrix):
+
+        # Constructors:
+
+        CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, uint8* array) except +
+
+
+cdef extern from "common/input/label_matrix_csr.hpp" nogil:
+
+    cdef cppclass CsrLabelMatrixImpl"CsrLabelMatrix"(ILabelMatrix):
+
+        # Constructors:
+
+        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices) except +
 
 
 cdef extern from "common/input/feature_matrix.hpp" nogil:
@@ -154,15 +139,15 @@ cdef class LabelMatrix:
     cdef shared_ptr[ILabelMatrix] label_matrix_ptr
 
 
-cdef class RandomAccessLabelMatrix(LabelMatrix):
+cdef class CContiguousLabelMatrix(LabelMatrix):
     pass
 
 
-cdef class CContiguousLabelMatrix(RandomAccessLabelMatrix):
+cdef class CsrLabelMatrix(LabelMatrix):
     pass
 
 
-cdef class DokLabelMatrix(RandomAccessLabelMatrix):
+cdef class DokLabelMatrix(LabelMatrix):
     pass
 
 

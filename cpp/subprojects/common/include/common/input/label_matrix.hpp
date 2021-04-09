@@ -3,7 +3,12 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/input/label_vector.hpp"
+#include <memory>
+
+// Forward declarations
+class IStatisticsProvider;
+class IStatisticsProviderFactory;
 
 
 /**
@@ -29,24 +34,22 @@ class ILabelMatrix {
          */
         virtual uint32 getNumCols() const = 0;
 
-};
-
-/**
- * Defines an interface for all label matrices that provide random access to the labels of the training examples.
- */
-class IRandomAccessLabelMatrix : public ILabelMatrix {
-
-    public:
-
-        virtual ~IRandomAccessLabelMatrix() { };
+        /**
+         * Creates and returns a label vector that corresponds to a specific row in the label matrix.
+         *
+         * @param row   The row
+         * @return      An unique pointer to an object of type `LabelVector` that has been created
+         */
+        virtual std::unique_ptr<LabelVector> getLabelVector(uint32 row) const = 0;
 
         /**
-         * Returns the value of a specific label.
+         * Creates and returns a new instance of the class `IStatisticsProvider`, based on the type of the label matrix.
          *
-         * @param exampleIndex  The index of the example
-         * @param labelIndex    The index of the label
-         * @return              The value of the label
+         * @param factory A reference to an object of type `IStatisticsProviderFactory` that should be used to create
+         *                the instance
+         * @return        An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
-        virtual uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const = 0;
+        virtual std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
+            const IStatisticsProviderFactory& factory) const = 0;
 
 };

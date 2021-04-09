@@ -8,37 +8,52 @@
 
 namespace boosting {
 
-    DenseExampleWiseStatisticsFactory::DenseExampleWiseStatisticsFactory(
+    template<class LabelMatrix>
+    static inline std::unique_ptr<IExampleWiseStatistics> createInternally(
             std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr, uint32 numThreads)
-        : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
-          labelMatrixPtr_(labelMatrixPtr), numThreads_(numThreads) {
-
-    }
-
-    std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactory::create() const {
-        uint32 numExamples = labelMatrixPtr_->getNumRows();
-        uint32 numLabels = labelMatrixPtr_->getNumCols();
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads,
+            const LabelMatrix& labelMatrix) {
+        uint32 numExamples = labelMatrix.getNumRows();
+        uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr =
             std::make_unique<DenseExampleWiseStatisticMatrix>(numExamples, numLabels);
         std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =
             std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
-        const IExampleWiseLoss* lossFunctionPtr = lossFunctionPtr_.get();
-        const IRandomAccessLabelMatrix* labelMatrixPtr = labelMatrixPtr_.get();
+        const IExampleWiseLoss* lossFunctionRawPtr = lossFunctionPtr.get();
+        const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseExampleWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(lossFunctionPtr) firstprivate(labelMatrixPtr) \
-        firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads_)
+        #pragma omp parallel for firstprivate(numExamples) firstprivate(lossFunctionRawPtr) \
+        firstprivate(labelMatrixPtr) firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) \
+        schedule(dynamic) num_threads(numThreads)
         for (uint32 i = 0; i < numExamples; i++) {
-            lossFunctionPtr->updateExampleWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr,
-                                                         *statisticMatrixRawPtr);
+            lossFunctionRawPtr->updateExampleWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr,
+                                                            *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<ExampleWiseStatistics<DenseExampleWiseStatisticVector, DenseExampleWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
-            lossFunctionPtr_, ruleEvaluationFactoryPtr_, labelMatrixPtr_, std::move(statisticMatrixPtr),
+        return std::make_unique<ExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector, DenseExampleWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
+            lossFunctionPtr, ruleEvaluationFactoryPtr, labelMatrix, std::move(statisticMatrixPtr),
             std::move(scoreMatrixPtr));
+    }
+
+    DenseExampleWiseStatisticsFactory::DenseExampleWiseStatisticsFactory(
+            std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads)
+        : lossFunctionPtr_(lossFunctionPtr), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr),
+          numThreads_(numThreads) {
+
+    }
+
+    std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactory::create(
+            const CContiguousLabelMatrix& labelMatrix) const {
+        return createInternally<CContiguousLabelMatrix>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, numThreads_,
+                                                        labelMatrix);
+    }
+
+    std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactory::create(
+            const CsrLabelMatrix& labelMatrix) const {
+        return createInternally<CsrLabelMatrix>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, numThreads_, labelMatrix);
     }
 
 }
