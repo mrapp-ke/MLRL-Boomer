@@ -4,15 +4,25 @@
 
 namespace seco {
 
+    template<class Prediction, class WeightMatrix>
+    static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                 WeightMatrix& weightMatrix,
+                                                 const BinarySparseArrayVector& majorityLabelVector) {
+        weightMatrix.updateRow(statisticIndex, majorityLabelVector, prediction.scores_cbegin(),
+                               prediction.scores_cend(), prediction.indices_cbegin(), prediction.indices_cend());
+    }
+
     /**
      * Provides access to the elements of confusion matrices that are computed independently for each label using dense
      * data structures.
      *
+     * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
+     *                                  examples
      * @tparam WeightMatrix             The type of the matrix that is used to store the weights of individual examples
      *                                  and labels
      * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
      */
-    template<class WeightMatrix, class ConfusionMatrixVector>
+    template<class LabelMatrix, class WeightMatrix, class ConfusionMatrixVector>
     class LabelWiseStatistics final : public ILabelWiseStatistics {
 
         private:
@@ -77,13 +87,13 @@ namespace seco {
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
-                        totalCoverableSumVector_->add(statisticIndex, *statistics_.labelMatrixPtr_,
+                        totalCoverableSumVector_->add(statisticIndex, statistics_.labelMatrix_,
                                                       *statistics_.majorityLabelVectorPtr_,
                                                       *statistics_.weightMatrixPtr_, -weight);
                     }
 
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
-                        sumVector_.addToSubset(statisticIndex, *statistics_.labelMatrixPtr_,
+                        sumVector_.addToSubset(statisticIndex, statistics_.labelMatrix_,
                                                *statistics_.majorityLabelVectorPtr_, *statistics_.weightMatrixPtr_,
                                                labelIndices_, weight);
                     }
@@ -119,7 +129,7 @@ namespace seco {
 
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
 
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr_;
+            const LabelMatrix& labelMatrix_;
 
             std::unique_ptr<WeightMatrix> weightMatrixPtr_;
 
@@ -129,12 +139,6 @@ namespace seco {
 
             ConfusionMatrixVector subsetSumVector_;
 
-            template<class T>
-            void applyPredictionInternally(uint32 statisticIndex, const T& prediction) {
-                weightMatrixPtr_->updateRow(statisticIndex, *majorityLabelVectorPtr_, prediction.scores_cbegin(),
-                    prediction.scores_cend(), prediction.indices_cbegin(), prediction.indices_cend());
-            }
-
         public:
 
             /**
@@ -142,19 +146,18 @@ namespace seco {
              *                                  that allows to create instances of the class that is used for
              *                                  calculating the predictions, as well as corresponding quality scores, of
              *                                  rules
-             * @param labelMatrixPtr            A shared pointer to an object of type `IRandomAccessLabelMatrix` that
-             *                                  provides random access to the labels of the training examples
+             * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
+             *                                  access to the labels of the training examples
              * @param weightMatrixPtr           An unique pointer to an object of template type `WeightMatrix` that
              *                                  stores the weights of individual examples and labels
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
              */
             LabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr,
-                                std::unique_ptr<WeightMatrix> weightMatrixPtr,
+                                const LabelMatrix& labelMatrix, std::unique_ptr<WeightMatrix> weightMatrixPtr,
                                 std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
-                : numStatistics_(labelMatrixPtr->getNumRows()), numLabels_(labelMatrixPtr->getNumCols()),
-                  ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrixPtr_(labelMatrixPtr),
+                : numStatistics_(labelMatrix.getNumRows()), numLabels_(labelMatrix.getNumCols()),
+                  ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrix_(labelMatrix),
                   weightMatrixPtr_(std::move(weightMatrixPtr)),
                   majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
                   totalSumVector_(ConfusionMatrixVector(numLabels_)),
@@ -185,10 +188,8 @@ namespace seco {
             }
 
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
-                totalSumVector_.add(statisticIndex, *labelMatrixPtr_, *majorityLabelVectorPtr_, *weightMatrixPtr_,
-                                    weight);
-                subsetSumVector_.add(statisticIndex, *labelMatrixPtr_, *majorityLabelVectorPtr_, *weightMatrixPtr_,
-                                     weight);
+                totalSumVector_.add(statisticIndex, labelMatrix_, *majorityLabelVectorPtr_, *weightMatrixPtr_, weight);
+                subsetSumVector_.add(statisticIndex, labelMatrix_, *majorityLabelVectorPtr_, *weightMatrixPtr_, weight);
             }
 
             void resetCoveredStatistics() override {
@@ -197,7 +198,7 @@ namespace seco {
 
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
                 float64 signedWeight = remove ? -weight : weight;
-                subsetSumVector_.add(statisticIndex, *labelMatrixPtr_, *majorityLabelVectorPtr_, *weightMatrixPtr_,
+                subsetSumVector_.add(statisticIndex, labelMatrix_, *majorityLabelVectorPtr_, *weightMatrixPtr_,
                                      signedWeight);
             }
 
@@ -216,11 +217,13 @@ namespace seco {
             }
 
             void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-                this->applyPredictionInternally<FullPrediction>(statisticIndex, prediction);
+                applyPredictionInternally<FullPrediction, WeightMatrix>(statisticIndex, prediction, *weightMatrixPtr_,
+                                                                        *majorityLabelVectorPtr_);
             }
 
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
-                this->applyPredictionInternally<PartialPrediction>(statisticIndex, prediction);
+                applyPredictionInternally<PartialPrediction, WeightMatrix>(statisticIndex, prediction,
+                                                                           *weightMatrixPtr_, *majorityLabelVectorPtr_);
             }
 
             float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {

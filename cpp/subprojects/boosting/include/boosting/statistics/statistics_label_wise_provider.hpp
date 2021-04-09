@@ -46,8 +46,9 @@ namespace boosting {
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads);
 
-            std::unique_ptr<IStatisticsProvider> create(
-                std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) const override;
+            std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const override;
+
+            std::unique_ptr<IStatisticsProvider> create(const CsrLabelMatrix& labelMatrix) const override;
 
     };
 

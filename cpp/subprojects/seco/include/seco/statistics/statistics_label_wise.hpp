@@ -4,6 +4,8 @@
  */
 #pragma once
 
+#include "common/input/label_matrix_c_contiguous.hpp"
+#include "common/input/label_matrix_csr.hpp"
 #include "seco/statistics/statistics_coverage.hpp"
 #include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 #include <memory>
@@ -43,11 +45,24 @@ namespace seco {
             virtual ~ILabelWiseStatisticsFactory() { };
 
             /**
-             * Creates a new instance of the class `ILabelWiseStatistics`.
+             * Creates a new instance of the class `ILabelWiseStatistics`, based on a matrix that provides random access
+             * to the labels of the training examples.
              *
-             * @return An unique pointer to an object of type `ILabelWiseStatistics` that has been created
+             * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides random
+             *                      access to the labels of the training examples
+             * @return              An unique pointer to an object of type `ILabelWiseStatistics` that has been created
              */
-            virtual std::unique_ptr<ILabelWiseStatistics> create() const = 0;
+            virtual std::unique_ptr<ILabelWiseStatistics> create(const CContiguousLabelMatrix& labelMatrix) const = 0;
+
+            /**
+             * Creates a new instance of the class `ILabelWiseStatistics`, based on a matrix that provides row-wise
+             * access to the labels of the training examples.
+             *
+             * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides row-wise
+             *                      access to the labels of the training examples
+             * @return              An unique pointer to an object of type `ILabelWiseStatistics` that has been created
+             */
+            virtual std::unique_ptr<ILabelWiseStatistics> create(const CsrLabelMatrix& labelMatrix) const = 0;
 
     };
 

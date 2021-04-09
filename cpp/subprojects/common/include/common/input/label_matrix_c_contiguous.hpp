@@ -11,7 +11,7 @@
  * Implements random read-only access to the labels of individual training examples that are stored in a pre-allocated
  * C-contiguous array.
  */
-class CContiguousLabelMatrix final : public IRandomAccessLabelMatrix {
+class CContiguousLabelMatrix final : public ILabelMatrix {
 
     private:
 
@@ -26,10 +26,34 @@ class CContiguousLabelMatrix final : public IRandomAccessLabelMatrix {
          */
         CContiguousLabelMatrix(uint32 numRows, uint32 numCols, uint8* array);
 
+        /**
+         * An iterator that provides read-only access to the values in the label matrix.
+         */
+        typedef CContiguousView<uint8>::const_iterator value_const_iterator;
+
+        /**
+         * Returns a `const_iterator` to the beginning of a specific row.
+         *
+         * @param row   The row
+         * @return      A `const_iterator` to the beginning of the given row
+         */
+        value_const_iterator row_values_cbegin(uint32 row) const;
+
+        /**
+         * Returns a `const_iterator` to the end of a specific row.
+         *
+         * @param row   The row
+         * @return      A `const_iterator` to the end of the given row
+         */
+        value_const_iterator row_values_cend(uint32 row) const;
+
         uint32 getNumRows() const override;
 
         uint32 getNumCols() const override;
 
-        uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const override;
+        std::unique_ptr<LabelVector> getLabelVector(uint32 row) const override;
+
+        std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
+            const IStatisticsProviderFactory& factory) const override;
 
 };

@@ -2,9 +2,9 @@
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
 from mlrl.common.cython._types cimport uint32
-from mlrl.common.cython.input cimport CContiguousLabelMatrix, CContiguousLabelMatrixImpl, ILabelMatrix
+from mlrl.common.cython.input cimport LabelMatrix, ILabelMatrix
 
-from libcpp.memory cimport shared_ptr, make_shared, make_unique, dynamic_pointer_cast
+from libcpp.memory cimport shared_ptr, make_shared, make_unique
 from libcpp.utility cimport move
 
 SERIALIZATION_VERSION = 1
@@ -100,64 +100,22 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
         self.num_threads = num_threads
 
     @classmethod
-    def create(cls, CContiguousLabelMatrix label_matrix, SimilarityMeasure measure, uint32 num_threads):
+    def create(cls, LabelMatrix label_matrix, SimilarityMeasure measure, uint32 num_threads):
         cdef shared_ptr[ISimilarityMeasure] measure_ptr = measure.get_similarity_measure_ptr()
-        cdef shared_ptr[CContiguousLabelMatrixImpl] label_matrix_ptr = dynamic_pointer_cast[CContiguousLabelMatrixImpl, ILabelMatrix](
-            label_matrix.label_matrix_ptr)
+        cdef shared_ptr[ILabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
         cdef uint32 num_rows = label_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = label_matrix_ptr.get().getNumCols()
         cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
             measure_ptr, num_threads)
         cdef unique_ptr[LabelVector] label_vector_ptr
-        cdef LabelVector.index_iterator iterator
-        cdef uint8 value
-        cdef uint32 i, j, n
+        cdef uint32 i
 
         for i in range(num_rows):
-            label_vector_ptr = make_unique[LabelVector](num_cols)
-            iterator = label_vector_ptr.get().indices_begin()
-            n = 0
-
-            for j in range(num_cols):
-                value = label_matrix_ptr.get().getValue(i, j)
-
-                if value:
-                    iterator[n] = j
-                    n += 1
-
-            label_vector_ptr.get().setNumElements(n, True)
+            label_vector_ptr = label_matrix_ptr.get().getLabelVector(i)
             predictor_ptr.get().addLabelVector(move(label_vector_ptr))
 
         cdef ExampleWiseClassificationPredictor predictor = ExampleWiseClassificationPredictor.__new__(
             ExampleWiseClassificationPredictor, num_cols, measure, num_threads)
-        predictor.predictor_ptr = <unique_ptr[IPredictor[uint8]]>move(predictor_ptr)
-        return predictor
-
-    @classmethod
-    def create_lil(cls, uint32 num_labels, list[::1] rows, SimilarityMeasure measure, uint32 num_threads):
-        cdef shared_ptr[ISimilarityMeasure] measure_ptr = measure.get_similarity_measure_ptr()
-        cdef uint32 num_rows = rows.shape[0]
-        cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
-            measure_ptr, num_threads)
-        cdef unique_ptr[LabelVector] label_vector_ptr
-        cdef LabelVector.index_iterator iterator
-        cdef list col_indices
-        cdef uint32 num_cols, label_index, i, j
-
-        for i in range(num_rows):
-            col_indices = rows[i]
-            num_cols = len(col_indices)
-            label_vector_ptr = make_unique[LabelVector](num_cols)
-            iterator = label_vector_ptr.get().indices_begin()
-
-            for j in range(num_cols):
-                label_index = col_indices[j]
-                iterator[j] = label_index
-
-            predictor_ptr.get().addLabelVector(move(label_vector_ptr))
-
-        cdef ExampleWiseClassificationPredictor predictor = ExampleWiseClassificationPredictor.__new__(
-            ExampleWiseClassificationPredictor, num_labels, measure, num_threads)
         predictor.predictor_ptr = <unique_ptr[IPredictor[uint8]]>move(predictor_ptr)
         return predictor
 
