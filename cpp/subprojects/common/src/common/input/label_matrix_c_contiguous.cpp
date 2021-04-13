@@ -1,5 +1,6 @@
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/statistics/statistics_provider_factory.hpp"
+#include "common/sampling/instance_sampling.hpp"
 
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, uint8* array)
@@ -43,5 +44,10 @@ std::unique_ptr<LabelVector> CContiguousLabelMatrix::getLabelVector(uint32 row) 
 
 std::unique_ptr<IStatisticsProvider> CContiguousLabelMatrix::createStatisticsProvider(
         const IStatisticsProviderFactory& factory) const {
+    return factory.create(*this);
+}
+
+std::unique_ptr<IInstanceSubSampling> CContiguousLabelMatrix::createInstanceSubSampling(
+        const IInstanceSubSamplingFactory& factory) const {
     return factory.create(*this);
 }
