@@ -4,6 +4,8 @@
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
+* The parameter `--instance-sub-sampling` now allows to use stratified sampling (`stratified-label-wise`).
+
 ### Version 0.5.0 (Mar 31, 2021)
 
 A major update to the BOOMER algorithm that introduces the following changes:
