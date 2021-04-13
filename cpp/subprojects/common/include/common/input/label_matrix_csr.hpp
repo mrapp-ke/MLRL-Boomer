@@ -72,6 +72,13 @@ class CsrLabelMatrix final : public ILabelMatrix {
          */
         value_const_iterator row_values_cend(uint32 row) const;
 
+        /**
+         * Returns the number of relevant labels.
+         *
+         * @return The number of relevant labels
+         */
+        uint32 getNumNonZeroElements() const;
+
         uint32 getNumRows() const override;
 
         uint32 getNumCols() const override;

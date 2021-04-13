@@ -37,4 +37,9 @@ uint32 CsrView<T>::getNumCols() const {
     return numCols_;
 }
 
+template<class T>
+uint32 CsrView<T>::getNumNonZeroElements() const {
+    return rowIndices_[numCols_];
+}
+
 template class CsrView<float32>;
