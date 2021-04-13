@@ -25,3 +25,12 @@ std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(const BiPartitio
     weightVectorPtr->setNumNonZeroWeights(numTrainingExamples);
     return weightVectorPtr;
 }
+
+std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(
+        const CContiguousLabelMatrix& labelMatrix) const {
+    return std::make_unique<NoInstanceSubSampling>();
+}
+
+std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix) const {
+    return std::make_unique<NoInstanceSubSampling>();
+}

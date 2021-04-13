@@ -61,3 +61,16 @@ std::unique_ptr<IWeightVector> Bagging::subSample(const BiPartition& partition, 
     weightVectorPtr->setNumNonZeroWeights(numNonZeroWeights);
     return weightVectorPtr;
 }
+
+BaggingFactory::BaggingFactory(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
+}
+
+std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CContiguousLabelMatrix& labelMatrix) const {
+    return std::make_unique<Bagging>(sampleSize_);
+}
+
+std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CsrLabelMatrix& labelMatrix) const {
+    return std::make_unique<Bagging>(sampleSize_);
+}

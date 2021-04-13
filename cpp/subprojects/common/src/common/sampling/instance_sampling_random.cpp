@@ -25,3 +25,18 @@ std::unique_ptr<IWeightVector> RandomInstanceSubsetSelection::subSample(const Bi
     return sampleWeightsWithoutReplacement<BiPartition::const_iterator>(partition.first_cbegin(), numTrainingExamples,
                                                                         numSamples, numExamples, rng);
 }
+
+RandomInstanceSubsetSelectionFactory::RandomInstanceSubsetSelectionFactory(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
+}
+
+std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
+        const CContiguousLabelMatrix& labelMatrix) const {
+    return std::make_unique<RandomInstanceSubsetSelection>(sampleSize_);
+}
+
+std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
+        const CsrLabelMatrix& labelMatrix) const {
+    return std::make_unique<RandomInstanceSubsetSelection>(sampleSize_);
+}
