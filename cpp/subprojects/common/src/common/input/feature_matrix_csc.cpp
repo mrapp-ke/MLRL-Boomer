@@ -7,6 +7,22 @@ CscFeatureMatrix::CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32
 
 }
 
+CscFeatureMatrix::value_const_iterator CscFeatureMatrix::column_values_cbegin(uint32 col) const {
+    return view_.column_values_cbegin(col);
+}
+
+CscFeatureMatrix::value_const_iterator CscFeatureMatrix::column_values_cend(uint32 col) const {
+    return view_.column_values_cend(col);
+}
+
+CscFeatureMatrix::index_const_iterator CscFeatureMatrix::column_indices_cbegin(uint32 col) const {
+    return view_.column_indices_cbegin(col);
+}
+
+CscFeatureMatrix::index_const_iterator CscFeatureMatrix::column_indices_cend(uint32 col) const {
+    return view_.column_indices_cend(col);
+}
+
 uint32 CscFeatureMatrix::getNumRows() const {
     return view_.getNumRows();
 }
