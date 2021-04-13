@@ -4,24 +4,11 @@
 from libcpp.memory cimport make_shared
 
 
-cdef class InstanceSubSampling:
+cdef class InstanceSubSamplingFactory:
     """
-    A wrapper for the pure virtual C++ class `IInstanceSubSampling`.
+    A wrapper for the pure virtual C++ class `IInstanceSubSamplingFactory`.
     """
     pass
-
-
-cdef class Bagging(InstanceSubSampling):
-    """
-    A wrapper for the C++ class `Bagging`.
-    """
-
-    def __cinit__(self, float32 sample_size = 1.0):
-        """
-        :param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
-                            60 % of the available examples). Must be in (0, 1]
-        """
-        self.instance_sub_sampling_ptr = <shared_ptr[IInstanceSubSampling]>make_shared[BaggingImpl](sample_size)
 
 
 cdef class BaggingFactory(InstanceSubSamplingFactory):
@@ -38,20 +25,6 @@ cdef class BaggingFactory(InstanceSubSamplingFactory):
             sample_size)
 
 
-cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
-    """
-    A wrapper for the C++ class `RandomInstanceSubsetSelection`.
-    """
-
-    def __cinit__(self, float32 sample_size = 0.66):
-        """
-        param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
-                           60 % of the available examples). Must be in (0, 1)
-        """
-        self.instance_sub_sampling_ptr = <shared_ptr[IInstanceSubSampling]>make_shared[RandomInstanceSubsetSelectionImpl](
-            sample_size)
-
-
 cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
     """
     A wrapper for the C++ class `RandomInstanceSubsetSelectionFactory`.
@@ -64,15 +37,6 @@ cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
         """
         self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[RandomInstanceSubsetSelectionFactoryImpl](
             sample_size)
-
-
-cdef class NoInstanceSubSampling(InstanceSubSampling):
-    """
-    A wrapper for the C++ class `NoInstanceSubSampling`.
-    """
-
-    def __cinit__(self):
-        self.instance_sub_sampling_ptr = <shared_ptr[IInstanceSubSampling]>make_shared[NoInstanceSubSamplingImpl]()
 
 
 cdef class NoInstanceSubSamplingFactory(InstanceSubSamplingFactory):
