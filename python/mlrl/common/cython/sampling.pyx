@@ -39,6 +39,15 @@ cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
             sample_size)
 
 
+cdef class LabelWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
+    """
+    A wrapper for the C++ class `LabelWiseStratifiedSamplingFactory`.
+    """
+
+    def __cinit__(self):
+        self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[LabelWiseStratifiedSamplingFactoryImpl]()
+
+
 cdef class NoInstanceSubSamplingFactory(InstanceSubSamplingFactory):
     """
     A wrapper for the C++ class `NoInstanceSubSamplingFactory`.
