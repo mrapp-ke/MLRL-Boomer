@@ -1,4 +1,5 @@
 /*
+ * @author Anna Kulischkin (Anna_Kulischkin@web.de)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
