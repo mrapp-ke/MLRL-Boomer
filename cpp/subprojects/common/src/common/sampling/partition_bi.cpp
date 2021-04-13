@@ -5,15 +5,15 @@
 #include "common/head_refinement/prediction.hpp"
 
 
-static inline std::unordered_set<uint32>* createSet(BiPartition::const_iterator iterator, uint32 numElements) {
-    std::unordered_set<uint32>* set = new std::unordered_set<uint32>();
+static inline BinaryDokVector* createDokVector(BiPartition::const_iterator iterator, uint32 numElements) {
+    BinaryDokVector* vector = new BinaryDokVector();
 
     for (uint32 i = 0; i < numElements; i++) {
         uint32 index = iterator[i];
-        set->insert(index);
+        vector->setValue(index);
     }
 
-    return set;
+    return vector;
 }
 
 BiPartition::BiPartition(uint32 numFirst, uint32 numSecond)
@@ -70,17 +70,17 @@ uint32 BiPartition::getNumElements() const {
     return vector_.getNumElements();
 }
 
-const std::unordered_set<uint32>& BiPartition::getFirstSet() {
+const BinaryDokVector& BiPartition::getFirstSet() {
     if (firstSet_ == nullptr) {
-        firstSet_ = createSet(this->first_cbegin(), this->getNumFirst());
+        firstSet_ = createDokVector(this->first_cbegin(), this->getNumFirst());
     }
 
     return *firstSet_;
 }
 
-const std::unordered_set<uint32>& BiPartition::getSecondSet() {
+const BinaryDokVector& BiPartition::getSecondSet() {
     if (secondSet_ == nullptr) {
-        secondSet_ = createSet(this->second_cbegin(), this->getNumSecond());
+        secondSet_ = createDokVector(this->second_cbegin(), this->getNumSecond());
     }
 
     return *secondSet_;
