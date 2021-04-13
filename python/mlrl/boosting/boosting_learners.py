@@ -36,10 +36,11 @@ from sklearn.base import ClassifierMixin
 from mlrl.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
     HEAD_REFINEMENT_SINGLE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
-    create_label_sub_sampling, create_partition_sampling, create_max_conditions, create_stopping_criteria, \
-    create_min_coverage, create_max_head_refinements, get_preferred_num_threads, create_thresholds_factory, \
-    parse_prefix_and_dict, get_int_argument, get_float_argument, get_string_argument, get_bool_argument
+from mlrl.common.rule_learners import create_pruning, create_feature_sub_sampling, \
+    create_instance_sub_sampling_factory, create_label_sub_sampling, create_partition_sampling, create_max_conditions, \
+    create_stopping_criteria, create_min_coverage, create_max_head_refinements, get_preferred_num_threads, \
+    create_thresholds_factory, parse_prefix_and_dict, get_int_argument, get_float_argument, get_string_argument, \
+    get_bool_argument
 
 EARLY_STOPPING_MEASURE = 'measure'
 
@@ -281,7 +282,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if early_stopping_criterion is not None:
             stopping_criteria.append(early_stopping_criterion)
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
-        instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
+        instance_sub_sampling_factory = create_instance_sub_sampling_factory(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
         partition_sampling = create_partition_sampling(self.holdout_set_size)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
@@ -303,7 +304,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         rule_induction = TopDownRuleInduction(num_threads_refinement)
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
-                                            label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                            label_sub_sampling, instance_sub_sampling_factory, feature_sub_sampling,
                                             partition_sampling, pruning, shrinkage, min_coverage, max_conditions,
                                             max_head_refinements, stopping_criteria)
 

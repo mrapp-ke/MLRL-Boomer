@@ -9,6 +9,8 @@
 // Forward declarations
 class IStatisticsProvider;
 class IStatisticsProviderFactory;
+class IInstanceSubSampling;
+class IInstanceSubSamplingFactory;
 
 
 /**
@@ -45,11 +47,22 @@ class ILabelMatrix {
         /**
          * Creates and returns a new instance of the class `IStatisticsProvider`, based on the type of the label matrix.
          *
-         * @param factory A reference to an object of type `IStatisticsProviderFactory` that should be used to create
-         *                the instance
-         * @return        An unique pointer to an object of type `IStatisticsProvider` that has been created
+         * @param factory   A reference to an object of type `IStatisticsProviderFactory` that should be used to create
+         *                  the instance
+         * @return          An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
         virtual std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
             const IStatisticsProviderFactory& factory) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IInstanceSubSampling`, based on the type of the label
+         * matrix.
+         *
+         * @param factory   A reference to an object of type `IInstanceSubSamplingFactory` that should be used to create
+         *                  the instance
+         * @return          An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
+            const IInstanceSubSamplingFactory& factory) const = 0;
 
 };

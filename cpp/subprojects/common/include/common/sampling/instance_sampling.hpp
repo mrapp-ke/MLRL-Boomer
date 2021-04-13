@@ -5,6 +5,8 @@
 
 #include "common/sampling/weight_vector.hpp"
 #include "common/sampling/random.hpp"
+#include "common/input/label_matrix_c_contiguous.hpp"
+#include "common/input/label_matrix_csr.hpp"
 #include <memory>
 
 // Forward declarations
@@ -43,5 +45,35 @@ class IInstanceSubSampling {
          *                  the individual training examples
          */
         virtual std::unique_ptr<IWeightVector> subSample(const BiPartition& partition, RNG& rng) const = 0;
+
+};
+
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IInstanceSubSampling`.
+ */
+class IInstanceSubSamplingFactory {
+
+    public:
+
+        virtual ~IInstanceSubSamplingFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IInstanceSubSampling`.
+         *
+         * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides access to the
+         *                      labels of the training examples
+         * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IInstanceSubSampling`.
+         *
+         * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` that provides access to the labels of
+         *                      the training examples
+         * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix) const = 0;
 
 };
