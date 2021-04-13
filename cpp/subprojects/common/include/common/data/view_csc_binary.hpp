@@ -10,7 +10,7 @@
  * Implements column-wise read-only access to binary values that are stored in a pre-allocated matrix in the compressed
  * sparse column (CSC) format.
  */
-class BinaryCscView {
+class BinaryCscView final {
 
     private:
 
