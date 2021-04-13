@@ -4,8 +4,8 @@
 
 
 /**
- * Implements bootstrap aggregating (bagging) for selecting a subset of the available training examples with
- * replacement.
+ * Implements iterative stratified sampling for selecting a subset of the available training examples, such that for
+ * each label the proportion of relevant and irrelevant examples is maintained.
  */
 class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
