@@ -18,6 +18,7 @@ source_files = [
     'src/common/data/vector_sparse_array_binary.cpp',
     'src/common/data/view_c_contiguous.cpp',
     'src/common/data/view_csc.cpp',
+    'src/common/data/view_csc_binary.cpp',
     'src/common/data/view_csr.cpp',
     'src/common/data/view_csr_binary.cpp',
     'src/common/data/view_fortran_contiguous.cpp',
