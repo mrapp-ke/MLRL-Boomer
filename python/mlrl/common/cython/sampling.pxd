@@ -47,7 +47,10 @@ cdef extern from "common/sampling/instance_sampling_stratified_label_wise.hpp" n
 
     cdef cppclass LabelWiseStratifiedSamplingFactoryImpl"LabelWiseStratifiedSamplingFactory"(
             IInstanceSubSamplingFactory):
-        pass
+
+        # Constructors:
+
+        LabelWiseStratifiedSamplingFactoryImpl(float32 sampleSize) except +
 
 
 cdef extern from "common/sampling/instance_sampling_no.hpp" nogil:

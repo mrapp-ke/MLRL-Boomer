@@ -16,7 +16,17 @@
  */
 class LabelWiseStratifiedSamplingFactory final : public IInstanceSubSamplingFactory {
 
+    private:
+
+        float32 sampleSize_;
+
     public:
+
+        /**
+         * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
+         *                   60 % of the available examples). Must be in (0, 1]
+         */
+        LabelWiseStratifiedSamplingFactory(float32 sampleSize);
 
         std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix) const override;
 

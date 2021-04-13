@@ -112,7 +112,8 @@ def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> Instance
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return RandomInstanceSubsetSelectionFactory(sample_size)
         elif prefix == INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE:
-            return LabelWiseStratifiedSamplingFactory()
+            sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+            return LabelWiseStratifiedSamplingFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
 
