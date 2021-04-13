@@ -243,6 +243,7 @@ cdef uint32 __format_conditions(uint32 num_processed_conditions, uint32 num_cond
                                 bint print_feature_names, bint print_nominal_values, object text, object comparator):
     cdef uint32 result = num_processed_conditions
     cdef uint32 feature_index, i
+    cdef float32 threshold
     cdef object attribute
 
     for i in range(num_conditions):
@@ -250,6 +251,7 @@ cdef uint32 __format_conditions(uint32 num_processed_conditions, uint32 num_cond
             text.write(' & ')
 
         feature_index = index_iterator[i]
+        threshold = threshold_iterator[i]
         attribute = attributes[feature_index] if len(attributes) > feature_index else None
 
         if print_feature_names and attribute is not None:
@@ -261,11 +263,13 @@ cdef uint32 __format_conditions(uint32 num_processed_conditions, uint32 num_cond
         text.write(comparator)
         text.write(' ')
 
-        if print_nominal_values and attribute is not None and attribute.nominal_values is not None and len(
-                attribute.nominal_values) > i:
-            text.write('"' + attribute.nominal_values[i] + '"')
+        if attribute is not None and attribute.nominal_values is not None:
+            if print_nominal_values and len(attribute.nominal_values) > threshold:
+                text.write('"' + attribute.nominal_values[<uint32>threshold] + '"')
+            else:
+                text.write(str(<uint32>threshold))
         else:
-            text.write(str(threshold_iterator[i]))
+            text.write(str(threshold))
 
         result += 1
 
