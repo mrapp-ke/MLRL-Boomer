@@ -98,4 +98,11 @@ class CscView final {
          */
         uint32 getNumCols() const;
 
+        /**
+         * Returns the number of non-zero elements in the view.
+         *
+         * @return The number of non-zero elements
+         */
+        uint32 getNumNonZeroElements() const;
+
 };

@@ -24,6 +24,10 @@ CsrLabelMatrix::value_const_iterator CsrLabelMatrix::row_values_cend(uint32 row)
     return view_.row_values_cend(row);
 }
 
+uint32 CsrLabelMatrix::getNumNonZeroElements() const {
+    return view_.getNumNonZeroElements();
+}
+
 uint32 CsrLabelMatrix::getNumRows() const {
     return view_.getNumRows();
 }
