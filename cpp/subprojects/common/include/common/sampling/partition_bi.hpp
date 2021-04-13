@@ -6,7 +6,7 @@
 #include "common/sampling/partition.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/data/vector_dense.hpp"
-#include <unordered_set>
+#include "common/data/vector_dok_binary.hpp"
 
 
 /**
@@ -21,9 +21,9 @@ class BiPartition : public IPartition {
 
         uint32 numFirst_;
 
-        std::unordered_set<uint32>* firstSet_;
+        BinaryDokVector* firstSet_;
 
-        std::unordered_set<uint32>* secondSet_;
+        BinaryDokVector* secondSet_;
 
     public:
 
@@ -117,18 +117,20 @@ class BiPartition : public IPartition {
         uint32 getNumSecond() const;
 
         /**
-         * Returns a set that contains the indices of all elements that are contained by the first set.
+         * Returns a vector that provides random access to the indices of all elements that are contained by the first
+         * set.
          *
-         * @return A reference to an `unordered_set` that contains the indices
+         * @return A reference to an object of type `BinaryDokVector` that provides random access to the indices
          */
-        const std::unordered_set<uint32>& getFirstSet();
+        const BinaryDokVector& getFirstSet();
 
         /**
-         * Returns a set that contains the indices of all elements that are contained by the second set.
+         * Returns a vector that provides random access to the indices of all elements that are contained by the second
+         * set.
          *
-         * @return A reference to an `unordered_set` that contains the indices
+         * @return A reference to an object of type `BinaryDokVector` that provides random access to the indices
          */
-        const std::unordered_set<uint32>& getSecondSet();
+        const BinaryDokVector& getSecondSet();
 
         /**
          * Returns the total number of elements.

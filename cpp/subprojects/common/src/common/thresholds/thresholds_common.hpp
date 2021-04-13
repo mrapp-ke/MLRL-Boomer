@@ -67,14 +67,14 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
                                                     const IHeadRefinementFactory& headRefinementFactory,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
-    const std::unordered_set<uint32>& holdoutSet = partition.getSecondSet();
+    const BinaryDokVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = iterator[i];
 
-        if (weights.getWeight(exampleIndex) == 0 && holdoutSet.find(exampleIndex) == holdoutSet.cend()) {
+        if (weights.getWeight(exampleIndex) == 0 && holdoutSet.getValue(exampleIndex)) {
             statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
@@ -129,14 +129,14 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
                                                    Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
-    const std::unordered_set<uint32>& holdoutSet = partition.getSecondSet();
+    const BinaryDokVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = iterator[i];
 
-        if (holdoutSet.find(exampleIndex) == holdoutSet.cend()) {
+        if (holdoutSet.getValue(exampleIndex)) {
             statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
