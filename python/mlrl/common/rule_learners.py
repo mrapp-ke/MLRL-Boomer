@@ -23,8 +23,8 @@ from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
 from mlrl.common.cython.rule_induction import RuleModelInduction
 from mlrl.common.cython.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
-from mlrl.common.cython.sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, \
-    NoInstanceSubSampling
+from mlrl.common.cython.sampling import InstanceSubSamplingFactory, BaggingFactory, \
+    RandomInstanceSubsetSelectionFactory, NoInstanceSubSamplingFactory
 from mlrl.common.cython.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
 from mlrl.common.cython.sampling import PartitionSampling, NoPartitionSampling, BiPartitionSampling
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
@@ -96,19 +96,19 @@ def create_label_sub_sampling(label_sub_sampling: str, num_labels: int) -> Label
         raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
 
-def create_instance_sub_sampling(instance_sub_sampling: str) -> InstanceSubSampling:
+def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> InstanceSubSamplingFactory:
     if instance_sub_sampling is None:
-        return NoInstanceSubSampling()
+        return NoInstanceSubSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(instance_sub_sampling,
                                              [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM])
 
         if prefix == INSTANCE_SUB_SAMPLING_BAGGING:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
-            return Bagging(sample_size)
+            return BaggingFactory(sample_size)
         elif prefix == INSTANCE_SUB_SAMPLING_RANDOM:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
-            return RandomInstanceSubsetSelection(sample_size)
+            return RandomInstanceSubsetSelectionFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
 
