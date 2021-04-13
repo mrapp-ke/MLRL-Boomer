@@ -1,6 +1,7 @@
 #include "common/sampling/instance_sampling_stratified_label_wise.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
+#include "common/input/label_matrix_csc.hpp"
 
 
 /**
@@ -11,16 +12,20 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
     private:
 
+        std::unique_ptr<CscLabelMatrix> labelMatrixPtr_;
+
         float32 sampleSize_;
 
     public:
 
         /**
-         * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
-         *                   60 % of the available examples). Must be in (0, 1]
+         * @param labelMatrixPtr    An unique pointer to an object of type `CscLabelMatrix` that provides column-wise
+         *                          access to the labels of the training examples
+         * @param sampleSize        The fraction of examples to be included in the sample (e.g. a value of 0.6
+         *                          corresponds to 60 % of the available examples). Must be in (0, 1]
          */
-        LabelWiseStratifiedSampling(float32 sampleSize)
-            : sampleSize_(sampleSize) {
+        LabelWiseStratifiedSampling(std::unique_ptr<CscLabelMatrix> labelMatrixPtr, float32 sampleSize)
+            : labelMatrixPtr_(std::move(labelMatrixPtr)), sampleSize_(sampleSize) {
 
         }
 
@@ -43,10 +48,12 @@ LabelWiseStratifiedSamplingFactory::LabelWiseStratifiedSamplingFactory(float32 s
 
 std::unique_ptr<IInstanceSubSampling> LabelWiseStratifiedSamplingFactory::create(
         const CContiguousLabelMatrix& labelMatrix) const {
-    return std::make_unique<LabelWiseStratifiedSampling>(sampleSize_);
+    std::unique_ptr<CscLabelMatrix> labelMatrixPtr = std::make_unique<CscLabelMatrix>(labelMatrix);
+    return std::make_unique<LabelWiseStratifiedSampling>(std::move(labelMatrixPtr), sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> LabelWiseStratifiedSamplingFactory::create(
         const CsrLabelMatrix& labelMatrix) const {
-    return std::make_unique<LabelWiseStratifiedSampling>(sampleSize_);
+    std::unique_ptr<CscLabelMatrix> labelMatrixPtr = std::make_unique<CscLabelMatrix>(labelMatrix);
+    return std::make_unique<LabelWiseStratifiedSampling>(std::move(labelMatrixPtr), sampleSize_);
 }
