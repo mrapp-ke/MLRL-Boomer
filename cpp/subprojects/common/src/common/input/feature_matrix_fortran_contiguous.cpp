@@ -6,6 +6,14 @@ FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numRows, u
 
 }
 
+FortranContiguousFeatureMatrix::const_iterator FortranContiguousFeatureMatrix::column_cbegin(uint32 col) const {
+    return view_.column_cbegin(col);
+}
+
+FortranContiguousFeatureMatrix::const_iterator FortranContiguousFeatureMatrix::column_cend(uint32 col) const {
+    return view_.column_cend(col);
+}
+
 uint32 FortranContiguousFeatureMatrix::getNumRows() const {
     return view_.getNumRows();
 }

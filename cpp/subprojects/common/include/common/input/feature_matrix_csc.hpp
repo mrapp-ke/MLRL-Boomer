@@ -33,6 +33,48 @@ class CscFeatureMatrix final : public IFeatureMatrix {
         CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, const uint32* rowIndices,
                          const uint32* colIndices);
 
+        /**
+         * An iterator that provides read-only access to the feature values.
+         */
+        typedef CscView<float32>::value_const_iterator value_const_iterator;
+
+        /**
+         * An iterator that provides read-only access to the indices of the non-zero feature values.
+         */
+        typedef CscView<float32>::index_const_iterator index_const_iterator;
+
+        /**
+         * Returns a `value_const_iterator` to the beginning of the values at a specific column.
+         *
+         * @param col   The column
+         * @return      A `value_const_iterator` to the beginning of the values
+         */
+        value_const_iterator column_values_cbegin(uint32 col) const;
+
+        /**
+         * Returns a `value_const_iterator` to the end of the values at a specific column.
+         *
+         * @param col   The column
+         * @return      A `value_const_iterator` to the end of the values
+         */
+        value_const_iterator column_values_cend(uint32 col) const;
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the indices at a specific column.
+         *
+         * @param col   The column
+         * @return      An `index_const_iterator` to the beginning of the indices
+         */
+        index_const_iterator column_indices_cbegin(uint32 col) const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the indices at a specific column.
+         *
+         * @param col   The column
+         * @return      An `index_const_iterator` to the end of the indices
+         */
+        index_const_iterator column_indices_cend(uint32 col) const;
+
         uint32 getNumRows() const override;
 
         uint32 getNumCols() const override;

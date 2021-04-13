@@ -26,6 +26,27 @@ class FortranContiguousFeatureMatrix final : public IFeatureMatrix {
          */
         FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, float32* array);
 
+        /**
+         * An iterator that provides read-only access to the feature values.
+         */
+        typedef FortranContiguousView<float32>::const_iterator const_iterator;
+
+        /**
+         * Returns a `const_iterator` to the beginning of a specific column.
+         *
+         * @param col   The column
+         * @return      A `const_iterator` to the beginning
+         */
+        const_iterator column_cbegin(uint32 col) const;
+
+        /**
+         * Returns a `const_iterator` to the end of a specific column.
+         *
+         * @param col   The column
+         * @return      A `const_iterator` to the end
+         */
+        const_iterator column_cend(uint32 col) const;
+
         uint32 getNumRows() const override;
 
         uint32 getNumCols() const override;
