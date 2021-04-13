@@ -75,6 +75,13 @@ class CscFeatureMatrix final : public IFeatureMatrix {
          */
         index_const_iterator column_indices_cend(uint32 col) const;
 
+        /**
+         * Returns the number of non-zero feature values.
+         *
+         * @return The number of non-zero feature values
+         */
+        uint32 getNumNonZeroElements() const;
+
         uint32 getNumRows() const override;
 
         uint32 getNumCols() const override;
