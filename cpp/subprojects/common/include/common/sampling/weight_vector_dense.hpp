@@ -29,6 +29,12 @@ class DenseWeightVector final : public IWeightVector {
         DenseWeightVector(uint32 numElements);
 
         /**
+         * @param numElements   The number of elements in the vector
+         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
+         */
+        DenseWeightVector(uint32 numElements, bool init);
+
+        /**
          * An iterator that provides access to the weights in the vector and allows to modify them.
          */
         typedef typename DenseVector<T>::iterator iterator;

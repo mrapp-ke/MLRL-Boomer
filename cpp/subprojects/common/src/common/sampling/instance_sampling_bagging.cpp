@@ -13,7 +13,7 @@ std::unique_ptr<IWeightVector> Bagging::subSample(const SinglePartition& partiti
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
     std::unique_ptr<DenseWeightVector<uint32>> weightVectorPtr = std::make_unique<DenseWeightVector<uint32>>(
-        numExamples);
+        numExamples, true);
     typename DenseWeightVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
     uint32 numNonZeroWeights = 0;
 
@@ -40,7 +40,7 @@ std::unique_ptr<IWeightVector> Bagging::subSample(const BiPartition& partition, 
     uint32 numSamples = (uint32) (sampleSize_ * numTrainingExamples);
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
     std::unique_ptr<DenseWeightVector<uint32>> weightVectorPtr = std::make_unique<DenseWeightVector<uint32>>(
-        numExamples);
+        numExamples, true);
     typename DenseWeightVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
     uint32 numNonZeroWeights = 0;
 
