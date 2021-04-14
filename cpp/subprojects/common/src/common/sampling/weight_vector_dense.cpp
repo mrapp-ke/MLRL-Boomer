@@ -47,4 +47,5 @@ float64 DenseWeightVector<T>::getWeight(uint32 pos) const {
     return (float64) vector_.getValue(pos);
 }
 
+template class DenseWeightVector<uint8>;
 template class DenseWeightVector<uint32>;
