@@ -3,7 +3,13 @@
 
 template<class T>
 DenseWeightVector<T>::DenseWeightVector(uint32 numElements)
-    : vector_(DenseVector<T>(numElements, true)), numNonZeroWeights_(0) {
+    : DenseWeightVector<T>(numElements, false) {
+
+}
+
+template<class T>
+DenseWeightVector<T>::DenseWeightVector(uint32 numElements, bool init)
+    : vector_(DenseVector<T>(numElements, init)), numNonZeroWeights_(0) {
 
 }
 
@@ -47,4 +53,5 @@ float64 DenseWeightVector<T>::getWeight(uint32 pos) const {
     return (float64) vector_.getValue(pos);
 }
 
+template class DenseWeightVector<uint8>;
 template class DenseWeightVector<uint32>;
