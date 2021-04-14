@@ -21,9 +21,9 @@ class NoInstanceSubSampling final : public IInstanceSubSampling {
             uint32 numExamples = partition.getNumElements();
             uint32 numTrainingExamples = partition.getNumFirst();
             BiPartition::const_iterator indexIterator = partition.first_cbegin();
-            std::unique_ptr<DenseWeightVector<uint32>> weightVectorPtr = std::make_unique<DenseWeightVector<uint32>>(
-                numExamples);
-            typename DenseWeightVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
+            std::unique_ptr<DenseWeightVector<uint8>> weightVectorPtr = std::make_unique<DenseWeightVector<uint8>>(
+                numExamples, true);
+            typename DenseWeightVector<uint8>::iterator weightIterator = weightVectorPtr->begin();
 
             for (uint32 i = 0; i < numTrainingExamples; i++) {
                 uint32 index = indexIterator[i];
