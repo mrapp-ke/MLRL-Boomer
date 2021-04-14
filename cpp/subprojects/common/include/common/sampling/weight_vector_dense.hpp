@@ -24,7 +24,7 @@ class DenseWeightVector final : public IWeightVector {
     public:
 
         /**
-         * @param numElements The number of elements in the vector. Must be at least 1
+         * @param numElements The number of elements in the vector
          */
         DenseWeightVector(uint32 numElements);
 
