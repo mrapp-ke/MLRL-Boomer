@@ -27,7 +27,8 @@ static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaT
                                                                                                  uint32 numSamples,
                                                                                                  uint32 numElements,
                                                                                                  RNG& rng) {
-    std::unique_ptr<DenseWeightVector<uint8>> weightVectorPtr = std::make_unique<DenseWeightVector<uint8>>(numElements);
+    std::unique_ptr<DenseWeightVector<uint8>> weightVectorPtr = std::make_unique<DenseWeightVector<uint8>>(numElements,
+                                                                                                           true);
     typename DenseWeightVector<uint8>::iterator sampleIterator = weightVectorPtr->begin();
     std::unordered_set<uint32> selectedIndices;
 
@@ -65,7 +66,8 @@ template<class T>
 static inline std::unique_ptr<IWeightVector> sampleWeightsWithoutReplacementViaPool(T iterator, uint32 numTotal,
                                                                                     uint32 numSamples,
                                                                                     uint32 numElements, RNG& rng) {
-    std::unique_ptr<DenseWeightVector<uint8>> weightVectorPtr = std::make_unique<DenseWeightVector<uint8>>(numElements);
+    std::unique_ptr<DenseWeightVector<uint8>> weightVectorPtr = std::make_unique<DenseWeightVector<uint8>>(numElements,
+                                                                                                           true);
     typename DenseWeightVector<uint8>::iterator sampleIterator = weightVectorPtr->begin();
     uint32 pool[numTotal];
 
