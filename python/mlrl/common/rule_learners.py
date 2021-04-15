@@ -24,7 +24,8 @@ from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
 from mlrl.common.cython.rule_induction import RuleModelInduction
 from mlrl.common.cython.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
 from mlrl.common.cython.sampling import InstanceSubSamplingFactory, BaggingFactory, \
-    RandomInstanceSubsetSelectionFactory, LabelWiseStratifiedSamplingFactory, NoInstanceSubSamplingFactory
+    RandomInstanceSubsetSelectionFactory, LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory, \
+    NoInstanceSubSamplingFactory
 from mlrl.common.cython.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
 from mlrl.common.cython.sampling import PartitionSampling, NoPartitionSampling, BiPartitionSampling
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
@@ -47,6 +48,8 @@ INSTANCE_SUB_SAMPLING_RANDOM = 'random-instance-selection'
 INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
 
 INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+
+INSTANCE_SUB_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
 
@@ -104,7 +107,8 @@ def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> Instance
     else:
         prefix, args = parse_prefix_and_dict(instance_sub_sampling,
                                              [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM,
-                                              INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE])
+                                              INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE,
+                                              INSTANCE_SUB_SAMPLING_STRATIFIED_EXAMPLE_WISE])
 
         if prefix == INSTANCE_SUB_SAMPLING_BAGGING:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
@@ -115,6 +119,9 @@ def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> Instance
         elif prefix == INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return LabelWiseStratifiedSamplingFactory(sample_size)
+        elif prefix == INSTANCE_SUB_SAMPLING_STRATIFIED_EXAMPLE_WISE:
+            sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+            return ExampleWiseStratifiedSamplingFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
 
