@@ -53,7 +53,7 @@ cdef extern from "common/input/label_matrix_csr.hpp" nogil:
 
         # Constructors:
 
-        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices) except +
+        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices) except +
 
 
 cdef extern from "common/input/feature_matrix.hpp" nogil:
