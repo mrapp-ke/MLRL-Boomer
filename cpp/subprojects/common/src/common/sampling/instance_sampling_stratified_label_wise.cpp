@@ -9,17 +9,13 @@
 #define UNSET_WEIGHT 2
 
 
-static inline std::unique_ptr<DenseVector<uint32>> getNumExamplesPerLabel(const CscLabelMatrix& labelMatrix) {
+static inline void fetchNumExamplesPerLabel(const CscLabelMatrix& labelMatrix, DenseVector<uint32>::iterator iterator) {
     uint32 numCols = labelMatrix.getNumCols();
-    std::unique_ptr<DenseVector<uint32>> vectorPtr = std::make_unique<DenseVector<uint32>>(numCols);
-    DenseVector<uint32>::iterator iterator = vectorPtr->begin();
 
     for (uint32 i = 0; i < numCols; i++) {
         uint32 numExamples = labelMatrix.column_indices_cend(i) - labelMatrix.column_indices_cbegin(i);
         iterator[i] = numExamples;
     }
-
-    return vectorPtr;
 }
 
 static inline uint32 getLabelWithFewestExamples(DenseVector<uint32>::const_iterator numExamplesIterator,
@@ -84,6 +80,8 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
         float32 sampleSize_;
 
+        DenseVector<uint32> numExamplesVector_;
+
     public:
 
         /**
@@ -96,7 +94,8 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
          */
         LabelWiseStratifiedSampling(Partition& partition, const LabelMatrix& labelMatrix, float32 sampleSize)
             : partition_(partition), labelMatrix_(labelMatrix),
-              cscLabelMatrixPtr_(std::make_unique<CscLabelMatrix>(labelMatrix)), sampleSize_(sampleSize) {
+              cscLabelMatrixPtr_(std::make_unique<CscLabelMatrix>(labelMatrix)), sampleSize_(sampleSize),
+              numExamplesVector_(DenseVector<uint32>(labelMatrix.getNumCols())) {
 
         }
 
@@ -111,10 +110,10 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
             // for which no weight has been set yet...
             setArrayToValue<uint32>(weightIterator, numExamples, UNSET_WEIGHT);
 
-            // Create a vector that stores the number of examples that are associated with individual labels...
-            std::unique_ptr<DenseVector<uint32>> numExamplesVectorPtr = getNumExamplesPerLabel(*cscLabelMatrixPtr_);
-            DenseVector<uint32>::iterator numExamplesIterator = numExamplesVectorPtr->begin();
-            uint32 numLabels = numExamplesVectorPtr->getNumElements();
+            // Determine the number of examples that are associated with individual labels...
+            DenseVector<uint32>::iterator numExamplesIterator = numExamplesVector_.begin();
+            fetchNumExamplesPerLabel(*cscLabelMatrixPtr_, numExamplesIterator);
+            uint32 numLabels = numExamplesVector_.getNumElements();
 
             // For each label, assign a weight to the examples that are associated with the label, if no weight has been
             // set yet. Labels with few examples are processed first...
