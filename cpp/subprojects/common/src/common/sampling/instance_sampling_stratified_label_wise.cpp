@@ -76,7 +76,7 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
         const LabelMatrix& labelMatrix_;
 
-        std::unique_ptr<CscLabelMatrix> cscLabelMatrixPtr_;
+        CscLabelMatrix cscLabelMatrix_;
 
         float32 sampleSize_;
 
@@ -93,9 +93,8 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
          *                      to 60 % of the available examples). Must be in (0, 1]
          */
         LabelWiseStratifiedSampling(Partition& partition, const LabelMatrix& labelMatrix, float32 sampleSize)
-            : partition_(partition), labelMatrix_(labelMatrix),
-              cscLabelMatrixPtr_(std::make_unique<CscLabelMatrix>(labelMatrix)), sampleSize_(sampleSize),
-              numExamplesVector_(DenseVector<uint32>(labelMatrix.getNumCols())) {
+            : partition_(partition), labelMatrix_(labelMatrix), cscLabelMatrix_(CscLabelMatrix(labelMatrix)),
+              sampleSize_(sampleSize), numExamplesVector_(DenseVector<uint32>(labelMatrix.getNumCols())) {
 
         }
 
@@ -112,7 +111,7 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
             // Determine the number of examples that are associated with individual labels...
             DenseVector<uint32>::iterator numExamplesIterator = numExamplesVector_.begin();
-            fetchNumExamplesPerLabel(*cscLabelMatrixPtr_, numExamplesIterator);
+            fetchNumExamplesPerLabel(cscLabelMatrix_, numExamplesIterator);
             uint32 numLabels = numExamplesVector_.getNumElements();
 
             // For each label, assign a weight to the examples that are associated with the label, if no weight has been
@@ -121,8 +120,8 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
             uint32 labelIndex;
 
             while ((labelIndex = getLabelWithFewestExamples(numExamplesIterator, numLabels)) < numLabels) {
-                CscLabelMatrix::index_iterator indexIterator = cscLabelMatrixPtr_->column_indices_begin(labelIndex);
-                uint32 numExamples = cscLabelMatrixPtr_->column_indices_end(labelIndex) - indexIterator;
+                CscLabelMatrix::index_iterator indexIterator = cscLabelMatrix_.column_indices_begin(labelIndex);
+                uint32 numExamples = cscLabelMatrix_.column_indices_end(labelIndex) - indexIterator;
                 uint32 numSamples = (uint32) (sampleSize_ * numExamplesIterator[labelIndex]);
                 numNonZeroWeights += numSamples;
                 uint32 i;
