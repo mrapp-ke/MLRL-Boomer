@@ -2,9 +2,19 @@
 
 
 template<class T>
-CsrView<T>::CsrView(uint32 numRows, uint32 numCols, const T* data, const uint32* rowIndices, const uint32* colIndices)
+CsrView<T>::CsrView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices)
     : numRows_(numRows), numCols_(numCols), data_(data), rowIndices_(rowIndices), colIndices_(colIndices) {
 
+}
+
+template<class T>
+typename CsrView<T>::value_iterator CsrView<T>::row_values_begin(uint32 row) {
+    return &data_[rowIndices_[row]];
+}
+
+template<class T>
+typename CsrView<T>::value_iterator CsrView<T>::row_values_end(uint32 row) {
+    return &data_[rowIndices_[row + 1]];
 }
 
 template<class T>
@@ -15,6 +25,16 @@ typename CsrView<T>::value_const_iterator CsrView<T>::row_values_cbegin(uint32 r
 template<class T>
 typename CsrView<T>::value_const_iterator CsrView<T>::row_values_cend(uint32 row) const {
     return &data_[rowIndices_[row + 1]];
+}
+
+template<class T>
+typename CsrView<T>::index_iterator CsrView<T>::row_indices_begin(uint32 row) {
+    return &colIndices_[rowIndices_[row]];
+}
+
+template<class T>
+typename CsrView<T>::index_iterator CsrView<T>::row_indices_end(uint32 row) {
+    return &colIndices_[rowIndices_[row + 1]];
 }
 
 template<class T>

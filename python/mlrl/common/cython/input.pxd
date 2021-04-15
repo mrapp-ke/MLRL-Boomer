@@ -53,7 +53,7 @@ cdef extern from "common/input/label_matrix_csr.hpp" nogil:
 
         # Constructors:
 
-        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices) except +
+        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices) except +
 
 
 cdef extern from "common/input/feature_matrix.hpp" nogil:
@@ -90,8 +90,8 @@ cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
 
         # Constructors:
 
-        CscFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, const uint32* rowIndices,
-                             const uint32* colIndices) except +
+        CscFeatureMatrixImpl(uint32 numRows, uint32 numCols, float32* data, uint32* rowIndices,
+                             uint32* colIndices) except +
 
 
 cdef extern from "common/input/feature_matrix_csr.hpp" nogil:
@@ -100,8 +100,8 @@ cdef extern from "common/input/feature_matrix_csr.hpp" nogil:
 
         # Constructors:
 
-        CsrFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, const uint32* rowIndices,
-                             const uint32 colIndices) except +
+        CsrFeatureMatrixImpl(uint32 numRows, uint32 numCols, float32* data, uint32* rowIndices,
+                             uint32 colIndices) except +
 
         # Functions:
 

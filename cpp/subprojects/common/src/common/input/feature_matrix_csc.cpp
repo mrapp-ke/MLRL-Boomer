@@ -1,8 +1,8 @@
 #include "common/input/feature_matrix_csc.hpp"
 
 
-CscFeatureMatrix::CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, const uint32* rowIndices,
-                                   const uint32* colIndices)
+CscFeatureMatrix::CscFeatureMatrix(uint32 numRows, uint32 numCols, float32* data, uint32* rowIndices,
+                                   uint32* colIndices)
     : view_(CscView<float32>(numRows, numCols, data, rowIndices, colIndices)) {
 
 }
