@@ -1,9 +1,17 @@
 #include "common/data/view_csc_binary.hpp"
 
 
-BinaryCscView::BinaryCscView(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices)
+BinaryCscView::BinaryCscView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
     : numRows_(numRows), numCols_(numCols), rowIndices_(rowIndices), colIndices_(colIndices) {
 
+}
+
+BinaryCscView::index_iterator BinaryCscView::column_indices_begin(uint32 col) {
+    return &rowIndices_[colIndices_[col]];
+}
+
+BinaryCscView::index_iterator BinaryCscView::column_indices_end(uint32 col) {
+    return &rowIndices_[colIndices_[col + 1]];
 }
 
 BinaryCscView::index_const_iterator BinaryCscView::column_indices_cbegin(uint32 col) const {
