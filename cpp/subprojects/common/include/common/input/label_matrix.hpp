@@ -45,7 +45,8 @@ class ILabelMatrix {
         virtual std::unique_ptr<LabelVector> getLabelVector(uint32 row) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `IStatisticsProvider`, based on the type of the label matrix.
+         * Creates and returns a new instance of the class `IStatisticsProvider`, based on the type of this label
+         * matrix.
          *
          * @param factory   A reference to an object of type `IStatisticsProviderFactory` that should be used to create
          *                  the instance
@@ -55,7 +56,7 @@ class ILabelMatrix {
             const IStatisticsProviderFactory& factory) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `IInstanceSubSampling`, based on the type of the label
+         * Creates and returns a new instance of the class `IInstanceSubSampling`, based on the type of this label
          * matrix.
          *
          * @param factory   A reference to an object of type `IInstanceSubSamplingFactory` that should be used to create
