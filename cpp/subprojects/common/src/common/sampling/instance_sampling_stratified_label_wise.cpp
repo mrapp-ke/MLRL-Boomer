@@ -62,17 +62,15 @@ static inline void updateNumExamplesPerLabel(const CsrLabelMatrix& labelMatrix, 
  * Implements iterative stratified sampling for selecting a subset of the available training examples, such that for
  * each label the proportion of relevant and irrelevant examples is maintained.
  *
- * @tparam Partition    The type of the object that provides access to the indices of the examples that are included in
- *                      the training set
- * @tparam LabelMatrix  The type of the label matrix that provides random or row-wise access to the labels of the
- *                      training examples
+ * @tparam LabelMatrix      The type of the label matrix that provides random or row-wise access to the labels of the
+ *                          training examples
+ * @tparam IndexIterator    The type of the iterator that provides access to the indices of the examples that are
+ *                          contained by the training set
  */
-template<class Partition, class LabelMatrix>
+template<class LabelMatrix, class IndexIterator>
 class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
     private:
-
-        Partition& partition_;
 
         const LabelMatrix& labelMatrix_;
 
@@ -85,22 +83,25 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
     public:
 
         /**
-         * @param partition     A reference to an object of template type `Partition` that provides access to the
-         *                      indices of the examples that are included in the training set
          * @param labelMatrix   A reference to an object of template type `LabelMatrix` that provides random or row-wise
          *                      access to the labels of the training examples
+         * @param indicesBegin  An iterator to the beginning of the indices of the examples that are contained by the
+         *                      training set
+         * @param indicesEnd    An iterator to the end of the indices of the examples that are contained by the training
+         *                      set
          * @param sampleSize    The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds
          *                      to 60 % of the available examples). Must be in (0, 1]
          */
-        LabelWiseStratifiedSampling(Partition& partition, const LabelMatrix& labelMatrix, float32 sampleSize)
-            : partition_(partition), labelMatrix_(labelMatrix), cscLabelMatrix_(CscLabelMatrix(labelMatrix)),
+        LabelWiseStratifiedSampling(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
+                                    IndexIterator indicesEnd, float32 sampleSize)
+            : labelMatrix_(labelMatrix), cscLabelMatrix_(CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd)),
               sampleSize_(sampleSize), numExamplesVector_(DenseVector<uint32>(labelMatrix.getNumCols())) {
 
         }
 
         std::unique_ptr<IWeightVector> subSample(RNG& rng) override {
             // Create a vector to store the weights of individual examples...
-            uint32 numExamples = partition_.getNumElements();
+            uint32 numExamples = labelMatrix_.getNumRows();
             std::unique_ptr<DenseWeightVector<uint32>> weightVectorPtr =
                 std::make_unique<DenseWeightVector<uint32>>(numExamples);
             DenseWeightVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
@@ -165,25 +166,24 @@ LabelWiseStratifiedSamplingFactory::LabelWiseStratifiedSamplingFactory(float32 s
 
 std::unique_ptr<IInstanceSubSampling> LabelWiseStratifiedSamplingFactory::create(
         const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition) const {
-    return std::make_unique<LabelWiseStratifiedSampling<const SinglePartition, CContiguousLabelMatrix>>(partition,
-                                                                                                        labelMatrix,
-                                                                                                        sampleSize_);
+    return std::make_unique<LabelWiseStratifiedSampling<CContiguousLabelMatrix, SinglePartition::const_iterator>>(
+        labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> LabelWiseStratifiedSamplingFactory::create(
         const CContiguousLabelMatrix& labelMatrix, BiPartition& partition) const {
-    return std::make_unique<LabelWiseStratifiedSampling<BiPartition, CContiguousLabelMatrix>>(partition, labelMatrix,
-                                                                                              sampleSize_);
+    return std::make_unique<LabelWiseStratifiedSampling<CContiguousLabelMatrix, BiPartition::const_iterator>>(
+        labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> LabelWiseStratifiedSamplingFactory::create(
         const CsrLabelMatrix& labelMatrix, const SinglePartition& partition) const {
-    return std::make_unique<LabelWiseStratifiedSampling<const SinglePartition, CsrLabelMatrix>>(partition, labelMatrix,
-                                                                                                sampleSize_);
+    return std::make_unique<LabelWiseStratifiedSampling<CsrLabelMatrix, SinglePartition::const_iterator>>(
+        labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> LabelWiseStratifiedSamplingFactory::create(
         const CsrLabelMatrix& labelMatrix, BiPartition& partition) const {
-    return std::make_unique<LabelWiseStratifiedSampling<BiPartition, CsrLabelMatrix>>(partition, labelMatrix,
-                                                                                      sampleSize_);
+    return std::make_unique<LabelWiseStratifiedSampling<CsrLabelMatrix, BiPartition::const_iterator>>(
+        labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
 }
