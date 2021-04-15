@@ -18,9 +18,9 @@ class BinaryCsrView final {
 
         uint32 numCols_;
 
-        const uint32* rowIndices_;
+        uint32* rowIndices_;
 
-        const uint32* colIndices_;
+        uint32* colIndices_;
 
     public:
 
@@ -33,7 +33,12 @@ class BinaryCsrView final {
          * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
          *                      column-indices, the non-zero elements correspond to
          */
-        BinaryCsrView(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices);
+        BinaryCsrView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices);
+
+        /**
+         * An iterator that provides access to the indices of the view and allows to modify them.
+         */
+        typedef uint32* index_iterator;
 
         /**
          * An iterator that provides read-only access to the indices in the view.
@@ -44,6 +49,22 @@ class BinaryCsrView final {
          * An iterator that provides read-only access to the values in the view.
          */
         typedef IndexForwardIterator<index_const_iterator> value_const_iterator;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the indices at a specific row.
+         *
+         * @param row   The row
+         * @return      An `index_iterator` to the beginning of the indices
+         */
+        index_iterator row_indices_begin(uint32 row);
+
+        /**
+         * Returns an `index_iterator` to the end of the indices at a specific row.
+         *
+         * @param row   The row
+         * @return      An `index_iterator` to the end of the indices
+         */
+        index_iterator row_indices_end(uint32 row);
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific row.
