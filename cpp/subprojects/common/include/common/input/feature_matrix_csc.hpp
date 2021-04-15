@@ -30,8 +30,7 @@ class CscFeatureMatrix final : public IFeatureMatrix {
          *                      of the first element in `data` and `rowIndices` that corresponds to a certain column.
          *                      The index at the last position is equal to `num_non_zero_values`
          */
-        CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, const uint32* rowIndices,
-                         const uint32* colIndices);
+        CscFeatureMatrix(uint32 numRows, uint32 numCols, float32* data, uint32* rowIndices, uint32* colIndices);
 
         /**
          * An iterator that provides read-only access to the feature values.
