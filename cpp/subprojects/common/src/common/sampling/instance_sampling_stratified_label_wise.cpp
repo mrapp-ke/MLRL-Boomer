@@ -19,8 +19,8 @@ static inline void fetchNumExamplesPerLabel(const CscLabelMatrix& labelMatrix, D
     }
 }
 
-static inline uint32 getLabelWithFewestExamples(DenseVector<uint32>::const_iterator numExamplesIterator,
-                                                uint32 numElements) {
+static inline uint32 getLabelWithFewestRemainingExamples(DenseVector<uint32>::const_iterator numExamplesIterator,
+                                                         uint32 numElements) {
     uint32 minNumExamples = std::numeric_limits<uint32>::max();
     uint32 index = numElements;
 
@@ -121,7 +121,7 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
             uint32 numNonZeroWeights = 0;
             uint32 labelIndex;
 
-            while ((labelIndex = getLabelWithFewestExamples(numExamplesIterator, numLabels)) < numLabels) {
+            while ((labelIndex = getLabelWithFewestRemainingExamples(numExamplesIterator, numLabels)) < numLabels) {
                 CscLabelMatrix::index_iterator indexIterator = cscLabelMatrix_.column_indices_begin(labelIndex);
                 uint32 numExamples = cscLabelMatrix_.column_indices_end(labelIndex) - indexIterator;
                 uint32 numSamples = (uint32) std::round(sampleSize_ * numExamplesIterator[labelIndex]);
