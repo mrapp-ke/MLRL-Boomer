@@ -80,7 +80,8 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRe
 }
 
 /**
- * Computes a random permutation of the indices that are contained by two mutually exclusive sets.
+ * Computes a random permutation of the indices that are contained by two mutually exclusive sets using the Fisher-Yates
+ * shuffle.
  *
  * @tparam FirstIterator    The type of the iterator that provides random access to the indices that are contained by
  *                          the first set
@@ -119,7 +120,7 @@ static inline void randomPermutation(FirstIterator firstIterator, SecondIterator
 
 /**
  * Randomly selects `numSamples` out of `numTotal` indices without replacement by first generating a random permutation
- * of the available indices using the Fisher-Yates shuffle and then returning the first `numSamples` indices.
+ * of the available indices and then returning the first `numSamples` indices.
  *
  * @tparam T            The type of the iterator that provides random access to the available indices to sample from
  * @param iterator      An iterator that provides random access to the available indices to sample from
