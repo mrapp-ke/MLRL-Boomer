@@ -73,8 +73,8 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     uint32 numExamples = thresholdsPtr->getNumExamples();
     uint32 numLabels = thresholdsPtr->getNumLabels();
     std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr_->partition(numExamples, rng);
-    std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr =
-        labelMatrixPtr->createInstanceSubSampling(*instanceSubSamplingFactoryPtr_);
+    std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partitionPtr->createInstanceSubSampling(
+        *instanceSubSamplingFactoryPtr_, *labelMatrixPtr);
     IStoppingCriterion::Result stoppingCriterionResult;
 
     while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, *partitionPtr,
@@ -85,7 +85,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
             numUsedRules = stoppingCriterionResult.numRules;
         }
 
-        std::unique_ptr<IWeightVector> weightsPtr = partitionPtr->subSample(*instanceSubSamplingPtr, rng);
+        std::unique_ptr<IWeightVector> weightsPtr = instanceSubSamplingPtr->subSample(rng);
         std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr_->subSample(numLabels, rng);
         bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, *labelIndicesPtr, *weightsPtr, *partitionPtr,
                                                      *featureSubSamplingPtr_, *pruningPtr_, *postProcessorPtr_,
