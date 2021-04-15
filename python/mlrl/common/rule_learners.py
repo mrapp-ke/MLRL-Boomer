@@ -103,7 +103,8 @@ def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> Instance
         return NoInstanceSubSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(instance_sub_sampling,
-                                             [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM])
+                                             [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM,
+                                              INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE])
 
         if prefix == INSTANCE_SUB_SAMPLING_BAGGING:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
