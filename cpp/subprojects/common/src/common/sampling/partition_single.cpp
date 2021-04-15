@@ -27,6 +27,11 @@ std::unique_ptr<IWeightVector> SinglePartition::subSample(const IInstanceSubSamp
     return instanceSubSampling.subSample(*this, rng);
 }
 
+std::unique_ptr<IInstanceSubSampling> SinglePartition::createInstanceSubSampling(
+        const IInstanceSubSamplingFactory& factory, const ILabelMatrix& labelMatrix) {
+    return labelMatrix.createInstanceSubSampling(factory, *this);
+}
+
 float64 SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
                                              const ICoverageState& coverageState, const AbstractPrediction& head) {
     return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);

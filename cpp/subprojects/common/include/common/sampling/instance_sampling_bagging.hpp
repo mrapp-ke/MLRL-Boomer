@@ -24,8 +24,16 @@ class BaggingFactory final : public IInstanceSubSamplingFactory {
          */
         BaggingFactory(float32 sampleSize);
 
-        std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix) const override;
+        std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix,
+                                                     const SinglePartition& partition) const override;
 
-        std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix) const override;
+        std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix,
+                                                     BiPartition& partition) const override;
+
+        std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix,
+                                                     const SinglePartition& partition) const override;
+
+        std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix,
+                                                     BiPartition& partition) const override;
 
 };

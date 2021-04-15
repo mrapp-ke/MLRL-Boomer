@@ -85,10 +85,22 @@ BaggingFactory::BaggingFactory(float32 sampleSize)
 
 }
 
-std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CContiguousLabelMatrix& labelMatrix) const {
+std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CContiguousLabelMatrix& labelMatrix,
+                                                             const SinglePartition& partition) const {
     return std::make_unique<Bagging>(sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CsrLabelMatrix& labelMatrix) const {
+std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CContiguousLabelMatrix& labelMatrix,
+                                                             BiPartition& partition) const {
+    return std::make_unique<Bagging>(sampleSize_);
+}
+
+std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                             const SinglePartition& partition) const {
+    return std::make_unique<Bagging>(sampleSize_);
+}
+
+std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                             BiPartition& partition) const {
     return std::make_unique<Bagging>(sampleSize_);
 }
