@@ -28,7 +28,7 @@ class CsrLabelMatrix final : public ILabelMatrix {
          * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
          *                      column-indices, the relevant labels correspond to
          */
-        CsrLabelMatrix(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices);
+        CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices);
 
         /**
          * An iterator that provides read-only access to the indices of the relevant labels.

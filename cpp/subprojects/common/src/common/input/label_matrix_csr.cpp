@@ -4,7 +4,7 @@
 #include "common/data/arrays.hpp"
 
 
-CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices)
+CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
     : view_(BinaryCsrView(numRows, numCols, rowIndices, colIndices)) {
 
 }
