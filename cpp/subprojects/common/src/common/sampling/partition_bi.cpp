@@ -86,8 +86,9 @@ const BinaryDokVector& BiPartition::getSecondSet() {
     return *secondSet_;
 }
 
-std::unique_ptr<IWeightVector> BiPartition::subSample(const IInstanceSubSampling& instanceSubSampling, RNG& rng) const {
-    return instanceSubSampling.subSample(*this, rng);
+std::unique_ptr<IInstanceSubSampling> BiPartition::createInstanceSubSampling(const IInstanceSubSamplingFactory& factory,
+                                                                             const ILabelMatrix& labelMatrix) {
+    return labelMatrix.createInstanceSubSampling(factory, *this);
 }
 
 float64 BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
