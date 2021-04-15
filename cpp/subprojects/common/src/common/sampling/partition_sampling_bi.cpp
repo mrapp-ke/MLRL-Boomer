@@ -24,6 +24,6 @@ std::unique_ptr<IPartition> BiPartitionSampling::partition(uint32 numExamples, R
     }
 
     randomPermutation<BiPartition::iterator, BiPartition::iterator>(trainingIterator, holdoutIterator, numTraining,
-                                                                    numExamples, rng);
+                                                                    numExamples, numExamples - 1, rng);
     return partitionPtr;
 }
