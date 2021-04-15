@@ -59,6 +59,16 @@ static inline void updateNumExamplesPerLabel(const CsrLabelMatrix& labelMatrix, 
     }
 }
 
+static inline bool tiebreak(uint32 numDesiredSamples, uint32 numDesiredOutOfSamples, RNG& rng) {
+    if (numDesiredSamples > numDesiredOutOfSamples) {
+        return true;
+    } else if (numDesiredSamples < numDesiredOutOfSamples) {
+        return false;
+    } else {
+        return rng.random(0, 2) != 0;
+    }
+}
+
 /**
  * Implements iterative stratified sampling for selecting a subset of the available training examples, such that for
  * each label the proportion of relevant and irrelevant examples is maintained.
@@ -118,14 +128,23 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
             // For each label, assign a weight to the examples that are associated with the label, if no weight has been
             // set yet. Labels with few examples are processed first...
+            uint32 numTotalSamples = (uint32) std::round(sampleSize_ * numTotalExamples);
+            uint32 numTotalOutOfSamples = numTotalExamples - numTotalSamples;
             uint32 numNonZeroWeights = 0;
+            uint32 numZeroWeights = 0;
             uint32 labelIndex;
 
             while ((labelIndex = getLabelWithFewestRemainingExamples(numExamplesIterator, numLabels)) < numLabels) {
                 CscLabelMatrix::index_iterator indexIterator = cscLabelMatrix_.column_indices_begin(labelIndex);
                 uint32 numExamples = cscLabelMatrix_.column_indices_end(labelIndex) - indexIterator;
-                uint32 numSamples = (uint32) std::round(sampleSize_ * numExamplesIterator[labelIndex]);
+                uint32 numRemainingExamples = numExamplesIterator[labelIndex];
+                float32 numSamplesDecimal = sampleSize_ * numRemainingExamples;
+                uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
+                uint32 numDesiredOutOfSamples = numTotalOutOfSamples - numZeroWeights;
+                uint32 numSamples = (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ?
+                                              std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
                 numNonZeroWeights += numSamples;
+                numZeroWeights += (numExamples - numSamples);
                 uint32 i;
 
                 // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples for which no weight has been set
