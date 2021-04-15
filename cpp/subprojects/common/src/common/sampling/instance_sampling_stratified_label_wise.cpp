@@ -100,7 +100,7 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
         }
 
-        std::unique_ptr<IWeightVector> subSample(RNG& rng) const override {
+        std::unique_ptr<IWeightVector> subSample(RNG& rng) override {
             // Create a vector to store the weights of individual examples...
             uint32 numExamples = partition_.getNumElements();
             std::unique_ptr<DenseWeightVector<uint32>> weightVectorPtr =

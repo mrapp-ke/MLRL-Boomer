@@ -49,7 +49,7 @@ class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
 
         }
 
-        std::unique_ptr<IWeightVector> subSample(RNG& rng) const override {
+        std::unique_ptr<IWeightVector> subSample(RNG& rng) override {
             return subSampleInternally(partition_, sampleSize_, rng);
         }
 
