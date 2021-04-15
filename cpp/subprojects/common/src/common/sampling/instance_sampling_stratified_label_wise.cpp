@@ -124,7 +124,7 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
             while ((labelIndex = getLabelWithFewestExamples(numExamplesIterator, numLabels)) < numLabels) {
                 CscLabelMatrix::index_iterator indexIterator = cscLabelMatrix_.column_indices_begin(labelIndex);
                 uint32 numExamples = cscLabelMatrix_.column_indices_end(labelIndex) - indexIterator;
-                uint32 numSamples = (uint32) std::ceil(sampleSize_ * numExamplesIterator[labelIndex]);
+                uint32 numSamples = (uint32) std::round(sampleSize_ * numExamplesIterator[labelIndex]);
                 numNonZeroWeights += numSamples;
                 uint32 i;
 
