@@ -34,8 +34,7 @@ cdef class CsrLabelMatrix(LabelMatrix):
     A wrapper for the C++ class `CsrLabelMatrix`.
     """
 
-    def __cinit__(self, uint32 num_examples, uint32 num_labels, const uint32[::1] row_indices,
-                  const uint32[::1] col_indices):
+    def __cinit__(self, uint32 num_examples, uint32 num_labels, uint32[::1] row_indices, uint32[::1] col_indices):
         """
         :param num_examples:    The total number of examples
         :param num_labels:      The total number of labels
