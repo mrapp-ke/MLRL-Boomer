@@ -18,9 +18,9 @@ class BinaryCscView final {
 
         uint32 numCols_;
 
-        const uint32* rowIndices_;
+        uint32* rowIndices_;
 
-        const uint32* colIndices_;
+        uint32* colIndices_;
 
     public:
 
@@ -33,7 +33,12 @@ class BinaryCscView final {
          *                      of the first element in `rowIndices` that corresponds to a certain column. The index at
          *                      the last position is equal to `num_non_zero_values`
          */
-        BinaryCscView(uint32 numRows, uint32 numCols, const uint32* rowIndices, const uint32* colIndices);
+        BinaryCscView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices);
+
+        /**
+         * An iterator that provides access to the indices in the view and allows to modify them.
+         */
+        typedef uint32* index_iterator;
 
         /**
          * An iterator that provides read-only access to the indices in the view.
@@ -44,6 +49,22 @@ class BinaryCscView final {
          * An iterator that provides read-only access to the values in the view.
          */
         typedef IndexForwardIterator<index_const_iterator> value_const_iterator;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the indices at a specific column.
+         *
+         * @param col   The column
+         * @return      An `index_iterator` to the beginning of the indices
+         */
+        index_iterator column_indices_begin(uint32 col);
+
+        /**
+         * Returns an `index_iterator` to the end of the indices at a specific column.
+         *
+         * @param col   The column
+         * @return      An `index_iterator` to the end of the indices
+         */
+        index_iterator column_indices_end(uint32 col);
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific column.
