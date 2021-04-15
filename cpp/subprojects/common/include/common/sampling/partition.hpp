@@ -7,8 +7,10 @@
 #include <memory>
 
 // Forward declarations
-class IWeightVector;
+class IWeightVector; // TODO Remove
 class IInstanceSubSampling;
+class IInstanceSubSamplingFactory;
+class ILabelMatrix;
 class RNG;
 class IThresholdsSubset;
 class ICoverageState;
@@ -36,8 +38,22 @@ class IPartition {
          * @return                      An unique pointer to an object type `WeightVector` that provides access to the
          *                              weights of the individual training examples
          */
+        // TODO Remove
         virtual std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
                                                          RNG& rng) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IInstanceSubSampling`, based on the type of this partition
+         * matrix.
+         *
+         * @param factory       A reference to an object of type `IInstanceSubSamplingFactory` that should be used to
+         *                      create the instance
+         * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels of
+         *                      the training examples
+         * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
+            const IInstanceSubSamplingFactory& factory, const ILabelMatrix& labelMatrix) = 0;
 
         /**
          * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that

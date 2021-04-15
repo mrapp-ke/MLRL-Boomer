@@ -49,11 +49,21 @@ RandomInstanceSubsetSelectionFactory::RandomInstanceSubsetSelectionFactory(float
 }
 
 std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
-        const CContiguousLabelMatrix& labelMatrix) const {
+        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition) const {
     return std::make_unique<RandomInstanceSubsetSelection>(sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
-        const CsrLabelMatrix& labelMatrix) const {
+        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition) const {
+    return std::make_unique<RandomInstanceSubsetSelection>(sampleSize_);
+}
+
+std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
+        const CsrLabelMatrix& labelMatrix, const SinglePartition& partition) const {
+    return std::make_unique<RandomInstanceSubsetSelection>(sampleSize_);
+}
+
+std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
+        const CsrLabelMatrix& labelMatrix, BiPartition& partition) const {
     return std::make_unique<RandomInstanceSubsetSelection>(sampleSize_);
 }

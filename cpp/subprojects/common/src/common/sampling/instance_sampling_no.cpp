@@ -37,10 +37,21 @@ class NoInstanceSubSampling final : public IInstanceSubSampling {
 };
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(
-        const CContiguousLabelMatrix& labelMatrix) const {
+        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition) const {
     return std::make_unique<NoInstanceSubSampling>();
 }
 
-std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix) const {
+std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(
+        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition) const {
+    return std::make_unique<NoInstanceSubSampling>();
+}
+
+std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                                           const SinglePartition& partition) const {
+    return std::make_unique<NoInstanceSubSampling>();
+}
+
+std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                                           BiPartition& partition) const {
     return std::make_unique<NoInstanceSubSampling>();
 }
