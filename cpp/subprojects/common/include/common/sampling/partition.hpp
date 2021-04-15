@@ -7,11 +7,9 @@
 #include <memory>
 
 // Forward declarations
-class IWeightVector; // TODO Remove
 class IInstanceSubSampling;
 class IInstanceSubSamplingFactory;
 class ILabelMatrix;
-class RNG;
 class IThresholdsSubset;
 class ICoverageState;
 class Refinement;
@@ -27,20 +25,6 @@ class IPartition {
     public:
 
         virtual ~IPartition() { };
-
-        /**
-         * Creates and returns a sub-sample of the examples that belong to the training set.
-         *
-         * @param instanceSubSampling   A reference to an object of type `IInstanceSubSampling` that should be used to
-         *                              sample the examples
-         * @param rng                   A reference to an object of type `RNG`, implementing the random number generator
-         *                              to be used
-         * @return                      An unique pointer to an object type `WeightVector` that provides access to the
-         *                              weights of the individual training examples
-         */
-        // TODO Remove
-        virtual std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
-                                                         RNG& rng) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IInstanceSubSampling`, based on the type of this partition

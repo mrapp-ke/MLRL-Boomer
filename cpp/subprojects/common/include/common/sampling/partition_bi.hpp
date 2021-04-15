@@ -139,9 +139,6 @@ class BiPartition : public IPartition {
          */
         uint32 getNumElements() const;
 
-        std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
-                                                 RNG& rng) const override;
-
         std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(const IInstanceSubSamplingFactory& factory,
                                                                         const ILabelMatrix& labelMatrix) override;
 
