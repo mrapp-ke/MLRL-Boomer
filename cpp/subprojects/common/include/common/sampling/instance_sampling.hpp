@@ -30,7 +30,7 @@ class IInstanceSubSampling {
          * @return          An unique pointer to an object type `WeightVector` that provides access to the weights of
          *                  the individual training examples
          */
-        virtual std::unique_ptr<IWeightVector> subSample(RNG& rng) const = 0;
+        virtual std::unique_ptr<IWeightVector> subSample(RNG& rng) = 0;
 
 };
 
