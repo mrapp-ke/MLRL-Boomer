@@ -128,8 +128,9 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
             // For each label, assign a weight to the examples that are associated with the label, if no weight has been
             // set yet. Labels with few examples are processed first...
-            uint32 numTotalSamples = (uint32) std::round(sampleSize_ * numTotalExamples);
-            uint32 numTotalOutOfSamples = numTotalExamples - numTotalSamples;
+            uint32 numTrainingExamples = cscLabelMatrix_.getNumRows();
+            uint32 numTotalSamples = (uint32) std::round(sampleSize_ * numTrainingExamples);
+            uint32 numTotalOutOfSamples = numTrainingExamples - numTotalSamples;
             uint32 numNonZeroWeights = 0;
             uint32 numZeroWeights = 0;
             uint32 labelIndex;
