@@ -113,13 +113,13 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
         std::unique_ptr<IWeightVector> subSample(RNG& rng) override {
             // Create a vector to store the weights of individual examples...
             uint32 numTotalExamples = labelMatrix_.getNumRows();
-            std::unique_ptr<DenseWeightVector<uint32>> weightVectorPtr =
-                std::make_unique<DenseWeightVector<uint32>>(numTotalExamples);
-            DenseWeightVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
+            std::unique_ptr<DenseWeightVector<uint8>> weightVectorPtr =
+                std::make_unique<DenseWeightVector<uint8>>(numTotalExamples);
+            DenseWeightVector<uint8>::iterator weightIterator = weightVectorPtr->begin();
 
             // Initialize the weights of all examples with the value `UNSET_WEIGHT`, which allows to identify examples
             // for which no weight has been set yet...
-            setArrayToValue<uint32>(weightIterator, numTotalExamples, UNSET_WEIGHT);
+            setArrayToValue<uint8>(weightIterator, numTotalExamples, UNSET_WEIGHT);
 
             // Determine the number of examples that are associated with individual labels...
             DenseVector<uint32>::iterator numExamplesIterator = numExamplesVector_.begin();
