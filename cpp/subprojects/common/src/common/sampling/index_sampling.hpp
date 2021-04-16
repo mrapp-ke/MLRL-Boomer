@@ -91,13 +91,12 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRe
  * @param secondIterator    The iterator that provides random access to the indices that are contained by the second set
  * @param numFirst          The number of indices that are contained by the first set
  * @param numTotal          The total number of indices to sample from
- * @param numPermutations   The maximum number of permutations to be performed. Must be in [1, numTotal)
  * @param rng               A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class FirstIterator, class SecondIterator>
 static inline void randomPermutation(FirstIterator firstIterator, SecondIterator secondIterator, uint32 numFirst,
-                                     uint32 numTotal, uint32 numPermutations, RNG& rng) {
-    for (uint32 i = 0; i < numPermutations; i++) {
+                                     uint32 numTotal, RNG& rng) {
+    for (uint32 i = 0; i < numTotal - 1; i++) {
         // Swap elements at index i and at a randomly selected index...
         uint32 randomIndex = rng.random(i, numTotal);
         uint32 tmp1 = i < numFirst ? firstIterator[i] : secondIterator[i - numFirst];
@@ -149,7 +148,7 @@ static inline std::unique_ptr<IIndexVector> sampleIndicesWithoutReplacementViaRa
     }
 
     randomPermutation<PartialIndexVector::iterator, uint32*>(sampleIterator, &unusedIndices[0], numSamples, numTotal,
-                                                             numSamples, rng);
+                                                             rng);
     return indexVectorPtr;
 }
 
