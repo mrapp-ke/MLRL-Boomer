@@ -1,5 +1,5 @@
 #include "common/input/label_vector_set.hpp"
-
+#include <vector>
 
 template<class T>
 typename LabelVectorSet<T>::const_iterator LabelVectorSet<T>::cbegin() const {
@@ -17,3 +17,4 @@ T& LabelVectorSet<T>::addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr
 }
 
 template class LabelVectorSet<uint32>;
+template class LabelVectorSet<std::vector<uint32>>;
