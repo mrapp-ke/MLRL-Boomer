@@ -15,3 +15,5 @@ template<class T>
 T& LabelVectorSet<T>::addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) {
     return map_[std::move(labelVectorPtr)];
 }
+
+template class LabelVectorSet<uint32>;
