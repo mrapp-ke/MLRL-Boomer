@@ -4,9 +4,8 @@
 #pragma once
 
 #include "common/output/predictor.hpp"
-#include "common/input/label_vector.hpp"
+#include "common/input/label_vector_set.hpp"
 #include "common/measures/measure_similarity.hpp"
-#include <unordered_map>
 #include <functional>
 
 
@@ -24,55 +23,7 @@ namespace boosting {
 
         private:
 
-            /**
-             * Allows to compute hashes for objects of type `LabelVector`.
-             */
-            struct HashFunction {
-
-                inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
-                    uint32 numElements = v->getNumElements();
-                    LabelVector::index_const_iterator it = v->indices_cbegin();
-                    std::size_t hash = (std::size_t) numElements;
-
-                    for (uint32 i = 0; i < numElements; i++) {
-                        hash ^= it[i] + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-                    }
-
-                    return hash;
-                }
-
-            };
-
-            /**
-             * Allows to check whether two objects of type `LabelVector` are equal.
-             */
-            struct EqualsFunction {
-
-                inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
-                                       const std::unique_ptr<LabelVector>& rhs) const {
-                    uint32 numElements = lhs->getNumElements();
-
-                    if (numElements != rhs->getNumElements()) {
-                        return false;
-                    }
-
-                    LabelVector::index_const_iterator it1 = lhs->indices_cbegin();
-                    LabelVector::index_const_iterator it2 = rhs->indices_cbegin();
-
-                    for (uint32 i = 0; i < numElements; i++) {
-                        if (it1[i] != it2[i]) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
-
-            };
-
-            typedef std::unordered_map<std::unique_ptr<LabelVector>, uint32, HashFunction, EqualsFunction> LabelVectorSet;
-
-            LabelVectorSet labelVectors_;
+            LabelVectorSet<uint32> labelVectors_;
 
             std::shared_ptr<ISimilarityMeasure> measurePtr_;
 
