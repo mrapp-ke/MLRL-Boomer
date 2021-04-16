@@ -4,6 +4,7 @@
 #include "common/sampling/partition_single.hpp"
 #include "common/input/label_matrix_csc.hpp"
 #include "common/data/arrays.hpp"
+#include "instance_sampling_stratified_common.hpp"
 #include <limits>
 #include <cmath>
 
@@ -56,16 +57,6 @@ static inline void updateNumExamplesPerLabel(const CsrLabelMatrix& labelMatrix, 
     for (uint32 i = 0; i < numLabels; i++) {
         uint32 labelIndex = indexIterator[i];
         numExamplesIterator[labelIndex]--;
-    }
-}
-
-static inline bool tiebreak(uint32 numDesiredSamples, uint32 numDesiredOutOfSamples, RNG& rng) {
-    if (numDesiredSamples > numDesiredOutOfSamples) {
-        return true;
-    } else if (numDesiredSamples < numDesiredOutOfSamples) {
-        return false;
-    } else {
-        return rng.random(0, 2) != 0;
     }
 }
 

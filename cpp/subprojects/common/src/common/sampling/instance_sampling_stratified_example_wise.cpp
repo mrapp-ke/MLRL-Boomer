@@ -3,19 +3,10 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/input/label_vector_set.hpp"
+#include "instance_sampling_stratified_common.hpp"
 #include <vector>
 #include <cmath>
 
-
-static inline bool tiebreak(uint32 numDesiredSamples, uint32 numDesiredOutOfSamples, RNG& rng) {
-    if (numDesiredSamples > numDesiredOutOfSamples) {
-        return true;
-    } else if (numDesiredSamples < numDesiredOutOfSamples) {
-        return false;
-    } else {
-        return rng.random(0, 2) != 0;
-    }
-}
 
 /**
  * Implements stratified sampling, where distinct label vectors are treated as individual classes.
