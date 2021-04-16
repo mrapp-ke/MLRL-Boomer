@@ -1,9 +1,21 @@
 #include "common/sampling/instance_sampling_stratified_example_wise.hpp"
+#include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/input/label_vector_set.hpp"
 #include <vector>
+#include <cmath>
 
+
+static inline bool tiebreak(uint32 numDesiredSamples, uint32 numDesiredOutOfSamples, RNG& rng) {
+    if (numDesiredSamples > numDesiredOutOfSamples) {
+        return true;
+    } else if (numDesiredSamples < numDesiredOutOfSamples) {
+        return false;
+    } else {
+        return rng.random(0, 2) != 0;
+    }
+}
 
 /**
  * Implements stratified sampling, where distinct label vectors are treated as individual classes.
@@ -17,6 +29,10 @@ template<class LabelMatrix, class IndexIterator>
 class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
 
     private:
+
+        uint32 numTotalExamples_;
+
+        uint32 numTrainingExamples_;
 
         float32 sampleSize_;
 
@@ -36,10 +52,9 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
          */
         ExampleWiseStratifiedSampling(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
                                       IndexIterator indicesEnd, float32 sampleSize)
-            : sampleSize_(sampleSize) {
-            uint32 numExamples = indicesEnd - indicesBegin;
-
-            for (uint32 i = 0; i < numExamples; i++) {
+            : numTotalExamples_(labelMatrix.getNumRows()), numTrainingExamples_(indicesEnd - indicesBegin), 
+              sampleSize_(sampleSize) {
+            for (uint32 i = 0; i < numTrainingExamples_; i++) {
                 uint32 exampleIndex = indicesBegin[i];
                 std::vector<uint32>& exampleIndices =
                     labelVectors_.addLabelVector(labelMatrix.getLabelVector(exampleIndex));
@@ -48,8 +63,42 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
         }
 
         std::unique_ptr<IWeightVector> subSample(RNG& rng) override {
-            // TODO Implement
-            return nullptr;
+            // Create a vector to store the weights of individual examples...
+            std::unique_ptr<DenseWeightVector<uint8>> weightVectorPtr =
+                std::make_unique<DenseWeightVector<uint8>>(numTotalExamples_, true);
+            DenseWeightVector<uint8>::iterator weightIterator = weightVectorPtr->begin();
+
+            // For each label vector, sample some of the examples with these labels...
+            uint32 numTotalSamples = (uint32) std::round(sampleSize_ * numTrainingExamples_);
+            uint32 numTotalOutOfSamples = numTrainingExamples_ - numTotalSamples;
+            uint32 numNonZeroWeights = 0;
+            uint32 numZeroWeights = 0;
+
+            for (auto it = labelVectors_.cbegin(); it != labelVectors_.cend(); it++) {
+                const auto& entry = *it;
+                std::vector<uint32> exampleIndices = entry.second;
+                std::vector<uint32>::iterator indexIterator = exampleIndices.begin();
+                std::vector<uint32>::size_type numExamples = exampleIndices.size();
+                float32 numSamplesDecimal = sampleSize_ * numExamples;
+                uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
+                uint32 numDesiredOutOfSamples = numTotalOutOfSamples - numZeroWeights;
+                uint32 numSamples = (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ? 
+                                              std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
+                numNonZeroWeights += numSamples;
+                numZeroWeights += (numExamples - numSamples);
+
+                // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and set their weight to 1...
+                for (uint32 i = 0; i < numSamples; i++) {
+                    uint32 randomIndex = rng.random(i, numExamples);
+                    uint32 exampleIndex = indexIterator[randomIndex];
+                    indexIterator[randomIndex] = indexIterator[i];
+                    indexIterator[i] = exampleIndex;
+                    weightIterator[exampleIndex] = 1;
+                }
+            }
+
+            weightVectorPtr->setNumNonZeroWeights(numNonZeroWeights);
+            return weightVectorPtr;
         }
 
 };
