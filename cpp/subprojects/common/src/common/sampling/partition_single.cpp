@@ -22,9 +22,9 @@ uint32 SinglePartition::getNumElements() const {
     return numElements_;
 }
 
-std::unique_ptr<IWeightVector> SinglePartition::subSample(const IInstanceSubSampling& instanceSubSampling,
-                                                          RNG& rng) const {
-    return instanceSubSampling.subSample(*this, rng);
+std::unique_ptr<IInstanceSubSampling> SinglePartition::createInstanceSubSampling(
+        const IInstanceSubSamplingFactory& factory, const ILabelMatrix& labelMatrix) {
+    return labelMatrix.createInstanceSubSampling(factory, *this);
 }
 
 float64 SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,

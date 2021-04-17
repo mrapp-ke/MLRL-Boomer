@@ -19,10 +19,10 @@ from sklearn.base import ClassifierMixin
 
 from mlrl.common.rule_learners import HEAD_REFINEMENT_SINGLE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
-    create_label_sub_sampling, create_partition_sampling, create_max_conditions, create_stopping_criteria, \
-    create_min_coverage, create_max_head_refinements, get_preferred_num_threads, parse_prefix_and_dict, \
-    get_int_argument, get_float_argument, create_thresholds_factory
+from mlrl.common.rule_learners import create_pruning, create_feature_sub_sampling, \
+    create_instance_sub_sampling_factory, create_label_sub_sampling, create_partition_sampling, create_max_conditions, \
+    create_stopping_criteria, create_min_coverage, create_max_head_refinements, get_preferred_num_threads, \
+    parse_prefix_and_dict, get_int_argument, get_float_argument, create_thresholds_factory
 
 HEAD_REFINEMENT_PARTIAL = 'partial'
 
@@ -186,7 +186,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
-        instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
+        instance_sub_sampling_factory = create_instance_sub_sampling_factory(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
         partition_sampling = create_partition_sampling(self.holdout_set_size)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
@@ -198,7 +198,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         stopping_criteria.append(CoverageStoppingCriterion(0))
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
-                                            label_sub_sampling, instance_sub_sampling, feature_sub_sampling,
+                                            label_sub_sampling, instance_sub_sampling_factory, feature_sub_sampling,
                                             partition_sampling, pruning, post_processor, min_coverage, max_conditions,
                                             max_head_refinements, stopping_criteria)
 

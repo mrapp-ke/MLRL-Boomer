@@ -20,31 +20,32 @@ cdef extern from "common/sampling/weight_vector.hpp" nogil:
 
 cdef extern from "common/sampling/instance_sampling.hpp" nogil:
 
-    cdef cppclass IInstanceSubSampling:
+    cdef cppclass IInstanceSubSamplingFactory:
         pass
 
 
 cdef extern from "common/sampling/instance_sampling_bagging.hpp" nogil:
 
-    cdef cppclass BaggingImpl"Bagging"(IInstanceSubSampling):
+    cdef cppclass BaggingFactoryImpl"BaggingFactory"(IInstanceSubSamplingFactory):
 
         # Constructors:
 
-        BaggingImpl(float32 sampleSize) except +
+        BaggingFactoryImpl(float32 sampleSize) except +
 
 
 cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
 
-    cdef cppclass RandomInstanceSubsetSelectionImpl"RandomInstanceSubsetSelection"(IInstanceSubSampling):
+    cdef cppclass RandomInstanceSubsetSelectionFactoryImpl"RandomInstanceSubsetSelectionFactory"(
+            IInstanceSubSamplingFactory):
 
         # Constructors:
 
-        RandomInstanceSubsetSelectionImpl(float32 sampleSize)
+        RandomInstanceSubsetSelectionFactoryImpl(float32 sampleSize) except +
 
 
 cdef extern from "common/sampling/instance_sampling_no.hpp" nogil:
 
-    cdef cppclass NoInstanceSubSamplingImpl"NoInstanceSubSampling"(IInstanceSubSampling):
+    cdef cppclass NoInstanceSubSamplingFactoryImpl"NoInstanceSubSamplingFactory"(IInstanceSubSamplingFactory):
         pass
 
 
@@ -108,22 +109,22 @@ cdef extern from "common/sampling/partition_sampling_bi.hpp" nogil:
         pass
 
 
-cdef class InstanceSubSampling:
+cdef class InstanceSubSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr
+    cdef shared_ptr[IInstanceSubSamplingFactory] instance_sub_sampling_factory_ptr
 
 
-cdef class Bagging(InstanceSubSampling):
+cdef class BaggingFactory(InstanceSubSamplingFactory):
     pass
 
 
-cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
+cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
     pass
 
 
-cdef class NoInstanceSubSampling(InstanceSubSampling):
+cdef class NoInstanceSubSamplingFactory(InstanceSubSamplingFactory):
     pass
 
 
