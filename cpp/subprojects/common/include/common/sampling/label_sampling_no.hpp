@@ -11,9 +11,18 @@
  */
 class NoLabelSubSampling final : public ILabelSubSampling {
 
+    private:
+
+        uint32 numLabels_;
+
     public:
 
-        std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) const override;
+        /**
+         * @param numLabels The total number of available labels
+         */
+        NoLabelSubSampling(uint32 numLabels);
+
+        std::unique_ptr<IIndexVector> subSample(RNG& rng) const override;
 
 };
 
