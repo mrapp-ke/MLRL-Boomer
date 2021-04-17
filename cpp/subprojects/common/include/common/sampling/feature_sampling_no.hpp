@@ -11,9 +11,18 @@
  */
 class NoFeatureSubSampling final : public IFeatureSubSampling {
 
+    private:
+
+        uint32 numFeatures_;
+
     public:
 
-        std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) const override;
+        /**
+         * @param numFeatures The total number of available features
+         */
+        NoFeatureSubSampling(uint32 numFeatures);
+
+        std::unique_ptr<IIndexVector> subSample(RNG& rng) const override;
 
 };
 
