@@ -38,7 +38,7 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
         std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
         std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-        std::shared_ptr<ILabelSubSampling> labelSubSamplingPtr,
+        std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr,
         std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr,
         std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
         std::shared_ptr<IPartitionSampling> partitionSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
@@ -47,7 +47,7 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
         std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr)
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), thresholdsFactoryPtr_(thresholdsFactoryPtr),
       ruleInductionPtr_(ruleInductionPtr), defaultRuleHeadRefinementFactoryPtr_(defaultRuleHeadRefinementFactoryPtr),
-      headRefinementFactoryPtr_(headRefinementFactoryPtr), labelSubSamplingPtr_(labelSubSamplingPtr),
+      headRefinementFactoryPtr_(headRefinementFactoryPtr), labelSubSamplingFactoryPtr_(labelSubSamplingFactoryPtr),
       instanceSubSamplingFactoryPtr_(instanceSubSamplingFactoryPtr),
       featureSubSamplingFactoryPtr_(featureSubSamplingFactoryPtr), partitionSamplingPtr_(partitionSamplingPtr),
       pruningPtr_(pruningPtr), postProcessorPtr_(postProcessorPtr), minCoverage_(minCoverage),
@@ -72,12 +72,13 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
                                                                                statisticsProviderPtr,
                                                                                headRefinementFactoryPtr_);
     uint32 numExamples = thresholdsPtr->getNumExamples();
+    uint32 numFeatures = thresholdsPtr->getNumFeatures();
     uint32 numLabels = thresholdsPtr->getNumLabels();
     std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr_->partition(numExamples, rng);
     std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partitionPtr->createInstanceSubSampling(
         *instanceSubSamplingFactoryPtr_, *labelMatrixPtr);
-    std::unique_ptr<IFeatureSubSampling> featureSubSamplingPtr = featureSubSamplingFactoryPtr_->create(
-        featureMatrixPtr->getNumCols());
+    std::unique_ptr<IFeatureSubSampling> featureSubSamplingPtr = featureSubSamplingFactoryPtr_->create(numFeatures);
+    std::unique_ptr<ILabelSubSampling> labelSubSamplingPtr = labelSubSamplingFactoryPtr_->create(numLabels);
     IStoppingCriterion::Result stoppingCriterionResult;
 
     while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, *partitionPtr,
@@ -89,7 +90,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
         }
 
         std::unique_ptr<IWeightVector> weightsPtr = instanceSubSamplingPtr->subSample(rng);
-        std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr_->subSample(numLabels, rng);
+        std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr->subSample(rng);
         bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, *labelIndicesPtr, *weightsPtr, *partitionPtr,
                                                      *featureSubSamplingPtr, *pruningPtr_, *postProcessorPtr_,
                                                      minCoverage_, maxConditions_, maxHeadRefinements_, rng,

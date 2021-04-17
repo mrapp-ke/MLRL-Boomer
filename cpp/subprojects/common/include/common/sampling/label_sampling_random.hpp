@@ -7,9 +7,10 @@
 
 
 /**
- * Implements random label subset selection for selecting a random subset of the available features without replacement.
+ * Allows to create objects of type `ILabelSubSampling` that select a random subset of the available features without
+ * replacement.
  */
-class RandomLabelSubsetSelection final : public ILabelSubSampling {
+class RandomLabelSubsetSelectionFactory final : public ILabelSubSamplingFactory {
 
     private:
 
@@ -20,8 +21,8 @@ class RandomLabelSubsetSelection final : public ILabelSubSampling {
         /**
          * @param numSamples The number of labels to be included in the sample
          */
-        RandomLabelSubsetSelection(uint32 numSamples);
+        RandomLabelSubsetSelectionFactory(uint32 numSamples);
 
-        std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) const override;
+        std::unique_ptr<ILabelSubSampling> create(uint32 numLabels) const override;
 
 };
