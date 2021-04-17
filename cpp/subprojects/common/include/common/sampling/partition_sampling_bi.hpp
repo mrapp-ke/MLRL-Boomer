@@ -27,7 +27,7 @@ class BiPartitionSampling final : public IPartitionSampling {
          */
         BiPartitionSampling(uint32 numExamples, float32 holdoutSetSize);
 
-        std::unique_ptr<IPartition> partition(RNG& rng) const override;
+        std::unique_ptr<IPartition> createPartition(RNG& rng) const override;
 
 };
 

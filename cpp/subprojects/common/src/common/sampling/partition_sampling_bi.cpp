@@ -8,7 +8,7 @@ BiPartitionSampling::BiPartitionSampling(uint32 numExamples, float32 holdoutSetS
 
 }
 
-std::unique_ptr<IPartition> BiPartitionSampling::partition(RNG& rng) const {
+std::unique_ptr<IPartition> BiPartitionSampling::createPartition(RNG& rng) const {
     std::unique_ptr<BiPartition> partitionPtr = std::make_unique<BiPartition>(numTraining_, numHoldout_);
     BiPartition::iterator trainingIterator = partitionPtr->first_begin();
     BiPartition::iterator holdoutIterator = partitionPtr->second_begin();

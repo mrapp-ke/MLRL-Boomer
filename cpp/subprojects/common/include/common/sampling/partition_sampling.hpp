@@ -25,7 +25,7 @@ class IPartitionSampling {
          * @return      An unique pointer to an object of type `IPartition` that provides access to the indices of the
          *              training examples that belong to the training set and holdout set, respectively
          */
-        virtual std::unique_ptr<IPartition> partition(RNG& rng) const = 0;
+        virtual std::unique_ptr<IPartition> createPartition(RNG& rng) const = 0;
 
 };
 

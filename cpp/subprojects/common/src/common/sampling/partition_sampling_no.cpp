@@ -7,7 +7,7 @@ NoPartitionSampling::NoPartitionSampling(uint32 numExamples)
 
 }
 
-std::unique_ptr<IPartition> NoPartitionSampling::partition(RNG& rng) const {
+std::unique_ptr<IPartition> NoPartitionSampling::createPartition(RNG& rng) const {
     return std::make_unique<SinglePartition>(numExamples_);
 }
 
