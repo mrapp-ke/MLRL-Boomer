@@ -1,4 +1,5 @@
 #include "common/sampling/label_sampling_random.hpp"
+#include "common/indices/index_vector_partial.hpp"
 #include "common/indices/index_iterator.hpp"
 #include "index_sampling.hpp"
 
@@ -12,7 +13,7 @@ class RandomLabelSubsetSelection final : public ILabelSubSampling {
 
         uint32 numLabels_;
 
-        uint32 numSamples_;
+        PartialIndexVector indexVector_;
 
     public:
 
@@ -21,16 +22,22 @@ class RandomLabelSubsetSelection final : public ILabelSubSampling {
          * @param numSamples    The number of labels to be included in the sample
          */
         RandomLabelSubsetSelection(uint32 numLabels, uint32 numSamples)
-            : numLabels_(numLabels), numSamples_(numSamples) {
+            : numLabels_(numLabels), indexVector_(PartialIndexVector(numSamples)) {
 
         }
 
-        std::unique_ptr<IIndexVector> subSample(RNG& rng) const override {
-            return sampleIndicesWithoutReplacement<IndexIterator>(IndexIterator(numLabels_), numLabels_, numSamples_,
-                                                                  rng);
+        const IIndexVector& subSample(RNG& rng) override {
+            sampleIndicesWithoutReplacement<IndexIterator>(indexVector_.begin(), IndexIterator(numLabels_), numLabels_,
+                                                           indexVector_.getNumElements(), rng);
+            return indexVector_;
         }
 
 };
+
+RandomLabelSubsetSelectionFactory::RandomLabelSubsetSelectionFactory(uint32 numSamples)
+    : numSamples_(numSamples) {
+
+}
 
 std::unique_ptr<ILabelSubSampling> RandomLabelSubsetSelectionFactory::create(uint32 numLabels) const {
     return std::make_unique<RandomLabelSubsetSelection>(numLabels, numSamples_);
