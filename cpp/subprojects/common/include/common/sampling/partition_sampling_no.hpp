@@ -14,6 +14,8 @@ class NoPartitionSamplingFactory final : public IPartitionSamplingFactory {
 
     public:
 
-        std::unique_ptr<IPartitionSampling> create(uint32 numExamples) const override;
+        std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const override;
+
+        std::unique_ptr<IPartitionSampling> create(const CsrLabelMatrix& labelMatrix) const override;
 
 };
