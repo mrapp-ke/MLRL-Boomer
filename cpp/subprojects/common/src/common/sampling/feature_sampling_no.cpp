@@ -2,14 +2,30 @@
 #include "common/indices/index_vector_full.hpp"
 
 
-NoFeatureSubSampling::NoFeatureSubSampling(uint32 numFeatures)
-    : numFeatures_(numFeatures) {
+/**
+ * An implementation of the class `IFeatureSubSampling` that does not perform any sampling, but includes all features.
+ */
+class NoFeatureSubSampling final : public IFeatureSubSampling {
 
-}
+    private:
 
-std::unique_ptr<IIndexVector> NoFeatureSubSampling::subSample(RNG& rng) const {
-    return std::make_unique<FullIndexVector>(numFeatures_);
-}
+        uint32 numFeatures_;
+
+    public:
+
+        /**
+         * @param numFeatures The total number of available features
+         */
+        NoFeatureSubSampling(uint32 numFeatures)
+            : numFeatures_(numFeatures) {
+
+        }
+
+        std::unique_ptr<IIndexVector> subSample(RNG& rng) const override {
+            return std::make_unique<FullIndexVector>(numFeatures_);
+        }
+
+};
 
 std::unique_ptr<IFeatureSubSampling> NoFeatureSubSamplingFactory::create(uint32 numFeatures) const {
     return std::make_unique<NoFeatureSubSampling>(numFeatures);
