@@ -44,8 +44,6 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
                                       const IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
                                       const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
                                       intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder) const {
-    // The total number of features
-    uint32 numFeatures = thresholds.getNumFeatures();
     // True, if the rule is learned on a sub-sample of the available training examples, False otherwise
     bool instanceSubSamplingUsed = weights.hasZeroWeights();
     // The label indices for which the next refinement of the rule may predict
@@ -73,7 +71,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         foundRefinement = false;
 
         // Sample features...
-        std::unique_ptr<IIndexVector> sampledFeatureIndicesPtr = featureSubSampling.subSample(numFeatures, rng);
+        std::unique_ptr<IIndexVector> sampledFeatureIndicesPtr = featureSubSampling.subSample(rng);
         uint32 numSampledFeatures = sampledFeatureIndicesPtr->getNumElements();
 
         // For each feature, create an object of type `IRuleRefinement`...
