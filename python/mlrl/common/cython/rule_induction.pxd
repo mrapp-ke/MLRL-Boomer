@@ -3,8 +3,8 @@ from mlrl.common.cython.input cimport NominalFeatureMask, INominalFeatureMask
 from mlrl.common.cython.input cimport FeatureMatrix, IFeatureMatrix
 from mlrl.common.cython.input cimport LabelMatrix, ILabelMatrix
 from mlrl.common.cython.model cimport ModelBuilder, RuleModel, IModelBuilder, RuleModelImpl
-from mlrl.common.cython.sampling cimport ILabelSubSampling, IInstanceSubSamplingFactory, IFeatureSubSamplingFactory, \
-    IPartitionSampling, RNG
+from mlrl.common.cython.sampling cimport ILabelSubSamplingFactory, IInstanceSubSamplingFactory, \
+    IFeatureSubSamplingFactory, IPartitionSampling, RNG
 from mlrl.common.cython.statistics cimport IStatisticsProviderFactory
 from mlrl.common.cython.stopping cimport IStoppingCriterion
 from mlrl.common.cython.thresholds cimport IThresholdsFactory
@@ -55,7 +55,7 @@ cdef extern from "common/rule_induction/rule_model_induction_sequential.hpp" nog
                                          shared_ptr[IRuleInduction] ruleInductionPtr,
                                          shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
                                          shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
-                                         shared_ptr[ILabelSubSampling] labelSubSamplingPtr,
+                                         shared_ptr[ILabelSubSamplingFactory] labelSubSamplingFactoryPtr,
                                          shared_ptr[IInstanceSubSamplingFactory] instanceSubSamplingFactoryPtr,
                                          shared_ptr[IFeatureSubSamplingFactory] featureSubSamplingFactoryPtr,
                                          shared_ptr[IPartitionSampling] partitionSamplingPtr,
