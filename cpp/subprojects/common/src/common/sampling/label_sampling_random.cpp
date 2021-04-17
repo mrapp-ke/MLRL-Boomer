@@ -10,3 +10,7 @@ RandomLabelSubsetSelection::RandomLabelSubsetSelection(uint32 numSamples)
 std::unique_ptr<IIndexVector> RandomLabelSubsetSelection::subSample(uint32 numLabels, RNG& rng) const {
     return sampleIndicesWithoutReplacement<IndexIterator>(IndexIterator(numLabels), numLabels, numSamples_, rng);
 }
+
+std::unique_ptr<ILabelSubSampling> RandomLabelSubsetSelectionFactory::create(uint32 numLabels) const {
+    return std::make_unique<RandomLabelSubsetSelection>(numSamples_);
+}
