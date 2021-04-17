@@ -29,3 +29,22 @@ class IFeatureSubSampling {
         virtual std::unique_ptr<IIndexVector> subSample(uint32 numFeatures, RNG& rng) const = 0;
 
 };
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IFeatureSubSampling`.
+ */
+class IFeatureSubSamplingFactory {
+
+    public:
+
+        virtual ~IFeatureSubSamplingFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IFeatureSubSampling`.
+         *
+         * @param numFeatures   The total number of available features
+         * @return              An unique pointer to an object of type `IFeatureSubSampling` that has been created
+         */
+        virtual std::unique_ptr<IFeatureSubSampling> create(uint32 numFeatures) const = 0;
+
+};
