@@ -94,29 +94,17 @@ cdef extern from "common/sampling/label_sampling_no.hpp" nogil:
 
 cdef extern from "common/sampling/partition_sampling.hpp" nogil:
 
-    cdef cppclass IPartitionSampling:
-        pass
-
-
     cdef cppclass IPartitionSamplingFactory:
         pass
 
 
 cdef extern from "common/sampling/partition_sampling_no.hpp" nogil:
 
-    cdef cppclass NoPartitionSamplingImpl"NoPartitionSampling"(IPartitionSampling):
-        pass
-
-
     cdef cppclass NoPartitionSamplingFactoryImpl"NoPartitionSamplingFactory"(IPartitionSamplingFactory):
         pass
 
 
 cdef extern from "common/sampling/partition_sampling_bi.hpp" nogil:
-
-    cdef cppclass BiPartitionSamplingImpl"BiPartitionSampling"(IPartitionSampling):
-        pass
-
 
     cdef cppclass BiPartitionSamplingFactoryImpl"BiPartitionSamplingFactory"(IPartitionSamplingFactory):
 
@@ -174,13 +162,6 @@ cdef class NoLabelSubSamplingFactory(LabelSubSamplingFactory):
     pass
 
 
-cdef class PartitionSampling:
-
-    # Attributes:
-
-    cdef shared_ptr[IPartitionSampling] partition_sampling_ptr
-
-
 cdef class PartitionSamplingFactory:
 
     # Attributes:
@@ -188,15 +169,7 @@ cdef class PartitionSamplingFactory:
     cdef shared_ptr[IPartitionSamplingFactory] partition_sampling_factory_ptr
 
 
-cdef class NoPartitionSampling(PartitionSampling):
-    pass
-
-
 cdef class NoPartitionSamplingFactory(PartitionSamplingFactory):
-    pass
-
-
-cdef class BiPartitionSampling(PartitionSampling):
     pass
 
 
