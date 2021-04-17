@@ -25,6 +25,11 @@ class NoPartitionSampling final : public IPartitionSampling {
 
 };
 
-std::unique_ptr<IPartitionSampling> NoPartitionSamplingFactory::create(uint32 numExamples) const {
-    return std::make_unique<NoPartitionSampling>(numExamples);
+std::unique_ptr<IPartitionSampling> NoPartitionSamplingFactory::create(
+        const CContiguousLabelMatrix& labelMatrix) const {
+    return std::make_unique<NoPartitionSampling>(labelMatrix.getNumRows());
+}
+
+std::unique_ptr<IPartitionSampling> NoPartitionSamplingFactory::create(const CsrLabelMatrix& labelMatrix) const {
+    return std::make_unique<NoPartitionSampling>(labelMatrix.getNumRows());
 }

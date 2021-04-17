@@ -5,6 +5,8 @@
 
 #include "common/sampling/partition.hpp"
 #include "common/sampling/random.hpp"
+#include "common/input/label_matrix_c_contiguous.hpp"
+#include "common/input/label_matrix_csr.hpp"
 #include <memory>
 
 
@@ -41,9 +43,19 @@ class IPartitionSamplingFactory {
         /**
          * Creates and returns a new object of type `IPartitionSampling`.
          *
-         * @param numExamples   The total number of available training examples
+         * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides random access to
+         *                      the labels of the training examples
          * @return              An unique pointer to an object of type `IPartitionSampling` that has been created
          */
-        virtual std::unique_ptr<IPartitionSampling> create(uint32 numExamples) const = 0;
+        virtual std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IPartitionSampling`.
+         *
+         * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` that provides row-wise access to the
+         *                      labels of the training examples
+         * @return              An unique pointer to an object of type `IPartitionSampling` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSampling> create(const CsrLabelMatrix& labelMatrix) const = 0;
 
 };

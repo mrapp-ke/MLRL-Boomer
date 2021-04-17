@@ -24,6 +24,8 @@ class BiPartitionSamplingFactory final : public IPartitionSamplingFactory {
          */
         BiPartitionSamplingFactory(float32 holdoutSetSize);
 
-        std::unique_ptr<IPartitionSampling> create(uint32 numExamples) const override;
+        std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const override;
+
+        std::unique_ptr<IPartitionSampling> create(const CsrLabelMatrix& labelMatrix) const override;
 
 };

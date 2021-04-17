@@ -53,6 +53,11 @@ BiPartitionSamplingFactory::BiPartitionSamplingFactory(float32 holdoutSetSize)
 
 }
 
-std::unique_ptr<IPartitionSampling> BiPartitionSamplingFactory::create(uint32 numExamples) const {
-    return std::make_unique<BiPartitionSampling>(numExamples, holdoutSetSize_);
+std::unique_ptr<IPartitionSampling> BiPartitionSamplingFactory::create(
+        const CContiguousLabelMatrix& labelMatrix) const {
+    return std::make_unique<BiPartitionSampling>(labelMatrix.getNumRows(), holdoutSetSize_);
+}
+
+std::unique_ptr<IPartitionSampling> BiPartitionSamplingFactory::create(const CsrLabelMatrix& labelMatrix) const {
+    return std::make_unique<BiPartitionSampling>(labelMatrix.getNumRows(), holdoutSetSize_);
 }

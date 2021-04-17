@@ -71,10 +71,10 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrixPtr, nominalFeatureMaskPtr,
                                                                                statisticsProviderPtr,
                                                                                headRefinementFactoryPtr_);
-    uint32 numExamples = thresholdsPtr->getNumExamples();
     uint32 numFeatures = thresholdsPtr->getNumFeatures();
     uint32 numLabels = thresholdsPtr->getNumLabels();
-    std::unique_ptr<IPartitionSampling> partitionSamplingPtr = partitionSamplingFactoryPtr_->create(numExamples);
+    std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrixPtr->createPartitionSampling(
+        *partitionSamplingFactoryPtr_);
     std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr->createPartition(rng);
     std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partitionPtr->createInstanceSubSampling(
         *instanceSubSamplingFactoryPtr_, *labelMatrixPtr);
