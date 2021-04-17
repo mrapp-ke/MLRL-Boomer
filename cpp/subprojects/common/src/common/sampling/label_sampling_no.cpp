@@ -5,3 +5,7 @@
 std::unique_ptr<IIndexVector> NoLabelSubSampling::subSample(uint32 numLabels, RNG& rng) const {
     return std::make_unique<FullIndexVector>(numLabels);
 }
+
+std::unique_ptr<ILabelSubSampling> NoLabelSubSamplingFactory::create(uint32 numLabels) const {
+    return std::make_unique<NoLabelSubSampling>();
+}
