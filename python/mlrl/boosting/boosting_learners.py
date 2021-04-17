@@ -37,7 +37,7 @@ from mlrl.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB
     HEAD_REFINEMENT_SINGLE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sub_sampling_factory, \
-    create_instance_sub_sampling_factory, create_label_sub_sampling_factory, create_partition_sampling, \
+    create_instance_sub_sampling_factory, create_label_sub_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
     get_preferred_num_threads, create_thresholds_factory, parse_prefix_and_dict, get_int_argument, get_float_argument, \
     get_string_argument, get_bool_argument
@@ -284,7 +284,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         label_sub_sampling_factory = create_label_sub_sampling_factory(self.label_sub_sampling, num_labels)
         instance_sub_sampling_factory = create_instance_sub_sampling_factory(self.instance_sub_sampling)
         feature_sub_sampling_factory = create_feature_sub_sampling_factory(self.feature_sub_sampling)
-        partition_sampling = create_partition_sampling(self.holdout_set_size)
+        partition_sampling_factory = create_partition_sampling_factory(self.holdout_set_size)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
         shrinkage = self.__create_post_processor()
         min_coverage = create_min_coverage(self.min_coverage)
@@ -305,8 +305,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
                                             label_sub_sampling_factory, instance_sub_sampling_factory,
-                                            feature_sub_sampling_factory, partition_sampling, pruning, shrinkage,
-                                            min_coverage, max_conditions, max_head_refinements, stopping_criteria)
+                                            feature_sub_sampling_factory, partition_sampling_factory, pruning,
+                                            shrinkage, min_coverage, max_conditions, max_head_refinements,
+                                            stopping_criteria)
 
     def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
         early_stopping = self.early_stopping

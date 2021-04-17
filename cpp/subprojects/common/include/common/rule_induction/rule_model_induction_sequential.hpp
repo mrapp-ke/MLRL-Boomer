@@ -39,7 +39,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
 
         std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr_;
 
-        std::shared_ptr<IPartitionSampling> partitionSamplingPtr_;
+        std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr_;
 
         std::shared_ptr<IPruning> pruningPtr_;
 
@@ -81,9 +81,10 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          *                                              `IFeatureSubSamplingFactory` that allows to create the
          *                                              implementation to be used for sampling the features that may be
          *                                              used by the conditions of a rule
-         * @param partitionSamplingPtr                  A shared pointer to an object of type `IPartitionSampling` that
-         *                                              should be used to partition the training examples into a
-         *                                              training set and a holdout set
+         * @param partitionSamplingFactoryPtr           A shared pointer to an object of type
+         *                                              `IPartitionSamplingFactory` that allows to create the
+         *                                              implementation to be used for partitioning the training examples
+         *                                              into a training set and a holdout set
          * @param pruningPtr                            A shared pointer to an object of type `IPruning` that should be
          *                                              used to prune the rules
          * @param postProcessorPtr                      A shared pointer to an object of type `IPostProcessor` that
@@ -109,9 +110,9 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
             std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr,
             std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr,
             std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
-            std::shared_ptr<IPartitionSampling> partitionSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
-            std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
-            intp maxHeadRefinements,
+            std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
+            std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage,
+            intp maxConditions, intp maxHeadRefinements,
             std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr);
 
         std::unique_ptr<RuleModel> induceRules(std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
