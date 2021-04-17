@@ -5,8 +5,7 @@
 
 
 /**
- * Implements random feature subset selection for selecting a random subset of the available features without
- * replacement.
+ * Allows to select a subset of the available features without replacement.
  */
 class RandomFeatureSubsetSelection final : public IFeatureSubSampling {
 

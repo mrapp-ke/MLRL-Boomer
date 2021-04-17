@@ -79,33 +79,33 @@ cdef class NoFeatureSubSamplingFactory(FeatureSubSamplingFactory):
         self.feature_sub_sampling_factory_ptr = <shared_ptr[IFeatureSubSamplingFactory]>make_shared[NoFeatureSubSamplingFactoryImpl]()
 
 
-cdef class LabelSubSampling:
+cdef class LabelSubSamplingFactory:
     """
-    A wrapper for the pure virtual C++ class `ILabelSubSampling`.
+    A wrapper for the pure virtual C++ class `ILabelSubSamplingFactory`.
     """
     pass
 
 
-cdef class RandomLabelSubsetSelection(LabelSubSampling):
+cdef class RandomLabelSubsetSelectionFactory(LabelSubSamplingFactory):
     """
-    A wrapper for the C++ class `RandomLabelSubsetSelection`.
+    A wrapper for the C++ class `RandomLabelSubsetSelectionFactory`.
     """
 
     def __cinit__(self, uint32 num_samples):
         """
         :param num_samples: The number of labels to be included in the sample
         """
-        self.label_sub_sampling_ptr = <shared_ptr[ILabelSubSampling]>make_shared[RandomLabelSubsetSelectionImpl](
+        self.label_sub_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[RandomLabelSubsetSelectionFactoryImpl](
             num_samples)
 
 
-cdef class NoLabelSubSampling(LabelSubSampling):
+cdef class NoLabelSubSamplingFactory(LabelSubSamplingFactory):
     """
-    A wrapper for the C++ class `NoLabelSubSampling`.
+    A wrapper for the C++ class `NoLabelSubSamplingFactory`.
     """
 
     def __cinit__(self):
-        self.label_sub_sampling_ptr = <shared_ptr[ILabelSubSampling]>make_shared[NoLabelSubSamplingImpl]()
+        self.label_sub_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[NoLabelSubSamplingFactoryImpl]()
 
 
 cdef class PartitionSampling:
