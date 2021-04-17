@@ -37,7 +37,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
 
         std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr_;
 
-        std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr_;
+        std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr_;
 
         std::shared_ptr<IPartitionSampling> partitionSamplingPtr_;
 
@@ -77,9 +77,10 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          *                                              `IInstanceSubSamplingFactory` that allows create the
          *                                              implementation to be used for sampling the examples whenever a
          *                                              new rule is induced
-         * @param featureSubSamplingPtr                 A shared pointer to an object of type `IFeatureSubSampling` that
-         *                                              should be used to sample the features that may be used by the
-         *                                              conditions of a rule
+         * @param featureSubSamplingFactoryPtr          A shared pointer to an object of type
+         *                                              `IFeatureSubSamplingFactory` that allows to create the
+         *                                              implementation to be used for sampling the features that may be
+         *                                              used by the conditions of a rule
          * @param partitionSamplingPtr                  A shared pointer to an object of type `IPartitionSampling` that
          *                                              should be used to partition the training examples into a
          *                                              training set and a holdout set
@@ -107,7 +108,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
             std::shared_ptr<ILabelSubSampling> labelSubSamplingPtr,
             std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr,
-            std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr,
+            std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
             std::shared_ptr<IPartitionSampling> partitionSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
             std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
             intp maxHeadRefinements,
