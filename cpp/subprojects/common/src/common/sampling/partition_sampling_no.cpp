@@ -2,10 +2,15 @@
 #include "common/sampling/partition_single.hpp"
 
 
-std::unique_ptr<IPartition> NoPartitionSampling::partition(uint32 numExamples, RNG& rng) const {
-    return std::make_unique<SinglePartition>(numExamples);
+NoPartitionSampling::NoPartitionSampling(uint32 numExamples)
+    : numExamples_(numExamples) {
+
+}
+
+std::unique_ptr<IPartition> NoPartitionSampling::partition(RNG& rng) const {
+    return std::make_unique<SinglePartition>(numExamples_);
 }
 
 std::unique_ptr<IPartitionSampling> NoPartitionSamplingFactory::create(uint32 numExamples) const {
-    return std::make_unique<NoPartitionSampling>();
+    return std::make_unique<NoPartitionSampling>(numExamples);
 }

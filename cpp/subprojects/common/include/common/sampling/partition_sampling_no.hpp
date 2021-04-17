@@ -12,9 +12,15 @@
  */
 class NoPartitionSampling final : public IPartitionSampling {
 
+    private:
+
+        uint32 numExamples_;
+
     public:
 
-        std::unique_ptr<IPartition> partition(uint32 numExamples, RNG& rng) const override;
+        NoPartitionSampling(uint32 numExamples);
+
+        std::unique_ptr<IPartition> partition(RNG& rng) const override;
 
 };
 

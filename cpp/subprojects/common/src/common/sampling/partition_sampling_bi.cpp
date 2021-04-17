@@ -3,28 +3,26 @@
 #include "index_sampling.hpp"
 
 
-BiPartitionSampling::BiPartitionSampling(float32 holdoutSetSize)
-    : holdoutSetSize_(holdoutSetSize) {
+BiPartitionSampling::BiPartitionSampling(uint32 numExamples, float32 holdoutSetSize)
+    : numHoldout_((uint32) (holdoutSetSize * numExamples)), numTraining_(numExamples - numHoldout_) {
 
 }
 
-std::unique_ptr<IPartition> BiPartitionSampling::partition(uint32 numExamples, RNG& rng) const {
-    uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
-    uint32 numTraining = numExamples - numHoldout;
-    std::unique_ptr<BiPartition> partitionPtr = std::make_unique<BiPartition>(numTraining, numHoldout);
+std::unique_ptr<IPartition> BiPartitionSampling::partition(RNG& rng) const {
+    std::unique_ptr<BiPartition> partitionPtr = std::make_unique<BiPartition>(numTraining_, numHoldout_);
     BiPartition::iterator trainingIterator = partitionPtr->first_begin();
     BiPartition::iterator holdoutIterator = partitionPtr->second_begin();
 
-    for (uint32 i = 0; i < numTraining; i++) {
+    for (uint32 i = 0; i < numTraining_; i++) {
         trainingIterator[i] = i;
     }
 
-    for (uint32 i = 0; i < numHoldout; i++) {
-        holdoutIterator[i] = numTraining + i;
+    for (uint32 i = 0; i < numHoldout_; i++) {
+        holdoutIterator[i] = numTraining_ + i;
     }
 
-    randomPermutation<BiPartition::iterator, BiPartition::iterator>(trainingIterator, holdoutIterator, numTraining,
-                                                                    numExamples, rng);
+    randomPermutation<BiPartition::iterator, BiPartition::iterator>(trainingIterator, holdoutIterator, numTraining_,
+                                                                    partitionPtr->getNumElements(), rng);
     return partitionPtr;
 }
 
@@ -34,5 +32,5 @@ BiPartitionSamplingFactory::BiPartitionSamplingFactory(float32 holdoutSetSize)
 }
 
 std::unique_ptr<IPartitionSampling> BiPartitionSamplingFactory::create(uint32 numExamples) const {
-    return std::make_unique<BiPartitionSampling>(holdoutSetSize_);
+    return std::make_unique<BiPartitionSampling>(numExamples, holdoutSetSize_);
 }
