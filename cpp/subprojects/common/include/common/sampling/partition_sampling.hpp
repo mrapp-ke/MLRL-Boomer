@@ -30,3 +30,22 @@ class IPartitionSampling {
         virtual std::unique_ptr<IPartition> partition(uint32 numExamples, RNG& rng) const = 0;
 
 };
+
+/**
+ * Defines an interface for all factories that allow to create objects of type `IPartitionSampling`.
+ */
+class IPartitionSamplingFactory {
+
+    public:
+
+        virtual ~IPartitionSamplingFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IPartitionSampling`.
+         *
+         * @param numExamples   The total number of available training examples
+         * @return              An unique pointer to an object of type `IPartitionSampling` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSampling> create(uint32 numExamples) const = 0;
+
+};
