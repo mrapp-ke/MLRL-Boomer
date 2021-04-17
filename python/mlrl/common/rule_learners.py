@@ -26,7 +26,8 @@ from mlrl.common.cython.sampling import FeatureSubSamplingFactory, RandomFeature
     NoFeatureSubSamplingFactory
 from mlrl.common.cython.sampling import InstanceSubSamplingFactory, BaggingFactory, \
     RandomInstanceSubsetSelectionFactory, NoInstanceSubSamplingFactory
-from mlrl.common.cython.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
+from mlrl.common.cython.sampling import LabelSubSamplingFactory, RandomLabelSubsetSelectionFactory, \
+    NoLabelSubSamplingFactory
 from mlrl.common.cython.sampling import PartitionSampling, NoPartitionSampling, BiPartitionSampling
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
@@ -85,15 +86,15 @@ def create_sparse_policy(policy: str) -> SparsePolicy:
             [x.value for x in SparsePolicy]))
 
 
-def create_label_sub_sampling(label_sub_sampling: str, num_labels: int) -> LabelSubSampling:
+def create_label_sub_sampling_factory(label_sub_sampling: str, num_labels: int) -> LabelSubSamplingFactory:
     if label_sub_sampling is None:
-        return NoLabelSubSampling()
+        return NoLabelSubSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(label_sub_sampling, [LABEL_SUB_SAMPLING_RANDOM])
 
         if prefix == LABEL_SUB_SAMPLING_RANDOM:
             num_samples = get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
-            return RandomLabelSubsetSelection(num_samples)
+            return RandomLabelSubsetSelectionFactory(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
 
