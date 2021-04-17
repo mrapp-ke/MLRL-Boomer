@@ -56,4 +56,10 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
         std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
             const IStatisticsProviderFactory& factory) const override;
 
+        std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
+            const IInstanceSubSamplingFactory& factory, const SinglePartition& partition) const override;
+
+        std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
+            const IInstanceSubSamplingFactory& factory, BiPartition& partition) const override;
+
 };

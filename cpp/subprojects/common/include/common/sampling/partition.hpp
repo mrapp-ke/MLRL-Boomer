@@ -7,9 +7,9 @@
 #include <memory>
 
 // Forward declarations
-class IWeightVector;
 class IInstanceSubSampling;
-class RNG;
+class IInstanceSubSamplingFactory;
+class ILabelMatrix;
 class IThresholdsSubset;
 class ICoverageState;
 class Refinement;
@@ -27,17 +27,17 @@ class IPartition {
         virtual ~IPartition() { };
 
         /**
-         * Creates and returns a sub-sample of the examples that belong to the training set.
+         * Creates and returns a new instance of the class `IInstanceSubSampling`, based on the type of this partition
+         * matrix.
          *
-         * @param instanceSubSampling   A reference to an object of type `IInstanceSubSampling` that should be used to
-         *                              sample the examples
-         * @param rng                   A reference to an object of type `RNG`, implementing the random number generator
-         *                              to be used
-         * @return                      An unique pointer to an object type `WeightVector` that provides access to the
-         *                              weights of the individual training examples
+         * @param factory       A reference to an object of type `IInstanceSubSamplingFactory` that should be used to
+         *                      create the instance
+         * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels of
+         *                      the training examples
+         * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
          */
-        virtual std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
-                                                         RNG& rng) const = 0;
+        virtual std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
+            const IInstanceSubSamplingFactory& factory, const ILabelMatrix& labelMatrix) = 0;
 
         /**
          * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
