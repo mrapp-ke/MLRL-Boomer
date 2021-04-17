@@ -13,16 +13,19 @@ class RandomLabelSubsetSelection final : public ILabelSubSampling {
 
     private:
 
+        uint32 numLabels_;
+
         uint32 numSamples_;
 
     public:
 
         /**
-         * @param numSamples The number of labels to be included in the sample
+         * @param numLabels     The total number of available labels
+         * @param numSamples    The number of labels to be included in the sample
          */
-        RandomLabelSubsetSelection(uint32 numSamples);
+        RandomLabelSubsetSelection(uint32 numLabels, uint32 numSamples);
 
-        std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) const override;
+        std::unique_ptr<IIndexVector> subSample(RNG& rng) const override;
 
 };
 
