@@ -108,25 +108,25 @@ cdef class NoLabelSubSamplingFactory(LabelSubSamplingFactory):
         self.label_sub_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[NoLabelSubSamplingFactoryImpl]()
 
 
-cdef class PartitionSampling:
+cdef class PartitionSamplingFactory:
     """
-    A wrapper for the pure virtual C++ class `IPartitionSampling`.
+    A wrapper for the pure virtual C++ class `IPartitionSamplingFactory`.
     """
     pass
 
 
-cdef class NoPartitionSampling(PartitionSampling):
+cdef class NoPartitionSamplingFactory(PartitionSamplingFactory):
     """
-    A wrapper for the C++ class `NoPartitionSampling`.
+    A wrapper for hte C++ class `NoPartitionSamplingFactory`.
     """
 
     def __cinit__(self):
-        self.partition_sampling_ptr = <shared_ptr[IPartitionSampling]>make_shared[NoPartitionSamplingImpl]()
+        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[NoPartitionSamplingFactoryImpl]()
 
 
-cdef class BiPartitionSampling(PartitionSampling):
+cdef class BiPartitionSamplingFactory(PartitionSamplingFactory):
     """
-    A wrapper for the C++ class `BiPartitionSampling`.
+    A wrapper for the C++ class `BiPartitionSamplingFactory`.
     """
 
     def __cinit__(self, float32 holdout_set_size):
@@ -134,5 +134,5 @@ cdef class BiPartitionSampling(PartitionSampling):
         :param holdout_set_size: The fraction of examples to be included in the holdout set (e.g. a value of 0.6
                                  corresponds to 60 % of the available examples). Must be in (0, 1)
         """
-        self.partition_sampling_ptr = <shared_ptr[IPartitionSampling]>make_shared[BiPartitionSamplingImpl](
+        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[BiPartitionSamplingFactoryImpl](
             holdout_set_size)

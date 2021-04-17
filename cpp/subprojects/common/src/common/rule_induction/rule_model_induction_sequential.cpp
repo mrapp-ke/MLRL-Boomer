@@ -41,7 +41,7 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
         std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr,
         std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr,
         std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
-        std::shared_ptr<IPartitionSampling> partitionSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
+        std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr, std::shared_ptr<IPruning> pruningPtr,
         std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
         intp maxHeadRefinements,
         std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr)
@@ -49,10 +49,10 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
       ruleInductionPtr_(ruleInductionPtr), defaultRuleHeadRefinementFactoryPtr_(defaultRuleHeadRefinementFactoryPtr),
       headRefinementFactoryPtr_(headRefinementFactoryPtr), labelSubSamplingFactoryPtr_(labelSubSamplingFactoryPtr),
       instanceSubSamplingFactoryPtr_(instanceSubSamplingFactoryPtr),
-      featureSubSamplingFactoryPtr_(featureSubSamplingFactoryPtr), partitionSamplingPtr_(partitionSamplingPtr),
-      pruningPtr_(pruningPtr), postProcessorPtr_(postProcessorPtr), minCoverage_(minCoverage),
-      maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
-      stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
+      featureSubSamplingFactoryPtr_(featureSubSamplingFactoryPtr),
+      partitionSamplingFactoryPtr_(partitionSamplingFactoryPtr), pruningPtr_(pruningPtr),
+      postProcessorPtr_(postProcessorPtr), minCoverage_(minCoverage), maxConditions_(maxConditions),
+      maxHeadRefinements_(maxHeadRefinements), stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
 
 }
 
@@ -71,10 +71,11 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrixPtr, nominalFeatureMaskPtr,
                                                                                statisticsProviderPtr,
                                                                                headRefinementFactoryPtr_);
-    uint32 numExamples = thresholdsPtr->getNumExamples();
     uint32 numFeatures = thresholdsPtr->getNumFeatures();
     uint32 numLabels = thresholdsPtr->getNumLabels();
-    std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr_->partition(numExamples, rng);
+    std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrixPtr->createPartitionSampling(
+        *partitionSamplingFactoryPtr_);
+    std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr->createPartition(rng);
     std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partitionPtr->createInstanceSubSampling(
         *instanceSubSamplingFactoryPtr_, *labelMatrixPtr);
     std::unique_ptr<IFeatureSubSampling> featureSubSamplingPtr = featureSubSamplingFactoryPtr_->create(numFeatures);
