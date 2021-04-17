@@ -4,7 +4,7 @@
 from mlrl.common.cython.head_refinement cimport HeadRefinementFactory
 from mlrl.common.cython.post_processing cimport PostProcessor
 from mlrl.common.cython.pruning cimport Pruning
-from mlrl.common.cython.sampling cimport InstanceSubSamplingFactory, FeatureSubSampling, LabelSubSampling, \
+from mlrl.common.cython.sampling cimport InstanceSubSamplingFactory, FeatureSubSamplingFactory, LabelSubSampling, \
     PartitionSampling
 from mlrl.common.cython.statistics cimport StatisticsProviderFactory
 from mlrl.common.cython.stopping cimport StoppingCriterion
@@ -62,9 +62,10 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
     def __cinit__(self, StatisticsProviderFactory statistics_provider_factory, ThresholdsFactory thresholds_factory,
                   RuleInduction rule_induction, HeadRefinementFactory default_rule_head_refinement_factory,
                   HeadRefinementFactory head_refinement_factory, LabelSubSampling label_sub_sampling,
-                  InstanceSubSamplingFactory instance_sub_sampling_factory, FeatureSubSampling feature_sub_sampling,
-                  PartitionSampling partition_sampling, Pruning pruning, PostProcessor post_processor,
-                  uint32 min_coverage, intp max_conditions, intp max_head_refinements, list stopping_criteria):
+                  InstanceSubSamplingFactory instance_sub_sampling_factory,
+                  FeatureSubSamplingFactory feature_sub_sampling_factory, PartitionSampling partition_sampling,
+                  Pruning pruning, PostProcessor post_processor, uint32 min_coverage, intp max_conditions,
+                  intp max_head_refinements, list stopping_criteria):
         """
         :param statistics_provider_factory:             A factory that allows to create a provider that provides access
                                                         to the statistics which serve as the basis for learning rules
@@ -82,8 +83,9 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
         :param instance_sub_sampling_factory:           The factory that should be used for creating the implementation
                                                         to be used for sub-sampling the training examples each time a
                                                         new classification rule is learned
-        :param feature_sub_sampling:                    The strategy that should be used for sub-sampling the features
-                                                        each time a classification rule is refined
+        :param feature_sub_sampling_factory:            The factory that should be used for creating the implementation
+                                                        to be used for sub-sampling the features each time a
+                                                        classification rule is refined
         :param partition_sampling:                      The strategy that should be used for partitioning the training
                                                         examples into a training set and a holdout set or
         :param pruning:                                 The strategy that should be used for pruning rules
@@ -116,6 +118,6 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
             rule_induction.rule_induction_ptr, default_rule_head_refinement_factory.head_refinement_factory_ptr,
             head_refinement_factory.head_refinement_factory_ptr, label_sub_sampling.label_sub_sampling_ptr,
             instance_sub_sampling_factory.instance_sub_sampling_factory_ptr,
-            feature_sub_sampling.feature_sub_sampling_ptr, partition_sampling.partition_sampling_ptr,
+            feature_sub_sampling_factory.feature_sub_sampling_factory_ptr, partition_sampling.partition_sampling_ptr,
             pruning.pruning_ptr, post_processor.post_processor_ptr, min_coverage, max_conditions, max_head_refinements,
             move(stopping_criteria_ptr))
