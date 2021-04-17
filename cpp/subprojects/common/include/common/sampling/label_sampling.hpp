@@ -28,3 +28,22 @@ class ILabelSubSampling {
         virtual std::unique_ptr<IIndexVector> subSample(uint32 numLabels, RNG& rng) const = 0;
 
 };
+
+/**
+ * Defines an interface for all factories that allow to create objects of type `ILabelSubSampling`.
+ */
+class ILabelSubSamplingFactory {
+
+    public:
+
+        virtual ~ILabelSubSamplingFactory() { };
+
+        /**
+         * Creates and returns a new object of type `ILabelSubSampling`.
+         *
+         * @param numLabels The total number of available labels
+         * @return          An unique pointer to an object of type `ILabelSubSampling` that has been created
+         */
+        virtual std::unique_ptr<ILabelSubSampling> create(uint32 numLabels) const = 0;
+
+};
