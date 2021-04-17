@@ -20,3 +20,12 @@ std::unique_ptr<IIndexVector> RandomFeatureSubsetSelection::subSample(uint32 num
 
     return sampleIndicesWithoutReplacement<IndexIterator>(IndexIterator(numFeatures), numFeatures, numSamples, rng);
 }
+
+RandomFeatureSubsetSelectionFactory::RandomFeatureSubsetSelectionFactory(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
+}
+
+std::unique_ptr<IFeatureSubSampling> RandomFeatureSubsetSelectionFactory::create(uint32 numFeatures) const {
+    return std::make_unique<RandomFeatureSubsetSelection>(sampleSize_);
+}
