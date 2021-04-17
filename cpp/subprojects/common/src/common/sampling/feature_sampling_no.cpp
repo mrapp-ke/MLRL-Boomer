@@ -9,7 +9,7 @@ class NoFeatureSubSampling final : public IFeatureSubSampling {
 
     private:
 
-        uint32 numFeatures_;
+        FullIndexVector indexVector_;
 
     public:
 
@@ -17,12 +17,12 @@ class NoFeatureSubSampling final : public IFeatureSubSampling {
          * @param numFeatures The total number of available features
          */
         NoFeatureSubSampling(uint32 numFeatures)
-            : numFeatures_(numFeatures) {
+            : indexVector_(FullIndexVector(numFeatures)) {
 
         }
 
-        std::unique_ptr<IIndexVector> subSample(RNG& rng) const override {
-            return std::make_unique<FullIndexVector>(numFeatures_);
+        const IIndexVector& subSample(RNG& rng) override {
+            return indexVector_;
         }
 
 };

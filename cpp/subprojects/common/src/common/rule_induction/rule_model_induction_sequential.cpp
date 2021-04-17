@@ -91,8 +91,8 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
         }
 
         std::unique_ptr<IWeightVector> weightsPtr = instanceSubSamplingPtr->subSample(rng);
-        std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr->subSample(rng);
-        bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, *labelIndicesPtr, *weightsPtr, *partitionPtr,
+        const IIndexVector& labelIndices = labelSubSamplingPtr->subSample(rng);
+        bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, labelIndices, *weightsPtr, *partitionPtr,
                                                      *featureSubSamplingPtr, *pruningPtr_, *postProcessorPtr_,
                                                      minCoverage_, maxConditions_, maxHeadRefinements_, rng,
                                                      modelBuilder);

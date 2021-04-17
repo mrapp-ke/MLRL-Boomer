@@ -21,10 +21,10 @@ class IFeatureSubSampling {
          * Creates and returns a sub-sample of the available features.
          *
          * @param rng   A reference to an object of type `RNG`, implementing the random number generator to be used
-         * @return      An unique pointer to an object of type `IIndexVector` that provides access to the indices of the
+         * @return      A reference to an object of type `IIndexVector` that provides access to the indices of the
          *              features that are contained in the sub-sample
          */
-        virtual std::unique_ptr<IIndexVector> subSample(RNG& rng) const = 0;
+        virtual const IIndexVector& subSample(RNG& rng) = 0;
 
 };
 
