@@ -51,22 +51,11 @@ cdef extern from "common/sampling/instance_sampling_no.hpp" nogil:
 
 cdef extern from "common/sampling/feature_sampling.hpp" nogil:
 
-    cdef cppclass IFeatureSubSampling:
-        pass
-
-
     cdef cppclass IFeatureSubSamplingFactory:
         pass
 
 
 cdef extern from "common/sampling/feature_sampling_random.hpp" nogil:
-
-    cdef cppclass RandomFeatureSubsetSelectionImpl"RandomFeatureSubsetSelection"(IFeatureSubSampling):
-
-        # Constructors:
-
-        RandomFeatureSubsetSelectionImpl(float32 sampleSize) except +
-
 
     cdef cppclass RandomFeatureSubsetSelectionFactoryImpl"RandomFeatureSubsetSelectionFactory"(
             IFeatureSubSamplingFactory):
@@ -77,10 +66,6 @@ cdef extern from "common/sampling/feature_sampling_random.hpp" nogil:
 
 
 cdef extern from "common/sampling/feature_sampling_no.hpp" nogil:
-
-    cdef cppclass NoFeatureSubSamplingImpl"NoFeatureSubSampling"(IFeatureSubSampling):
-        pass
-
 
     cdef cppclass NoFeatureSubSamplingFactoryImpl"NoFeatureSubSamplingFactory"(IFeatureSubSamplingFactory):
         pass
@@ -144,13 +129,6 @@ cdef class NoInstanceSubSamplingFactory(InstanceSubSamplingFactory):
     pass
 
 
-cdef class FeatureSubSampling:
-
-    # Attributes:
-
-    cdef shared_ptr[IFeatureSubSampling] feature_sub_sampling_ptr
-
-
 cdef class FeatureSubSamplingFactory:
 
     # Attributes:
@@ -158,15 +136,7 @@ cdef class FeatureSubSamplingFactory:
     cdef shared_ptr[IFeatureSubSamplingFactory] feature_sub_sampling_factory_ptr
 
 
-cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
-    pass
-
-
 cdef class RandomFeatureSubsetSelectionFactory(FeatureSubSamplingFactory):
-    pass
-
-
-cdef class NoFeatureSubSampling(FeatureSubSampling):
     pass
 
 
