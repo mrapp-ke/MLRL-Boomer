@@ -27,3 +27,12 @@ std::unique_ptr<IPartition> BiPartitionSampling::partition(uint32 numExamples, R
                                                                     numExamples, rng);
     return partitionPtr;
 }
+
+BiPartitionSamplingFactory::BiPartitionSamplingFactory(float32 holdoutSetSize)
+    : holdoutSetSize_(holdoutSetSize) {
+
+}
+
+std::unique_ptr<IPartitionSampling> BiPartitionSamplingFactory::create(uint32 numExamples) const {
+    return std::make_unique<BiPartitionSampling>(holdoutSetSize_);
+}
