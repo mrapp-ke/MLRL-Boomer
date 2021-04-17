@@ -22,7 +22,8 @@ from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
 from mlrl.common.cython.rule_induction import RuleModelInduction
-from mlrl.common.cython.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
+from mlrl.common.cython.sampling import FeatureSubSamplingFactory, RandomFeatureSubsetSelectionFactory, \
+    NoFeatureSubSamplingFactory
 from mlrl.common.cython.sampling import InstanceSubSamplingFactory, BaggingFactory, \
     RandomInstanceSubsetSelectionFactory, NoInstanceSubSamplingFactory
 from mlrl.common.cython.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
@@ -112,15 +113,15 @@ def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> Instance
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
 
-def create_feature_sub_sampling(feature_sub_sampling: str) -> FeatureSubSampling:
+def create_feature_sub_sampling_factory(feature_sub_sampling: str) -> FeatureSubSamplingFactory:
     if feature_sub_sampling is None:
-        return NoFeatureSubSampling()
+        return NoFeatureSubSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(feature_sub_sampling, [FEATURE_SUB_SAMPLING_RANDOM])
 
         if prefix == FEATURE_SUB_SAMPLING_RANDOM:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
-            return RandomFeatureSubsetSelection(sample_size)
+            return RandomFeatureSubsetSelectionFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
 
 

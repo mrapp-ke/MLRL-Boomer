@@ -3,7 +3,7 @@ from mlrl.common.cython.input cimport NominalFeatureMask, INominalFeatureMask
 from mlrl.common.cython.input cimport FeatureMatrix, IFeatureMatrix
 from mlrl.common.cython.input cimport LabelMatrix, ILabelMatrix
 from mlrl.common.cython.model cimport ModelBuilder, RuleModel, IModelBuilder, RuleModelImpl
-from mlrl.common.cython.sampling cimport ILabelSubSampling, IInstanceSubSamplingFactory, IFeatureSubSampling, \
+from mlrl.common.cython.sampling cimport ILabelSubSampling, IInstanceSubSamplingFactory, IFeatureSubSamplingFactory, \
     IPartitionSampling, RNG
 from mlrl.common.cython.statistics cimport IStatisticsProviderFactory
 from mlrl.common.cython.stopping cimport IStoppingCriterion
@@ -57,7 +57,7 @@ cdef extern from "common/rule_induction/rule_model_induction_sequential.hpp" nog
                                          shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
                                          shared_ptr[ILabelSubSampling] labelSubSamplingPtr,
                                          shared_ptr[IInstanceSubSamplingFactory] instanceSubSamplingFactoryPtr,
-                                         shared_ptr[IFeatureSubSampling] featureSubSamplingPtr,
+                                         shared_ptr[IFeatureSubSamplingFactory] featureSubSamplingFactoryPtr,
                                          shared_ptr[IPartitionSampling] partitionSamplingPtr,
                                          shared_ptr[IPruning] pruningPtr, shared_ptr[IPostProcessor] postProcessorPtr,
                                          uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,

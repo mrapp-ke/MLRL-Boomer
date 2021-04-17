@@ -2,6 +2,15 @@
 #include "common/indices/index_vector_full.hpp"
 
 
-std::unique_ptr<IIndexVector> NoFeatureSubSampling::subSample(uint32 numFeatures, RNG& rng) const {
-    return std::make_unique<FullIndexVector>(numFeatures);
+NoFeatureSubSampling::NoFeatureSubSampling(uint32 numFeatures)
+    : numFeatures_(numFeatures) {
+
+}
+
+std::unique_ptr<IIndexVector> NoFeatureSubSampling::subSample(RNG& rng) const {
+    return std::make_unique<FullIndexVector>(numFeatures_);
+}
+
+std::unique_ptr<IFeatureSubSampling> NoFeatureSubSamplingFactory::create(uint32 numFeatures) const {
+    return std::make_unique<NoFeatureSubSampling>(numFeatures);
 }
