@@ -20,7 +20,7 @@ class NoPartitionSampling final : public IPartitionSampling {
 
         NoPartitionSampling(uint32 numExamples);
 
-        std::unique_ptr<IPartition> partition(RNG& rng) const override;
+        std::unique_ptr<IPartition> createPartition(RNG& rng) const override;
 
 };
 

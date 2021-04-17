@@ -75,7 +75,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     uint32 numFeatures = thresholdsPtr->getNumFeatures();
     uint32 numLabels = thresholdsPtr->getNumLabels();
     std::unique_ptr<IPartitionSampling> partitionSamplingPtr = partitionSamplingFactoryPtr_->create(numExamples);
-    std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr->partition(rng);
+    std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr->createPartition(rng);
     std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partitionPtr->createInstanceSubSampling(
         *instanceSubSamplingFactoryPtr_, *labelMatrixPtr);
     std::unique_ptr<IFeatureSubSampling> featureSubSamplingPtr = featureSubSamplingFactoryPtr_->create(numFeatures);
