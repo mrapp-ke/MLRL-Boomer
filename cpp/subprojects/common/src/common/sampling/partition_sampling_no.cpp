@@ -2,14 +2,28 @@
 #include "common/sampling/partition_single.hpp"
 
 
-NoPartitionSampling::NoPartitionSampling(uint32 numExamples)
-    : numExamples_(numExamples) {
+/**
+ * An implementation of the class `IPartitionSampling` that does not split the training examples, but includes all of
+ * them in the training set.
+ */
+class NoPartitionSampling final : public IPartitionSampling {
 
-}
+    private:
 
-std::unique_ptr<IPartition> NoPartitionSampling::createPartition(RNG& rng) const {
-    return std::make_unique<SinglePartition>(numExamples_);
-}
+        uint32 numExamples_;
+
+    public:
+
+        NoPartitionSampling(uint32 numExamples)
+            : numExamples_(numExamples) {
+
+        }
+
+        std::unique_ptr<IPartition> createPartition(RNG& rng) const override {
+            return std::make_unique<SinglePartition>(numExamples_);
+        }
+
+};
 
 std::unique_ptr<IPartitionSampling> NoPartitionSamplingFactory::create(uint32 numExamples) const {
     return std::make_unique<NoPartitionSampling>(numExamples);
