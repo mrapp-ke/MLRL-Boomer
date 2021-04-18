@@ -1,5 +1,7 @@
 #include "common/input/label_matrix_csr.hpp"
 #include "common/statistics/statistics_provider_factory.hpp"
+#include "common/sampling/partition_sampling.hpp"
+#include "common/sampling/instance_sampling.hpp"
 #include "common/data/arrays.hpp"
 
 
@@ -49,4 +51,19 @@ std::unique_ptr<LabelVector> CsrLabelMatrix::getLabelVector(uint32 row) const {
 std::unique_ptr<IStatisticsProvider> CsrLabelMatrix::createStatisticsProvider(
         const IStatisticsProviderFactory& factory) const {
     return factory.create(*this);
+}
+
+std::unique_ptr<IPartitionSampling> CsrLabelMatrix::createPartitionSampling(
+        const IPartitionSamplingFactory& factory) const {
+    return factory.create(*this);
+}
+
+std::unique_ptr<IInstanceSubSampling> CsrLabelMatrix::createInstanceSubSampling(
+        const IInstanceSubSamplingFactory& factory, const SinglePartition& partition) const {
+    return factory.create(*this, partition);
+}
+
+std::unique_ptr<IInstanceSubSampling> CsrLabelMatrix::createInstanceSubSampling(
+        const IInstanceSubSamplingFactory& factory, BiPartition& partition) const {
+    return factory.create(*this, partition);
 }

@@ -4,16 +4,16 @@
 from libcpp.memory cimport make_shared
 
 
-cdef class InstanceSubSampling:
+cdef class InstanceSubSamplingFactory:
     """
-    A wrapper for the pure virtual C++ class `IInstanceSubSampling`.
+    A wrapper for the pure virtual C++ class `IInstanceSubSamplingFactory`.
     """
     pass
 
 
-cdef class Bagging(InstanceSubSampling):
+cdef class BaggingFactory(InstanceSubSamplingFactory):
     """
-    A wrapper for the C++ class `Bagging`.
+    A wrapper for the C++ class `BaggingFactory`.
     """
 
     def __cinit__(self, float32 sample_size = 1.0):
@@ -21,12 +21,13 @@ cdef class Bagging(InstanceSubSampling):
         :param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                             60 % of the available examples). Must be in (0, 1]
         """
-        self.instance_sub_sampling_ptr = <shared_ptr[IInstanceSubSampling]>make_shared[BaggingImpl](sample_size)
+        self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[BaggingFactoryImpl](
+            sample_size)
 
 
-cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
+cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
     """
-    A wrapper for the C++ class `RandomInstanceSubsetSelection`.
+    A wrapper for the C++ class `RandomInstanceSubsetSelectionFactory`.
     """
 
     def __cinit__(self, float32 sample_size = 0.66):
@@ -34,29 +35,29 @@ cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples). Must be in (0, 1)
         """
-        self.instance_sub_sampling_ptr = <shared_ptr[IInstanceSubSampling]>make_shared[RandomInstanceSubsetSelectionImpl](
+        self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[RandomInstanceSubsetSelectionFactoryImpl](
             sample_size)
 
 
-cdef class NoInstanceSubSampling(InstanceSubSampling):
+cdef class NoInstanceSubSamplingFactory(InstanceSubSamplingFactory):
     """
-    A wrapper for the C++ class `NoInstanceSubSampling`.
+    A wrapper for the C++ class `NoInstanceSubSamplingFactory`.
     """
 
     def __cinit__(self):
-        self.instance_sub_sampling_ptr = <shared_ptr[IInstanceSubSampling]>make_shared[NoInstanceSubSamplingImpl]()
+        self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[NoInstanceSubSamplingFactoryImpl]()
 
 
-cdef class FeatureSubSampling:
+cdef class FeatureSubSamplingFactory:
     """
-    A wrapper for the pure virtual C++ class `IFeatureSubSampling`.
+    A wrapper for the pure virtual C++ class `IFeatureSubSamplingFactory`.
     """
     pass
 
 
-cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
+cdef class RandomFeatureSubsetSelectionFactory(FeatureSubSamplingFactory):
     """
-    A wrapper for the C++ class `RandomFeatureSubsetSelection`.
+    A wrapper for the C++ class `RandomFeatureSubsetSelectionFactory`.
     """
 
     def __cinit__(self, float32 sample_size = 0.0):
@@ -65,67 +66,67 @@ cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
                             60 % of the available features). Must be in (0, 1) or 0, if the default sample size
                             `floor(log2(num_features - 1) + 1)` should be used
         """
-        self.feature_sub_sampling_ptr = <shared_ptr[IFeatureSubSampling]>make_shared[RandomFeatureSubsetSelectionImpl](
+        self.feature_sub_sampling_factory_ptr = <shared_ptr[IFeatureSubSamplingFactory]>make_shared[RandomFeatureSubsetSelectionFactoryImpl](
             sample_size)
 
 
-cdef class NoFeatureSubSampling(FeatureSubSampling):
+cdef class NoFeatureSubSamplingFactory(FeatureSubSamplingFactory):
     """
-    A wrapper for the C++ class `NoFeatureSubSampling`.
+    A wrapper for the C++ class `NoFeatureSubSamplingFactory`.
     """
 
     def __cinit__(self):
-        self.feature_sub_sampling_ptr = <shared_ptr[IFeatureSubSampling]>make_shared[NoFeatureSubSamplingImpl]()
+        self.feature_sub_sampling_factory_ptr = <shared_ptr[IFeatureSubSamplingFactory]>make_shared[NoFeatureSubSamplingFactoryImpl]()
 
 
-cdef class LabelSubSampling:
+cdef class LabelSubSamplingFactory:
     """
-    A wrapper for the pure virtual C++ class `ILabelSubSampling`.
+    A wrapper for the pure virtual C++ class `ILabelSubSamplingFactory`.
     """
     pass
 
 
-cdef class RandomLabelSubsetSelection(LabelSubSampling):
+cdef class RandomLabelSubsetSelectionFactory(LabelSubSamplingFactory):
     """
-    A wrapper for the C++ class `RandomLabelSubsetSelection`.
+    A wrapper for the C++ class `RandomLabelSubsetSelectionFactory`.
     """
 
     def __cinit__(self, uint32 num_samples):
         """
         :param num_samples: The number of labels to be included in the sample
         """
-        self.label_sub_sampling_ptr = <shared_ptr[ILabelSubSampling]>make_shared[RandomLabelSubsetSelectionImpl](
+        self.label_sub_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[RandomLabelSubsetSelectionFactoryImpl](
             num_samples)
 
 
-cdef class NoLabelSubSampling(LabelSubSampling):
+cdef class NoLabelSubSamplingFactory(LabelSubSamplingFactory):
     """
-    A wrapper for the C++ class `NoLabelSubSampling`.
+    A wrapper for the C++ class `NoLabelSubSamplingFactory`.
     """
 
     def __cinit__(self):
-        self.label_sub_sampling_ptr = <shared_ptr[ILabelSubSampling]>make_shared[NoLabelSubSamplingImpl]()
+        self.label_sub_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[NoLabelSubSamplingFactoryImpl]()
 
 
-cdef class PartitionSampling:
+cdef class PartitionSamplingFactory:
     """
-    A wrapper for the pure virtual C++ class `IPartitionSampling`.
+    A wrapper for the pure virtual C++ class `IPartitionSamplingFactory`.
     """
     pass
 
 
-cdef class NoPartitionSampling(PartitionSampling):
+cdef class NoPartitionSamplingFactory(PartitionSamplingFactory):
     """
-    A wrapper for the C++ class `NoPartitionSampling`.
+    A wrapper for hte C++ class `NoPartitionSamplingFactory`.
     """
 
     def __cinit__(self):
-        self.partition_sampling_ptr = <shared_ptr[IPartitionSampling]>make_shared[NoPartitionSamplingImpl]()
+        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[NoPartitionSamplingFactoryImpl]()
 
 
-cdef class BiPartitionSampling(PartitionSampling):
+cdef class BiPartitionSamplingFactory(PartitionSamplingFactory):
     """
-    A wrapper for the C++ class `BiPartitionSampling`.
+    A wrapper for the C++ class `BiPartitionSamplingFactory`.
     """
 
     def __cinit__(self, float32 holdout_set_size):
@@ -133,5 +134,5 @@ cdef class BiPartitionSampling(PartitionSampling):
         :param holdout_set_size: The fraction of examples to be included in the holdout set (e.g. a value of 0.6
                                  corresponds to 60 % of the available examples). Must be in (0, 1)
         """
-        self.partition_sampling_ptr = <shared_ptr[IPartitionSampling]>make_shared[BiPartitionSamplingImpl](
+        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[BiPartitionSamplingFactoryImpl](
             holdout_set_size)

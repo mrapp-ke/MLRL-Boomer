@@ -33,13 +33,13 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
 
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr_;
 
-        std::shared_ptr<ILabelSubSampling> labelSubSamplingPtr_;
+        std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr_;
 
-        std::shared_ptr<IInstanceSubSampling> instanceSubSamplingPtr_;
+        std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr_;
 
-        std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr_;
+        std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr_;
 
-        std::shared_ptr<IPartitionSampling> partitionSamplingPtr_;
+        std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr_;
 
         std::shared_ptr<IPruning> pruningPtr_;
 
@@ -70,18 +70,21 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          * @param headRefinementFactoryPtr              A shared pointer to an object of type `IHeadRefinement` that
          *                                              allows to create instances of the class that should be used to
          *                                              find the head of all remaining rules
-         * @param labelSubSamplingPtr                   A shared pointer to an object of type `ILabelSubSampling` that
-         *                                              should be used to sample the labels whenever a new rule is
-         *                                              induced
-         * @param instanceSubSamplingPtr                A shared pointer to an object of type `IInstanceSubSampling`
-         *                                              that should be used to sample the examples whenever a new rule
-         *                                              is induced
-         * @param featureSubSamplingPtr                 A shared pointer to an object of type `IFeatureSubSampling` that
-         *                                              should be used to sample the features that may be used by the
-         *                                              conditions of a rule
-         * @param partitionSamplingPtr                  A shared pointer to an object of type `IPartitionSampling` that
-         *                                              should be used to partition the training examples into a
-         *                                              training set and a holdout set
+         * @param labelSubSamplingFactoryPtr            A shared pointer to an object of type `ILabelSubSamplingFactory`
+         *                                              that allows to create the implementation to be used for sampling
+         *                                              the labels whenever a new rule is induced
+         * @param instanceSubSamplingFactoryPtr         A shared pointer to an object of type
+         *                                              `IInstanceSubSamplingFactory` that allows create the
+         *                                              implementation to be used for sampling the examples whenever a
+         *                                              new rule is induced
+         * @param featureSubSamplingFactoryPtr          A shared pointer to an object of type
+         *                                              `IFeatureSubSamplingFactory` that allows to create the
+         *                                              implementation to be used for sampling the features that may be
+         *                                              used by the conditions of a rule
+         * @param partitionSamplingFactoryPtr           A shared pointer to an object of type
+         *                                              `IPartitionSamplingFactory` that allows to create the
+         *                                              implementation to be used for partitioning the training examples
+         *                                              into a training set and a holdout set
          * @param pruningPtr                            A shared pointer to an object of type `IPruning` that should be
          *                                              used to prune the rules
          * @param postProcessorPtr                      A shared pointer to an object of type `IPostProcessor` that
@@ -104,12 +107,12 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
             std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
             std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-            std::shared_ptr<ILabelSubSampling> labelSubSamplingPtr,
-            std::shared_ptr<IInstanceSubSampling> instanceSubSamplingPtr,
-            std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr,
-            std::shared_ptr<IPartitionSampling> partitionSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
-            std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
-            intp maxHeadRefinements,
+            std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr,
+            std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr,
+            std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
+            std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
+            std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage,
+            intp maxConditions, intp maxHeadRefinements,
             std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr);
 
         std::unique_ptr<RuleModel> induceRules(std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
