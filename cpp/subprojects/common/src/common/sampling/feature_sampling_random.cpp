@@ -1,4 +1,5 @@
 #include "common/sampling/feature_sampling_random.hpp"
+#include "common/indices/index_vector_partial.hpp"
 #include "common/indices/index_iterator.hpp"
 #include "index_sampling.hpp"
 #include <cmath>
@@ -13,7 +14,7 @@ class RandomFeatureSubsetSelection final : public IFeatureSubSampling {
 
         uint32 numFeatures_;
 
-        uint32 numSamples_;
+        PartialIndexVector indexVector_;
 
     public:
 
@@ -25,13 +26,15 @@ class RandomFeatureSubsetSelection final : public IFeatureSubSampling {
          */
         RandomFeatureSubsetSelection(uint32 numFeatures, float32 sampleSize)
             : numFeatures_(numFeatures),
-              numSamples_((uint32) (sampleSize > 0 ? sampleSize * numFeatures : log2(numFeatures - 1) + 1)) {
+              indexVector_(PartialIndexVector((uint32) (sampleSize > 0 ? sampleSize * numFeatures
+                                                                       : log2(numFeatures - 1) + 1))) {
 
         }
 
-        std::unique_ptr<IIndexVector> subSample(RNG& rng) const override {
-            return sampleIndicesWithoutReplacement<IndexIterator>(IndexIterator(numFeatures_), numFeatures_,
-                                                                  numSamples_, rng);
+        const IIndexVector& subSample(RNG& rng) override {
+            sampleIndicesWithoutReplacement<IndexIterator>(indexVector_, IndexIterator(numFeatures_), numFeatures_,
+                                                           rng);
+            return indexVector_;
         }
 
 };

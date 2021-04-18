@@ -27,10 +27,10 @@ class IInstanceSubSampling {
          * Creates and returns a sub-sample of the available training examples.
          *
          * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
-         * @return          An unique pointer to an object type `WeightVector` that provides access to the weights of
-         *                  the individual training examples
+         * @return          A reference to an object type `WeightVector` that provides access to the weights of the
+         *                  individual training examples
          */
-        virtual std::unique_ptr<IWeightVector> subSample(RNG& rng) const = 0;
+        virtual const IWeightVector& subSample(RNG& rng) = 0;
 
 };
 
