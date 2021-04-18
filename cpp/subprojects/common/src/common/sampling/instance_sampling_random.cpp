@@ -5,20 +5,20 @@
 #include "common/sampling/partition_single.hpp"
 
 
-static inline std::unique_ptr<IWeightVector> subSampleInternally(const SinglePartition& partition, float32 sampleSize,
-                                                                 RNG& rng) {
+static inline void subSampleInternally(const SinglePartition& partition, float32 sampleSize,
+                                       DenseWeightVector<uint8>& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize * numExamples);
-    return sampleWeightsWithoutReplacement<IndexIterator>(IndexIterator(numExamples), numExamples, numSamples,
-                                                          numExamples, rng);
+    sampleWeightsWithoutReplacement<IndexIterator>(weightVector, IndexIterator(numExamples), numExamples, numSamples,
+                                                   rng);
 }
 
-static inline std::unique_ptr<IWeightVector> subSampleInternally(BiPartition& partition, float32 sampleSize, RNG& rng) {
-    uint32 numExamples = partition.getNumElements();
+static inline void subSampleInternally(BiPartition& partition, float32 sampleSize,
+                                       DenseWeightVector<uint8>& weightVector, RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize * numTrainingExamples);
-    return sampleWeightsWithoutReplacement<BiPartition::const_iterator>(partition.first_cbegin(), numTrainingExamples,
-                                                                        numSamples, numExamples, rng);
+    sampleWeightsWithoutReplacement<BiPartition::const_iterator>(weightVector, partition.first_cbegin(),
+                                                                 numTrainingExamples, numSamples, rng);
 }
 
 /**
@@ -36,6 +36,8 @@ class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
 
         float32 sampleSize_;
 
+        DenseWeightVector<uint8> weightVector_;
+
     public:
 
         /**
@@ -45,12 +47,14 @@ class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
          *                   60 % of the available examples). Must be in (0, 1)
          */
         RandomInstanceSubsetSelection(Partition& partition, float32 sampleSize)
-            : partition_(partition), sampleSize_(sampleSize) {
+            : partition_(partition), sampleSize_(sampleSize),
+              weightVector_(DenseWeightVector<uint8>(partition.getNumElements())) {
 
         }
 
-        std::unique_ptr<IWeightVector> subSample(RNG& rng) override {
-            return subSampleInternally(partition_, sampleSize_, rng);
+        const IWeightVector& subSample(RNG& rng) override {
+            subSampleInternally(partition_, sampleSize_, weightVector_, rng);
+            return weightVector_;
         }
 
 };
