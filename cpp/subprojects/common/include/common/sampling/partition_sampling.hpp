@@ -24,10 +24,10 @@ class IPartitionSampling {
          * Creates and returns a partition of the available training examples.
          *
          * @param rng   A reference to an object of type `RNG`, implementing the random number generator to be used
-         * @return      An unique pointer to an object of type `IPartition` that provides access to the indices of the
+         * @return      A reference to an object of type `IPartition` that provides access to the indices of the
          *              training examples that belong to the training set and holdout set, respectively
          */
-        virtual std::unique_ptr<IPartition> createPartition(RNG& rng) const = 0;
+        virtual IPartition& partition(RNG& rng) = 0;
 
 };
 

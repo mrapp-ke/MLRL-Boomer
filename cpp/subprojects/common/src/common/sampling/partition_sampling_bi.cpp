@@ -11,9 +11,7 @@ class BiPartitionSampling final : public IPartitionSampling {
 
     private:
 
-        uint32 numHoldout_;
-
-        uint32 numTraining_;
+        BiPartition partition_;
 
     public:
 
@@ -23,27 +21,29 @@ class BiPartitionSampling final : public IPartitionSampling {
          *                          corresponds to 60 % of the available examples). Must be in (0, 1)
          */
         BiPartitionSampling(uint32 numExamples, float32 holdoutSetSize)
-            : numHoldout_((uint32) (holdoutSetSize * numExamples)), numTraining_(numExamples - numHoldout_) {
+            : partition_(BiPartition(numExamples - ((uint32) holdoutSetSize * numExamples),
+                                     (uint32) (holdoutSetSize * numExamples))) {
 
         }
 
-        std::unique_ptr<IPartition> createPartition(RNG& rng) const override {
-            std::unique_ptr<BiPartition> partitionPtr = std::make_unique<BiPartition>(numTraining_, numHoldout_);
-            BiPartition::iterator trainingIterator = partitionPtr->first_begin();
-            BiPartition::iterator holdoutIterator = partitionPtr->second_begin();
+        IPartition& partition(RNG& rng) override {
+            uint32 numTraining = partition_.getNumFirst();
+            uint32 numHoldout = partition_.getNumSecond();
+            BiPartition::iterator trainingIterator = partition_.first_begin();
+            BiPartition::iterator holdoutIterator = partition_.second_begin();
 
-            for (uint32 i = 0; i < numTraining_; i++) {
+            for (uint32 i = 0; i < numTraining; i++) {
                 trainingIterator[i] = i;
             }
 
-            for (uint32 i = 0; i < numHoldout_; i++) {
-                holdoutIterator[i] = numTraining_ + i;
+            for (uint32 i = 0; i < numHoldout; i++) {
+                holdoutIterator[i] = numTraining + i;
             }
 
+            uint32 numTotal = partition_.getNumElements();
             randomPermutation<BiPartition::iterator, BiPartition::iterator>(trainingIterator, holdoutIterator,
-                                                                            numTraining_,
-                                                                            partitionPtr->getNumElements(), rng);
-            return partitionPtr;
+                                                                            numTraining, numTotal, rng);
+            return partition_;
         }
 
 };
