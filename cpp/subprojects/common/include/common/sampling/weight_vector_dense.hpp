@@ -73,6 +73,13 @@ class DenseWeightVector final : public IWeightVector {
         const_iterator cend() const;
 
         /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements
+         */
+        uint32 getNumElements() const;
+
+        /**
          * Sets the number of non-zero weights.
          *
          * @param numNonZeroWeights The number of non-zero weights to be set
