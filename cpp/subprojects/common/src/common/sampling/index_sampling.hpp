@@ -12,15 +12,16 @@
  * indices that have already been selected. This method is suitable if `numSamples` is much smaller than `numTotal`
  *
  * @tparam Iterator     The type of the iterator that provides random access to the available indices to sample from
- * @param array         A pointer to an array of type `uint32`, the sampled indices should be written to
- * @param numSamples    The number of elements in the array `array`
+ * @param indexVector   A reference to an object of type `PartialIndexVector`, the sampled indices should be written to
  * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class Iterator>
-static inline void sampleIndicesWithoutReplacementViaTrackingSelection(uint32* array, uint32 numSamples,
+static inline void sampleIndicesWithoutReplacementViaTrackingSelection(PartialIndexVector& indexVector,
                                                                        Iterator iterator, uint32 numTotal, RNG& rng) {
+    uint32 numSamples = indexVector.getNumElements();
+    PartialIndexVector::iterator sampleIterator = indexVector.begin();
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -33,7 +34,7 @@ static inline void sampleIndicesWithoutReplacementViaTrackingSelection(uint32* a
             shouldContinue = !selectedIndices.insert(sampledIndex).second;
         }
 
-        array[i] = sampledIndex;
+        sampleIterator[i] = sampledIndex;
     }
 }
 
@@ -42,24 +43,26 @@ static inline void sampleIndicesWithoutReplacementViaTrackingSelection(uint32* a
  * This method is suitable if `numSamples` is almost as large as `numTotal`.
  *
  * @tparam Iterator     The type of the iterator that provides random access to the available indices to sample from
- * @param array         A pointer to an array of type `uint32`, the sampled indices should be written to
- * @param numSamples    The number of elements in the array `array`
+ * @param indexVector   A reference to an object of type `PartialIndexVector`, the sampled indices should be written to
  * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class Iterator>
-static inline void sampleIndicesWithoutReplacementViaReservoirSampling(uint32* array, uint32 numSamples,
-                                                                        Iterator iterator, uint32 numTotal, RNG& rng) {
+static inline void sampleIndicesWithoutReplacementViaReservoirSampling(PartialIndexVector& indexVector,
+                                                                       Iterator iterator, uint32 numTotal, RNG& rng) {
+    uint32 numSamples = indexVector.getNumElements();
+    PartialIndexVector::iterator sampleIterator = indexVector.begin();
+
     for (uint32 i = 0; i < numSamples; i++) {
-        array[i] = iterator[i];
+        sampleIterator[i] = iterator[i];
     }
 
     for (uint32 i = numSamples; i < numTotal; i++) {
         uint32 randomIndex = rng.random(0, i + 1);
 
         if (randomIndex < numSamples) {
-            array[randomIndex] = iterator[i];
+            sampleIterator[randomIndex] = iterator[i];
         }
     }
 }
@@ -108,53 +111,54 @@ static inline void randomPermutation(FirstIterator firstIterator, SecondIterator
  * of the available indices and then returning the first `numSamples` indices.
  *
  * @tparam Iterator     The type of the iterator that provides random access to the available indices to sample from
- * @param array         A pointer to an array of type `uint32`, the sampled indices should be written to
- * @param numSamples    The number of elements in the array `array`
+ * @param indexVector   A reference to an object of type `PartialIndexVector`, the sampled indices should be written to
  * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class Iterator>
-static inline void sampleIndicesWithoutReplacementViaRandomPermutation(uint32* array, uint32 numSamples,
+static inline void sampleIndicesWithoutReplacementViaRandomPermutation(PartialIndexVector& indexVector,
                                                                        Iterator iterator, uint32 numTotal, RNG& rng) {
+    uint32 numSamples = indexVector.getNumElements();
+    PartialIndexVector::iterator sampleIterator = indexVector.begin();
     uint32 unusedIndices[numTotal - numSamples];
 
     for (uint32 i = 0; i < numSamples; i++) {
-        array[i] = iterator[i];
+        sampleIterator[i] = iterator[i];
     }
 
     for (uint32 i = numSamples; i < numTotal; i++) {
         unusedIndices[i - numSamples] = iterator[i];
     }
 
-    randomPermutation<PartialIndexVector::iterator, uint32*>(array, &unusedIndices[0], numSamples, numTotal, rng);
+    randomPermutation<PartialIndexVector::iterator, uint32*>(sampleIterator, &unusedIndices[0], numSamples, numTotal,
+                                                             rng);
 }
 
 /**
  * Randomly selects `numSamples` out of `numTotal` indices without replacement. The method that is used internally is
  * chosen automatically, depending on the ratio `numSamples / numTotal`.
  *
- * @tparam Iterator    The type of the iterator that provides random access to the available indices to sample from
- * @param array         A pointer to an array of type `uint32`, the sampled indices should be written to
- * @param numSamples    The number of elements in the array `array`
+ * @tparam Iterator     The type of the iterator that provides random access to the available indices to sample from
+ * @param indexVector   A reference to an object of type `PartialIndexVector`, the sampled indices should be written to
  * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class Iterator>
-static inline void sampleIndicesWithoutReplacement(uint32* array, uint32 numSamples, Iterator iterator, uint32 numTotal,
+static inline void sampleIndicesWithoutReplacement(PartialIndexVector& indexVector, Iterator iterator, uint32 numTotal,
                                                    RNG& rng) {
-    float64 ratio = numTotal > 0 ? ((float64) numSamples) / ((float64) numTotal) : 1;
+    float64 ratio = numTotal > 0 ? ((float64) indexVector.getNumElements()) / ((float64) numTotal) : 1;
 
     // The thresholds for choosing a suitable method are based on empirical experiments
     if (ratio < 0.06) {
         // For very small ratios use tracking selection
-        sampleIndicesWithoutReplacementViaTrackingSelection(array, numSamples, iterator, numTotal, rng);
+        sampleIndicesWithoutReplacementViaTrackingSelection(indexVector, iterator, numTotal, rng);
     } else if (ratio > 0.5) {
         // For large ratios use reservoir sampling
-        sampleIndicesWithoutReplacementViaReservoirSampling(array, numSamples, iterator, numTotal, rng);
+        sampleIndicesWithoutReplacementViaReservoirSampling(indexVector, iterator, numTotal, rng);
     } else {
         // Otherwise, use random permutation as the default method
-        sampleIndicesWithoutReplacementViaRandomPermutation(array, numSamples, iterator, numTotal, rng);
+        sampleIndicesWithoutReplacementViaRandomPermutation(indexVector, iterator, numTotal, rng);
     }
 }
