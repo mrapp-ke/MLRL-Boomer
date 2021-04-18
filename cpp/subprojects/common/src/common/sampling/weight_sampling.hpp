@@ -13,7 +13,7 @@
  * set to 0, by using a set to keep track of the elements that have already been selected. This method is suitable if
  * `numSamples` is much smaller than `numTotal`.
  *
- * @tparam T            The type of the iterator that provides random access to the indices of the available elements to
+ * @tparam Iterator     The type of the iterator that provides random access to the indices of the available elements to
  *                      sample from
  * @param weightVector  A reference to an object of type `DenseWeightVector` the weights should be written to
  * @param iterator      An iterator that provides random access to the indices of the available elements to sample from
@@ -22,10 +22,10 @@
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IWeightVector` that provides access to the weights
  */
-template<class T>
+template<class Iterator>
 static inline void sampleWeightsWithoutReplacementViaTrackingSelection(DenseWeightVector<uint8>& weightVector,
-                                                                       T iterator, uint32 numTotal, uint32 numSamples,
-                                                                       RNG& rng) {
+                                                                       Iterator iterator, uint32 numTotal,
+                                                                       uint32 numSamples, RNG& rng) {
     typename DenseWeightVector<uint8>::iterator sampleIterator = weightVector.begin();
     setArrayToZeros(sampleIterator, weightVector.getNumElements());
     std::unordered_set<uint32> selectedIndices;
@@ -50,7 +50,7 @@ static inline void sampleWeightsWithoutReplacementViaTrackingSelection(DenseWeig
  * Randomly selects `numSamples` out of `numTotal` elements and sets their weights to 1, while the remaining weights are
  * set to 0, by using a pool, i.e., an array, to keep track of the elements that have not been selected yet.
  *
- * @tparam T            The type of the iterator that provides random access to the indices of the available elements to
+ * @tparam Iterator     The type of the iterator that provides random access to the indices of the available elements to
  *                      sample from
  * @param weightVector  A reference to an object of type `DenseWeightVector` the weights should be written to
  * @param iterator      An iterator that provides random access to the indices of the available elements to sample from
@@ -59,8 +59,8 @@ static inline void sampleWeightsWithoutReplacementViaTrackingSelection(DenseWeig
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  * @return              An unique pointer to an object of type `IWeightVector` that provides access to the weights
  */
-template<class T>
-static inline void sampleWeightsWithoutReplacementViaPool(DenseWeightVector<uint8>& weightVector, T iterator,
+template<class Iterator>
+static inline void sampleWeightsWithoutReplacementViaPool(DenseWeightVector<uint8>& weightVector, Iterator iterator,
                                                           uint32 numTotal, uint32 numSamples, RNG& rng) {
     typename DenseWeightVector<uint8>::iterator sampleIterator = weightVector.begin();
     setArrayToZeros(sampleIterator, weightVector.getNumElements());
@@ -90,7 +90,7 @@ static inline void sampleWeightsWithoutReplacementViaPool(DenseWeightVector<uint
  * Randomly selects `numSamples` out of `numTotal` elements and sets their weights to 1, while the remaining weights are
  * set to 0. The method that is used internally is chosen automatically, depending on the ratio `numSamples / numTotal`.
  *
- * @tparam T            The type of the iterator that provides random access to the indices of the available elements to
+ * @tparam Iterator     The type of the iterator that provides random access to the indices of the available elements to
  *                      sample from
  * @param weightVector  A reference to an object of type `DenseWeightVector` the weights should be written to
  * @param iterator      An iterator that provides random access to the indices of the available elements to sample from
@@ -100,9 +100,9 @@ static inline void sampleWeightsWithoutReplacementViaPool(DenseWeightVector<uint
  * @return              An unique pointer to an object of type `IWeightVector` that provides access to the weights
  *
  */
-template<class T>
-static inline void sampleWeightsWithoutReplacement(DenseWeightVector<uint8>& weightVector, T iterator, uint32 numTotal,
-                                                   uint32 numSamples, RNG& rng) {
+template<class Iterator>
+static inline void sampleWeightsWithoutReplacement(DenseWeightVector<uint8>& weightVector, Iterator iterator,
+                                                   uint32 numTotal, uint32 numSamples, RNG& rng) {
     float64 ratio = numTotal > 0 ? ((float64) numSamples) / ((float64) numTotal) : 1;
 
     if (ratio < 0.06) {
