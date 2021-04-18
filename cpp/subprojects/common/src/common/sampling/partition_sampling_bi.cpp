@@ -42,7 +42,7 @@ class BiPartitionSampling final : public IPartitionSampling {
 
             uint32 numTotal = partition_.getNumElements();
             randomPermutation<BiPartition::iterator, BiPartition::iterator>(trainingIterator, holdoutIterator,
-                                                                            numTraining, numTotal, rng);
+                                                                            numTraining, numTotal, numTraining, rng);
             return partition_;
         }
 
