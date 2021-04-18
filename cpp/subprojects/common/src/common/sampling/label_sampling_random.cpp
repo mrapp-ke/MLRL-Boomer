@@ -27,8 +27,8 @@ class RandomLabelSubsetSelection final : public ILabelSubSampling {
         }
 
         const IIndexVector& subSample(RNG& rng) override {
-            sampleIndicesWithoutReplacement<IndexIterator>(indexVector_.begin(), IndexIterator(numLabels_), numLabels_,
-                                                           indexVector_.getNumElements(), rng);
+            sampleIndicesWithoutReplacement<IndexIterator>(indexVector_.begin(), indexVector_.getNumElements(),
+                                                           IndexIterator(numLabels_), numLabels_, rng);
             return indexVector_;
         }
 

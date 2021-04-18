@@ -13,14 +13,14 @@
  *
  * @tparam T            The type of the iterator that provides random access to the available indices to sample from
  * @param array         A pointer to an array of type `uint32`, the sampled indices should be written to
+ * @param numSamples    The number of elements in the array `array`
  * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
- * @param numSamples    The number of elements in the array `array`
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class T>
-static inline void sampleIndicesWithoutReplacementViaTrackingSelection(uint32* array, T iterator, uint32 numTotal,
-                                                                       uint32 numSamples, RNG& rng) {
+static inline void sampleIndicesWithoutReplacementViaTrackingSelection(uint32* array, uint32 numSamples, T iterator,
+                                                                       uint32 numTotal, RNG& rng) {
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -43,14 +43,14 @@ static inline void sampleIndicesWithoutReplacementViaTrackingSelection(uint32* a
  *
  * @tparam T            The type of the iterator that provides random access to the available indices to sample from
  * @param array         A pointer to an array of type `uint32`, the sampled indices should be written to
+ * @param numSamples    The number of elements in the array `array`
  * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
- * @param numSamples    The number of elements in the array `array`
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class T>
-static inline void sampleIndicesWithoutReplacementViaReservoirSampling(uint32* array, T iterator, uint32 numTotal,
-                                                                       uint32 numSamples, RNG& rng) {
+static inline void sampleIndicesWithoutReplacementViaReservoirSampling(uint32* array, uint32 numSamples, T iterator,
+                                                                        uint32 numTotal, RNG& rng) {
     for (uint32 i = 0; i < numSamples; i++) {
         array[i] = iterator[i];
     }
@@ -109,14 +109,14 @@ static inline void randomPermutation(FirstIterator firstIterator, SecondIterator
  *
  * @tparam T            The type of the iterator that provides random access to the available indices to sample from
  * @param array         A pointer to an array of type `uint32`, the sampled indices should be written to
+ * @param numSamples    The number of elements in the array `array`
  * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
- * @param numSamples    The number of elements in the array `array`
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class T>
-static inline void sampleIndicesWithoutReplacementViaRandomPermutation(uint32* array, T iterator, uint32 numTotal,
-                                                                       uint32 numSamples, RNG& rng) {
+static inline void sampleIndicesWithoutReplacementViaRandomPermutation(uint32* array, uint32 numSamples, T iterator,
+                                                                       uint32 numTotal, RNG& rng) {
     uint32 unusedIndices[numTotal - numSamples];
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -136,25 +136,25 @@ static inline void sampleIndicesWithoutReplacementViaRandomPermutation(uint32* a
  *
  * @tparam T            The type of the iterator that provides random access to the available indices to sample from
  * @param array         A pointer to an array of type `uint32`, the sampled indices should be written to
+ * @param numSamples    The number of elements in the array `array`
  * @param iterator      An iterator that provides random access to the available indices to sample from
  * @param numTotal      The total number of available indices to sample from
- * @param numSamples    The number of elements in the array `array`
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class T>
-static inline void sampleIndicesWithoutReplacement(uint32* array, T iterator, uint32 numTotal, uint32 numSamples,
+static inline void sampleIndicesWithoutReplacement(uint32* array, uint32 numSamples, T iterator, uint32 numTotal,
                                                    RNG& rng) {
     float64 ratio = numTotal > 0 ? ((float64) numSamples) / ((float64) numTotal) : 1;
 
     // The thresholds for choosing a suitable method are based on empirical experiments
     if (ratio < 0.06) {
         // For very small ratios use tracking selection
-        sampleIndicesWithoutReplacementViaTrackingSelection(array, iterator, numTotal, numSamples, rng);
+        sampleIndicesWithoutReplacementViaTrackingSelection(array, numSamples, iterator, numTotal, rng);
     } else if (ratio > 0.5) {
         // For large ratios use reservoir sampling
-        sampleIndicesWithoutReplacementViaReservoirSampling(array, iterator, numTotal, numSamples, rng);
+        sampleIndicesWithoutReplacementViaReservoirSampling(array, numSamples, iterator, numTotal, rng);
     } else {
         // Otherwise, use random permutation as the default method
-        sampleIndicesWithoutReplacementViaRandomPermutation(array, iterator, numTotal, numSamples, rng);
+        sampleIndicesWithoutReplacementViaRandomPermutation(array, numSamples, iterator, numTotal, rng);
     }
 }
