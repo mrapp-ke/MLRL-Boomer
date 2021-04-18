@@ -32,8 +32,8 @@ class RandomFeatureSubsetSelection final : public IFeatureSubSampling {
         }
 
         const IIndexVector& subSample(RNG& rng) override {
-            sampleIndicesWithoutReplacement<IndexIterator>(indexVector_.begin(), indexVector_.getNumElements(),
-                                                           IndexIterator(numFeatures_), numFeatures_, rng);
+            sampleIndicesWithoutReplacement<IndexIterator>(indexVector_, IndexIterator(numFeatures_), numFeatures_,
+                                                           rng);
             return indexVector_;
         }
 
