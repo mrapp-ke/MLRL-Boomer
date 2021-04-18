@@ -6,6 +6,10 @@ EqualWeightVector::EqualWeightVector(uint32 numElements)
 
 }
 
+uint32 EqualWeightVector::getNumElements() const {
+    return numElements_;
+}
+
 uint32 EqualWeightVector::getNumNonZeroWeights() const {
     return numElements_;
 }

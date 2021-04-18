@@ -22,6 +22,13 @@ class EqualWeightVector final : public IWeightVector {
          */
         EqualWeightVector(uint32 numElements);
 
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements
+         */
+        uint32 getNumElements() const;
+
         uint32 getNumNonZeroWeights() const override;
 
         bool hasZeroWeights() const override;
