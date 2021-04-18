@@ -20,153 +20,158 @@ cdef extern from "common/sampling/weight_vector.hpp" nogil:
 
 cdef extern from "common/sampling/instance_sampling.hpp" nogil:
 
-    cdef cppclass IInstanceSubSampling:
+    cdef cppclass IInstanceSubSamplingFactory:
         pass
 
 
 cdef extern from "common/sampling/instance_sampling_bagging.hpp" nogil:
 
-    cdef cppclass BaggingImpl"Bagging"(IInstanceSubSampling):
+    cdef cppclass BaggingFactoryImpl"BaggingFactory"(IInstanceSubSamplingFactory):
 
         # Constructors:
 
-        BaggingImpl(float32 sampleSize) except +
+        BaggingFactoryImpl(float32 sampleSize) except +
 
 
 cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
 
-    cdef cppclass RandomInstanceSubsetSelectionImpl"RandomInstanceSubsetSelection"(IInstanceSubSampling):
+    cdef cppclass RandomInstanceSubsetSelectionFactoryImpl"RandomInstanceSubsetSelectionFactory"(
+            IInstanceSubSamplingFactory):
 
         # Constructors:
 
-        RandomInstanceSubsetSelectionImpl(float32 sampleSize)
+        RandomInstanceSubsetSelectionFactoryImpl(float32 sampleSize) except +
 
 
 cdef extern from "common/sampling/instance_sampling_no.hpp" nogil:
 
-    cdef cppclass NoInstanceSubSamplingImpl"NoInstanceSubSampling"(IInstanceSubSampling):
+    cdef cppclass NoInstanceSubSamplingFactoryImpl"NoInstanceSubSamplingFactory"(IInstanceSubSamplingFactory):
         pass
 
 
 cdef extern from "common/sampling/feature_sampling.hpp" nogil:
 
-    cdef cppclass IFeatureSubSampling:
+    cdef cppclass IFeatureSubSamplingFactory:
         pass
 
 
 cdef extern from "common/sampling/feature_sampling_random.hpp" nogil:
 
-    cdef cppclass RandomFeatureSubsetSelectionImpl"RandomFeatureSubsetSelection"(IFeatureSubSampling):
+    cdef cppclass RandomFeatureSubsetSelectionFactoryImpl"RandomFeatureSubsetSelectionFactory"(
+            IFeatureSubSamplingFactory):
 
-        # Constructors:
+        # Constructors
 
-        RandomFeatureSubsetSelectionImpl(float32 sampleSize) except +
+        RandomFeatureSubsetSelectionFactoryImpl(float32 sampleSize) except +
 
 
 cdef extern from "common/sampling/feature_sampling_no.hpp" nogil:
 
-    cdef cppclass NoFeatureSubSamplingImpl"NoFeatureSubSampling"(IFeatureSubSampling):
+    cdef cppclass NoFeatureSubSamplingFactoryImpl"NoFeatureSubSamplingFactory"(IFeatureSubSamplingFactory):
         pass
 
 
 cdef extern from "common/sampling/label_sampling.hpp" nogil:
 
-    cdef cppclass ILabelSubSampling:
+    cdef cppclass ILabelSubSamplingFactory:
         pass
 
 
 cdef extern from "common/sampling/label_sampling_random.hpp" nogil:
 
-    cdef cppclass RandomLabelSubsetSelectionImpl"RandomLabelSubsetSelection"(ILabelSubSampling):
+    cdef cppclass RandomLabelSubsetSelectionFactoryImpl"RandomLabelSubsetSelectionFactory"(ILabelSubSamplingFactory):
 
         # Constructors:
 
-        RandomLabelSubsetSelectionImpl(uint32 numSamples)
+        RandomLabelSubsetSelectionFactoryImpl(uint32 numSamples) except +
 
 
 cdef extern from "common/sampling/label_sampling_no.hpp" nogil:
 
-    cdef cppclass NoLabelSubSamplingImpl"NoLabelSubSampling"(ILabelSubSampling):
+    cdef cppclass NoLabelSubSamplingFactoryImpl"NoLabelSubSamplingFactory"(ILabelSubSamplingFactory):
         pass
 
 
 cdef extern from "common/sampling/partition_sampling.hpp" nogil:
 
-    cdef cppclass IPartitionSampling:
+    cdef cppclass IPartitionSamplingFactory:
         pass
 
 
 cdef extern from "common/sampling/partition_sampling_no.hpp" nogil:
 
-    cdef cppclass NoPartitionSamplingImpl"NoPartitionSampling"(IPartitionSampling):
+    cdef cppclass NoPartitionSamplingFactoryImpl"NoPartitionSamplingFactory"(IPartitionSamplingFactory):
         pass
 
 
 cdef extern from "common/sampling/partition_sampling_bi.hpp" nogil:
 
-    cdef cppclass BiPartitionSamplingImpl"BiPartitionSampling"(IPartitionSampling):
-        pass
+    cdef cppclass BiPartitionSamplingFactoryImpl"BiPartitionSamplingFactory"(IPartitionSamplingFactory):
+
+        # Constructors:
+
+        BiPartitionSamplingFactoryImpl(float32 holdout_set_size) except +
 
 
-cdef class InstanceSubSampling:
-
-    # Attributes:
-
-    cdef shared_ptr[IInstanceSubSampling] instance_sub_sampling_ptr
-
-
-cdef class Bagging(InstanceSubSampling):
-    pass
-
-
-cdef class RandomInstanceSubsetSelection(InstanceSubSampling):
-    pass
-
-
-cdef class NoInstanceSubSampling(InstanceSubSampling):
-    pass
-
-
-cdef class FeatureSubSampling:
+cdef class InstanceSubSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IFeatureSubSampling] feature_sub_sampling_ptr
+    cdef shared_ptr[IInstanceSubSamplingFactory] instance_sub_sampling_factory_ptr
 
 
-cdef class RandomFeatureSubsetSelection(FeatureSubSampling):
+cdef class BaggingFactory(InstanceSubSamplingFactory):
     pass
 
 
-cdef class NoFeatureSubSampling(FeatureSubSampling):
+cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
     pass
 
 
-cdef class LabelSubSampling:
+cdef class NoInstanceSubSamplingFactory(InstanceSubSamplingFactory):
+    pass
+
+
+cdef class FeatureSubSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelSubSampling] label_sub_sampling_ptr
+    cdef shared_ptr[IFeatureSubSamplingFactory] feature_sub_sampling_factory_ptr
 
 
-cdef class RandomLabelSubsetSelection(LabelSubSampling):
+cdef class RandomFeatureSubsetSelectionFactory(FeatureSubSamplingFactory):
     pass
 
 
-cdef class NoLabelSubSampling(LabelSubSampling):
+cdef class NoFeatureSubSamplingFactory(FeatureSubSamplingFactory):
     pass
 
 
-cdef class PartitionSampling:
+cdef class LabelSubSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IPartitionSampling] partition_sampling_ptr
+    cdef shared_ptr[ILabelSubSamplingFactory] label_sub_sampling_factory_ptr
 
 
-cdef class NoPartitionSampling(PartitionSampling):
+cdef class RandomLabelSubsetSelectionFactory(LabelSubSamplingFactory):
     pass
 
 
-cdef class BiPartitionSampling(PartitionSampling):
+cdef class NoLabelSubSamplingFactory(LabelSubSamplingFactory):
+    pass
+
+
+cdef class PartitionSamplingFactory:
+
+    # Attributes:
+
+    cdef shared_ptr[IPartitionSamplingFactory] partition_sampling_factory_ptr
+
+
+cdef class NoPartitionSamplingFactory(PartitionSamplingFactory):
+    pass
+
+
+cdef class BiPartitionSamplingFactory(PartitionSamplingFactory):
     pass
