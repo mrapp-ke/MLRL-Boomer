@@ -75,24 +75,23 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     uint32 numLabels = thresholdsPtr->getNumLabels();
     std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrixPtr->createPartitionSampling(
         *partitionSamplingFactoryPtr_);
-    std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr->createPartition(rng);
-    std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partitionPtr->createInstanceSubSampling(
+    IPartition& partition = partitionSamplingPtr->partition(rng);
+    std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partition.createInstanceSubSampling(
         *instanceSubSamplingFactoryPtr_, *labelMatrixPtr);
     std::unique_ptr<IFeatureSubSampling> featureSubSamplingPtr = featureSubSamplingFactoryPtr_->create(numFeatures);
     std::unique_ptr<ILabelSubSampling> labelSubSamplingPtr = labelSubSamplingFactoryPtr_->create(numLabels);
     IStoppingCriterion::Result stoppingCriterionResult;
 
-    while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, *partitionPtr,
-                                                          statisticsProviderPtr->get(),
-                                                          numRules),
+    while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, partition,
+                                                          statisticsProviderPtr->get(), numRules),
            stoppingCriterionResult.action != IStoppingCriterion::Action::FORCE_STOP) {
         if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
             numUsedRules = stoppingCriterionResult.numRules;
         }
 
-        std::unique_ptr<IWeightVector> weightsPtr = instanceSubSamplingPtr->subSample(rng);
-        std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr->subSample(rng);
-        bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, *labelIndicesPtr, *weightsPtr, *partitionPtr,
+        const IWeightVector& weights = instanceSubSamplingPtr->subSample(rng);
+        const IIndexVector& labelIndices = labelSubSamplingPtr->subSample(rng);
+        bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, labelIndices, weights, partition,
                                                      *featureSubSamplingPtr, *pruningPtr_, *postProcessorPtr_,
                                                      minCoverage_, maxConditions_, maxHeadRefinements_, rng,
                                                      modelBuilder);

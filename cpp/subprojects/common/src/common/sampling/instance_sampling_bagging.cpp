@@ -2,15 +2,15 @@
 #include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
+#include "common/data/arrays.hpp"
 
 
-static inline std::unique_ptr<IWeightVector> subSampleInternally(const SinglePartition& partition, float32 sampleSize,
-                                                                 RNG& rng) {
+static inline void subSampleInternally(const SinglePartition& partition, float32 sampleSize,
+                                       DenseWeightVector<uint32>& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize * numExamples);
-    std::unique_ptr<DenseWeightVector<uint32>> weightVectorPtr = std::make_unique<DenseWeightVector<uint32>>(
-        numExamples, true);
-    typename DenseWeightVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
+    typename DenseWeightVector<uint32>::iterator weightIterator = weightVector.begin();
+    setArrayToZeros(weightIterator, numExamples);
     uint32 numNonZeroWeights = 0;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -26,18 +26,17 @@ static inline std::unique_ptr<IWeightVector> subSampleInternally(const SinglePar
         }
     }
 
-    weightVectorPtr->setNumNonZeroWeights(numNonZeroWeights);
-    return weightVectorPtr;
+    weightVector.setNumNonZeroWeights(numNonZeroWeights);
 }
 
-static inline std::unique_ptr<IWeightVector> subSampleInternally(BiPartition& partition, float32 sampleSize, RNG& rng) {
+static inline void subSampleInternally(BiPartition& partition, float32 sampleSize,
+                                       DenseWeightVector<uint32>& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize * numTrainingExamples);
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
-    std::unique_ptr<DenseWeightVector<uint32>> weightVectorPtr = std::make_unique<DenseWeightVector<uint32>>(
-        numExamples, true);
-    typename DenseWeightVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
+    typename DenseWeightVector<uint32>::iterator weightIterator = weightVector.begin();
+    setArrayToZeros(weightIterator, numExamples);
     uint32 numNonZeroWeights = 0;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -54,8 +53,7 @@ static inline std::unique_ptr<IWeightVector> subSampleInternally(BiPartition& pa
         }
     }
 
-    weightVectorPtr->setNumNonZeroWeights(numNonZeroWeights);
-    return weightVectorPtr;
+    weightVector.setNumNonZeroWeights(numNonZeroWeights);
 }
 
 /**
@@ -74,6 +72,8 @@ class Bagging final : public IInstanceSubSampling {
 
         float32 sampleSize_;
 
+        DenseWeightVector<uint32> weightVector_;
+
     public:
 
         /**
@@ -83,12 +83,14 @@ class Bagging final : public IInstanceSubSampling {
          *                   60 % of the available examples). Must be in (0, 1]
          */
         Bagging(Partition& partition, float32 sampleSize)
-            : partition_(partition), sampleSize_(sampleSize) {
+            : partition_(partition), sampleSize_(sampleSize),
+              weightVector_(DenseWeightVector<uint32>(partition.getNumElements())) {
 
         }
 
-        std::unique_ptr<IWeightVector> subSample(RNG& rng) const override {
-            return subSampleInternally(partition_, sampleSize_, rng);
+        const IWeightVector& subSample(RNG& rng) override {
+            subSampleInternally(partition_, sampleSize_, weightVector_, rng);
+            return weightVector_;
         }
 
 };

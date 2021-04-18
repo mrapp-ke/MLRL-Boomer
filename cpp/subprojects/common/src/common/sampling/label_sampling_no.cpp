@@ -2,14 +2,30 @@
 #include "common/indices/index_vector_full.hpp"
 
 
-NoLabelSubSampling::NoLabelSubSampling(uint32 numLabels)
-    : numLabels_(numLabels) {
+/**
+ * An implementation of the class `ILabelSubSampling` that does not perform any sampling, but includes all labels.
+ */
+class NoLabelSubSampling final : public ILabelSubSampling {
 
-}
+    private:
 
-std::unique_ptr<IIndexVector> NoLabelSubSampling::subSample(RNG& rng) const {
-    return std::make_unique<FullIndexVector>(numLabels_);
-}
+        FullIndexVector indexVector_;
+
+    public:
+
+        /**
+         * @param numLabels The total number of available labels
+         */
+        NoLabelSubSampling(uint32 numLabels)
+            : indexVector_(numLabels) {
+
+        }
+
+        const IIndexVector& subSample(RNG& rng) override {
+            return indexVector_;
+        }
+
+};
 
 std::unique_ptr<ILabelSubSampling> NoLabelSubSamplingFactory::create(uint32 numLabels) const {
     return std::make_unique<NoLabelSubSampling>(numLabels);
