@@ -148,6 +148,15 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
             i++;
         }
     } else {
+        // Discard the indices at positions [start, end) and set the corresponding values in `coverageMask` to
+        // `numConditions`, which marks them as uncovered...
+        for (intp r = start; r < end; r++) {
+            uint32 index = iterator[r].index;
+            coverageMaskIterator[index] = numConditions;
+            float64 weight = weights.getWeight(index);
+            statistics.updateCoveredStatistic(index, weight, true);
+        }
+
         if (conditionComparator == NEQ) {
             // Retain the indices at positions [currentStart, currentEnd), while leaving the corresponding values in
             // `coverageMask` untouched, such that all previously covered examples in said range are still marked
@@ -170,15 +179,6 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
                 filteredIterator[i].value = iterator[r].value;
                 i++;
             }
-        }
-
-        // Discard the indices at positions [start, end) and set the corresponding values in `coverageMask` to
-        // `numConditions`, which marks them as uncovered...
-        for (intp r = start; r < end; r++) {
-            uint32 index = iterator[r].index;
-            coverageMaskIterator[index] = numConditions;
-            float64 weight = weights.getWeight(index);
-            statistics.updateCoveredStatistic(index, weight, true);
         }
 
         // Retain the indices at positions [currentStart, currentEnd), while leaving the corresponding values in
