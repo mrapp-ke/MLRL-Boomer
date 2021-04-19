@@ -82,6 +82,8 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
         DenseVector<uint32> numExamplesVector_;
 
+        DenseWeightVector<uint8> weightVector_;
+
     public:
 
         /**
@@ -97,19 +99,16 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
         LabelWiseStratifiedSampling(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
                                     IndexIterator indicesEnd, float32 sampleSize)
             : labelMatrix_(labelMatrix), cscLabelMatrix_(CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd)),
-              sampleSize_(sampleSize), numExamplesVector_(DenseVector<uint32>(labelMatrix.getNumCols())) {
+              sampleSize_(sampleSize), numExamplesVector_(DenseVector<uint32>(labelMatrix.getNumCols())),
+              weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows())) {
 
         }
 
-        std::unique_ptr<IWeightVector> subSample(RNG& rng) override {
-            // Create a vector to store the weights of individual examples...
-            uint32 numTotalExamples = labelMatrix_.getNumRows();
-            std::unique_ptr<DenseWeightVector<uint8>> weightVectorPtr =
-                std::make_unique<DenseWeightVector<uint8>>(numTotalExamples);
-            DenseWeightVector<uint8>::iterator weightIterator = weightVectorPtr->begin();
-
+        const IWeightVector& subSample(RNG& rng) override {
             // Initialize the weights of all examples with the value `UNSET_WEIGHT`, which allows to identify examples
             // for which no weight has been set yet...
+            uint32 numTotalExamples = labelMatrix_.getNumRows();
+            DenseWeightVector<uint8>::iterator weightIterator = weightVector_.begin();
             setArrayToValue<uint8>(weightIterator, numTotalExamples, UNSET_WEIGHT);
 
             // Determine the number of examples that are associated with individual labels...
@@ -169,8 +168,8 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
                 }
             }
 
-            weightVectorPtr->setNumNonZeroWeights(numNonZeroWeights);
-            return weightVectorPtr;
+            weightVector_.setNumNonZeroWeights(numNonZeroWeights);
+            return weightVector_;
         }
 
 };
