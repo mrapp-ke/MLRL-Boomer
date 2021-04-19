@@ -22,12 +22,14 @@ from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
 from mlrl.common.cython.rule_induction import RuleModelInduction
-from mlrl.common.cython.sampling import FeatureSubSampling, RandomFeatureSubsetSelection, NoFeatureSubSampling
+from mlrl.common.cython.sampling import FeatureSubSamplingFactory, RandomFeatureSubsetSelectionFactory, \
+    NoFeatureSubSamplingFactory
 from mlrl.common.cython.sampling import InstanceSubSamplingFactory, BaggingFactory, \
-    RandomInstanceSubsetSelectionFactory, LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory, \
-    NoInstanceSubSamplingFactory
-from mlrl.common.cython.sampling import LabelSubSampling, RandomLabelSubsetSelection, NoLabelSubSampling
-from mlrl.common.cython.sampling import PartitionSampling, NoPartitionSampling, BiPartitionSampling
+    RandomInstanceSubsetSelectionFactory, NoInstanceSubSamplingFactory, LabelWiseStratifiedSamplingFactory, \
+    ExampleWiseStratifiedSamplingFactory
+from mlrl.common.cython.sampling import LabelSubSamplingFactory, RandomLabelSubsetSelectionFactory, \
+    NoLabelSubSamplingFactory
+from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, BiPartitionSamplingFactory
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
@@ -89,15 +91,15 @@ def create_sparse_policy(policy: str) -> SparsePolicy:
             [x.value for x in SparsePolicy]))
 
 
-def create_label_sub_sampling(label_sub_sampling: str, num_labels: int) -> LabelSubSampling:
+def create_label_sub_sampling_factory(label_sub_sampling: str, num_labels: int) -> LabelSubSamplingFactory:
     if label_sub_sampling is None:
-        return NoLabelSubSampling()
+        return NoLabelSubSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(label_sub_sampling, [LABEL_SUB_SAMPLING_RANDOM])
 
         if prefix == LABEL_SUB_SAMPLING_RANDOM:
             num_samples = get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
-            return RandomLabelSubsetSelection(num_samples)
+            return RandomLabelSubsetSelectionFactory(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
 
 
@@ -125,24 +127,24 @@ def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> Instance
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
 
 
-def create_feature_sub_sampling(feature_sub_sampling: str) -> FeatureSubSampling:
+def create_feature_sub_sampling_factory(feature_sub_sampling: str) -> FeatureSubSamplingFactory:
     if feature_sub_sampling is None:
-        return NoFeatureSubSampling()
+        return NoFeatureSubSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(feature_sub_sampling, [FEATURE_SUB_SAMPLING_RANDOM])
 
         if prefix == FEATURE_SUB_SAMPLING_RANDOM:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
-            return RandomFeatureSubsetSelection(sample_size)
+            return RandomFeatureSubsetSelectionFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
 
 
-def create_partition_sampling(holdout_set_size: float) -> PartitionSampling:
+def create_partition_sampling_factory(holdout_set_size: float) -> PartitionSamplingFactory:
     if holdout_set_size <= 0.0:
-        return NoPartitionSampling()
+        return NoPartitionSamplingFactory()
     else:
         if holdout_set_size < 1.0:
-            return BiPartitionSampling(holdout_set_size)
+            return BiPartitionSamplingFactory(holdout_set_size)
         raise ValueError('Invalid value given for parameter \'holdout_set_size\': ' + str(holdout_set_size))
 
 
