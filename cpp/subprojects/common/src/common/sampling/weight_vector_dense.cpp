@@ -34,6 +34,11 @@ typename DenseWeightVector<T>::const_iterator DenseWeightVector<T>::cend() const
 }
 
 template<class T>
+uint32 DenseWeightVector<T>::getNumElements() const {
+    return vector_.getNumElements();
+}
+
+template<class T>
 uint32 DenseWeightVector<T>::getNumNonZeroWeights() const {
     return numNonZeroWeights_;
 }

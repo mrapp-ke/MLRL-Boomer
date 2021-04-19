@@ -88,6 +88,9 @@ class CsrLabelMatrix final : public ILabelMatrix {
         std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
             const IStatisticsProviderFactory& factory) const override;
 
+        std::unique_ptr<IPartitionSampling> createPartitionSampling(
+            const IPartitionSamplingFactory& factory) const override;
+
         std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
             const IInstanceSubSamplingFactory& factory, const SinglePartition& partition) const override;
 

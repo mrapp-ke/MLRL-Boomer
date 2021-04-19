@@ -41,11 +41,9 @@ void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProv
 
 bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
                                       const IWeightVector& weights, IPartition& partition,
-                                      const IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
+                                      IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
                                       const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
                                       intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder) const {
-    // The total number of features
-    uint32 numFeatures = thresholds.getNumFeatures();
     // True, if the rule is learned on a sub-sample of the available training examples, False otherwise
     bool instanceSubSamplingUsed = weights.hasZeroWeights();
     // The label indices for which the next refinement of the rule may predict
@@ -73,12 +71,12 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         foundRefinement = false;
 
         // Sample features...
-        std::unique_ptr<IIndexVector> sampledFeatureIndicesPtr = featureSubSampling.subSample(numFeatures, rng);
-        uint32 numSampledFeatures = sampledFeatureIndicesPtr->getNumElements();
+        const IIndexVector& sampledFeatureIndices = featureSubSampling.subSample(rng);
+        uint32 numSampledFeatures = sampledFeatureIndices.getNumElements();
 
         // For each feature, create an object of type `IRuleRefinement`...
         for (intp i = 0; i < numSampledFeatures; i++) {
-            uint32 featureIndex = sampledFeatureIndicesPtr->getIndex((uint32) i);
+            uint32 featureIndex = sampledFeatureIndices.getIndex((uint32) i);
             std::unique_ptr<IRuleRefinement> ruleRefinementPtr = currentLabelIndices->createRuleRefinement(
                 *thresholdsSubsetPtr, featureIndex);
             ruleRefinements[featureIndex] = std::move(ruleRefinementPtr);
@@ -88,14 +86,14 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         #pragma omp parallel for firstprivate(numSampledFeatures) firstprivate(ruleRefinementsPtr) \
         firstprivate(bestHead) schedule(dynamic) num_threads(numThreads_)
         for (intp i = 0; i < numSampledFeatures; i++) {
-            uint32 featureIndex = sampledFeatureIndicesPtr->getIndex((uint32) i);
+            uint32 featureIndex = sampledFeatureIndices.getIndex((uint32) i);
             std::unique_ptr<IRuleRefinement>& ruleRefinementPtr = ruleRefinementsPtr->find(featureIndex)->second;
             ruleRefinementPtr->findRefinement(bestHead);
         }
 
         // Pick the best refinement among the refinements that have been found for the different features...
         for (intp i = 0; i < numSampledFeatures; i++) {
-            uint32 featureIndex = sampledFeatureIndicesPtr->getIndex((uint32) i);
+            uint32 featureIndex = sampledFeatureIndices.getIndex((uint32) i);
             std::unique_ptr<IRuleRefinement>& ruleRefinementPtr = ruleRefinements.find(featureIndex)->second;
             std::unique_ptr<Refinement> refinementPtr = ruleRefinementPtr->pollRefinement();
 
