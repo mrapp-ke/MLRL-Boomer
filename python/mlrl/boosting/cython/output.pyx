@@ -111,7 +111,7 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
         cdef uint32 i
 
         for i in range(num_rows):
-            label_vector_ptr = label_matrix_ptr.get().getLabelVector(i)
+            label_vector_ptr = label_matrix_ptr.get().createLabelVector(i)
             predictor_ptr.get().addLabelVector(move(label_vector_ptr))
 
         cdef ExampleWiseClassificationPredictor predictor = ExampleWiseClassificationPredictor.__new__(

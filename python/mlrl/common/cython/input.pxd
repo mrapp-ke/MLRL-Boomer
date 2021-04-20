@@ -35,7 +35,7 @@ cdef extern from "common/input/label_matrix.hpp" nogil:
 
         uint32 getNumCols()
 
-        unique_ptr[LabelVector] getLabelVector(uint32 row)
+        unique_ptr[LabelVector] createLabelVector(uint32 row)
 
 
 cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
