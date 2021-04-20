@@ -84,7 +84,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
             numUsedRules = numRules;
         }
 
-        Debugger::lb();
+        Debugger::lb(false);
 
         std::unique_ptr<IWeightVector> weightsPtr = partitionPtr->subSample(*instanceSubSamplingPtr_, rng);
 

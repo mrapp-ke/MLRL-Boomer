@@ -13,7 +13,7 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
     // Only rules with more than one condition can be pruned...
     if (numConditions > 1) {
 
-        Debugger::lb();
+        Debugger::lb(true);
 
         // Calculate the quality score of the original rule on the prune set...
         const CoverageMask& originalCoverageMask = thresholdsSubset.getCoverageMask();

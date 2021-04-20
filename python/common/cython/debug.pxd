@@ -13,3 +13,5 @@ cdef extern from "common/debugging/debug.hpp":
       cdef void setRIFlag()
 
       cdef void setConfusionFlag()
+
+      cdef void setPrunFlag()

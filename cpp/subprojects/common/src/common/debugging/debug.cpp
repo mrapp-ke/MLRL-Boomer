@@ -11,6 +11,7 @@ int dHS = 0;
 int dLC = 0;
 int dConfusion = 0;
 int dRI = 0;
+int dPrun = 0;
 
 float64 metrics[9];
 
@@ -49,6 +50,11 @@ void setConfusionFlag() {
     dConfusion = 1;
 }
 
+void setPrunFlag() {
+    debugging_ = 1;
+    dPrun = 1;
+}
+
 void Debugger::printStart() {
     if (debugging_) {
         std::cout << "\n===debugging==========================================================\n";
@@ -61,8 +67,8 @@ void Debugger::printEnd() {
     }
 }
 
-void Debugger::lb() {
-    if (debugging_) {
+void Debugger::lb(bool prun) {
+    if (debugging_ and (dFull or prun ? dPrun : dRI)) {
         std::cout << "\n";
     }
 }
@@ -81,19 +87,14 @@ void Debugger::printCoverageMask(const CoverageMask &coverageMask, bool original
 }
 
 void Debugger::printQualityScores(float64 bestScore, float64 score) {
-    if (debugging_) {
+    if (debugging_ and (dFull or dPrun)) {
         std::cout << "\nbest quality score: " << bestScore << "\n";
         std::cout << "current quality score " << score << "\n";
     }
 }
 
-void Debugger::printRule(std::_List_const_iterator<Condition> conditionIterator, unsigned long numConditions,
+void printRuleInternally(std::_List_const_iterator<Condition> conditionIterator, unsigned long numConditions,
                          const AbstractPrediction &head) {
-    // Do nothing if the necessary flags are missing.
-    if (not debugging_) {
-        return;
-    }
-
     std::cout << "\nthe rule\n  {";
     for (std::list<Condition>::size_type m = 1; m <= numConditions; m++) {
         auto comp = static_cast<uint32>(conditionIterator->comparator);
@@ -115,8 +116,17 @@ void Debugger::printRule(std::_List_const_iterator<Condition> conditionIterator,
     std::cout << ")\n\n";
 }
 
+void Debugger::printRule(std::_List_const_iterator<Condition> conditionIterator, unsigned long numConditions,
+                         const AbstractPrediction &head) {
+    // Do nothing if the necessary flags are missing.
+    if (not debugging_ or not(dFull or dPrun)) {
+        return;
+    }
+    printRuleInternally(conditionIterator, numConditions, head);
+}
+
 void Debugger::printPrunedConditions(unsigned long numPrunedConditions) {
-    if (debugging_) {
+    if (debugging_ and (dFull or dPrun)) {
         std::cout << "number of conditions to prune: " << numPrunedConditions << "\n\n";
     }
 }
@@ -177,13 +187,13 @@ void Debugger::printHeadScore(float64 headScore, bool final) {
 }
 
 void Debugger::printStopping(bool shouldStop) {
-    if (debugging_ and shouldStop) {
+    if (debugging_ and dFull and shouldStop) {
         std::cout << "should stop\n";
     }
 }
 
 void Debugger::printRuleInduction() {
-    if (debugging_) {
+    if (debugging_ and (dFull or dRI)) {
         std::cout << "rule has been induced \n\n";
     }
 }
@@ -254,7 +264,7 @@ void Debugger::printFindHead() {
 
 void Debugger::printFindRefinement() {
     //Do nothing if the necessary flags are missing.
-    if (not debugging_) {
+    if (not debugging_ or not(dFull or dRI or dConfusion)) {
         return;
     }
     std::cout << "find refinement starting now\n";
@@ -283,7 +293,7 @@ void Debugger::printRule(Refinement &condition, const AbstractPrediction &head) 
     }
     ConditionList tmp;
     tmp.addCondition(condition);
-    Debugger::printRule(tmp.cbegin(), 1, head);
+    printRuleInternally(tmp.cbegin(), 1, head);
 }
 
 

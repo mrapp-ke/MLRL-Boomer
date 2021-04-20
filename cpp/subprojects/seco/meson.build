@@ -7,6 +7,7 @@ source_files = [
     'src/seco/heuristics/heuristic_f_measure.cpp',
     'src/seco/heuristics/heuristic_hamming_loss.cpp',
     'src/seco/heuristics/heuristic_irep.cpp',
+    'src/seco/heuristics/heuristic_laplace.cpp',
     'src/seco/heuristics/heuristic_m_estimate.cpp',
     'src/seco/heuristics/heuristic_precision.cpp',
     'src/seco/heuristics/heuristic_recall.cpp',

@@ -37,6 +37,7 @@ namespace seco {
              */
             HeuristicLabelWiseRuleEvaluation(const T& labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
                                              bool predictMajority)
+                                             // TODO: pruning heuristicPtr
                 : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority),
                   scoreVector_(DenseLabelWiseScoreVector<T>(labelIndices)) {
 
@@ -97,6 +98,7 @@ namespace seco {
                         urp = confusionMatricesTotal[offsetL + RP] - crp;
                     }
 
+                    // TODO: pruning heuristic
                     score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
 
                     // Debugger: print evaluation metrics

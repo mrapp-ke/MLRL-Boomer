@@ -94,7 +94,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
             ruleRefinementPtr->findRefinement(bestHead);
         }
 
-        Debugger::lb();
+        Debugger::lb(false);
 
         // Pick the best refinement among the refinements that have been found for the different features...
         for (intp i = 0; i < numSampledFeatures; i++) {

@@ -20,6 +20,11 @@ cdef extern from "seco/heuristics/heuristic_recall.hpp" namespace "seco" nogil:
     cdef cppclass RecallImpl"seco::Recall"(IHeuristic):
         pass
 
+cdef extern from "seco/heuristics/heuristic_laplace.hpp" namespace "seco" nogil:
+
+    cdef cppclass LaplaceImpl"seco::Laplace"(IHeuristic):
+        pass
+
 
 cdef extern from "seco/heuristics/heuristic_wra.hpp" namespace "seco" nogil:
 
@@ -63,6 +68,9 @@ cdef class Precision(Heuristic):
 
 
 cdef class Recall(Heuristic):
+    pass
+
+cdef class Laplace(Heuristic):
     pass
 
 

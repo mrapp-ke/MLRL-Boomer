@@ -30,6 +30,15 @@ cdef class Recall(Heuristic):
         self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[RecallImpl]()
 
 
+cdef class Laplace(Heuristic):
+    """
+    A wrapper for the C++ class 'Laplace'.
+    """
+
+    def __cinit__(self):
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[LaplaceImpl]()
+
+
 cdef class WRA(Heuristic):
     """
     A wrapper for the C++ class `WRA`.

@@ -55,6 +55,7 @@ static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExampl
     // Debugger: print ouf of sample
     Debugger::printOutOfSample();
     std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
+    // TODO: pruning heuristic boolean
     const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
     return scoreVector.overallQualityScore;
 }

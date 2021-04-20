@@ -9,7 +9,7 @@ from common.cython.post_processing import NoPostProcessor
 from common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from common.cython.statistics import StatisticsProviderFactory
 from seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
-from seco.cython.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
+from seco.cython.heuristics import Heuristic, Precision, Recall, Laplace, WRA, HammingLoss, FMeasure, MEstimate
 from seco.cython.model import DecisionListBuilder
 from seco.cython.output import LabelWiseClassificationPredictor
 from seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
@@ -29,6 +29,8 @@ HEAD_REFINEMENT_PARTIAL = 'partial'
 AVERAGING_LABEL_WISE = 'label-wise-averaging'
 
 HEURISTIC_PRECISION = 'precision'
+
+HEURISTIC_LAPLACE = 'laplace'
 
 HEURISTIC_HAMMING_LOSS = 'hamming-loss'
 
@@ -210,7 +212,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
         prefix, args = parse_prefix_and_dict(heuristic, [HEURISTIC_PRECISION, HEURISTIC_HAMMING_LOSS, HEURISTIC_RECALL,
-                                                         HEURISTIC_WRA, HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE])
+                                                         HEURISTIC_LAPLACE, HEURISTIC_WRA, HEURISTIC_F_MEASURE,
+                                                         HEURISTIC_M_ESTIMATE])
 
         if prefix == HEURISTIC_PRECISION:
             return Precision()
@@ -218,6 +221,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             return HammingLoss()
         elif prefix == HEURISTIC_RECALL:
             return Recall()
+        elif prefix == HEURISTIC_LAPLACE:
+            return Laplace()
         elif prefix == HEURISTIC_WRA:
             return WRA()
         elif prefix == HEURISTIC_F_MEASURE:
@@ -233,6 +238,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
         if loss == AVERAGING_LABEL_WISE:
             default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, predictMajority=True)
+            # TODO: pruning heuristic übergeben
             rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic)
             return LabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, rule_evaluation_factory)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))

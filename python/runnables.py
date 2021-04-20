@@ -19,7 +19,7 @@ from testbed.training import DataSet
 
 from common.cython.debug import (
     set_full_flag, set_cm_flag, set_dist_flag,
-    set_hs_flag, set_lc_flag, set_ri_flag, set_confusion_flag
+    set_hs_flag, set_lc_flag, set_ri_flag, set_confusion_flag, set_prun_flag
 )
 
 LOG_FORMAT = '%(levelname)s %(message)s'
@@ -60,6 +60,8 @@ class Runnable(ABC):
                     set_ri_flag()
                 if 'cf' in args.debugging_:
                     set_confusion_flag()
+                if 'prun' in args.debugging_:
+                    set_prun_flag()
 
         self._run(args)
 

@@ -20,7 +20,7 @@ void setFullFlag();
 void setCMFlag();
 
 /**
- * Sets the flag if the example weights should be included in the debugging prints.
+ * Sets the flag if the sets distribution should be included in the debugging prints.
  */
 void setDistFlag();
 
@@ -44,6 +44,11 @@ void setRIFlag();
  */
 void setConfusionFlag();
 
+/**
+ * Sets the flag if the output used to check the pruning should be included in the debugging prints.
+ */
+void setPrunFlag();
+
 class Debugger {
 
     public:
@@ -60,8 +65,10 @@ class Debugger {
 
         /**
          * Prints a new line for output format.
+         *
+         * @param prun  if it's called from pruning
          */
-        static void lb();
+        static void lb(bool prun);
 
         /**
          * Prints the coverage mask.
@@ -107,7 +114,7 @@ class Debugger {
         static void printPrunedConditions(unsigned long numPrunedConditions);
 
         /**
-         * Prints the weights.
+         * Prints the distribution of sets.
          *
          * @param weights of the examples
          */
