@@ -48,7 +48,7 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
             for (uint32 i = 0; i < numTrainingExamples_; i++) {
                 uint32 exampleIndex = indicesBegin[i];
                 std::vector<uint32>& exampleIndices =
-                    labelVectors_.addLabelVector(labelMatrix.getLabelVector(exampleIndex));
+                    labelVectors_.addLabelVector(labelMatrix.createLabelVector(exampleIndex));
                 exampleIndices.push_back(exampleIndex);
             }
         }
