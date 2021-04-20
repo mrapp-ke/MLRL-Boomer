@@ -51,7 +51,7 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
 
         uint32 getNumCols() const override;
 
-        std::unique_ptr<LabelVector> getLabelVector(uint32 row) const override;
+        std::unique_ptr<LabelVector> createLabelVector(uint32 row) const override;
 
         std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
             const IStatisticsProviderFactory& factory) const override;
