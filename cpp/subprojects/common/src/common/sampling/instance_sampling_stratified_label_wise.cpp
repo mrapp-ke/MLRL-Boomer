@@ -3,60 +3,39 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/input/label_matrix_csc.hpp"
-#include "common/data/arrays.hpp"
 #include "instance_sampling_stratified_common.hpp"
-#include <limits>
+#include <unordered_map>
+#include <map>
+#include <cstdlib>
 #include <cmath>
 
-#define UNSET_WEIGHT 2
-
-
-static inline void fetchNumExamplesPerLabel(const CscLabelMatrix& labelMatrix, DenseVector<uint32>::iterator iterator) {
-    uint32 numCols = labelMatrix.getNumCols();
-
-    for (uint32 i = 0; i < numCols; i++) {
-        uint32 numExamples = labelMatrix.column_indices_cend(i) - labelMatrix.column_indices_cbegin(i);
-        iterator[i] = numExamples;
-    }
-}
-
-static inline uint32 getLabelWithFewestRemainingExamples(DenseVector<uint32>::const_iterator numExamplesIterator,
-                                                         uint32 numElements) {
-    uint32 minNumExamples = std::numeric_limits<uint32>::max();
-    uint32 index = numElements;
-
-    for (uint32 i = 1; i < numElements; i++) {
-        uint32 numExamples = numExamplesIterator[i];
-
-        if (numExamples > 0 && numExamples < minNumExamples) {
-            minNumExamples = numExamples;
-            index = i;
-        }
-    }
-
-    return index;
-}
 
 static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& labelMatrix, uint32 exampleIndex,
-                                             DenseVector<uint32>::iterator numExamplesIterator) {
+                                             uint32* numExamplesPerLabel,
+                                             std::unordered_map<uint32, uint32>& affectedLabelIndices) {
     CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumCols();
 
     for (uint32 i = 0; i < numLabels; i++) {
         if (labelIterator[i]) {
-            numExamplesIterator[i]--;
+            uint32 numRemaining = numExamplesPerLabel[i];
+            numExamplesPerLabel[i] = numRemaining - 1;
+            affectedLabelIndices.emplace(i, numRemaining);
         }
     }
 }
 
 static inline void updateNumExamplesPerLabel(const CsrLabelMatrix& labelMatrix, uint32 exampleIndex,
-                                             DenseVector<uint32>::iterator numExamplesIterator) {
+                                             uint32* numExamplesPerLabel,
+                                             std::unordered_map<uint32, uint32>& affectedLabelIndices) {
     CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.row_indices_cend(exampleIndex) - indexIterator;
 
     for (uint32 i = 0; i < numLabels; i++) {
         uint32 labelIndex = indexIterator[i];
-        numExamplesIterator[labelIndex]--;
+        uint32 numRemaining = numExamplesPerLabel[labelIndex];
+        numExamplesPerLabel[labelIndex] = numRemaining - 1;
+        affectedLabelIndices.emplace(labelIndex, numRemaining);
     }
 }
 
@@ -74,15 +53,19 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
     private:
 
-        const LabelMatrix& labelMatrix_;
-
-        CscLabelMatrix cscLabelMatrix_;
-
         float32 sampleSize_;
 
-        DenseVector<uint32> numExamplesVector_;
+        uint32 numTotalSamples_;
+
+        uint32 numTotalOutOfSamples_;
 
         DenseWeightVector<uint8> weightVector_;
+
+        uint32* rowIndices_;
+
+        uint32* colIndices_;
+
+        uint32 numCols_;
 
     public:
 
@@ -98,73 +81,170 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
          */
         LabelWiseStratifiedSampling(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
                                     IndexIterator indicesEnd, float32 sampleSize)
-            : labelMatrix_(labelMatrix), cscLabelMatrix_(CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd)),
-              sampleSize_(sampleSize), numExamplesVector_(DenseVector<uint32>(labelMatrix.getNumCols())),
-              weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows())) {
+            : sampleSize_(sampleSize), numTotalSamples_((uint32) std::round(sampleSize * (indicesEnd - indicesBegin))),
+              numTotalOutOfSamples_((indicesEnd - indicesBegin) - numTotalSamples_),
+              weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows(), true)) {
+            // Convert the given label matrix into the CSC format...
+            CscLabelMatrix cscLabelMatrix(labelMatrix, indicesBegin, indicesEnd);
 
-        }
+            // Create an array that stores for each label the number of examples that are associated with the label, as
+            // well as a sorted map that stores all label indices in increasing order of the number of associated
+            // examples...
+            uint32 numLabels = cscLabelMatrix.getNumCols();
+            uint32 numExamplesPerLabel[numLabels];
+            std::multimap<uint32, uint32> sortedLabelIndices;
 
-        const IWeightVector& subSample(RNG& rng) override {
-            // Initialize the weights of all examples with the value `UNSET_WEIGHT`, which allows to identify examples
-            // for which no weight has been set yet...
-            uint32 numTotalExamples = labelMatrix_.getNumRows();
+            for (uint32 i = 0; i < numLabels; i++) {
+                uint32 numExamples = cscLabelMatrix.column_indices_cend(i) - cscLabelMatrix.column_indices_cbegin(i);
+                numExamplesPerLabel[i] = numExamples;
+
+                if (numExamples > 0) {
+                    sortedLabelIndices.emplace(numExamples, i);
+                }
+            }
+
+            // Allocate arrays for storing the row and column indices of the labels to be processed by the sampling
+            // method in the CSC format...
+            rowIndices_ = (uint32*) malloc(cscLabelMatrix.getNumNonZeroElements() * sizeof(uint32));
+            colIndices_ = (uint32*) malloc((sortedLabelIndices.size() + 1) * sizeof(uint32));
+            uint32 numNonZeroElements = 0;
+            uint32 numCols = 0;
+
+            // As long as there are labels that have not been processed yet, proceed with the label that has the
+            // smallest number of associated examples...
             DenseWeightVector<uint8>::iterator weightIterator = weightVector_.begin();
-            setArrayToValue<uint8>(weightIterator, numTotalExamples, UNSET_WEIGHT);
+            std::unordered_map<uint32, uint32> affectedLabelIndices;
+            std::multimap<uint32, uint32>::iterator firstEntry;
 
-            // Determine the number of examples that are associated with individual labels...
-            DenseVector<uint32>::iterator numExamplesIterator = numExamplesVector_.begin();
-            fetchNumExamplesPerLabel(cscLabelMatrix_, numExamplesIterator);
-            uint32 numLabels = numExamplesVector_.getNumElements();
+            while ((firstEntry = sortedLabelIndices.begin()) != sortedLabelIndices.end()) {
+                uint32 labelIndex = firstEntry->second;
 
-            // For each label, assign a weight to the examples that are associated with the label, if no weight has been
-            // set yet. Labels with few examples are processed first...
-            uint32 numTrainingExamples = cscLabelMatrix_.getNumRows();
-            uint32 numTotalSamples = (uint32) std::round(sampleSize_ * numTrainingExamples);
-            uint32 numTotalOutOfSamples = numTrainingExamples - numTotalSamples;
-            uint32 numNonZeroWeights = 0;
-            uint32 numZeroWeights = 0;
-            uint32 labelIndex;
+                // Remove the label from the sorted map...
+                sortedLabelIndices.erase(firstEntry);
 
-            while ((labelIndex = getLabelWithFewestRemainingExamples(numExamplesIterator, numLabels)) < numLabels) {
-                CscLabelMatrix::index_iterator indexIterator = cscLabelMatrix_.column_indices_begin(labelIndex);
-                uint32 numExamples = cscLabelMatrix_.column_indices_end(labelIndex) - indexIterator;
-                uint32 numRemainingExamples = numExamplesIterator[labelIndex];
-                float32 numSamplesDecimal = sampleSize_ * numRemainingExamples;
-                uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
-                uint32 numDesiredOutOfSamples = numTotalOutOfSamples - numZeroWeights;
-                uint32 numSamples = (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ?
-                                              std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
-                numNonZeroWeights += numSamples;
-                numZeroWeights += (numExamples - numSamples);
-                uint32 i;
+                // Add the number of non-zero labels that have been processed so far to the array of column indices...
+                colIndices_[numCols] = numNonZeroElements;
+                numCols++;
 
-                // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples for which no weight has been set
-                // yet and set their weight to 1...
-                for (i = 0; i < numExamples; i++) {
-                    uint32 randomIndex = rng.random(i, numExamples);
-                    uint32 exampleIndex = indexIterator[randomIndex];
-                    indexIterator[randomIndex] = indexIterator[i];
-                    indexIterator[i] = exampleIndex;
+                // Iterate the examples that are associated with the current label, if no weight has been set yet...
+                CscLabelMatrix::index_iterator indexIterator = cscLabelMatrix.column_indices_begin(labelIndex);
+                uint32 numExamples = cscLabelMatrix.column_indices_end(labelIndex) - indexIterator;
 
-                    if (weightIterator[exampleIndex] == UNSET_WEIGHT) {
+                for (uint32 i = 0; i < numExamples; i++) {
+                    uint32 exampleIndex = indexIterator[i];
+
+                    // If the example's weight is 0, it has not been encountered yet...
+                    if (weightIterator[exampleIndex] == 0) {
+                        // Set the example's weight to 1...
                         weightIterator[exampleIndex] = 1;
-                        updateNumExamplesPerLabel(labelMatrix_, exampleIndex, numExamplesIterator);
-                        numSamples--;
 
-                        if (numSamples == 0) {
-                            break;
+                        // Add the example's index to the array of row indices...
+                        rowIndices_[numNonZeroElements] = exampleIndex;
+                        numNonZeroElements++;
+
+                        // For each label that is associated with the example, decrement the number of associated
+                        // examples by one...
+                        updateNumExamplesPerLabel(labelMatrix, exampleIndex, &numExamplesPerLabel[0],
+                                                  affectedLabelIndices);
+                    }
+                }
+
+                // Remove each label, for which the number of associated examples have been changed previously, from the
+                // sorted map and add it again to update the order...
+                for (auto it = affectedLabelIndices.cbegin(); it != affectedLabelIndices.cend(); it++) {
+                    uint32 key = it->first;
+
+                    if (key != labelIndex) {
+                        uint32 value = it->second;
+                        auto range = sortedLabelIndices.equal_range(value);
+
+                        for (auto it2 = range.first; it2 != range.second; it2++) {
+                            if (it2->second == key) {
+                                sortedLabelIndices.erase(it2);
+                                uint32 numRemaining = numExamplesPerLabel[key];
+
+                                if (numRemaining > 0) {
+                                    sortedLabelIndices.emplace(numRemaining, key);
+                                }
+
+                                break;
+                            }
                         }
                     }
                 }
 
-                // Set the weights of the remaining examples to 0, if no weight has been set yet...
-                for (i = i + 1; i < numExamples; i++) {
-                    uint32 exampleIndex = indexIterator[i];
+                affectedLabelIndices.clear();
+            }
 
-                    if (weightIterator[exampleIndex] == UNSET_WEIGHT) {
-                        weightIterator[exampleIndex] = 0;
-                        updateNumExamplesPerLabel(labelMatrix_, exampleIndex, numExamplesIterator);
+            // If there are examples that are not associated with any labels, we handle them separately..
+            uint32 numTrainingExamples = weightVector_.getNumElements();
+            uint32 numRemaining = numTrainingExamples - numNonZeroElements;
+
+            if (numRemaining > 0) {
+                // Adjust the size of the arrays that are used to store row and column indices...
+                rowIndices_ = (uint32*) realloc(rowIndices_, (numNonZeroElements + numRemaining) * sizeof(uint32));
+                colIndices_ = (uint32*) realloc(colIndices_, (numCols + 1) * sizeof(uint32));
+
+                // Add the number of non-zero labels that have been processed so far to the array of column indices...
+                colIndices_[numCols] = numNonZeroElements;
+                numCols++;
+
+                // Iterate the weights of all examples to find those whose weight has not been set yet...
+                for (uint32 i = 0; i < numTrainingExamples; i++) {
+                    if (weightIterator[i] == 0) {
+                        // Add the example's index to the array of row indices...
+                        rowIndices_[numNonZeroElements] = i;
+                        numNonZeroElements++;
                     }
+                }
+            } else {
+                // Adjust the size of the arrays that are used to store row and column indices...
+                rowIndices_ = (uint32*) realloc(rowIndices_, numNonZeroElements * sizeof(uint32));
+                colIndices_ = (uint32*) realloc(colIndices_, numCols * sizeof(uint32));
+            }
+
+            colIndices_[numCols - 1] = numNonZeroElements;
+            numCols_ = numCols - 1;
+        }
+
+        const IWeightVector& subSample(RNG& rng) override {
+            DenseWeightVector<uint8>::iterator weightIterator = weightVector_.begin();
+            uint32 numNonZeroWeights = 0;
+            uint32 numZeroWeights = 0;
+
+            // For each column, assign a weight to the corresponding examples...
+            for (uint32 i = 0; i < numCols_; i++) {
+                uint32 start = colIndices_[i];
+                uint32* exampleIndices = &rowIndices_[start];
+                uint32 end = colIndices_[i + 1];
+                uint32 numExamples = end - start;
+                float32 numSamplesDecimal = sampleSize_ * numExamples;
+                uint32 numDesiredSamples = numTotalSamples_ - numNonZeroWeights;
+                uint32 numDesiredOutOfSamples = numTotalOutOfSamples_ - numZeroWeights;
+                uint32 numSamples = (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ?
+                                              std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
+                numNonZeroWeights += numSamples;
+                numZeroWeights =+ (numExamples - numSamples);
+                uint32 j;
+
+                // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and set their weights to 1...
+                for (j = 0; j < numExamples; j++) {
+                    uint32 randomIndex = rng.random(i, numExamples);
+                    uint32 exampleIndex = exampleIndices[randomIndex];
+                    exampleIndices[randomIndex] = exampleIndices[j];
+                    exampleIndices[j] = exampleIndex;
+                    weightIterator[exampleIndex] = 1;
+                    numSamples--;
+
+                    if (numSamples == 0) {
+                        break;
+                    }
+                }
+
+                // Set the weights of the remaining examples to 0...
+                for (j = j + 1; j < numExamples; j++) {
+                    uint32 exampleIndex = exampleIndices[j];
+                    weightIterator[exampleIndex] = 0;
                 }
             }
 
