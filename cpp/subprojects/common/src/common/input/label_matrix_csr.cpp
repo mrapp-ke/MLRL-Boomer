@@ -38,7 +38,7 @@ uint32 CsrLabelMatrix::getNumCols() const {
     return view_.getNumCols();
 }
 
-std::unique_ptr<LabelVector> CsrLabelMatrix::getLabelVector(uint32 row) const {
+std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const {
     index_const_iterator indexIterator = this->row_indices_cbegin(row);
     index_const_iterator indicesEnd = this->row_indices_cend(row);
     uint32 numElements = indicesEnd - indexIterator;
