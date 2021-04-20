@@ -3,7 +3,7 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/input/label_matrix_csc.hpp"
-#include "instance_sampling_stratified_common.hpp"
+#include "stratified_sampling.hpp"
 #include <unordered_map>
 #include <map>
 #include <cstdlib>
