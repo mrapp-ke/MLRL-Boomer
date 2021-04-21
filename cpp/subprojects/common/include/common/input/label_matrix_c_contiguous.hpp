@@ -15,7 +15,7 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
 
     private:
 
-        CContiguousView<uint8> view_;
+        CContiguousConstView<const uint8> view_;
 
     public:
 
@@ -24,12 +24,12 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
          * @param numCols   The number of columns in the label matrix
          * @param array     A pointer to a C-contiguous array of type `uint8` that stores the labels
          */
-        CContiguousLabelMatrix(uint32 numRows, uint32 numCols, uint8* array);
+        CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array);
 
         /**
          * An iterator that provides read-only access to the values in the label matrix.
          */
-        typedef CContiguousView<uint8>::const_iterator value_const_iterator;
+        typedef CContiguousConstView<uint8>::const_iterator value_const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of a specific row.

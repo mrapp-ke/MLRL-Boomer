@@ -4,8 +4,8 @@
 #include "common/sampling/instance_sampling.hpp"
 
 
-CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, uint8* array)
-    : view_(CContiguousView<uint8>(numRows, numCols, array)) {
+CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
+    : view_(CContiguousConstView<const uint8>(numRows, numCols, array)) {
 
 }
 

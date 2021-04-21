@@ -62,12 +62,13 @@ namespace boosting {
              * Obtains predictions for different examples, based on predicted scores, and writes them to a given
              * prediction matrix.
              *
-             * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the predicted
-             *                          scores
+             * @param scoreMatrix       A reference to an object of type `CContiguousConstView` that stores the 
+             *                          predicted scores
              * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
              *                          written to. May contain arbitrary values
              */
-            void transform(const CContiguousView<float64>& scoreMatrix, CContiguousView<uint8>& predictionMatrix) const;
+            void transform(const CContiguousConstView<float64>& scoreMatrix,
+                           CContiguousView<uint8>& predictionMatrix) const;
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const RuleModel& model) const override;

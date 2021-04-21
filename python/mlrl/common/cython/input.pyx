@@ -17,7 +17,7 @@ cdef class CContiguousLabelMatrix(LabelMatrix):
     A wrapper for the C++ class `CContiguousLabelMatrix`.
     """
 
-    def __cinit__(self, uint8[:, ::1] array):
+    def __cinit__(self, const uint8[:, ::1] array):
         """
         :param array: A C-contiguous array of type `uint8`, shape `(num_examples, num_labels)`, that stores the labels
                       of the training examples
@@ -101,7 +101,7 @@ cdef class CContiguousFeatureMatrix:
     A wrapper for the C++ class `CContiguousFeatureMatrix`.
     """
 
-    def __cinit__(self, float32[:, ::1] array):
+    def __cinit__(self, const float32[:, ::1] array):
         """
         :param array: A C-contiguous array of type `float32`, shape `(num_examples, num_features)`, that stores the
                       feature values of the training examples

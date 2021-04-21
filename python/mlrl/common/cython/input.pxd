@@ -44,7 +44,7 @@ cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
 
         # Constructors:
 
-        CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, uint8* array) except +
+        CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint8* array) except +
 
 
 cdef extern from "common/input/label_matrix_csr.hpp" nogil:
@@ -68,7 +68,7 @@ cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
 
         # Constructors:
 
-        CContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, float32* array) except +
+        CContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array) except +
 
         # Functions:
 
