@@ -21,16 +21,6 @@ DenseVector<T>::~DenseVector() {
 }
 
 template<class T>
-T DenseVector<T>::getValue(uint32 pos) const {
-    return VectorView<T>::array_[pos];
-}
-
-template<class T>
-void DenseVector<T>::setValue(uint32 pos, T value) {
-    VectorView<T>::array_[pos] = value;
-}
-
-template<class T>
 void DenseVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
     if (numElements < maxCapacity_) {
         if (freeMemory) {

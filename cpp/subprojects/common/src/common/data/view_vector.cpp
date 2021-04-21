@@ -28,6 +28,16 @@ typename VectorView<T>::const_iterator VectorView<T>::cend() const {
 }
 
 template<class T>
+T VectorView<T>::getValue(uint32 pos) const {
+    return array_[pos];
+}
+
+template<class T>
+void VectorView<T>::setValue(uint32 pos, T value) {
+    array_[pos] = value;
+}
+
+template<class T>
 uint32 VectorView<T>::getNumElements() const {
     return numElements_;
 }
