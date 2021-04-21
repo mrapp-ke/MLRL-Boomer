@@ -31,3 +31,8 @@ template<class T>
 uint32 VectorView<T>::getNumElements() const {
     return numElements_;
 }
+
+template class VectorView<uint8>;
+template class VectorView<uint32>;
+template class VectorView<float32>;
+template class VectorView<float64>;

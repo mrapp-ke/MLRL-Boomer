@@ -10,64 +10,39 @@ DenseVector<T>::DenseVector(uint32 numElements)
 
 template<class T>
 DenseVector<T>::DenseVector(uint32 numElements, bool init)
-    : array_((T*) (init ? calloc(numElements, sizeof(T)) : malloc(numElements * sizeof(T)))),
-      numElements_(numElements), maxCapacity_(numElements) {
+    : VectorView<T>(numElements, (T*) (init ? calloc(numElements, sizeof(T)) : malloc(numElements * sizeof(T)))),
+      maxCapacity_(numElements) {
 
 }
 
 template<class T>
 DenseVector<T>::~DenseVector() {
-    free(array_);
-}
-
-template<class T>
-uint32 DenseVector<T>::getNumElements() const {
-    return numElements_;
+    free(VectorView<T>::array_);
 }
 
 template<class T>
 T DenseVector<T>::getValue(uint32 pos) const {
-    return array_[pos];
+    return VectorView<T>::array_[pos];
 }
 
 template<class T>
 void DenseVector<T>::setValue(uint32 pos, T value) {
-    array_[pos] = value;
-}
-
-template<class T>
-typename DenseVector<T>::iterator DenseVector<T>::begin() {
-    return array_;
-}
-
-template<class T>
-typename DenseVector<T>::iterator DenseVector<T>::end() {
-    return &array_[numElements_];
-}
-
-template<class T>
-typename DenseVector<T>::const_iterator DenseVector<T>::cbegin() const {
-    return array_;
-}
-
-template<class T>
-typename DenseVector<T>::const_iterator DenseVector<T>::cend() const {
-    return &array_[numElements_];
+    VectorView<T>::array_[pos] = value;
 }
 
 template<class T>
 void DenseVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
     if (numElements < maxCapacity_) {
         if (freeMemory) {
-            array_ = (T*) realloc(array_, numElements * sizeof(T));
+            DenseVector<T>::array_ = (T*) realloc(DenseVector<T>::array_, numElements * sizeof(T));
             maxCapacity_ = numElements;
         }
     } else if (numElements > maxCapacity_) {
-        array_ = (T*) realloc(array_, numElements * sizeof(T));
+        DenseVector<T>::array_ = (T*) realloc(DenseVector<T>::array_, numElements * sizeof(T));
         maxCapacity_ = numElements;
     }
 
-    numElements_ = numElements;
+    DenseVector<T>::numElements_ = numElements;
 }
 
 template class DenseVector<uint8>;
