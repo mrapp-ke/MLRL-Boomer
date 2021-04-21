@@ -20,7 +20,7 @@ MissingFeatureVector::missing_index_const_iterator MissingFeatureVector::missing
 }
 
 void MissingFeatureVector::addMissingIndex(uint32 index) {
-    missingIndicesPtr_->setValue(index);
+    missingIndicesPtr_->set(index, true);
 }
 
 bool MissingFeatureVector::isMissing(uint32 index) const {

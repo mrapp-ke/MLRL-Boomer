@@ -80,7 +80,7 @@ class DokVector final {
          * @param pos   The position of the element
          * @param value The value to be set
          */
-        void setValue(uint32 pos, T value);
+        void set(uint32 pos, T value);
 
         /**
          * Sets the values of all elements to zero.

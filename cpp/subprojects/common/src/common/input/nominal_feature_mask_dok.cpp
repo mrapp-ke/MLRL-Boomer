@@ -6,5 +6,5 @@ bool DokNominalFeatureMask::isNominal(uint32 featureIndex) const {
 }
 
 void DokNominalFeatureMask::setNominal(uint32 featureIndex) {
-    vector_.setValue(featureIndex);
+    vector_.set(featureIndex, true);
 }
