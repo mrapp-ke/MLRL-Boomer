@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/data/vector_dense.hpp"
 #include "common/indices/index_forward_iterator.hpp"
 
 
@@ -14,11 +14,7 @@ class BinarySparseArrayVector final {
 
     private:
 
-        uint32* array_;
-
-        uint32 numElements_;
-
-        uint32 maxCapacity_;
+        DenseVector<uint32> vector_;
 
     public:
 
@@ -33,17 +29,15 @@ class BinarySparseArrayVector final {
          */
         BinarySparseArrayVector(uint32 numElements, bool init);
 
-        ~BinarySparseArrayVector();
-
         /**
          * An iterator that provides access to the indices in the vector and allows to modify them.
          */
-        typedef uint32* index_iterator;
+        typedef DenseVector<uint32>::iterator index_iterator;
 
         /**
          * An iterator that provides read-only access to the indices in the vector.
          */
-        typedef const uint32* index_const_iterator;
+        typedef DenseVector<uint32>::const_iterator index_const_iterator;
 
         /**
          * An iterator that provides read-only access to the values in the vector.

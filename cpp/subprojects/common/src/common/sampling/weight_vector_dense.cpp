@@ -55,7 +55,7 @@ bool DenseWeightVector<T>::hasZeroWeights() const {
 
 template<class T>
 float64 DenseWeightVector<T>::getWeight(uint32 pos) const {
-    return (float64) vector_.getValue(pos);
+    return (float64) vector_[pos];
 }
 
 template class DenseWeightVector<uint8>;

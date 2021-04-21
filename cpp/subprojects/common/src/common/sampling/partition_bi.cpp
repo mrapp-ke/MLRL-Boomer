@@ -10,7 +10,7 @@ static inline BinaryDokVector* createDokVector(BiPartition::const_iterator itera
 
     for (uint32 i = 0; i < numElements; i++) {
         uint32 index = iterator[i];
-        vector->setValue(index);
+        vector->set(index, true);
     }
 
     return vector;
