@@ -1,4 +1,5 @@
 #include "common/data/view_vector.hpp"
+#include "common/data/indexed_value.hpp"
 
 
 template<class T>
@@ -46,3 +47,5 @@ template class VectorView<uint8>;
 template class VectorView<uint32>;
 template class VectorView<float32>;
 template class VectorView<float64>;
+template class VectorView<IndexedValue<float32>>;
+template class VectorView<IndexedValue<float64>>;
