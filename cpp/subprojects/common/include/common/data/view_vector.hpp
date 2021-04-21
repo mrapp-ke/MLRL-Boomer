@@ -74,6 +74,22 @@ class VectorView {
         const_iterator cend() const;
 
         /**
+         * Returns the value of the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      The value of the given element
+         */
+        T getValue(uint32 pos) const;
+
+        /**
+         * Sets the value of the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @param value The value to be set
+         */
+        void setValue(uint32 pos, T value);
+
+        /**
          * Returns the number of elements in the view.
          *
          * @return The number of elements in the view

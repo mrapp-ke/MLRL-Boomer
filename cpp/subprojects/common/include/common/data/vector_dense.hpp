@@ -41,20 +41,4 @@ class DenseVector final : public VectorView<T> {
          */
         void setNumElements(uint32 numElements, bool freeMemory);
 
-        /**
-         * Returns the value of the element at a specific position.
-         *
-         * @param pos   The position of the element. Must be in [0, getNumElements())
-         * @return      The value of the given element
-         */
-        T getValue(uint32 pos) const;
-
-        /**
-         * Sets the value of the element at a specific position.
-         *
-         * @param pos   The position of the element. Must be in [0, getNumElements())
-         * @param value The value to be set
-         */
-        void setValue(uint32 pos, T value);
-
 };
