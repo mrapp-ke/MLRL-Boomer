@@ -15,7 +15,7 @@ class CscFeatureMatrix final : public IFeatureMatrix {
 
     private:
 
-        CscView<float32> view_;
+        CscConstView<const float32> view_;
 
     public:
 
@@ -30,17 +30,17 @@ class CscFeatureMatrix final : public IFeatureMatrix {
          *                      of the first element in `data` and `rowIndices` that corresponds to a certain column.
          *                      The index at the last position is equal to `num_non_zero_values`
          */
-        CscFeatureMatrix(uint32 numRows, uint32 numCols, float32* data, uint32* rowIndices, uint32* colIndices);
+        CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32* colIndices);
 
         /**
          * An iterator that provides read-only access to the feature values.
          */
-        typedef CscView<float32>::value_const_iterator value_const_iterator;
+        typedef CscConstView<const float32>::value_const_iterator value_const_iterator;
 
         /**
          * An iterator that provides read-only access to the indices of the non-zero feature values.
          */
-        typedef CscView<float32>::index_const_iterator index_const_iterator;
+        typedef CscConstView<const float32>::index_const_iterator index_const_iterator;
 
         /**
          * Returns a `value_const_iterator` to the beginning of the values at a specific column.
