@@ -27,7 +27,7 @@ typename DokVector<T>::const_iterator DokVector<T>::cend() const {
 }
 
 template<class T>
-T DokVector<T>::getValue(uint32 pos) const {
+const T& DokVector<T>::operator[](uint32 pos) const {
     auto it = data_.find(pos);
     return it != data_.cend() ? it->second : sparseValue_;
 }

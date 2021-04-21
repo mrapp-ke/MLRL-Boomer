@@ -9,7 +9,7 @@ BinaryDokVector::index_const_iterator BinaryDokVector::indices_cend() const {
     return data_.cend();
 }
 
-bool BinaryDokVector::getValue(uint32 pos) const {
+bool BinaryDokVector::operator[](uint32 pos) const {
     return data_.find(pos) != data_.end();
 }
 
