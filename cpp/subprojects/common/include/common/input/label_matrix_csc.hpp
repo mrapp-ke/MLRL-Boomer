@@ -73,11 +73,6 @@ class CscLabelMatrix final {
         ~CscLabelMatrix();
 
         /**
-         * An iterator that provides access to the indices of the relevant labels and allows to modify them.
-         */
-        typedef BinaryCscView::index_iterator index_iterator;
-
-        /**
          * An iterator that provides read-only access to the indices of the relevant labels.
          */
         typedef BinaryCscView::index_const_iterator index_const_iterator;
@@ -86,22 +81,6 @@ class CscLabelMatrix final {
          * An iterator that provides read-only access to the values in the label matrix.
          */
         typedef BinaryCscView::value_const_iterator value_const_iterator;
-
-        /**
-         * Returns an `index_iterator` to the beginning of the indices at a specific column.
-         *
-         * @param col   The column
-         * @return      An `index_iterator` to the beginning of the indices
-         */
-        index_iterator column_indices_begin(uint32 col);
-
-        /**
-         * Returns an `index_iterator` to the end of the indices at a specific column.
-         *
-         * @param col   The column
-         * @return      An `index_iterator` to the end of the indices
-         */
-        index_iterator column_indices_end(uint32 col);
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific column.
