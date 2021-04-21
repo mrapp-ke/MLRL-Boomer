@@ -27,13 +27,13 @@ typename DokVector<T>::const_iterator DokVector<T>::cend() const {
 }
 
 template<class T>
-T DokVector<T>::getValue(uint32 pos) const {
+const T& DokVector<T>::operator[](uint32 pos) const {
     auto it = data_.find(pos);
     return it != data_.cend() ? it->second : sparseValue_;
 }
 
 template<class T>
-void DokVector<T>::setValue(uint32 pos, T value) {
+void DokVector<T>::set(uint32 pos, T value) {
     auto result = data_.emplace(pos, value);
 
     if (!result.second) {

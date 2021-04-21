@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/data/vector_dense.hpp"
 #include <iterator>
 
 
@@ -18,15 +18,9 @@ class DenseBinnedVector {
 
     private:
 
-        uint32* binIndices_;
+        DenseVector<uint32> binIndices_;
 
-        T* array_;
-
-        uint32 numElements_;
-
-        uint32 numBins_;
-
-        uint32 maxBinCapacity_;
+        DenseVector<T> values_;
 
     public:
 
@@ -141,28 +135,26 @@ class DenseBinnedVector {
          */
         DenseBinnedVector(uint32 numElements, uint32 numBins);
 
-        virtual ~DenseBinnedVector();
-
         /**
          * An iterator that provides access to the indices that correspond to individual bins and allows to modify them.
          */
-        typedef uint32* index_binned_iterator;
+        typedef typename DenseVector<uint32>::iterator index_binned_iterator;
 
         /**
          * An iterator that provides read-only access to the indices that correspond to individual bins.
          */
-        typedef const uint32* index_binned_const_iterator;
+        typedef typename DenseVector<uint32>::const_iterator index_binned_const_iterator;
 
         /**
          * An iterator that provides access to the elements that correspond to individual bins and allows to modify
          * them.
          */
-        typedef T* binned_iterator;
+        typedef typename DenseVector<T>::iterator binned_iterator;
 
         /**
          * An iterator that provides read-only access to the elements that correspond to individual bins.
          */
-        typedef const T* binned_const_iterator;
+        typedef typename DenseVector<T>::const_iterator binned_const_iterator;
 
         /**
          * An iterator that provides read-only access to the elements in the vector.
@@ -260,13 +252,5 @@ class DenseBinnedVector {
          * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
         void setNumBins(uint32 numBins, bool freeMemory);
-
-        /**
-         * Returns the value of the element at a specific position.
-         *
-         * @param pos   The position of the element. Must be in [0, getNumElements())
-         * @return      The value of the given element
-         */
-        T getValue(uint32 pos) const;
 
 };

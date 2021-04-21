@@ -28,7 +28,7 @@ void PartialIndexVector::setNumElements(uint32 numElements, bool freeMemory) {
 }
 
 uint32 PartialIndexVector::getIndex(uint32 pos) const {
-    return vector_.getValue(pos);
+    return vector_[pos];
 }
 
 PartialIndexVector::iterator PartialIndexVector::begin() {
