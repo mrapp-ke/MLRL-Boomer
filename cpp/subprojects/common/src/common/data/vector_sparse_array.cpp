@@ -1,58 +1,41 @@
 #include "common/data/vector_sparse_array.hpp"
 #include <algorithm>
-#include <cstdlib>
 
 
 template<class T>
 SparseArrayVector<T>::SparseArrayVector(uint32 numElements)
-    : array_((IndexedValue<T>*) malloc(numElements * sizeof(IndexedValue<T>))), numElements_(numElements),
-      maxCapacity_(numElements) {
+    : vector_(DenseVector<IndexedValue<T>>(numElements)) {
 
-}
-
-template<class T>
-SparseArrayVector<T>::~SparseArrayVector() {
-    free(array_);
-}
-
-template<class T>
-uint32 SparseArrayVector<T>::getNumElements() const {
-    return numElements_;
-}
-
-template<class T>
-void SparseArrayVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
-    if (numElements < maxCapacity_) {
-        if (freeMemory) {
-            array_ = (IndexedValue<T>*) realloc(array_, numElements * sizeof(IndexedValue<T>));
-            maxCapacity_ = numElements;
-        }
-    } else if (numElements > maxCapacity_) {
-        array_ = (IndexedValue<T>*) realloc(array_, numElements * sizeof(IndexedValue<T>));
-        maxCapacity_ = numElements;
-    }
-
-    numElements_ = numElements;
 }
 
 template<class T>
 typename SparseArrayVector<T>::iterator SparseArrayVector<T>::begin() {
-    return array_;
+    return vector_.begin();
 }
 
 template<class T>
 typename SparseArrayVector<T>::iterator SparseArrayVector<T>::end() {
-    return &array_[numElements_];
+    return vector_.end();
 }
 
 template<class T>
 typename SparseArrayVector<T>::const_iterator SparseArrayVector<T>::cbegin() const {
-    return array_;
+    return vector_.cbegin();
 }
 
 template<class T>
 typename SparseArrayVector<T>::const_iterator SparseArrayVector<T>::cend() const {
-    return &array_[numElements_];
+    return vector_.cend();
+}
+
+template<class T>
+uint32 SparseArrayVector<T>::getNumElements() const {
+    return vector_.getNumElements();
+}
+
+template<class T>
+void SparseArrayVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
+    vector_.setNumElements(numElements, freeMemory);
 }
 
 template<class T>
@@ -64,7 +47,7 @@ void SparseArrayVector<T>::sortByValues() {
         }
 
     } comparator;
-    std::sort(this->begin(), this->end(), comparator);
+    std::sort(vector_.begin(), vector_.end(), comparator);
 }
 
 template class SparseArrayVector<float32>;
