@@ -81,7 +81,7 @@ cdef extern from "common/input/feature_matrix_fortran_contiguous.hpp" nogil:
 
         # Constructors:
 
-        FortranContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, float32* array) except +
+        FortranContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array) except +
 
 
 cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
