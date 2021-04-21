@@ -74,7 +74,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = iterator[i];
 
-        if (weights.getWeight(exampleIndex) == 0 && holdoutSet.getValue(exampleIndex)) {
+        if (weights.getWeight(exampleIndex) == 0 && holdoutSet[exampleIndex]) {
             statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
@@ -136,7 +136,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = iterator[i];
 
-        if (holdoutSet.getValue(exampleIndex)) {
+        if (holdoutSet[exampleIndex]) {
             statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }

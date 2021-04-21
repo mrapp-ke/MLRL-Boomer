@@ -69,18 +69,18 @@ class DokVector final {
         /**
          * Returns the value of the element at a specific position.
          *
-         * @param pos   The position of the element. Must be in [0, getNumElements())
-         * @return      The value of the given element
+         * @param pos   The position of the element
+         * @return      The value of the specified element
          */
-        T getValue(uint32 pos) const;
+        const T& operator[](uint32 pos) const;
 
         /**
          * Sets a value to the element at a specific position.
          *
-         * @param pos   The position of the element. Must be in [0, getNumElements())
+         * @param pos   The position of the element
          * @param value The value to be set
          */
-        void setValue(uint32 pos, T value);
+        void set(uint32 pos, T value);
 
         /**
          * Sets the values of all elements to zero.
