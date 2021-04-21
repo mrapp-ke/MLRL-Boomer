@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/data/vector_dense.hpp"
 #include "common/data/indexed_value.hpp"
 
 
@@ -16,21 +16,9 @@
 template<class T>
 class SparseArrayVector final {
 
-    public:
-
-        /**
-         * The type of an element that is contained by the vector.
-         */
-        typedef IndexedValue<T> Entry;
-
-
     private:
 
-        Entry* array_;
-
-        uint32 numElements_;
-
-        uint32 maxCapacity_;
+        DenseVector<IndexedValue<T>> vector_;
 
     public:
 
@@ -39,17 +27,15 @@ class SparseArrayVector final {
          */
         SparseArrayVector(uint32 numElements);
 
-        ~SparseArrayVector();
-
         /**
          * An iterator that provides access to the elements in the vector and allows to modify them.
          */
-        typedef Entry* iterator;
+        typedef typename DenseVector<IndexedValue<T>>::iterator iterator;
 
         /**
          * An iterator that provides read-only access to the elements in the vector.
          */
-        typedef const Entry* const_iterator;
+        typedef typename DenseVector<IndexedValue<T>>::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the vector.
