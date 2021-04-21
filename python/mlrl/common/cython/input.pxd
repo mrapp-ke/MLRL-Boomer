@@ -90,7 +90,7 @@ cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
 
         # Constructors:
 
-        CscFeatureMatrixImpl(uint32 numRows, uint32 numCols, float32* data, uint32* rowIndices,
+        CscFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices,
                              uint32* colIndices) except +
 
 
