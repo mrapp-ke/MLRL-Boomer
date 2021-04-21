@@ -42,6 +42,9 @@ namespace boosting {
         }
     }
 
+    template class DenseNumericMatrix<uint8>;
+    template class DenseNumericMatrix<uint32>;
+    template class DenseNumericMatrix<float32>;
     template class DenseNumericMatrix<float64>;
 
 }
