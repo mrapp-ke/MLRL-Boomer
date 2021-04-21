@@ -85,7 +85,7 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
               numTotalOutOfSamples_((indicesEnd - indicesBegin) - numTotalSamples_),
               weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows(), true)) {
             // Convert the given label matrix into the CSC format...
-            CscLabelMatrix cscLabelMatrix(labelMatrix, indicesBegin, indicesEnd);
+            const CscLabelMatrix cscLabelMatrix(labelMatrix, indicesBegin, indicesEnd);
 
             // Create an array that stores for each label the number of examples that are associated with the label, as
             // well as a sorted map that stores all label indices in increasing order of the number of associated
@@ -127,8 +127,8 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
                 numCols++;
 
                 // Iterate the examples that are associated with the current label, if no weight has been set yet...
-                CscLabelMatrix::index_iterator indexIterator = cscLabelMatrix.column_indices_begin(labelIndex);
-                uint32 numExamples = cscLabelMatrix.column_indices_end(labelIndex) - indexIterator;
+                CscLabelMatrix::index_const_iterator indexIterator = cscLabelMatrix.column_indices_cbegin(labelIndex);
+                uint32 numExamples = cscLabelMatrix.column_indices_cend(labelIndex) - indexIterator;
 
                 for (uint32 i = 0; i < numExamples; i++) {
                     uint32 exampleIndex = indexIterator[i];
