@@ -61,7 +61,7 @@ cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
     A wrapper for the C++ class `FortranContiguousFeatureMatrix`.
     """
 
-    def __cinit__(self, float32[::1, :] array):
+    def __cinit__(self, const float32[::1, :] array):
         """
         :param array: A Fortran-contiguous array of type `float32`, shape `(num_examples, num_features)`, that stores
                       the feature values of the training examples
