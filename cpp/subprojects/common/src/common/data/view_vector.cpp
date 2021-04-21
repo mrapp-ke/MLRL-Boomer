@@ -28,13 +28,13 @@ typename VectorView<T>::const_iterator VectorView<T>::cend() const {
 }
 
 template<class T>
-T VectorView<T>::getValue(uint32 pos) const {
+T& VectorView<T>::operator[](uint32 pos) {
     return array_[pos];
 }
 
 template<class T>
-void VectorView<T>::setValue(uint32 pos, T value) {
-    array_[pos] = value;
+const T& VectorView<T>::operator[](uint32 pos) const {
+    return array_[pos];
 }
 
 template<class T>
