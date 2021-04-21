@@ -6,7 +6,7 @@ namespace boosting {
 
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
                                                           const CContiguousLabelMatrix& labelMatrix,
-                                                          const CContiguousView<float64>& scoreMatrix,
+                                                          const CContiguousConstView<float64>& scoreMatrix,
                                                           FullIndexVector::const_iterator labelIndicesBegin,
                                                           FullIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const {
@@ -14,7 +14,7 @@ namespace boosting {
             statisticMatrix.gradients_row_begin(exampleIndex);
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
-        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
 
@@ -27,7 +27,7 @@ namespace boosting {
 
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
                                                           const CContiguousLabelMatrix& labelMatrix,
-                                                          const CContiguousView<float64>& scoreMatrix,
+                                                          const CContiguousConstView<float64>& scoreMatrix,
                                                           PartialIndexVector::const_iterator labelIndicesBegin,
                                                           PartialIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const {
@@ -35,7 +35,7 @@ namespace boosting {
             statisticMatrix.gradients_row_begin(exampleIndex);
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
-        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
 
@@ -50,7 +50,7 @@ namespace boosting {
 
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
                                                           const CsrLabelMatrix& labelMatrix,
-                                                          const CContiguousView<float64>& scoreMatrix,
+                                                          const CContiguousConstView<float64>& scoreMatrix,
                                                           FullIndexVector::const_iterator labelIndicesBegin,
                                                           FullIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const {
@@ -58,7 +58,7 @@ namespace boosting {
             statisticMatrix.gradients_row_begin(exampleIndex);
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
-        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CsrLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
 
@@ -71,7 +71,7 @@ namespace boosting {
     }
 
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                                          const CContiguousView<float64> scoreMatrix,
+                                                          const CContiguousConstView<float64> scoreMatrix,
                                                           PartialIndexVector::const_iterator labelIndicesBegin,
                                                           PartialIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const {
@@ -79,7 +79,7 @@ namespace boosting {
             statisticMatrix.gradients_row_begin(exampleIndex);
         DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
             statisticMatrix.hessians_row_begin(exampleIndex);
-        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CsrLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
         uint32 previousLabelIndex = 0;
@@ -96,8 +96,8 @@ namespace boosting {
     }
 
     float64 AbstractLabelWiseLoss::evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
-                                            const CContiguousView<float64>& scoreMatrix) const {
-        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+                                            const CContiguousConstView<float64>& scoreMatrix) const {
+        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
         float64 mean = 0;
@@ -113,8 +113,8 @@ namespace boosting {
     }
 
     float64 AbstractLabelWiseLoss::evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                            const CContiguousView<float64>& scoreMatrix) const {
-        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+                                            const CContiguousConstView<float64>& scoreMatrix) const {
+        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CsrLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
         float64 mean = 0;
@@ -131,8 +131,8 @@ namespace boosting {
     }
 
     float64 AbstractLabelWiseLoss::measureSimilarity(const LabelVector& labelVector,
-                                                     CContiguousView<float64>::const_iterator scoresBegin,
-                                                     CContiguousView<float64>::const_iterator scoresEnd) const {
+                                                     CContiguousConstView<float64>::const_iterator scoresBegin,
+                                                     CContiguousConstView<float64>::const_iterator scoresEnd) const {
         uint32 numLabels = scoresEnd - scoresBegin;
         LabelVector::value_const_iterator labelIterator = labelVector.values_cbegin();
         float64 mean = 0;
