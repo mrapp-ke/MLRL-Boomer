@@ -13,8 +13,12 @@ bool BinaryDokVector::operator[](uint32 pos) const {
     return data_.find(pos) != data_.end();
 }
 
-void BinaryDokVector::setValue(uint32 pos) {
-    data_.insert(pos);
+void BinaryDokVector::set(uint32 pos, bool value) {
+    if (value) {
+        data_.insert(pos);
+    } else {
+        data_.erase(pos);
+    }
 }
 
 void BinaryDokVector::setAllToZero() {

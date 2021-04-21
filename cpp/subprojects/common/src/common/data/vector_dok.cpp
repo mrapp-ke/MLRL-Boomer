@@ -33,7 +33,7 @@ const T& DokVector<T>::operator[](uint32 pos) const {
 }
 
 template<class T>
-void DokVector<T>::setValue(uint32 pos, T value) {
+void DokVector<T>::set(uint32 pos, T value) {
     auto result = data_.emplace(pos, value);
 
     if (!result.second) {
