@@ -25,12 +25,12 @@ class IEvaluationMeasure {
          * @param exampleIndex  The index of the example for which the predictions should be evaluated
          * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides random access to
          *                      the labels of the training examples
-         * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently predicted
-         *                      scores
+         * @param scoreMatrix   A reference to an object of type `CContiguousConstView` that stores the currently 
+         *                      predicted scores
          * @return              The numerical score that has been calculated
          */
         virtual float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+                                 const CContiguousConstView<float64>& scoreMatrix) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -40,11 +40,11 @@ class IEvaluationMeasure {
          * @param exampleIndex  The index of the example for which the predictions should be evaluated
          * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` that provides row-wise access to the
          *                      labels of the training examples
-         * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently predicted
-         *                      scores
+         * @param scoreMatrix   A reference to an object of type `CContiguousConstView` that stores the currently 
+         *                      predicted scores
          * @return              The numerical score that has been calculated
          */
         virtual float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+                                 const CContiguousConstView<float64>& scoreMatrix) const = 0;
 
 };

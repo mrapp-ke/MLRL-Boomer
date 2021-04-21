@@ -15,7 +15,7 @@ class CsrLabelMatrix final : public ILabelMatrix {
 
     private:
 
-        BinaryCsrView view_;
+        BinaryCsrConstView view_;
 
     public:
 
@@ -33,12 +33,12 @@ class CsrLabelMatrix final : public ILabelMatrix {
         /**
          * An iterator that provides read-only access to the indices of the relevant labels.
          */
-        typedef BinaryCsrView::index_const_iterator index_const_iterator;
+        typedef BinaryCsrConstView::index_const_iterator index_const_iterator;
 
         /**
          * An iterator that provides read-only access to the values in the label matrix.
          */
-        typedef BinaryCsrView::value_const_iterator value_const_iterator;
+        typedef BinaryCsrConstView::value_const_iterator value_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific row.
