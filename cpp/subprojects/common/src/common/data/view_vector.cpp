@@ -3,44 +3,64 @@
 
 
 template<class T>
-VectorView<T>::VectorView(uint32 numElements, T* array)
+VectorConstView<T>::VectorConstView(uint32 numElements, T* array)
     : numElements_(numElements), array_(array) {
 
 }
 
 template<class T>
-typename VectorView<T>::iterator VectorView<T>::begin() {
+typename VectorConstView<T>::const_iterator VectorConstView<T>::cbegin() const {
     return array_;
+}
+
+template<class T>
+typename VectorConstView<T>::const_iterator VectorConstView<T>::cend() const {
+    return &array_[numElements_];
+}
+
+template<class T>
+const T& VectorConstView<T>::operator[](uint32 pos) const {
+    return array_[pos];
+}
+
+template<class T>
+uint32 VectorConstView<T>::getNumElements() const {
+    return numElements_;
+}
+
+template class VectorConstView<uint8>;
+template class VectorConstView<const uint8>;
+template class VectorConstView<uint32>;
+template class VectorConstView<const uint32>;
+template class VectorConstView<float32>;
+template class VectorConstView<float64>;
+template class VectorConstView<IndexedValue<float32>>;
+template class VectorConstView<IndexedValue<float64>>;
+
+template<class T>
+VectorView<T>::VectorView(uint32 numElements, T* array)
+    : VectorConstView<T>(numElements, array) {
+
+}
+
+template<class T>
+typename VectorView<T>::iterator VectorView<T>::begin() {
+    return VectorConstView<T>::array_;
 }
 
 template<class T>
 typename VectorView<T>::iterator VectorView<T>::end() {
-    return &array_[numElements_];
-}
-
-template<class T>
-typename VectorView<T>::const_iterator VectorView<T>::cbegin() const {
-    return array_;
-}
-
-template<class T>
-typename VectorView<T>::const_iterator VectorView<T>::cend() const {
-    return &array_[numElements_];
-}
-
-template<class T>
-T& VectorView<T>::operator[](uint32 pos) {
-    return array_[pos];
+    return &VectorConstView<T>::array_[VectorConstView<T>::numElements_];
 }
 
 template<class T>
 const T& VectorView<T>::operator[](uint32 pos) const {
-    return array_[pos];
+    return VectorConstView<T>::array_[pos];
 }
 
 template<class T>
-uint32 VectorView<T>::getNumElements() const {
-    return numElements_;
+T& VectorView<T>::operator[](uint32 pos) {
+    return VectorConstView<T>::array_[pos];
 }
 
 template class VectorView<uint8>;
