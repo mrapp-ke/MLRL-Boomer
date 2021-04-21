@@ -1,8 +1,8 @@
 #include "common/input/feature_matrix_fortran_contiguous.hpp"
 
 
-FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, float32* array)
-    : view_(FortranContiguousView<float32>(numRows, numCols, array)) {
+FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array)
+    : view_(FortranContiguousConstView<const float32>(numRows, numCols, array)) {
 
 }
 
@@ -24,7 +24,7 @@ uint32 FortranContiguousFeatureMatrix::getNumCols() const {
 
 void FortranContiguousFeatureMatrix::fetchFeatureVector(uint32 featureIndex,
                                                         std::unique_ptr<FeatureVector>& featureVectorPtr) const {
-    FortranContiguousView<float32>::const_iterator columnIterator = view_.column_cbegin(featureIndex);
+    FortranContiguousConstView<const float32>::const_iterator columnIterator = view_.column_cbegin(featureIndex);
     uint32 numElements = this->getNumRows();
     featureVectorPtr = std::make_unique<FeatureVector>(numElements);
     FeatureVector::iterator vectorIterator = featureVectorPtr->begin();

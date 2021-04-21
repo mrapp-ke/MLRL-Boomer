@@ -16,18 +16,18 @@ namespace boosting {
         public:
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
-                                             const CContiguousView<float64>& scoreMatrix,
+                                             const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                             const CContiguousView<float64>& scoreMatrix,
+                                             const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
 
             float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
-                             const CContiguousView<float64>& scoreMatrix) const override;
+                             const CContiguousConstView<float64>& scoreMatrix) const override;
 
             float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                             const CContiguousView<float64>& scoreMatrix) const override;
+                             const CContiguousConstView<float64>& scoreMatrix) const override;
 
             float64 measureSimilarity(const LabelVector& labelVector,
                                       CContiguousView<float64>::const_iterator scoresBegin,
