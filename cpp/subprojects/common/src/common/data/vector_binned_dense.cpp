@@ -143,10 +143,4 @@ void DenseBinnedVector<T>::setNumBins(uint32 numBins, bool freeMemory) {
     numBins_ = numBins;
 }
 
-template<class T>
-T DenseBinnedVector<T>::getValue(uint32 pos) const {
-    uint32 binIndex = binIndices_[pos];
-    return array_[binIndex];
-}
-
 template class DenseBinnedVector<float64>;
