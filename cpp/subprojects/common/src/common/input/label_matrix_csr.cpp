@@ -6,7 +6,7 @@
 
 
 CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
-    : view_(BinaryCsrView(numRows, numCols, rowIndices, colIndices)) {
+    : view_(BinaryCsrConstView(numRows, numCols, rowIndices, colIndices)) {
 
 }
 

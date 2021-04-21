@@ -15,7 +15,7 @@ class FortranContiguousFeatureMatrix final : public IFeatureMatrix {
 
     private:
 
-        FortranContiguousView<float32> view_;
+        FortranContiguousConstView<const float32> view_;
 
     public:
 
@@ -24,12 +24,12 @@ class FortranContiguousFeatureMatrix final : public IFeatureMatrix {
          * @param numCols   The number of columns in the feature matrix
          * @param array     A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
          */
-        FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, float32* array);
+        FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array);
 
         /**
          * An iterator that provides read-only access to the feature values.
          */
-        typedef FortranContiguousView<float32>::const_iterator const_iterator;
+        typedef FortranContiguousConstView<const float32>::const_iterator const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of a specific column.

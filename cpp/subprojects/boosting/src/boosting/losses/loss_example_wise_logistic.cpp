@@ -6,7 +6,7 @@ namespace boosting {
 
     template<class LabelMatrix>
     static inline void updateExampleWiseStatisticsInternally(uint32 exampleIndex, const LabelMatrix& labelMatrix,
-                                                             const CContiguousView<float64>& scoreMatrix,
+                                                             const CContiguousConstView<float64>& scoreMatrix,
                                                              DenseExampleWiseStatisticMatrix& statisticMatrix) {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
@@ -14,7 +14,7 @@ namespace boosting {
         // `exp(x_1 - max) / (exp(x_1 - max) + exp(x_2 - max) + ...)`, where `max = max(x_1, x_2, ...)`. To be able to
         // exploit this equivalence for the calculation of gradients and Hessians, they are calculated as products of
         // fractions of the above form.
-        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         DenseExampleWiseStatisticMatrix::gradient_iterator gradientIterator =
             statisticMatrix.gradients_row_begin(exampleIndex);
@@ -106,7 +106,7 @@ namespace boosting {
 
     template<class LabelMatrix>
     static inline float64 evaluateInternally(uint32 exampleIndex, const LabelMatrix& labelMatrix,
-                                             const CContiguousView<float64>& scoreMatrix) {
+                                             const CContiguousConstView<float64>& scoreMatrix) {
         // The example-wise logistic loss calculates as
         // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2) + ...)`.
         // In the following, we exploit the identity
@@ -114,7 +114,7 @@ namespace boosting {
         // `max = max(x_1, x_2, ...)`, to increase numerical stability (see, e.g., section "Log-sum-exp for computing
         // the log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
         uint32 numLabels = labelMatrix.getNumCols();
-        CContiguousView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         float64 max = 0;
 
@@ -149,31 +149,31 @@ namespace boosting {
 
     void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
                                                               const CContiguousLabelMatrix& labelMatrix,
-                                                              const CContiguousView<float64>& scoreMatrix,
+                                                              const CContiguousConstView<float64>& scoreMatrix,
                                                               DenseExampleWiseStatisticMatrix& statisticMatrix) const {
         updateExampleWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
                                                                       statisticMatrix);
     }
 
     void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                                              const CContiguousView<float64>& scoreMatrix,
+                                                              const CContiguousConstView<float64>& scoreMatrix,
                                                               DenseExampleWiseStatisticMatrix& statisticMatrix) const {
         updateExampleWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix, statisticMatrix);
     }
 
     float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
-                                              const CContiguousView<float64>& scoreMatrix) const {
+                                              const CContiguousConstView<float64>& scoreMatrix) const {
         return evaluateInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix);
     }
 
     float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                              const CContiguousView<float64>& scoreMatrix) const {
+                                              const CContiguousConstView<float64>& scoreMatrix) const {
         return evaluateInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix);
     }
 
     float64 ExampleWiseLogisticLoss::measureSimilarity(const LabelVector& labelVector,
-                                                       CContiguousView<float64>::const_iterator scoresBegin,
-                                                       CContiguousView<float64>::const_iterator scoresEnd) const {
+                                                       CContiguousConstView<float64>::const_iterator scoresBegin,
+                                                       CContiguousConstView<float64>::const_iterator scoresEnd) const {
         // The example-wise logistic loss calculates as
         // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2) + ...)`.
         // In the following, we exploit the identity
