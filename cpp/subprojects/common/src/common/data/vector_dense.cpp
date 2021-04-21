@@ -24,15 +24,15 @@ template<class T>
 void DenseVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
     if (numElements < maxCapacity_) {
         if (freeMemory) {
-            DenseVector<T>::array_ = (T*) realloc(DenseVector<T>::array_, numElements * sizeof(T));
+            VectorView<T>::array_ = (T*) realloc(VectorView<T>::array_, numElements * sizeof(T));
             maxCapacity_ = numElements;
         }
     } else if (numElements > maxCapacity_) {
-        DenseVector<T>::array_ = (T*) realloc(DenseVector<T>::array_, numElements * sizeof(T));
+        VectorView<T>::array_ = (T*) realloc(VectorView<T>::array_, numElements * sizeof(T));
         maxCapacity_ = numElements;
     }
 
-    DenseVector<T>::numElements_ = numElements;
+    VectorView<T>::numElements_ = numElements;
 }
 
 template class DenseVector<uint8>;
