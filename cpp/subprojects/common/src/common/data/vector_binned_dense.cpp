@@ -125,4 +125,7 @@ void DenseBinnedVector<T>::setNumBins(uint32 numBins, bool freeMemory) {
     values_.setNumElements(numBins, freeMemory);
 }
 
+template class DenseBinnedVector<uint8>;
+template class DenseBinnedVector<uint32>;
+template class DenseBinnedVector<float32>;
 template class DenseBinnedVector<float64>;

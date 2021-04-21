@@ -27,8 +27,14 @@ uint32 FortranContiguousConstView<T>::getNumCols() const {
     return numCols_;
 }
 
+template class FortranContiguousConstView<uint8>;
+template class FortranContiguousConstView<const uint8>;
+template class FortranContiguousConstView<uint32>;
+template class FortranContiguousConstView<const uint32>;
 template class FortranContiguousConstView<float32>;
 template class FortranContiguousConstView<const float32>;
+template class FortranContiguousConstView<float64>;
+template class FortranContiguousConstView<const float64>;
 
 template<class T>
 FortranContiguousView<T>::FortranContiguousView(uint32 numRows, uint32 numCols, T* array)
@@ -46,4 +52,7 @@ typename FortranContiguousView<T>::iterator FortranContiguousView<T>::column_end
     return &FortranContiguousConstView<T>::array_[(col + 1) * FortranContiguousConstView<T>::numRows_];
 }
 
+template class FortranContiguousView<uint8>;
+template class FortranContiguousView<uint32>;
 template class FortranContiguousView<float32>;
+template class FortranContiguousView<float64>;

@@ -40,5 +40,7 @@ template class DenseVector<uint8>;
 template class DenseVector<uint32>;
 template class DenseVector<float32>;
 template class DenseVector<float64>;
+template class DenseVector<IndexedValue<uint8>>;
+template class DenseVector<IndexedValue<uint32>>;
 template class DenseVector<IndexedValue<float32>>;
 template class DenseVector<IndexedValue<float64>>;
