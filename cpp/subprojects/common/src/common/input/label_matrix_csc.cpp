@@ -127,14 +127,6 @@ CscLabelMatrix::~CscLabelMatrix() {
     free(colIndices_);
 }
 
-CscLabelMatrix::index_iterator CscLabelMatrix::column_indices_begin(uint32 col) {
-    return view_.column_indices_begin(col);
-}
-
-CscLabelMatrix::index_iterator CscLabelMatrix::column_indices_end(uint32 col) {
-    return view_.column_indices_end(col);
-}
-
 CscLabelMatrix::index_const_iterator CscLabelMatrix::column_indices_cbegin(uint32 col) const {
     return view_.column_indices_cbegin(col);
 }
