@@ -5,7 +5,8 @@
 
 template<class T>
 SparseArrayVector<T>::SparseArrayVector(uint32 numElements)
-    : array_((Entry*) malloc(numElements * sizeof(Entry))), numElements_(numElements), maxCapacity_(numElements) {
+    : array_((IndexedValue<T>*) malloc(numElements * sizeof(IndexedValue<T>))), numElements_(numElements),
+      maxCapacity_(numElements) {
 
 }
 
@@ -23,11 +24,11 @@ template<class T>
 void SparseArrayVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
     if (numElements < maxCapacity_) {
         if (freeMemory) {
-            array_ = (Entry*) realloc(array_, numElements * sizeof(Entry));
+            array_ = (IndexedValue<T>*) realloc(array_, numElements * sizeof(IndexedValue<T>));
             maxCapacity_ = numElements;
         }
     } else if (numElements > maxCapacity_) {
-        array_ = (Entry*) realloc(array_, numElements * sizeof(Entry));
+        array_ = (IndexedValue<T>*) realloc(array_, numElements * sizeof(IndexedValue<T>));
         maxCapacity_ = numElements;
     }
 
@@ -58,7 +59,7 @@ template<class T>
 void SparseArrayVector<T>::sortByValues() {
     struct {
 
-        bool operator()(const SparseArrayVector<T>::Entry& a, const SparseArrayVector<T>::Entry& b) const {
+        bool operator()(const IndexedValue<T>& a, const IndexedValue<T>& b) const {
             return a.value < b.value;
         }
 

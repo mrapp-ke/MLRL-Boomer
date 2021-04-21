@@ -16,17 +16,9 @@
 template<class T>
 class SparseArrayVector final {
 
-    public:
-
-        /**
-         * The type of an element that is contained by the vector.
-         */
-        typedef IndexedValue<T> Entry;
-
-
     private:
 
-        Entry* array_;
+        IndexedValue<T>* array_;
 
         uint32 numElements_;
 
@@ -44,12 +36,12 @@ class SparseArrayVector final {
         /**
          * An iterator that provides access to the elements in the vector and allows to modify them.
          */
-        typedef Entry* iterator;
+        typedef IndexedValue<T>* iterator;
 
         /**
          * An iterator that provides read-only access to the elements in the vector.
          */
-        typedef const Entry* const_iterator;
+        typedef const IndexedValue<T>* const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the vector.
