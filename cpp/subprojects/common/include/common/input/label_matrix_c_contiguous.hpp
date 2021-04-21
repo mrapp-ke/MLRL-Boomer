@@ -29,7 +29,7 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
         /**
          * An iterator that provides read-only access to the values in the label matrix.
          */
-        typedef CContiguousConstView<uint8>::const_iterator value_const_iterator;
+        typedef CContiguousConstView<const uint8>::const_iterator value_const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of a specific row.
