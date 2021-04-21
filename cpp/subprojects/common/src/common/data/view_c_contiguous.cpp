@@ -29,9 +29,12 @@ uint32 CContiguousConstView<T>::getNumCols() const {
 
 template class CContiguousConstView<uint8>;
 template class CContiguousConstView<const uint8>;
+template class CContiguousConstView<uint32>;
+template class CContiguousConstView<const uint32>;
 template class CContiguousConstView<float32>;
 template class CContiguousConstView<const float32>;
 template class CContiguousConstView<float64>;
+template class CContiguousConstView<const float64>;
 
 template<class T>
 CContiguousView<T>::CContiguousView(uint32 numRows, uint32 numCols, T* array)
@@ -50,5 +53,6 @@ typename CContiguousView<T>::iterator CContiguousView<T>::row_end(uint32 row) {
 }
 
 template class CContiguousView<uint8>;
+template class CContiguousView<uint32>;
 template class CContiguousView<float32>;
 template class CContiguousView<float64>;

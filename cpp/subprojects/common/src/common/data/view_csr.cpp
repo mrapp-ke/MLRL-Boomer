@@ -42,8 +42,14 @@ uint32 CsrConstView<T>::getNumNonZeroElements() const {
     return rowIndices_[numCols_];
 }
 
+template class CsrConstView<uint8>;
+template class CsrConstView<const uint8>;
+template class CsrConstView<uint32>;
+template class CsrConstView<const uint32>;
 template class CsrConstView<float32>;
 template class CsrConstView<const float32>;
+template class CsrConstView<float64>;
+template class CsrConstView<const float64>;
 
 template<class T>
 CsrView<T>::CsrView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices)
@@ -71,4 +77,7 @@ typename CsrView<T>::index_iterator CsrView<T>::row_indices_end(uint32 row) {
     return &CsrConstView<T>::colIndices_[CsrConstView<T>::rowIndices_[row + 1]];
 }
 
+template class CsrView<uint8>;
+template class CsrView<uint32>;
 template class CsrView<float32>;
+template class CsrView<float64>;

@@ -42,8 +42,14 @@ uint32 CscConstView<T>::getNumNonZeroElements() const {
     return colIndices_[numCols_];
 }
 
+template class CscConstView<uint8>;
+template class CscConstView<const uint8>;
+template class CscConstView<uint32>;
+template class CscConstView<const uint32>;
 template class CscConstView<float32>;
 template class CscConstView<const float32>;
+template class CscConstView<float64>;
+template class CscConstView<const float64>;
 
 template<class T>
 CscView<T>::CscView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices)
@@ -71,4 +77,7 @@ typename CscView<T>::index_iterator CscView<T>::column_indices_end(uint32 col) {
     return &CscConstView<T>::rowIndices_[CscConstView<T>::colIndices_[col + 1]];
 }
 
+template class CscView<uint8>;
+template class CscView<uint32>;
 template class CscView<float32>;
+template class CscView<float64>;
