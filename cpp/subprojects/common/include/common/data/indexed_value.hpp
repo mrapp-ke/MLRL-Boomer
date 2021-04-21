@@ -8,6 +8,8 @@
 
 /**
  * A tuple that consists of an index and a value.
+ *
+ * @tparam T The type of the value
  */
 template<class T>
 struct IndexedValue {
