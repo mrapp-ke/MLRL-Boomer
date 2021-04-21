@@ -31,7 +31,7 @@ class LabelVectorSet {
         };
 
         /**
-         * Allows to check whether two objects of type `LabelVector` are equal.
+         * Allows to check whether two objects of type `LabelVector` are equal or not.
          */
         struct EqualsFunction {
 
