@@ -24,16 +24,17 @@ static inline std::size_t hashArray(const uint32* a, uint32 numElements) {
 }
 
 /**
- * Returns whether two arrays of type `uint32` are equal or not.
+ * Returns whether two arrays are equal or not.
  *
- * @param first             A pointer to an array of type `uint32`
+ * @tparam T                The type of the arrays
+ * @param first             A pointer to an array of template type `T`
  * @param firstNumElements  The number of elements in the array `first`
- * @param second            A pointer to another array of type `uint32`
+ * @param second            A pointer to another array of template type `T`
  * @param secondNumElements The number of elements in the array `second`
  * @return                  True, if both arrays are equal, false otherwise
  */
-static inline bool compareArrays(const uint32* first, uint32 firstNumElements, const uint32* second,
-                                 uint32 secondNumElements) {
+template<class T>
+static inline bool compareArrays(const T* first, uint32 firstNumElements, const T* second, uint32 secondNumElements) {
     if (firstNumElements != secondNumElements) {
         return false;
     }
