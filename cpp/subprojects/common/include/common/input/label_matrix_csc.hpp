@@ -26,7 +26,7 @@ class CscLabelMatrix final {
 
         uint32* colIndices_;
 
-        BinaryCscView view_;
+        BinaryCscConstView view_;
 
     public:
 
@@ -75,12 +75,12 @@ class CscLabelMatrix final {
         /**
          * An iterator that provides read-only access to the indices of the relevant labels.
          */
-        typedef BinaryCscView::index_const_iterator index_const_iterator;
+        typedef BinaryCscConstView::index_const_iterator index_const_iterator;
 
         /**
          * An iterator that provides read-only access to the values in the label matrix.
          */
-        typedef BinaryCscView::value_const_iterator value_const_iterator;
+        typedef BinaryCscConstView::value_const_iterator value_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific column.
