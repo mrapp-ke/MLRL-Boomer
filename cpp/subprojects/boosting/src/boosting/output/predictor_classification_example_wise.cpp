@@ -58,10 +58,10 @@ namespace boosting {
         }
     }
 
-    void ExampleWiseClassificationPredictor::transform(const CContiguousView<float64>& scoreMatrix,
+    void ExampleWiseClassificationPredictor::transform(const CContiguousConstView<float64>& scoreMatrix,
                                                        CContiguousView<uint8>& predictionMatrix) const {
         uint32 numExamples = scoreMatrix.getNumRows();
-        const CContiguousView<float64>* scoreMatrixPtr = &scoreMatrix;
+        const CContiguousConstView<float64>* scoreMatrixPtr = &scoreMatrix;
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
         const ISimilarityMeasure* measurePtr = measurePtr_.get();
         const LabelVectorSet<uint32>* labelVectorsPtr = &labelVectors_;

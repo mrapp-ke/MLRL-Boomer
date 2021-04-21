@@ -10,7 +10,7 @@ namespace boosting {
         return logisticFunction(predictedScore);
     }
 
-    static inline void applyTransformationFunction(CContiguousView<float64>::const_iterator originalIterator,
+    static inline void applyTransformationFunction(CContiguousConstView<float64>::const_iterator originalIterator,
                                                    CContiguousView<float64>::iterator transformedIterator,
                                                    uint32 numElements,
                                                    const ILabelWiseTransformationFunction& transformationFunction) {

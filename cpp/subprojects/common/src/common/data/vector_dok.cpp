@@ -46,4 +46,7 @@ void DokVector<T>::setAllToZero() {
     data_.clear();
 }
 
+template class DokVector<uint8>;
 template class DokVector<uint32>;
+template class DokVector<float32>;
+template class DokVector<float64>;

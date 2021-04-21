@@ -50,5 +50,7 @@ void SparseArrayVector<T>::sortByValues() {
     std::sort(vector_.begin(), vector_.end(), comparator);
 }
 
+template class SparseArrayVector<uint8>;
+template class SparseArrayVector<uint32>;
 template class SparseArrayVector<float32>;
 template class SparseArrayVector<float64>;

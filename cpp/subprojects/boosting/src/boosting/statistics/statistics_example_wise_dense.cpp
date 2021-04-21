@@ -21,7 +21,7 @@ namespace boosting {
             std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
         const IExampleWiseLoss* lossFunctionRawPtr = lossFunctionPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
-        const CContiguousView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
+        const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseExampleWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(lossFunctionRawPtr) \
