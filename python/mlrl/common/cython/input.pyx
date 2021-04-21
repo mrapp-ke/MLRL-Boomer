@@ -116,7 +116,7 @@ cdef class CsrFeatureMatrix:
     A wrapper for the C++ class `CsrFeatureMatrix`.
     """
 
-    def __cinit__(self, uint32 num_examples, uint32 num_features, float32[::1] data, uint32[::1] row_indices,
+    def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] data, uint32[::1] row_indices,
                   uint32[::1] col_indices):
         """
         :param num_examples:    The total number of examples
