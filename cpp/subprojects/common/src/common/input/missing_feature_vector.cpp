@@ -24,7 +24,7 @@ void MissingFeatureVector::addMissingIndex(uint32 index) {
 }
 
 bool MissingFeatureVector::isMissing(uint32 index) const {
-    return missingIndicesPtr_->getValue(index);
+    return (*missingIndicesPtr_)[index];
 }
 
 void MissingFeatureVector::clearMissingIndices() {
