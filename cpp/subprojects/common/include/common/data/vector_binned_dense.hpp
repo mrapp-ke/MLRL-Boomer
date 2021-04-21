@@ -261,12 +261,4 @@ class DenseBinnedVector {
          */
         void setNumBins(uint32 numBins, bool freeMemory);
 
-        /**
-         * Returns the value of the element at a specific position.
-         *
-         * @param pos   The position of the element. Must be in [0, getNumElements())
-         * @return      The value of the given element
-         */
-        T getValue(uint32 pos) const;
-
 };
