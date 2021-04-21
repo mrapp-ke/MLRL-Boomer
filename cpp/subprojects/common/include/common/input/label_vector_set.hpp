@@ -22,7 +22,7 @@ class LabelVectorSet {
         /**
          * Allows to compute hashes for objects of type `LabelVector`.
          */
-        struct HashFunction {
+        struct Hash {
 
             inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
                 return hashArray(v->indices_cbegin(), v->getNumElements());
@@ -33,7 +33,7 @@ class LabelVectorSet {
         /**
          * Allows to check whether two objects of type `LabelVector` are equal or not.
          */
-        struct EqualsFunction {
+        struct Pred {
 
             inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
                                    const std::unique_ptr<LabelVector>& rhs) const {
@@ -43,7 +43,7 @@ class LabelVectorSet {
 
         };
 
-        typedef std::unordered_map<std::unique_ptr<LabelVector>, T, HashFunction, EqualsFunction> Map;
+        typedef std::unordered_map<std::unique_ptr<LabelVector>, T, Hash, Pred> Map;
 
         Map map_;
 
