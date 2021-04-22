@@ -4,6 +4,11 @@
 #include "common/sampling/instance_sampling.hpp"
 
 
+CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
+    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.view_.row_cbegin(row)) {
+
+}
+
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
     : view_(CContiguousConstView<const uint8>(numRows, numCols, array)) {
 
@@ -23,6 +28,10 @@ uint32 CContiguousLabelMatrix::getNumRows() const {
 
 uint32 CContiguousLabelMatrix::getNumCols() const {
     return view_.getNumCols();
+}
+
+std::unique_ptr<CContiguousLabelMatrix::view_type> CContiguousLabelMatrix::createView(uint32 row) const {
+    return std::make_unique<CContiguousLabelMatrix::view_type>(*this, row);
 }
 
 std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 row) const {
