@@ -17,4 +17,3 @@ T& LabelVectorSet<T>::addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr
 }
 
 template class LabelVectorSet<uint32>;
-template class LabelVectorSet<std::vector<uint32>>;
