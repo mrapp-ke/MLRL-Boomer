@@ -40,14 +40,9 @@ void SparseArrayVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
 
 template<class T>
 void SparseArrayVector<T>::sortByValues() {
-    struct {
-
-        bool operator()(const IndexedValue<T>& a, const IndexedValue<T>& b) const {
-            return a.value < b.value;
-        }
-
-    } comparator;
-    std::sort(vector_.begin(), vector_.end(), comparator);
+    std::sort(vector_.begin(), vector_.end(), [=](const IndexedValue<T>& a, const IndexedValue<T>& b) {
+        return a.value < b.value;
+    });
 }
 
 template class SparseArrayVector<uint8>;
