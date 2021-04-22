@@ -2,8 +2,8 @@
 #include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
-#include "common/input/label_vector_set.hpp"
 #include "stratified_sampling.hpp"
+#include <unordered_map>
 #include <vector>
 #include <cmath>
 
@@ -27,7 +27,13 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
 
         DenseWeightVector<uint8> weightVector_;
 
-        LabelVectorSet<std::vector<uint32>> labelVectors_;
+        typedef std::unique_ptr<typename LabelMatrix::view_type> Key;
+
+        typedef typename LabelMatrix::view_type::Hash Hash;
+
+        typedef typename LabelMatrix::view_type::Pred Pred;
+
+        std::unordered_map<Key, std::vector<uint32>, Hash, Pred> map_;
 
     public:
 
@@ -47,8 +53,7 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
               weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows())) {
             for (uint32 i = 0; i < numTrainingExamples_; i++) {
                 uint32 exampleIndex = indicesBegin[i];
-                std::vector<uint32>& exampleIndices =
-                    labelVectors_.addLabelVector(labelMatrix.createLabelVector(exampleIndex));
+                std::vector<uint32>& exampleIndices = map_[std::move(labelMatrix.createView(exampleIndex))];
                 exampleIndices.push_back(exampleIndex);
             }
         }
@@ -60,9 +65,9 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
             uint32 numNonZeroWeights = 0;
             uint32 numZeroWeights = 0;
 
-            for (auto it = labelVectors_.cbegin(); it != labelVectors_.cend(); it++) {
-                const auto& entry = *it;
-                std::vector<uint32> exampleIndices = entry.second;
+            for (auto it = map_.begin(); it != map_.end(); it++) {
+                auto& entry = *it;
+                std::vector<uint32>& exampleIndices = entry.second;
                 std::vector<uint32>::iterator indexIterator = exampleIndices.begin();
                 uint32 numExamples = exampleIndices.size();
                 float32 numSamplesDecimal = sampleSize_ * numExamples;
