@@ -30,8 +30,8 @@ uint32 CContiguousLabelMatrix::getNumCols() const {
     return view_.getNumCols();
 }
 
-std::unique_ptr<CContiguousLabelMatrix::view_type> CContiguousLabelMatrix::createView(uint32 row) const {
-    return std::make_unique<CContiguousLabelMatrix::view_type>(*this, row);
+CContiguousLabelMatrix::view_type CContiguousLabelMatrix::createView(uint32 row) const {
+    return CContiguousLabelMatrix::view_type(*this, row);
 }
 
 std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 row) const {

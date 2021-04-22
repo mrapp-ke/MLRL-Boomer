@@ -27,7 +27,7 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
 
         DenseWeightVector<uint8> weightVector_;
 
-        typedef std::unique_ptr<typename LabelMatrix::view_type> Key;
+        typedef typename LabelMatrix::view_type Key;
 
         typedef typename LabelMatrix::view_type::Hash Hash;
 
@@ -53,7 +53,7 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
               weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows())) {
             for (uint32 i = 0; i < numTrainingExamples_; i++) {
                 uint32 exampleIndex = indicesBegin[i];
-                std::vector<uint32>& exampleIndices = map_[std::move(labelMatrix.createView(exampleIndex))];
+                std::vector<uint32>& exampleIndices = map_[labelMatrix.createView(exampleIndex)];
                 exampleIndices.push_back(exampleIndex);
             }
         }

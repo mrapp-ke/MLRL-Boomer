@@ -32,8 +32,8 @@ class CsrLabelMatrix final : public ILabelMatrix {
                  */
                 struct Hash {
 
-                    inline std::size_t operator()(const std::unique_ptr<View>& v) const {
-                        return hashArray(v->cbegin(), v->getNumElements());
+                    inline std::size_t operator()(const View& v) const {
+                        return hashArray(v.cbegin(), v.getNumElements());
                     }
 
                 };
@@ -43,9 +43,8 @@ class CsrLabelMatrix final : public ILabelMatrix {
                  */
                 struct Pred {
 
-                    inline bool operator()(const std::unique_ptr<View>& lhs, const std::unique_ptr<View>& rhs) const {
-                        return compareArrays(lhs->cbegin(), lhs->getNumElements(), rhs->cbegin(),
-                                             rhs->getNumElements());
+                    inline bool operator()(const View& lhs, const View& rhs) const {
+                        return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
                     }
 
                 };
@@ -72,7 +71,7 @@ class CsrLabelMatrix final : public ILabelMatrix {
         /**
          * The type of the view that provides access to the values that are stored in a single row of the label matrix.
          */
-        typedef View view_type;
+        typedef const View view_type;
 
         /**
          * An iterator that provides read-only access to the indices of the relevant labels.
@@ -127,9 +126,9 @@ class CsrLabelMatrix final : public ILabelMatrix {
          * Creates and returns a view that provides access to the values at a specific row of the label matrix.
          *
          * @param row   The row
-         * @return      An unique pointer to an object of type `view_type` that has been created
+         * @return      An object of type `view_type` that has been created
          */
-        std::unique_ptr<view_type> createView(uint32 row) const;
+        view_type createView(uint32 row) const;
 
         uint32 getNumRows() const override;
 
