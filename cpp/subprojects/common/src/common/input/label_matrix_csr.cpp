@@ -44,8 +44,8 @@ uint32 CsrLabelMatrix::getNumCols() const {
     return view_.getNumCols();
 }
 
-std::unique_ptr<CsrLabelMatrix::view_type> CsrLabelMatrix::createView(uint32 row) const {
-    return std::make_unique<CsrLabelMatrix::view_type>(*this, row);
+CsrLabelMatrix::view_type CsrLabelMatrix::createView(uint32 row) const {
+    return CsrLabelMatrix::view_type(*this, row);
 }
 
 std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const {
