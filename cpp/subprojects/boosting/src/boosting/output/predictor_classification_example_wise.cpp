@@ -6,10 +6,10 @@
 
 namespace boosting {
 
+    template<class T>
     static inline void predictClosestLabelVector(uint32 exampleIndex, const float64* scoresBegin,
                                                  const float64* scoresEnd, CContiguousView<uint8>& predictionMatrix,
-                                                 const ISimilarityMeasure& measure,
-                                                 const LabelVectorSet<uint32>& labelVectors) {
+                                                 const ISimilarityMeasure& measure, const T& labelVectors) {
         std::fill(predictionMatrix.row_begin(exampleIndex), predictionMatrix.row_end(exampleIndex), 0);
         const LabelVector* closestLabelVector = nullptr;
         float64 bestScore = 0;
@@ -47,7 +47,7 @@ namespace boosting {
     }
 
     void ExampleWiseClassificationPredictor::addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) {
-        ++labelVectors_.addLabelVector(std::move(labelVectorPtr));
+        ++labelVectors_[std::move(labelVectorPtr)];
     }
 
     void ExampleWiseClassificationPredictor::visit(LabelVectorVisitor visitor) const {
@@ -64,7 +64,7 @@ namespace boosting {
         const CContiguousConstView<float64>* scoreMatrixPtr = &scoreMatrix;
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
         const ISimilarityMeasure* measurePtr = measurePtr_.get();
-        const LabelVectorSet<uint32>* labelVectorsPtr = &labelVectors_;
+        const std::unordered_map<std::unique_ptr<LabelVector>, uint32, Hash, Pred>* labelVectorsPtr = &labelVectors_;
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(scoreMatrixPtr) \
         firstprivate(predictionMatrixPtr) firstprivate(measurePtr) firstprivate(labelVectorsPtr) schedule(dynamic) \
@@ -84,7 +84,7 @@ namespace boosting {
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
         const RuleModel* modelPtr = &model;
         const ISimilarityMeasure* measurePtr = measurePtr_.get();
-        const LabelVectorSet<uint32>* labelVectorsPtr = &labelVectors_;
+        const std::unordered_map<std::unique_ptr<LabelVector>, uint32, Hash, Pred>* labelVectorsPtr = &labelVectors_;
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
         firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(measurePtr) \
@@ -112,7 +112,7 @@ namespace boosting {
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
         const RuleModel* modelPtr = &model;
         const ISimilarityMeasure* measurePtr = measurePtr_.get();
-        const LabelVectorSet<uint32>* labelVectorsPtr = &labelVectors_;
+        const std::unordered_map<std::unique_ptr<LabelVector>, uint32, Hash, Pred>* labelVectorsPtr = &labelVectors_;
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
         firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(measurePtr) \
