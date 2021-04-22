@@ -4,6 +4,7 @@
 #include "common/sampling/partition_single.hpp"
 #include "stratified_sampling.hpp"
 #include <unordered_map>
+#include <algorithm>
 #include <vector>
 #include <cmath>
 
@@ -35,6 +36,8 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
 
         std::unordered_map<Key, std::vector<uint32>, Hash, Pred> map_;
 
+        std::vector<std::reference_wrapper<std::vector<uint32>>> order_;
+
     public:
 
         /**
@@ -51,11 +54,25 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
                                       IndexIterator indicesEnd, float32 sampleSize)
             : numTrainingExamples_(indicesEnd - indicesBegin), sampleSize_(sampleSize),
               weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows())) {
+            // Create a map that stores the indices of the examples that are associated with each unique label vector...
             for (uint32 i = 0; i < numTrainingExamples_; i++) {
                 uint32 exampleIndex = indicesBegin[i];
                 std::vector<uint32>& exampleIndices = map_[labelMatrix.createView(exampleIndex)];
                 exampleIndices.push_back(exampleIndex);
             }
+
+            // Sort the label vectors by their frequency...
+            order_.reserve(map_.size());
+
+            for (auto it = map_.begin(); it != map_.end(); it++) {
+                auto& entry = *it;
+                std::vector<uint32>& exampleIndices = entry.second;
+                order_.push_back(exampleIndices);
+            }
+
+            std::sort(order_.begin(), order_.end(), [=](const std::vector<uint32>& a, const std::vector<uint32>& b) {
+                return a.size() < b.size();
+            });
         }
 
         const IWeightVector& subSample(RNG& rng) override {
@@ -65,9 +82,8 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
             uint32 numNonZeroWeights = 0;
             uint32 numZeroWeights = 0;
 
-            for (auto it = map_.begin(); it != map_.end(); it++) {
-                auto& entry = *it;
-                std::vector<uint32>& exampleIndices = entry.second;
+            for (auto it = order_.begin(); it != order_.end(); it++) {
+                std::vector<uint32>& exampleIndices = *it;
                 std::vector<uint32>::iterator indexIterator = exampleIndices.begin();
                 uint32 numExamples = exampleIndices.size();
                 float32 numSamplesDecimal = sampleSize_ * numExamples;
