@@ -229,7 +229,7 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
                 // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and set their weights to 1...
                 for (j = 0; j < numExamples; j++) {
-                    uint32 randomIndex = rng.random(i, numExamples);
+                    uint32 randomIndex = rng.random(j, numExamples);
                     uint32 exampleIndex = exampleIndices[randomIndex];
                     exampleIndices[randomIndex] = exampleIndices[j];
                     exampleIndices[j] = exampleIndex;
