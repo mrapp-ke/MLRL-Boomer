@@ -199,8 +199,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
                                             label_sub_sampling_factory, instance_sub_sampling_factory,
-                                            feature_sub_sampling_factory, partition_sampling, pruning, post_processor,
-                                            min_coverage, max_conditions, max_head_refinements, stopping_criteria)
+                                            feature_sub_sampling_factory, partition_sampling_factory, pruning,
+                                            post_processor, min_coverage, max_conditions, max_head_refinements,
+                                            stopping_criteria)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
