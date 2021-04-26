@@ -160,13 +160,13 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
                         for (auto it2 = range.first; it2 != range.second; it2++) {
                             if (it2->second == key) {
-                                sortedLabelIndices.erase(it2);
                                 uint32 numRemaining = numExamplesPerLabel[key];
 
                                 if (numRemaining > 0) {
-                                    sortedLabelIndices.emplace(numRemaining, key);
+                                    sortedLabelIndices.emplace_hint(it2, numRemaining, key);
                                 }
 
+                                sortedLabelIndices.erase(it2);
                                 break;
                             }
                         }
