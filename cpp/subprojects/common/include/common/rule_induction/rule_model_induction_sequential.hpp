@@ -45,14 +45,6 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
 
         std::shared_ptr<IPostProcessor> postProcessorPtr_;
 
-        uint32 minCoverage_;
-
-        intp maxConditions_;
-
-        intp maxHeadRefinements_;
-
-        bool recalculatePredictions_;
-
         std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr_;
 
     public:
@@ -91,18 +83,6 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          *                                              used to prune the rules
          * @param postProcessorPtr                      A shared pointer to an object of type `IPostProcessor` that
          *                                              should be used to post-process the predictions of rules
-         * @param minCoverage                           The minimum number of training examples that must be covered by
-         *                                              the rule. Must be at least 1
-         * @param maxConditions                         The maximum number of conditions to be included in the rule's
-         *                                              body. Must be at least 1 or -1, if the number of conditions
-         *                                              should not be restricted
-         * @param maxHeadRefinements                    The maximum number of times, the head of the rule may be
-         *                                              refinement after a new condition has been added to its body.
-         *                                              Must be at least 1 or -1, if the number of refinements should
-         *                                              not be restricted
-         * @param recalculatePredictions                True, if the predictions of rules should be recalculated on the
-         *                                              entire training data, if instance sub-sampling is used, false
-         *                                              otherwise
          * @param stoppingCriteriaPtr                   An unique pointer to a list that contains the stopping criteria,
          *                                              which should be used to decide whether additional rules should
          *                                              be induced or not
@@ -116,8 +96,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
             std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr,
             std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
             std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-            std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage,
-            intp maxConditions, intp maxHeadRefinements, bool recalculatePredictions,
+            std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
             std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr);
 
         std::unique_ptr<RuleModel> induceRules(std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
