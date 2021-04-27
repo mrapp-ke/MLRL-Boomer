@@ -95,7 +95,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
                  time_limit: int = -1, early_stopping: str = None, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sub_sampling: str = None,
-                 instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING,
+                 instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING, recalculate_predictions: bool = True,
                  feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, holdout_set_size: float = 0.0,
                  feature_binning: str = None, label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
@@ -128,6 +128,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     `random-instance-selection` or None, if no sub-sampling should be
                                                     used. Additional arguments may be provided as a dictionary, e.g.
                                                     `bagging{\"sample_size\":0.5}`
+        :param recalculate_predictions:             True, if the predictions of rules should be recalculated on the
+                                                    entire training data, if instance sub-sampling is used, False
+                                                    otherwise
         :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
                                                     classification rule is refined. Must be `random-feature-selection`
                                                     or None, if no sub-sampling should be used. Additional argument may
@@ -177,6 +180,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.predictor = predictor
         self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
+        self.recalculate_predictions = recalculate_predictions
         self.feature_sub_sampling = feature_sub_sampling
         self.holdout_set_size = holdout_set_size
         self.feature_binning = feature_binning
@@ -290,6 +294,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
+        recalculate_predictions = self.recalculate_predictions
         loss_function = self.__create_loss_function()
         default_rule_head_refinement_factory = FullHeadRefinementFactory() if self.default_rule \
             else NoHeadRefinementFactory()
@@ -307,7 +312,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             label_sub_sampling_factory, instance_sub_sampling_factory,
                                             feature_sub_sampling_factory, partition_sampling_factory, pruning,
                                             shrinkage, min_coverage, max_conditions, max_head_refinements,
-                                            stopping_criteria)
+                                            recalculate_predictions, stopping_criteria)
 
     def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
         early_stopping = self.early_stopping

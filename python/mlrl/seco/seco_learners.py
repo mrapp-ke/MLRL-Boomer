@@ -200,7 +200,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                             default_rule_head_refinement_factory, head_refinement_factory,
                                             label_sub_sampling_factory, instance_sub_sampling_factory,
                                             feature_sub_sampling_factory, partition_sampling_factory, pruning,
-                                            post_processor, min_coverage, max_conditions, max_head_refinements,
+                                            post_processor, min_coverage, max_conditions, max_head_refinements, False,
                                             stopping_criteria)
 
     def __create_heuristic(self) -> Heuristic:
