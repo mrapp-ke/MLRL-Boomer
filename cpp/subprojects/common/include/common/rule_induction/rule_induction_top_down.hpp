@@ -32,6 +32,7 @@ class TopDownRuleInduction : public IRuleInduction {
         bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
                         IPartition& partition, IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
                         const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
-                        intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder) const override;
+                        intp maxHeadRefinements, bool recalculatePredictions, RNG& rng,
+                        IModelBuilder& modelBuilder) const override;
 
 };

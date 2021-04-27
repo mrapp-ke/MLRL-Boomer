@@ -50,18 +50,18 @@ cdef extern from "common/rule_induction/rule_model_induction_sequential.hpp" nog
 
         # Constructors:
 
-        SequentialRuleModelInductionImpl(shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
-                                         shared_ptr[IThresholdsFactory] thresholdsFactoryPtr,
-                                         shared_ptr[IRuleInduction] ruleInductionPtr,
-                                         shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
-                                         shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
-                                         shared_ptr[ILabelSubSamplingFactory] labelSubSamplingFactoryPtr,
-                                         shared_ptr[IInstanceSubSamplingFactory] instanceSubSamplingFactoryPtr,
-                                         shared_ptr[IFeatureSubSamplingFactory] featureSubSamplingFactoryPtr,
-                                         shared_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr,
-                                         shared_ptr[IPruning] pruningPtr, shared_ptr[IPostProcessor] postProcessorPtr,
-                                         uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
-                                         unique_ptr[forward_list[shared_ptr[IStoppingCriterion]]] stoppingCriteriaPtr) except +
+        SequentialRuleModelInductionImpl(
+                shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
+                shared_ptr[IThresholdsFactory] thresholdsFactoryPtr, shared_ptr[IRuleInduction] ruleInductionPtr,
+                shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
+                shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
+                shared_ptr[ILabelSubSamplingFactory] labelSubSamplingFactoryPtr,
+                shared_ptr[IInstanceSubSamplingFactory] instanceSubSamplingFactoryPtr,
+                shared_ptr[IFeatureSubSamplingFactory] featureSubSamplingFactoryPtr,
+                shared_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr, shared_ptr[IPruning] pruningPtr,
+                shared_ptr[IPostProcessor] postProcessorPtr, uint32 minCoverage, intp maxConditions,
+                intp maxHeadRefinements, bool recalculatePredictions,
+                unique_ptr[forward_list[shared_ptr[IStoppingCriterion]]] stoppingCriteriaPtr) except +
 
 
 cdef class RuleInduction:
