@@ -51,6 +51,8 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
 
         intp maxHeadRefinements_;
 
+        bool recalculatePredictions_;
+
         std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr_;
 
     public:
@@ -98,6 +100,9 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          *                                              refinement after a new condition has been added to its body.
          *                                              Must be at least 1 or -1, if the number of refinements should
          *                                              not be restricted
+         * @param recalculatePredictions                True, if the predictions of rules should be recalculated on the
+         *                                              entire training data, if instance sub-sampling is used, false
+         *                                              otherwise
          * @param stoppingCriteriaPtr                   An unique pointer to a list that contains the stopping criteria,
          *                                              which should be used to decide whether additional rules should
          *                                              be induced or not
@@ -112,7 +117,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
             std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
             std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage,
-            intp maxConditions, intp maxHeadRefinements,
+            intp maxConditions, intp maxHeadRefinements, bool recalculatePredictions,
             std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr);
 
         std::unique_ptr<RuleModel> induceRules(std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,

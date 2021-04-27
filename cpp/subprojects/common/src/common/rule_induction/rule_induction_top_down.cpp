@@ -43,7 +43,8 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
                                       const IWeightVector& weights, IPartition& partition,
                                       IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
                                       const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
-                                      intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder) const {
+                                      intp maxHeadRefinements, bool recalculatePredictions, RNG& rng,
+                                      IModelBuilder& modelBuilder) const {
     // True, if the rule is learned on a sub-sample of the available training examples, False otherwise
     bool instanceSubSamplingUsed = weights.hasZeroWeights();
     // The label indices for which the next refinement of the rule may predict
@@ -137,9 +138,11 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
                                                                              conditions, *bestHead);
 
             // Re-calculate the scores in the head based on the entire training data...
-            const ICoverageState& coverageState =
-                coverageStatePtr.get() != nullptr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
-            partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *bestRefinementPtr);
+            if (recalculatePredictions) {
+                const ICoverageState& coverageState =
+                    coverageStatePtr.get() != nullptr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
+                partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *bestRefinementPtr);
+            }
         }
 
         // Apply post-processor...
