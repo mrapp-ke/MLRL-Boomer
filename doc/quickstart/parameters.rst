@@ -129,6 +129,10 @@ The following parameters allow to adjust the behavior of the algorithm:
   * ``stratified-label-wise`` The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. Additional arguments may be provided using the Python dictionary syntax, e.g., ``stratified-label-wise{'sample_size':0.5}``.
   * ``stratified-example-wise`` The training examples to be considered for learning a new rule are selected according to stratified sample, where distinct label vectors are treated as individual classes. Additional arguments may be provided using the Python dictionary syntax, e.g., ``stratified-example-wise{'sample_size':0.5}``.
 
+* ``--recalculate-predictions`` (default value ``True``)
+
+  * ``True``, if the predictions of rules should be recalculated on the entire training data, if the parameter ``instance-sub-sampling`` is not set to ``None``, ``False`` otherwise.
+
 * ``--holdout`` (default value ``0``)
 
   * The fraction of the training examples that should be included in a holdout set. Must be in greater than ``0`` and smaller than ``1`` or ``0``, if no holdout set should be used.
@@ -147,7 +151,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 * ``--label-binning`` (default value ``None``)
 
   * ``None`` No label binning is used.
-  * ``equal-width`` The labels for which a rule may predict are assigned to bins according to the equal-width binning method. Additional arguments may be provided usign the Python dictionary syntax, e.g., ``equal-width{'bin_ratio':0.04,'min_bins':1,'max_bins':8``.
+  * ``equal-width`` The labels for which a rule may predict are assigned to bins according to the equal-width binning method. Additional arguments may be provided using the Python dictionary syntax, e.g., ``equal-width{'bin_ratio':0.04,'min_bins':1,'max_bins':8``.
 
 * ``--pruning`` (default value ``None``)
 
