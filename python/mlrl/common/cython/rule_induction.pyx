@@ -65,7 +65,8 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
                   InstanceSubSamplingFactory instance_sub_sampling_factory,
                   FeatureSubSamplingFactory feature_sub_sampling_factory,
                   PartitionSamplingFactory partition_sampling_factory, Pruning pruning, PostProcessor post_processor,
-                  uint32 min_coverage, intp max_conditions, intp max_head_refinements, list stopping_criteria):
+                  uint32 min_coverage, intp max_conditions, intp max_head_refinements, bint recalculate_predictions,
+                  list stopping_criteria):
         """
         :param statistics_provider_factory:             A factory that allows to create a provider that provides access
                                                         to the statistics which serve as the basis for learning rules
@@ -102,6 +103,9 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
                                                         after a new condition has been added to its body. Must be at
                                                         least 1 or -1, if the number of refinements should not be
                                                         restricted
+        :param recalculate_predictions:                 True, if the predictions of rules should be recalculated on the
+                                                        entire training data, if instance sub-sampling is used, False
+                                                        otherwise
         :param stopping_criteria                        A list that contains the stopping criteria that should be used
                                                         to decide whether additional rules should be induced or not
         """
@@ -124,4 +128,4 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
             feature_sub_sampling_factory.feature_sub_sampling_factory_ptr,
             partition_sampling_factory.partition_sampling_factory_ptr, pruning.pruning_ptr,
             post_processor.post_processor_ptr, min_coverage, max_conditions, max_head_refinements,
-            move(stopping_criteria_ptr))
+            recalculate_predictions, move(stopping_criteria_ptr))

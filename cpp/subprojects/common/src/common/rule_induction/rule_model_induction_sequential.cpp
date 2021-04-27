@@ -43,7 +43,7 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
         std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
         std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr, std::shared_ptr<IPruning> pruningPtr,
         std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
-        intp maxHeadRefinements,
+        intp maxHeadRefinements, bool recalculatePredictions,
         std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr)
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), thresholdsFactoryPtr_(thresholdsFactoryPtr),
       ruleInductionPtr_(ruleInductionPtr), defaultRuleHeadRefinementFactoryPtr_(defaultRuleHeadRefinementFactoryPtr),
@@ -52,7 +52,8 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
       featureSubSamplingFactoryPtr_(featureSubSamplingFactoryPtr),
       partitionSamplingFactoryPtr_(partitionSamplingFactoryPtr), pruningPtr_(pruningPtr),
       postProcessorPtr_(postProcessorPtr), minCoverage_(minCoverage), maxConditions_(maxConditions),
-      maxHeadRefinements_(maxHeadRefinements), stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
+      maxHeadRefinements_(maxHeadRefinements), recalculatePredictions_(recalculatePredictions),
+      stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
 
 }
 
@@ -93,8 +94,8 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
         const IIndexVector& labelIndices = labelSubSamplingPtr->subSample(rng);
         bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, labelIndices, weights, partition,
                                                      *featureSubSamplingPtr, *pruningPtr_, *postProcessorPtr_,
-                                                     minCoverage_, maxConditions_, maxHeadRefinements_, rng,
-                                                     modelBuilder);
+                                                     minCoverage_, maxConditions_, maxHeadRefinements_,
+                                                     recalculatePredictions_, rng, modelBuilder);
 
         if (success) {
             numRules++;

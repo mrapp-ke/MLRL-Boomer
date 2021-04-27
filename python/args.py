@@ -202,6 +202,10 @@ class ArgumentParserBuilder:
         parser.add_argument('--default-rule', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('default_rule', True, **kwargs),
                             help='True, if the first rule should be a default rule, False otherwise')
+        parser.add_argument('--recalculate-predictions', type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('recalculate_predictions', True, **kwargs),
+                            help='True, if the predictions of rules should be recalculated on the entire training '
+                                 + 'data, if instance sub-sampling is used, False otherwise')
         parser.add_argument('--early-stopping', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('early_stopping', None, **kwargs),
                             help='The name of the strategy to be used for early stopping or None')
