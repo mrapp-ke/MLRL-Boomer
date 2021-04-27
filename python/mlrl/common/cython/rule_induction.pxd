@@ -11,7 +11,6 @@ from mlrl.common.cython.thresholds cimport IThresholdsFactory
 from mlrl.common.cython.pruning cimport IPruning
 from mlrl.common.cython.post_processing cimport IPostProcessor
 from mlrl.common.cython.head_refinement cimport IHeadRefinementFactory
-
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr, shared_ptr
 from libcpp.forward_list cimport forward_list
@@ -41,7 +40,8 @@ cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
 
         # Constructors:
 
-        TopDownRuleInductionImpl(uint32 numThreads) except +
+        TopDownRuleInductionImpl(uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
+                                 bool recalculatePredictions, uint32 numThreads) except +
 
 
 cdef extern from "common/rule_induction/rule_model_induction_sequential.hpp" nogil:
@@ -50,18 +50,17 @@ cdef extern from "common/rule_induction/rule_model_induction_sequential.hpp" nog
 
         # Constructors:
 
-        SequentialRuleModelInductionImpl(shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
-                                         shared_ptr[IThresholdsFactory] thresholdsFactoryPtr,
-                                         shared_ptr[IRuleInduction] ruleInductionPtr,
-                                         shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
-                                         shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
-                                         shared_ptr[ILabelSubSamplingFactory] labelSubSamplingFactoryPtr,
-                                         shared_ptr[IInstanceSubSamplingFactory] instanceSubSamplingFactoryPtr,
-                                         shared_ptr[IFeatureSubSamplingFactory] featureSubSamplingFactoryPtr,
-                                         shared_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr,
-                                         shared_ptr[IPruning] pruningPtr, shared_ptr[IPostProcessor] postProcessorPtr,
-                                         uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
-                                         unique_ptr[forward_list[shared_ptr[IStoppingCriterion]]] stoppingCriteriaPtr) except +
+        SequentialRuleModelInductionImpl(
+                shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
+                shared_ptr[IThresholdsFactory] thresholdsFactoryPtr, shared_ptr[IRuleInduction] ruleInductionPtr,
+                shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
+                shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
+                shared_ptr[ILabelSubSamplingFactory] labelSubSamplingFactoryPtr,
+                shared_ptr[IInstanceSubSamplingFactory] instanceSubSamplingFactoryPtr,
+                shared_ptr[IFeatureSubSamplingFactory] featureSubSamplingFactoryPtr,
+                shared_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr, shared_ptr[IPruning] pruningPtr,
+                shared_ptr[IPostProcessor] postProcessorPtr,
+                unique_ptr[forward_list[shared_ptr[IStoppingCriterion]]] stoppingCriteriaPtr) except +
 
 
 cdef class RuleInduction:

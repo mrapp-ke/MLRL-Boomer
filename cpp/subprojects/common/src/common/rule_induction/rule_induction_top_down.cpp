@@ -4,8 +4,10 @@
 #include <unordered_map>
 
 
-TopDownRuleInduction::TopDownRuleInduction(uint32 numThreads)
-    : numThreads_(numThreads) {
+TopDownRuleInduction::TopDownRuleInduction(uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
+                                           bool recalculatePredictions, uint32 numThreads)
+    : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
+      recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
 
 }
 
@@ -42,8 +44,8 @@ void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProv
 bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
                                       const IWeightVector& weights, IPartition& partition,
                                       IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
-                                      const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
-                                      intp maxHeadRefinements, RNG& rng, IModelBuilder& modelBuilder) const {
+                                      const IPostProcessor& postProcessor, RNG& rng,
+                                      IModelBuilder& modelBuilder) const {
     // True, if the rule is learned on a sub-sample of the available training examples, False otherwise
     bool instanceSubSamplingUsed = weights.hasZeroWeights();
     // The label indices for which the next refinement of the rule may predict
@@ -67,7 +69,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
 
     // Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore or
     // the maximum number of conditions has been reached...
-    while (foundRefinement && (maxConditions == -1 || numConditions < maxConditions)) {
+    while (foundRefinement && (maxConditions_ == -1 || numConditions < maxConditions_)) {
         foundRefinement = false;
 
         // Sample features...
@@ -115,12 +117,12 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
             numConditions++;
 
             // Keep the labels for which the rule predicts, if the head should not be further refined...
-            if (maxHeadRefinements > 0 && numConditions >= maxHeadRefinements) {
+            if (maxHeadRefinements_ > 0 && numConditions >= maxHeadRefinements_) {
                 currentLabelIndices = bestHead;
             }
 
             // Abort refinement process if the rule is not allowed to cover less examples...
-            if (numCoveredExamples <= minCoverage) {
+            if (numCoveredExamples <= minCoverage_) {
                 break;
             }
         }
@@ -137,9 +139,11 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
                                                                              conditions, *bestHead);
 
             // Re-calculate the scores in the head based on the entire training data...
-            const ICoverageState& coverageState =
-                coverageStatePtr.get() != nullptr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
-            partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *bestRefinementPtr);
+            if (recalculatePredictions_) {
+                const ICoverageState& coverageState =
+                    coverageStatePtr.get() != nullptr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
+                partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *bestRefinementPtr);
+            }
         }
 
         // Apply post-processor...
