@@ -180,8 +180,12 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
         num_threads_update = get_preferred_num_threads(self.num_threads_update)
         thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
+        min_coverage = create_min_coverage(self.min_coverage)
+        max_conditions = create_max_conditions(self.max_conditions)
+        max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         num_threads_refinement = get_preferred_num_threads(self.num_threads_refinement)
-        rule_induction = TopDownRuleInduction(num_threads_refinement)
+        rule_induction = TopDownRuleInduction(min_coverage, max_conditions, max_head_refinements, False,
+                                              num_threads_refinement)
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)
@@ -191,17 +195,13 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         partition_sampling_factory = create_partition_sampling_factory(self.holdout_set_size)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
         post_processor = NoPostProcessor()
-        min_coverage = create_min_coverage(self.min_coverage)
-        max_conditions = create_max_conditions(self.max_conditions)
-        max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(CoverageStoppingCriterion(0))
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
                                             label_sub_sampling_factory, instance_sub_sampling_factory,
                                             feature_sub_sampling_factory, partition_sampling_factory, pruning,
-                                            post_processor, min_coverage, max_conditions, max_head_refinements,
-                                            stopping_criteria)
+                                            post_processor, stopping_criteria)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic

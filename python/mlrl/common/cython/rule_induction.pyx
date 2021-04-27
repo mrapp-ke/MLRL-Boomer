@@ -28,12 +28,23 @@ cdef class TopDownRuleInduction(RuleInduction):
     A wrapper for the C++ class `TopDownRuleInduction`.
     """
 
-    def __cinit__(self, uint32 num_threads):
+    def __cinit__(self, uint32 min_coverage, intp max_conditions, intp max_head_refinements,
+                  bint recalculate_predictions, uint32 num_threads):
         """
-        :param num_threads: The number of CPU threads to be used to search for potential refinements of a rule in
-                            parallel. Must be at least 1
+        :param min_coverage:            The minimum number of training examples that must be covered by a rule. Must be
+                                        at least 1
+        :param max_conditions:          The maximum number of conditions to be included in a rule's body. Must be at
+                                        least 1 or -1, if the number of conditions should not be restricted
+        :param max_head_refinements:    The maximum number of times the head of a rule may be refined after a new
+                                        condition has been added to its body. Must be at least 1 or -1, if the number of
+                                        refinements should not be restricted
+        :param recalculate_predictions: True, if the predictions of rules should be recalculated on the entire training
+                                        data, if instance sub-sampling is used, False otherwise
+        :param num_threads:             The number of CPU threads to be used to search for potential refinements of a
+                                        rule in parallel. Must be at least 1
         """
-        self.rule_induction_ptr = <shared_ptr[IRuleInduction]>make_shared[TopDownRuleInductionImpl](num_threads)
+        self.rule_induction_ptr = <shared_ptr[IRuleInduction]>make_shared[TopDownRuleInductionImpl](
+            min_coverage, max_conditions, max_head_refinements, recalculate_predictions, num_threads)
 
 
 cdef class RuleModelInduction:
@@ -65,7 +76,7 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
                   InstanceSubSamplingFactory instance_sub_sampling_factory,
                   FeatureSubSamplingFactory feature_sub_sampling_factory,
                   PartitionSamplingFactory partition_sampling_factory, Pruning pruning, PostProcessor post_processor,
-                  uint32 min_coverage, intp max_conditions, intp max_head_refinements, list stopping_criteria):
+                  list stopping_criteria):
         """
         :param statistics_provider_factory:             A factory that allows to create a provider that provides access
                                                         to the statistics which serve as the basis for learning rules
@@ -93,15 +104,6 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
         :param pruning:                                 The strategy that should be used for pruning rules
         :param post_processor:                          The post-processor that should be used to post-process the rule
                                                         once it has been learned
-        :param min_coverage:                            The minimum number of training examples that must be covered by
-                                                        a rule. Must be at least 1
-        :param max_conditions:                          The maximum number of conditions to be included in a rule's
-                                                        body. Must be at least 1 or -1, if the number of conditions
-                                                        should not be restricted
-        :param max_head_refinements:                    The maximum number of times the head of a rule may be refined
-                                                        after a new condition has been added to its body. Must be at
-                                                        least 1 or -1, if the number of refinements should not be
-                                                        restricted
         :param stopping_criteria                        A list that contains the stopping criteria that should be used
                                                         to decide whether additional rules should be induced or not
         """
@@ -123,5 +125,4 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
             instance_sub_sampling_factory.instance_sub_sampling_factory_ptr,
             feature_sub_sampling_factory.feature_sub_sampling_factory_ptr,
             partition_sampling_factory.partition_sampling_factory_ptr, pruning.pruning_ptr,
-            post_processor.post_processor_ptr, min_coverage, max_conditions, max_head_refinements,
-            move(stopping_criteria_ptr))
+            post_processor.post_processor_ptr, move(stopping_criteria_ptr))
