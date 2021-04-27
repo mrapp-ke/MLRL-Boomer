@@ -291,10 +291,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         partition_sampling_factory = create_partition_sampling_factory(self.holdout_set_size)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
         shrinkage = self.__create_post_processor()
-        min_coverage = create_min_coverage(self.min_coverage)
-        max_conditions = create_max_conditions(self.max_conditions)
-        max_head_refinements = create_max_head_refinements(self.max_head_refinements)
-        recalculate_predictions = self.recalculate_predictions
         loss_function = self.__create_loss_function()
         default_rule_head_refinement_factory = FullHeadRefinementFactory() if self.default_rule \
             else NoHeadRefinementFactory()
@@ -305,14 +301,18 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory,
                                                                                 num_threads_update)
         thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
+        min_coverage = create_min_coverage(self.min_coverage)
+        max_conditions = create_max_conditions(self.max_conditions)
+        max_head_refinements = create_max_head_refinements(self.max_head_refinements)
+        recalculate_predictions = self.recalculate_predictions
         num_threads_refinement = get_preferred_num_threads(self.num_threads_refinement)
-        rule_induction = TopDownRuleInduction(num_threads_refinement)
+        rule_induction = TopDownRuleInduction(min_coverage, max_conditions, max_head_refinements,
+                                              recalculate_predictions, num_threads_refinement)
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
                                             label_sub_sampling_factory, instance_sub_sampling_factory,
                                             feature_sub_sampling_factory, partition_sampling_factory, pruning,
-                                            shrinkage, min_coverage, max_conditions, max_head_refinements,
-                                            recalculate_predictions, stopping_criteria)
+                                            shrinkage, stopping_criteria)
 
     def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
         early_stopping = self.early_stopping
