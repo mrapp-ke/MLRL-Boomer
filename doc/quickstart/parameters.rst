@@ -145,7 +145,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 * ``--label-binning`` (default value ``None``)
 
   * ``None`` No label binning is used.
-  * ``equal-width`` The labels for which a rule may predict are assigned to bins according to the equal-width binning method. Additional arguments may be provided usign the Python dictionary syntax, e.g., ``equal-width{'bin_ratio':0.04,'min_bins':1,'max_bins':8``.
+  * ``equal-width`` The labels for which a rule may predict are assigned to bins according to the equal-width binning method. Additional arguments may be provided using the Python dictionary syntax, e.g., ``equal-width{'bin_ratio':0.04,'min_bins':1,'max_bins':8``.
 
 * ``--pruning`` (default value ``None``)
 
