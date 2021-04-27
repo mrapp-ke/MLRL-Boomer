@@ -42,8 +42,7 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
         std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr,
         std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
         std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr, std::shared_ptr<IPruning> pruningPtr,
-        std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
-        intp maxHeadRefinements,
+        std::shared_ptr<IPostProcessor> postProcessorPtr,
         std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr)
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), thresholdsFactoryPtr_(thresholdsFactoryPtr),
       ruleInductionPtr_(ruleInductionPtr), defaultRuleHeadRefinementFactoryPtr_(defaultRuleHeadRefinementFactoryPtr),
@@ -51,8 +50,7 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
       instanceSubSamplingFactoryPtr_(instanceSubSamplingFactoryPtr),
       featureSubSamplingFactoryPtr_(featureSubSamplingFactoryPtr),
       partitionSamplingFactoryPtr_(partitionSamplingFactoryPtr), pruningPtr_(pruningPtr),
-      postProcessorPtr_(postProcessorPtr), minCoverage_(minCoverage), maxConditions_(maxConditions),
-      maxHeadRefinements_(maxHeadRefinements), stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
+      postProcessorPtr_(postProcessorPtr), stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
 
 }
 
@@ -92,8 +90,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
         const IWeightVector& weights = instanceSubSamplingPtr->subSample(rng);
         const IIndexVector& labelIndices = labelSubSamplingPtr->subSample(rng);
         bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, labelIndices, weights, partition,
-                                                     *featureSubSamplingPtr, *pruningPtr_, *postProcessorPtr_,
-                                                     minCoverage_, maxConditions_, maxHeadRefinements_, rng,
+                                                     *featureSubSamplingPtr, *pruningPtr_, *postProcessorPtr_, rng,
                                                      modelBuilder);
 
         if (success) {

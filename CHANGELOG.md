@@ -4,6 +4,8 @@
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
+* The parameter `--recalculate-predictions` allows to specify whether the predictions of rules should be recalculated on the entire training data, if instance sub-sampling is used.
+
 ### Version 0.5.0 (Mar 31, 2021)
 
 A major update to the BOOMER algorithm that introduces the following changes:
