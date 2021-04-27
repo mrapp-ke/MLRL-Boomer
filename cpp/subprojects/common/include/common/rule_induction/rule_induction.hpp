@@ -57,15 +57,6 @@ class IRuleInduction {
          *                                  rule
          * @param postProcessor             A reference to an object of type `IPostProcessor` that should be used to
          *                                  post-process the predictions of the rule
-         * @param minCoverage               The minimum number of training examples that must be covered by the rule.
-         *                                  Must be at least 1
-         * @param maxConditions             The maximum number of conditions to be included in the rule's body. Must be
-         *                                  at least 1 or -1, if the number of conditions should not be restricted
-         * @param maxHeadRefinements        The maximum number of times, the head of the rule may be refinement after a
-         *                                  new condition has been added to its body. Must be at least 1 or -1, if the
-         *                                  number of refinements should not be restricted
-         * @param recalculatePredictions    True, if the predictions of the rule should be recalculated on all training
-         *                                  examples, if some of the examples have zero weights, false otherwise
          * @param rng                       A reference to an object of type `RNG` that implements the random number
          *                                  generator to be used
          * @param modelBuilder              A reference to an object of type `IModelBuilder`, the rule should be added
@@ -75,8 +66,6 @@ class IRuleInduction {
         virtual bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
                                 const IWeightVector& weights, IPartition& partition,
                                 IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
-                                const IPostProcessor& postProcessor, uint32 minCoverage, intp maxConditions,
-                                intp maxHeadRefinements, bool recalculatePredictions, RNG& rng,
-                                IModelBuilder& modelBuilder) const = 0;
+                                const IPostProcessor& postProcessor, RNG& rng, IModelBuilder& modelBuilder) const = 0;
 
 };
