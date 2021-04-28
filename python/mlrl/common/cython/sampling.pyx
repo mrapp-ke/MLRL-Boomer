@@ -124,9 +124,9 @@ cdef class NoPartitionSamplingFactory(PartitionSamplingFactory):
         self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[NoPartitionSamplingFactoryImpl]()
 
 
-cdef class BiPartitionSamplingFactory(PartitionSamplingFactory):
+cdef class RandomBiPartitionSamplingFactory(PartitionSamplingFactory):
     """
-    A wrapper for the C++ class `BiPartitionSamplingFactory`.
+    A wrapper for the C++ class `RandomBiPartitionSamplingFactory`.
     """
 
     def __cinit__(self, float32 holdout_set_size):
@@ -134,5 +134,5 @@ cdef class BiPartitionSamplingFactory(PartitionSamplingFactory):
         :param holdout_set_size: The fraction of examples to be included in the holdout set (e.g. a value of 0.6
                                  corresponds to 60 % of the available examples). Must be in (0, 1)
         """
-        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[BiPartitionSamplingFactoryImpl](
+        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[RandomBiPartitionSamplingFactoryImpl](
             holdout_set_size)

@@ -28,7 +28,8 @@ from mlrl.common.cython.sampling import InstanceSubSamplingFactory, BaggingFacto
     RandomInstanceSubsetSelectionFactory, NoInstanceSubSamplingFactory
 from mlrl.common.cython.sampling import LabelSubSamplingFactory, RandomLabelSubsetSelectionFactory, \
     NoLabelSubSamplingFactory
-from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, BiPartitionSamplingFactory
+from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
+    RandomBiPartitionSamplingFactory
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
@@ -131,7 +132,7 @@ def create_partition_sampling_factory(holdout_set_size: float) -> PartitionSampl
         return NoPartitionSamplingFactory()
     else:
         if holdout_set_size < 1.0:
-            return BiPartitionSamplingFactory(holdout_set_size)
+            return RandomBiPartitionSamplingFactory(holdout_set_size)
         raise ValueError('Invalid value given for parameter \'holdout_set_size\': ' + str(holdout_set_size))
 
 
