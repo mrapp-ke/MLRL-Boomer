@@ -133,6 +133,26 @@ cdef extern from "common/sampling/partition_sampling_bi_random.hpp" nogil:
         RandomBiPartitionSamplingFactoryImpl(float32 holdout_set_size) except +
 
 
+cdef extern from "common/sampling/partition_sampling_bi_stratified_example_wise.hpp" nogil:
+
+    cdef cppclass ExampleWiseStratifiedBiPartitionSamplingFactoryImpl"ExampleWiseStratifiedBiPartitionSamplingFactory"(
+            IPartitionSamplingFactory):
+
+        # Constructors:
+
+        ExampleWiseStratifiedBiPartitionSamplingFactoryImpl(float32 holdout_set_size) except +
+
+
+cdef extern from "common/sampling/partition_sampling_bi_stratified_label_wise.hpp" nogil:
+
+    cdef cppclass LabelWiseStratifiedBiPartitionSamplingFactoryImpl"LabelWiseStratifiedBiPartitionSamplingFactory"(
+            IPartitionSamplingFactory):
+
+        # Constructors:
+
+        LabelWiseStratifiedBiPartitionSamplingFactoryImpl(float32 holdout_set_size) except +
+
+
 cdef class InstanceSubSamplingFactory:
 
     # Attributes:
@@ -202,4 +222,12 @@ cdef class NoPartitionSamplingFactory(PartitionSamplingFactory):
 
 
 cdef class RandomBiPartitionSamplingFactory(PartitionSamplingFactory):
+    pass
+
+
+cdef class ExampleWiseStratifiedBiPartitionSamplingFactory(PartitionSamplingFactory):
+    pass
+
+
+cdef class LabelWiseStratifiedBiPartitionSamplingFactory(PartitionSamplingFactory):
     pass
