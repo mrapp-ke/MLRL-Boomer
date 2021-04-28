@@ -164,3 +164,31 @@ cdef class RandomBiPartitionSamplingFactory(PartitionSamplingFactory):
         """
         self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[RandomBiPartitionSamplingFactoryImpl](
             holdout_set_size)
+
+
+cdef class ExampleWiseStratifiedBiPartitionSamplingFactory(PartitionSamplingFactory):
+    """
+    A wrapper for the C++ class `ExampleWiseStratifiedBiPartitionSamplingFactory`.
+    """
+
+    def __cinit__(self, float32 holdout_set_size):
+        """
+        :param holdout_set_size: The fraction of examples to be included in the holdout set (e.g. a value of 0.6
+                                 corresponds to 60 % of the available examples). Must be in (0, 1)
+        """
+        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[ExampleWiseStratifiedBiPartitionSamplingFactoryImpl](
+            holdout_set_size)
+
+
+cdef class LabelWiseStratifiedBiPartitionSamplingFactory(PartitionSamplingFactory):
+    """
+    A wrapper for the C++ class `LabelWiseStratifiedBiPartitionSamplingFactory`.
+    """
+
+    def __cinit__(self, float32 holdout_set_size):
+        """
+        :param holdout_set_size: The fraction of examples to be included in the holdout set (e.g. a value of 0.6
+                                 corresponds to 60 % of the available examples). Must be in (0, 1)
+        """
+        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[LabelWiseStratifiedBiPartitionSamplingFactoryImpl](
+            holdout_set_size)
