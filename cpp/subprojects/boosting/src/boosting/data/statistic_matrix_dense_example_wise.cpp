@@ -1,4 +1,4 @@
-#include "boosting/data/matrix_dense_example_wise.hpp"
+#include "boosting/data/statistic_matrix_dense_example_wise.hpp"
 #include "boosting/math/math.hpp"
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
