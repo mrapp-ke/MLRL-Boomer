@@ -89,7 +89,7 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousLabelMatrix& labelMatrix, FullIn
                                FullIndexVector::const_iterator indicesEnd)
     : rowIndices_((uint32*) malloc(labelMatrix.getNumRows() * labelMatrix.getNumCols() * sizeof(uint32))),
       colIndices_((uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))),
-      view_(BinaryCscConstView(indicesEnd - indicesBegin, labelMatrix.getNumCols(), rowIndices_, colIndices_)) {
+      view_(BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(), rowIndices_, colIndices_)) {
     rowIndices_ = copyLabelMatrix<FullIndexVector::const_iterator>(rowIndices_, colIndices_, labelMatrix, indicesBegin,
                                                                    indicesEnd);
 }
@@ -99,7 +99,7 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousLabelMatrix& labelMatrix,
                                PartialIndexVector::const_iterator indicesEnd)
     : rowIndices_((uint32*) malloc(labelMatrix.getNumRows() * labelMatrix.getNumCols() * sizeof(uint32))),
       colIndices_((uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))),
-      view_(BinaryCscConstView(indicesEnd - indicesBegin, labelMatrix.getNumCols(), rowIndices_, colIndices_)) {
+      view_(BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(), rowIndices_, colIndices_)) {
     rowIndices_ = copyLabelMatrix<PartialIndexVector::const_iterator>(rowIndices_, colIndices_, labelMatrix,
                                                                       indicesBegin, indicesEnd);
 }
@@ -108,7 +108,7 @@ CscLabelMatrix::CscLabelMatrix(const CsrLabelMatrix& labelMatrix, FullIndexVecto
                                FullIndexVector::const_iterator indicesEnd)
     : rowIndices_((uint32*) malloc(labelMatrix.getNumNonZeroElements() * sizeof(uint32))),
       colIndices_((uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))),
-      view_(BinaryCscConstView(indicesEnd - indicesBegin, labelMatrix.getNumCols(), rowIndices_, colIndices_)) {
+      view_(BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(), rowIndices_, colIndices_)) {
     rowIndices_ = copyLabelMatrix<FullIndexVector::const_iterator>(rowIndices_, colIndices_, labelMatrix, indicesBegin,
                                                                    indicesEnd);
 }
@@ -117,7 +117,7 @@ CscLabelMatrix::CscLabelMatrix(const CsrLabelMatrix& labelMatrix, PartialIndexVe
                                PartialIndexVector::const_iterator indicesEnd)
     : rowIndices_((uint32*) malloc(labelMatrix.getNumNonZeroElements() * sizeof(uint32))),
       colIndices_((uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))),
-      view_(BinaryCscConstView(indicesEnd - indicesBegin, labelMatrix.getNumCols(), rowIndices_, colIndices_)) {
+      view_(BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(), rowIndices_, colIndices_)) {
     rowIndices_ = copyLabelMatrix<PartialIndexVector::const_iterator>(rowIndices_, colIndices_, labelMatrix,
                                                                       indicesBegin, indicesEnd);
 }
