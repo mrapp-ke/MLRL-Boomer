@@ -144,7 +144,7 @@ class ExampleWiseStratification final {
                 }
 
                 // Set the weights of the remaining examples to 0...
-                for (i = i + 1; i < numExamples; i++) {
+                for (i = i; i < numExamples; i++) {
                     uint32 exampleIndex = indexIterator[i];
                     weightIterator[exampleIndex] = 0;
                 }
