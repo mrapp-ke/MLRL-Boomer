@@ -127,7 +127,7 @@ The following parameters allow to adjust the behavior of the algorithm:
   * ``random-instance-selection`` The training examples to be considered for learning a new rule are selected randomly without replacement. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random-instance-selection{'sample_size':0.5}``.
   * ``bagging`` The training examples to be considered for learning a new rule are selected randomly with replacement. Additional arguments may be provided using the Python dictionary syntax, e.g., ``bagging{'sample_size':0.5}``.
   * ``stratified-label-wise`` The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. Additional arguments may be provided using the Python dictionary syntax, e.g., ``stratified-label-wise{'sample_size':0.5}``.
-  * ``stratified-example-wise`` The training examples to be considered for learning a new rule are selected according to stratified sample, where distinct label vectors are treated as individual classes. Additional arguments may be provided using the Python dictionary syntax, e.g., ``stratified-example-wise{'sample_size':0.5}``.
+  * ``stratified-example-wise`` The training examples to be considered for learning a new rule are selected according to stratified sampling method, where distinct label vectors are treated as individual classes. Additional arguments may be provided using the Python dictionary syntax, e.g., ``stratified-example-wise{'sample_size':0.5}``.
 
 * ``--recalculate-predictions`` (default value ``True``)
 
@@ -137,6 +137,8 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * ``None```No holdout set is created.
   * ``random`` The available examples are randomly split into a training set and a holdout set. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random{'holdout_set_size':0.5}``.
+  * ``stratified-label-wise`` The available examples are split into a training set and a holdout set according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. Additional argument may be provided using the Python dictionary syntax, e.g., ``stratified-label-wise{'holdout_set_size':0.5}``.
+  * ``stratified-example-wise`` The available examples are split into a training set and a holdout set according to a stratified sampling method, where distinct label vectors are treated as individual classes. Additional arguments may be provided using the Python dictionary syntax, e.g., ``stratified-example-wise{'holdout_set_size':0.5}``.
 
 * ``--early-stopping`` (default value ``None``)
 
