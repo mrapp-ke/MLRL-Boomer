@@ -106,16 +106,6 @@ class ExampleWiseStratification final {
         }
 
         /**
-         * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.
-         *
-         * @param partition A reference to an object of type `BiPartition` to be updated
-         * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
-         */
-        void sampleBiPartition(BiPartition& partition, RNG& rng) const {
-            // TODO Implement
-        }
-
-        /**
          * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
          * remaining weights are set to 0.
          *
@@ -162,6 +152,50 @@ class ExampleWiseStratification final {
             }
 
             weightVector.setNumNonZeroWeights(numNonZeroWeights);
+        }
+
+        /**
+         * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.
+         *
+         * @param partition A reference to an object of type `BiPartition` to be updated
+         * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
+         */
+        void sampleBiPartition(BiPartition& partition, RNG& rng) const {
+            BiPartition::iterator firstIterator = partition.first_begin();
+            BiPartition::iterator secondIterator = partition.second_begin();
+            uint32 numFirst = partition.getNumFirst();
+            uint32 numSecond = partition.getNumSecond();
+
+            for (auto it = order_.begin(); it != order_.end(); it++) {
+                std::vector<uint32>& exampleIndices = *it;
+                std::vector<uint32>::iterator indexIterator = exampleIndices.begin();
+                uint32 numExamples = exampleIndices.size();
+                float32 sampleSize = (float32) numFirst / (float32) (numFirst + numSecond);
+                float32 numSamplesDecimal = sampleSize * numExamples;
+                uint32 numSamples = (uint32) (tiebreak(numFirst, numSecond, rng) ? std::ceil(numSamplesDecimal)
+                                                                                 : std::floor(numSamplesDecimal));
+                numFirst -= numSamples;
+                numSecond -= (numExamples - numSamples);
+
+                // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and add them to the first set...
+                uint32 i;
+
+                for (i = 0; i < numSamples; i++) {
+                    uint32 randomIndex = rng.random(i, numExamples);
+                    uint32 exampleIndex = indexIterator[randomIndex];
+                    indexIterator[randomIndex] = indexIterator[i];
+                    indexIterator[i] = exampleIndex;
+                    *firstIterator = exampleIndex;
+                    firstIterator++;
+                }
+
+                // Add the remaining examples to the second set...
+                for (; i < numExamples; i++) {
+                    uint32 exampleIndex = indexIterator[i];
+                    *secondIterator = exampleIndex;
+                    secondIterator++;
+                }
+            }
         }
 
 };
@@ -331,16 +365,6 @@ class LabelWiseStratification final {
         }
 
         /**
-         * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.
-         *
-         * @param partition A reference to an object of type `BiPartition` to be updated
-         * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
-         */
-        void sampleBiPartition(BiPartition& partition, RNG& rng) const {
-            // TODO Implement
-        }
-
-        /**
          * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
          * remaining weights are set to 0.
          *
@@ -372,27 +396,68 @@ class LabelWiseStratification final {
                 uint32 j;
 
                 // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and set their weights to 1...
-                for (j = 0; j < numExamples; j++) {
+                for (j = 0; j < numSamples; j++) {
                     uint32 randomIndex = rng.random(j, numExamples);
                     uint32 exampleIndex = exampleIndices[randomIndex];
                     exampleIndices[randomIndex] = exampleIndices[j];
                     exampleIndices[j] = exampleIndex;
                     weightIterator[exampleIndex] = 1;
-                    numSamples--;
-
-                    if (numSamples == 0) {
-                        break;
-                    }
                 }
 
                 // Set the weights of the remaining examples to 0...
-                for (j = j + 1; j < numExamples; j++) {
+                for (; j < numExamples; j++) {
                     uint32 exampleIndex = exampleIndices[j];
                     weightIterator[exampleIndex] = 0;
                 }
             }
 
             weightVector.setNumNonZeroWeights(numNonZeroWeights);
+        }
+
+        /**
+         * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.
+         *
+         * @param partition A reference to an object of type `BiPartition` to be updated
+         * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
+         */
+        void sampleBiPartition(BiPartition& partition, RNG& rng) const {
+            BiPartition::iterator firstIterator = partition.first_begin();
+            BiPartition::iterator secondIterator = partition.second_begin();
+            uint32 numFirst = partition.getNumFirst();
+            uint32 numSecond = partition.getNumSecond();
+
+            for (uint32 i = 0; i < numCols_; i++) {
+                uint32 start = colIndices_[i];
+                uint32* exampleIndices = &rowIndices_[start];
+                uint32 end = colIndices_[i + 1];
+                uint32 numExamples = end - start;
+
+                float32 sampleSize = (float32) numFirst / (float32) (numFirst + numSecond);
+                float32 numSamplesDecimal = sampleSize * numExamples;
+                uint32 numSamples = (uint32) (tiebreak(numFirst, numSecond, rng) ? std::ceil(numSamplesDecimal)
+                                                                                 : std::floor(numSamplesDecimal));
+                numFirst -= numSamples;
+                numSecond -= (numExamples - numSamples);
+
+                // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and add them to the first set...
+                uint32 j;
+
+                for (j = 0; j < numSamples; j++) {
+                    uint32 randomIndex = rng.random(j, numExamples);
+                    uint32 exampleIndex = exampleIndices[randomIndex];
+                    exampleIndices[randomIndex] = exampleIndices[j];
+                    exampleIndices[j] = exampleIndex;
+                    *firstIterator = exampleIndex;
+                    firstIterator++;
+                }
+
+                // Add the remaining examples to the second set...
+                for (; j < numExamples; j++) {
+                    uint32 exampleIndex = exampleIndices[j];
+                    *secondIterator = exampleIndex;
+                    secondIterator++;
+                }
+            }
         }
 
 };
