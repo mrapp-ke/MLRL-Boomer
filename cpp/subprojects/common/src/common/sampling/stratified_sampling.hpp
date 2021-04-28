@@ -5,6 +5,7 @@
 
 #include "common/input/label_matrix_csc.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
+#include "common/sampling/partition_bi.hpp"
 #include "common/sampling/random.hpp"
 #include <unordered_map>
 #include <map>
@@ -105,10 +106,20 @@ class ExampleWiseStratification final {
         }
 
         /**
+         * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.
+         *
+         * @param partition A reference to an object of type `BiPartition` to be updated
+         * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
+         */
+        void sampleBiPartition(BiPartition& partition, RNG& rng) const {
+            // TODO Implement
+        }
+
+        /**
          * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
          * remaining weights are set to 0.
          *
-         * @param weightVector  A reference to an object of type `DenseWeightVector` the weights should be written to
+         * @param weightVector  A reference to an object of type `DenseWeightVector`, the weights should be written to
          * @param sampleSize    The fraction of the available examples to be selected
          * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
          *                      used
@@ -320,10 +331,20 @@ class LabelWiseStratification final {
         }
 
         /**
+         * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.
+         *
+         * @param partition A reference to an object of type `BiPartition` to be updated
+         * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
+         */
+        void sampleBiPartition(BiPartition& partition, RNG& rng) const {
+            // TODO Implement
+        }
+
+        /**
          * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
          * remaining weights are set to 0.
          *
-         * @param weightVector  A reference to an object of type `DenseWeightVector` the weights should be written to
+         * @param weightVector  A reference to an object of type `DenseWeightVector`, the weights should be written to
          * @param sampleSize    The fraction of the available examples to be selected
          * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
          *                      used
