@@ -20,7 +20,6 @@
  * @param numTotal      The total number of available elements to sample from
  * @param numSamples    The number of weights to be set to 1
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
- * @return              An unique pointer to an object of type `IWeightVector` that provides access to the weights
  */
 template<class Iterator>
 static inline void sampleWeightsWithoutReplacementViaTrackingSelection(DenseWeightVector<uint8>& weightVector,
@@ -57,7 +56,6 @@ static inline void sampleWeightsWithoutReplacementViaTrackingSelection(DenseWeig
  * @param numTotal      The total number of available elements to sample from
  * @param numSamples    The number of weights to be set to 1
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
- * @return              An unique pointer to an object of type `IWeightVector` that provides access to the weights
  */
 template<class Iterator>
 static inline void sampleWeightsWithoutReplacementViaPool(DenseWeightVector<uint8>& weightVector, Iterator iterator,
@@ -97,7 +95,6 @@ static inline void sampleWeightsWithoutReplacementViaPool(DenseWeightVector<uint
  * @param numTotal      The total number of available elements to sample from
  * @param numSamples    The number of weights to be set to 1
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
- * @return              An unique pointer to an object of type `IWeightVector` that provides access to the weights
  *
  */
 template<class Iterator>
