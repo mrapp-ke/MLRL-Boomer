@@ -37,7 +37,8 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
          */
         ExampleWiseStratifiedSampling(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
                                       IndexIterator indicesEnd, float32 sampleSize)
-            : sampleSize_(sampleSize), weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows(),
+            : sampleSize_(sampleSize),
+              weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows(),
                                                      (uint32) (indicesEnd - indicesBegin) < labelMatrix.getNumRows())),
               stratification_(ExampleWiseStratification<LabelMatrix, IndexIterator>(labelMatrix, indicesBegin,
                                                                                     indicesEnd)) {
