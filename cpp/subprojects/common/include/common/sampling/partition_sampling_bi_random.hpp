@@ -7,10 +7,10 @@
 
 
 /**
- * Allows to create objects of the type `IPartitionSampling` that split the training examples into two mutually
+ * Allows to create objects of the type `IPartitionSampling` that randomly split the training examples into two mutually
  * exclusive sets that may be used as a training set and a holdout set.
  */
-class BiPartitionSamplingFactory final : public IPartitionSamplingFactory {
+class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
 
     private:
 
@@ -22,7 +22,7 @@ class BiPartitionSamplingFactory final : public IPartitionSamplingFactory {
          * @param holdoutSetSize The fraction of examples to be included in the holdout set (e.g. a value of 0.6
          *                       corresponds to 60 % of the available examples). Must be in (0, 1)
          */
-        BiPartitionSamplingFactory(float32 holdoutSetSize);
+        RandomBiPartitionSamplingFactory(float32 holdoutSetSize);
 
         std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const override;
 

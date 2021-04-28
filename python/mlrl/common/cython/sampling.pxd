@@ -124,13 +124,13 @@ cdef extern from "common/sampling/partition_sampling_no.hpp" nogil:
         pass
 
 
-cdef extern from "common/sampling/partition_sampling_bi.hpp" nogil:
+cdef extern from "common/sampling/partition_sampling_bi_random.hpp" nogil:
 
-    cdef cppclass BiPartitionSamplingFactoryImpl"BiPartitionSamplingFactory"(IPartitionSamplingFactory):
+    cdef cppclass RandomBiPartitionSamplingFactoryImpl"RandomBiPartitionSamplingFactory"(IPartitionSamplingFactory):
 
         # Constructors:
 
-        BiPartitionSamplingFactoryImpl(float32 holdout_set_size) except +
+        RandomBiPartitionSamplingFactoryImpl(float32 holdout_set_size) except +
 
 
 cdef class InstanceSubSamplingFactory:
@@ -201,5 +201,5 @@ cdef class NoPartitionSamplingFactory(PartitionSamplingFactory):
     pass
 
 
-cdef class BiPartitionSamplingFactory(PartitionSamplingFactory):
+cdef class RandomBiPartitionSamplingFactory(PartitionSamplingFactory):
     pass
