@@ -16,13 +16,11 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
     public:
 
         /**
-         * @param numExamples       The total number of available training examples
-         * @param holdoutSetSize    The fraction of examples to be included in the holdout set (e.g. a value of 0.6
-         *                          corresponds to 60 % of the available examples). Must be in (0, 1)
+         * @param numTraining   The number of examples to be included in the training set
+         * @param numHoldout    The number of examples to be included in the holdout set
          */
-        RandomBiPartitionSampling(uint32 numExamples, float32 holdoutSetSize)
-            : partition_(BiPartition(numExamples - ((uint32) holdoutSetSize * numExamples),
-                                     (uint32) (holdoutSetSize * numExamples))) {
+        RandomBiPartitionSampling(uint32 numTraining, uint32 numHoldout)
+            : partition_(BiPartition(numTraining, numHoldout)) {
 
         }
 
@@ -55,9 +53,15 @@ RandomBiPartitionSamplingFactory::RandomBiPartitionSamplingFactory(float32 holdo
 
 std::unique_ptr<IPartitionSampling> RandomBiPartitionSamplingFactory::create(
         const CContiguousLabelMatrix& labelMatrix) const {
-    return std::make_unique<RandomBiPartitionSampling>(labelMatrix.getNumRows(), holdoutSetSize_);
+    uint32 numExamples = labelMatrix.getNumRows();
+    uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
+    uint32 numTraining = numExamples - numHoldout;
+    return std::make_unique<RandomBiPartitionSampling>(numTraining, numHoldout);
 }
 
 std::unique_ptr<IPartitionSampling> RandomBiPartitionSamplingFactory::create(const CsrLabelMatrix& labelMatrix) const {
-    return std::make_unique<RandomBiPartitionSampling>(labelMatrix.getNumRows(), holdoutSetSize_);
+    uint32 numExamples = labelMatrix.getNumRows();
+    uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
+    uint32 numTraining = numExamples - numHoldout;
+    return std::make_unique<RandomBiPartitionSampling>(numTraining, numHoldout);
 }
