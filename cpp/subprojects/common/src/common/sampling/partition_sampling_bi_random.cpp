@@ -1,4 +1,4 @@
-#include "common/sampling/partition_sampling_bi.hpp"
+#include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "index_sampling.hpp"
 
