@@ -216,9 +216,17 @@ class LabelWiseStratification final {
             uint32 numNonZeroElements = 0;
             uint32 numCols = 0;
 
+            // Create a boolean array that stores whether individual examples remain to be processed (1) or not (0)...
+            uint32 numTotalExamples = labelMatrix.getNumRows();
+            uint8 mask[numTotalExamples] = {};
+
+            for (uint32 i = 0; i < numRows_; i++) {
+                uint32 exampleIndex = indicesBegin[i];
+                mask[exampleIndex] = 1;
+            }
+
             // As long as there are labels that have not been processed yet, proceed with the label that has the
             // smallest number of associated examples...
-            uint8 mask[numRows_] = {};
             std::unordered_map<uint32, uint32> affectedLabelIndices;
             std::multimap<uint32, uint32>::iterator firstEntry;
 
@@ -239,9 +247,9 @@ class LabelWiseStratification final {
                 for (uint32 i = 0; i < numExamples; i++) {
                     uint32 exampleIndex = indexIterator[i];
 
-                    // If the example has not been encountered yet...
-                    if (mask[exampleIndex] == 0) {
-                        mask[exampleIndex] = 1;
+                    // If the example has not been processed yet...
+                    if (mask[exampleIndex]) {
+                        mask[exampleIndex] = 0;
 
                         // Add the example's index to the array of row indices...
                         rowIndices_[numNonZeroElements] = exampleIndex;
@@ -294,8 +302,8 @@ class LabelWiseStratification final {
                 numCols++;
 
                 // Iterate the weights of all examples to find those whose weight has not been set yet...
-                for (uint32 i = 0; i < numRows_; i++) {
-                    if (mask[i] == 0) {
+                for (uint32 i = 0; i < numTotalExamples; i++) {
+                    if (mask[i]) {
                         // Add the example's index to the array of row indices...
                         rowIndices_[numNonZeroElements] = i;
                         numNonZeroElements++;
