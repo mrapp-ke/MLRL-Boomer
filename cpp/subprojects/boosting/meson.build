@@ -3,11 +3,11 @@ project('boosting', 'cpp', version : '0.6.0')
 # Source files
 source_files = [
     'src/boosting/binning/label_binning_equal_width.cpp',
-    'src/boosting/data/matrix_dense_example_wise.cpp',
-    'src/boosting/data/matrix_dense_label_wise.cpp',
     'src/boosting/data/matrix_dense_numeric.cpp',
-    'src/boosting/data/vector_dense_example_wise.cpp',
-    'src/boosting/data/vector_dense_label_wise.cpp',
+    'src/boosting/data/statistic_matrix_dense_example_wise.cpp',
+    'src/boosting/data/statistic_matrix_dense_label_wise.cpp',
+    'src/boosting/data/statistic_vector_dense_example_wise.cpp',
+    'src/boosting/data/statistic_vector_dense_label_wise.cpp',
     'src/boosting/losses/loss_example_wise_logistic.cpp',
     'src/boosting/losses/loss_label_wise.cpp',
     'src/boosting/losses/loss_label_wise_logistic.cpp',
