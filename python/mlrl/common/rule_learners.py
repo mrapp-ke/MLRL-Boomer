@@ -28,7 +28,8 @@ from mlrl.common.cython.sampling import InstanceSubSamplingFactory, BaggingFacto
     RandomInstanceSubsetSelectionFactory, NoInstanceSubSamplingFactory
 from mlrl.common.cython.sampling import LabelSubSamplingFactory, RandomLabelSubsetSelectionFactory, \
     NoLabelSubSamplingFactory
-from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, BiPartitionSamplingFactory
+from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
+    RandomBiPartitionSamplingFactory
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
@@ -53,6 +54,10 @@ FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
 ARGUMENT_SAMPLE_SIZE = 'sample_size'
 
 ARGUMENT_NUM_SAMPLES = 'num_samples'
+
+PARTITION_SAMPLING_RANDOM = 'random'
+
+ARGUMENT_HOLDOUT_SET_SIZE = 'holdout_set_size'
 
 BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 
@@ -126,13 +131,16 @@ def create_feature_sub_sampling_factory(feature_sub_sampling: str) -> FeatureSub
         raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
 
 
-def create_partition_sampling_factory(holdout_set_size: float) -> PartitionSamplingFactory:
-    if holdout_set_size <= 0.0:
+def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
+    if holdout is None:
         return NoPartitionSamplingFactory()
     else:
-        if holdout_set_size < 1.0:
-            return BiPartitionSamplingFactory(holdout_set_size)
-        raise ValueError('Invalid value given for parameter \'holdout_set_size\': ' + str(holdout_set_size))
+        prefix, args = parse_prefix_and_dict(holdout, [PARTITION_SAMPLING_RANDOM])
+
+        if prefix == PARTITION_SAMPLING_RANDOM:
+            holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+            return RandomBiPartitionSamplingFactory(holdout_set_size)
+        raise ValueError('Invalid value given for parameter \'holdout\': ' + str(holdout))
 
 
 def create_pruning(pruning: str, instance_sub_sampling: str) -> Pruning:
