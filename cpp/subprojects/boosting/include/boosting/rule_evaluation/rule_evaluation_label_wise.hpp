@@ -6,7 +6,7 @@
 #include "common/rule_evaluation/score_vector_label_wise.hpp"
 #include "common/indices/index_vector_full.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "boosting/data/vector_dense_label_wise.hpp"
+#include "boosting/data/statistic_vector_dense_label_wise.hpp"
 #include <memory>
 
 
