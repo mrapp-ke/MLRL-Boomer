@@ -133,9 +133,10 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * ``True``, if the predictions of rules should be recalculated on the entire training data, if the parameter ``instance-sub-sampling`` is not set to ``None``, ``False`` otherwise.
 
-* ``--holdout`` (default value ``0``)
+* ``--holdout`` (default value ``None``)
 
-  * The fraction of the training examples that should be included in a holdout set. Must be in greater than ``0`` and smaller than ``1`` or ``0``, if no holdout set should be used.
+  * ``None```No holdout set is created.
+  * ``random`` The available examples are randomly split into a training set and a holdout set. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random{'holdout_set_size':0.5}``.
 
 * ``--early-stopping`` (default value ``None``)
 

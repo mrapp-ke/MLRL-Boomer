@@ -71,7 +71,7 @@ source_files = [
     'src/common/sampling/label_sampling_no.cpp',
     'src/common/sampling/label_sampling_random.cpp',
     'src/common/sampling/partition_bi.cpp',
-    'src/common/sampling/partition_sampling_bi.cpp',
+    'src/common/sampling/partition_sampling_bi_random.cpp',
     'src/common/sampling/partition_sampling_no.cpp',
     'src/common/sampling/partition_single.cpp',
     'src/common/sampling/random.cpp',
