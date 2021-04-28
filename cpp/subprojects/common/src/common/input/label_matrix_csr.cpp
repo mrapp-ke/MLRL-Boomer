@@ -5,6 +5,12 @@
 #include "common/data/arrays.hpp"
 
 
+CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
+    : VectorConstView<const uint32>(labelMatrix.view_.row_indices_cend(row) - labelMatrix.view_.row_indices_cbegin(row),
+                                    labelMatrix.view_.row_indices_cbegin(row)) {
+
+}
+
 CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
     : view_(BinaryCsrConstView(numRows, numCols, rowIndices, colIndices)) {
 
@@ -36,6 +42,10 @@ uint32 CsrLabelMatrix::getNumRows() const {
 
 uint32 CsrLabelMatrix::getNumCols() const {
     return view_.getNumCols();
+}
+
+CsrLabelMatrix::view_type CsrLabelMatrix::createView(uint32 row) const {
+    return CsrLabelMatrix::view_type(*this, row);
 }
 
 std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const {

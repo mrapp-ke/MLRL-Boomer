@@ -43,6 +43,26 @@ cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
         RandomInstanceSubsetSelectionFactoryImpl(float32 sampleSize) except +
 
 
+cdef extern from "common/sampling/instance_sampling_stratified_label_wise.hpp" nogil:
+
+    cdef cppclass LabelWiseStratifiedSamplingFactoryImpl"LabelWiseStratifiedSamplingFactory"(
+            IInstanceSubSamplingFactory):
+
+        # Constructors:
+
+        LabelWiseStratifiedSamplingFactoryImpl(float32 sampleSize) except +
+
+
+cdef extern from "common/sampling/instance_sampling_stratified_example_wise.hpp" nogil:
+
+    cdef cppclass ExampleWiseStratifiedSamplingFactoryImpl"ExampleWiseStratifiedSamplingFactory"(
+            IInstanceSubSamplingFactory):
+
+        # Constructors:
+
+        ExampleWiseStratifiedSamplingFactoryImpl(float32 sampleSize) except +
+
+
 cdef extern from "common/sampling/instance_sampling_no.hpp" nogil:
 
     cdef cppclass NoInstanceSubSamplingFactoryImpl"NoInstanceSubSamplingFactory"(IInstanceSubSamplingFactory):
@@ -125,6 +145,14 @@ cdef class BaggingFactory(InstanceSubSamplingFactory):
 
 
 cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
+    pass
+
+
+cdef class LabelWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
+    pass
+
+
+cdef class ExampleWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
     pass
 
 

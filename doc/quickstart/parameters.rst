@@ -126,6 +126,8 @@ The following parameters allow to adjust the behavior of the algorithm:
   * ``None`` All training examples are considered for learning a new rule.
   * ``random-instance-selection`` The training examples to be considered for learning a new rule are selected randomly without replacement. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random-instance-selection{'sample_size':0.5}``.
   * ``bagging`` The training examples to be considered for learning a new rule are selected randomly with replacement. Additional arguments may be provided using the Python dictionary syntax, e.g., ``bagging{'sample_size':0.5}``.
+  * ``stratified-label-wise`` The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. Additional arguments may be provided using the Python dictionary syntax, e.g., ``stratified-label-wise{'sample_size':0.5}``.
+  * ``stratified-example-wise`` The training examples to be considered for learning a new rule are selected according to stratified sample, where distinct label vectors are treated as individual classes. Additional arguments may be provided using the Python dictionary syntax, e.g., ``stratified-example-wise{'sample_size':0.5}``.
 
 * ``--recalculate-predictions`` (default value ``True``)
 

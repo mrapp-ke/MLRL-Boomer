@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/view_c_contiguous.hpp"
+#include "common/data/functions.hpp"
 #include "common/input/label_matrix.hpp"
 
 
@@ -20,11 +21,64 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
     public:
 
         /**
+         * Provides access to the values that are stored in a single row of a `CContiguousLabelMatrix`.
+         */
+        class View final : public VectorConstView<const uint8> {
+
+            public:
+
+                /**
+                 * Allows to compute hash values for objects of type `CContiguousLabelMatrix::View`.
+                 */
+                struct Hash {
+
+                    inline std::size_t operator()(const View& v) const {
+                        uint32 numElements = v.getNumElements();
+                        std::size_t hashValue = (std::size_t) numElements;
+                        View::const_iterator it = v.cbegin();
+
+                        for (uint32 i = 0; i < numElements; i++) {
+                            if (it[i]) {
+                                hashValue ^= i + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
+                            }
+                        }
+
+                        return hashValue;
+                    }
+
+                };
+
+                /**
+                 * Allows to check whether two objects of type `CContiguousLabelMatrix::View` are equal or not.
+                 */
+                struct Pred {
+
+                    inline bool operator()(const View& lhs, const View& rhs) const {
+                        return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
+                    }
+
+                };
+
+                /**
+                 * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix`, the view provides
+                 *                      access to
+                 * @param row           The row, the view provides access to
+                 */
+                View(const CContiguousLabelMatrix& labelMatrix, uint32 row);
+
+        };
+
+        /**
          * @param numRows   The number of rows in the label matrix
          * @param numCols   The number of columns in the label matrix
          * @param array     A pointer to a C-contiguous array of type `uint8` that stores the labels
          */
         CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array);
+
+        /**
+         * The type of the view that provides access to the values that are stored in a single row of the label matrix.
+         */
+        typedef const View view_type;
 
         /**
          * An iterator that provides read-only access to the values in the label matrix.
@@ -46,6 +100,14 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
          * @return      A `const_iterator` to the end of the given row
          */
         value_const_iterator row_values_cend(uint32 row) const;
+
+        /**
+         * Creates and returns a view that provides access to the values at a specific row of the label matrix.
+         *
+         * @param row   The row
+         * @return      An object of type `view_type` that has been created
+         */
+        view_type createView(uint32 row) const;
 
         uint32 getNumRows() const override;
 
