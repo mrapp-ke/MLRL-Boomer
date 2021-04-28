@@ -1,12 +1,7 @@
 #include "common/sampling/instance_sampling_stratified_example_wise.hpp"
-#include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "stratified_sampling.hpp"
-#include <unordered_map>
-#include <algorithm>
-#include <vector>
-#include <cmath>
 
 
 /**
@@ -22,21 +17,11 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
 
     private:
 
-        uint32 numTrainingExamples_;
-
         float32 sampleSize_;
 
         DenseWeightVector<uint8> weightVector_;
 
-        typedef typename LabelMatrix::view_type Key;
-
-        typedef typename LabelMatrix::view_type::Hash Hash;
-
-        typedef typename LabelMatrix::view_type::Pred Pred;
-
-        std::unordered_map<Key, std::vector<uint32>, Hash, Pred> map_;
-
-        std::vector<std::reference_wrapper<std::vector<uint32>>> order_;
+        ExampleWiseStratification<LabelMatrix, IndexIterator> stratification_;
 
     public:
 
@@ -52,67 +37,15 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
          */
         ExampleWiseStratifiedSampling(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
                                       IndexIterator indicesEnd, float32 sampleSize)
-            : numTrainingExamples_(indicesEnd - indicesBegin), sampleSize_(sampleSize),
-              weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows())) {
-            // Create a map that stores the indices of the examples that are associated with each unique label vector...
-            for (uint32 i = 0; i < numTrainingExamples_; i++) {
-                uint32 exampleIndex = indicesBegin[i];
-                std::vector<uint32>& exampleIndices = map_[labelMatrix.createView(exampleIndex)];
-                exampleIndices.push_back(exampleIndex);
-            }
+            : sampleSize_(sampleSize), weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows(),
+                                                     (uint32) (indicesEnd - indicesBegin) < labelMatrix.getNumRows())),
+              stratification_(ExampleWiseStratification<LabelMatrix, IndexIterator>(labelMatrix, indicesBegin,
+                                                                                    indicesEnd)) {
 
-            // Sort the label vectors by their frequency...
-            order_.reserve(map_.size());
-
-            for (auto it = map_.begin(); it != map_.end(); it++) {
-                auto& entry = *it;
-                std::vector<uint32>& exampleIndices = entry.second;
-                order_.push_back(exampleIndices);
-            }
-
-            std::sort(order_.begin(), order_.end(), [=](const std::vector<uint32>& a, const std::vector<uint32>& b) {
-                return a.size() < b.size();
-            });
         }
 
         const IWeightVector& subSample(RNG& rng) override {
-            DenseWeightVector<uint8>::iterator weightIterator = weightVector_.begin();
-            uint32 numTotalSamples = (uint32) std::round(sampleSize_ * numTrainingExamples_);
-            uint32 numTotalOutOfSamples = numTrainingExamples_ - numTotalSamples;
-            uint32 numNonZeroWeights = 0;
-            uint32 numZeroWeights = 0;
-
-            for (auto it = order_.begin(); it != order_.end(); it++) {
-                std::vector<uint32>& exampleIndices = *it;
-                std::vector<uint32>::iterator indexIterator = exampleIndices.begin();
-                uint32 numExamples = exampleIndices.size();
-                float32 numSamplesDecimal = sampleSize_ * numExamples;
-                uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
-                uint32 numDesiredOutOfSamples = numTotalOutOfSamples - numZeroWeights;
-                uint32 numSamples = (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ? 
-                                              std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
-                numNonZeroWeights += numSamples;
-                numZeroWeights += (numExamples - numSamples);
-
-                // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and set their weight to 1...
-                uint32 i;
-
-                for (i = 0; i < numSamples; i++) {
-                    uint32 randomIndex = rng.random(i, numExamples);
-                    uint32 exampleIndex = indexIterator[randomIndex];
-                    indexIterator[randomIndex] = indexIterator[i];
-                    indexIterator[i] = exampleIndex;
-                    weightIterator[exampleIndex] = 1;
-                }
-
-                // Set the weights of the remaining examples to 0...
-                for (i = i + 1; i < numExamples; i++) {
-                    uint32 exampleIndex = indexIterator[i];
-                    weightIterator[exampleIndex] = 0;
-                }
-            }
-
-            weightVector_.setNumNonZeroWeights(numNonZeroWeights);
+            stratification_.sampleWeights(weightVector_, sampleSize_, rng);
             return weightVector_;
         }
 
