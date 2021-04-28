@@ -7,7 +7,7 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
-#include "boosting/data/matrix_dense_label_wise.hpp"
+#include "boosting/data/statistic_matrix_dense_label_wise.hpp"
 
 
 namespace boosting {
