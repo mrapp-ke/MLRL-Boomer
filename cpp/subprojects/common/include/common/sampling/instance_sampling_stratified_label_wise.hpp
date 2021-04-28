@@ -8,11 +8,9 @@
 
 
 /**
- * Allows to create instances of the type `IInstanceSubSampling` that implement iterative stratified sampling as
- * proposed in the following publication:
- *
- * Sechidis K., Tsoumakas G., Vlahavas I. (2011) On the Stratification of Multi-label Data. In: Machine Learning and
- * Knowledge Discovery in Databases. ECML PKDD 2011. Lecture Notes in Computer Science, vol 6913. Springer.
+ * Allows to create instances of the type `IInstanceSubSampling` that implement stratified sampling for selecting a
+ * subset of the available training examples, such that for each label the proportion of relevant and irrelevant
+ * examples is maintained.
  */
 class LabelWiseStratifiedSamplingFactory final : public IInstanceSubSamplingFactory {
 
