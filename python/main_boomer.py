@@ -14,7 +14,7 @@ class BoomerRunnable(RuleLearnerRunnable):
                       predictor=args.predictor, pruning=args.pruning, label_sub_sampling=args.label_sub_sampling,
                       instance_sub_sampling=args.instance_sub_sampling,
                       recalculate_predictions=args.recalculate_predictions, shrinkage=args.shrinkage,
-                      feature_sub_sampling=args.feature_sub_sampling, holdout_set_size=args.holdout,
+                      feature_sub_sampling=args.feature_sub_sampling, holdout=args.holdout,
                       feature_binning=args.feature_binning, label_binning=args.label_binning,
                       head_refinement=args.head_refinement, l2_regularization_weight=args.l2_regularization_weight,
                       min_coverage=args.min_coverage, max_conditions=args.max_conditions,

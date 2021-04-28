@@ -63,7 +63,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
                  head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
-                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout_set_size: float = 0.0,
+                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout: str = None,
                  feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
                  num_threads_prediction: int = 1):
@@ -98,9 +98,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     or None, if no sub-sampling should be used. Additional argument may
                                                     be provided as a dictionary, e.g.
                                                     `random-feature-selection{\"sample_size\":0.5}`
-        :param holdout_set_size:                    The fraction of the training examples that should be included in the
-                                                    holdout set. Must be in (0, 1) or 0, if no holdout set should be
-                                                    used
+        :param holdout:                             The name of the strategy to be used for creating a holdout set. Must
+                                                    be `random` or None, if no holdout set should be used. Additional
+                                                    arguments may be provided as a dictionary, e.g.
+                                                    `random{\"holdout_set_size\":0.5}`
         :param feature_binning:                     The strategy that is used for assigning examples to bins based on
                                                     their feature values. Must be `equal-width`, `equal-frequency` or
                                                     None, if no feature binning should be used. Additional arguments may
@@ -133,7 +134,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
-        self.holdout_set_size = holdout_set_size
+        self.holdout = holdout
         self.feature_binning = feature_binning
         self.pruning = pruning
         self.min_coverage = min_coverage
@@ -156,8 +157,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
         if self.feature_sub_sampling is not None:
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
-        if float(self.holdout_set_size > 0.0):
-            name += '_holdout=' + str(self.holdout_set_size)
+        if self.holdout is not None:
+            name += '_holdout=' + str(self.holdout)
         if self.feature_binning is not None:
             name += '_feature-binning=' + str(self.feature_binning)
         if self.pruning is not None:
@@ -192,7 +193,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         label_sub_sampling_factory = create_label_sub_sampling_factory(self.label_sub_sampling, num_labels)
         instance_sub_sampling_factory = create_instance_sub_sampling_factory(self.instance_sub_sampling)
         feature_sub_sampling_factory = create_feature_sub_sampling_factory(self.feature_sub_sampling)
-        partition_sampling_factory = create_partition_sampling_factory(self.holdout_set_size)
+        partition_sampling_factory = create_partition_sampling_factory(self.holdout)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
         post_processor = NoPostProcessor()
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
