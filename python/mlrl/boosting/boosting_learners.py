@@ -96,7 +96,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  time_limit: int = -1, early_stopping: str = None, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sub_sampling: str = None,
                  instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING, recalculate_predictions: bool = True,
-                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, holdout_set_size: float = 0.0,
+                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, holdout: str = None,
                  feature_binning: str = None, label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
@@ -133,12 +133,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     otherwise
         :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
                                                     classification rule is refined. Must be `random-feature-selection`
-                                                    or None, if no sub-sampling should be used. Additional argument may
+                                                    or None, if no sub-sampling should be used. Additional arguments may
                                                     be provided as a dictionary, e.g.
                                                     `random-feature-selection{\"sample_size\":0.5}`
-        :param holdout_set_size:                    The fraction of the training examples that should be included in the
-                                                    holdout set. Must be in (0, 1) or 0, if no holdout set should be
-                                                    used
+        :param holdout:                             The name of the strategy to be used for creating a holdout set. Must
+                                                    be `random` or None, if no holdout set should be used. Additional
+                                                    arguments may be provided as a dictionary, e.g.
+                                                    `random{\"holdout_set_size\":0.5}`
         :param feature_binning:                     The strategy that is used for assigning examples to bins based on
                                                     their feature values. Must be `equal-width`, `equal-frequency` or
                                                     None, if no feature binning should be used. Additional arguments may
@@ -182,7 +183,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.instance_sub_sampling = instance_sub_sampling
         self.recalculate_predictions = recalculate_predictions
         self.feature_sub_sampling = feature_sub_sampling
-        self.holdout_set_size = holdout_set_size
+        self.holdout = holdout
         self.feature_binning = feature_binning
         self.label_binning = label_binning
         self.pruning = pruning
@@ -210,8 +211,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
         if self.feature_sub_sampling is not None:
             name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
-        if float(self.holdout_set_size) > 0.0:
-            name += '_holdout=' + str(self.holdout_set_size)
+        if self.holdout is not None:
+            name += '_holdout=' + str(self.holdout)
         if self.feature_binning is not None:
             name += '_feature-binning=' + str(self.feature_binning)
         if self.label_binning is not None:
@@ -288,7 +289,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         label_sub_sampling_factory = create_label_sub_sampling_factory(self.label_sub_sampling, num_labels)
         instance_sub_sampling_factory = create_instance_sub_sampling_factory(self.instance_sub_sampling)
         feature_sub_sampling_factory = create_feature_sub_sampling_factory(self.feature_sub_sampling)
-        partition_sampling_factory = create_partition_sampling_factory(self.holdout_set_size)
+        partition_sampling_factory = create_partition_sampling_factory(self.holdout)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
         shrinkage = self.__create_post_processor()
         loss_function = self.__create_loss_function()
@@ -323,9 +324,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             prefix, args = parse_prefix_and_dict(early_stopping, [EARLY_STOPPING_MEASURE])
 
             if prefix == EARLY_STOPPING_MEASURE:
-                if self.holdout_set_size <= 0.0:
+                if self.holdout is None:
                     log.warning('Parameter \'early_stopping\' does not have any effect, because parameter \'holdout\' '
-                                + 'is set to \'0\'!')
+                                + 'is set to \'None\'!')
                     return None
                 else:
                     loss = self.__create_loss_function()

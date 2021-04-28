@@ -1,13 +1,13 @@
-#include "common/sampling/partition_sampling_bi.hpp"
+#include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "index_sampling.hpp"
 
 
 /**
- * Allows to split the training examples into two mutually exclusive sets that may be used as a training set and a
- * holdout set.
+ * Allows to randomly split the training examples into two mutually exclusive sets that may be used as a training set
+ * and a holdout set.
  */
-class BiPartitionSampling final : public IPartitionSampling {
+class RandomBiPartitionSampling final : public IPartitionSampling {
 
     private:
 
@@ -20,7 +20,7 @@ class BiPartitionSampling final : public IPartitionSampling {
          * @param holdoutSetSize    The fraction of examples to be included in the holdout set (e.g. a value of 0.6
          *                          corresponds to 60 % of the available examples). Must be in (0, 1)
          */
-        BiPartitionSampling(uint32 numExamples, float32 holdoutSetSize)
+        RandomBiPartitionSampling(uint32 numExamples, float32 holdoutSetSize)
             : partition_(BiPartition(numExamples - ((uint32) holdoutSetSize * numExamples),
                                      (uint32) (holdoutSetSize * numExamples))) {
 
@@ -48,16 +48,16 @@ class BiPartitionSampling final : public IPartitionSampling {
 
 };
 
-BiPartitionSamplingFactory::BiPartitionSamplingFactory(float32 holdoutSetSize)
+RandomBiPartitionSamplingFactory::RandomBiPartitionSamplingFactory(float32 holdoutSetSize)
     : holdoutSetSize_(holdoutSetSize) {
 
 }
 
-std::unique_ptr<IPartitionSampling> BiPartitionSamplingFactory::create(
+std::unique_ptr<IPartitionSampling> RandomBiPartitionSamplingFactory::create(
         const CContiguousLabelMatrix& labelMatrix) const {
-    return std::make_unique<BiPartitionSampling>(labelMatrix.getNumRows(), holdoutSetSize_);
+    return std::make_unique<RandomBiPartitionSampling>(labelMatrix.getNumRows(), holdoutSetSize_);
 }
 
-std::unique_ptr<IPartitionSampling> BiPartitionSamplingFactory::create(const CsrLabelMatrix& labelMatrix) const {
-    return std::make_unique<BiPartitionSampling>(labelMatrix.getNumRows(), holdoutSetSize_);
+std::unique_ptr<IPartitionSampling> RandomBiPartitionSamplingFactory::create(const CsrLabelMatrix& labelMatrix) const {
+    return std::make_unique<RandomBiPartitionSampling>(labelMatrix.getNumRows(), holdoutSetSize_);
 }
