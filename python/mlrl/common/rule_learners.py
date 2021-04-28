@@ -30,7 +30,8 @@ from mlrl.common.cython.sampling import InstanceSubSamplingFactory, BaggingFacto
 from mlrl.common.cython.sampling import LabelSubSamplingFactory, RandomLabelSubsetSelectionFactory, \
     NoLabelSubSamplingFactory
 from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
-    RandomBiPartitionSamplingFactory
+    RandomBiPartitionSamplingFactory, LabelWiseStratifiedBiPartitionSamplingFactory, \
+    ExampleWiseStratifiedBiPartitionSamplingFactory
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
@@ -61,6 +62,10 @@ ARGUMENT_SAMPLE_SIZE = 'sample_size'
 ARGUMENT_NUM_SAMPLES = 'num_samples'
 
 PARTITION_SAMPLING_RANDOM = 'random'
+
+PARTITION_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+
+PARTITION_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 ARGUMENT_HOLDOUT_SET_SIZE = 'holdout_set_size'
 
@@ -153,6 +158,12 @@ def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
         if prefix == PARTITION_SAMPLING_RANDOM:
             holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
             return RandomBiPartitionSamplingFactory(holdout_set_size)
+        if prefix == PARTITION_SAMPLING_STRATIFIED_LABEL_WISE:
+            holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+            return LabelWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
+        if prefix == PARTITION_SAMPLING_STRATIFIED_LABEL_WISE:
+            holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+            return ExampleWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
         raise ValueError('Invalid value given for parameter \'holdout\': ' + str(holdout))
 
 
