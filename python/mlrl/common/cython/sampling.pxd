@@ -104,7 +104,7 @@ cdef extern from "common/sampling/partition_sampling_no.hpp" nogil:
         pass
 
 
-cdef extern from "common/sampling/partition_sampling_bi.hpp" nogil:
+cdef extern from "common/sampling/partition_sampling_bi_random.hpp" nogil:
 
     cdef cppclass BiPartitionSamplingFactoryImpl"BiPartitionSamplingFactory"(IPartitionSamplingFactory):
 
