@@ -153,7 +153,9 @@ def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
     if holdout is None:
         return NoPartitionSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(holdout, [PARTITION_SAMPLING_RANDOM])
+        prefix, args = parse_prefix_and_dict(holdout, [PARTITION_SAMPLING_RANDOM,
+                                                       PARTITION_SAMPLING_STRATIFIED_LABEL_WISE,
+                                                       PARTITION_SAMPLING_STRATIFIED_EXAMPLE_WISE])
 
         if prefix == PARTITION_SAMPLING_RANDOM:
             holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
@@ -161,7 +163,7 @@ def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
         if prefix == PARTITION_SAMPLING_STRATIFIED_LABEL_WISE:
             holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
             return LabelWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
-        if prefix == PARTITION_SAMPLING_STRATIFIED_LABEL_WISE:
+        if prefix == PARTITION_SAMPLING_STRATIFIED_EXAMPLE_WISE:
             holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
             return ExampleWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
         raise ValueError('Invalid value given for parameter \'holdout\': ' + str(holdout))
