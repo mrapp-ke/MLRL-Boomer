@@ -1,4 +1,3 @@
-
 # README
 
 This project provides a scikit-learn implementation of "BOOMER" - an algorithm for learning gradient boosted multi-label classification rules.
