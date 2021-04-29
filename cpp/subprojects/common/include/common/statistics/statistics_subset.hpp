@@ -80,15 +80,15 @@ class IStatisticsSubset {
          * predict for any other labels. In addition to each score, a quality score, which assesses the quality of the
          * prediction for the respective label, is returned.
          *
-         * @param uncovered     0, if the rule covers all statistics that have been added to the subset via the function
-         *                      `addToSubset`, 1, if the rule covers all statistics that belong to the difference
-         *                      between the statistics that have been provided via the function
+         * @param uncovered     False, if the rule covers all statistics that have been added to the subset via the
+         *                      function `addToSubset`, true, if the rule covers all statistics that belong to the
+         *                      difference between the statistics that have been provided via the function
          *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
          *                      statistics that have been added via the function `addToSubset`
-         * @param accumulated   0, if the rule covers all statistics that have been added to the subset via the function
-         *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
-         *                      the rule covers all examples that have been provided since the subset has been created
-         *                      via the function `Statistics#createSubset`
+         * @param accumulated   False, if the rule covers all statistics that have been added to the subset via the
+         *                      function `addToSubset` since the function `resetSubset` has been called for the last
+         *                      time, true, if the rule covers all examples that have been provided since the subset has
+         *                      been created via the function `Statistics#createSubset`
          * @return              A reference to an object of type `ILabelWiseScoreVector` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as the corresponding quality
          *                      scores
@@ -115,15 +115,15 @@ class IStatisticsSubset {
          * addition to the scores, an overall quality score, which assesses the quality of the predictions for all
          * labels in terms of a single score, is returned.
          *
-         * @param uncovered     0, if the rule covers all statistics that have been added to the subset via the function
-         *                      `addToSubset`, 1, if the rule covers all statistics that belong to the difference
-         *                      between the statistics that have been provided via the function
+         * @param uncovered     False, if the rule covers all statistics that have been added to the subset via the
+         *                      function `addToSubset`, true, if the rule covers all statistics that belong to the
+         *                      difference between the statistics that have been provided via the function
          *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
          *                      statistics that have been added via the function `addToSubset`
-         * @param accumulated   0, if the rule covers all statistics that have been added to the subset via the function
-         *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
-         *                      the rule covers all examples that have been provided since the subset has been created
-         *                      via the function `Statistics#createSubset`
+         * @param accumulated   False, if the rule covers all statistics that have been added to the subset via the
+         *                      function `addToSubset` since the function `resetSubset` has been called for the last
+         *                      time, true, if the rule covers all examples that have been provided since the subset has
+         *                      been created via the function `Statistics#createSubset`
          * @return              A reference to an object of type `IScoreVector` that stores the scores to be predicted
          *                      by the rule for each considered label, as well as an overall quality score
          */
