@@ -1,4 +1,6 @@
 #include "boosting/statistics/statistics_example_wise.hpp"
+#include "boosting/losses/loss_example_wise.hpp"
+#include "boosting/statistics/statistics_boosting.hpp"
 
 
 namespace boosting {
@@ -265,7 +267,8 @@ namespace boosting {
      */
     template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
     class ExampleWiseStatistics final : public AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
-                                        virtual public IExampleWiseStatistics {
+                                        virtual public IExampleWiseStatistics,
+                                        public IBoostingStatistics {
 
         private:
 
@@ -421,6 +424,11 @@ namespace boosting {
                 return std::make_unique<typename ExampleWiseStatistics::PartialSubset>(*this, totalSumVectorPtr_.get(),
                                                                                        std::move(ruleEvaluationPtr),
                                                                                        labelIndices);
+            }
+
+            const mapExamplesGradients visit(const IRandomAccessLabelMatrix& labelMatrix,
+                                             const IVisitor& visitor)const{
+                return visitor.visit(labelMatrix, *this->statisticMatrixPtr_);
             }
 
     };

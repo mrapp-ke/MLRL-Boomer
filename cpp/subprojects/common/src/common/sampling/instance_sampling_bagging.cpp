@@ -8,7 +8,9 @@ Bagging::Bagging(float32 sampleSize)
 
 }
 
-std::unique_ptr<IWeightVector> Bagging::subSample(const SinglePartition& partition, RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const {
+std::unique_ptr<IWeightVector> Bagging::subSample(const SinglePartition& partition, RNG& rng,
+                                                  const IRandomAccessLabelMatrix& labelMatrix,
+                                                  const IStatistics& statistics) const {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize_ * numExamples);
     std::unique_ptr<DenseWeightVector> weightVectorPtr = std::make_unique<DenseWeightVector>(numExamples, numSamples);
@@ -25,7 +27,9 @@ std::unique_ptr<IWeightVector> Bagging::subSample(const SinglePartition& partiti
     return weightVectorPtr;
 }
 
-std::unique_ptr<IWeightVector> Bagging::subSample(const BiPartition& partition, RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const {
+std::unique_ptr<IWeightVector> Bagging::subSample(const BiPartition& partition, RNG& rng,
+                                                  const IRandomAccessLabelMatrix& labelMatrix,
+                                                  const IStatistics& statistics) const {
     uint32 numExamples = partition.getNumElements();
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize_ * numTrainingExamples);

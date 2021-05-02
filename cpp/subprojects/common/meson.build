@@ -58,7 +58,6 @@ source_files = [
     'src/common/sampling/instance_sampling_bagging.cpp',
     'src/common/sampling/instance_sampling_no.cpp',
     'src/common/sampling/instance_sampling_random.cpp',
-    'src/common/sampling/instance_sampling_stratification.cpp',
     'src/common/sampling/label_sampling_no.cpp',
     'src/common/sampling/label_sampling_random.cpp',
     'src/common/sampling/partition_bi.cpp',

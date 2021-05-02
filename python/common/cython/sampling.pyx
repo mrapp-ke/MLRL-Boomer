@@ -47,15 +47,6 @@ cdef class NoInstanceSubSampling(InstanceSubSampling):
         self.instance_sub_sampling_ptr = <shared_ptr[IInstanceSubSampling]>make_shared[NoInstanceSubSamplingImpl]()
 
 
-cdef class Stratification(InstanceSubSampling):
-    """
-    A wrapper for the C++ class 'Stratification'.
-    """
-
-    def __cinit__(self, float32 sample_size = 1.0):
-        self.instance_sub_sampling_ptr = <shared_ptr[IInstanceSubSampling]>make_shared[StratificationImpl](sample_size)
-
-
 cdef class FeatureSubSampling:
     """
     A wrapper for the pure virtual C++ class `IFeatureSubSampling`.

@@ -1,6 +1,7 @@
 #include "boosting/statistics/statistics_label_wise.hpp"
 #include "common/statistics/statistics_subset_decomposable.hpp"
-
+#include "boosting/losses/loss_label_wise.hpp"
+#include "boosting/statistics/statistics_boosting.hpp"
 
 namespace boosting {
 
@@ -252,7 +253,8 @@ namespace boosting {
      */
     template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
     class LabelWiseStatistics final : public AbstractLabelWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
-                                      virtual public ILabelWiseStatistics {
+                                      virtual public ILabelWiseStatistics,
+                                      public IBoostingStatistics {
 
         private:
 
@@ -411,6 +413,10 @@ namespace boosting {
                                                                                      labelIndices);
             }
 
+            const mapExamplesGradients visit(const IRandomAccessLabelMatrix& labelMatrix,
+                                             const IVisitor& visitor)const{
+                return visitor.visit(labelMatrix, *this->statisticMatrixPtr_);
+            }
     };
 
 }

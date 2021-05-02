@@ -48,7 +48,8 @@ class SinglePartition : public IPartition {
         uint32 getNumElements() const;
 
         std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
-                                                 RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const override;
+                                                 RNG& rng, const IRandomAccessLabelMatrix& labelMatrix,
+                                                 const IStatistics& statistics) const override;
 
         float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                     const AbstractPrediction& head) const override;

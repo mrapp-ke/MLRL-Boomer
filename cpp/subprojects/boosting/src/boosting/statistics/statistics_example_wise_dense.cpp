@@ -2,7 +2,7 @@
 #include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/matrix_dense_example_wise.hpp"
 #include "boosting/data/vector_dense_example_wise.hpp"
-#include "statistics_example_wise_common.hpp"
+#include "boosting/statistics/statistics_example_wise_common.hpp"
 #include "omp.h"
 
 

@@ -2,6 +2,10 @@ project('boosting', 'cpp', version : '0.4.0')
 
 # Source files
 source_files = [
+    'src/boosting/sampling/instance_sampling_gradient_based_labelwise.cpp',
+    'src/boosting/sampling/instance_sampling_gradient_based_labelset.cpp',
+    'src/boosting/sampling/instance_sampling_iterative_stratification_labelwise.cpp',
+    'src/boosting/sampling/instance_sampling_iterative_stratification_labelset.cpp',
     'src/boosting/data/matrix_dense_example_wise.cpp',
     'src/boosting/data/matrix_dense_label_wise.cpp',
     'src/boosting/data/matrix_dense_numeric.cpp',

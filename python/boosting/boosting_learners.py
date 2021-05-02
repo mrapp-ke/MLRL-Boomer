@@ -19,6 +19,9 @@ from boosting.cython.rule_evaluation_example_wise import RegularizedExampleWiseR
 from boosting.cython.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory
 from boosting.cython.statistics_example_wise import ExampleWiseStatisticsProviderFactory
 from boosting.cython.statistics_label_wise import LabelWiseStatisticsProviderFactory
+from boosting.cython.sampling import IterativeStratificationLabelWise, IterativeStratificationLabelSet, \
+    GradientBasedLabelWise, GradientBasedLabelSet
+from common.cython.sampling import InstanceSubSampling, Bagging, RandomInstanceSubsetSelection, NoInstanceSubSampling
 from common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     FullHeadRefinementFactory
 from common.cython.input import CContiguousLabelMatrix
@@ -31,7 +34,8 @@ from common.cython.stopping import MeasureStoppingCriterion, AggregationFunction
     ArithmeticMeanFunction
 from sklearn.base import ClassifierMixin
 
-from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE
+from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE,  \
+    INSTANCE_SUB_SAMPLING_RANDOM, ARGUMENT_SAMPLE_SIZE
 from common.rule_learners import MLRuleLearner, SparsePolicy
 from common.rule_learners import create_pruning, create_feature_sub_sampling, create_instance_sub_sampling, \
     create_label_sub_sampling, create_partition_sampling, create_max_conditions, create_stopping_criteria, \
@@ -62,6 +66,10 @@ ARGUMENT_FORCE_STOP = 'force_stop'
 
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
+#ARGUMENT_SAMPLE_SIZE_TOP = 'sample_size_top'
+
+#ARGUMENT_SAMPLE_SIZE_RANDOM = 'sample_size_random'
+
 HEAD_REFINEMENT_FULL = 'full'
 
 LOSS_LABEL_WISE_LOGISTIC = 'label-wise-logistic-loss'
@@ -77,6 +85,10 @@ NON_DECOMPOSABLE_LOSSES = {LOSS_EXAMPLE_WISE_LOGISTIC}
 PREDICTOR_LABEL_WISE = 'label-wise'
 
 PREDICTOR_EXAMPLE_WISE = 'example-wise'
+
+INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION = "iterative-stratification"
+
+INSTANCE_SUB_SAMPLING_GRADIENT_BASED = "gradient-based"
 
 
 class Boomer(MLRuleLearner, ClassifierMixin):
@@ -292,7 +304,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if early_stopping_criterion is not None:
             stopping_criteria.append(early_stopping_criterion)
         label_sub_sampling = create_label_sub_sampling(self.label_sub_sampling, num_labels)
-        instance_sub_sampling = create_instance_sub_sampling(self.instance_sub_sampling)
+        instance_sub_sampling = self.create_instance_sub_sampling(self.instance_sub_sampling)
         feature_sub_sampling = create_feature_sub_sampling(self.feature_sub_sampling)
         partition_sampling = create_partition_sampling(self.holdout_set_size)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
@@ -422,3 +434,37 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if shrinkage == 1.0:
             return NoPostProcessor()
         raise ValueError('Invalid value given for parameter \'shrinkage\': ' + str(shrinkage))
+
+    def create_instance_sub_sampling(self, instance_sub_sampling: str) -> InstanceSubSampling:
+        if instance_sub_sampling is None:
+            return NoInstanceSubSampling()
+        else:
+            prefix, args = parse_prefix_and_dict(instance_sub_sampling,
+                                                 [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM,
+                                                  INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION,
+                                                  INSTANCE_SUB_SAMPLING_GRADIENT_BASED])
+
+            if prefix == INSTANCE_SUB_SAMPLING_BAGGING:
+                sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
+                return Bagging(sample_size)
+            elif prefix == INSTANCE_SUB_SAMPLING_RANDOM:
+                sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+                return RandomInstanceSubsetSelection(sample_size)
+            elif prefix == INSTANCE_SUB_SAMPLING_GRADIENT_BASED:
+                predictor = self.__get_preferred_predictor()
+                sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.6, lambda x: 0 < x < 1)
+                #sample_size_top = get_float_argument(args, ARGUMENT_SAMPLE_SIZE_TOP, 0.6, lambda x: 0 < x < 1)
+                #sample_size_random = get_float_argument(args, ARGUMENT_SAMPLE_SIZE_RANDOM, 0.2, lambda x: 0 < x < 1-ARGUMENT_SAMPLE_SIZE_TOP)
+                if predictor == PREDICTOR_LABEL_WISE:
+                    return GradientBasedLabelWise(sample_size) #(sample_size_top, sample_size_random)
+                elif predictor == PREDICTOR_EXAMPLE_WISE:
+                    return GradientBasedLabelSet(sample_size)
+            elif prefix == INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION:
+                predictor = self.__get_preferred_predictor()
+                sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.6, lambda x: 0 < x < 1)
+                if predictor == PREDICTOR_LABEL_WISE:
+                    return IterativeStratificationLabelWise(sample_size)
+                elif predictor == PREDICTOR_EXAMPLE_WISE:
+                    return IterativeStratificationLabelSet(sample_size)
+            raise ValueError(
+                'Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))

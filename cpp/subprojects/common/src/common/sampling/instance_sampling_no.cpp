@@ -5,11 +5,15 @@
 #include "common/sampling/partition_single.hpp"
 
 
-std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(const SinglePartition& partition, RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const {
+std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(const SinglePartition& partition, RNG& rng,
+                                                                const IRandomAccessLabelMatrix& labelMatrix,
+                                                                const IStatistics& statistics) const {
     return std::make_unique<EqualWeightVector>(partition.getNumElements());
 }
 
-std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(const BiPartition& partition, RNG& rng, const IRandomAccessLabelMatrix& labelMatrix) const {
+std::unique_ptr<IWeightVector> NoInstanceSubSampling::subSample(const BiPartition& partition, RNG& rng,
+                                                                const IRandomAccessLabelMatrix& labelMatrix,
+                                                                const IStatistics& statistics) const {
     uint32 numExamples = partition.getNumElements();
     uint32 numTrainingExamples = partition.getNumFirst();
     BiPartition::const_iterator indexIterator = partition.first_cbegin();

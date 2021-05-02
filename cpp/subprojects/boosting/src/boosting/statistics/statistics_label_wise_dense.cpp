@@ -2,7 +2,7 @@
 #include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/matrix_dense_label_wise.hpp"
 #include "boosting/data/vector_dense_label_wise.hpp"
-#include "statistics_label_wise_common.hpp"
+#include "boosting/statistics/statistics_label_wise_common.hpp"
 #include "omp.h"
 
 
