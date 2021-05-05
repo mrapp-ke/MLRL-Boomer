@@ -3,6 +3,9 @@
 #include "seco/heuristics/confusion_matrices.hpp"
 #include "common/rule_evaluation/score_vector_label_wise_dense.hpp"
 
+#include "seco/heuristics/heuristic_precision.hpp"
+#include "seco/heuristics/heuristic_recall.hpp"
+
 #include "common/debugging/debug.hpp"
 
 
@@ -21,6 +24,8 @@ namespace seco {
 
             std::shared_ptr<IHeuristic> heuristicPtr_;
 
+            std::shared_ptr<IHeuristic> pruningHeuristicPtr_;
+
             bool predictMajority_;
 
             DenseLabelWiseScoreVector<T> scoreVector_;
@@ -36,10 +41,10 @@ namespace seco {
              *                          minority label should be predicted
              */
             HeuristicLabelWiseRuleEvaluation(const T& labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
+                                             std::shared_ptr<IHeuristic> pruningHeuristicPtr,
                                              bool predictMajority)
-                                             // TODO: pruning heuristicPtr
-                : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority),
-                  scoreVector_(DenseLabelWiseScoreVector<T>(labelIndices)) {
+                : heuristicPtr_(heuristicPtr), pruningHeuristicPtr_(pruningHeuristicPtr),
+                predictMajority_(predictMajority), scoreVector_(DenseLabelWiseScoreVector<T>(labelIndices)) {
 
             }
 
@@ -47,7 +52,7 @@ namespace seco {
                                                                       const float64* confusionMatricesTotal,
                                                                       const float64* confusionMatricesSubset,
                                                                       const float64* confusionMatricesCovered,
-                                                                      bool uncovered) override {
+                                                                      bool uncovered, bool pruning) override {
                 uint32 numPredictions = scoreVector_.getNumElements();
                 typename DenseLabelWiseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 typename DenseLabelWiseScoreVector<T>::index_const_iterator indexIterator =
@@ -98,8 +103,13 @@ namespace seco {
                         urp = confusionMatricesTotal[offsetL + RP] - crp;
                     }
 
-                    // TODO: pruning heuristic
-                    score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
+                    // when pruning use the pruning heuristic pointer to be able to use a different heuristic for
+                    // pruning and learning a rule
+                    if (pruning) {
+                        score = pruningHeuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
+                    } else {
+                        score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
+                    }
 
                     // Debugger: print evaluation metrics
                     Debugger::printEvaluationConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp, score);
@@ -115,20 +125,23 @@ namespace seco {
     };
 
     HeuristicLabelWiseRuleEvaluationFactory::HeuristicLabelWiseRuleEvaluationFactory(
-            std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority)
-        : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority) {
+            std::shared_ptr<IHeuristic> heuristicPtr, std::shared_ptr<IHeuristic> pruningHeuristicPtr,
+            bool predictMajority)
+        : heuristicPtr_(heuristicPtr), pruningHeuristicPtr_(pruningHeuristicPtr), predictMajority_(predictMajority) {
 
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
             const FullIndexVector& indexVector) const {
         return std::make_unique<HeuristicLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, heuristicPtr_,
+                                                                                   pruningHeuristicPtr_,
                                                                                    predictMajority_);
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
         return std::make_unique<HeuristicLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector, heuristicPtr_,
+                                                                                      pruningHeuristicPtr_,
                                                                                       predictMajority_);
     }
 

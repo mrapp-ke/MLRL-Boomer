@@ -79,3 +79,19 @@ cdef class MEstimate(Heuristic):
         :param m: The value of the m-parameter. Must be at least 0
         """
         self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[MEstimateImpl](m)
+
+cdef class IREP(Heuristic):
+    """
+    A wrapper for the C++ class `IREP`.
+    """
+
+    def __cinit__(self):
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[IREPImpl]()
+
+cdef class Ripper(Heuristic):
+    """
+    A wrapper for the C++ class `Ripper`.
+    """
+
+    def __cinit__(self):
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[RipperImpl]()

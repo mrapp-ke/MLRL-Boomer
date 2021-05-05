@@ -9,4 +9,8 @@ namespace seco {
         return recall(cin, crp, uin, urp);
     }
 
+    std::string Recall::getName() const {
+        return "Recall";
+    }
+
 }

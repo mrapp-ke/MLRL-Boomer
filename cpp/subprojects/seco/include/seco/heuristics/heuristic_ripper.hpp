@@ -10,16 +10,18 @@
 namespace seco {
 
     /**
-     * A heuristic that is used to prune rules like in RIPPER: (p - n) / (p + n), with  p(n) all positive(negative)
+     * A heuristic that is used to prune rules like in Ripper: (p - n) / (p + n), with  p(n) all positive(negative)
      * covered examples.
-     * As this function is maximised in RIPPER and we try to minimise we used the inverse of the function.
+     * Not needed, as it performs similar to precision.
      */
-    class RIPPER final : public IHeuristic {
+    class Ripper final : public IHeuristic {
 
     public:
 
         float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                         float64 uip, float64 urn, float64 urp) const override;
+
+        std::string getName() const override;
 
     };
 

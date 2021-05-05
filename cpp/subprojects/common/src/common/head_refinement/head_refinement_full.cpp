@@ -68,7 +68,7 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
         }
 
         const IScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                bool accumulated) const override {
+                                                bool accumulated, bool pruning) const override {
             return statisticsSubset.calculateExampleWisePrediction(uncovered, accumulated);
         }
 

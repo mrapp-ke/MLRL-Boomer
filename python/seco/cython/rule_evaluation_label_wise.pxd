@@ -17,8 +17,8 @@ cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise_heuristic.hpp"
 
         # Constructors:
 
-        # TODO: pruning heuristic
-        HeuristicLabelWiseRuleEvaluationFactoryImpl(IHeuristic* heuristic, bool predictMajority) except +
+        HeuristicLabelWiseRuleEvaluationFactoryImpl(IHeuristic* heuristic, IHeuristic* pruningHeuristic,
+                                                    bool predictMajority) except +
 
 
 cdef class LabelWiseRuleEvaluationFactory:

@@ -33,4 +33,8 @@ namespace seco {
         }
     }
 
+    std::string FMeasure::getName() const {
+        return "f-measure";
+    }
+
 }

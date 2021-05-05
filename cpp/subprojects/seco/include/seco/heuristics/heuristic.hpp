@@ -4,6 +4,7 @@
  */
 #pragma once
 
+#include <string>
 #include "common/data/types.hpp"
 
 
@@ -79,6 +80,11 @@ namespace seco {
             virtual float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                                     float64 uip, float64 urn, float64 urp) const = 0;
 
+            /**
+             *
+             * @return  the name of this heuristic
+             */
+            virtual std::string getName() const = 0;
     };
 
 }

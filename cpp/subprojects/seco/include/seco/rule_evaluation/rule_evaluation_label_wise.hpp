@@ -43,6 +43,8 @@ namespace seco {
              * @param uncovered                 False, if the confusion matrices in `confusion_matrices_covered`
              *                                  correspond to the examples that are covered by rule, True, if they
              *                                  correspond to the examples that are not covered by the rule
+             * @param pruning                   False, if the score is to be calculated for learning a rule, true if
+             *                                  it is used for pruning a rule.
              * @param return                    A reference to an object of type `ILabelWiseScoreVector` that stores the
              *                                  predicted scores and quality scores
              */
@@ -50,7 +52,7 @@ namespace seco {
                                                                               const float64* confusionMatricesTotal,
                                                                               const float64* confusionMatricesSubset,
                                                                               const float64* confusionMatricesCovered,
-                                                                              bool uncovered) = 0;
+                                                                              bool uncovered, bool pruning) = 0;
 
     };
 

@@ -219,6 +219,9 @@ class ArgumentParserBuilder:
         parser.add_argument('--heuristic', type=str,
                             default=ArgumentParserBuilder.__get_or_default('heuristic', HEURISTIC_PRECISION, **kwargs),
                             help='The name of the heuristic to be used')
+        parser.add_argument('--pruning-heuristic', type=str,
+                            default=ArgumentParserBuilder.__get_or_default('pruning_heuristic', None, **kwargs),
+                            help='The name of the heuristic to be used for pruning')
         parser.add_argument('--lift-function', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('lift_function', LIFT_FUNCTION_PEAK,
                                                                            **kwargs),

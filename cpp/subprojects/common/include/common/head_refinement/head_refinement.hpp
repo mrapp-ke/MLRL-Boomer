@@ -65,10 +65,11 @@ class IHeadRefinement {
          * @param accumulated       False, if the rule covers all examples that have been added since the
          *                          `IStatisticsSubset` has been reset for the last time, True, if the rule covers all
          *                          examples that have been added so far
+         * @param pruning
          * @return                  A reference to an object of type `IScoreVector` that stores the optimal scores to be
          *                          predicted by the rule, as well as its overall quality score
          */
         virtual const IScoreVector& calculatePrediction(IStatisticsSubset& statisticsSubset, bool uncovered,
-                                                        bool accumulated) const = 0;
+                                                        bool accumulated, bool pruning) const = 0;
 
 };

@@ -13,4 +13,8 @@ namespace seco {
         return numCoveredIncorrect + 1 / numCovered + 2;
     }
 
+    std::string Laplace::getName() const {
+        return "Laplace";
+    }
+
 }

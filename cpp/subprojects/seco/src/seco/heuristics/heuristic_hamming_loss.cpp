@@ -18,4 +18,8 @@ namespace seco {
         return numIncorrect / numTotal;
     }
 
+    std::string HammingLoss::getName() const {
+        return "hamming loss";
+    }
+
 }

@@ -9,4 +9,8 @@ namespace seco {
         return precision(cin, cip, crn, crp);
     }
 
+    std::string Precision::getName() const {
+        return "Precision";
+    }
+
 }

@@ -9,7 +9,8 @@ from common.cython.post_processing import NoPostProcessor
 from common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from common.cython.statistics import StatisticsProviderFactory
 from seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
-from seco.cython.heuristics import Heuristic, Precision, Recall, Laplace, WRA, HammingLoss, FMeasure, MEstimate
+from seco.cython.heuristics import Heuristic, Precision, Recall, Laplace, WRA, HammingLoss, FMeasure, MEstimate, \
+    IREP, Ripper
 from seco.cython.model import DecisionListBuilder
 from seco.cython.output import LabelWiseClassificationPredictor
 from seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
@@ -42,6 +43,10 @@ HEURISTIC_F_MEASURE = 'f-measure'
 
 HEURISTIC_M_ESTIMATE = 'm-estimate'
 
+HEURISTIC_IREP = 'irep'
+
+HEURISTIC_RIPPER = 'ripper'
+
 LIFT_FUNCTION_PEAK = 'peak'
 
 ARGUMENT_PEAK_LABEL = 'peak_label'
@@ -64,7 +69,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
                  head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
-                 heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
+                 heuristic: str = HEURISTIC_PRECISION, pruning_heuristic: str = None, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout_set_size: float = 0.0,
                  feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
@@ -82,9 +87,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     `peak{\"peak_label\":10,\"max_lift\":2.0,\"curvature\":1.0}`
         :param loss:                                The loss function to be minimized. Must be `label-wise-averaging`
         :param heuristic:                           The heuristic to be minimized. Must be `precision`, `hamming-loss`,
-                                                    `recall`, `weighted-relative-accuracy`, `f-measure` or `m-estimate`.
-                                                    Additional arguments may be provided as a dictionary, e.g.
-                                                    `f-measure{\"beta\":1.0}`
+                                                    `recall`, `weighted-relative-accuracy`, `f-measure`, `m-estimate`
+                                                    or `laplace`. Additional arguments may be provided as a dictionary,
+                                                    e.g. `f-measure{\"beta\":1.0}`
+        :param pruning_heuristic                    The heuristic to be used for pruning. Can be any of the above as
+                                                    well as `irep` and `ripper`.
         :param label_sub_sampling:                  The strategy that is used for sub-sampling the labels each time a
                                                     new classification rule is learned. Must be 'random-label-selection'
                                                     or None, if no sub-sampling should be used. Additional arguments may
@@ -134,6 +141,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.lift_function = lift_function
         self.loss = loss
         self.heuristic = heuristic
+        self.pruning_heuristic = pruning_heuristic
         self.label_sub_sampling = label_sub_sampling
         self.instance_sub_sampling = instance_sub_sampling
         self.feature_sub_sampling = feature_sub_sampling
@@ -155,6 +163,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         name += '_lift-function=' + str(self.lift_function)
         name += '_loss=' + str(self.loss)
         name += '_heuristic=' + str(self.heuristic)
+        if self.pruning_heuristic is not None:
+            name += '_pruning-heuristic=' + str(self.pruning_heuristic)
         if self.label_sub_sampling is not None:
             name += '_label-sub-sampling=' + str(self.label_sub_sampling)
         if self.instance_sub_sampling is not None:
@@ -183,8 +193,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         return DecisionListBuilder()
 
     def _create_rule_model_induction(self, num_labels: int) -> SequentialRuleModelInduction:
-        heuristic = self.__create_heuristic()
-        statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
+        heuristic, pruning_heuristic = self.__create_heuristic()
+        statistics_provider_factory = self.__create_statistics_provider_factory(heuristic, pruning_heuristic)
         num_threads_update = get_preferred_num_threads(self.num_threads_update)
         thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
         num_threads_refinement = get_preferred_num_threads(self.num_threads_refinement)
@@ -209,37 +219,58 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                             partition_sampling, pruning, post_processor, min_coverage, max_conditions,
                                             max_head_refinements, stopping_criteria)
 
-    def __create_heuristic(self) -> Heuristic:
+    def __create_heuristic(self) -> (Heuristic, Heuristic):
+
+        pruning_heuristic = self.pruning_heuristic
+        if pruning_heuristic is not None:
+            if pruning_heuristic == HEURISTIC_PRECISION:
+                return_pruning_heuristic = Precision()
+            elif pruning_heuristic == HEURISTIC_IREP:
+                return_pruning_heuristic = IREP()
+            elif pruning_heuristic == HEURISTIC_RIPPER:
+                return_pruning_heuristic = Ripper()
+            else:
+                raise ValueError('Invalid value given for parameter \'pruning-heuristic\': ' + str(pruning_heuristic))
+        else:
+            return_pruning_heuristic = None
+
         heuristic = self.heuristic
         prefix, args = parse_prefix_and_dict(heuristic, [HEURISTIC_PRECISION, HEURISTIC_HAMMING_LOSS, HEURISTIC_RECALL,
                                                          HEURISTIC_LAPLACE, HEURISTIC_WRA, HEURISTIC_F_MEASURE,
                                                          HEURISTIC_M_ESTIMATE])
 
         if prefix == HEURISTIC_PRECISION:
-            return Precision()
+            return_heuristic = Precision()
         elif prefix == HEURISTIC_HAMMING_LOSS:
-            return HammingLoss()
+            return_heuristic = HammingLoss()
         elif prefix == HEURISTIC_RECALL:
-            return Recall()
+            return_heuristic = Recall()
         elif prefix == HEURISTIC_LAPLACE:
-            return Laplace()
+            return_heuristic = Laplace()
         elif prefix == HEURISTIC_WRA:
-            return WRA()
+            return_heuristic = WRA()
         elif prefix == HEURISTIC_F_MEASURE:
             beta = get_float_argument(args, ARGUMENT_BETA, 0.5, lambda x: x >= 0)
-            return FMeasure(beta)
+            return_heuristic = FMeasure(beta)
         elif prefix == HEURISTIC_M_ESTIMATE:
             m = get_float_argument(args, ARGUMENT_M, 22.466, lambda x: x >= 0)
-            return MEstimate(m)
-        raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
+            return_heuristic = MEstimate(m)
+        else:
+            raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
 
-    def __create_statistics_provider_factory(self, heuristic: Heuristic) -> StatisticsProviderFactory:
+        if return_pruning_heuristic is None:
+            return return_heuristic, return_heuristic
+        else:
+            return return_heuristic, return_pruning_heuristic
+
+    def __create_statistics_provider_factory(self, heuristic: Heuristic, pruning_heuristic: Heuristic) \
+            -> StatisticsProviderFactory:
         loss = self.loss
 
         if loss == AVERAGING_LABEL_WISE:
-            default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, predictMajority=True)
-            # TODO: pruning heuristic übergeben
-            rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic)
+            default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, pruning_heuristic,
+                                                                                      predictMajority=True)
+            rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, pruning_heuristic)
             return LabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, rule_evaluation_factory)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 

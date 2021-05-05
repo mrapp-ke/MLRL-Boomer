@@ -55,6 +55,16 @@ cdef extern from "seco/heuristics/heuristic_m_estimate.hpp" namespace "seco" nog
 
         MEstimateImpl(float64 m) except +
 
+cdef extern from "seco/heuristics/heuristic_irep.hpp" namespace "seco" nogil:
+
+    cdef cppclass IREPImpl"seco::IREP"(IHeuristic):
+        pass
+
+cdef extern from "seco/heuristics/heuristic_ripper.hpp" namespace "seco" nogil:
+
+    cdef cppclass RipperImpl"seco::Ripper"(IHeuristic):
+        pass
+
 
 cdef class Heuristic:
 

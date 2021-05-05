@@ -111,7 +111,8 @@ namespace boosting {
                     }
 
                     const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
-                                                                              bool accumulated) override {
+                                                                              bool accumulated,
+                                                                              bool pruning) override {
                         const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                         if (uncovered) {

@@ -9,4 +9,8 @@ namespace seco {
         return wra(cin, cip, crn, crp, uin, uip, urn, urp);
     }
 
+    std::string WRA::getName() const {
+        return "WRA";
+    }
+
 }

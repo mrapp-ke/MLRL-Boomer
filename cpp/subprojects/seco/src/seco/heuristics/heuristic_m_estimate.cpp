@@ -34,4 +34,8 @@ namespace seco {
         }
     }
 
+    std::string MEstimate::getName() const {
+        return "m-estimate";
+    }
+
 }

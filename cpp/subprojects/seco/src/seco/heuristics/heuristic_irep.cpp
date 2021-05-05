@@ -7,13 +7,17 @@ namespace seco {
     float64 IREP::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                                float64 uip, float64 urn, float64 urp) const {
 
-        float64 numPositive = crn + crp + urn + urp;    // P
-        float64 numNegative = cin + cip + uin + uip;    // N
-        float64 numCoveredPositive = crn + crp;         // p
-        float64 numCoveredNegative = cin + cip;         // n
+        float64 numUncoveredCorrect = urp + uin;
+        float64 numCoveredIncorrect = cip + crn;
+        float64 numTotal = numUncoveredCorrect + numCoveredIncorrect + cin + crp + uip + urn;
 
-        // inverse of (p + (N - n)) / (P + N) = (P + N) / (p + (N - n))
-        return (numPositive + numNegative) / (numCoveredPositive + (numNegative - numCoveredNegative));
+        // (p + (N - n)) / (P + N)
+        // (numUncoveredCorrect + numCoveredIncorrect) / (numTotal)
+        return (numUncoveredCorrect + numCoveredIncorrect) / numTotal;
+    }
+
+    std::string IREP::getName() const {
+        return "IREP";
     }
 
 }

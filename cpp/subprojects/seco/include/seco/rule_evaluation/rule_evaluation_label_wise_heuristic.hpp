@@ -19,18 +19,22 @@ namespace seco {
 
             std::shared_ptr<IHeuristic> heuristicPtr_;
 
+            std::shared_ptr<IHeuristic> pruningHeuristicPtr_;
+
             bool predictMajority_;
 
         public:
 
             /**
-             * @param heuristicPtr      A shared pointer to an object of type `IHeuristic`, representing the heuristic
-             *                          to be optimized
-             * @param predictMajority   True, if for each label the majority label should be predicted, false, if the
-             *                          minority label should be predicted
+             * @param heuristicPtr        A shared pointer to an object of type `IHeuristic`, representing the heuristic
+             *                            to be optimized
+             * @param pruningHeuristicPtr A shared pointer to an object of type `IHeuristic`, representing hte heuristic
+             *                            used for pruning
+             * @param predictMajority     True, if for each label the majority label should be predicted, false, if the
+             *                            minority label should be predicted
              */
-             // TODO: pruning heuristic
-            HeuristicLabelWiseRuleEvaluationFactory(std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority);
+            HeuristicLabelWiseRuleEvaluationFactory(std::shared_ptr<IHeuristic> heuristicPtr,
+                                                    std::shared_ptr<IHeuristic> pruningHeuristicPtr, bool predictMajority);
 
             std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
 

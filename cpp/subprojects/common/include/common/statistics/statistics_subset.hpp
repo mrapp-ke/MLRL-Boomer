@@ -89,11 +89,14 @@ class IStatisticsSubset {
          *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
          *                      the rule covers all examples that have been provided since the subset has been created
          *                      via the function `Statistics#createSubset`
+         * @oaram pruning       0, if the score is to be calculated for learning a rule, 1, if it is to be calculated
+         *                      for pruning a rule. Only applicable for seco and thus has a default value of false.
          * @return              A reference to an object of type `ILabelWiseScoreVector` that stores the scores to be
          *                      predicted by the rule for each considered label, as well as the corresponding quality
          *                      scores
          */
-        virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
+        virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered, bool accumulated,
+                                                                          bool pruning = false) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
