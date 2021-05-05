@@ -1,9 +1,9 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/data/view_vector.hpp"
 
 
 /**
@@ -12,13 +12,9 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
-class DenseVector final {
+class DenseVector final : public VectorView<T> {
 
     private:
-
-        T* array_;
-
-        uint32 numElements_;
 
         uint32 maxCapacity_;
 
@@ -37,45 +33,6 @@ class DenseVector final {
 
         virtual ~DenseVector();
 
-        typedef T* iterator;
-
-        typedef const T* const_iterator;
-
-        /**
-         * Returns an `iterator` to the beginning of the vector.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin();
-
-        /**
-         * Returns an `iterator` to the end of the vector.
-         *
-         * @return An `iterator` to the end
-         */
-        iterator end();
-
-        /**
-         * Returns a `const_iterator` to the beginning of the vector.
-         *
-         * @return A `const_iterator` to the beginning
-         */
-        const_iterator cbegin() const;
-
-        /**
-         * Returns a `const_iterator` to the end of the vector.
-         *
-         * @return A `const_iterator` to the end
-         */
-        const_iterator cend() const;
-
-        /**
-         * Returns the number of elements in the vector.
-         *
-         * @return The number of elements in the vector
-         */
-        uint32 getNumElements() const;
-
         /**
          * Sets the number of elements in the vector.
          *
@@ -83,13 +40,5 @@ class DenseVector final {
          * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
         void setNumElements(uint32 numElements, bool freeMemory);
-
-        /**
-         * Returns the value of the element at a specific position.
-         *
-         * @param pos   The position of the element. Must be in [0, getNumElements())
-         * @return      The value of the given element
-         */
-        T getValue(uint32 pos) const;
 
 };

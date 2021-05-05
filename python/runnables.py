@@ -10,12 +10,12 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
-from testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
-from testbed.experiments import Experiment
-from testbed.parameters import ParameterCsvInput
-from testbed.persistence import ModelPersistence
-from testbed.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
-from testbed.training import DataSet
+from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.parameters import ParameterCsvInput
+from mlrl.testbed.persistence import ModelPersistence
+from mlrl.testbed.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
+from mlrl.testbed.training import DataSet
 
 from common.cython.debug import (
     set_full_flag, set_cm_flag, set_dist_flag,

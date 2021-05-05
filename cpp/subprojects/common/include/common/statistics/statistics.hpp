@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
@@ -7,6 +7,7 @@
 #include "common/statistics/histogram.hpp"
 #include "common/head_refinement/prediction_full.hpp"
 #include "common/head_refinement/prediction_partial.hpp"
+#include "common/measures/measure_evaluation.hpp"
 
 
 /**
@@ -17,41 +18,6 @@
 class IStatistics : virtual public IImmutableStatistics {
 
     public:
-
-        /**
-         * Defines an interface for all classes that allow to build histograms by aggregating the statistics that
-         * correspond to the same bins.
-         */
-        class IHistogramBuilder {
-
-            public:
-
-                virtual ~IHistogramBuilder() { };
-
-                /**
-                 * Returns the number of bins.
-                 *
-                 * @return The number of bins
-                 */
-                virtual uint32 getNumBins() const = 0;
-
-                /**
-                 * Adds the statistic at a specific index to a specific bin.
-                 *
-                 * @param binIndex          The index of the bin
-                 * @param statisticIndex    The index of the statistic
-                 * @param weight            The weight of the statistic
-                 */
-                virtual void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) = 0;
-
-                /**
-                 * Creates and returns a new instance of the class `IHistogram` that stores the aggregated statistics.
-                 *
-                 * @return An unique pointer to an object of type `IHistogram` that has been created
-                 */
-                virtual std::unique_ptr<IHistogram> build() = 0;
-
-        };
 
         virtual ~IStatistics() { };
 
@@ -82,7 +48,7 @@ class IStatistics : virtual public IImmutableStatistics {
          * @param statisticIndex    The index of the statistic that should be considered
          * @param weight            The weight of the statistic that should be considered
          */
-        virtual void addSampledStatistic(uint32 statisticIndex, uint32 weight) = 0;
+        virtual void addSampledStatistic(uint32 statisticIndex, float64 weight) = 0;
 
         /**
          * Resets the statistics which should be considered in the following for refining an existing rule. The indices
@@ -116,7 +82,7 @@ class IStatistics : virtual public IImmutableStatistics {
          * @param remove            False, if the statistic should be considered, True, if the statistic should not be
          *                          considered anymore
          */
-        virtual void updateCoveredStatistic(uint32 statisticIndex, uint32 weight, bool remove) = 0;
+        virtual void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) = 0;
 
         /**
          * Updates a specific statistic based on the prediction of a rule that predicts for all available labels.
@@ -144,11 +110,21 @@ class IStatistics : virtual public IImmutableStatistics {
         virtual void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
 
         /**
-         * Creates and returns a new instance of the class `IHistogramBuilder` that allows to build a histogram based on
-         * the statistics.
+         * Calculates and returns a numeric score that assesses the quality of the current predictions for a specific
+         * statistic in terms of a given measure.
          *
-         * @return An unique pointer to an object of type `IHistogramBuilder` that has been created
+         * @param statisticIndex    The index of the statistic for which the predictions should be evaluated
+         * @param measure           A reference to an object of type `IEvaluationMeasure` that should be used to assess
+         *                          the quality of the predictions
+         * @return                  The numeric score that has been calculated
          */
-        virtual std::unique_ptr<IHistogramBuilder> createHistogramBuilder(uint32 numBins) const = 0;
+        virtual float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const = 0;
+
+        /**
+         * Creates and returns a new histogram based on the statistics.
+         *
+         * @return An unique pointer to an object of type `IHistogram` that has been created
+         */
+        virtual std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const = 0;
 
 };

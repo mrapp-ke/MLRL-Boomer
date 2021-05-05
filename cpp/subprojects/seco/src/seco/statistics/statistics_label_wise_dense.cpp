@@ -1,4 +1,7 @@
 #include "seco/statistics/statistics_label_wise_dense.hpp"
+#include "seco/data/matrix_dense_weights.hpp"
+#include "seco/data/vector_dense_confusion_matrices.hpp"
+#include "statistics_label_wise_common.hpp"
 #include "common/data/arrays.hpp"
 #include "common/statistics/statistics_subset_decomposable.hpp"
 #include "seco/heuristics/confusion_matrices.hpp"
@@ -369,48 +372,87 @@ namespace seco {
     };
 
     DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr)
-        : ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrixPtr_(labelMatrixPtr) {
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+        : ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
     }
 
-    std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create() const {
-        // The number of examples
-        uint32 numExamples = labelMatrixPtr_->getNumRows();
-        // The number of labels
-        uint32 numLabels = labelMatrixPtr_->getNumCols();
-        // A matrix that stores the weights of individual examples and labels that are still uncovered
-        float64* uncoveredLabels = (float64*) malloc(numExamples * numLabels * sizeof(float64));
-        // The sum of weights of all examples and labels that remain to be covered
-        float64 sumUncoveredLabels = 0;
-        // An array that stores whether rules should predict individual labels as relevant (1) or irrelevant (0)
-        uint8* minorityLabels = (uint8*) malloc(numLabels * sizeof(uint8));
-        // The number of positive examples that must be exceeded for the default rule to predict a label as relevant
+    std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create(
+            const CContiguousLabelMatrix& labelMatrix) const {
+        uint32 numExamples = labelMatrix.getNumRows();
+        uint32 numLabels = labelMatrix.getNumCols();
+        std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(
+            numExamples, numLabels);
+        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr = std::make_unique<BinarySparseArrayVector>(
+            numLabels);
+        BinarySparseArrayVector::index_iterator majorityIterator = majorityLabelVectorPtr->indices_begin();
         float64 threshold = numExamples / 2.0;
+        float64 sumOfUncoveredWeights = 0;
+        uint32 n = 0;
 
-        for (uint32 c = 0; c < numLabels; c++) {
-            uint32 numPositiveLabels = 0;
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 numRelevant = 0;
 
-            for (uint32 r = 0; r < numExamples; r++) {
-                uint8 trueLabel = labelMatrixPtr_->getValue(r, c);
-                numPositiveLabels += trueLabel;
-
-                // Mark the current example and label as uncovered...
-                uncoveredLabels[r * numLabels + c] = 1;
+            for (uint32 j = 0; j < numExamples; j++) {
+                uint8 trueLabel = labelMatrix.row_values_cbegin(j)[i];
+                numRelevant += trueLabel;
             }
 
-            if (numPositiveLabels > threshold) {
-                minorityLabels[c] = 0;
-                sumUncoveredLabels += (numExamples - numPositiveLabels);
+            if (numRelevant > threshold) {
+                sumOfUncoveredWeights += (numExamples - numRelevant);
+                majorityIterator[n] = i;
+                n++;
             } else {
-                minorityLabels[c] = 1;
-                sumUncoveredLabels += numPositiveLabels;
+                sumOfUncoveredWeights += numRelevant;
             }
         }
 
-        return std::make_unique<LabelWiseStatistics>(ruleEvaluationFactoryPtr_, labelMatrixPtr_, uncoveredLabels,
-                                                     sumUncoveredLabels, minorityLabels);
+        majorityLabelVectorPtr->setNumElements(n, true);
+        weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
+        return std::make_unique<LabelWiseStatistics<CContiguousLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
+            ruleEvaluationFactoryPtr_, labelMatrix, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
+    }
+
+    std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create(
+            const CsrLabelMatrix& labelMatrix) const {
+        uint32 numExamples = labelMatrix.getNumRows();
+        uint32 numLabels = labelMatrix.getNumCols();
+        std::unique_ptr<DenseWeightMatrix> weightMatrixPtr = std::make_unique<DenseWeightMatrix>(
+            numExamples, numLabels);
+        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr = std::make_unique<BinarySparseArrayVector>(
+            numLabels, true);
+        BinarySparseArrayVector::index_iterator majorityIterator = majorityLabelVectorPtr->indices_begin();
+
+        for (uint32 i = 0; i < numExamples; i++) {
+            CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(i);
+            uint32 numElements = labelMatrix.row_indices_cend(i) - indexIterator;
+
+            for (uint32 j = 0; j < numElements; j++) {
+                uint32 index = indexIterator[j];
+                majorityIterator[index] += 1;
+            }
+        }
+
+        float64 threshold = numExamples / 2.0;
+        float64 sumOfUncoveredWeights = 0;
+        uint32 n = 0;
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 numRelevant = majorityIterator[i];
+
+            if (numRelevant > threshold) {
+                sumOfUncoveredWeights += (numExamples - numRelevant);
+                majorityIterator[n] = i;
+                n++;
+            } else {
+                sumOfUncoveredWeights += numRelevant;
+            }
+        }
+
+        majorityLabelVectorPtr->setNumElements(n, true);
+        weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
+        return std::make_unique<LabelWiseStatistics<CsrLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
+            ruleEvaluationFactoryPtr_, labelMatrix, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
 }

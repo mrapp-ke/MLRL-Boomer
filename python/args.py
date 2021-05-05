@@ -11,9 +11,9 @@ from ast import literal_eval
 
 import sklearn.metrics as metrics
 
-from boosting.boosting_learners import LOSS_LABEL_WISE_LOGISTIC
-from common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM
-from seco.seco_learners import HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
+from mlrl.boosting.boosting_learners import LOSS_LABEL_WISE_LOGISTIC
+from mlrl.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM
+from mlrl.seco.seco_learners import HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
 
 
 def log_level(s):
@@ -161,9 +161,9 @@ class ArgumentParserBuilder:
         parser.add_argument('--feature-sub-sampling', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('feature_sub_sampling', None, **kwargs),
                             help='The name of the strategy to be used for feature sub-sampling or None')
-        parser.add_argument('--holdout', type=float,
-                            default=ArgumentParserBuilder.__get_or_default('holdout', 0, **kwargs),
-                            help='The fraction of the training data to be included in the holdout set or 0')
+        parser.add_argument('--holdout', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('holdout', None, **kwargs),
+                            help='The name of the strategy to be used for creating a holdout set or None')
         parser.add_argument('--loss', type=str, default=loss, help='The name of the loss function to be used')
         parser.add_argument('--head-refinement', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('head_refinement', None, **kwargs),
@@ -202,6 +202,19 @@ class ArgumentParserBuilder:
                                         instance_sub_sampling=INSTANCE_SUB_SAMPLING_BAGGING,
                                         feature_sub_sampling=FEATURE_SUB_SAMPLING_RANDOM, **kwargs)
         parser = self.parser
+        parser.add_argument('--default-rule', type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('default_rule', True, **kwargs),
+                            help='True, if the first rule should be a default rule, False otherwise')
+        parser.add_argument('--recalculate-predictions', type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('recalculate_predictions', True, **kwargs),
+                            help='True, if the predictions of rules should be recalculated on the entire training '
+                                 + 'data, if instance sub-sampling is used, False otherwise')
+        parser.add_argument('--early-stopping', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('early_stopping', None, **kwargs),
+                            help='The name of the strategy to be used for early stopping or None')
+        parser.add_argument('--label-binning', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('label_binning', None, **kwargs),
+                            help='The name of the strategy to be used for label binning or None')
         parser.add_argument('--l2-regularization-weight', type=float,
                             default=ArgumentParserBuilder.__get_or_default('l2_regularization_weight', 1.0, **kwargs),
                             help='The weight of the L2 regularization to be used')

@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -33,18 +33,39 @@ class Condition {
          */
         Condition(const Condition& condition);
 
+        /**
+         * The index of the feature, the condition corresponds to.
+         */
         uint32 featureIndex;
 
+        /**
+         * The type of the operator that is used by the condition.
+         */
         Comparator comparator;
 
+        /**
+         * The threshold that is used by the condition.
+         */
         float32 threshold;
 
+        /**
+         * The index of the first element (inclusive) that is covered (or uncovered) by the condition.
+         */
         intp start;
 
+        /**
+         * The index of the last element (exclusive) that is covered (or uncovered) by the condition.
+         */
         intp end;
 
+        /**
+         * True, if the elements in [start, end) are covered by the condition, false otherwise.
+         */
         bool covered;
 
-        uint32 coveredWeights;
+        /**
+         * The number of elements that are covered by the condition.
+         */
+        uint32 numCovered;
 
 };

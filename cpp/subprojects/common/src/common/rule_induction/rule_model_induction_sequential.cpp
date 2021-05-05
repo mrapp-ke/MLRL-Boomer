@@ -5,19 +5,26 @@
 
 
 static inline IStoppingCriterion::Result testStoppingCriteria(
-        std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria, const IStatistics& statistics,
-        uint32 numRules) {
-    IStoppingCriterion::Result result = IStoppingCriterion::Result::CONTINUE;
+        std::forward_list<std::shared_ptr<IStoppingCriterion>>& stoppingCriteria, const IPartition& partition,
+        const IStatistics& statistics, uint32 numRules) {
+    IStoppingCriterion::Result result;
+    result.action = IStoppingCriterion::Action::CONTINUE;
 
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::shared_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
+        IStoppingCriterion::Result stoppingCriterionResult = stoppingCriterionPtr->test(partition, statistics,
+                                                                                        numRules);
+        IStoppingCriterion::Action action = stoppingCriterionResult.action;
 
-        switch (stoppingCriterionPtr->test(statistics, numRules)) {
-            case IStoppingCriterion::Result::FORCE_STOP: {
-                return IStoppingCriterion::Result::FORCE_STOP;
+        switch (action) {
+            case IStoppingCriterion::Action::FORCE_STOP: {
+                result.action = action;
+                result.numRules = stoppingCriterionResult.numRules;
+                return result;
             }
-            case IStoppingCriterion::Result::STORE_STOP: {
-                result = IStoppingCriterion::Result::STORE_STOP;
+            case IStoppingCriterion::Action::STORE_STOP: {
+                result.action = action;
+                result.numRules = stoppingCriterionResult.numRules;
                 break;
             }
             default: {
@@ -34,20 +41,19 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
         std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
         std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-        std::shared_ptr<ILabelSubSampling> labelSubSamplingPtr,
-        std::shared_ptr<IInstanceSubSampling> instanceSubSamplingPtr,
-        std::shared_ptr<IFeatureSubSampling> featureSubSamplingPtr,
-        std::shared_ptr<IPartitionSampling> partitionSamplingPtr, std::shared_ptr<IPruning> pruningPtr,
-        std::shared_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage, intp maxConditions,
-        intp maxHeadRefinements,
+        std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr,
+        std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr,
+        std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
+        std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr, std::shared_ptr<IPruning> pruningPtr,
+        std::shared_ptr<IPostProcessor> postProcessorPtr,
         std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr)
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), thresholdsFactoryPtr_(thresholdsFactoryPtr),
       ruleInductionPtr_(ruleInductionPtr), defaultRuleHeadRefinementFactoryPtr_(defaultRuleHeadRefinementFactoryPtr),
-      headRefinementFactoryPtr_(headRefinementFactoryPtr), labelSubSamplingPtr_(labelSubSamplingPtr),
-      instanceSubSamplingPtr_(instanceSubSamplingPtr), featureSubSamplingPtr_(featureSubSamplingPtr),
-      partitionSamplingPtr_(partitionSamplingPtr), pruningPtr_(pruningPtr), postProcessorPtr_(postProcessorPtr),
-      minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
-      stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
+      headRefinementFactoryPtr_(headRefinementFactoryPtr), labelSubSamplingFactoryPtr_(labelSubSamplingFactoryPtr),
+      instanceSubSamplingFactoryPtr_(instanceSubSamplingFactoryPtr),
+      featureSubSamplingFactoryPtr_(featureSubSamplingFactoryPtr),
+      partitionSamplingFactoryPtr_(partitionSamplingFactoryPtr), pruningPtr_(pruningPtr),
+      postProcessorPtr_(postProcessorPtr), stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
 
 }
 
@@ -62,39 +68,42 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     const IHeadRefinementFactory* defaultRuleHeadRefinementFactory = defaultRuleHeadRefinementFactoryPtr_.get();
     uint32 numRules = defaultRuleHeadRefinementFactory != nullptr ? 1 : 0;
     uint32 numUsedRules = 0;
-     std::shared_ptr<IRandomAccessLabelMatrix> randomAccessLabelMatrixPtr =
-        std::dynamic_pointer_cast<IRandomAccessLabelMatrix, ILabelMatrix>(labelMatrixPtr);
-    std::shared_ptr<IStatisticsProvider> statisticsProviderPtr = statisticsProviderFactoryPtr_->create(
-        randomAccessLabelMatrixPtr);
+    std::shared_ptr<IStatisticsProvider> statisticsProviderPtr =
+        labelMatrixPtr->createStatisticsProvider(*statisticsProviderFactoryPtr_);
     ruleInductionPtr_->induceDefaultRule(*statisticsProviderPtr, defaultRuleHeadRefinementFactory, modelBuilder);
 
     // Induce the remaining rules...
     std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrixPtr, nominalFeatureMaskPtr,
                                                                                statisticsProviderPtr,
                                                                                headRefinementFactoryPtr_);
-    uint32 numExamples = thresholdsPtr->getNumExamples();
+    uint32 numFeatures = thresholdsPtr->getNumFeatures();
     uint32 numLabels = thresholdsPtr->getNumLabels();
-    std::unique_ptr<IPartition> partitionPtr = partitionSamplingPtr_->partition(numExamples, rng);
+    std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrixPtr->createPartitionSampling(
+        *partitionSamplingFactoryPtr_);
+    IPartition& partition = partitionSamplingPtr->partition(rng);
+    std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partition.createInstanceSubSampling(
+        *instanceSubSamplingFactoryPtr_, *labelMatrixPtr);
+    std::unique_ptr<IFeatureSubSampling> featureSubSamplingPtr = featureSubSamplingFactoryPtr_->create(numFeatures);
+    std::unique_ptr<ILabelSubSampling> labelSubSamplingPtr = labelSubSamplingFactoryPtr_->create(numLabels);
     IStoppingCriterion::Result stoppingCriterionResult;
 
-    while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, statisticsProviderPtr->get(),
-                                                          numRules),
-           stoppingCriterionResult != IStoppingCriterion::Result::FORCE_STOP) {
-        if (stoppingCriterionResult == IStoppingCriterion::Result::STORE_STOP && numUsedRules == 0) {
-            numUsedRules = numRules;
+    while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, partition,
+                                                          statisticsProviderPtr->get(), numRules),
+           stoppingCriterionResult.action != IStoppingCriterion::Action::FORCE_STOP) {
+        if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
+            numUsedRules = stoppingCriterionResult.numRules;
         }
 
         Debugger::lb(false);
 
-        std::unique_ptr<IWeightVector> weightsPtr = partitionPtr->subSample(*instanceSubSamplingPtr_, rng);
+        const IWeightVector& weights = instanceSubSamplingPtr->subSample(rng);
 
         // Debugger: print distribution of training and pruning sets
         Debugger::printDistribution(*weightsPtr);
 
-        std::unique_ptr<IIndexVector> labelIndicesPtr = labelSubSamplingPtr_->subSample(numLabels, rng);
-        bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, *labelIndicesPtr, *weightsPtr, *partitionPtr,
-                                                     *featureSubSamplingPtr_, *pruningPtr_, *postProcessorPtr_,
-                                                     minCoverage_, maxConditions_, maxHeadRefinements_, rng,
+        const IIndexVector& labelIndices = labelSubSamplingPtr->subSample(rng);
+        bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, labelIndices, weights, partition,
+                                                     *featureSubSamplingPtr, *pruningPtr_, *postProcessorPtr_, rng,
                                                      modelBuilder);
 
         if (success) {

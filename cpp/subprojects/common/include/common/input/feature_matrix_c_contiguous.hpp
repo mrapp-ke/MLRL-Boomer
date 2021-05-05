@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -10,4 +10,4 @@
  * Implements row-wise read-only access to the feature values of individual training examples that are stored in a
  * pre-allocated C-contiguous array.
  */
-typedef CContiguousView<float32> CContiguousFeatureMatrix;
+typedef CContiguousConstView<const float32> CContiguousFeatureMatrix;

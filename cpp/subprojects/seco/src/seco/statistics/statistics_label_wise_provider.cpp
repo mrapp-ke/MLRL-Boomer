@@ -48,9 +48,17 @@ namespace seco {
     }
 
     std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
-            std::shared_ptr<IRandomAccessLabelMatrix> labelMatrixPtr) const {
-        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_, labelMatrixPtr);
-        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_, statisticsFactory.create());
+            const CContiguousLabelMatrix& labelMatrix) const {
+        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                             statisticsFactory.create(labelMatrix));
+    }
+
+    std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
+            const CsrLabelMatrix& labelMatrix) const {
+        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                             statisticsFactory.create(labelMatrix));
     }
 
 }

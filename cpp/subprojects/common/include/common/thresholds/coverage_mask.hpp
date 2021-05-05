@@ -1,17 +1,17 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/thresholds/coverage_state.hpp"
 
 
 /**
- * Allows to keep track of the elements, e.g. examples or bins, that are covered by a rule as the rule is refined. For
- * each element, an integer is stored in a C-contiguous array that may be updated when the rule is refined. The elements
- * that correspond to a number that is equal to the "target" are considered to be covered.
+ * Allows to check whether individual examples are covered by a rule or not. For each example, an integer is stored in a
+ * C-contiguous array that may be updated when the rule is refined. If the value that corresponds to a certain example
+ * is equal to the "target", it is considered to be covered.
  */
-class CoverageMask final {
+class CoverageMask final : public ICoverageState {
 
     private:
 
@@ -19,10 +19,12 @@ class CoverageMask final {
 
         uint32 numElements_;
 
+        uint32 target_;
+
     public:
 
         /**
-         * @param numElements The number of elements
+         * @param numElements The total number of examples
          */
         CoverageMask(uint32 numElements);
 
@@ -33,7 +35,15 @@ class CoverageMask final {
 
         ~CoverageMask();
 
+        /**
+         * An iterator that provides access to the values in the mask and allows to modify them.
+         */
         typedef uint32* iterator;
+
+        /**
+         * An iterator that provides read-only access to the values in the mask.
+         */
+        typedef const uint32* const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the mask.
@@ -50,22 +60,66 @@ class CoverageMask final {
         iterator end();
 
         /**
-         * Resets the mask by setting all elements and the "target" to zero.
+         * Returns a `const_iterator` to the beginning of the mask.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the mask.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const;
+
+        /**
+         * Returns the total number of examples
+         *
+         * @return The total number of examples
+         */
+        uint32 getNumElements() const;
+
+        /**
+         * Returns the "target".
+         *
+         * @return The "target"
+         */
+        uint32 getTarget() const;
+
+        /**
+         * Sets the "target".
+         *
+         * @param target The "target" to be set
+         */
+        void setTarget(uint32 target);
+
+        /**
+         * Resets the mask and the target such that all examples are marked as covered.
          */
         void reset();
 
         /**
-         * Returns whether the element at a specific element it covered or not.
+         * Returns whether the example at a specific index is covered or not.
          *
-         * @param pos   The position of the element to be checked
-         * @return      True, if the element at the given position is covered, false otherwise
+         * @param pos   The index of the example
+         * @return      True, if the example at the given index is covered, false otherwise
          */
         bool isCovered(uint32 pos) const;
 
-        /**
-         * The "target" that corresponds to the elements that are considered to be covered.
-         */
-        uint32 target;
+        std::unique_ptr<ICoverageState> copy() const override;
+
+        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
+                                    const AbstractPrediction& head) const override;
+
+        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
+                                    const AbstractPrediction& head) const override;
+
+        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
+                                   Refinement& refinement) const override;
+
+        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
+                                   Refinement& refinement) const override;
 
         /**
          * Returns the number of elements in the coverage mask.

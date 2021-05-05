@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -12,9 +12,9 @@
 namespace boosting {
 
     /**
-     * A two-dimensional matrix that provides random access to a fixed number of numbers stored in a C-contiguous array.
+     * A two-dimensional matrix that provides random access to a fixed number of values stored in a C-contiguous array.
      *
-     * @tparam T The type of the numbers that are stored in the matrix
+     * @tparam T The type of the values that are stored in the matrix
      */
     template<class T>
     class DenseNumericMatrix final : public DenseMatrix<T> {
@@ -35,14 +35,14 @@ namespace boosting {
             DenseNumericMatrix(uint32 numRows, uint32 numCols, bool init);
 
             /**
-             * Adds all numbers in another vector to certain elements, whose positions are given as a `FullIndexVector`,
+             * Adds all values in another vector to certain elements, whose positions are given as a `FullIndexVector`,
              * at a specific row of this matrix.
              *
              * @param row           The row
-             * @param begin         A `DenseVector<T>::const_iterator` to the beginning of the vector
-             * @param end           A `DenseVector<T>::const_iterator` to the end of the vector
-             * @param indicesBegin  A `FullIndexVector::const_iterator` to the beginning of the indices
-             * @param indicesEnd    A `FullIndexVector::const_iterator` to the end of the indices
+             * @param begin         An iterator to the beginning of the vector
+             * @param end           An iterator to the end of the vector
+             * @param indicesBegin  An iterator to the beginning of the indices
+             * @param indicesEnd    An iterator to the end of the indices
              */
             void addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
                                     typename DenseVector<T>::const_iterator end,
@@ -50,14 +50,14 @@ namespace boosting {
                                     FullIndexVector::const_iterator indicesEnd);
 
             /**
-             * Adds all numbers in another vector to certain elements, whose positions are given as a
+             * Adds all values in another vector to certain elements, whose positions are given as a
              * `PartialIndexVector`, at a specific row of this matrix.
              *
              * @param row           The row
-             * @param begin         A `DenseVector<T>::const_iterator` to the beginning of the vector
-             * @param end           A `DenseVector<T>::const_iterator` to the end of the vector
-             * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the indices
-             * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the indices
+             * @param begin         An iterator to the beginning of the vector
+             * @param end           An iterator to the end of the vector
+             * @param indicesBegin  An iterator to the beginning of the indices
+             * @param indicesEnd    An iterator to the end of the indices
              */
             void addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
                                     typename DenseVector<T>::const_iterator end,

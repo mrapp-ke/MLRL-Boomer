@@ -52,9 +52,9 @@ import numpy as np
 from scipy.stats import bernoulli
 
 from args import boolean_string, ArgumentParserBuilder
+from mlrl.testbed.data import save_data_set_and_meta_data
+from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
 from runnables import Runnable
-from testbed.data import save_data_set_and_meta_data
-from testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
 
 
 class GenerateSyntheticDataRunnable(Runnable):

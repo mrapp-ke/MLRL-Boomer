@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -13,7 +13,7 @@ class NoPruning final : public IPruning {
 
     public:
 
-        std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, const IPartition& partition,
-                                            ConditionList& conditions, const AbstractPrediction& head) const override;
+        std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
+                                              ConditionList& conditions, const AbstractPrediction& head) const override;
 
 };

@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -7,15 +7,23 @@
 
 
 /**
- * An implementation of the class `IInstanceSubSampling` that does not perform any sampling, but assigns equal weights
- * to all examples.
+ * Allows to create instances of the type `IInstanceSubSampling` that do not perform any sampling, but assign equal
+ * weights to all examples.
  */
-class NoInstanceSubSampling final : public IInstanceSubSampling {
+class NoInstanceSubSamplingFactory final : public IInstanceSubSamplingFactory {
 
     public:
 
-        std::unique_ptr<IWeightVector> subSample(const SinglePartition& partition, RNG& rng) const override;
+        std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix,
+                                                     const SinglePartition& partition) const override;
 
-        std::unique_ptr<IWeightVector> subSample(const BiPartition& partition, RNG& rng) const override;
+        std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix,
+                                                     BiPartition& partition) const override;
+
+        std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix,
+                                                     const SinglePartition& partition) const override;
+
+        std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix,
+                                                     BiPartition& partition) const override;
 
 };

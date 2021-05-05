@@ -1,4 +1,4 @@
-/**
+/*
  * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -24,7 +24,7 @@ namespace seco {
              *
              * @return The sum of the weights
              */
-            virtual float64 getSumOfUncoveredLabels() const = 0;
+            virtual float64 getSumOfUncoveredWeights() const = 0;
 
     };
 

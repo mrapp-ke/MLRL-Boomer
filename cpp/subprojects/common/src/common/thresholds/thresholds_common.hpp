@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -13,26 +13,12 @@
 #include "omp.h"
 
 
-/**
- * An entry that is stored in a cache and contains an unique pointer to a vector of arbitrary type. The field
- * `numConditions` specifies how many conditions the rule contained when the vector was updated for the last time. It
- * may be used to check if the vector is still valid or must be updated.
- *
- * @tparam T The type of the vector that is stored by the entry
- */
-template<class T>
-struct FilteredCacheEntry {
-    FilteredCacheEntry<T>() : numConditions(0) { };
-    std::unique_ptr<T> vectorPtr;
-    uint32 numConditions;
-};
-
 static inline void updateSampledStatisticsInternally(IStatistics& statistics, const IWeightVector& weights) {
     uint32 numExamples = statistics.getNumStatistics();
     statistics.resetSampledStatistics();
 
     for (uint32 i = 0; i < numExamples; i++) {
-        uint32 weight = weights.getWeight(i);
+        float64 weight = weights.getWeight(i);
         statistics.addSampledStatistic(i, weight);
     }
 }
@@ -59,6 +45,49 @@ static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExampl
     return scoreVector.overallQualityScore;
 }
 
+static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
+                                                    const IStatistics& statistics,
+                                                    const IHeadRefinementFactory& headRefinementFactory,
+                                                    const AbstractPrediction& prediction) {
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = iterator[i];
+
+        if (weights.getWeight(exampleIndex) == 0) {
+            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+        }
+    }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    return scoreVector.overallQualityScore;
+}
+
+static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
+                                                    BiPartition& partition, const IStatistics& statistics,
+                                                    const IHeadRefinementFactory& headRefinementFactory,
+                                                    const AbstractPrediction& prediction) {
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
+    const BinaryDokVector& holdoutSet = partition.getSecondSet();
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = iterator[i];
+
+        if (weights.getWeight(exampleIndex) == 0 && holdoutSet[exampleIndex]) {
+            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+        }
+    }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    return scoreVector.overallQualityScore;
+}
+
 template<class T>
 static inline void recalculatePredictionInternally(T iterator, uint32 numExamples, const CoverageMask& coverageMask,
                                                    const IStatistics& statistics,
@@ -82,20 +111,45 @@ static inline void recalculatePredictionInternally(T iterator, uint32 numExample
     scoreVector.updatePrediction(head);
 }
 
-static inline void updateStatisticsInternally(IStatistics& statistics, const CoverageMask& coverageMask,
-                                              const AbstractPrediction& prediction, uint32 numThreads) {
-    uint32 numStatistics = statistics.getNumStatistics();
-    const CoverageMask* coverageMaskPtr = &coverageMask;
-    const AbstractPrediction* predictionPtr = &prediction;
-    IStatistics* statisticsPtr = &statistics;
+static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, const IStatistics& statistics,
+                                                   const IHeadRefinementFactory& headRefinementFactory,
+                                                   Refinement& refinement) {
+    AbstractPrediction& head = *refinement.headPtr;
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
-    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
-    firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
-    for (uint32 i = 0; i < numStatistics; i++) {
-        if (coverageMaskPtr->isCovered(i)) {
-            predictionPtr->apply(*statisticsPtr, i);
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = iterator[i];
+        statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+    }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    scoreVector.updatePrediction(head);
+}
+
+static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, BiPartition& partition,
+                                                   const IStatistics& statistics,
+                                                   const IHeadRefinementFactory& headRefinementFactory,
+                                                   Refinement& refinement) {
+    AbstractPrediction& head = *refinement.headPtr;
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
+    const BinaryDokVector& holdoutSet = partition.getSecondSet();
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = iterator[i];
+
+        if (holdoutSet[exampleIndex]) {
+            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
+
+    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    scoreVector.updatePrediction(head);
 }
 
 /**
@@ -106,12 +160,28 @@ class AbstractThresholds : public IThresholds {
 
     protected:
 
+        /**
+         * A shared pointer to an object of type `IFeatureMatrix` that provides access to the feature values of the
+         * training examples.
+         */
         std::shared_ptr<IFeatureMatrix> featureMatrixPtr_;
 
+        /**
+         * A shared pointer to an object of type `INominalFeatureMask` that provides access to the information whether
+         * individual feature are nominal or not.
+         */
         std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr_;
 
+        /**
+         * A shared pointer to an object of type `IStatisticsProvider` that provides access to statistics about the
+         * labels of the training examples.
+         */
         std::shared_ptr<IStatisticsProvider> statisticsProviderPtr_;
 
+        /**
+         * A shared pointer to an object of type `IHeadRefinementFactory` that allows to create instances of the class
+         * that should be used to find the heads of rules.
+         */
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr_;
 
     public:
@@ -121,7 +191,7 @@ class AbstractThresholds : public IThresholds {
          *                                  to the feature values of the training examples
          * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
          *                                  access to the information whether individual features are nominal or not
-         * @param statisticsPtr             A shared pointer to an object of type `IStatisticsProvider` that provides
+         * @param statisticsProviderPtr     A shared pointer to an object of type `IStatisticsProvider` that provides
                                             access to statistics about the labels of the training examples
          * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
          *                                  to create instances of the class that should be used to find the heads of

@@ -5,7 +5,7 @@
 
 namespace boosting {
 
-    static inline void applyThreshold(CContiguousView<float64>::const_iterator originalIterator,
+    static inline void applyThreshold(CContiguousConstView<float64>::const_iterator originalIterator,
                                       CContiguousView<uint8>::iterator transformedIterator, uint32 numElements,
                                       float64 threshold) {
         for (uint32 i = 0; i < numElements; i++) {

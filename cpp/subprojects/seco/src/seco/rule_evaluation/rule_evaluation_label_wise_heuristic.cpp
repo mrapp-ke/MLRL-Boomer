@@ -1,7 +1,7 @@
 #include <iostream>
 #include "seco/rule_evaluation/rule_evaluation_label_wise_heuristic.hpp"
-#include "seco/heuristics/confusion_matrices.hpp"
 #include "common/rule_evaluation/score_vector_label_wise_dense.hpp"
+#include "../data/confusion_matrices.hpp"
 
 #include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/heuristics/heuristic_recall.hpp"
@@ -48,17 +48,18 @@ namespace seco {
 
             }
 
-            const ILabelWiseScoreVector& calculateLabelWisePrediction(const uint8* minorityLabels,
-                                                                      const float64* confusionMatricesTotal,
-                                                                      const float64* confusionMatricesSubset,
-                                                                      const float64* confusionMatricesCovered,
-                                                                      bool uncovered, bool pruning) override {
+            const ILabelWiseScoreVector& calculateLabelWisePrediction(
+                    const BinarySparseArrayVector& majorityLabelVector,
+                    const DenseConfusionMatrixVector& confusionMatricesTotal,
+                    const DenseConfusionMatrixVector& confusionMatricesSubset,
+                    const DenseConfusionMatrixVector& confusionMatricesCovered, bool uncovered, bool pruning) override {
                 uint32 numPredictions = scoreVector_.getNumElements();
                 typename DenseLabelWiseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 typename DenseLabelWiseScoreVector<T>::index_const_iterator indexIterator =
                     scoreVector_.indices_cbegin();
                 typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
                     scoreVector_.quality_scores_begin();
+                BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
                 float64 overallQualityScore = 0;
 
                 // Debugger: print confusion matrices
@@ -69,38 +70,43 @@ namespace seco {
                                                  NUM_CONFUSION_MATRIX_ELEMENTS,
                                                  uncovered);
 
-                for (uint32 c = 0; c < numPredictions; c++) {
-                    uint32 l = indexIterator[c];
+                for (uint32 i = 0; i < numPredictions; i++) {
+                    uint32 index = indexIterator[i];
 
                     // Set the score to be predicted for the current label...
-                    uint8 minorityLabel = minorityLabels[l];
-                    float64 score = (float64) (predictMajority_ ? (minorityLabel > 0 ? 0 : 1) : minorityLabel);
-                    scoreIterator[c] = score;
+                    bool majorityLabel = *majorityIterator;
+                    float64 score = (float64) (predictMajority_ ? majorityLabel : !majorityLabel);
+                    scoreIterator[i] = score;
 
                     // Calculate the quality score for the current label...
-                    uint32 offsetC = c * NUM_CONFUSION_MATRIX_ELEMENTS;
-                    uint32 offsetL = l * NUM_CONFUSION_MATRIX_ELEMENTS;
+                    DenseConfusionMatrixVector::const_iterator coveredIterator =
+                        confusionMatricesCovered.confusion_matrix_cbegin(i);
+                    DenseConfusionMatrixVector::const_iterator totalIterator =
+                        confusionMatricesTotal.confusion_matrix_cbegin(index);
+
+                    uint32 cin = coveredIterator[IN];
+                    uint32 cip = coveredIterator[IP];
+                    uint32 crn = coveredIterator[RN];
+                    uint32 crp = coveredIterator[RP];
                     uint32 uin, uip, urn, urp;
 
-                    uint32 cin = confusionMatricesCovered[offsetC + IN];
-                    uint32 cip = confusionMatricesCovered[offsetC + IP];
-                    uint32 crn = confusionMatricesCovered[offsetC + RN];
-                    uint32 crp = confusionMatricesCovered[offsetC + RP];
-
                     if (uncovered) {
-                        uin = cin + confusionMatricesTotal[offsetL + IN] - confusionMatricesSubset[offsetL + IN];
-                        uip = cip + confusionMatricesTotal[offsetL + IP] - confusionMatricesSubset[offsetL + IP];
-                        urn = crn + confusionMatricesTotal[offsetL + RN] - confusionMatricesSubset[offsetL + RN];
-                        urp = crp + confusionMatricesTotal[offsetL + RP] - confusionMatricesSubset[offsetL + RP];
-                        cin = confusionMatricesSubset[offsetC + IN] - cin;
-                        cip = confusionMatricesSubset[offsetC + IP] - cip;
-                        crn = confusionMatricesSubset[offsetC + RN] - crn;
-                        crp = confusionMatricesSubset[offsetC + RP] - crp;
+                        DenseConfusionMatrixVector::const_iterator subsetIterator =
+                            confusionMatricesSubset.confusion_matrix_cbegin(index);
+                        uin = cin + totalIterator[IN] - subsetIterator[IN];
+                        uip = cip + totalIterator[IP] - subsetIterator[IP];
+                        urn = crn + totalIterator[RN] - subsetIterator[RN];
+                        urp = crp + totalIterator[RP] - subsetIterator[RP];
+                        subsetIterator = confusionMatricesSubset.confusion_matrix_cbegin(i);
+                        cin = subsetIterator[IN] - cin;
+                        cip = subsetIterator[IP] - cip;
+                        crn = subsetIterator[RN] - crn;
+                        crp = subsetIterator[RP] - crp;
                     } else {
-                        uin = confusionMatricesTotal[offsetL + IN] - cin;
-                        uip = confusionMatricesTotal[offsetL + IP] - cip;
-                        urn = confusionMatricesTotal[offsetL + RN] - crn;
-                        urp = confusionMatricesTotal[offsetL + RP] - crp;
+                        uin = totalIterator[IN] - cin;
+                        uip = totalIterator[IP] - cip;
+                        urn = totalIterator[RN] - crn;
+                        urp = totalIterator[RP] - crp;
                     }
 
                     // when pruning use the pruning heuristic pointer to be able to use a different heuristic for
@@ -113,8 +119,9 @@ namespace seco {
 
                     // Debugger: print evaluation metrics
                     Debugger::printEvaluationConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp, score);
-                    qualityScoreIterator[c] = score;
+                    qualityScoreIterator[i] = score;
                     overallQualityScore += score;
+                    majorityIterator++;
                 }
 
                 overallQualityScore /= numPredictions;

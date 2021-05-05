@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -15,9 +15,19 @@ namespace boosting {
 
         public:
 
-            void updateExampleWiseStatistics(uint32 exampleIndex, const IRandomAccessLabelMatrix& labelMatrix,
-                                             const CContiguousView<float64>& scoreMatrix,
+            void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+                                             const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
+
+            void updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                             const CContiguousConstView<float64>& scoreMatrix,
+                                             DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
+
+            float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+                             const CContiguousConstView<float64>& scoreMatrix) const override;
+
+            float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                             const CContiguousConstView<float64>& scoreMatrix) const override;
 
             float64 measureSimilarity(const LabelVector& labelVector,
                                       CContiguousView<float64>::const_iterator scoresBegin,

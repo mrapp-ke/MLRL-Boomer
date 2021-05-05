@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -22,6 +22,6 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
          */
         SizeStoppingCriterion(uint32 maxRules);
 
-        Result test(const IStatistics& statistics, uint32 numRules) override;
+        Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
 };

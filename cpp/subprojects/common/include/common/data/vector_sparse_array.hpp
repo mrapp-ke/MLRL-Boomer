@@ -1,9 +1,9 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/data/vector_dense.hpp"
 #include "common/data/indexed_value.hpp"
 
 
@@ -14,20 +14,11 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<class T>
-class SparseArrayVector {
-
-    public:
-
-        typedef IndexedValue<T> Entry;
-
+class SparseArrayVector final {
 
     private:
 
-        Entry* array_;
-
-        uint32 numElements_;
-
-        uint32 maxCapacity_;
+        DenseVector<IndexedValue<T>> vector_;
 
     public:
 
@@ -36,11 +27,15 @@ class SparseArrayVector {
          */
         SparseArrayVector(uint32 numElements);
 
-        virtual ~SparseArrayVector();
+        /**
+         * An iterator that provides access to the elements in the vector and allows to modify them.
+         */
+        typedef typename DenseVector<IndexedValue<T>>::iterator iterator;
 
-        typedef Entry* iterator;
-
-        typedef const Entry* const_iterator;
+        /**
+         * An iterator that provides read-only access to the elements in the vector.
+         */
+        typedef typename DenseVector<IndexedValue<T>>::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the vector.

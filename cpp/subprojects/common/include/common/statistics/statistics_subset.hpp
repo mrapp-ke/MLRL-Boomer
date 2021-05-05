@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -25,7 +25,7 @@ class IStatisticsSubset {
          * @param statisticIndex    The index of the missing statistic
          * @param weight            The weight of the missing statistic
          */
-        virtual void addToMissing(uint32 statisticIndex, uint32 weight) = 0;
+        virtual void addToMissing(uint32 statisticIndex, float64 weight) = 0;
 
         /**
          * Adds the statistics at a specific index to the subset in order to mark it as covered by the condition that is
@@ -44,7 +44,7 @@ class IStatisticsSubset {
          * @param statisticIndex    The index of the covered statistic
          * @param weight            The weight of the covered statistic
          */
-        virtual void addToSubset(uint32 statisticIndex, uint32 weight) = 0;
+        virtual void addToSubset(uint32 statisticIndex, float64 weight) = 0;
 
         /**
          * Resets the subset by removing all statistics that have been added via preceding calls to the function
@@ -80,15 +80,15 @@ class IStatisticsSubset {
          * predict for any other labels. In addition to each score, a quality score, which assesses the quality of the
          * prediction for the respective label, is returned.
          *
-         * @param uncovered     0, if the rule covers all statistics that have been added to the subset via the function
-         *                      `addToSubset`, 1, if the rule covers all statistics that belong to the difference
-         *                      between the statistics that have been provided via the function
+         * @param uncovered     False, if the rule covers all statistics that have been added to the subset via the
+         *                      function `addToSubset`, true, if the rule covers all statistics that belong to the
+         *                      difference between the statistics that have been provided via the function
          *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
          *                      statistics that have been added via the function `addToSubset`
-         * @param accumulated   0, if the rule covers all statistics that have been added to the subset via the function
-         *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
-         *                      the rule covers all examples that have been provided since the subset has been created
-         *                      via the function `Statistics#createSubset`
+         * @param accumulated   False, if the rule covers all statistics that have been added to the subset via the
+         *                      function `addToSubset` since the function `resetSubset` has been called for the last
+         *                      time, true, if the rule covers all examples that have been provided since the subset has
+         *                      been created via the function `Statistics#createSubset`
          * @oaram pruning       0, if the score is to be calculated for learning a rule, 1, if it is to be calculated
          *                      for pruning a rule. Only applicable for seco and thus has a default value of false.
          * @return              A reference to an object of type `ILabelWiseScoreVector` that stores the scores to be
@@ -118,15 +118,15 @@ class IStatisticsSubset {
          * addition to the scores, an overall quality score, which assesses the quality of the predictions for all
          * labels in terms of a single score, is returned.
          *
-         * @param uncovered     0, if the rule covers all statistics that have been added to the subset via the function
-         *                      `addToSubset`, 1, if the rule covers all statistics that belong to the difference
-         *                      between the statistics that have been provided via the function
+         * @param uncovered     False, if the rule covers all statistics that have been added to the subset via the
+         *                      function `addToSubset`, true, if the rule covers all statistics that belong to the
+         *                      difference between the statistics that have been provided via the function
          *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
          *                      statistics that have been added via the function `addToSubset`
-         * @param accumulated   0, if the rule covers all statistics that have been added to the subset via the function
-         *                      `addToSubset` since the function `resetSubset` has been called for the last time, 1, if
-         *                      the rule covers all examples that have been provided since the subset has been created
-         *                      via the function `Statistics#createSubset`
+         * @param accumulated   False, if the rule covers all statistics that have been added to the subset via the
+         *                      function `addToSubset` since the function `resetSubset` has been called for the last
+         *                      time, true, if the rule covers all examples that have been provided since the subset has
+         *                      been created via the function `Statistics#createSubset`
          * @return              A reference to an object of type `IScoreVector` that stores the scores to be predicted
          *                      by the rule for each considered label, as well as an overall quality score
          */

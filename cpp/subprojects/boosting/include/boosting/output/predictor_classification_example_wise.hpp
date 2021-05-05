@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -6,6 +6,7 @@
 #include "common/output/predictor.hpp"
 #include "common/input/label_vector.hpp"
 #include "common/measures/measure_similarity.hpp"
+#include "common/data/functions.hpp"
 #include <unordered_map>
 #include <functional>
 
@@ -27,49 +28,28 @@ namespace boosting {
             /**
              * Allows to compute hashes for objects of type `LabelVector`.
              */
-            struct HashFunction {
+            struct Hash {
 
                 inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
-                    std::size_t hash = (std::size_t) v->getNumElements();
-
-                    for (auto it = v->indices_cbegin(); it != v->indices_cend(); it++) {
-                        hash ^= *it + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-                    }
-
-                    return hash;
+                    return hashArray(v->indices_cbegin(), v->getNumElements());
                 }
 
             };
 
             /**
-             * Allows to check whether two objects of type `LabelVector` are equal.
+             * Allows to check whether two objects of type `LabelVector` are equal or not.
              */
-            struct EqualsFunction {
+            struct Pred {
 
                 inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
                                        const std::unique_ptr<LabelVector>& rhs) const {
-                    if (lhs->getNumElements() != rhs->getNumElements()) {
-                        return false;
-                    }
-
-                    auto it1 = lhs->indices_cbegin();
-
-                    for (auto it2 = rhs->indices_cbegin(); it2 != rhs->indices_cend(); it2++) {
-                        if (*it1 != *it2) {
-                            return false;
-                        }
-
-                        it1++;
-                    }
-
-                    return true;
+                    return compareArrays(lhs->indices_cbegin(), lhs->getNumElements(), rhs->indices_cbegin(),
+                                         rhs->getNumElements());
                 }
 
             };
 
-            typedef std::unordered_map<std::unique_ptr<LabelVector>, uint32, HashFunction, EqualsFunction> LabelVectorSet;
-
-            LabelVectorSet labelVectors_;
+            std::unordered_map<std::unique_ptr<LabelVector>, uint32, Hash, Pred> labelVectors_;
 
             std::shared_ptr<ISimilarityMeasure> measurePtr_;
 
@@ -85,6 +65,9 @@ namespace boosting {
              */
             ExampleWiseClassificationPredictor(std::shared_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads);
 
+            /**
+             * A visitor function for handling objects of the type `LabelVector`.
+             */
             typedef std::function<void(const LabelVector&)> LabelVectorVisitor;
 
             /**
@@ -100,6 +83,18 @@ namespace boosting {
              * @param visitor The visitor function for handling objects of the type `LabelVector`
              */
             void visit(LabelVectorVisitor visitor) const;
+
+            /**
+             * Obtains predictions for different examples, based on predicted scores, and writes them to a given
+             * prediction matrix.
+             *
+             * @param scoreMatrix       A reference to an object of type `CContiguousConstView` that stores the 
+             *                          predicted scores
+             * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
+             *                          written to. May contain arbitrary values
+             */
+            void transform(const CContiguousConstView<float64>& scoreMatrix,
+                           CContiguousView<uint8>& predictionMatrix) const;
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const RuleModel& model) const override;

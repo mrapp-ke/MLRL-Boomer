@@ -1,4 +1,4 @@
-/**
+/*
  * @author Jakob Steeg (jakob.steeg@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
@@ -26,7 +26,7 @@ namespace seco {
              */
             CoverageStoppingCriterion(float64 threshold);
 
-            Result test(const IStatistics& statistics, uint32 numRules) override;
+            Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
     };
 

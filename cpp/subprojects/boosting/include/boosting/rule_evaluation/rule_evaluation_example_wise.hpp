@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -7,7 +7,7 @@
 #include "common/rule_evaluation/score_vector_label_wise.hpp"
 #include "common/indices/index_vector_full.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "boosting/data/vector_dense_example_wise.hpp"
+#include "boosting/data/statistic_vector_dense_example_wise.hpp"
 #include <memory>
 
 
@@ -30,7 +30,7 @@ namespace boosting {
              *
              * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores
              *                          the gradients and Hessians
-             * @param return            A reference to an object of type `ILabelWiseScoreVector` that stores the
+             * @return                  A reference to an object of type `ILabelWiseScoreVector` that stores the
              *                          predicted scores and quality scores
              */
             virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(
@@ -42,8 +42,8 @@ namespace boosting {
              *
              * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector` that stores
              *                          the gradients and Hessians
-             * @param prediction        A reference to an object of type `IScoreVector` that should be used to store the
-             *                          predicted scores and quality score
+             * @return                  A reference to an object of type `IScoreVector` that stores the predicted scores
+             *                          and quality score
              */
             virtual const IScoreVector& calculateExampleWisePrediction(
                 DenseExampleWiseStatisticVector& statisticVector) = 0;

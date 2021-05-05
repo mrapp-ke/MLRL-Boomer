@@ -1,5 +1,5 @@
 default_target: compile
-.PHONY: clean_venv clean_cpp clean_cython clean_compile clean install
+.PHONY: clean_venv clean_cpp clean_cython clean_compile clean_doc clean install doc
 
 clean_venv:
 	@echo "Removing virtual Python environment..."
@@ -21,7 +21,13 @@ clean_cython:
 
 clean_compile: clean_cpp clean_cython
 
-clean: clean_compile clean_venv
+clean_doc:
+	@echo "Removing documentation..."
+	rm -rf doc/_build/*
+	rm -rf doc/apidoc/*
+	rm -rf doc/doxygen/*
+
+clean: clean_doc clean_compile clean_venv
 
 venv:
 	@echo "Creating virtual Python environment..."
@@ -36,10 +42,24 @@ venv:
 	venv/bin/pip install meson
 	@echo "Installing compile-time dependency \"ninja\" into virtual environment..."
 	venv/bin/pip install ninja
+	@echo "Installing compile-time dependency \"wheel\" into virtual environment..."
+	venv/bin/pip install wheel
+
+doc: venv
+	@echo "Installing dependency \"Sphinx\" into virtual environment..."
+	venv/bin/pip install Sphinx
+	@echo "Installing dependency \"sphinx_rtd_theme\" into virtual environment..."
+	venv/bin/pip install sphinx_rtd_theme
+	@echo "Installing dependency \"breathe\" into virtual environment..."
+	venv/bin/pip install breathe
+	@echo "Installing dependency \"exhale\" into virtual environment..."
+	venv/bin/pip install exhale
+	@echo "Generating Sphinx documentation..."
+	cd doc/ && PATH=$$PATH:../venv/bin/ make html
 
 compile: venv
 	@echo "Compiling C++ code..."
-	cd cpp/ && ../venv/bin/meson setup build -Doptimization=3 && cd build/ && ../../venv/bin/ninja
+	cd cpp/ && PATH=$$PATH:../venv/bin/ ../venv/bin/meson setup build -Doptimization=3 && cd build/ && ../../venv/bin/ninja
 	@echo "Compiling Cython code..."
 	cd python/ && ../venv/bin/python setup.py build_ext --inplace
 

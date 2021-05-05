@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -6,6 +6,7 @@
 #include "common/sampling/partition.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/data/vector_dense.hpp"
+#include "common/data/vector_dok_binary.hpp"
 
 
 /**
@@ -20,6 +21,10 @@ class BiPartition : public IPartition {
 
         uint32 numFirst_;
 
+        BinaryDokVector* firstSet_;
+
+        BinaryDokVector* secondSet_;
+
     public:
 
         /**
@@ -28,8 +33,17 @@ class BiPartition : public IPartition {
          */
         BiPartition(uint32 numFirst, uint32 numSecond);
 
+        ~BiPartition();
+
+        /**
+         * An iterator that provides access to the indices that are contained by the first or second set and allows to
+         * modify them.
+         */
         typedef DenseVector<uint32>::iterator iterator;
 
+        /**
+         * An iterator that provides read-only access to the indices that are contained in the first or second set.
+         */
         typedef DenseVector<uint32>::const_iterator const_iterator;
 
         /**
@@ -103,19 +117,35 @@ class BiPartition : public IPartition {
         uint32 getNumSecond() const;
 
         /**
+         * Returns a vector that provides random access to the indices of all elements that are contained by the first
+         * set.
+         *
+         * @return A reference to an object of type `BinaryDokVector` that provides random access to the indices
+         */
+        const BinaryDokVector& getFirstSet();
+
+        /**
+         * Returns a vector that provides random access to the indices of all elements that are contained by the second
+         * set.
+         *
+         * @return A reference to an object of type `BinaryDokVector` that provides random access to the indices
+         */
+        const BinaryDokVector& getSecondSet();
+
+        /**
          * Returns the total number of elements.
          *
          * @return The total number of elements
          */
         uint32 getNumElements() const;
 
-        std::unique_ptr<IWeightVector> subSample(const IInstanceSubSampling& instanceSubSampling,
-                                                 RNG& rng) const override;
+        std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(const IInstanceSubSamplingFactory& factory,
+                                                                        const ILabelMatrix& labelMatrix) override;
 
-        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
-                                    const AbstractPrediction& head) const override;
+        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+                                    const AbstractPrediction& head) override;
 
-        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
-                                   Refinement& refinement) const override;
+        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+                                   Refinement& refinement) override;
 
 };

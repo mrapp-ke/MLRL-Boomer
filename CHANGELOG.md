@@ -1,6 +1,20 @@
 # Changelog
 
-### Version 0.4.0 (to be released)
+### Version 0.6.0 (to be released)
+
+A major update to the BOOMER algorithm that introduces the following changes:
+
+* The parameter `--instance-sub-sampling` does now allow to use stratified sampling (`stratified-label-wise` and `stratified-example-wise`).
+* The parameter `--holdout` does now allow to use stratified sampling (`stratified-label-wise` and `stratified-example-wise`).
+* The parameter `--recalculate-predictions` does now allow to specify whether the predictions of rules should be recalculated on the entire training data, if instance sub-sampling is used.
+
+### Version 0.5.0 (Mar 31, 2021)
+
+A major update to the BOOMER algorithm that introduces the following changes:
+
+* Gradient-based label binning (GBLB) can be used to assign labels to a predefined number of bins.
+
+### Version 0.4.0 (Mar 31, 2021)
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
@@ -8,6 +22,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * The (label- and example-wise) logistic loss functions have been rewritten to better prevent numerical problems.
 * Approximate methods for evaluating potential conditions of rules, based on unsupervised binning methods (currently equal-width- and equal-frequency-binning), have been added.
 * The parameter `--predictor` does now allow using different algorithms for prediction (`label-wise` or `example-wise`).
+* An early stopping mechanism has been added, which allows to stop the induction of rules as soon as the quality of the model does not improve on a holdout set.    
 * Multi-threading can be used to parallelize the prediction for different examples across multiple CPU cores.
 * Multi-threading can be used to parallelize the calculation of gradients and Hessians for different examples across multiple CPU cores.
 * Probability estimates can be predicted when using the loss function `label-wise-logistic-loss`.
@@ -37,7 +52,7 @@ A major update to the BOOMER algorithm that features the following changes:
 
 The first version of the BOOMER algorithm used in the following publication:
 
-*Rapp M., Loza Mencía E., Fürnkranz J., Nguyen VL., Hüllermeier E. (2020) Learning Gradient Boosted Multi-label Classification Rules. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2020. Lecture Notes in Computer Science. Springer, Cham*
+*Rapp M., Loza Mencía E., Fürnkranz J., Nguyen VL., Hüllermeier E. (2020) Learning Gradient Boosted Multi-label Classification Rules. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2020. Lecture Notes in Computer Science, pp. 124-140, vol 12459. Springer, Cham*
 
 This version supports the following features to learn an ensemble of boosted classification rules:
 

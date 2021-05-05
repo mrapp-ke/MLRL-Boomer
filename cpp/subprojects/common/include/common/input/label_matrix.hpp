@@ -1,9 +1,20 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/input/label_vector.hpp"
+#include <memory>
+
+// Forward declarations
+class IStatisticsProvider;
+class IStatisticsProviderFactory;
+class IPartitionSampling;
+class IPartitionSamplingFactory;
+class IInstanceSubSampling;
+class IInstanceSubSamplingFactory;
+class SinglePartition;
+class BiPartition;
 
 
 /**
@@ -29,24 +40,59 @@ class ILabelMatrix {
          */
         virtual uint32 getNumCols() const = 0;
 
-};
-
-/**
- * Defines an interface for all label matrices that provide random access to the labels of the training examples.
- */
-class IRandomAccessLabelMatrix : public ILabelMatrix {
-
-    public:
-
-        virtual ~IRandomAccessLabelMatrix() { };
+        /**
+         * Creates and returns a label vector that corresponds to a specific row in the label matrix.
+         *
+         * @param row   The row
+         * @return      An unique pointer to an object of type `LabelVector` that has been created
+         */
+        virtual std::unique_ptr<LabelVector> createLabelVector(uint32 row) const = 0;
 
         /**
-         * Returns the value of a specific label.
+         * Creates and returns a new instance of the class `IStatisticsProvider`, based on the type of this label
+         * matrix.
          *
-         * @param exampleIndex  The index of the example
-         * @param labelIndex    The index of the label
-         * @return              The value of the label
+         * @param factory   A reference to an object of type `IStatisticsProviderFactory` that should be used to create
+         *                  the instance
+         * @return          An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
-        virtual uint8 getValue(uint32 exampleIndex, uint32 labelIndex) const = 0;
+        virtual std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
+            const IStatisticsProviderFactory& factory) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IPartitionSampling`, based on the type of this label matrix.
+         *
+         * @param factory   A reference to an object of type `IPartitionSamplingFactory` that should be used to create
+         *                  the instance
+         * @return          An unique pointer to an object of type `IPartitionSampling` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSampling> createPartitionSampling(
+            const IPartitionSamplingFactory& factory) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IInstanceSubSampling`, based on the type of this label
+         * matrix.
+         *
+         * @param factory   A reference to an object of type `IInstanceSubSamplingFactory` that should be used to create
+         *                  the instance
+         * @param partition A reference to an object of type `SinglePartition` that provides access to the indices of
+         *                  the training examples that are included in the training set
+         * @return          An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
+            const IInstanceSubSamplingFactory& factory, const SinglePartition& partition) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IInstanceSubSampling`, based on the type of this label
+         * matrix.
+         *
+         * @param factory   A reference to an object of type `IInstanceSubSamplingFactory` that should be used to create
+         *                  the instance
+         * @param partition A reference to an object of type `BiPartition` that provides access to the indices of the
+         *                  training examples that are included in the training set and the holdout set, respectively
+         * @return          An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
+            const IInstanceSubSamplingFactory& factory, BiPartition& partition) const = 0;
 
 };

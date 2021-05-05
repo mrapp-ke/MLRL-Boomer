@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 from args import ArgumentParserBuilder
+from mlrl.seco.seco_learners import SeparateAndConquerRuleLearner
 from runnables import RuleLearnerRunnable
-from seco.seco_learners import SeparateAndConquerRuleLearner
 
 
 class SecoRunnable(RuleLearnerRunnable):
@@ -14,10 +14,10 @@ class SecoRunnable(RuleLearnerRunnable):
                                              pruning_heuristic=args.pruning_heuristic,
                                              pruning=args.pruning, label_sub_sampling=args.label_sub_sampling,
                                              instance_sub_sampling=args.instance_sub_sampling,
-                                             feature_sub_sampling=args.feature_sub_sampling,
-                                             holdout_set_size=args.holdout, feature_binning=args.feature_binning,
-                                             head_refinement=args.head_refinement, min_coverage=args.min_coverage,
-                                             max_conditions=args.max_conditions, lift_function=args.lift_function,
+                                             feature_sub_sampling=args.feature_sub_sampling, holdout=args.holdout,
+                                             feature_binning=args.feature_binning, head_refinement=args.head_refinement,
+                                             min_coverage=args.min_coverage, max_conditions=args.max_conditions,
+                                             lift_function=args.lift_function,
                                              max_head_refinements=args.max_head_refinements,
                                              num_threads_refinement=args.num_threads_refinement,
                                              num_threads_update=args.num_threads_update,

@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -23,8 +23,20 @@ class PartialIndexVector final : public IIndexVector {
          */
         PartialIndexVector(uint32 numElements);
 
+        /**
+         * @param numElements   The number of elements in the vector
+         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
+         */
+        PartialIndexVector(uint32 numElements, bool init);
+
+        /**
+         * An iterator that provides access to the indices in the vector and allows to modify them.
+         */
         typedef DenseVector<uint32>::iterator iterator;
 
+        /**
+         * An iterator that provides read-only access to the indices in the vector.
+         */
         typedef DenseVector<uint32>::const_iterator const_iterator;
 
         /**

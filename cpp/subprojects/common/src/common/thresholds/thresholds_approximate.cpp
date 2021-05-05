@@ -1,235 +1,141 @@
 #include "common/thresholds/thresholds_approximate.hpp"
-#include "common/binning/bin_vector.hpp"
 #include "common/binning/feature_binning_nominal.hpp"
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
+#include "common/data/arrays.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
-#include <limits>
-
 
 /**
- * An entry that is stored in the cache and contains unique pointers to a histogram and a vector that stores bins. The
- * field `numConditions` specifies how many conditions the rule contained when the vector was updated for the last time.
- * It may be used to check if the vector and histogram are still valid or must be updated.
+ * An entry that is stored in the cache. It contains the result of a binning method and an unique pointer to an
+ * histogram, well as to a vector that stores the weights of individual bins.
  */
-struct FilteredBinCacheEntry : public FilteredCacheEntry<BinVector> {
+struct CacheEntry : public IFeatureBinning::Result {
+
+    /**
+     * An unique pointer to an object of type `IHistogram` that provides access to the values stored in a histogram.
+     */
     std::unique_ptr<IHistogram> histogramPtr;
-    std::unique_ptr<DenseVector<uint32>> weightVectorPtr;
+
+    /**
+     * An unique pointer to an object of type `BinWeightVector` that provides access to the weights of individual bins.
+     */
+    std::unique_ptr<BinWeightVector> weightVectorPtr;
+
 };
 
-static inline void removeEmptyBins(BinVector& vector) {
-    uint32 numElements = vector.getNumElements();
-    BinVector::bin_iterator binIterator = vector.bins_begin();
-    BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
-    uint32 i = 0;
-
-    for (uint32 r = 0; r < numElements; r++) {
-        const BinVector::ExampleList examples = exampleIterator[r];
-
-        if (examples.cbegin() != examples.cend()) {
-            binIterator[i].index = i;
-            binIterator[i].minValue = binIterator[r].minValue;
-            binIterator[i].maxValue = binIterator[r].maxValue;
-            vector.swapExamples(i, r);
-            i++;
-        }
-    }
-
-    vector.setNumElements(i, true);
-}
-
-static inline void filterCurrentVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, intp conditionEnd,
-                                       bool covered, uint32 numConditions, CoverageMask& coverageMask,
-                                       IStatistics& statistics, const IWeightVector& weights) {
-    uint32 numTotalElements = vector.getNumElements();
-    uint32 numElements = covered ? conditionEnd : (numTotalElements > conditionEnd ? numTotalElements - conditionEnd : 0);
-    bool wasEmpty = false;
-
-    BinVector* filteredVector = cacheEntry.vectorPtr.get();
-
-    if (filteredVector == nullptr) {
-        cacheEntry.vectorPtr = std::make_unique<BinVector>(numElements);
-        filteredVector = cacheEntry.vectorPtr.get();
-        wasEmpty = true;
-    }
-
-    BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
-    BinVector::example_list_const_iterator examplesIterator = vector.examples_cbegin();
-    BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
-    BinVector::example_list_iterator filteredExamplesIterator = filteredVector->examples_begin();
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
-
-    coverageMask.target = numConditions;
-    statistics.resetCoveredStatistics();
+/**
+ * Updates a given `CoverageSet` after a new condition has been added, such that only the examples that are covered by
+ * the new rule are marked es covered.
+ *
+ * @param thresholdVector   A reference to an object of type `ThresholdVector` that stores the thresholds that result
+ *                          from the boundaries of the bins
+ * @param binIndices        A reference to an object of type `IBinIndexVector` that stores the indices of the bins,
+ *                          individual examples belong to
+ * @param conditionStart    The first bin (inclusive) that is covered by the new condition
+ * @param conditionEnd      The last bin (exclusive) that is covered by the new condition
+ * @param covered           True, if the bins in range [conditionStart, conditionEnd) are covered by the new condition
+ *                          and the remaining ones are not, false, if the elements in said range are not covered, but
+ *                          the remaining ones are
+ * @param coverageSet       A reference to an object of type `CoverageSet` that is used to keep track of the examples
+ *                          that are covered by the previous rule. It will be updated by this function
+ * @param statistics        A reference to an object of type `IStatistics` to be notified about the statistics that must
+ *                          be considered when searching for the next refinement, i.e., the statistics that are covered
+ *                          by the new rule
+ * @param weights           A reference to an an object of type `IWeightVector` that provides access to the weights of
+ *                          the individual training examples
+ */
+static inline void updateCoveredExamples(const ThresholdVector& thresholdVector, const IBinIndexVector& binIndices,
+                                         intp conditionStart, intp conditionEnd, bool covered, CoverageSet& coverageSet,
+                                         IStatistics& statistics, const IWeightVector& weights) {
     intp start, end;
-    uint32 i = 0;
 
-    if (covered) {
-        start = 0;
-        end = conditionEnd;
+    if (conditionEnd < conditionStart) {
+        start = conditionEnd + 1;
+        end = conditionStart + 1;
     } else {
-        start = conditionEnd;
-        end = numTotalElements;
+        start = conditionStart;
+        end = conditionEnd;
     }
 
-    for (intp r = start; r < end; r++) {
-        const BinVector::ExampleList& examples = examplesIterator[r];
-        BinVector::ExampleList& filteredExamples = filteredExamplesIterator[i];
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::iterator coverageSetIterator = coverageSet.begin();
+    statistics.resetCoveredStatistics();
+    uint32 n = 0;
 
-        for (auto it = examples.cbegin(); it != examples.cend(); it++) {
-            const BinVector::Example example = *it;
-            uint32 index = example.index;
-            coverageMaskIterator[index] = numConditions;
-            uint32 weight = weights.getWeight(index);
-            statistics.updateCoveredStatistic(index, weight, false);
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = coverageSetIterator[i];
 
-            if (wasEmpty) {
-                filteredExamples.push_front(example);
+        if (!thresholdVector.isMissing(exampleIndex)) {
+            uint32 binIndex = binIndices.getBinIndex(exampleIndex);
+
+            if (binIndex == IBinIndexVector::BIN_INDEX_SPARSE) {
+                binIndex = thresholdVector.getSparseBinIndex();
+            }
+
+            if ((binIndex >= start && binIndex < end) == covered) {
+                float64 weight = weights.getWeight(exampleIndex);
+                statistics.updateCoveredStatistic(exampleIndex, weight, false);
+                coverageSetIterator[n] = exampleIndex;
+                n++;
             }
         }
-
-        if (!wasEmpty) {
-            filteredVector->swapExamples(i, r);
-        }
-
-        filteredBinIterator[i].index = binIterator[r].index;
-        filteredBinIterator[i].minValue = binIterator[r].minValue;
-        filteredBinIterator[i].maxValue = binIterator[r].maxValue;
-        i++;
     }
 
-    filteredVector->setNumElements(numElements, true);
-    cacheEntry.numConditions = numConditions;
+    coverageSet.setNumCovered(n);
 }
 
-static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntry& cacheEntry, uint32 numConditions,
-                                   const CoverageMask& coverageMask, const IWeightVector& weights) {
-    uint32 maxElements = vector.getNumElements();
-    BinVector* filteredVector = cacheEntry.vectorPtr.get();
-    DenseVector<uint32>* weightVector = cacheEntry.weightVectorPtr.get();
-    IHistogram* histogram = cacheEntry.histogramPtr.get();
-    bool wasEmpty = false;
+/**
+ * Rebuilds a given histogram such that is contains the statistics of all examples that are currently covered and
+ * updates the weights of the individual bins.
+ *
+ * @param thresholdVector   A reference to an object of type `ThresholdVector` that stores the thresholds that result
+ *                          from the boundaries of the bins
+ * @param binIndices        A reference to an object of type `IBinIndexVector` that stores the indices of the bins,
+ *                          individual examples belong to
+ * @param binWeights        A reference to an object of type `BinWeightVector` that stores the weights of individual
+ *                          bins
+ * @param histogram         A reference to an object of type `IHistogram` that should be rebuild
+ * @param weights           A reference to an an object of type `IWeightVector` that provides access to the weights of
+ *                          the individual training examples
+ * @param coverageSet       A reference to an object of type `CoverageSet` that is used to keep track of the examples
+ *                          that are currently covered
+ */
+static inline void rebuildHistogram(const ThresholdVector& thresholdVector, const IBinIndexVector& binIndices,
+                                    BinWeightVector& binWeights, IHistogram& histogram, const IWeightVector& weights,
+                                    const CoverageSet& coverageSet) {
+    // Reset all statistics in the histogram to zero...
+    histogram.setAllToZero();
 
-    if (filteredVector == nullptr) {
-        cacheEntry.vectorPtr = std::make_unique<BinVector>(maxElements);
-        filteredVector = cacheEntry.vectorPtr.get();
-        wasEmpty = true;
-    }
+    // Reset the weights of all bins to zero...
+    BinWeightVector::iterator binWeightIterator = binWeights.begin();
+    setArrayToZeros(binWeightIterator, binWeights.getNumElements());
 
-    BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
-    BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
-    BinVector::bin_iterator filteredBinIterator = filteredVector->bins_begin();
-    BinVector::example_list_iterator filteredExampleIterator = filteredVector->examples_begin();
-    uint32 i = 0;
+    // Iterate the covered examples and add their statistics to the corresponding bin...
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
+    uint8 sparseBinWeight = 0;
 
-    for(uint32 r = 0; r < maxElements; r++) {
-        float32 maxValue = -std::numeric_limits<float32>::infinity();
-        float32 minValue = std::numeric_limits<float32>::infinity();
-        uint32 numExamples = 0;
-        const BinVector::ExampleList& examples = exampleIterator[r];
-        BinVector::ExampleList::const_iterator before = examples.cbefore_begin();
-        BinVector::ExampleList& filteredExamples = filteredExampleIterator[i];
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = coverageSetIterator[i];
 
-        for (auto it = examples.cbegin(); it != examples.cend();) {
-            const BinVector::Example example = *it;
-            uint32 exampleIndex = example.index;
+        if (!thresholdVector.isMissing(exampleIndex)) {
+            uint32 binIndex = binIndices.getBinIndex(exampleIndex);
+            float64 weight = weights.getWeight(exampleIndex);
 
-            if (coverageMask.isCovered(exampleIndex)) {
-                float32 value = example.value;
-
-                if (value < minValue) {
-                    minValue = value;
-                }
-
-                if (maxValue < value) {
-                    maxValue = value;
-                }
-
-                if (wasEmpty) {
-                    filteredExamples.push_front(example);
-                }
-
-                numExamples++;
-                before = it;
-                it++;
+            if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
+                binWeightIterator[binIndex] |= (weight > 0);
+                histogram.addToBin(binIndex, exampleIndex, weight);
             } else {
-                if (histogram != nullptr) {
-                    uint32 binIndex = binIterator[r].index;
-                    uint32 weight = weights.getWeight(exampleIndex);
-                    weightVector->begin()[binIndex] -= weight;
-                    histogram->removeFromBin(binIndex, exampleIndex, weight);
-                }
-
-                if (!wasEmpty) {
-                    it = filteredExamples.erase_after(before);
-                } else {
-                    it++;
-                }
+                sparseBinWeight |= (weight > 0);
             }
         }
-
-        if (!wasEmpty) {
-            filteredVector->swapExamples(i, r);
-        }
-
-        if (numExamples > 0) {
-            filteredBinIterator[i].index = binIterator[r].index;
-            filteredBinIterator[i].minValue = minValue;
-            filteredBinIterator[i].maxValue = maxValue;
-            i++;
-        }
     }
 
-    filteredVector->setNumElements(i, true);
-    cacheEntry.numConditions = numConditions;
-}
+    uint32 sparseBinIndex = thresholdVector.getSparseBinIndex();
 
-static inline void buildHistogram(BinVector& vector, IStatistics::IHistogramBuilder& histogramBuilder,
-                                  FilteredBinCacheEntry& cacheEntry, const IWeightVector& weights) {
-    uint32 numElements = vector.getNumElements();
-    uint32 numBins = histogramBuilder.getNumBins();
-    BinVector::bin_const_iterator binIterator = vector.bins_cbegin();
-    BinVector::example_list_const_iterator exampleIterator = vector.examples_cbegin();
-    std::unique_ptr<DenseVector<uint32>> weightVectorPtr = std::make_unique<DenseVector<uint32>>(numBins, false);
-    DenseVector<uint32>::iterator weightIterator = weightVectorPtr->begin();
-
-    for (uint32 i = 0; i < numElements; i++) {
-        const BinVector::ExampleList& examples = exampleIterator[i];
-        uint32 binIndex = binIterator[i].index;
-        uint32 sumOfWeights = 0;
-
-        for (auto it = examples.cbegin(); it != examples.cend(); it++) {
-            BinVector::Example example = *it;
-            uint32 exampleIndex = example.index;
-            uint32 weight = weights.getWeight(exampleIndex);
-            histogramBuilder.addToBin(binIndex, exampleIndex, weight);
-            sumOfWeights += weight;
-        }
-
-        weightIterator[binIndex] = sumOfWeights;
+    if (sparseBinIndex < thresholdVector.getNumElements()) {
+        binWeightIterator[sparseBinIndex] = sparseBinWeight;
     }
-
-    cacheEntry.histogramPtr = std::move(histogramBuilder.build());
-    cacheEntry.weightVectorPtr = std::move(weightVectorPtr);
-}
-
-static inline void addValueToBinVector(BinVector& vector, uint32 binIndex, uint32 originalIndex, float32 value) {
-    BinVector::bin_iterator binIterator = vector.bins_begin();
-
-    if (value < binIterator[binIndex].minValue) {
-        binIterator[binIndex].minValue = value;
-    }
-
-    if (binIterator[binIndex].maxValue < value) {
-        binIterator[binIndex].maxValue = value;
-    }
-
-    IndexedValue<float32> example;
-    example.index = originalIndex;
-    example.value = value;
-    BinVector::example_list_iterator exampleIterator = vector.examples_begin();
-    BinVector::ExampleList& examples = exampleIterator[binIndex];
-    examples.push_front(example);
 }
 
 /**
@@ -253,7 +159,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IRuleRefinementCallback<BinVector, DenseVector<uint32>> {
+                class Callback final : public IRuleRefinementCallback<ThresholdVector, BinWeightVector> {
 
                     private:
 
@@ -278,64 +184,42 @@ class ApproximateThresholds final : public AbstractThresholds {
                         }
 
                         std::unique_ptr<Result> get() override {
-                            auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
-                            FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
-                            BinVector* binVector = cacheEntry.vectorPtr.get();
-                            std::unique_ptr<IStatistics::IHistogramBuilder> histogramBuilderPtr;
+                            auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
+                            ThresholdVector* thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
+                            IBinIndexVector* binIndices = cacheIterator->second.binIndicesPtr.get();
 
-                            if (binVector == nullptr) {
-                                auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
-                                binVector = cacheIterator->second.get();
+                            if (thresholdVector == nullptr) {
+                                // Fetch feature vector...
+                                std::unique_ptr<FeatureVector> featureVectorPtr;
+                                const IFeatureMatrix& featureMatrix = *thresholdsSubset_.thresholds_.featureMatrixPtr_;
+                                uint32 numExamples = featureMatrix.getNumRows();
+                                featureMatrix.fetchFeatureVector(featureIndex_, featureVectorPtr);
 
-                                if (binVector == nullptr) {
-                                    // Fetch feature vector...
-                                    std::unique_ptr<FeatureVector> featureVectorPtr;
-                                    thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(
-                                        featureIndex_, featureVectorPtr);
+                                // Apply binning method...
+                                const IFeatureBinning& binning =
+                                    nominal_ ? thresholdsSubset_.thresholds_.nominalBinning_
+                                             : *thresholdsSubset_.thresholds_.binningPtr_;
+                                IFeatureBinning::Result result = binning.createBins(*featureVectorPtr, numExamples);
+                                cacheIterator->second.thresholdVectorPtr = std::move(result.thresholdVectorPtr);
+                                thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
+                                cacheIterator->second.binIndicesPtr = std::move(result.binIndicesPtr);
+                                binIndices = cacheIterator->second.binIndicesPtr.get();
 
-                                    // Apply binning method...
-                                    const IFeatureBinning& binning =
-                                        nominal_ ? thresholdsSubset_.thresholds_.nominalBinning_
-                                                 : *thresholdsSubset_.thresholds_.binningPtr_;
-                                    IFeatureBinning::FeatureInfo featureInfo =
-                                        binning.getFeatureInfo(*featureVectorPtr);
-                                    uint32 numBins = featureInfo.numBins;
-                                    cacheIterator->second = std::move(std::make_unique<BinVector>(numBins, true));
-                                    binVector = cacheIterator->second.get();
-                                    auto callback = [=](uint32 binIndex, uint32 originalIndex, float32 value) {
-                                        addValueToBinVector(*binVector, binIndex, originalIndex, value);
-                                    };
-                                    binning.createBins(featureInfo, *featureVectorPtr, callback);
-
-                                    if (!nominal_) {
-                                        removeEmptyBins(*binVector);
-                                    }
-                                }
-
-                                histogramBuilderPtr =
-                                    thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogramBuilder(
-                                        binVector->getNumElements());
+                                // Create histogram and weight vector...
+                                uint32 numBins = thresholdVector->getNumElements();
+                                cacheIterator->second.histogramPtr =
+                                    thresholdsSubset_.thresholds_.statisticsProviderPtr_->get().createHistogram(
+                                        numBins);
+                                cacheIterator->second.weightVectorPtr = std::make_unique<BinWeightVector>(numBins);
                             }
 
-                            // Filter bins, if necessary...
-                            uint32 numConditions = thresholdsSubset_.numModifications_;
+                            // Rebuild histogram...
+                            IHistogram& histogram = *cacheIterator->second.histogramPtr;
+                            BinWeightVector& binWeights = *cacheIterator->second.weightVectorPtr;
+                            rebuildHistogram(*thresholdVector, *binIndices, binWeights, histogram,
+                                             thresholdsSubset_.weights_, thresholdsSubset_.coverageSet_);
 
-                            if (numConditions > cacheEntry.numConditions) {
-                                filterAnyVector(*binVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_,
-                                                thresholdsSubset_.weights_);
-                                binVector = cacheEntry.vectorPtr.get();
-                            }
-
-                            // Build histogram, if necessary...
-                            IStatistics::IHistogramBuilder* histogramBuilder = histogramBuilderPtr.get();
-
-                            if (histogramBuilder != nullptr) {
-                                buildHistogram(*binVector, *histogramBuilder, cacheEntry, thresholdsSubset_.weights_);
-                            }
-
-                            const IHistogram& histogram = *cacheEntry.histogramPtr;
-                            const DenseVector<uint32>& weightVector = *cacheEntry.weightVectorPtr;
-                            return std::make_unique<Result>(histogram, weightVector, *binVector);
+                            return std::make_unique<Result>(histogram, binWeights, *thresholdVector);
                         }
 
                 };
@@ -344,42 +228,32 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 const IWeightVector& weights_;
 
-                CoverageMask coverageMask_;
-
-                uint32 numModifications_;
-
-                std::unordered_map<uint32, FilteredBinCacheEntry> cacheFiltered_;
+                CoverageSet coverageSet_;
 
                 template<class T>
                 std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
                                                                                  uint32 featureIndex) {
-                    auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredBinCacheEntry()).first;
-                    BinVector* binVector = cacheFilteredIterator->second.vectorPtr.get();
-
-                    if (binVector == nullptr) {
-                        thresholds_.cache_.emplace(featureIndex, std::unique_ptr<BinVector>());
-                    }
-
+                    thresholds_.cache_.emplace(featureIndex, CacheEntry());
                     bool nominal = thresholds_.nominalFeatureMaskPtr_->isNominal(featureIndex);
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
                     std::unique_ptr<IHeadRefinement> headRefinementPtr =
                         thresholds_.headRefinementFactoryPtr_->create(labelIndices);
                     return std::make_unique<ApproximateRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
-                                                                          featureIndex, nominal,
+                                                                          featureIndex, nominal, weights_,
                                                                           std::move(callbackPtr));
                 }
 
             public:
 
                 /**
-                 * @param thresholds    A reference to an object of type `ApproximateThresholds` that stores the 
+                 * @param thresholds    A reference to an object of type `ApproximateThresholds` that stores the
                  *                      thresholds
                  * @param weights       A reference to an object of type `IWeightWeight` that provides access to the
                  *                      weights of individual training examples
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
                     : thresholds_(thresholds), weights_(weights),
-                      coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
+                      coverageSet_(CoverageSet(thresholds.getNumExamples())) {
 
                 }
 
@@ -394,67 +268,100 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void filterThresholds(Refinement& refinement) override {
-                    numModifications_++;
-
                     uint32 featureIndex = refinement.featureIndex;
-                    auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
-                    FilteredBinCacheEntry& cacheEntry = cacheFilteredIterator->second;
-                    BinVector* binVector = cacheEntry.vectorPtr.get();
-
-                    if (binVector == nullptr) {
-                        auto cacheIterator = thresholds_.cache_.find(featureIndex);
-                        binVector = cacheIterator->second.get();
-                    }
-
-                    filterCurrentVector(*binVector, cacheEntry, refinement.end, refinement.covered, numModifications_,
-                                        coverageMask_, thresholds_.statisticsProviderPtr_->get(), weights_);
+                    auto cacheIterator = thresholds_.cache_.find(featureIndex);
+                    const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
+                    const IBinIndexVector& binIndices = *cacheIterator->second.binIndicesPtr;
+                    updateCoveredExamples(thresholdVector, binIndices, refinement.start, refinement.end,
+                                          refinement.covered, coverageSet_, thresholds_.statisticsProviderPtr_->get(),
+                                          weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
-                    // TODO Implement
+                    uint32 featureIndex = condition.featureIndex;
+                    auto cacheIterator = thresholds_.cache_.find(featureIndex);
+                    const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
+                    const IBinIndexVector& binIndices = *cacheIterator->second.binIndicesPtr;
+                    updateCoveredExamples(thresholdVector, binIndices, condition.start, condition.end,
+                                          condition.covered, coverageSet_, thresholds_.statisticsProviderPtr_->get(),
+                                          weights_);
                 }
 
                 void resetThresholds() override {
-                    numModifications_ = 0;
-                    cacheFiltered_.clear();
-                    coverageMask_.reset();
+                    coverageSet_.reset();
                 }
 
-                const CoverageMask& getCoverageMask() const {
-                    return coverageMask_;
+                const ICoverageState& getCoverageState() const {
+                    return coverageSet_;
                 }
 
-                float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageMask,
+                float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
-                        partition.cbegin(), partition.getNumElements(), weights_, coverageMask,
+                        partition.cbegin(), partition.getNumElements(), weights_, coverageState,
                         thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);
                 }
 
-                float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageMask,
+                float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
-                        partition.first_cbegin(), partition.getNumFirst(), weights_, coverageMask,
+                        partition.first_cbegin(), partition.getNumFirst(), weights_, coverageState,
                         thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);
                 }
 
-                void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
+                float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
+                                            const AbstractPrediction& head) const override {
+                    return evaluateOutOfSampleInternally(weights_, coverageState,
+                                                         thresholds_.statisticsProviderPtr_->get(),
+                                                         *thresholds_.headRefinementFactoryPtr_, head);
+                }
+
+                float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
+                                            const AbstractPrediction& head) const override {
+                    return evaluateOutOfSampleInternally(weights_, coverageState, partition,
+                                                         thresholds_.statisticsProviderPtr_->get(),
+                                                         *thresholds_.headRefinementFactoryPtr_, head);
+                }
+
+                void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
-                        partition.cbegin(), partition.getNumElements(), coverageMask,
+                        partition.cbegin(), partition.getNumElements(), coverageState,
                         thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, refinement);
                 }
 
-                void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
+                void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
-                        partition.first_cbegin(), partition.getNumFirst(), coverageMask,
+                        partition.first_cbegin(), partition.getNumFirst(), coverageState,
                         thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, refinement);
+                }
+
+                void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
+                                           Refinement& refinement) const override {
+                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProviderPtr_->get(),
+                                                    *thresholds_.headRefinementFactoryPtr_, refinement);
+                }
+
+                void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
+                                           Refinement& refinement) const override {
+                    recalculatePredictionInternally(coverageState, partition, thresholds_.statisticsProviderPtr_->get(),
+                                                    *thresholds_.headRefinementFactoryPtr_, refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
-                    updateStatisticsInternally(thresholds_.statisticsProviderPtr_->get(), coverageMask_, prediction,
-                                               thresholds_.numThreads_);
+                    uint32 numCovered = coverageSet_.getNumCovered();
+                    CoverageSet::const_iterator iterator = coverageSet_.cbegin();
+                    const AbstractPrediction* predictionPtr = &prediction;
+                    IStatistics* statisticsPtr = &thresholds_.statisticsProviderPtr_->get();
+                    uint32 numThreads = thresholds_.numThreads_;
+
+                    #pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) \
+                    firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+                    for (uint32 i = 0; i < numCovered; i++) {
+                        uint32 exampleIndex = iterator[i];
+                        predictionPtr->apply(*statisticsPtr, exampleIndex);
+                    }
                 }
 
         };
@@ -465,7 +372,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
         uint32 numThreads_;
 
-        std::unordered_map<uint32, std::unique_ptr<BinVector>> cache_;
+        std::unordered_map<uint32, CacheEntry> cache_;
 
     public:
 

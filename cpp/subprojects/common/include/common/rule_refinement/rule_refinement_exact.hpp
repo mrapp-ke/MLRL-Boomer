@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -27,7 +27,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         const T& labelIndices_;
 
-        uint32 totalSumOfWeights_;
+        uint32 numExamples_;
 
         uint32 featureIndex_;
 
@@ -44,7 +44,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
          *                          the head of refined rules
          * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
          *                          the labels for which the refined rule is allowed to predict
-         * @param totalSumOfWeights The total sum of the weights of all training examples that are covered by the
+         * @param numExamples       The total number of training examples with non-zero weights that are covered by the
          *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
@@ -52,7 +52,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
          *                          retrieve a feature vector for the given feature
          */
         ExactRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
-                            uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+                            uint32 numExamples, uint32 featureIndex, bool nominal,
                             std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;

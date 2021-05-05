@@ -6,7 +6,12 @@
 
 
 PartialIndexVector::PartialIndexVector(uint32 numElements)
-    : vector_(DenseVector<uint32>(numElements)) {
+    : PartialIndexVector(numElements, false) {
+
+}
+
+PartialIndexVector::PartialIndexVector(uint32 numElements, bool init)
+    : vector_(DenseVector<uint32>(numElements, init)) {
 
 }
 
@@ -23,7 +28,7 @@ void PartialIndexVector::setNumElements(uint32 numElements, bool freeMemory) {
 }
 
 uint32 PartialIndexVector::getIndex(uint32 pos) const {
-    return vector_.getValue(pos);
+    return vector_[pos];
 }
 
 PartialIndexVector::iterator PartialIndexVector::begin() {

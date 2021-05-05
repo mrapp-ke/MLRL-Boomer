@@ -1,4 +1,4 @@
-/**
+/*
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
@@ -31,6 +31,6 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
          */
         TimeStoppingCriterion(uint32 timeLimit);
 
-        Result test(const IStatistics& statistics, uint32 numRules) override;
+        Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
 };

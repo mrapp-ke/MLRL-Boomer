@@ -17,7 +17,10 @@ DenseMatrix<T>::DenseMatrix(uint32 numRows, uint32 numCols, bool init)
 
 template<class T>
 DenseMatrix<T>::~DenseMatrix() {
-    free(CContiguousView<T>::array_);
+    free(this->array_);
 }
 
+template class DenseMatrix<uint8>;
+template class DenseMatrix<uint32>;
+template class DenseMatrix<float32>;
 template class DenseMatrix<float64>;

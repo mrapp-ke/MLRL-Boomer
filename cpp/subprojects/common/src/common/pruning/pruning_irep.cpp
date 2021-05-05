@@ -5,10 +5,10 @@
 #include "common/debugging/debug.hpp"
 
 
-std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, const IPartition& partition,
-                                          ConditionList& conditions, const AbstractPrediction& head) const {
+std::unique_ptr<ICoverageState> IREP::prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
+                                            ConditionList& conditions, const AbstractPrediction& head) const {
     ConditionList::size_type numConditions = conditions.getNumConditions();
-    std::unique_ptr<CoverageMask> bestCoverageMaskPtr;
+    std::unique_ptr<ICoverageState> bestCoverageStatePtr;
 
     // Only rules with more than one condition can be pruned...
     if (numConditions > 1) {
@@ -16,14 +16,14 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
         Debugger::lb(true);
 
         // Calculate the quality score of the original rule on the prune set...
-        const CoverageMask& originalCoverageMask = thresholdsSubset.getCoverageMask();
-        float64 bestQualityScore = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageMask, head);
+        const ICoverageState& originalCoverageState = thresholdsSubset.getCoverageState();
+        float64 bestQualityScore = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageState, head);
 
         // Debugger: print the original coverage mask
         Debugger::printCoverageMask(originalCoverageMask, true);
 
         // Create a copy of the original coverage mask...
-        bestCoverageMaskPtr = std::make_unique<CoverageMask>(originalCoverageMask);
+        bestCoverageStatePtr = originalCoverageState.copy();
 
         // Reset the given thresholds...
         thresholdsSubset.resetThresholds();
@@ -44,8 +44,8 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
             Debugger::printRule(conditions.cbegin(), numConditions, head);
 
             // Calculate the quality score of a rule that contains the conditions that have been processed so far...
-            const CoverageMask& coverageMask = thresholdsSubset.getCoverageMask();
-            float64 qualityScore = partition.evaluateOutOfSample(thresholdsSubset, coverageMask, head);
+            const ICoverageState& coverageState = thresholdsSubset.getCoverageState();
+            float64 qualityScore = partition.evaluateOutOfSample(thresholdsSubset, coverageState, head);
 
             // Debugger: print iteration mask
             Debugger::printCoverageMask(originalCoverageMask, false, n);
@@ -56,7 +56,7 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
             // with fewer conditions is considered an improvement)...
             if (qualityScore < bestQualityScore || (numPrunedConditions == 0 && qualityScore == bestQualityScore)) {
                 bestQualityScore = qualityScore;
-                bestCoverageMaskPtr = std::make_unique<CoverageMask>(coverageMask);
+                bestCoverageStatePtr = coverageState.copy();
                 numPrunedConditions = (numConditions - n);
             }
 
@@ -73,5 +73,5 @@ std::unique_ptr<CoverageMask> IREP::prune(IThresholdsSubset& thresholdsSubset, c
         }
     }
 
-    return bestCoverageMaskPtr;
+    return bestCoverageStatePtr;
 }
