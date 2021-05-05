@@ -3,12 +3,13 @@
  */
 #pragma once
 
+#include "common/data/indexed_value.hpp"
 #include "common/input/label_matrix_csc.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/random.hpp"
 #include <unordered_map>
-#include <map>
+#include <set>
 #include <vector>
 #include <cstdlib>
 #include <algorithm>
@@ -243,14 +244,15 @@ class LabelWiseStratification final {
             // examples...
             uint32 numLabels = cscLabelMatrix.getNumCols();
             uint32 numExamplesPerLabel[numLabels];
-            std::multimap<uint32, uint32> sortedLabelIndices;
+            typedef std::set<IndexedValue<uint32>, IndexedValue<uint32>::Compare> SortedSet;
+            SortedSet sortedLabelIndices;
 
             for (uint32 i = 0; i < numLabels; i++) {
                 uint32 numExamples = cscLabelMatrix.column_indices_cend(i) - cscLabelMatrix.column_indices_cbegin(i);
                 numExamplesPerLabel[i] = numExamples;
 
                 if (numExamples > 0) {
-                    sortedLabelIndices.emplace(numExamples, i);
+                    sortedLabelIndices.emplace(i, numExamples);
                 }
             }
 
@@ -273,10 +275,11 @@ class LabelWiseStratification final {
             // As long as there are labels that have not been processed yet, proceed with the label that has the
             // smallest number of associated examples...
             std::unordered_map<uint32, uint32> affectedLabelIndices;
-            std::multimap<uint32, uint32>::iterator firstEntry;
+            SortedSet::iterator firstEntry;
 
             while ((firstEntry = sortedLabelIndices.begin()) != sortedLabelIndices.end()) {
-                uint32 labelIndex = firstEntry->second;
+                const IndexedValue<uint32>& entry = *firstEntry;
+                uint32 labelIndex = entry.index;
 
                 // Remove the label from the sorted map...
                 sortedLabelIndices.erase(firstEntry);
@@ -314,20 +317,14 @@ class LabelWiseStratification final {
 
                     if (key != labelIndex) {
                         uint32 value = it->second;
-                        auto range = sortedLabelIndices.equal_range(value);
+                        SortedSet::iterator it2 = sortedLabelIndices.find(IndexedValue<uint32>(key, value));
+                        uint32 numRemaining = numExamplesPerLabel[key];
 
-                        for (auto it2 = range.first; it2 != range.second; it2++) {
-                            if (it2->second == key) {
-                                uint32 numRemaining = numExamplesPerLabel[key];
-
-                                if (numRemaining > 0) {
-                                    sortedLabelIndices.emplace_hint(it2, numRemaining, key);
-                                }
-
-                                sortedLabelIndices.erase(it2);
-                                break;
-                            }
+                        if (numRemaining > 0) {
+                            sortedLabelIndices.emplace_hint(it2, key, numRemaining);
                         }
+
+                        sortedLabelIndices.erase(it2);
                     }
                 }
 
