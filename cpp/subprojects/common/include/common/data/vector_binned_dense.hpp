@@ -18,12 +18,6 @@ class DenseBinnedVector {
 
     private:
 
-        DenseVector<uint32> binIndices_;
-
-        DenseVector<T> values_;
-
-    public:
-
         /**
          * Allows to iterate all elements in the vector.
          */
@@ -128,6 +122,12 @@ class DenseBinnedVector {
                 difference_type operator-(const Iterator& rhs) const;
 
         };
+
+        DenseVector<uint32> binIndices_;
+
+        DenseVector<T> values_;
+
+    public:
 
         /**
          * @param numElements   The number of elements in the vector

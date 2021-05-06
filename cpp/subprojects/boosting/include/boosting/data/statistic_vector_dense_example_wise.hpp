@@ -19,16 +19,6 @@ namespace boosting {
 
         private:
 
-            uint32 numGradients_;
-
-            uint32 numHessians_;
-
-            float64* gradients_;
-
-            float64* hessians_;
-
-        public:
-
             /**
              * Allows to iterate the Hessians on the diagonal.
              */
@@ -133,6 +123,16 @@ namespace boosting {
                     difference_type operator-(const HessianDiagonalIterator& rhs) const;
 
             };
+
+            uint32 numGradients_;
+
+            uint32 numHessians_;
+
+            float64* gradients_;
+
+            float64* hessians_;
+
+        public:
 
             /**
              * @param numGradients The number of gradients in the vector

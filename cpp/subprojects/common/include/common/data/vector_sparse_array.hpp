@@ -19,10 +19,6 @@ class SparseArrayVector final {
 
     private:
 
-        DenseVector<IndexedValue<T>> vector_;
-
-    public:
-
         /**
          * An iterator that provides random access to the indices in a `SparseArrayVector` and allows to modify them.
          */
@@ -426,6 +422,10 @@ class SparseArrayVector final {
                 difference_type operator-(const ValueConstIterator& rhs) const;
 
         };
+
+        DenseVector<IndexedValue<T>> vector_;
+
+    public:
 
         /**
          * @param numElements The number of elements in the vector

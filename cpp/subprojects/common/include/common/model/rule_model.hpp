@@ -15,12 +15,6 @@ class RuleModel final {
 
     private:
 
-        std::list<Rule> list_;
-
-        uint32 numUsedRules_;
-
-    public:
-
         /**
          * Allows to iterate only the used rules.
          */
@@ -103,6 +97,12 @@ class RuleModel final {
                 difference_type operator-(const UsedIterator& rhs) const;
 
         };
+
+        std::list<Rule> list_;
+
+        uint32 numUsedRules_;
+
+    public:
 
         RuleModel();
 
