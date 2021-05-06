@@ -10,6 +10,7 @@
 class IInstanceSubSampling;
 class IInstanceSubSamplingFactory;
 class ILabelMatrix;
+class IStatistics;
 class IThresholdsSubset;
 class ICoverageState;
 class Refinement;
@@ -34,10 +35,12 @@ class IPartition {
          *                      create the instance
          * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels of
          *                      the training examples
+         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
+         *                      which serve as a basis for learning rules
          * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
          */
         virtual std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
-            const IInstanceSubSamplingFactory& factory, const ILabelMatrix& labelMatrix) = 0;
+            const IInstanceSubSamplingFactory& factory, const ILabelMatrix& labelMatrix, IStatistics& statistics) = 0;
 
         /**
          * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that

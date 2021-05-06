@@ -140,7 +140,8 @@ class BiPartition : public IPartition {
         uint32 getNumElements() const;
 
         std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(const IInstanceSubSamplingFactory& factory,
-                                                                        const ILabelMatrix& labelMatrix) override;
+                                                                        const ILabelMatrix& labelMatrix,
+                                                                        IStatistics& statistics) override;
 
         float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                     const AbstractPrediction& head) override;
