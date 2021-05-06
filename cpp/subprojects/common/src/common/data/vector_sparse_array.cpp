@@ -29,6 +29,16 @@ typename SparseArrayVector<T>::const_iterator SparseArrayVector<T>::cend() const
 }
 
 template<class T>
+const IndexedValue<T>& SparseArrayVector<T>::operator[](uint32 pos) const {
+    return vector_[pos];
+}
+
+template<class T>
+IndexedValue<T>& SparseArrayVector<T>::operator[](uint32 pos) {
+    return vector_[pos];
+}
+
+template<class T>
 uint32 SparseArrayVector<T>::getNumElements() const {
     return vector_.getNumElements();
 }

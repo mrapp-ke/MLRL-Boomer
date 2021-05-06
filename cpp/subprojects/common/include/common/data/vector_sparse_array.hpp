@@ -66,6 +66,22 @@ class SparseArrayVector final {
         const_iterator cend() const;
 
         /**
+         * Returns a const reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A const reference to the specified element
+         */
+        const IndexedValue<T>& operator[](uint32 pos) const;
+
+        /**
+         * Returns a reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A reference to the specified element
+         */
+        IndexedValue<T>& operator[](uint32 pos);
+
+        /**
          * Returns the number of elements in the vector.
          *
          * @return The number of elements in the vector
