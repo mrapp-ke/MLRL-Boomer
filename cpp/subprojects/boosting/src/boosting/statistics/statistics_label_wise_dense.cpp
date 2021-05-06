@@ -1,12 +1,62 @@
 #include "boosting/statistics/statistics_label_wise_dense.hpp"
 #include "boosting/data/matrix_dense_numeric.hpp"
-#include "boosting/data/statistic_matrix_dense_label_wise.hpp"
 #include "boosting/data/statistic_vector_dense_label_wise.hpp"
+#include "boosting/data/statistic_view_dense_example_wise.hpp"
+#include "boosting/data/statistic_view_dense_label_wise.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "omp.h"
+#include <cstdlib>
 
 
 namespace boosting {
+
+    class DenseLabelWiseStatisticMatrix final : public DenseLabelWiseStatisticView {
+
+        public:
+
+            DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
+                : DenseLabelWiseStatisticMatrix(numRows, numCols, false) {
+
+            }
+
+            DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols, bool init)
+                : DenseLabelWiseStatisticView(numRows, numCols,
+                                              (float64*) (init ? calloc(numRows * numCols, sizeof(float64))
+                                                               : malloc(numRows * numCols * sizeof(float64))),
+                                              (float64*) (init ? calloc(numRows * numCols, sizeof(float64))
+                                                               : malloc(numRows * numCols * sizeof(float64)))) {
+
+            }
+
+            ~DenseLabelWiseStatisticMatrix() {
+                free(gradients_);
+                free(hessians_);
+            }
+
+    };
+
+    template<class LabelMatrix>
+    class DenseLabelWiseStatistics final : public AbstractLabelWiseStatistics<LabelMatrix,
+                                                                              DenseLabelWiseStatisticVector,
+                                                                              DenseLabelWiseStatisticView,
+                                                                              DenseLabelWiseStatisticMatrix,
+                                                                              DenseNumericMatrix<float64>> {
+
+        public:
+
+            DenseLabelWiseStatistics(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
+                                     std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                                     const LabelMatrix& labelMatrix,
+                                     std::unique_ptr<DenseLabelWiseStatisticView> statisticMatrixPtr,
+                                     std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr)
+                : AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticView,
+                                              DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>(
+                      lossFunctionPtr, ruleEvaluationFactoryPtr, labelMatrix, std::move(statisticMatrixPtr),
+                      std::move(scoreMatrixPtr)) {
+
+            }
+
+    };
 
     template<class LabelMatrix>
     static inline std::unique_ptr<ILabelWiseStatistics> createInternally(
@@ -33,9 +83,9 @@ namespace boosting {
                                                           *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<LabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
-            lossFunctionPtr, ruleEvaluationFactoryPtr, labelMatrix, std::move(statisticMatrixPtr),
-            std::move(scoreMatrixPtr));
+        return std::make_unique<DenseLabelWiseStatistics<LabelMatrix>>(lossFunctionPtr, ruleEvaluationFactoryPtr,
+                                                                       labelMatrix, std::move(statisticMatrixPtr),
+                                                                       std::move(scoreMatrixPtr));
     }
 
     DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(
