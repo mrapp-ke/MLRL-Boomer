@@ -73,16 +73,17 @@ void Debugger::lb(bool prun) {
     }
 }
 
-void Debugger::printCoverageMask(const CoverageMask &coverageMask, bool originalMask,
+void Debugger::printCoverageMask(const ICoverageState& coverageMask, bool originalMask,
                                  unsigned long iteration) {
     if (not debugging_ or not(dFull or dCM)) {
         return;
     }
+    auto cm = dynamic_cast<const CoverageMask&>(coverageMask);
     (originalMask ? std::cout << "\n" << "the original coverage mask:" :
      std::cout << "\n" << "the " << iteration << ". coverage mask:") << "\n";
-    for (uint32 i = 0; i < coverageMask.getNumElements(); i++) {
+    for (uint32 i = 0; i < cm.getNumElements(); i++) {
         std::cout << "  " << "index " << i << ": " << (i < 10 ? " " : "") <<
-                  (coverageMask.isCovered(i) ? "    covered" : "not covered") << "\n";
+                  (cm.isCovered(i) ? "    covered" : "not covered") << "\n";
     }
 }
 
@@ -138,7 +139,7 @@ void Debugger::printDistribution(const IWeightVector &weights) {
     }
 
     std::cout << "Examples in the pruning set:\n";
-    const auto *printWeight = dynamic_cast<const DenseWeightVector *>(&weights);
+    const auto *printWeight = dynamic_cast<const DenseWeightVector<uint8> *>(&weights);
     for (uint32 i = 0; i < printWeight->getNumElements(); i++) {
         std::cout << "  " << i << (i < 10 ? "  " : " ") <<
                   (printWeight->getWeight(i) == 0 ? "yes" : "no") << "\n";
@@ -146,6 +147,8 @@ void Debugger::printDistribution(const IWeightVector &weights) {
 }
 
 void Debugger::printLabelCoverage(uint32 numLabels, uint32 numStatistics, float64 *uncoveredLabels) {
+    // TODO: not usable anymore in statistics_label_wise.applyPrediction()
+
     // Do nothing if the necessary flags are missing.
     if (not debugging_ or not(dFull or dLC)) {
         return;
@@ -199,8 +202,7 @@ void Debugger::printRuleInduction() {
 }
 
 void Debugger::printConfusionMatrices(const float64 *confusionMatricesTotal, const float64 *confusionMatricesSubset,
-                                      const float64 *confusionMatricesCovered, uint32 numPredictions,
-                                      uint32 numMatrixElements, bool uncovered) {
+                                      const float64 *confusionMatricesCovered, uint32 numPredictions,bool uncovered) {
     // Do nothing if the necessary flags are missing.
     if (not debugging_ or not(dFull or dConfusion)) {
         return;
@@ -213,17 +215,17 @@ void Debugger::printConfusionMatrices(const float64 *confusionMatricesTotal, con
     // Rows are all the possible labels
     for (uint32 i = 0; i < numPredictions; i++) {
         // columns are the four evaluation metrics IN, IP, RN, RP
-        for (uint32 j = 0; j < numMatrixElements; j++) {
-            auto e = confusionMatricesTotal[i*numMatrixElements + j];
-            std::cout << (e < 10 ? " " : "") << e << (j < numMatrixElements - 1 ? ", " : "    ");
+        for (uint32 j = 0; j < 4; j++) {
+            auto e = confusionMatricesTotal[i*4 + j];
+            std::cout << (e < 10 ? " " : "") << e << (j < 4 - 1 ? ", " : "    ");
         }
-        for (uint32 j = 0; j < numMatrixElements; j++) {
-            auto e = confusionMatricesSubset[i*numMatrixElements + j];
-            std::cout << (e < 10 ? " " : "") << e << (j < numMatrixElements - 1 ? ", " : "    ");
+        for (uint32 j = 0; j < 4; j++) {
+            auto e = confusionMatricesSubset[i*4 + j];
+            std::cout << (e < 10 ? " " : "") << e << (j < 4 - 1 ? ", " : "    ");
         }
-        for (uint32 j = 0; j < numMatrixElements; j++) {
-            auto e = confusionMatricesCovered[i*numMatrixElements + j];
-            std::cout << (e < 10 ? " " : "") << e << (j < numMatrixElements - 1 ? ", " : "");
+        for (uint32 j = 0; j < 4; j++) {
+            auto e = confusionMatricesCovered[i*4 + j];
+            std::cout << (e < 10 ? " " : "") << e << (j < 4 - 1 ? ", " : "");
         }
         std::cout << "\n";
     }

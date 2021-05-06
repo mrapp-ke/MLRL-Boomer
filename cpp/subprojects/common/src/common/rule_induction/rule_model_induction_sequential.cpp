@@ -99,7 +99,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
         const IWeightVector& weights = instanceSubSamplingPtr->subSample(rng);
 
         // Debugger: print distribution of training and pruning sets
-        Debugger::printDistribution(*weightsPtr);
+        Debugger::printDistribution(weights);
 
         const IIndexVector& labelIndices = labelSubSamplingPtr->subSample(rng);
         bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, labelIndices, weights, partition,

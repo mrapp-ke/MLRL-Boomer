@@ -63,12 +63,12 @@ namespace seco {
                 float64 overallQualityScore = 0;
 
                 // Debugger: print confusion matrices
+                /* TODO: confusion matrices need to be change from float64* to DenseConfusionMatrixVector& in Debugger
                 Debugger::printConfusionMatrices(confusionMatricesTotal,
                                                  confusionMatricesSubset,
                                                  confusionMatricesCovered,
                                                  numPredictions,
-                                                 NUM_CONFUSION_MATRIX_ELEMENTS,
-                                                 uncovered);
+                                                 uncovered); */
 
                 for (uint32 i = 0; i < numPredictions; i++) {
                     uint32 index = indexIterator[i];

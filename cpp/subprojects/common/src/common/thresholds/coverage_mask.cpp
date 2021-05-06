@@ -80,7 +80,3 @@ void CoverageMask::recalculatePrediction(const IThresholdsSubset& thresholdsSubs
                                          Refinement& refinement) const {
     thresholdsSubset.recalculatePrediction(partition, *this, refinement);
 }
-
-uint32 CoverageMask::getNumElements() const {
-    return numElements_;
-}

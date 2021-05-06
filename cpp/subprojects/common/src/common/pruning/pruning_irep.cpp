@@ -20,7 +20,7 @@ std::unique_ptr<ICoverageState> IREP::prune(IThresholdsSubset& thresholdsSubset,
         float64 bestQualityScore = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageState, head);
 
         // Debugger: print the original coverage mask
-        Debugger::printCoverageMask(originalCoverageMask, true);
+        Debugger::printCoverageMask(originalCoverageState, true);
 
         // Create a copy of the original coverage mask...
         bestCoverageStatePtr = originalCoverageState.copy();
@@ -48,7 +48,7 @@ std::unique_ptr<ICoverageState> IREP::prune(IThresholdsSubset& thresholdsSubset,
             float64 qualityScore = partition.evaluateOutOfSample(thresholdsSubset, coverageState, head);
 
             // Debugger: print iteration mask
-            Debugger::printCoverageMask(originalCoverageMask, false, n);
+            Debugger::printCoverageMask(coverageState, false, n);
             // Debugger: print quality scores
             Debugger::printQualityScores(bestQualityScore, qualityScore);
 

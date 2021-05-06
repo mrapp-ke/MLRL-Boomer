@@ -112,13 +112,15 @@ namespace seco {
                     }
 
                     const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
-                                                                              bool accumulated) override {
+                                                                              bool accumulated,
+                                                                              bool pruning) override {
                         const ConfusionMatrixVector& sumsOfConfusionMatrices =
                             accumulated ? *accumulatedSumVector_ : sumVector_;
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(*statistics_.majorityLabelVectorPtr_,
                                                                                 statistics_.totalSumVector_,
                                                                                 *totalSumVector_,
-                                                                                sumsOfConfusionMatrices, uncovered);
+                                                                                sumsOfConfusionMatrices, uncovered,
+                                                                                pruning);
                     }
 
             };

@@ -6,6 +6,7 @@
 
 #include <common/model/condition_list.hpp>
 #include "common/thresholds/thresholds_subset.hpp"
+#include "common/thresholds/coverage_state.hpp"
 
 
 
@@ -77,7 +78,7 @@ class Debugger {
          * @param originalMask  if it the original coverage mask
          * @param iteration     iteration of the coverage mask
          */
-        static void printCoverageMask(const CoverageMask& coverageMask, bool originalMask,
+        static void printCoverageMask(const ICoverageState& coverageMask, bool originalMask,
                                       unsigned long iteration = 0);
 
         /**
@@ -166,7 +167,6 @@ class Debugger {
          * @param numPredictions            Number of predictions which are evaluated. Usually all labels when
          *                                  called from find head, only the labels in the head when called from
          *                                  calculate prediction.
-         * @param numMatrixElements:        Always four because of the evaluation metrics IN, IP, RN, RP.
          * @param uncovered                 False, if the confusion matrices in `confusion_matrices_covered`
          *                                  correspond to the examples that are covered by rule, True, if they
          *                                  correspond to the examples that are not covered by the rule.
@@ -175,7 +175,6 @@ class Debugger {
                                            const float64* confusionMatricesSubset,
                                            const float64* confusionMatricesCovered,
                                            uint32 numPredictions,
-                                           uint32 numMatrixElements,
                                            bool uncovered);
 
         /**

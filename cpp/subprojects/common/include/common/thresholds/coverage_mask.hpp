@@ -120,11 +120,4 @@ class CoverageMask final : public ICoverageState {
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                    Refinement& refinement) const override;
-
-        /**
-         * Returns the number of elements in the coverage mask.
-         *
-         * @return the number of elements
-         */
-        uint32 getNumElements() const;
 };

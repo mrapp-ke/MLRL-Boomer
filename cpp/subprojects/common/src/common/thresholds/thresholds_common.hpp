@@ -62,7 +62,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
     }
 
     std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
-    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false, true);
     return scoreVector.overallQualityScore;
 }
 
@@ -84,7 +84,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
     }
 
     std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
-    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false, true);
     return scoreVector.overallQualityScore;
 }
 
@@ -125,7 +125,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
     }
 
     std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
-    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false, false);
     scoreVector.updatePrediction(head);
 }
 
@@ -148,7 +148,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
     }
 
     std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
-    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false, false);
     scoreVector.updatePrediction(head);
 }
 
