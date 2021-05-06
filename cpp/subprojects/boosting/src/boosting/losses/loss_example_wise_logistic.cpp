@@ -7,7 +7,7 @@ namespace boosting {
     template<class LabelMatrix>
     static inline void updateExampleWiseStatisticsInternally(uint32 exampleIndex, const LabelMatrix& labelMatrix,
                                                              const CContiguousConstView<float64>& scoreMatrix,
-                                                             DenseExampleWiseStatisticMatrix& statisticMatrix) {
+                                                             DenseExampleWiseStatisticView& statisticView) {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
         // of the form `exp(x_1) / (exp(x_1) + exp(x_2) + ...)` as
@@ -16,10 +16,10 @@ namespace boosting {
         // fractions of the above form.
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
-        DenseExampleWiseStatisticMatrix::gradient_iterator gradientIterator =
-            statisticMatrix.gradients_row_begin(exampleIndex);
-        DenseExampleWiseStatisticMatrix::hessian_iterator hessianIterator =
-            statisticMatrix.hessians_row_begin(exampleIndex);
+        DenseExampleWiseStatisticView::gradient_iterator gradientIterator =
+            statisticView.gradients_row_begin(exampleIndex);
+        DenseExampleWiseStatisticView::hessian_iterator hessianIterator =
+            statisticView.hessians_row_begin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
 
         // For each label `c`, calculate `x = -expectedScore_c * predictedScore_c` and find the largest and second
@@ -150,15 +150,15 @@ namespace boosting {
     void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
                                                               const CContiguousLabelMatrix& labelMatrix,
                                                               const CContiguousConstView<float64>& scoreMatrix,
-                                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const {
+                                                              DenseExampleWiseStatisticView& statisticView) const {
         updateExampleWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
-                                                                      statisticMatrix);
+                                                                      statisticView);
     }
 
     void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                               const CContiguousConstView<float64>& scoreMatrix,
-                                                              DenseExampleWiseStatisticMatrix& statisticMatrix) const {
-        updateExampleWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix, statisticMatrix);
+                                                              DenseExampleWiseStatisticView& statisticView) const {
+        updateExampleWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix, statisticView);
     }
 
     float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
