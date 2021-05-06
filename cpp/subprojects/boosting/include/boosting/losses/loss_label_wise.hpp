@@ -7,7 +7,7 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
-#include "boosting/data/statistic_matrix_dense_label_wise.hpp"
+#include "boosting/data/statistic_view_dense_label_wise.hpp"
 
 
 namespace boosting {
@@ -32,13 +32,13 @@ namespace boosting {
              *                          currently predicted scores
              * @param labelIndicesBegin A `FullIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `FullIndexVector::const_iterator` to the end of the label indices
-             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
                                                    FullIndexVector::const_iterator labelIndicesBegin,
                                                    FullIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -51,13 +51,13 @@ namespace boosting {
              *                          currently predicted scores
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -70,13 +70,13 @@ namespace boosting {
              *                          currently predicted scores
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
                                                    FullIndexVector::const_iterator labelIndicesBegin,
                                                    FullIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -89,13 +89,13 @@ namespace boosting {
              *                          currently predicted scores
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                    const CContiguousConstView<float64> scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
 
     };
 
@@ -137,25 +137,25 @@ namespace boosting {
                                            const CContiguousConstView<float64>& scoreMatrix,
                                            FullIndexVector::const_iterator labelIndicesBegin,
                                            FullIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
+                                           DenseLabelWiseStatisticView& statisticView) const override final;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                            const CContiguousConstView<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
+                                           DenseLabelWiseStatisticView& statisticView) const override final;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                            const CContiguousConstView<float64>& scoreMatrix,
                                            FullIndexVector::const_iterator labelIndicesBegin,
                                            FullIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
+                                           DenseLabelWiseStatisticView& statisticView) const override final;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                             const CContiguousConstView<float64> scoreMatrix,
                                             PartialIndexVector::const_iterator labelIndicesBegin,
                                             PartialIndexVector::const_iterator labelIndicesEnd,
-                                            DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
+                                            DenseLabelWiseStatisticView& statisticView) const override final;
 
             float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override final;
