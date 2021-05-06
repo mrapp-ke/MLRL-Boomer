@@ -17,7 +17,7 @@ from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
 from mlrl.testbed.training import DataSet
 
-from common.cython.debug import (
+from mlrl.common.cython.debug import (
     set_full_flag, set_cm_flag, set_dist_flag,
     set_hs_flag, set_lc_flag, set_ri_flag, set_confusion_flag, set_prun_flag
 )
