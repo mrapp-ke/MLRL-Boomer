@@ -122,9 +122,10 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
             const IPartitionSamplingFactory& factory) const override;
 
         std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
-            const IInstanceSubSamplingFactory& factory, const SinglePartition& partition) const override;
+            const IInstanceSubSamplingFactory& factory, const SinglePartition& partition,
+            IStatistics& statistics) const override;
 
         std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
-            const IInstanceSubSamplingFactory& factory, BiPartition& partition) const override;
+            const IInstanceSubSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const override;
 
 };
