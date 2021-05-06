@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/math/math.hpp"
 #include "boosting/math/math.hpp"
 
 
