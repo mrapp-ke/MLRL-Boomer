@@ -21,10 +21,6 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
 
     private:
 
-        DenseVector<float64> qualityScoreVector_;
-
-    public:
-
         /**
          * Allows to iterate the quality scores that correspond to individual labels.
          */
@@ -129,6 +125,10 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
                 difference_type operator-(const QualityScoreIterator& rhs) const;
 
         };
+
+        DenseVector<float64> qualityScoreVector_;
+
+    public:
 
         /**
          * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
