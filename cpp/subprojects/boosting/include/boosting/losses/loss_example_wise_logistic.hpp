@@ -17,11 +17,11 @@ namespace boosting {
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                              const CContiguousConstView<float64>& scoreMatrix,
-                                             DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
+                                             DenseExampleWiseStatisticView& statisticView) const override;
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                              const CContiguousConstView<float64>& scoreMatrix,
-                                             DenseExampleWiseStatisticMatrix& statisticMatrix) const override;
+                                             DenseExampleWiseStatisticView& statisticView) const override;
 
             float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override;
