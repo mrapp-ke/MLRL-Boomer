@@ -10,20 +10,6 @@
 namespace boosting {
 
     /**
-     * Returns the result of the floating point division `numerator / denominator` or 0, if a division by zero occurs.
-     *
-     * @tparam T            The type of the operands
-     * @param numerator     The numerator
-     * @param denominator   The denominator
-     * @return              The result of the division or 0, if a division by zero occurred
-     */
-    template<class T>
-    static inline T divideOrZero(T numerator, T denominator) {
-        T result = numerator / denominator;
-        return std::isfinite(result) ? result : 0;
-    }
-
-    /**
      * Calculates and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.
      *
      * @param n A scalar of type `uint32`, representing the order of the triangular number
