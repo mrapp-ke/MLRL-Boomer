@@ -63,11 +63,11 @@ std::unique_ptr<IPartitionSampling> CContiguousLabelMatrix::createPartitionSampl
 }
 
 std::unique_ptr<IInstanceSubSampling> CContiguousLabelMatrix::createInstanceSubSampling(
-        const IInstanceSubSamplingFactory& factory, const SinglePartition& partition) const {
-    return factory.create(*this, partition);
+        const IInstanceSubSamplingFactory& factory, const SinglePartition& partition, IStatistics& statistics) const {
+    return factory.create(*this, partition, statistics);
 }
 
 std::unique_ptr<IInstanceSubSampling> CContiguousLabelMatrix::createInstanceSubSampling(
-        const IInstanceSubSamplingFactory& factory, BiPartition& partition) const {
-    return factory.create(*this, partition);
+        const IInstanceSubSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const {
+    return factory.create(*this, partition, statistics);
 }

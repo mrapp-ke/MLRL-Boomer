@@ -61,21 +61,23 @@ class NoInstanceSubSampling final : public IInstanceSubSampling {
 };
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(
-        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition) const {
+        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
     return std::make_unique<NoInstanceSubSampling<const SinglePartition, EqualWeightVector>>(partition);
 }
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(
-        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition) const {
+        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
     return std::make_unique<NoInstanceSubSampling<BiPartition, DenseWeightVector<uint8>>>(partition);
 }
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
-                                                                           const SinglePartition& partition) const {
+                                                                           const SinglePartition& partition,
+                                                                           IStatistics& statistics) const {
     return std::make_unique<NoInstanceSubSampling<const SinglePartition, EqualWeightVector>>(partition);
 }
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
-                                                                           BiPartition& partition) const {
+                                                                           BiPartition& partition,
+                                                                           IStatistics& statistics) const {
     return std::make_unique<NoInstanceSubSampling<BiPartition, DenseWeightVector<uint8>>>(partition);
 }
