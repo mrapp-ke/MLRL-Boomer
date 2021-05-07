@@ -3,7 +3,6 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/statistics/statistics.hpp"
-#include "boosting/statistics/statistics_label_wise_common.hpp"
 #include "boosting/data/matrix_dense_numeric.hpp"
 #include <cmath>
 
@@ -18,8 +17,8 @@ namespace boosting{
             return false;
     }
 
-    GradientBasedLabelWise::GradientBasedLabelWise(float32 sampleSizeTop)://, float32 sampleSizeRandom):
-            sampleSizeTop_(sampleSizeTop){sampleSizeRandom_=0.2;}//, sampleSizeRandom_(sampleSizeRandom){}
+    GradientBasedLabelWise::GradientBasedLabelWise(float32 sampleSizeTop, float32 sampleSizeRandom):
+            sampleSizeTop_(sampleSizeTop), sampleSizeRandom_(sampleSizeRandom){}
 
     std::unique_ptr<IWeightVector> GradientBasedLabelWise::subSample(const BiPartition& partition, RNG& rng,
                                                                     const IRandomAccessLabelMatrix& labelMatrix,
@@ -40,9 +39,14 @@ namespace boosting{
         return findExamplesPerLabel(labelMatrix, statisticMatrix);
     }
 
+    const mapExamplesGradients GradientBasedLabelWise::visit(const IRandomAccessLabelMatrix& labelMatrix,
+                                              const DenseExampleWiseStatisticMatrix& statisticMatrix)const{
+        return findExamplesPerLabel(labelMatrix, statisticMatrix);
+    }
 
+    template<typename DenseStatisticMatrix>
     const mapExamplesGradients GradientBasedLabelWise::findExamplesPerLabel(const IRandomAccessLabelMatrix& labelMatrixPtr,
-                                                             const DenseLabelWiseStatisticMatrix& statisticMatrix)const{
+                                                             const DenseStatisticMatrix& statisticMatrix)const{
 
         uint32 numExamples = labelMatrixPtr.getNumRows();
         uint32 numLabels = labelMatrixPtr.getNumCols();
@@ -52,7 +56,7 @@ namespace boosting{
             for(uint32 labelIndex=0; labelIndex<numLabels; labelIndex++){
                 uint8 label = labelMatrixPtr.getValue(exampleIndex, labelIndex);
 
-                DenseLabelWiseStatisticMatrix::gradient_const_iterator gradient_iter = statisticMatrix.gradients_row_cbegin(exampleIndex);
+                auto gradient_iter = statisticMatrix.gradients_row_cbegin(exampleIndex);
                 float64 gradient = std::abs(gradient_iter[labelIndex]);
 
                 if (label == 0){
@@ -118,14 +122,15 @@ namespace boosting{
           labelused +=1;
           l = getNextLabel(examplesPerLabel);
        }
-
-       float32 fuct = (1-sampleSizeTop_)/sampleSizeRandom_;
-       uint32 randomExampleIndex = rng.random(0, numExamples);
-       while(numSamplesRandom>0 && !usedExamples[randomExampleIndex]){
-           --numSamplesRandom;
-           usedExamples[randomExampleIndex] = true;
-           weightIterator[randomExampleIndex] = fuct;
-           randomExampleIndex = rng.random(0, numExamples);
+       if (sampleSizeRandom_!=0.0){
+           float32 fuct = (1-sampleSizeTop_)/sampleSizeRandom_;
+           uint32 randomExampleIndex = rng.random(0, numExamples);
+           while(numSamplesRandom>0 && !usedExamples[randomExampleIndex]){
+               --numSamplesRandom;
+               usedExamples[randomExampleIndex] = true;
+               weightIterator[randomExampleIndex] = fuct;
+               randomExampleIndex = rng.random(0, numExamples);
+           }
        }
        return weightVectorPtr;
     }

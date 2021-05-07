@@ -8,7 +8,7 @@ cdef extern from "boosting/sampling/instance_sampling_gradient_based_labelset.hp
 
         # Constructors:
 
-        GradientBasedLabelSetImpl(float32 sampleSize) except +
+        GradientBasedLabelSetImpl(float32 sampleSize, float32 sampleSizeRandom) except +
 
 
 cdef extern from "boosting/sampling/instance_sampling_gradient_based_labelwise.hpp" nogil:
@@ -17,7 +17,7 @@ cdef extern from "boosting/sampling/instance_sampling_gradient_based_labelwise.h
 
         # Constructors:
 
-        GradientBasedLabelWiseImpl(float32 sampleSize) except +
+        GradientBasedLabelWiseImpl(float32 sampleSizeTop, float32 sampleSizeRandom) except +
 
 
 cdef extern from "boosting/sampling/instance_sampling_iterative_stratification_labelwise.hpp" nogil:

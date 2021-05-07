@@ -16,8 +16,8 @@ namespace boosting{
         else
             return false;
     }
-    GradientBasedLabelSet::GradientBasedLabelSet(float32 sampleSizeTop):// , float32 sampleSizeRandom):
-            sampleSizeTop_(sampleSizeTop){sampleSizeRandom_=0.2;}//, sampleSizeRandom_(sampleSizeRandom){}
+    GradientBasedLabelSet::GradientBasedLabelSet(float32 sampleSizeTop, float32 sampleSizeRandom):
+            sampleSizeTop_(sampleSizeTop), sampleSizeRandom_(sampleSizeRandom){}
 
     std::unique_ptr<IWeightVector> GradientBasedLabelSet::subSample(const BiPartition& partition, RNG& rng,
                                                                     const IRandomAccessLabelMatrix& labelMatrix,
@@ -34,12 +34,18 @@ namespace boosting{
 
 
     const mapExamplesGradients GradientBasedLabelSet::visit(const IRandomAccessLabelMatrix& labelMatrix,
+                                                            const DenseLabelWiseStatisticMatrix& statisticMatrix)const{
+        return findExamplesPerLabelset(labelMatrix, statisticMatrix);
+    }
+
+    const mapExamplesGradients GradientBasedLabelSet::visit(const IRandomAccessLabelMatrix& labelMatrix,
                                                             const DenseExampleWiseStatisticMatrix& statisticMatrix)const{
         return findExamplesPerLabelset(labelMatrix, statisticMatrix);
     }
 
+    template<typename DenseStatisticMatrix>
     const mapExamplesGradients GradientBasedLabelSet::findExamplesPerLabelset(const IRandomAccessLabelMatrix& labelMatrixPtr,
-                                                               const DenseExampleWiseStatisticMatrix& statisticMatrix)const{
+                                                               const DenseStatisticMatrix& statisticMatrix)const{
         uint32 numExamples = labelMatrixPtr.getNumRows();
         uint32 numLabels = labelMatrixPtr.getNumCols();
 
@@ -53,7 +59,7 @@ namespace boosting{
             }
 
             float64 gradient = 0;
-            DenseExampleWiseStatisticMatrix::gradient_const_iterator gradient_iter = statisticMatrix.gradients_row_cbegin(exampleIndex);
+            auto gradient_iter = statisticMatrix.gradients_row_cbegin(exampleIndex);
             while(gradient_iter!=statisticMatrix.gradients_row_cend(exampleIndex)){
                 gradient += std::abs(*gradient_iter);
                 ++gradient_iter;
@@ -117,14 +123,16 @@ namespace boosting{
           l = getNextLabelset(examplesPerLabelset);
        }
 
-       float32 fuct = (1-sampleSizeTop_)/sampleSizeRandom_;
-       uint32 randomExampleIndex = rng.random(0, numExamples);
-       while(numSamplesRandom>0 && !usedExamples[randomExampleIndex]){
-           --numSamplesRandom;
-           usedExamples[randomExampleIndex] = true;
-           weightIterator[randomExampleIndex] = fuct;
-           randomExampleIndex = rng.random(0, numExamples);
-       }
+        if(sampleSizeRandom_!=0.0){
+           float32 fuct = (1-sampleSizeTop_)/sampleSizeRandom_;
+           uint32 randomExampleIndex = rng.random(0, numExamples);
+           while(numSamplesRandom>0 && !usedExamples[randomExampleIndex]){
+               --numSamplesRandom;
+               usedExamples[randomExampleIndex] = true;
+               weightIterator[randomExampleIndex] = fuct;
+               randomExampleIndex = rng.random(0, numExamples);
+           }
+        }
        return weightVectorPtr;
     }
 

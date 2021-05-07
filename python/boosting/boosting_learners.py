@@ -66,9 +66,9 @@ ARGUMENT_FORCE_STOP = 'force_stop'
 
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
-#ARGUMENT_SAMPLE_SIZE_TOP = 'sample_size_top'
+ARGUMENT_SAMPLE_SIZE_TOP = 'sample_size_top'
 
-#ARGUMENT_SAMPLE_SIZE_RANDOM = 'sample_size_random'
+ARGUMENT_SAMPLE_SIZE_RANDOM = 'sample_size_random'
 
 HEAD_REFINEMENT_FULL = 'full'
 
@@ -86,9 +86,13 @@ PREDICTOR_LABEL_WISE = 'label-wise'
 
 PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
-INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION = "iterative-stratification"
+INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION_LABELWISE = "iterative-stratification-labelwise"
 
-INSTANCE_SUB_SAMPLING_GRADIENT_BASED = "gradient-based"
+INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION_LABELSET = "iterative-stratification-labelset"
+
+INSTANCE_SUB_SAMPLING_GRADIENT_BASED_LABELWISE = "gradient-based-labelwise"
+
+INSTANCE_SUB_SAMPLING_GRADIENT_BASED_LABELSET = "gradient-based-labelset"
 
 
 class Boomer(MLRuleLearner, ClassifierMixin):
@@ -441,8 +445,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         else:
             prefix, args = parse_prefix_and_dict(instance_sub_sampling,
                                                  [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM,
-                                                  INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION,
-                                                  INSTANCE_SUB_SAMPLING_GRADIENT_BASED])
+                                                  INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION_LABELWISE,
+                                                  INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION_LABELSET,
+                                                  INSTANCE_SUB_SAMPLING_GRADIENT_BASED_LABELWISE,
+                                                  INSTANCE_SUB_SAMPLING_GRADIENT_BASED_LABELSET])
 
             if prefix == INSTANCE_SUB_SAMPLING_BAGGING:
                 sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
@@ -450,21 +456,19 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             elif prefix == INSTANCE_SUB_SAMPLING_RANDOM:
                 sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
                 return RandomInstanceSubsetSelection(sample_size)
-            elif prefix == INSTANCE_SUB_SAMPLING_GRADIENT_BASED:
-                predictor = self.__get_preferred_predictor()
+            elif prefix == INSTANCE_SUB_SAMPLING_GRADIENT_BASED_LABELWISE:
+                sample_size_top = get_float_argument(args, ARGUMENT_SAMPLE_SIZE_TOP, 0.6, lambda x: 0 < x < 1)
+                sample_size_random = get_float_argument(args, ARGUMENT_SAMPLE_SIZE_RANDOM, 0.0, lambda x: 0 <= x < 1-sample_size_top)
+                return GradientBasedLabelWise(sample_size_top, sample_size_random)
+            elif prefix == INSTANCE_SUB_SAMPLING_GRADIENT_BASED_LABELSET:
+                sample_size_top = get_float_argument(args, ARGUMENT_SAMPLE_SIZE_TOP, 0.6, lambda x: 0 < x < 1)
+                sample_size_random = get_float_argument(args, ARGUMENT_SAMPLE_SIZE_RANDOM, 0.0, lambda x: 0 <= x < 1-sample_size_top)
+                return GradientBasedLabelSet(sample_size_top, sample_size_random)
+            elif prefix == INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION_LABELWISE:
                 sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.6, lambda x: 0 < x < 1)
-                #sample_size_top = get_float_argument(args, ARGUMENT_SAMPLE_SIZE_TOP, 0.6, lambda x: 0 < x < 1)
-                #sample_size_random = get_float_argument(args, ARGUMENT_SAMPLE_SIZE_RANDOM, 0.2, lambda x: 0 < x < 1-ARGUMENT_SAMPLE_SIZE_TOP)
-                if predictor == PREDICTOR_LABEL_WISE:
-                    return GradientBasedLabelWise(sample_size) #(sample_size_top, sample_size_random)
-                elif predictor == PREDICTOR_EXAMPLE_WISE:
-                    return GradientBasedLabelSet(sample_size)
-            elif prefix == INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION:
-                predictor = self.__get_preferred_predictor()
+                return IterativeStratificationLabelWise(sample_size)
+            elif prefix == INSTANCE_SUB_SAMPLING_ITERATIVE_STRATIFICATION_LABELSET:
                 sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.6, lambda x: 0 < x < 1)
-                if predictor == PREDICTOR_LABEL_WISE:
-                    return IterativeStratificationLabelWise(sample_size)
-                elif predictor == PREDICTOR_EXAMPLE_WISE:
-                    return IterativeStratificationLabelSet(sample_size)
+                return IterativeStratificationLabelSet(sample_size)
             raise ValueError(
                 'Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))

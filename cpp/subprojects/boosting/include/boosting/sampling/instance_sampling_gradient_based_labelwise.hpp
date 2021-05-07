@@ -17,7 +17,7 @@ namespace boosting{
             float32 sampleSizeRandom_;
 
         public:
-            GradientBasedLabelWise(float32 sampleSizeTop);//, float32 sampleSizeRandom);
+            GradientBasedLabelWise(float32 sampleSizeTop, float32 sampleSizeRandom);
 
             std::unique_ptr<IWeightVector> subSample(const SinglePartition& partition, RNG& rng,
                                                      const IRandomAccessLabelMatrix& labelMatrix,
@@ -30,8 +30,9 @@ namespace boosting{
             std::unique_ptr<IWeightVector> subSample_(const IRandomAccessLabelMatrix& labelMatrixPtr,
                                                       RNG& rng, const IStatistics& statistics)const;
 
+            template<typename DenseStatisticMatrix>
             const mapExamplesGradients findExamplesPerLabel(const IRandomAccessLabelMatrix& labelMatrixPtr,
-                                             const DenseLabelWiseStatisticMatrix& statisticMatrix)const;
+                                             const DenseStatisticMatrix& statisticMatrix)const;
 
             uint32Vector getNextLabel(mapExamplesGradients examplesPerLabel)const;
 
@@ -41,6 +42,6 @@ namespace boosting{
                                       const DenseLabelWiseStatisticMatrix& statisticMatrix)const;
 
             const mapExamplesGradients visit(const IRandomAccessLabelMatrix& labelMatrix,
-                                      const DenseExampleWiseStatisticMatrix& statisticMatrix)const{};
+                                      const DenseExampleWiseStatisticMatrix& statisticMatrix)const;
     };
 }
