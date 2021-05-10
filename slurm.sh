@@ -2,7 +2,7 @@
 
 if [ "$#" -ne 3 ]; then
     echo "Illegal number of arguments!"
-    exit -1
+    exit 1
 fi
 
 # Command line arguments
@@ -41,21 +41,21 @@ mkdir -p "${OUTPUT_DIR}"
 FILE="${SUB_DIR}.sh"
 PARAMETERS="--log-level ${LOG_LEVEL} --data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --output-dir ${OUTPUT_DIR} --folds ${FOLDS} --current-fold \$SLURM_ARRAY_TASK_ID --max-rules ${MAX_RULES} --time-limit ${TIME_LIMIT_SECONDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --heuristic ${HEURISTIC} --pruning-heuristic ${PRUNING_HEURISTIC} --head-refinement ${HEAD_REFINEMENT}"
 
-echo "$FILE"
-echo "#!/bin/bash" >> "$FILE"
-echo "#SBATCH -a 1-${FOLDS}" >> "$FILE"
-echo "#SBATCH -J ${SUB_DIR}_fold=%a" >> "$FILE"
-echo "#SBATCH -D ${WORK_DIR}" >> "$FILE"
-echo "#SBATCH -t ${TIME_LIMIT_HOURS}:00:00" >> "$FILE"
-echo "#SBATCH -n 1" >> "$FILE"
-echo "#SBATCH -c ${CORES}" >> "$FILE"
-echo "#SBATCH -o fold_%a.log" >> "$FILE"
-echo "#SBATCH -e fold_%a.err" >> "$FILE"
-echo "#SBATCH --mem-per-cpu=${MEMORY}" >> "$FILE"
-echo "${ROOT_DIR}/venv/bin/python3 ${ROOT_DIR}/python/main_seco.py ${PARAMETERS}" >> "$FILE"
+{
+  echo "#!/bin/bash"
+  echo "#SBATCH -a 1-${FOLDS}"
+  echo "#SBATCH -J ${SUB_DIR}_fold=%a"
+  echo "#SBATCH -D ${WORK_DIR}"
+  echo "#SBATCH -t ${TIME_LIMIT_HOURS}:00:00"
+  echo "#SBATCH -n 1"
+  echo "#SBATCH -c ${CORES}"
+  echo "#SBATCH -o fold_%a.log"
+  echo "#SBATCH -e fold_%a.err"
+  echo "#SBATCH --mem-per-cpu=${MEMORY}"
+  echo "${ROOT_DIR}/venv/bin/python3 ${ROOT_DIR}/python/main_seco.py ${PARAMETERS}"
+} >> "$FILE"
 
 # Run SLURM jobs
 sbatch "$FILE"
 rm "$FILE"
 echo "Started array of experiments with parameters ${PARAMETERS}"
-
