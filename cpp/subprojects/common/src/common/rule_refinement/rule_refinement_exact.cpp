@@ -514,10 +514,13 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             Debugger::printHeadScore(bestHead->overallQualityScore, false);
         }
     }
-    // Debugger: print rule
-    Debugger::printRule(*refinementPtr, *bestHead);
-    // Debugger: print head score
-    Debugger::printHeadScore(bestHead->overallQualityScore, true);
+
+    if (bestHead != nullptr) {
+        // Debugger: print rule
+        Debugger::printRule(*refinementPtr, *bestHead);
+        // Debugger: print head score
+        Debugger::printHeadScore(bestHead->overallQualityScore, true);
+    }
 
     refinementPtr->headPtr = headRefinementPtr_->pollHead();
     refinementPtr_ = std::move(refinementPtr);
