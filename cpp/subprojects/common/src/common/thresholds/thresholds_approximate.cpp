@@ -79,7 +79,7 @@ static inline void filterCurrentVector(const BinVector& vector, FilteredBinCache
             const BinVector::Example example = *it;
             uint32 index = example.index;
             coverageMaskIterator[index] = numConditions;
-            uint32 weight = weights.getWeight(index);
+            float64 weight = weights.getWeight(index);
             statistics.updateCoveredStatistic(index, weight, false);
 
             if (wasEmpty) {
@@ -154,7 +154,7 @@ static inline void filterAnyVector(const BinVector& vector, FilteredBinCacheEntr
             } else {
                 if (histogram != nullptr) {
                     uint32 binIndex = binIterator[r].index;
-                    uint32 weight = weights.getWeight(exampleIndex);
+                    float64 weight = weights.getWeight(exampleIndex);
                     weightVector->begin()[binIndex] -= weight;
                     histogram->removeFromBin(binIndex, exampleIndex, weight);
                 }
@@ -195,12 +195,12 @@ static inline void buildHistogram(BinVector& vector, IStatistics::IHistogramBuil
     for (uint32 i = 0; i < numElements; i++) {
         const BinVector::ExampleList& examples = exampleIterator[i];
         uint32 binIndex = binIterator[i].index;
-        uint32 sumOfWeights = 0;
+        float64 sumOfWeights = 0;
 
         for (auto it = examples.cbegin(); it != examples.cend(); it++) {
             BinVector::Example example = *it;
             uint32 exampleIndex = example.index;
-            uint32 weight = weights.getWeight(exampleIndex);
+            float64 weight = weights.getWeight(exampleIndex);
             histogramBuilder.addToBin(binIndex, exampleIndex, weight);
             sumOfWeights += weight;
         }

@@ -101,7 +101,6 @@ namespace boosting{
 
        std::vector<bool> usedExamples(numExamples, false);
        uint32Vector l = getNextLabel(examplesPerLabel);
-       uint32 labelused = 1;
        while (!l.empty()){
           while(examplesPerLabel[l].size() > 0){
                uint32 m = getNextSubset(desiredSamplesPerLabelPerSet[l], desiredSamplesPerSet);
@@ -119,11 +118,10 @@ namespace boosting{
                desiredSamplesPerLabelPerSet[l][m] -= 1;
                desiredSamplesPerSet[m] -= 1;
           }
-          labelused +=1;
           l = getNextLabel(examplesPerLabel);
        }
        if (sampleSizeRandom_!=0.0){
-           float32 fuct = (1-sampleSizeTop_)/sampleSizeRandom_;
+           float64 fuct = (1-sampleSizeTop_)/sampleSizeRandom_;
            uint32 randomExampleIndex = rng.random(0, numExamples);
            while(numSamplesRandom>0 && !usedExamples[randomExampleIndex]){
                --numSamplesRandom;

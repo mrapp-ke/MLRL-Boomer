@@ -25,7 +25,7 @@ class IStatisticsSubset {
          * @param statisticIndex    The index of the missing statistic
          * @param weight            The weight of the missing statistic
          */
-        virtual void addToMissing(uint32 statisticIndex, uint32 weight) = 0;
+        virtual void addToMissing(uint32 statisticIndex, float64 weight) = 0;
 
         /**
          * Adds the statistics at a specific index to the subset in order to mark it as covered by the condition that is
@@ -44,7 +44,7 @@ class IStatisticsSubset {
          * @param statisticIndex    The index of the covered statistic
          * @param weight            The weight of the covered statistic
          */
-        virtual void addToSubset(uint32 statisticIndex, uint32 weight) = 0;
+        virtual void addToSubset(uint32 statisticIndex, float64 weight) = 0;
 
         /**
          * Resets the subset by removing all statistics that have been added via preceding calls to the function

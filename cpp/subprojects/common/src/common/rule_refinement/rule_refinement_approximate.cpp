@@ -35,11 +35,11 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     uint32 r = 0;
     uint32 previousR = 0;
     float32 previousValue = 0;
-    uint32 sumOfWeights = 0;
+    float64 sumOfWeights = 0;
 
     for (; r < numBins; r++) {
         uint32 binIndex = binIterator[r].index;
-        uint32 weight = weightIterator[binIndex];
+        float64 weight = weightIterator[binIndex];
 
         if (weight > 0) {
             previousValue = binIterator[r].maxValue;
@@ -53,7 +53,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     if (sumOfWeights > 0) {
         for (r = r + 1; r < numBins; r++) {
             uint32 binIndex = binIterator[r].index;
-            uint32 weight = weightIterator[binIndex];
+            float64 weight = weightIterator[binIndex];
 
             if (weight > 0) {
                 float32 currentValue = binIterator[r].minValue;

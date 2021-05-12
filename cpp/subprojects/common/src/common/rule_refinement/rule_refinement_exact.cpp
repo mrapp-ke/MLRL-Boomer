@@ -4,7 +4,7 @@
 
 template<class T>
 ExactRuleRefinement<T>::ExactRuleRefinement(
-        std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 totalSumOfWeights,
+        std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, float64 totalSumOfWeights,
         uint32 featureIndex, bool nominal,
         std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr)
     : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices),
@@ -33,12 +33,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
     for (auto it = featureVector.missing_indices_cbegin(); it != featureVector.missing_indices_cend(); it++) {
         uint32 i = *it;
-        uint32 weight = weights.getWeight(i);
+        float64 weight = weights.getWeight(i);
         statisticsSubsetPtr->addToMissing(i, weight);
     }
 
     // In the following, we start by processing all examples with feature values < 0...
-    uint32 sumOfWeights = 0;
+    float64 sumOfWeights = 0;
     intp firstR = 0;
     intp lastNegativeR = -1;
     float32 previousThreshold = 0;
@@ -56,7 +56,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
         lastNegativeR = r;
         uint32 i = iterator[r].index;
-        uint32 weight = weights.getWeight(i);
+        float64 weight = weights.getWeight(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -68,7 +68,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         }
     }
 
-    uint32 accumulatedSumOfWeights = sumOfWeights;
+    float64 accumulatedSumOfWeights = sumOfWeights;
 
     // Traverse the remaining examples with feature values < 0 in ascending order...
     if (sumOfWeights > 0) {
@@ -81,7 +81,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
             lastNegativeR = r;
             uint32 i = iterator[r].index;
-            uint32 weight = weights.getWeight(i);
+            float64 weight = weights.getWeight(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
@@ -197,7 +197,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
     float32 previousThresholdNegative = previousThreshold;
     intp previousRNegative = previousR;
-    uint32 accumulatedSumOfWeightsNegative = accumulatedSumOfWeights;
+    float64 accumulatedSumOfWeightsNegative = accumulatedSumOfWeights;
 
     // We continue by processing all examples with feature values >= 0...
     sumOfWeights = 0;
@@ -207,7 +207,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     // encountered...
     for (r = firstR; r > lastNegativeR; r--) {
         uint32 i = iterator[r].index;
-        uint32 weight = weights.getWeight(i);
+        float64 weight = weights.getWeight(i);
 
         if (weight > 0) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -225,7 +225,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     if (sumOfWeights > 0) {
         for (r = r - 1; r > lastNegativeR; r--) {
             uint32 i = iterator[r].index;
-            uint32 weight = weights.getWeight(i);
+            float64 weight = weights.getWeight(i);
 
             // Do only consider examples that are included in the current sub-sample...
             if (weight > 0) {
@@ -337,7 +337,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         }
     }
 
-    uint32 totalAccumulatedSumOfWeights = accumulatedSumOfWeightsNegative + accumulatedSumOfWeights;
+    float64 totalAccumulatedSumOfWeights = accumulatedSumOfWeightsNegative + accumulatedSumOfWeights;
 
     // If the sum of weights of all examples that have been iterated so far (including those with feature values < 0 and
     // those with feature values >= 0) is less than the sum of weights of all examples, this means that there are

@@ -14,9 +14,9 @@ class DenseWeightVector final : public IWeightVector {
 
     private:
 
-        DenseVector<uint32> vector_;
+        DenseVector<float64> vector_;
 
-        uint32 sumOfWeights_;
+        float64 sumOfWeights_;
 
     public:
 
@@ -24,11 +24,11 @@ class DenseWeightVector final : public IWeightVector {
          * @param numElements   The number of elements in the vector. Must be at least 1
          * @param sumOfWeights  The sum of the weights in the vector
          */
-        DenseWeightVector(uint32 numElements, uint32 sumOfWeights);
+        DenseWeightVector(uint32 numElements, float64 sumOfWeights);
 
-        typedef DenseVector<uint32>::iterator iterator;
+        typedef DenseVector<float64>::iterator iterator;
 
-        typedef DenseVector<uint32>::const_iterator const_iterator;
+        typedef DenseVector<float64>::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the vector.
@@ -60,8 +60,8 @@ class DenseWeightVector final : public IWeightVector {
 
         bool hasZeroWeights() const override;
 
-        uint32 getWeight(uint32 pos) const override;
+        float64 getWeight(uint32 pos) const override;
 
-        uint32 getSumOfWeights() const override;
+        float64 getSumOfWeights() const override;
 
 };

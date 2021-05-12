@@ -30,7 +30,7 @@ static inline void updateSampledStatisticsInternally(IStatistics& statistics, co
     statistics.resetSampledStatistics();
 
     for (uint32 i = 0; i < numExamples; i++) {
-        uint32 weight = weights.getWeight(i);
+        float64 weight = weights.getWeight(i);
         statistics.addSampledStatistic(i, weight);
     }
 }

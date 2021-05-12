@@ -10,10 +10,10 @@ bool EqualWeightVector::hasZeroWeights() const {
     return false;
 }
 
-uint32 EqualWeightVector::getWeight(uint32 pos) const {
+float64 EqualWeightVector::getWeight(uint32 pos) const {
     return 1;
 }
 
-uint32 EqualWeightVector::getSumOfWeights() const {
+float64 EqualWeightVector::getSumOfWeights() const {
     return numElements_;
 }

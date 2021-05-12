@@ -27,7 +27,7 @@ class IWeightVector {
          *
          * @return The sum of the weights
          */
-        virtual uint32 getSumOfWeights() const = 0;
+        virtual float64 getSumOfWeights() const = 0;
 
         /**
          * Returns the weight of the example at a specific index.
@@ -35,6 +35,6 @@ class IWeightVector {
          * @param pos   The index of the example
          * @return      The weight of the example at the given index
          */
-        virtual uint32 getWeight(uint32 pos) const = 0;
+        virtual float64 getWeight(uint32 pos) const = 0;
 
 };

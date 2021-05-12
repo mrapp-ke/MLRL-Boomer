@@ -124,7 +124,7 @@ namespace boosting{
        }
 
         if(sampleSizeRandom_!=0.0){
-           float32 fuct = (1-sampleSizeTop_)/sampleSizeRandom_;
+           float64 fuct = (1-sampleSizeTop_)/sampleSizeRandom_;
            uint32 randomExampleIndex = rng.random(0, numExamples);
            while(numSamplesRandom>0 && !usedExamples[randomExampleIndex]){
                --numSamplesRandom;

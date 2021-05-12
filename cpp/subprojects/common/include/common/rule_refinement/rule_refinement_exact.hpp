@@ -27,7 +27,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         const T& labelIndices_;
 
-        uint32 totalSumOfWeights_;
+        float64 totalSumOfWeights_;
 
         uint32 featureIndex_;
 
@@ -52,7 +52,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
          *                          retrieve a feature vector for the given feature
          */
         ExactRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
-                            uint32 totalSumOfWeights, uint32 featureIndex, bool nominal,
+                            float64 totalSumOfWeights, uint32 featureIndex, bool nominal,
                             std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;

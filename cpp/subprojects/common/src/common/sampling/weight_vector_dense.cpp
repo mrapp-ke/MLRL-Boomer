@@ -1,8 +1,8 @@
 #include "common/sampling/weight_vector_dense.hpp"
 
 
-DenseWeightVector::DenseWeightVector(uint32 numElements, uint32 sumOfWeights)
-    : vector_(DenseVector<uint32>(numElements, true)), sumOfWeights_(sumOfWeights) {
+DenseWeightVector::DenseWeightVector(uint32 numElements, float64 sumOfWeights)
+    : vector_(DenseVector<float64>(numElements, true)), sumOfWeights_(sumOfWeights) {
 
 }
 
@@ -26,10 +26,10 @@ bool DenseWeightVector::hasZeroWeights() const {
     return true;
 }
 
-uint32 DenseWeightVector::getWeight(uint32 pos) const {
+float64 DenseWeightVector::getWeight(uint32 pos) const {
     return vector_.getValue(pos);
 }
 
-uint32 DenseWeightVector::getSumOfWeights() const {
+float64 DenseWeightVector::getSumOfWeights() const {
     return sumOfWeights_;
 }
