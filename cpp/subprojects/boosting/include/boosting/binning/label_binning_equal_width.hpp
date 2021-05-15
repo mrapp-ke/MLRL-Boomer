@@ -43,6 +43,9 @@ namespace boosting {
                                    HessianIterator hessiansBegin, HessianIterator hessiansEnd,
                                    float64 l2RegularizationWeight) const override;
 
+            /**
+             * @see `ILabelBinning::createBins`
+             */
             void createBins(
                 LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
                 HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,
