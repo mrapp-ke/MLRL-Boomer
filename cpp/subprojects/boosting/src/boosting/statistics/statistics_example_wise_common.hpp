@@ -342,25 +342,40 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IExampleWiseStatistics::setRuleEvaluationFactory`
+             */
             void setRuleEvaluationFactory(
                     std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) override {
                 this->ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
             }
 
+            /**
+             * @see `IStatistics::resetSampledStatistics`
+             */
             void resetSampledStatistics() override {
                 // This function is equivalent to the function `resetCoveredStatistics`...
                 this->resetCoveredStatistics();
             }
 
+            /**
+             * @see `IStatistics::addSampledStatistic`
+             */
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
                 // This function is equivalent to the function `updateCoveredStatistic`...
                 this->updateCoveredStatistic(statisticIndex, weight, false);
             }
 
+            /**
+             * @see `IStatistics::resetCoveredStatistics`
+             */
             void resetCoveredStatistics() override {
                 totalSumVectorPtr_->setAllToZero();
             }
 
+            /**
+             * @see `IStatistics::updateCoveredStatistic`
+             */
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
                 float64 signedWeight = remove ? -weight : weight;
                 totalSumVectorPtr_->add(this->statisticViewPtr_->gradients_row_cbegin(statisticIndex),
@@ -369,22 +384,34 @@ namespace boosting {
                                         this->statisticViewPtr_->hessians_row_cend(statisticIndex), signedWeight);
             }
 
+            /**
+             * @see `IStatistics::applyPrediction`
+             */
             void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
                 applyPredictionInternally<FullPrediction, LabelMatrix, StatisticView, ScoreMatrix>(
                     statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
                     *lossFunctionPtr_);
             }
 
+            /**
+             * @see `IStatistics::applyPrediction`
+             */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
                 applyPredictionInternally<PartialPrediction, LabelMatrix, StatisticView, ScoreMatrix>(
                     statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
                     *lossFunctionPtr_);
             }
 
+            /**
+             * @see `IStatistics::evaluatePrediction`
+             */
             float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
                 return measure.evaluate(statisticIndex, labelMatrix_, *scoreMatrixPtr_);
             }
 
+            /**
+             * @see `IStatistics::createHistogram`
+             */
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, StatisticMatrix,
                                                              ScoreMatrix>>(*this->statisticViewPtr_,
@@ -392,6 +419,9 @@ namespace boosting {
                                                                            this->ruleEvaluationFactoryPtr_, numBins);
             }
 
+            /**
+             * @see `IStatistics::createSubset`
+             */
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
                 std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                     this->ruleEvaluationFactoryPtr_->create(labelIndices);
@@ -399,6 +429,9 @@ namespace boosting {
                     *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
             }
 
+            /**
+             * @see `IStatistics::createSubset`
+             */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
                 std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =

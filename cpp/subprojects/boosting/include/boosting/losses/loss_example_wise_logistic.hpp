@@ -29,6 +29,9 @@ namespace boosting {
             float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override;
 
+            /**
+             * @see `ISimilarityMeasure::measureSimilarity`
+             */
             float64 measureSimilarity(const LabelVector& labelVector,
                                       CContiguousView<float64>::const_iterator scoresBegin,
                                       CContiguousView<float64>::const_iterator scoresEnd) const override;
