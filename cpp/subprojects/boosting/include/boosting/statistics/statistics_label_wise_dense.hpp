@@ -11,7 +11,8 @@
 namespace boosting {
 
     /**
-     * A factory that allows to create new instances of the class `LabelWiseStatistics`.
+     * A factory that allows to create new instances of the class `ILabelWiseStatistics` that use dense data structures
+     * to store the statistics.
      */
     class DenseLabelWiseStatisticsFactory final : public ILabelWiseStatisticsFactory {
 
