@@ -17,14 +17,30 @@ class CscConstView {
 
     protected:
 
+        /**
+         * The number of rows in the view.
+         */
         uint32 numRows_;
 
+        /**
+         * The number of columns in the view.
+         */
         uint32 numCols_;
 
+        /**
+         * A pointer to an array that stores all non-zero values.
+         */
         T* data_;
 
+        /**
+         * A pointer to an array that stores the row-indices, the values in `data_` correspond to.
+         */
         uint32* rowIndices_;
 
+        /**
+         * A pointer to an array that stores the indices of the first element in `data_` and `rowIndices_` that
+         * corresponds to a certain column.
+         */
         uint32* colIndices_;
 
     public:

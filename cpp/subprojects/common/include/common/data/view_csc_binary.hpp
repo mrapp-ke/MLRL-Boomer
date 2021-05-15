@@ -14,12 +14,25 @@ class BinaryCscConstView {
 
     protected:
 
+        /**
+         * The number of rows in the view.
+         */
         uint32 numRows_;
 
+        /**
+         * The number of columns in the view.
+         */
         uint32 numCols_;
 
+        /**
+         * A pointer to an array that stores the row-indices, the non-zero elements correspond to.
+         */
         uint32* rowIndices_;
 
+        /**
+         * A pointer to an array that stores the indices of the first element in `rowIndices_` that corresponds to a
+         * certain column.
+         */
         uint32* colIndices_;
 
     public:
@@ -64,7 +77,7 @@ class BinaryCscConstView {
         /**
          * Returns a `value_const_iterator` to the beginning of the values at a specific column.
          *
-         * @param row   The row
+         * @param col   The column
          * @return      A `value_const_iterator` to the beginning of the values
          */
         value_const_iterator column_values_cbegin(uint32 col) const;
@@ -72,7 +85,7 @@ class BinaryCscConstView {
         /**
          * Returns a `value_const_iterator` to the end of the values at a specific column.
          *
-         * @param row   The row
+         * @param col   The column
          * @return      A `value_const_iterator` to the end of the values
          */
         value_const_iterator column_values_cend(uint32 col) const;

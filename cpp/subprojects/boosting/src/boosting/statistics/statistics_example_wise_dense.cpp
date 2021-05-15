@@ -10,15 +10,28 @@
 
 namespace boosting {
 
+    /**
+     * A matrix that stores gradients and Hessians that have been calculated using a non-decomposable loss function
+     * using C-contiguous arrays.
+     */
     class DenseExampleWiseStatisticMatrix : public DenseExampleWiseStatisticView {
 
         public:
 
+            /**
+             * @param numRows       The number of rows in the matrix
+             * @param numGradients  The number of gradients per row
+             */
             DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients)
                 : DenseExampleWiseStatisticMatrix(numRows, numGradients, false) {
 
             }
 
+            /**
+             * @param numRows       The number of rows in the matrix
+             * @param numGradients  The number of gradients per row
+             * @param init          True, if the gradients and Hessiansshould be value-initialized, false otherwise
+             */
             DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients, bool init)
                 : DenseExampleWiseStatisticView(numRows, numGradients,
                                                 (float64*) (init ? calloc(numRows * numGradients, sizeof(float64))
@@ -35,6 +48,12 @@ namespace boosting {
 
     };
 
+    /**
+     * Provides access to gradients and Hessians that have been calculated according to a differentiable loss function
+     * that is applied example-wise and are stored using dense data structures.
+     *
+     * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
+     */
     template<class LabelMatrix>
     class DenseExampleWiseStatistics final : public AbstractExampleWiseStatistics<LabelMatrix,
                                                                                   DenseExampleWiseStatisticVector,
@@ -44,15 +63,28 @@ namespace boosting {
 
         public:
 
+            /**
+             * @param lossFunctionPtr           A shared pointer to an object of type `IExampleWiseLoss`, representing
+             *                                  the loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
+             *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
+             *                                  predictions, as well as corresponding quality scores, of rules
+             * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
+             *                                  access to the labels of the training examples
+             * @param statisticViewPtr          An unique pointer to an object of template type `StatisticView` that
+             *                                  provides access to the gradients and Hessians
+             * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that
+             *                                  stores the currently predicted scores
+             */
             DenseExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                                        std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                        const LabelMatrix& labelMatrix,
-                                       std::unique_ptr<DenseExampleWiseStatisticView> statisticMatrixPtr,
+                                       std::unique_ptr<DenseExampleWiseStatisticView> statisticViewPtr,
                                        std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr)
                 : AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
                                                 DenseExampleWiseStatisticView, DenseExampleWiseStatisticMatrix,
                                                 DenseNumericMatrix<float64>>(
-                      lossFunctionPtr, ruleEvaluationFactoryPtr, labelMatrix, std::move(statisticMatrixPtr),
+                      lossFunctionPtr, ruleEvaluationFactoryPtr, labelMatrix, std::move(statisticViewPtr),
                       std::move(scoreMatrixPtr)) {
 
             }
