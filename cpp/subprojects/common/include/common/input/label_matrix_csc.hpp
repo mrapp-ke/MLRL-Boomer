@@ -101,7 +101,7 @@ class CscLabelMatrix final {
         /**
          * Returns a `value_const_iterator` to the beginning of the values at a specific column.
          *
-         * @param row   The row
+         * @param col   The column
          * @return      A `value_const_iterator` to the beginning of the values
          */
         value_const_iterator column_values_cbegin(uint32 col) const;
@@ -109,7 +109,7 @@ class CscLabelMatrix final {
         /**
          * Returns a `value_const_iterator` to the end of the values at a specific column.
          *
-         * @param row   The row
+         * @param col   The column
          * @return      A `value_const_iterator` to the end of the values
          */
         value_const_iterator column_values_cend(uint32 col) const;

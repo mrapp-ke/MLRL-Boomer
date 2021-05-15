@@ -32,6 +32,12 @@ class CsrLabelMatrix final : public ILabelMatrix {
                  */
                 struct Hash {
 
+                    /**
+                     * Computes and returns a hash value for a given object of type `CsrLabelMatrix::View`.
+                     *
+                     * @param v A reference to an object of type `CsrLabelMatrix::View`
+                     * @return  The hash value
+                     */
                     inline std::size_t operator()(const View& v) const {
                         return hashArray(v.cbegin(), v.getNumElements());
                     }
@@ -43,6 +49,13 @@ class CsrLabelMatrix final : public ILabelMatrix {
                  */
                 struct Pred {
 
+                    /**
+                     * Returns whether two objects of tyep `CsrLabelMatrix::View` are equal or not.
+                     *
+                     * @param lhs   A reference to a first object of type `CsrLabelMatrix::View`
+                     * @param rhs   A reference to a second object of type `CsrLabelMatrix::View`
+                     * @return      True, if the given objects are equal, false otherwise
+                     */
                     inline bool operator()(const View& lhs, const View& rhs) const {
                         return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
                     }

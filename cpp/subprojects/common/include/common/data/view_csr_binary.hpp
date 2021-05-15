@@ -14,12 +14,25 @@ class BinaryCsrConstView {
 
     protected:
 
+        /**
+         * The number of rows in the view.
+         */
         uint32 numRows_;
 
+        /**
+         * The number of columns in the view.
+         */
         uint32 numCols_;
 
+        /**
+         * A pointer to an array that stores the indices of the first element in `colIndices_` that corresponds to a
+         * certain row.
+         */
         uint32* rowIndices_;
 
+        /**
+         * A pointer to an array that stores the column-indices, the non-zero elements correspond to.
+         */
         uint32* colIndices_;
 
     public:

@@ -22,6 +22,13 @@ struct IndexedValue {
      */
     struct Compare {
 
+        /**
+         * Returns whether the a given object of type `IndexedValue` should go before a second one.
+         *
+         * @param lhs   A reference to a first object of type `IndexedValue`
+         * @param rhs   A reference to a second object of type `IndexedValue`
+         * @return      True, if the first object should go before the second one, false otherwise
+         */
         inline bool operator()(const IndexedValue<T>& lhs, const IndexedValue<T>& rhs) const {
             return lhs.value < rhs.value || (lhs.value == rhs.value && lhs.index < rhs.index);
         }

@@ -16,6 +16,9 @@ class NoPartitionSampling final : public IPartitionSampling {
 
     public:
 
+        /**
+         * @param numExamples The total number of available training examples
+         */
         NoPartitionSampling(uint32 numExamples)
             : partition_(SinglePartition(numExamples)) {
 
