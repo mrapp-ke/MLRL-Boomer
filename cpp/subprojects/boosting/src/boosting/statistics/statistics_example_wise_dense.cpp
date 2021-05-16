@@ -4,6 +4,7 @@
 #include "boosting/data/statistic_view_dense_example_wise.hpp"
 #include "boosting/data/statistic_view_dense_label_wise.hpp"
 #include "statistics_example_wise_common.hpp"
+#include "statistics_example_wise_provider.hpp"
 #include "omp.h"
 #include <cstdlib>
 
@@ -142,6 +143,31 @@ namespace boosting {
     std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactory::create(
             const CsrLabelMatrix& labelMatrix) const {
         return createInternally<CsrLabelMatrix>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, numThreads_, labelMatrix);
+    }
+
+    DenseExampleWiseStatisticsProviderFactory::DenseExampleWiseStatisticsProviderFactory(
+            std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads)
+        : lossFunctionPtr_(lossFunctionPtr), defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
+          ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), numThreads_(numThreads) {
+
+    }
+
+    std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
+            const CContiguousLabelMatrix& labelMatrix) const {
+        DenseExampleWiseStatisticsFactory statisticsFactory(lossFunctionPtr_, defaultRuleEvaluationFactoryPtr_,
+                                                            numThreads_);
+        return std::make_unique<ExampleWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                               statisticsFactory.create(labelMatrix));
+    }
+
+    std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
+            const CsrLabelMatrix& labelMatrix) const {
+        DenseExampleWiseStatisticsFactory statisticsFactory(lossFunctionPtr_, defaultRuleEvaluationFactoryPtr_,
+                                                            numThreads_);
+        return std::make_unique<ExampleWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                               statisticsFactory.create(labelMatrix));
     }
 
 }

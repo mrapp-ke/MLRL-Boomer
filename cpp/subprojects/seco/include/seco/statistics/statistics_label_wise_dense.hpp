@@ -4,6 +4,7 @@
  */
 #pragma once
 
+#include "common/statistics/statistics_provider_factory.hpp"
 #include "seco/statistics/statistics_label_wise.hpp"
 
 
@@ -32,6 +33,40 @@ namespace seco {
             std::unique_ptr<ILabelWiseStatistics> create(const CContiguousLabelMatrix& labelMatrix) const override;
 
             std::unique_ptr<ILabelWiseStatistics> create(const CsrLabelMatrix& labelMatrix) const override;
+
+    };
+
+    /**
+     * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
+     * `ILabelWiseStatistics`, which uses dense data structures to store the statistics.
+     */
+    class DenseLabelWiseStatisticsProviderFactory : public IStatisticsProviderFactory {
+
+        private:
+
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
+
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+
+        public:
+
+            /**
+             * @param defaultRuleEvaluationFactoryPtr   A shared pointer to an object of type
+             *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
+             *                                          calculating the predictions, as well as corresponding quality
+             *                                          scores, of the default rule
+             * @param ruleEvaluationFactoryPtr          A shared pointer to an object of type
+             *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
+             *                                          calculating the predictions, as well as corresponding quality
+             *                                          scores, of all remaining rules
+             */
+            DenseLabelWiseStatisticsProviderFactory(
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+
+            std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const override;
+
+            std::unique_ptr<IStatisticsProvider> create(const CsrLabelMatrix& labelMatrix) const override;
 
     };
 

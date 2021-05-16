@@ -5,18 +5,18 @@ from mlrl.boosting.cython.rule_evaluation_label_wise cimport ILabelWiseRuleEvalu
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "boosting/statistics/statistics_label_wise_provider.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/statistics/statistics_label_wise_dense.hpp" namespace "boosting" nogil:
 
-    cdef cppclass LabelWiseStatisticsProviderFactoryImpl"boosting::LabelWiseStatisticsProviderFactory"(
+    cdef cppclass DenseLabelWiseStatisticsProviderFactoryImpl"boosting::DenseLabelWiseStatisticsProviderFactory"(
             IStatisticsProviderFactory):
 
         # Constructors:
 
-        LabelWiseStatisticsProviderFactoryImpl(
+        DenseLabelWiseStatisticsProviderFactoryImpl(
             shared_ptr[ILabelWiseLoss] lossFunctionPtr,
             shared_ptr[ILabelWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
             shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
 
 
-cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
+cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
     pass

@@ -4,17 +4,17 @@ from mlrl.seco.cython.rule_evaluation_label_wise cimport ILabelWiseRuleEvaluatio
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "seco/statistics/statistics_label_wise_provider.hpp" namespace "seco" nogil:
+cdef extern from "seco/statistics/statistics_label_wise_dense.hpp" namespace "seco" nogil:
 
-    cdef cppclass LabelWiseStatisticsProviderFactoryImpl"seco::LabelWiseStatisticsProviderFactory"(
+    cdef cppclass DenseLabelWiseStatisticsProviderFactoryImpl"seco::DenseLabelWiseStatisticsProviderFactory"(
             IStatisticsProviderFactory):
 
         # Constructors:
 
-        LabelWiseStatisticsProviderFactoryImpl(
+        DenseLabelWiseStatisticsProviderFactoryImpl(
             shared_ptr[ILabelWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
             shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
 
 
-cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
+cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
     pass

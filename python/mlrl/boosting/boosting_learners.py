@@ -19,8 +19,8 @@ from mlrl.boosting.cython.rule_evaluation_example_wise import RegularizedExample
     EqualWidthBinningExampleWiseRuleEvaluationFactory
 from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory, \
     EqualWidthBinningLabelWiseRuleEvaluationFactory
-from mlrl.boosting.cython.statistics_example_wise import ExampleWiseStatisticsProviderFactory
-from mlrl.boosting.cython.statistics_label_wise import LabelWiseStatisticsProviderFactory
+from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory
+from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, NoHeadRefinementFactory, \
     SingleLabelHeadRefinementFactory, FullHeadRefinementFactory
 from mlrl.common.cython.input import LabelMatrix
@@ -412,11 +412,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __create_statistics_provider_factory(self, loss_function, rule_evaluation_factory,
                                              num_threads: int) -> StatisticsProviderFactory:
         if isinstance(loss_function, LabelWiseLoss):
-            return LabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory,
-                                                      num_threads)
+            return DenseLabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory,
+                                                           rule_evaluation_factory, num_threads)
         else:
-            return ExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory, rule_evaluation_factory,
-                                                        num_threads)
+            return DenseExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory,
+                                                             rule_evaluation_factory, num_threads)
 
     def __create_head_refinement_factory(self) -> HeadRefinementFactory:
         head_refinement = self.___get_preferred_head_refinement()
