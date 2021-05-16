@@ -152,10 +152,10 @@ namespace boosting {
                                            DenseLabelWiseStatisticView& statisticView) const override final;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                            const CContiguousConstView<float64> scoreMatrix,
-                                            PartialIndexVector::const_iterator labelIndicesBegin,
-                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                            DenseLabelWiseStatisticView& statisticView) const override final;
+                                           const CContiguousConstView<float64> scoreMatrix,
+                                           PartialIndexVector::const_iterator labelIndicesBegin,
+                                           PartialIndexVector::const_iterator labelIndicesEnd,
+                                           DenseLabelWiseStatisticView& statisticView) const override final;
 
             float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override final;
