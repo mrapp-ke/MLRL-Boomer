@@ -8,7 +8,7 @@ from mlrl.boosting.cython.rule_evaluation_label_wise cimport LabelWiseRuleEvalua
 from libcpp.memory cimport make_shared
 
 
-cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
+cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
     """
     A wrapper for the C++ class `LabelWiseStatisticsProviderFactory`.
     """
@@ -26,6 +26,6 @@ cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
         :param num_threads:                     The number of CPU threads to be used to calculate the initial statistics
                                                 in parallel. Must be at least 1
         """
-        self.statistics_provider_factory_ptr = <shared_ptr[IStatisticsProviderFactory]>make_shared[LabelWiseStatisticsProviderFactoryImpl](
+        self.statistics_provider_factory_ptr = <shared_ptr[IStatisticsProviderFactory]>make_shared[DenseLabelWiseStatisticsProviderFactoryImpl](
             loss_function.loss_function_ptr, default_rule_evaluation_factory.rule_evaluation_factory_ptr,
             rule_evaluation_factory.rule_evaluation_factory_ptr, num_threads)

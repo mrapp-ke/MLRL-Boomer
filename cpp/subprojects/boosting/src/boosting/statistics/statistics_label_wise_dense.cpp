@@ -4,6 +4,7 @@
 #include "boosting/data/statistic_view_dense_example_wise.hpp"
 #include "boosting/data/statistic_view_dense_label_wise.hpp"
 #include "statistics_label_wise_common.hpp"
+#include "statistics_label_wise_provider.hpp"
 #include "omp.h"
 #include <cstdlib>
 
@@ -144,5 +145,31 @@ namespace boosting {
             const CsrLabelMatrix& labelMatrix) const {
         return createInternally<CsrLabelMatrix>(lossFunctionPtr_, ruleEvaluationFactoryPtr_, numThreads_, labelMatrix);
     }
+
+    DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
+            std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads)
+        : lossFunctionPtr_(lossFunctionPtr), defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
+          ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), numThreads_(numThreads) {
+
+    }
+
+    std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
+            const CContiguousLabelMatrix& labelMatrix) const {
+        DenseLabelWiseStatisticsFactory statisticsFactory(lossFunctionPtr_, defaultRuleEvaluationFactoryPtr_,
+                                                          numThreads_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                             statisticsFactory.create(labelMatrix));
+    }
+
+    std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
+            const CsrLabelMatrix& labelMatrix) const {
+        DenseLabelWiseStatisticsFactory statisticsFactory(lossFunctionPtr_, defaultRuleEvaluationFactoryPtr_,
+                                                          numThreads_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                             statisticsFactory.create(labelMatrix));
+    }
+
 
 }

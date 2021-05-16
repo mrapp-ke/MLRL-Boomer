@@ -13,7 +13,7 @@ from mlrl.seco.cython.heuristics import Heuristic, Precision, Recall, WRA, Hammi
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
 from mlrl.seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
-from mlrl.seco.cython.statistics_label_wise import LabelWiseStatisticsProviderFactory
+from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
@@ -231,7 +231,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         if loss == AVERAGING_LABEL_WISE:
             default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, predictMajority=True)
             rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic)
-            return LabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, rule_evaluation_factory)
+            return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, rule_evaluation_factory)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:
