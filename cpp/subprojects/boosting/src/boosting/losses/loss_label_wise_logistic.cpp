@@ -11,7 +11,7 @@ namespace boosting {
      * @param x The value `x`
      * @return  The value that has been calculated
      */
-    static inline float64 squaredLogisticFunction(float64 x) {
+    static inline constexpr float64 squaredLogisticFunction(float64 x) {
         if (x >= 0) {
             float64 exponential = std::exp(-x);  // Evaluates to 0 for large x, resulting in 1 ultimately
             return 1 / ((exponential + 1) * (exponential + 1));
@@ -31,7 +31,7 @@ namespace boosting {
      * @param x The value `x`
      * @return  The value that has been calculated
      */
-    static inline float64 logSumExp(float64 x) {
+    static inline constexpr float64 logSumExp(float64 x) {
         if (x > 0) {
             return x + std::log(std::exp(0 - x) + 1);
         } else {
