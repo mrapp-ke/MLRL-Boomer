@@ -15,7 +15,7 @@ namespace boosting {
      * @param n A scalar of type `uint32`, representing the order of the triangular number
      * @return  A scalar of type `uint32`, representing the n-th triangular number
      */
-    static inline uint32 triangularNumber(uint32 n) {
+    static inline constexpr uint32 triangularNumber(uint32 n) {
         return (n * (n + 1)) / 2;
     }
 
@@ -29,7 +29,7 @@ namespace boosting {
      * @param x The value `x`
      * @return  The value that has been calculated
      */
-    static inline float64 logisticFunction(float64 x) {
+    static inline constexpr float64 logisticFunction(float64 x) {
         if (x >= 0) {
             float64 exponential = std::exp(-x);  // Evaluates to 0 for large x, resulting in 1 ultimately
             return 1 / (1 + exponential);
@@ -50,7 +50,7 @@ namespace boosting {
      * @return          The square of the L2 norm
     */
     template<class Iterator>
-    static inline float64 l2NormPow(Iterator iterator, uint32 n) {
+    static inline constexpr float64 l2NormPow(Iterator iterator, uint32 n) {
         float64 result = 0;
 
         for (uint32 i = 0; i < n; i++) {
@@ -76,7 +76,7 @@ namespace boosting {
      * @return                  The square of the L2 norm
     */
     template<class Iterator, class WeightIterator>
-    static inline float64 l2NormPow(Iterator iterator, WeightIterator weightIterator, uint32 n) {
+    static inline constexpr float64 l2NormPow(Iterator iterator, WeightIterator weightIterator, uint32 n) {
         float64 result = 0;
 
         for (uint32 i = 0; i < n; i++) {

@@ -8,7 +8,8 @@
 
 namespace boosting {
 
-    static inline float64 calculateStatistic(float64 gradient, float64 hessian, float64 l2RegularizationWeight) {
+    static inline constexpr float64 calculateStatistic(float64 gradient, float64 hessian,
+                                                       float64 l2RegularizationWeight) {
         return divideOrZero<float64>(gradient, hessian + l2RegularizationWeight);
     }
 
