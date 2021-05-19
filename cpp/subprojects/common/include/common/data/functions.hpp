@@ -13,7 +13,7 @@
  * @param numElements   The number of elements in the array
  * @return              The hash value
  */
-static inline std::size_t hashArray(const uint32* a, uint32 numElements) {
+static inline constexpr std::size_t hashArray(const uint32* a, uint32 numElements) {
     std::size_t hashValue = (std::size_t) numElements;
 
     for (uint32 i = 0; i < numElements; i++) {
@@ -34,7 +34,8 @@ static inline std::size_t hashArray(const uint32* a, uint32 numElements) {
  * @return                  True, if both arrays are equal, false otherwise
  */
 template<class T>
-static inline bool compareArrays(const T* first, uint32 firstNumElements, const T* second, uint32 secondNumElements) {
+static inline constexpr bool compareArrays(const T* first, uint32 firstNumElements, const T* second,
+                                           uint32 secondNumElements) {
     if (firstNumElements != secondNumElements) {
         return false;
     }

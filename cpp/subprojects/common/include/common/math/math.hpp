@@ -16,7 +16,7 @@
  * @return              The result of the division or 0, if a division by zero occurred
  */
 template<class T>
-static inline T divideOrZero(T numerator, T denominator) {
+static inline constexpr T divideOrZero(T numerator, T denominator) {
     T result = numerator / denominator;
     return std::isfinite(result) ? result : 0;
 }
@@ -31,7 +31,7 @@ static inline T divideOrZero(T numerator, T denominator) {
  * @return      The mean that has been calculated
  */
 template<class T>
-static inline T arithmeticMean(T small, T large) {
+static inline constexpr T arithmeticMean(T small, T large) {
     return small + ((large - small) * 0.5);
 }
 
@@ -49,6 +49,6 @@ static inline T arithmeticMean(T small, T large) {
  * @return      The arithmetic mean of all values provided so far
  */
 template<class T>
-static inline T iterativeArithmeticMean(uint32 n, T x, T mean) {
+static inline constexpr T iterativeArithmeticMean(uint32 n, T x, T mean) {
     return mean + ((x - mean) / (T) n);
 }
