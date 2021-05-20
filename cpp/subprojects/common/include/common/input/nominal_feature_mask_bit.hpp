@@ -3,21 +3,26 @@
  */
 #pragma once
 
-#include "common/data/vector_dok_binary.hpp"
+#include "common/data/vector_bit.hpp"
 #include "common/input/nominal_feature_mask.hpp"
 
 
 /**
  * Provides access to the information whether the features at specific indices are nominal or not, based on a
- * `BinaryDokVector` that stores the indices of all nominal features.
+ * `BitVector` that stores whether individual features are nominal or not.
  */
-class DokNominalFeatureMask : public INominalFeatureMask {
+class BitNominalFeatureMask : public INominalFeatureMask {
 
     private:
 
-        BinaryDokVector vector_;
+        BitVector vector_;
 
     public:
+
+        /**
+         * @param numFeatures The total number of available features
+         */
+        BitNominalFeatureMask(uint32 numFeatures);
 
         /**
          * Marks the feature at a specific index as nominal.
