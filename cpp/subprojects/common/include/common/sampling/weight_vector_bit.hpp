@@ -44,7 +44,12 @@ class BitWeightVector final : public IWeightVector {
          * @param pos       The position
          * @param weight    The weight to be set
          */
-        void setWeight(uint32 pos, bool weight);
+        void set(uint32 pos, bool weight);
+
+        /**
+         * Sets all weights to zero.
+         */
+        void setAllToZero();
 
         /**
          * Sets the number of non-zero weights.
