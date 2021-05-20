@@ -3,8 +3,7 @@
  */
 #pragma once
 
-#include "common/sampling/weight_vector_dense.hpp"
-#include "common/data/arrays.hpp"
+#include "common/sampling/weight_vector_bit.hpp"
 #include <unordered_set>
 
 
@@ -15,18 +14,16 @@
  *
  * @tparam Iterator     The type of the iterator that provides random access to the indices of the available elements to
  *                      sample from
- * @param weightVector  A reference to an object of type `DenseWeightVector` the weights should be written to
+ * @param weightVector  A reference to an object of type `BitWeightVector` the weights should be written to
  * @param iterator      An iterator that provides random access to the indices of the available elements to sample from
  * @param numTotal      The total number of available elements to sample from
  * @param numSamples    The number of weights to be set to 1
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class Iterator>
-static inline void sampleWeightsWithoutReplacementViaTrackingSelection(DenseWeightVector<uint8>& weightVector,
-                                                                       Iterator iterator, uint32 numTotal,
-                                                                       uint32 numSamples, RNG& rng) {
-    typename DenseWeightVector<uint8>::iterator sampleIterator = weightVector.begin();
-    setArrayToZeros(sampleIterator, weightVector.getNumElements());
+static inline void sampleWeightsWithoutReplacementViaTrackingSelection(BitWeightVector& weightVector, Iterator iterator,
+                                                                       uint32 numTotal, uint32 numSamples, RNG& rng) {
+    weightVector.setAllToZero();
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -39,7 +36,7 @@ static inline void sampleWeightsWithoutReplacementViaTrackingSelection(DenseWeig
             shouldContinue = !selectedIndices.insert(sampledIndex).second;
         }
 
-        sampleIterator[sampledIndex] = 1;
+        weightVector.set(sampledIndex, true);
     }
 
     weightVector.setNumNonZeroWeights(numSamples);
@@ -51,17 +48,16 @@ static inline void sampleWeightsWithoutReplacementViaTrackingSelection(DenseWeig
  *
  * @tparam Iterator     The type of the iterator that provides random access to the indices of the available elements to
  *                      sample from
- * @param weightVector  A reference to an object of type `DenseWeightVector` the weights should be written to
+ * @param weightVector  A reference to an object of type `BitWeightVector` the weights should be written to
  * @param iterator      An iterator that provides random access to the indices of the available elements to sample from
  * @param numTotal      The total number of available elements to sample from
  * @param numSamples    The number of weights to be set to 1
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
 template<class Iterator>
-static inline void sampleWeightsWithoutReplacementViaPool(DenseWeightVector<uint8>& weightVector, Iterator iterator,
+static inline void sampleWeightsWithoutReplacementViaPool(BitWeightVector& weightVector, Iterator iterator,
                                                           uint32 numTotal, uint32 numSamples, RNG& rng) {
-    typename DenseWeightVector<uint8>::iterator sampleIterator = weightVector.begin();
-    setArrayToZeros(sampleIterator, weightVector.getNumElements());
+    weightVector.setAllToZero();
     uint32 pool[numTotal];
 
     // Initialize pool...
@@ -75,7 +71,7 @@ static inline void sampleWeightsWithoutReplacementViaPool(DenseWeightVector<uint
         uint32 sampledIndex = pool[randomIndex];
 
         // Set weight at the selected index to 1...
-        sampleIterator[sampledIndex] = 1;
+        weightVector.set(sampledIndex, true);
 
         // Move the index at the border to the position of the recently drawn index...
         pool[randomIndex] = pool[numTotal - i - 1];
@@ -90,7 +86,7 @@ static inline void sampleWeightsWithoutReplacementViaPool(DenseWeightVector<uint
  *
  * @tparam Iterator     The type of the iterator that provides random access to the indices of the available elements to
  *                      sample from
- * @param weightVector  A reference to an object of type `DenseWeightVector` the weights should be written to
+ * @param weightVector  A reference to an object of type `BitWeightVector` the weights should be written to
  * @param iterator      An iterator that provides random access to the indices of the available elements to sample from
  * @param numTotal      The total number of available elements to sample from
  * @param numSamples    The number of weights to be set to 1
@@ -98,8 +94,8 @@ static inline void sampleWeightsWithoutReplacementViaPool(DenseWeightVector<uint
  *
  */
 template<class Iterator>
-static inline void sampleWeightsWithoutReplacement(DenseWeightVector<uint8>& weightVector, Iterator iterator,
-                                                   uint32 numTotal, uint32 numSamples, RNG& rng) {
+static inline void sampleWeightsWithoutReplacement(BitWeightVector& weightVector, Iterator iterator, uint32 numTotal,
+                                                   uint32 numSamples, RNG& rng) {
     float64 ratio = numTotal > 0 ? ((float64) numSamples) / ((float64) numTotal) : 1;
 
     if (ratio < 0.06) {
