@@ -78,6 +78,7 @@ source_files = [
     'src/common/sampling/partition_sampling_no.cpp',
     'src/common/sampling/partition_single.cpp',
     'src/common/sampling/random.cpp',
+    'src/common/sampling/weight_vector_bit.cpp',
     'src/common/sampling/weight_vector_dense.cpp',
     'src/common/sampling/weight_vector_equal.cpp',
     'src/common/stopping/stopping_criterion_measure.cpp',
