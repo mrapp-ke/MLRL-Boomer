@@ -114,9 +114,9 @@ cdef extern from "common/input/nominal_feature_mask.hpp" nogil:
         pass
 
 
-cdef extern from "common/input/nominal_feature_mask_dok.hpp" nogil:
+cdef extern from "common/input/nominal_feature_mask_bit.hpp" nogil:
 
-    cdef cppclass DokNominalFeatureMaskImpl"DokNominalFeatureMask"(INominalFeatureMask):
+    cdef cppclass BitNominalFeatureMaskImpl"BitNominalFeatureMask"(INominalFeatureMask):
 
         # Functions:
 
@@ -187,7 +187,7 @@ cdef class NominalFeatureMask:
     cdef shared_ptr[INominalFeatureMask] nominal_feature_mask_ptr
 
 
-cdef class DokNominalFeatureMask(NominalFeatureMask):
+cdef class BitNominalFeatureMask(NominalFeatureMask):
     pass
 
 
