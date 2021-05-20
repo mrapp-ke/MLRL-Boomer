@@ -55,4 +55,9 @@ class BitVector final {
          */
         uint32 getNumElements() const;
 
+        /**
+         * Sets the values of all elements to zero.
+         */
+        void setAllToZero();
+
 };

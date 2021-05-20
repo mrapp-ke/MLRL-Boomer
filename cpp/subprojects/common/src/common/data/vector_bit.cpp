@@ -1,4 +1,5 @@
 #include "common/data/vector_bit.hpp"
+#include "common/data/arrays.hpp"
 #include <climits>
 
 
@@ -44,4 +45,8 @@ void BitVector::set(uint32 pos, bool value) {
 
 uint32 BitVector::getNumElements() const {
     return numElements_;
+}
+
+void BitVector::setAllToZero() {
+    setArrayToZeros(array_, size(numElements_));
 }
