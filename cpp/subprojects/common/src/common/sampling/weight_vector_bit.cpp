@@ -27,8 +27,12 @@ bool BitWeightVector::hasZeroWeights() const {
     return numNonZeroWeights_ < vector_.getNumElements();
 }
 
-void BitWeightVector::setWeight(uint32 pos, bool weight) {
+void BitWeightVector::set(uint32 pos, bool weight) {
     vector_.set(pos, weight);
+}
+
+void BitWeightVector::setAllToZero() {
+    vector_.setAllToZero();
 }
 
 float64 BitWeightVector::getWeight(uint32 pos) const {
