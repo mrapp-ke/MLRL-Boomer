@@ -30,10 +30,10 @@ class IWeightVector {
         virtual bool hasZeroWeights() const = 0;
 
         /**
-         * Returns the weight of the example at a specific index.
+         * Returns the weight at a specific index.
          *
-         * @param pos   The index of the example
-         * @return      The weight of the example at the given index
+         * @param pos   The index
+         * @return      The weight at the given index
          */
         virtual float64 getWeight(uint32 pos) const = 0;
 

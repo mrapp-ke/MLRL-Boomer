@@ -6,15 +6,15 @@
 
 
 static inline void subSampleInternally(const SinglePartition& partition, float32 sampleSize,
-                                       DenseWeightVector<uint8>& weightVector, RNG& rng) {
+                                       BitWeightVector& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize * numExamples);
     sampleWeightsWithoutReplacement<IndexIterator>(weightVector, IndexIterator(numExamples), numExamples, numSamples,
                                                    rng);
 }
 
-static inline void subSampleInternally(BiPartition& partition, float32 sampleSize,
-                                       DenseWeightVector<uint8>& weightVector, RNG& rng) {
+static inline void subSampleInternally(BiPartition& partition, float32 sampleSize, BitWeightVector& weightVector,
+                                       RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize * numTrainingExamples);
     sampleWeightsWithoutReplacement<BiPartition::const_iterator>(weightVector, partition.first_cbegin(),
@@ -36,7 +36,7 @@ class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
 
         float32 sampleSize_;
 
-        DenseWeightVector<uint8> weightVector_;
+        BitWeightVector weightVector_;
 
     public:
 
@@ -48,7 +48,7 @@ class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
          */
         RandomInstanceSubsetSelection(Partition& partition, float32 sampleSize)
             : partition_(partition), sampleSize_(sampleSize),
-              weightVector_(DenseWeightVector<uint8>(partition.getNumElements())) {
+              weightVector_(BitWeightVector(partition.getNumElements())) {
 
         }
 

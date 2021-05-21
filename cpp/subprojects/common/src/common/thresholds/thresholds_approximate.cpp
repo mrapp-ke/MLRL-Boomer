@@ -1,7 +1,6 @@
 #include "common/thresholds/thresholds_approximate.hpp"
 #include "common/binning/feature_binning_nominal.hpp"
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
-#include "common/data/arrays.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
 
@@ -107,26 +106,28 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, cons
     histogram.setAllToZero();
 
     // Reset the weights of all bins to zero...
-    BinWeightVector::iterator binWeightIterator = binWeights.begin();
-    setArrayToZeros(binWeightIterator, binWeights.getNumElements());
+    binWeights.setAllToZero();
 
     // Iterate the covered examples and add their statistics to the corresponding bin...
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
-    uint8 sparseBinWeight = 0;
+    bool sparseBinWeight = false;
 
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = coverageSetIterator[i];
 
         if (!thresholdVector.isMissing(exampleIndex)) {
-            uint32 binIndex = binIndices.getBinIndex(exampleIndex);
             float64 weight = weights.getWeight(exampleIndex);
 
-            if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
-                binWeightIterator[binIndex] |= (weight > 0);
-                histogram.addToBin(binIndex, exampleIndex, weight);
-            } else {
-                sparseBinWeight |= (weight > 0);
+            if (weight > 0) {
+                uint32 binIndex = binIndices.getBinIndex(exampleIndex);
+
+                if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
+                    binWeights.set(binIndex, true);
+                    histogram.addToBin(binIndex, exampleIndex, weight);
+                } else {
+                    sparseBinWeight = true;
+                }
             }
         }
     }
@@ -134,7 +135,7 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, cons
     uint32 sparseBinIndex = thresholdVector.getSparseBinIndex();
 
     if (sparseBinIndex < thresholdVector.getNumElements()) {
-        binWeightIterator[sparseBinIndex] = sparseBinWeight;
+        binWeights.set(sparseBinIndex, sparseBinWeight);
     }
 }
 

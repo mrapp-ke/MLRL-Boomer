@@ -14,7 +14,7 @@ from typing import List
 
 import numpy as np
 from mlrl.common.cython.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
-from mlrl.common.cython.input import DokNominalFeatureMask, EqualNominalFeatureMask
+from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureMask
 from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
 from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
@@ -423,7 +423,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         elif len(self.nominal_attribute_indices) == num_features:
             nominal_feature_mask = EqualNominalFeatureMask(True)
         else:
-            nominal_feature_mask = DokNominalFeatureMask(self.nominal_attribute_indices)
+            nominal_feature_mask = BitNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
         rule_model_induction = self._create_rule_model_induction(num_labels)
