@@ -4,38 +4,33 @@
 #pragma once
 
 #include "common/data/types.hpp"
-#include <unordered_set>
 
 
 /**
- * An one-dimensional sparse vector that stores binary data using the dictionary of keys (DOK) format.
+ * An one-dimension vector that stores binary data in a space-efficient way.
  */
-class BinaryDokVector final {
+class BitVector final {
 
     private:
 
-        std::unordered_set<uint32> data_;
+        uint32 numElements_;
+
+        uint32* array_;
 
     public:
 
         /**
-         * An iterator that provides read-only access to the elements in the vector.
+         * @param numElements The number of elements in the vector
          */
-        typedef std::unordered_set<uint32>::const_iterator index_const_iterator;
+        BitVector(uint32 numElements);
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the indices.
-         *
-         * @return An `index_const_iterator` to the beginning
+         * @param numElements   The number of elements in the vector
+         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
-        index_const_iterator indices_cbegin() const;
+        BitVector(uint32 numElements, bool init);
 
-        /**
-         * Returns an `index_const_iterator` to the end of the indices.
-         *
-         * @return An `index_const_iterator` to the end
-         */
-        index_const_iterator indices_cend() const;
+        ~BitVector();
 
         /**
          * Returns the value of the element at a specific position.
@@ -52,6 +47,13 @@ class BinaryDokVector final {
          * @param value The value to be set
          */
         void set(uint32 pos, bool value);
+
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements in the vector
+         */
+        uint32 getNumElements() const;
 
         /**
          * Sets the values of all elements to zero.

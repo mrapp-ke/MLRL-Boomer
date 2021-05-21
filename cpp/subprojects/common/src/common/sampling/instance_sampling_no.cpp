@@ -1,6 +1,6 @@
 #include "common/sampling/instance_sampling_no.hpp"
+#include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/weight_vector_equal.hpp"
-#include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/data/arrays.hpp"
@@ -10,16 +10,14 @@ static inline void subSampleInternally(const SinglePartition& partition, EqualWe
     return;
 }
 
-static inline void subSampleInternally(BiPartition& partition, DenseWeightVector<uint8>& weightVector, RNG& rng) {
-    uint32 numExamples = partition.getNumElements();
+static inline void subSampleInternally(BiPartition& partition, BitWeightVector& weightVector, RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
-    typename DenseWeightVector<uint8>::iterator weightIterator = weightVector.begin();
-    setArrayToZeros(weightIterator, numExamples);
+    weightVector.setAllToZero();
 
     for (uint32 i = 0; i < numTrainingExamples; i++) {
         uint32 index = indexIterator[i];
-        weightIterator[index] = 1;
+        weightVector.set(index, true);
     }
 
     weightVector.setNumNonZeroWeights(numTrainingExamples);
@@ -67,7 +65,7 @@ std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(
         const CContiguousLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
-    return std::make_unique<NoInstanceSubSampling<BiPartition, DenseWeightVector<uint8>>>(partition);
+    return std::make_unique<NoInstanceSubSampling<BiPartition, BitWeightVector>>(partition);
 }
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
@@ -79,5 +77,5 @@ std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
                                                                            BiPartition& partition,
                                                                            IStatistics& statistics) const {
-    return std::make_unique<NoInstanceSubSampling<BiPartition, DenseWeightVector<uint8>>>(partition);
+    return std::make_unique<NoInstanceSubSampling<BiPartition, BitWeightVector>>(partition);
 }
