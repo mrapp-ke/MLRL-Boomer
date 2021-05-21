@@ -12,3 +12,6 @@ DATASET=$1
 ./slurm.sh "${DATASET}" "f-measure{\\'beta\\':0.25}" "precision"
 ./slurm.sh "${DATASET}" "laplace" "irep"
 ./slurm.sh "${DATASET}" "f-measure{\\'beta\\':0.25}" "irep"
+./slurm.sh "${DATASET}" "laplace"
+./slurm.sh "${DATASET}" "f-measure{\\'beta\\':0.25}"
+./slurm.sh "${DATASET}" "precision"

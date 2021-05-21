@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$#" -ne 3 ]; then
+if [ "$#" -ne 2 ]; then
     echo "Illegal number of arguments!"
     exit 1
 fi
@@ -8,7 +8,7 @@ fi
 # Command line arguments
 DATASET=$1
 HEURISTIC=$2
-PRUNING_HEURISTIC=$3
+PRUNING_HEURISTIC=${3:=""}
 
 # Constants
 MEMORY=2048
@@ -24,6 +24,7 @@ TIME_LIMIT_SECONDS=$((TIME_LIMIT_HOURS*3600))
 # Paths
 ROOT_DIR="${PWD}"
 DATA_DIR="${ROOT_DIR}/data"
+
 SUB_DIR="${DATASET}_pruning_${HEURISTIC::1}_${PRUNING_HEURISTIC::1}"
 LOG_DIR="${ROOT_DIR}/results/${SUB_DIR}/logs"
 OUTPUT_DIR="${ROOT_DIR}/results/${SUB_DIR}/evaluation"
@@ -39,7 +40,12 @@ echo "Creating directory ${OUTPUT_DIR}"
 mkdir -p "${OUTPUT_DIR}"
 
 FILE="${SUB_DIR}.sh"
-PARAMETERS="--log-level ${LOG_LEVEL} --data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --output-dir ${OUTPUT_DIR} --folds ${FOLDS} --current-fold \$SLURM_ARRAY_TASK_ID --max-rules ${MAX_RULES} --time-limit ${TIME_LIMIT_SECONDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --heuristic ${HEURISTIC} --pruning-heuristic ${PRUNING_HEURISTIC} --head-refinement ${HEAD_REFINEMENT}"
+
+if [[ -n $PRUNING_HEURISTIC ]]; then
+  PARAMETERS="--log-level ${LOG_LEVEL} --data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --output-dir ${OUTPUT_DIR} --folds ${FOLDS} --current-fold \$SLURM_ARRAY_TASK_ID --max-rules ${MAX_RULES} --time-limit ${TIME_LIMIT_SECONDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --heuristic ${HEURISTIC} --pruning irep --pruning-heuristic ${PRUNING_HEURISTIC} --head-refinement ${HEAD_REFINEMENT}"
+else
+  PARAMETERS="--log-level ${LOG_LEVEL} --data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --output-dir ${OUTPUT_DIR} --folds ${FOLDS} --current-fold \$SLURM_ARRAY_TASK_ID --max-rules ${MAX_RULES} --time-limit ${TIME_LIMIT_SECONDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --heuristic ${HEURISTIC} --head-refinement ${HEAD_REFINEMENT}"
+fi
 
 {
   echo "#!/bin/bash"
