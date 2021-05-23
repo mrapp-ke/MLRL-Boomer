@@ -233,14 +233,14 @@ namespace boosting {
 
         private:
 
-            const StatisticView& statisticView_;
+            const StatisticView& originalStatisticView_;
 
             const StatisticVector* totalSumVector_;
 
         public:
 
             /**
-             * @param statisticView             A reference to an object of template type `StatisticView` that provides
+             * @param originalStatisticView     A reference to an object of template type `StatisticView` that provides
              *                                  access to the original gradients and Hessians, the histogram was created
              *                                  from
              * @param totalSumVector            A pointer to an object of template type `StatisticVector` that stores
@@ -250,12 +250,13 @@ namespace boosting {
              *                                  predictions, as well as corresponding quality scores, of rules
              * @param numBins                   The number of bins in the histogram
              */
-            ExampleWiseHistogram(const StatisticView& statisticView, const StatisticVector* totalSumVector,
+            ExampleWiseHistogram(const StatisticView& originalStatisticView, const StatisticVector* totalSumVector,
                                  std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                  uint32 numBins)
                 : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, StatisticMatrix, ScoreMatrix>(
-                      std::make_unique<StatisticMatrix>(numBins, statisticView.getNumCols()), ruleEvaluationFactoryPtr),
-                  statisticView_(statisticView), totalSumVector_(totalSumVector) {
+                      std::make_unique<StatisticMatrix>(numBins, originalStatisticView.getNumCols()),
+                      ruleEvaluationFactoryPtr),
+                  originalStatisticView_(originalStatisticView), totalSumVector_(totalSumVector) {
 
             }
 
@@ -264,10 +265,10 @@ namespace boosting {
             }
 
             void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
-                this->statisticViewPtr_->addToRow(binIndex, statisticView_.gradients_row_cbegin(statisticIndex),
-                                                  statisticView_.gradients_row_cend(statisticIndex),
-                                                  statisticView_.hessians_row_cbegin(statisticIndex),
-                                                  statisticView_.hessians_row_cend(statisticIndex), weight);
+                this->statisticViewPtr_->addToRow(binIndex, originalStatisticView_.gradients_row_cbegin(statisticIndex),
+                                                  originalStatisticView_.gradients_row_cend(statisticIndex),
+                                                  originalStatisticView_.hessians_row_cbegin(statisticIndex),
+                                                  originalStatisticView_.hessians_row_cend(statisticIndex), weight);
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
@@ -300,9 +301,9 @@ namespace boosting {
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
     template<class LabelMatrix, class StatisticVector, class StatisticView, class StatisticMatrix, class ScoreMatrix>
-    class AbstractExampleWiseStatistics : public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
-                                                                                        StatisticMatrix, ScoreMatrix>,
-                                  virtual public IExampleWiseStatistics {
+    class ExampleWiseStatistics final : public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
+                                                                                      StatisticMatrix, ScoreMatrix>,
+                                        virtual public IExampleWiseStatistics {
 
         private:
 
@@ -329,11 +330,10 @@ namespace boosting {
              * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that
              *                                  stores the currently predicted scores
              */
-            AbstractExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-                                          std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                          const LabelMatrix& labelMatrix,
-                                          std::unique_ptr<StatisticView> statisticViewPtr,
-                                          std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
+            ExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
+                                  std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                                  const LabelMatrix& labelMatrix, std::unique_ptr<StatisticView> statisticViewPtr,
+                                  std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, StatisticMatrix, ScoreMatrix>(
                       std::move(statisticViewPtr), ruleEvaluationFactoryPtr),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticViewPtr_->getNumCols())),
@@ -414,9 +414,8 @@ namespace boosting {
              */
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, StatisticMatrix,
-                                                             ScoreMatrix>>(*this->statisticViewPtr_,
-                                                                           totalSumVectorPtr_.get(),
-                                                                           this->ruleEvaluationFactoryPtr_, numBins);
+                                                             ScoreMatrix>>(
+                    *this->statisticViewPtr_, totalSumVectorPtr_.get(), this->ruleEvaluationFactoryPtr_, numBins);
             }
 
             /**
@@ -425,8 +424,9 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
                 std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                     this->ruleEvaluationFactoryPtr_->create(labelIndices);
-                return std::make_unique<typename AbstractExampleWiseStatistics::FullSubset>(
-                    *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
+                return std::make_unique<typename ExampleWiseStatistics::FullSubset>(*this, totalSumVectorPtr_.get(),
+                                                                                    std::move(ruleEvaluationPtr),
+                                                                                    labelIndices);
             }
 
             /**
@@ -436,8 +436,9 @@ namespace boosting {
                     const PartialIndexVector& labelIndices) const override final {
                 std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr =
                     this->ruleEvaluationFactoryPtr_->create(labelIndices);
-                return std::make_unique<typename AbstractExampleWiseStatistics::PartialSubset>(
-                    *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
+                return std::make_unique<typename ExampleWiseStatistics::PartialSubset>(*this, totalSumVectorPtr_.get(),
+                                                                                       std::move(ruleEvaluationPtr),
+                                                                                       labelIndices);
             }
 
     };

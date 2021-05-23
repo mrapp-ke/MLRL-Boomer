@@ -1,5 +1,4 @@
 #include "boosting/data/statistic_view_dense_example_wise.hpp"
-#include "boosting/math/math.hpp"
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
 
@@ -7,9 +6,10 @@
 namespace boosting {
 
     DenseExampleWiseStatisticConstView::DenseExampleWiseStatisticConstView(uint32 numRows, uint32 numGradients,
-                                                                           float64* gradients, float64* hessians)
-        : numRows_(numRows), numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
-          gradients_(gradients), hessians_(hessians) {
+                                                                           uint32 numHessians, float64* gradients,
+                                                                           float64* hessians)
+        : numRows_(numRows), numGradients_(numGradients), numHessians_(numHessians), gradients_(gradients),
+          hessians_(hessians) {
 
     }
 
@@ -42,8 +42,9 @@ namespace boosting {
     }
 
     DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients,
-                                                                 float64* gradients, float64* hessians)
-        : DenseExampleWiseStatisticConstView(numRows, numGradients, gradients, hessians) {
+                                                                 uint32 numHessians, float64* gradients,
+                                                                 float64* hessians)
+        : DenseExampleWiseStatisticConstView(numRows, numGradients, numHessians, gradients, hessians) {
 
     }
 

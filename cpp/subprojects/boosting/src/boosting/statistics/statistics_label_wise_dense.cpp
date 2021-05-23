@@ -1,7 +1,6 @@
 #include "boosting/statistics/statistics_label_wise_dense.hpp"
 #include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/statistic_vector_dense_label_wise.hpp"
-#include "boosting/data/statistic_view_dense_example_wise.hpp"
 #include "boosting/data/statistic_view_dense_label_wise.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_label_wise_provider.hpp"
@@ -24,21 +23,8 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : DenseLabelWiseStatisticMatrix(numRows, numCols, false) {
-
-            }
-
-            /**
-             * @param numRows   The number of rows in the matrix
-             * @param numCols   The number of columns in the matrix
-             * @param init      True, if the the gradients and Hessians should be value-initialized, false otherwise
-             */
-            DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols, bool init)
-                : DenseLabelWiseStatisticView(numRows, numCols,
-                                              (float64*) (init ? calloc(numRows * numCols, sizeof(float64))
-                                                               : malloc(numRows * numCols * sizeof(float64))),
-                                              (float64*) (init ? calloc(numRows * numCols, sizeof(float64))
-                                                               : malloc(numRows * numCols * sizeof(float64)))) {
+                : DenseLabelWiseStatisticView(numRows, numCols, (float64*) malloc(numRows * numCols * sizeof(float64)),
+                                              (float64*) malloc(numRows * numCols * sizeof(float64))) {
 
             }
 

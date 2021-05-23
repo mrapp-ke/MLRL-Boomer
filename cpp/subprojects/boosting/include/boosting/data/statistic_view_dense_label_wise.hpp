@@ -124,8 +124,6 @@ namespace boosting {
              */
             DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, float64* gradients, float64* hessians);
 
-            virtual ~DenseLabelWiseStatisticView() { };
-
             /**
              * An iterator that provides access to the gradients and allows to modify them.
              */
