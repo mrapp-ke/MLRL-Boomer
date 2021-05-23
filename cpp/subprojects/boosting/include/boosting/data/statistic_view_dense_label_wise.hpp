@@ -110,25 +110,19 @@ namespace boosting {
      * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
      * label-wise decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
-    class DenseLabelWiseStatisticView final : public DenseLabelWiseStatisticConstView {
+    class DenseLabelWiseStatisticView : public DenseLabelWiseStatisticConstView {
 
         public:
 
             /**
              * @param numRows   The number of rows in the view
              * @param numCols   The number of columns in the view
+             * @param gradients A pointer to a C-contiguous array of type `float64` that stores the gradients, the view
+             *                  provides access to
+             * @param hessians  A pointer to a C-contiguous array of type `float64` that stores the Hessians, the view
+             *                  provides access to
              */
-            DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols);
-
-            /**
-             * @param numRows   The number of rows in the view
-             * @param numCols   The number of columns in the view
-             * @param init      True, if all gradients and Hessians in the matrix should be initialized with zero, false
-             *                  otherwise
-             */
-            DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, bool init);
-
-            ~DenseLabelWiseStatisticView();
+            DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, float64* gradients, float64* hessians);
 
             /**
              * An iterator that provides access to the gradients and allows to modify them.

@@ -1,12 +1,28 @@
 #include "boosting/statistics/statistics_example_wise_dense.hpp"
 #include "boosting/data/matrix_dense_numeric.hpp"
-#include "boosting/data/statistic_view_dense_example_wise.hpp"
 #include "boosting/data/statistic_vector_dense_example_wise.hpp"
+#include "boosting/data/statistic_view_dense_example_wise.hpp"
+#include "boosting/math/math.hpp"
 #include "statistics_example_wise_common.hpp"
 #include "omp.h"
+#include <cstdlib>
 
 
 namespace boosting {
+
+    class DenseExampleWiseStatisticMatrix : public DenseExampleWiseStatisticView {
+
+        public:
+
+            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients)
+                : DenseExampleWiseStatisticView(
+                      numRows, numGradients, triangularNumber(numGradients),
+                      (float64*) malloc(numRows * numGradients * sizeof(float64)),
+                      (float64*) malloc(numRows * triangularNumber(numGradients) * sizeof(float64))) {
+
+            }
+
+    };
 
     template<class LabelMatrix>
     static inline std::unique_ptr<IExampleWiseStatistics> createInternally(
@@ -15,14 +31,14 @@ namespace boosting {
             const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
-        std::unique_ptr<DenseExampleWiseStatisticView> statisticMatrixPtr =
-            std::make_unique<DenseExampleWiseStatisticView>(numExamples, numLabels);
+        std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr =
+            std::make_unique<DenseExampleWiseStatisticMatrix>(numExamples, numLabels);
         std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =
             std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
         const IExampleWiseLoss* lossFunctionRawPtr = lossFunctionPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
-        DenseExampleWiseStatisticView* statisticMatrixRawPtr = statisticMatrixPtr.get();
+        DenseExampleWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(lossFunctionRawPtr) \
         firstprivate(labelMatrixPtr) firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) \
@@ -32,7 +48,9 @@ namespace boosting {
                                                             *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<ExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector, DenseExampleWiseStatisticView, DenseNumericMatrix<float64>>>(
+        return std::make_unique<ExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
+                                                      DenseExampleWiseStatisticView, DenseExampleWiseStatisticMatrix,
+                                                      DenseNumericMatrix<float64>>>(
             lossFunctionPtr, ruleEvaluationFactoryPtr, labelMatrix, std::move(statisticMatrixPtr),
             std::move(scoreMatrixPtr));
     }

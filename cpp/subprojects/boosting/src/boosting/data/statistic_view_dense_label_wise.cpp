@@ -1,7 +1,6 @@
 #include "boosting/data/statistic_view_dense_label_wise.hpp"
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
-#include <cstdlib>
 
 
 namespace boosting {
@@ -40,23 +39,10 @@ namespace boosting {
         return numCols_;
     }
 
-    DenseLabelWiseStatisticView::DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols)
-        : DenseLabelWiseStatisticView(numRows, numCols, false) {
+    DenseLabelWiseStatisticView::DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, float64* gradients,
+                                                             float64* hessians)
+        : DenseLabelWiseStatisticConstView(numRows, numCols, gradients, hessians) {
 
-    }
-
-    DenseLabelWiseStatisticView::DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, bool init)
-        : DenseLabelWiseStatisticConstView(numRows, numCols,
-                                           (float64*) (init ? calloc(numRows * numCols, sizeof(float64))
-                                                            : malloc(numRows * numCols * sizeof(float64))),
-                                           (float64*) (init ? calloc(numRows * numCols, sizeof(float64))
-                                                            : malloc(numRows * numCols * sizeof(float64)))) {
-
-    }
-
-    DenseLabelWiseStatisticView::~DenseLabelWiseStatisticView() {
-        free(gradients_);
-        free(hessians_);
     }
 
     DenseLabelWiseStatisticView::gradient_iterator DenseLabelWiseStatisticView::gradients_row_begin(uint32 row) {
