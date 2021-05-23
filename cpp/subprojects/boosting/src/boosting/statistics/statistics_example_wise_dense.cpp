@@ -1,6 +1,6 @@
 #include "boosting/statistics/statistics_example_wise_dense.hpp"
 #include "boosting/data/matrix_dense_numeric.hpp"
-#include "boosting/data/statistic_matrix_dense_example_wise.hpp"
+#include "boosting/data/statistic_view_dense_example_wise.hpp"
 #include "boosting/data/statistic_vector_dense_example_wise.hpp"
 #include "statistics_example_wise_common.hpp"
 #include "omp.h"
@@ -15,14 +15,14 @@ namespace boosting {
             const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
-        std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr =
-            std::make_unique<DenseExampleWiseStatisticMatrix>(numExamples, numLabels);
+        std::unique_ptr<DenseExampleWiseStatisticView> statisticMatrixPtr =
+            std::make_unique<DenseExampleWiseStatisticView>(numExamples, numLabels);
         std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =
             std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
         const IExampleWiseLoss* lossFunctionRawPtr = lossFunctionPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
-        DenseExampleWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
+        DenseExampleWiseStatisticView* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(lossFunctionRawPtr) \
         firstprivate(labelMatrixPtr) firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) \
@@ -32,7 +32,7 @@ namespace boosting {
                                                             *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<ExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector, DenseExampleWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
+        return std::make_unique<ExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector, DenseExampleWiseStatisticView, DenseNumericMatrix<float64>>>(
             lossFunctionPtr, ruleEvaluationFactoryPtr, labelMatrix, std::move(statisticMatrixPtr),
             std::move(scoreMatrixPtr));
     }
