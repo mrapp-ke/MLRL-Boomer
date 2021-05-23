@@ -287,9 +287,9 @@ namespace boosting {
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
     template<class LabelMatrix, class StatisticVector, class StatisticView, class StatisticMatrix, class ScoreMatrix>
-    class LabelWiseStatistics final : public AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
-                                                                                  StatisticMatrix, ScoreMatrix>,
-                                      virtual public ILabelWiseStatistics {
+    class AbstractLabelWiseStatistics : public AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
+                                                                                    StatisticMatrix, ScoreMatrix>,
+                                        virtual public ILabelWiseStatistics {
 
         private:
 
@@ -317,10 +317,10 @@ namespace boosting {
              * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that
              *                                  stores the currently predicted scores
              */
-            LabelWiseStatistics(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
-                                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                const LabelMatrix& labelMatrix, std::unique_ptr<StatisticView> statisticViewPtr,
-                                std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
+            AbstractLabelWiseStatistics(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
+                                        std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+                                        const LabelMatrix& labelMatrix, std::unique_ptr<StatisticView> statisticViewPtr,
+                                        std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, StatisticMatrix, ScoreMatrix>(
                       std::move(statisticViewPtr), ruleEvaluationFactoryPtr),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticViewPtr_->getNumCols())),
@@ -411,9 +411,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
                     this->ruleEvaluationFactoryPtr_->create(labelIndices);
-                return std::make_unique<typename LabelWiseStatistics::FullSubset>(*this, totalSumVectorPtr_.get(),
-                                                                                  std::move(ruleEvaluationPtr),
-                                                                                  labelIndices);
+                return std::make_unique<typename AbstractLabelWiseStatistics::FullSubset>(
+                    *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
             }
 
             /**
@@ -422,9 +421,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override {
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
                     this->ruleEvaluationFactoryPtr_->create(labelIndices);
-                return std::make_unique<typename LabelWiseStatistics::PartialSubset>(*this, totalSumVectorPtr_.get(),
-                                                                                     std::move(ruleEvaluationPtr),
-                                                                                     labelIndices);
+                return std::make_unique<typename AbstractLabelWiseStatistics::PartialSubset>(
+                    *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
             }
 
     };
