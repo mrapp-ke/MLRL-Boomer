@@ -23,9 +23,10 @@ namespace boosting {
      *
      * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView    The type of the view that provides access to the gradients and Hessians
+     * @tparam StatisticMatrix  The type of the matrix that is used to store gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
-    template<class StatisticVector, class StatisticView, class ScoreMatrix>
+    template<class StatisticVector, class StatisticView, class StatisticMatrix, class ScoreMatrix>
     class AbstractLabelWiseImmutableStatistics : virtual public IImmutableStatistics {
 
         protected:
@@ -207,11 +208,12 @@ namespace boosting {
      *
      * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView    The type of the view that provides access to the gradients and Hessians
+     * @tparam StatisticMatrix  The type of the matrix that is used to store gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
-    template<class StatisticVector, class StatisticView, class ScoreMatrix>
+    template<class StatisticVector, class StatisticView, class StatisticMatrix, class ScoreMatrix>
     class LabelWiseHistogram final : public AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
-                                                                                 ScoreMatrix>,
+                                                                                 StatisticMatrix, ScoreMatrix>,
                                      virtual public IHistogram {
 
         private:
@@ -237,8 +239,8 @@ namespace boosting {
             LabelWiseHistogram(const StatisticView& originalStatisticView, const StatisticVector* totalSumVector,
                                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                uint32 numBins)
-                : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix>(
-                      std::make_unique<StatisticView>(numBins, originalStatisticView.getNumCols()),
+                : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, StatisticMatrix, ScoreMatrix>(
+                      std::make_unique<StatisticMatrix>(numBins, originalStatisticView.getNumCols()),
                       ruleEvaluationFactoryPtr),
                   originalStatisticView_(originalStatisticView), totalSumVector_(totalSumVector) {
 
@@ -281,11 +283,12 @@ namespace boosting {
      * @tparam LabelMatrix      The type of the matrix that provides access to the labels of the training examples
      * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView    The type of the view that provides access to the gradients and Hessians
+     * @tparam StatisticMatrix  The type of the matrix that is used to store gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
-    template<class LabelMatrix, class StatisticVector, class StatisticView, class ScoreMatrix>
+    template<class LabelMatrix, class StatisticVector, class StatisticView, class StatisticMatrix, class ScoreMatrix>
     class LabelWiseStatistics final : public AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
-                                                                                  ScoreMatrix>,
+                                                                                  StatisticMatrix, ScoreMatrix>,
                                       virtual public ILabelWiseStatistics {
 
         private:
@@ -318,7 +321,7 @@ namespace boosting {
                                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                 const LabelMatrix& labelMatrix, std::unique_ptr<StatisticView> statisticViewPtr,
                                 std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix>(
+                : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, StatisticMatrix, ScoreMatrix>(
                       std::move(statisticViewPtr), ruleEvaluationFactoryPtr),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticViewPtr_->getNumCols())),
                   lossFunctionPtr_(lossFunctionPtr), labelMatrix_(labelMatrix),
@@ -370,9 +373,9 @@ namespace boosting {
             }
 
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
-                return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticView, ScoreMatrix>>(
-                            *this->statisticViewPtr_, totalSumVectorPtr_.get(), this->ruleEvaluationFactoryPtr_,
-                            numBins);
+                return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticView, StatisticMatrix,
+                                                           ScoreMatrix>>(
+                    *this->statisticViewPtr_, totalSumVectorPtr_.get(), this->ruleEvaluationFactoryPtr_, numBins);
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {

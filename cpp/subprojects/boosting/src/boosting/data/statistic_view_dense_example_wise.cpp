@@ -1,16 +1,15 @@
 #include "boosting/data/statistic_view_dense_example_wise.hpp"
-#include "boosting/math/math.hpp"
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
-#include <cstdlib>
 
 
 namespace boosting {
 
     DenseExampleWiseStatisticConstView::DenseExampleWiseStatisticConstView(uint32 numRows, uint32 numGradients,
-                                                                           float64* gradients, float64* hessians)
-        : numRows_(numRows), numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
-          gradients_(gradients), hessians_(hessians) {
+                                                                           uint32 numHessians, float64* gradients,
+                                                                           float64* hessians)
+        : numRows_(numRows), numGradients_(numGradients), numHessians_(numHessians), gradients_(gradients),
+          hessians_(hessians) {
 
     }
 
@@ -42,24 +41,11 @@ namespace boosting {
         return numGradients_;
     }
 
-    DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients)
-        : DenseExampleWiseStatisticView(numRows, numGradients, false) {
+    DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients,
+                                                                 uint32 numHessians, float64* gradients,
+                                                                 float64* hessians)
+        : DenseExampleWiseStatisticConstView(numRows, numGradients, numHessians, gradients, hessians) {
 
-    }
-
-    DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients, bool init)
-        : DenseExampleWiseStatisticConstView(
-              numRows, numGradients,
-              (float64*) (init ? calloc(numRows * numGradients, sizeof(float64))
-                               : malloc(numRows * numGradients * sizeof(float64))),
-              (float64*) (init ? calloc(numRows * triangularNumber(numGradients), sizeof(float64))
-                               : malloc(numRows * triangularNumber(numGradients) * sizeof(float64)))) {
-
-    }
-
-    DenseExampleWiseStatisticView::~DenseExampleWiseStatisticView() {
-        free(gradients_);
-        free(hessians_);
     }
 
     DenseExampleWiseStatisticView::gradient_iterator DenseExampleWiseStatisticView::gradients_row_begin(uint32 row) {
