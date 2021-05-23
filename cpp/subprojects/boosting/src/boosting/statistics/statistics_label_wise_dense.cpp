@@ -1,6 +1,6 @@
 #include "boosting/statistics/statistics_label_wise_dense.hpp"
 #include "boosting/data/matrix_dense_numeric.hpp"
-#include "boosting/data/statistic_matrix_dense_label_wise.hpp"
+#include "boosting/data/statistic_view_dense_label_wise.hpp"
 #include "boosting/data/statistic_vector_dense_label_wise.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "omp.h"
@@ -15,14 +15,14 @@ namespace boosting {
             const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
-        std::unique_ptr<DenseLabelWiseStatisticMatrix> statisticMatrixPtr =
-            std::make_unique<DenseLabelWiseStatisticMatrix>(numExamples, numLabels);
+        std::unique_ptr<DenseLabelWiseStatisticView> statisticMatrixPtr =
+            std::make_unique<DenseLabelWiseStatisticView>(numExamples, numLabels);
         std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =
             std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
         const ILabelWiseLoss* lossFunctionRawPtr = lossFunctionPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
-        DenseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
+        DenseLabelWiseStatisticView* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(lossFunctionRawPtr) \
         firstprivate(labelMatrixPtr) firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) \
@@ -33,7 +33,7 @@ namespace boosting {
                                                           *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<LabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>>(
+        return std::make_unique<LabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticView, DenseNumericMatrix<float64>>>(
             lossFunctionPtr, ruleEvaluationFactoryPtr, labelMatrix, std::move(statisticMatrixPtr),
             std::move(scoreMatrixPtr));
     }

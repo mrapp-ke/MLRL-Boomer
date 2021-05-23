@@ -9,11 +9,11 @@ namespace boosting {
                                                           const CContiguousConstView<float64>& scoreMatrix,
                                                           FullIndexVector::const_iterator labelIndicesBegin,
                                                           FullIndexVector::const_iterator labelIndicesEnd,
-                                                          DenseLabelWiseStatisticMatrix& statisticMatrix) const {
-        DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
-            statisticMatrix.gradients_row_begin(exampleIndex);
-        DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
-            statisticMatrix.hessians_row_begin(exampleIndex);
+                                                          DenseLabelWiseStatisticView& statisticView) const {
+        DenseLabelWiseStatisticView::gradient_iterator gradientIterator =
+            statisticView.gradients_row_begin(exampleIndex);
+        DenseLabelWiseStatisticView::hessian_iterator hessianIterator =
+            statisticView.hessians_row_begin(exampleIndex);
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
@@ -30,11 +30,11 @@ namespace boosting {
                                                           const CContiguousConstView<float64>& scoreMatrix,
                                                           PartialIndexVector::const_iterator labelIndicesBegin,
                                                           PartialIndexVector::const_iterator labelIndicesEnd,
-                                                          DenseLabelWiseStatisticMatrix& statisticMatrix) const {
-        DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
-            statisticMatrix.gradients_row_begin(exampleIndex);
-        DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
-            statisticMatrix.hessians_row_begin(exampleIndex);
+                                                          DenseLabelWiseStatisticView& statisticView) const {
+        DenseLabelWiseStatisticView::gradient_iterator gradientIterator =
+            statisticView.gradients_row_begin(exampleIndex);
+        DenseLabelWiseStatisticView::hessian_iterator hessianIterator =
+            statisticView.hessians_row_begin(exampleIndex);
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
@@ -53,11 +53,11 @@ namespace boosting {
                                                           const CContiguousConstView<float64>& scoreMatrix,
                                                           FullIndexVector::const_iterator labelIndicesBegin,
                                                           FullIndexVector::const_iterator labelIndicesEnd,
-                                                          DenseLabelWiseStatisticMatrix& statisticMatrix) const {
-        DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
-            statisticMatrix.gradients_row_begin(exampleIndex);
-        DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
-            statisticMatrix.hessians_row_begin(exampleIndex);
+                                                          DenseLabelWiseStatisticView& statisticView) const {
+        DenseLabelWiseStatisticView::gradient_iterator gradientIterator =
+            statisticView.gradients_row_begin(exampleIndex);
+        DenseLabelWiseStatisticView::hessian_iterator hessianIterator =
+            statisticView.hessians_row_begin(exampleIndex);
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CsrLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
@@ -74,11 +74,11 @@ namespace boosting {
                                                           const CContiguousConstView<float64> scoreMatrix,
                                                           PartialIndexVector::const_iterator labelIndicesBegin,
                                                           PartialIndexVector::const_iterator labelIndicesEnd,
-                                                          DenseLabelWiseStatisticMatrix& statisticMatrix) const {
-        DenseLabelWiseStatisticMatrix::gradient_iterator gradientIterator =
-            statisticMatrix.gradients_row_begin(exampleIndex);
-        DenseLabelWiseStatisticMatrix::hessian_iterator hessianIterator =
-            statisticMatrix.hessians_row_begin(exampleIndex);
+                                                          DenseLabelWiseStatisticView& statisticView) const {
+        DenseLabelWiseStatisticView::gradient_iterator gradientIterator =
+            statisticView.gradients_row_begin(exampleIndex);
+        DenseLabelWiseStatisticView::hessian_iterator hessianIterator =
+            statisticView.hessians_row_begin(exampleIndex);
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CsrLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelIndicesEnd - labelIndicesBegin;

@@ -1,4 +1,4 @@
-#include "boosting/data/statistic_matrix_dense_example_wise.hpp"
+#include "boosting/data/statistic_view_dense_example_wise.hpp"
 #include "boosting/math/math.hpp"
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
@@ -7,12 +7,12 @@
 
 namespace boosting {
 
-    DenseExampleWiseStatisticMatrix::DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients)
-        : DenseExampleWiseStatisticMatrix(numRows, numGradients, false) {
+    DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients)
+        : DenseExampleWiseStatisticView(numRows, numGradients, false) {
 
     }
 
-    DenseExampleWiseStatisticMatrix::DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients, bool init)
+    DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients, bool init)
         : numRows_(numRows), numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
           gradients_((float64*) (init ? calloc(numRows * numGradients, sizeof(float64))
                                       : malloc(numRows * numGradients * sizeof(float64)))),
@@ -21,62 +21,62 @@ namespace boosting {
 
     }
 
-    DenseExampleWiseStatisticMatrix::~DenseExampleWiseStatisticMatrix() {
+    DenseExampleWiseStatisticView::~DenseExampleWiseStatisticView() {
         free(gradients_);
         free(hessians_);
     }
 
-    DenseExampleWiseStatisticMatrix::gradient_iterator DenseExampleWiseStatisticMatrix::gradients_row_begin(
+    DenseExampleWiseStatisticView::gradient_iterator DenseExampleWiseStatisticView::gradients_row_begin(
             uint32 row) {
         return &gradients_[row * numGradients_];
     }
 
-    DenseExampleWiseStatisticMatrix::gradient_iterator DenseExampleWiseStatisticMatrix::gradients_row_end(uint32 row) {
+    DenseExampleWiseStatisticView::gradient_iterator DenseExampleWiseStatisticView::gradients_row_end(uint32 row) {
         return &gradients_[(row + 1) * numGradients_];
     }
 
-    DenseExampleWiseStatisticMatrix::gradient_const_iterator DenseExampleWiseStatisticMatrix::gradients_row_cbegin(
+    DenseExampleWiseStatisticView::gradient_const_iterator DenseExampleWiseStatisticView::gradients_row_cbegin(
             uint32 row) const {
         return &gradients_[row * numGradients_];
     }
 
-    DenseExampleWiseStatisticMatrix::gradient_const_iterator DenseExampleWiseStatisticMatrix::gradients_row_cend(
+    DenseExampleWiseStatisticView::gradient_const_iterator DenseExampleWiseStatisticView::gradients_row_cend(
             uint32 row) const {
         return &gradients_[(row + 1) * numGradients_];
     }
 
-    DenseExampleWiseStatisticMatrix::hessian_iterator DenseExampleWiseStatisticMatrix::hessians_row_begin(uint32 row) {
+    DenseExampleWiseStatisticView::hessian_iterator DenseExampleWiseStatisticView::hessians_row_begin(uint32 row) {
         return &hessians_[row * numHessians_];
     }
 
-    DenseExampleWiseStatisticMatrix::hessian_iterator DenseExampleWiseStatisticMatrix::hessians_row_end(uint32 row) {
+    DenseExampleWiseStatisticView::hessian_iterator DenseExampleWiseStatisticView::hessians_row_end(uint32 row) {
         return &hessians_[(row + 1) * numHessians_];
     }
 
-    DenseExampleWiseStatisticMatrix::hessian_const_iterator DenseExampleWiseStatisticMatrix::hessians_row_cbegin(
+    DenseExampleWiseStatisticView::hessian_const_iterator DenseExampleWiseStatisticView::hessians_row_cbegin(
             uint32 row) const {
         return &hessians_[row * numHessians_];
     }
 
-    DenseExampleWiseStatisticMatrix::hessian_const_iterator DenseExampleWiseStatisticMatrix::hessians_row_cend(
+    DenseExampleWiseStatisticView::hessian_const_iterator DenseExampleWiseStatisticView::hessians_row_cend(
             uint32 row) const {
         return &hessians_[(row + 1) * numHessians_];
     }
 
-    uint32 DenseExampleWiseStatisticMatrix::getNumRows() const {
+    uint32 DenseExampleWiseStatisticView::getNumRows() const {
         return numRows_;
     }
 
-    uint32 DenseExampleWiseStatisticMatrix::getNumCols() const {
+    uint32 DenseExampleWiseStatisticView::getNumCols() const {
         return numGradients_;
     }
 
-    void DenseExampleWiseStatisticMatrix::setAllToZero() {
+    void DenseExampleWiseStatisticView::setAllToZero() {
         setArrayToZeros(gradients_, numRows_ * numGradients_);
         setArrayToZeros(hessians_, numRows_ * numHessians_);
     }
 
-    void DenseExampleWiseStatisticMatrix::addToRow(uint32 row, gradient_const_iterator gradientsBegin,
+    void DenseExampleWiseStatisticView::addToRow(uint32 row, gradient_const_iterator gradientsBegin,
                                                    gradient_const_iterator gradientsEnd,
                                                    hessian_const_iterator hessiansBegin,
                                                    hessian_const_iterator hessiansEnd, float64 weight) {

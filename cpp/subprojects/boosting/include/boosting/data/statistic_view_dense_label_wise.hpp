@@ -9,60 +9,68 @@
 namespace boosting {
 
     /**
-     * A two-dimensional matrix that stores gradients and Hessians that have been calculated using a non-decomposable
-     * loss function in C-contiguous arrays. For each element at a certain row a single gradient, but multiple Hessians
-     * are stored. In a vector that stores `n` gradients `(n * (n + 1)) / 2` Hessians are stored. The Hessians can be
-     * viewed as a symmetric Hessian matrix with `n` rows and columns.
+     * Implements row-wise read-only access to the gradients and Hessians that have been calculated using a label-wise
+     * decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
-    class DenseExampleWiseStatisticMatrix final {
+    class DenseLabelWiseStatisticView final {
 
         private:
 
+            /**
+             * The number of rows in the view.
+             */
             uint32 numRows_;
 
-            uint32 numGradients_;
+            /**
+             * The number of columns in the view.
+             */
+            uint32 numCols_;
 
-            uint32 numHessians_;
-
+            /**
+             * A pointer to an array that stores the gradients.
+             */
             float64* gradients_;
 
+            /**
+             * A pointer to an array that stores the Hessians.
+             */
             float64* hessians_;
 
         public:
 
             /**
-             * @param numRows       The number of rows in the matrix
-             * @param numGradients  The number of gradients per row
+             * @param numRows   The number of rows in the matrix
+             * @param numCols   The number of columns in the matrix
              */
-            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients);
+            DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols);
 
             /**
-             * @param numRows       The number of rows in the matrix
-             * @param numGradients  The number of gradients per row
-             * @param init          True, if all gradients and Hessians in the matrix should be initialized with zero,
-             *                      false otherwise
+             * @param numRows   The number of rows in the matrix
+             * @param numCols   The number of columns in the matrix
+             * @param init      True, if all gradients and Hessians in the matrix should be initialized with zero, false
+             *                  otherwise
              */
-            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients, bool init);
+            DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, bool init);
 
-            ~DenseExampleWiseStatisticMatrix();
+            ~DenseLabelWiseStatisticView();
 
             /**
-             * An iterator that provides access to the gradients in the matrix and allows to modify them.
+             * An iterator that provides access to the gradients and allows to modify them.
              */
             typedef float64* gradient_iterator;
 
             /**
-             * An iterator that provides read-only access to the gradients in the matrix.
+             * An iterator that provides read-only access to the gradients.
              */
             typedef const float64* gradient_const_iterator;
 
             /**
-             * An iterator that provides access to the Hessians in the matrix and allows to modify them.
+             * An iterator that provides access to the Hessians and allows to modify them.
              */
             typedef float64* hessian_iterator;
 
             /**
-             * An iterator that provides read-only access to the Hessians in the matrix.
+             * An iterator that provides read-only access to the Hessians.
              */
             typedef const float64* hessian_const_iterator;
 
@@ -131,14 +139,14 @@ namespace boosting {
             hessian_const_iterator hessians_row_cend(uint32 row) const;
 
             /**
-             * Returns the number of rows in the matrix.
+             * Returns the number of rows in the view.
              *
              * @return The number of rows
              */
             uint32 getNumRows() const;
 
             /**
-             * Returns the number of gradients per row.
+             * Returns the number of gradients per column.
              *
              * @return The number of gradients
              */
