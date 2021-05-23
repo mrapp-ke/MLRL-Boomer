@@ -3,16 +3,16 @@
 
 namespace boosting {
 
-    template<class Prediction, class LabelMatrix, class StatisticMatrix, class ScoreMatrix>
+    template<class Prediction, class LabelMatrix, class StatisticView, class ScoreMatrix>
     void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction, const LabelMatrix& labelMatrix,
-                                   StatisticMatrix& statisticMatrix, ScoreMatrix& scoreMatrix,
+                                   StatisticView& statisticView, ScoreMatrix& scoreMatrix,
                                    const IExampleWiseLoss& lossFunction) {
         // Update the scores that are currently predicted for the example at the given index...
         scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
                                        prediction.indices_cbegin(), prediction.indices_cend());
 
         // Update the gradients and Hessians for the example at the given index...
-        lossFunction.updateExampleWiseStatistics(statisticIndex, labelMatrix, scoreMatrix, statisticMatrix);
+        lossFunction.updateExampleWiseStatistics(statisticIndex, labelMatrix, scoreMatrix, statisticView);
     }
 
     /**
@@ -20,10 +20,10 @@ namespace boosting {
      * according to a differentiable loss function that is applied example-wise.
      *
      * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
-     * @tparam StatisticMatrix  The type of the matrices that are used to store gradients and Hessians
+     * @tparam StatisticView    The type of the view that provides access to the gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
-    template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
+    template<class StatisticVector, class StatisticView, class ScoreMatrix>
     class AbstractExampleWiseStatistics : virtual public IImmutableStatistics {
 
         protected:
@@ -96,17 +96,17 @@ namespace boosting {
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
                         totalCoverableSumVector_->add(
-                            statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
-                            statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
-                            statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                            statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex), -weight);
+                            statistics_.statisticViewPtr_->gradients_row_cbegin(statisticIndex),
+                            statistics_.statisticViewPtr_->gradients_row_cend(statisticIndex),
+                            statistics_.statisticViewPtr_->hessians_row_cbegin(statisticIndex),
+                            statistics_.statisticViewPtr_->hessians_row_cend(statisticIndex), -weight);
                     }
 
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
-                        sumVector_.addToSubset(statistics_.statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
-                                               statistics_.statisticMatrixPtr_->gradients_row_cend(statisticIndex),
-                                               statistics_.statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                                               statistics_.statisticMatrixPtr_->hessians_row_cend(statisticIndex),
+                        sumVector_.addToSubset(statistics_.statisticViewPtr_->gradients_row_cbegin(statisticIndex),
+                                               statistics_.statisticViewPtr_->gradients_row_cend(statisticIndex),
+                                               statistics_.statisticViewPtr_->hessians_row_cbegin(statisticIndex),
+                                               statistics_.statisticViewPtr_->hessians_row_cend(statisticIndex),
                                                labelIndices_, weight);
                     }
 
@@ -178,9 +178,9 @@ namespace boosting {
         protected:
 
             /**
-             * An unique pointer to an object of template type `StatisticMatrix` that stores the gradients and Hessians.
+             * An unique pointer to an object of template type `StatisticView` that stores the gradients and Hessians.
              */
-            std::unique_ptr<StatisticMatrix> statisticMatrixPtr_;
+            std::unique_ptr<StatisticView> statisticViewPtr_;
 
             /**
              * A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory` to be used for calculating the
@@ -191,16 +191,16 @@ namespace boosting {
         public:
 
             /**
-             * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
-             *                                  stores the gradients and Hessians
+             * @param statisticViewPtr          An unique pointer to an object of template type `StatisticView` that
+             *                                  provides access to the gradients and Hessians
              * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
              *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
              *                                  predictions, as well as corresponding quality scores, of rules
              */
-            AbstractExampleWiseStatistics(std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+            AbstractExampleWiseStatistics(std::unique_ptr<StatisticView> statisticViewPtr,
                                           std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
-                : numStatistics_(statisticMatrixPtr->getNumRows()), numLabels_(statisticMatrixPtr->getNumCols()),
-                  statisticMatrixPtr_(std::move(statisticMatrixPtr)),
+                : numStatistics_(statisticViewPtr->getNumRows()), numLabels_(statisticViewPtr->getNumCols()),
+                  statisticViewPtr_(std::move(statisticViewPtr)),
                   ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
             }
@@ -220,24 +220,26 @@ namespace boosting {
      * applied example-wise and are organized as a histogram.
      *
      * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
-     * @tparam StatisticMatrix  The type of the matrices that are used to store gradients and Hessians
+     * @tparam StatisticView    The type of the view that provides access to the gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
-    template<class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-    class ExampleWiseHistogram final : public AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
+    template<class StatisticVector, class StatisticView, class ScoreMatrix>
+    class ExampleWiseHistogram final : public AbstractExampleWiseStatistics<StatisticVector, StatisticView,
+                                                                            ScoreMatrix>,
                                        virtual public IHistogram {
 
         private:
 
-            const StatisticMatrix& originalStatisticMatrix_;
+            const StatisticView& originalStatisticView_;
 
             const StatisticVector* totalSumVector_;
 
         public:
 
             /**
-             * @param originalStatisticMatrix   A reference to an object of template type `StatisticMatrix` that stores
-             *                                  the original gradients and Hessians, the histogram was created from
+             * @param originalStatisticView     A reference to an object of template type `StatisticView` that provides
+             *                                  access to the original gradients and Hessians, the histogram was created
+             *                                  from
              * @param totalSumVector            A pointer to an object of template type `StatisticVector` that stores
              *                                  the total sums of gradients and Hessians
              * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
@@ -245,26 +247,25 @@ namespace boosting {
              *                                  predictions, as well as corresponding quality scores, of rules
              * @param numBins                   The number of bins in the histogram
              */
-            ExampleWiseHistogram(const StatisticMatrix& originalStatisticMatrix, const StatisticVector* totalSumVector,
+            ExampleWiseHistogram(const StatisticView& originalStatisticView, const StatisticVector* totalSumVector,
                                  std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                  uint32 numBins)
-                : AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
-                      std::make_unique<StatisticMatrix>(numBins, originalStatisticMatrix.getNumCols()),
+                : AbstractExampleWiseStatistics<StatisticVector, StatisticView, ScoreMatrix>(
+                      std::make_unique<StatisticView>(numBins, originalStatisticView.getNumCols()),
                       ruleEvaluationFactoryPtr),
-                  originalStatisticMatrix_(originalStatisticMatrix), totalSumVector_(totalSumVector) {
+                  originalStatisticView_(originalStatisticView), totalSumVector_(totalSumVector) {
 
             }
 
             void setAllToZero() override {
-                this->statisticMatrixPtr_->setAllToZero();
+                this->statisticViewPtr_->setAllToZero();
             }
 
             void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
-                this->statisticMatrixPtr_->addToRow(binIndex,
-                                                    originalStatisticMatrix_.gradients_row_cbegin(statisticIndex),
-                                                    originalStatisticMatrix_.gradients_row_cend(statisticIndex),
-                                                    originalStatisticMatrix_.hessians_row_cbegin(statisticIndex),
-                                                    originalStatisticMatrix_.hessians_row_cend(statisticIndex), weight);
+                this->statisticViewPtr_->addToRow(binIndex, originalStatisticView_.gradients_row_cbegin(statisticIndex),
+                                                  originalStatisticView_.gradients_row_cend(statisticIndex),
+                                                  originalStatisticView_.hessians_row_cbegin(statisticIndex),
+                                                  originalStatisticView_.hessians_row_cend(statisticIndex), weight);
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
@@ -292,11 +293,12 @@ namespace boosting {
      *
      * @tparam LabelMatrix      The type of the matrix that provides access to the labels of the training examples
      * @tparam StatisticVector  The type of the vectors that are used to store gradients and Hessians
-     * @tparam StatisticMatrix  The type of the matrices that are used to store gradients and Hessians
+     * @tparam StatisticView    The type of the view that provides access to the gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
-    template<class LabelMatrix, class StatisticVector, class StatisticMatrix, class ScoreMatrix>
-    class ExampleWiseStatistics final : public AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>,
+    template<class LabelMatrix, class StatisticVector, class StatisticView, class ScoreMatrix>
+    class ExampleWiseStatistics final : public AbstractExampleWiseStatistics<StatisticVector, StatisticView,
+                                                                             ScoreMatrix>,
                                         virtual public IExampleWiseStatistics {
 
         private:
@@ -319,18 +321,18 @@ namespace boosting {
              *                                  predictions, as well as corresponding quality scores, of rules
              * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
              *                                  access to the labels of the training examples
-             * @param statisticMatrixPtr        An unique pointer to an object of template type `StatisticMatrix` that
-             *                                  stores the gradients and Hessians
+             * @param statisticViewPtr          An unique pointer to an object of template type `StatisticView` that
+             *                                  provides access to the gradients and Hessians
              * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that
              *                                  stores the currently predicted scores
              */
             ExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                                   std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                  const LabelMatrix& labelMatrix, std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                                  const LabelMatrix& labelMatrix, std::unique_ptr<StatisticView> statisticViewPtr,
                                   std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractExampleWiseStatistics<StatisticVector, StatisticMatrix, ScoreMatrix>(
-                      std::move(statisticMatrixPtr), ruleEvaluationFactoryPtr),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticMatrixPtr_->getNumCols())),
+                : AbstractExampleWiseStatistics<StatisticVector, StatisticView, ScoreMatrix>(
+                      std::move(statisticViewPtr), ruleEvaluationFactoryPtr),
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticViewPtr_->getNumCols())),
                   lossFunctionPtr_(lossFunctionPtr), labelMatrix_(labelMatrix),
                   scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
 
@@ -357,21 +359,21 @@ namespace boosting {
 
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
                 float64 signedWeight = remove ? -weight : weight;
-                totalSumVectorPtr_->add(this->statisticMatrixPtr_->gradients_row_cbegin(statisticIndex),
-                                        this->statisticMatrixPtr_->gradients_row_cend(statisticIndex),
-                                        this->statisticMatrixPtr_->hessians_row_cbegin(statisticIndex),
-                                        this->statisticMatrixPtr_->hessians_row_cend(statisticIndex), signedWeight);
+                totalSumVectorPtr_->add(this->statisticViewPtr_->gradients_row_cbegin(statisticIndex),
+                                        this->statisticViewPtr_->gradients_row_cend(statisticIndex),
+                                        this->statisticViewPtr_->hessians_row_cbegin(statisticIndex),
+                                        this->statisticViewPtr_->hessians_row_cend(statisticIndex), signedWeight);
             }
 
             void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-                applyPredictionInternally<FullPrediction, LabelMatrix, StatisticMatrix, ScoreMatrix>(
-                    statisticIndex, prediction, labelMatrix_, *this->statisticMatrixPtr_, *scoreMatrixPtr_,
+                applyPredictionInternally<FullPrediction, LabelMatrix, StatisticView, ScoreMatrix>(
+                    statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
                     *lossFunctionPtr_);
             }
 
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
-                applyPredictionInternally<PartialPrediction, LabelMatrix, StatisticMatrix, ScoreMatrix>(
-                    statisticIndex, prediction, labelMatrix_, *this->statisticMatrixPtr_, *scoreMatrixPtr_,
+                applyPredictionInternally<PartialPrediction, LabelMatrix, StatisticView, ScoreMatrix>(
+                    statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
                     *lossFunctionPtr_);
             }
 
@@ -380,8 +382,8 @@ namespace boosting {
             }
 
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
-                return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticMatrix, ScoreMatrix>>(
-                        *this->statisticMatrixPtr_, totalSumVectorPtr_.get(), this->ruleEvaluationFactoryPtr_, numBins);
+                return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, ScoreMatrix>>(
+                        *this->statisticViewPtr_, totalSumVectorPtr_.get(), this->ruleEvaluationFactoryPtr_, numBins);
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
