@@ -2,7 +2,7 @@
 #include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/statistic_vector_dense_example_wise.hpp"
 #include "boosting/data/statistic_view_dense_example_wise.hpp"
-#include "boosting/data/statistic_view_dense_label_wise.hpp"
+#include "boosting/math/math.hpp"
 #include "statistics_example_wise_common.hpp"
 #include "statistics_example_wise_provider.hpp"
 #include "omp.h"
@@ -24,27 +24,11 @@ namespace boosting {
              * @param numGradients  The number of gradients per row
              */
             DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients)
-                : DenseExampleWiseStatisticMatrix(numRows, numGradients, false) {
+                : DenseExampleWiseStatisticView(
+                      numRows, numGradients, triangularNumber(numGradients),
+                      (float64*) malloc(numRows * numGradients * sizeof(float64)),
+                      (float64*) malloc(numRows * triangularNumber(numGradients) * sizeof(float64))) {
 
-            }
-
-            /**
-             * @param numRows       The number of rows in the matrix
-             * @param numGradients  The number of gradients per row
-             * @param init          True, if the gradients and Hessiansshould be value-initialized, false otherwise
-             */
-            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients, bool init)
-                : DenseExampleWiseStatisticView(numRows, numGradients,
-                                                (float64*) (init ? calloc(numRows * numGradients, sizeof(float64))
-                                                                 : malloc(numRows * numGradients * sizeof(float64))),
-                                                (float64*) (init ? calloc(numRows * numHessians_, sizeof(float64))
-                                                                 : malloc(numRows * numHessians_ * sizeof(float64)))) {
-
-            }
-
-            ~DenseExampleWiseStatisticMatrix() {
-                free(gradients_);
-                free(hessians_);
             }
 
     };
