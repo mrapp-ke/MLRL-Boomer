@@ -24,13 +24,13 @@ namespace boosting {
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
     template<class StatisticVector, class StatisticView, class ScoreMatrix>
-    class AbstractExampleWiseStatistics : virtual public IImmutableStatistics {
+    class AbstractExampleWiseImmutableStatistics : virtual public IImmutableStatistics {
 
         protected:
 
             /**
              * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
-             * `ExampleWiseStatistics`.
+             * `AbstractExampleWiseImmutableStatistics`.
              *
              * @tparam T The type of the vector that provides access to the indices of the labels that are included in
              *           the subset
@@ -40,7 +40,7 @@ namespace boosting {
 
                 private:
 
-                    const AbstractExampleWiseStatistics& statistics_;
+                    const AbstractExampleWiseImmutableStatistics& statistics_;
 
                     const StatisticVector* totalSumVector_;
 
@@ -59,8 +59,9 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `AbstractExampleWiseStatistics` that
-                     *                          stores the gradients and Hessians
+                     * @param statistics        A reference to an object of type
+                     *                          `AbstractExampleWiseImmutableStatistics` that stores the gradients and
+                     *                          Hessians
                      * @param totalSumVector    A pointer to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
                      * @param ruleEvaluationPtr An unique pointer to an object of type `IExampleWiseRuleEvaluation` that
@@ -69,7 +70,7 @@ namespace boosting {
                      * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(const AbstractExampleWiseStatistics& statistics,
+                    StatisticsSubset(const AbstractExampleWiseImmutableStatistics& statistics,
                                      const StatisticVector* totalSumVector,
                                      std::unique_ptr<IExampleWiseRuleEvaluation> ruleEvaluationPtr,
                                      const T& labelIndices)
@@ -197,11 +198,11 @@ namespace boosting {
              *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
              *                                  predictions, as well as corresponding quality scores, of rules
              */
-            AbstractExampleWiseStatistics(std::unique_ptr<StatisticView> statisticViewPtr,
-                                          std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+            AbstractExampleWiseImmutableStatistics(
+                    std::unique_ptr<StatisticView> statisticViewPtr,
+                    std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
                 : numStatistics_(statisticViewPtr->getNumRows()), numLabels_(statisticViewPtr->getNumCols()),
-                  statisticViewPtr_(std::move(statisticViewPtr)),
-                  ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+                  statisticViewPtr_(std::move(statisticViewPtr)), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
 
             }
 
@@ -224,8 +225,8 @@ namespace boosting {
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
     template<class StatisticVector, class StatisticView, class ScoreMatrix>
-    class ExampleWiseHistogram final : public AbstractExampleWiseStatistics<StatisticVector, StatisticView,
-                                                                            ScoreMatrix>,
+    class ExampleWiseHistogram final : public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
+                                                                                     ScoreMatrix>,
                                        virtual public IHistogram {
 
         private:
@@ -250,7 +251,7 @@ namespace boosting {
             ExampleWiseHistogram(const StatisticView& originalStatisticView, const StatisticVector* totalSumVector,
                                  std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                  uint32 numBins)
-                : AbstractExampleWiseStatistics<StatisticVector, StatisticView, ScoreMatrix>(
+                : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix>(
                       std::make_unique<StatisticView>(numBins, originalStatisticView.getNumCols()),
                       ruleEvaluationFactoryPtr),
                   originalStatisticView_(originalStatisticView), totalSumVector_(totalSumVector) {
@@ -297,8 +298,8 @@ namespace boosting {
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
     template<class LabelMatrix, class StatisticVector, class StatisticView, class ScoreMatrix>
-    class ExampleWiseStatistics final : public AbstractExampleWiseStatistics<StatisticVector, StatisticView,
-                                                                             ScoreMatrix>,
+    class ExampleWiseStatistics final : public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
+                                                                                      ScoreMatrix>,
                                         virtual public IExampleWiseStatistics {
 
         private:
@@ -330,7 +331,7 @@ namespace boosting {
                                   std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                   const LabelMatrix& labelMatrix, std::unique_ptr<StatisticView> statisticViewPtr,
                                   std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractExampleWiseStatistics<StatisticVector, StatisticView, ScoreMatrix>(
+                : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix>(
                       std::move(statisticViewPtr), ruleEvaluationFactoryPtr),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticViewPtr_->getNumCols())),
                   lossFunctionPtr_(lossFunctionPtr), labelMatrix_(labelMatrix),
