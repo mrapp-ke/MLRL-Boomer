@@ -46,7 +46,7 @@ namespace boosting {
                                                                               DenseLabelWiseStatisticVector,
                                                                               DenseLabelWiseStatisticView,
                                                                               DenseLabelWiseStatisticMatrix,
-                                                                              DenseNumericMatrix<float64>> {
+                                                                              NumericDenseMatrix<float64>> {
 
         public:
 
@@ -68,9 +68,9 @@ namespace boosting {
                                      std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                      const LabelMatrix& labelMatrix,
                                      std::unique_ptr<DenseLabelWiseStatisticView> statisticViewPtr,
-                                     std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr)
+                                     std::unique_ptr<NumericDenseMatrix<float64>> scoreMatrixPtr)
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticView,
-                                              DenseLabelWiseStatisticMatrix, DenseNumericMatrix<float64>>(
+                                              DenseLabelWiseStatisticMatrix, NumericDenseMatrix<float64>>(
                       lossFunctionPtr, ruleEvaluationFactoryPtr, labelMatrix, std::move(statisticViewPtr),
                       std::move(scoreMatrixPtr)) {
 
@@ -92,8 +92,8 @@ namespace boosting {
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<DenseLabelWiseStatisticMatrix> statisticMatrixPtr =
             std::make_unique<DenseLabelWiseStatisticMatrix>(numExamples, numLabels);
-        std::unique_ptr<DenseNumericMatrix<float64>> scoreMatrixPtr =
-            std::make_unique<DenseNumericMatrix<float64>>(numExamples, numLabels, true);
+        std::unique_ptr<NumericDenseMatrix<float64>> scoreMatrixPtr =
+            std::make_unique<NumericDenseMatrix<float64>>(numExamples, numLabels, true);
         const ILabelWiseLoss* lossFunctionRawPtr = lossFunctionPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
