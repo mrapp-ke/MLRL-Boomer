@@ -58,6 +58,6 @@ class BitVector final {
         /**
          * Sets the values of all elements to zero.
          */
-        void setAllToZero();
+        void clear();
 
 };

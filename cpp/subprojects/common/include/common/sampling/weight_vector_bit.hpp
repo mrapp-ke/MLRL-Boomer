@@ -49,7 +49,7 @@ class BitWeightVector final : public IWeightVector {
         /**
          * Sets all weights to zero.
          */
-        void setAllToZero();
+        void clear();
 
         /**
          * Sets the number of non-zero weights.

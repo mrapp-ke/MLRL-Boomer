@@ -116,7 +116,7 @@ namespace seco {
         return numElements_;
     }
 
-    void DenseConfusionMatrixVector::setAllToZero() {
+    void DenseConfusionMatrixVector::clear() {
         setArrayToZeros(array_, numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS);
     }
 

@@ -121,7 +121,7 @@ namespace seco {
             /**
              * Sets the elements of all confusion matrices to zero.
              */
-            void setAllToZero();
+            void clear();
 
             /**
              * Adds all confusion matrix elements in another vector to this vector.

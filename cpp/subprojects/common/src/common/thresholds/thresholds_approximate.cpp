@@ -103,10 +103,10 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, cons
                                     BinWeightVector& binWeights, IHistogram& histogram, const IWeightVector& weights,
                                     const CoverageSet& coverageSet) {
     // Reset all statistics in the histogram to zero...
-    histogram.setAllToZero();
+    histogram.clear();
 
     // Reset the weights of all bins to zero...
-    binWeights.setAllToZero();
+    binWeights.clear();
 
     // Iterate the covered examples and add their statistics to the corresponding bin...
     uint32 numCovered = coverageSet.getNumCovered();

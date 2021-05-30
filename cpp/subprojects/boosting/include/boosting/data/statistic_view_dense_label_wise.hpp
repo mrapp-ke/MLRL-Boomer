@@ -169,7 +169,7 @@ namespace boosting {
             /**
              * Sets all gradients and Hessians in the matrix to zero.
              */
-            void setAllToZero();
+            void clear();
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians

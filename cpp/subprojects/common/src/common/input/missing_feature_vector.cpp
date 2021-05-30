@@ -28,5 +28,5 @@ bool MissingFeatureVector::isMissing(uint32 index) const {
 }
 
 void MissingFeatureVector::clearMissingIndices() {
-    missingIndicesPtr_->setAllToZero();
+    missingIndicesPtr_->clear();
 }

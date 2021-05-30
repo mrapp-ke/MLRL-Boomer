@@ -65,7 +65,7 @@ namespace boosting {
         return numElements_;
     }
 
-    void DenseLabelWiseStatisticVector::setAllToZero() {
+    void DenseLabelWiseStatisticVector::clear() {
         setArrayToZeros(gradients_, numElements_);
         setArrayToZeros(hessians_, numElements_);
     }

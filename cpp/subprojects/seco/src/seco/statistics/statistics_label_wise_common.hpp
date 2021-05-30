@@ -108,7 +108,7 @@ namespace seco {
                         // Reset the confusion matrix for each label to zero and add its elements to the accumulated
                         // confusion matrix...
                         accumulatedSumVector_->add(sumVector_.cbegin(), sumVector_.cend());
-                        sumVector_.setAllToZero();
+                        sumVector_.clear();
                     }
 
                     const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
@@ -183,8 +183,8 @@ namespace seco {
             }
 
             void resetSampledStatistics() override {
-                totalSumVector_.setAllToZero();
-                subsetSumVector_.setAllToZero();
+                totalSumVector_.clear();
+                subsetSumVector_.clear();
             }
 
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
@@ -193,7 +193,7 @@ namespace seco {
             }
 
             void resetCoveredStatistics() override {
-                subsetSumVector_.setAllToZero();
+                subsetSumVector_.clear();
             }
 
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {

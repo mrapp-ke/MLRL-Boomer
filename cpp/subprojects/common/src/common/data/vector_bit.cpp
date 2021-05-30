@@ -47,6 +47,6 @@ uint32 BitVector::getNumElements() const {
     return numElements_;
 }
 
-void BitVector::setAllToZero() {
+void BitVector::clear() {
     setArrayToZeros(array_, size(numElements_));
 }
