@@ -123,7 +123,7 @@ namespace boosting {
                         // gradients and Hessians...
                         accumulatedSumVector_->add(sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
                                                    sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
-                        sumVector_.setAllToZero();
+                        sumVector_.clear();
                     }
 
                     const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
@@ -260,8 +260,8 @@ namespace boosting {
 
             }
 
-            void setAllToZero() override {
-                this->statisticViewPtr_->setAllToZero();
+            void clear() override {
+                this->statisticViewPtr_->clear();
             }
 
             void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
@@ -371,7 +371,7 @@ namespace boosting {
              * @see `IStatistics::resetCoveredStatistics`
              */
             void resetCoveredStatistics() override {
-                totalSumVectorPtr_->setAllToZero();
+                totalSumVectorPtr_->clear();
             }
 
             /**

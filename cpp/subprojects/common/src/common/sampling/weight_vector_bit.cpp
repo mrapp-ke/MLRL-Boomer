@@ -31,8 +31,8 @@ void BitWeightVector::set(uint32 pos, bool weight) {
     vector_.set(pos, weight);
 }
 
-void BitWeightVector::setAllToZero() {
-    vector_.setAllToZero();
+void BitWeightVector::clear() {
+    vector_.clear();
 }
 
 float64 BitWeightVector::getWeight(uint32 pos) const {

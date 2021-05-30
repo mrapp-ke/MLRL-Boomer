@@ -123,7 +123,7 @@ namespace boosting {
         return numGradients_;
     }
 
-    void DenseExampleWiseStatisticVector::setAllToZero() {
+    void DenseExampleWiseStatisticVector::clear() {
         setArrayToZeros(gradients_, numGradients_);
         setArrayToZeros(hessians_, numHessians_);
     }

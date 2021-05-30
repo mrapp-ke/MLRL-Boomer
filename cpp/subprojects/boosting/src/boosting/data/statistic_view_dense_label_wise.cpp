@@ -61,7 +61,7 @@ namespace boosting {
         return &hessians_[(row + 1) * numCols_];
     }
 
-    void DenseLabelWiseStatisticView::setAllToZero() {
+    void DenseLabelWiseStatisticView::clear() {
         setArrayToZeros(gradients_, numRows_ * numCols_);
         setArrayToZeros(hessians_, numRows_ * numCols_);
     }

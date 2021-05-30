@@ -42,7 +42,7 @@ void DokVector<T>::set(uint32 pos, T value) {
 }
 
 template<class T>
-void DokVector<T>::setAllToZero() {
+void DokVector<T>::clear() {
     data_.clear();
 }
 

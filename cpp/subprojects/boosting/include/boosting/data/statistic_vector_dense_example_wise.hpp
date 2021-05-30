@@ -261,7 +261,7 @@ namespace boosting {
             /**
              * Sets all gradients and Hessians in the vector to zero.
              */
-            void setAllToZero();
+            void clear();
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.

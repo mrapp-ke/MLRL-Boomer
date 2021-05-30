@@ -64,7 +64,7 @@ namespace boosting {
         return &hessians_[(row + 1) * numHessians_];
     }
 
-    void DenseExampleWiseStatisticView::setAllToZero() {
+    void DenseExampleWiseStatisticView::clear() {
         setArrayToZeros(gradients_, numRows_ * numGradients_);
         setArrayToZeros(hessians_, numRows_ * numHessians_);
     }

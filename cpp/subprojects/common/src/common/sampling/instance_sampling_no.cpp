@@ -13,7 +13,7 @@ static inline void subSampleInternally(const SinglePartition& partition, EqualWe
 static inline void subSampleInternally(BiPartition& partition, BitWeightVector& weightVector, RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
-    weightVector.setAllToZero();
+    weightVector.clear();
 
     for (uint32 i = 0; i < numTrainingExamples; i++) {
         uint32 index = indexIterator[i];

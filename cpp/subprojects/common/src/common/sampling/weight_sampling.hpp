@@ -23,7 +23,7 @@
 template<class Iterator>
 static inline void sampleWeightsWithoutReplacementViaTrackingSelection(BitWeightVector& weightVector, Iterator iterator,
                                                                        uint32 numTotal, uint32 numSamples, RNG& rng) {
-    weightVector.setAllToZero();
+    weightVector.clear();
     std::unordered_set<uint32> selectedIndices;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -57,7 +57,7 @@ static inline void sampleWeightsWithoutReplacementViaTrackingSelection(BitWeight
 template<class Iterator>
 static inline void sampleWeightsWithoutReplacementViaPool(BitWeightVector& weightVector, Iterator iterator,
                                                           uint32 numTotal, uint32 numSamples, RNG& rng) {
-    weightVector.setAllToZero();
+    weightVector.clear();
     uint32 pool[numTotal];
 
     // Initialize pool...
