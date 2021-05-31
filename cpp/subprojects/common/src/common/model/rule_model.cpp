@@ -25,6 +25,10 @@ bool RuleModel::UsedIterator::operator!=(const UsedIterator& rhs) const {
     return index_ != rhs.index_;
 }
 
+bool RuleModel::UsedIterator::operator==(const UsedIterator& rhs) const {
+    return index_ == rhs.index_;
+}
+
 RuleModel::UsedIterator::difference_type RuleModel::UsedIterator::operator-(const UsedIterator& rhs) const {
     return (difference_type) index_ - (difference_type) rhs.index_;
 }

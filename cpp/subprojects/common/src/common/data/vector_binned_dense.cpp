@@ -49,6 +49,11 @@ bool DenseBinnedVector<T>::Iterator::operator!=(const DenseBinnedVector<T>::Iter
 }
 
 template<class T>
+bool DenseBinnedVector<T>::Iterator::operator==(const DenseBinnedVector<T>::Iterator& rhs) const {
+    return index_ == rhs.index_;
+}
+
+template<class T>
 typename DenseBinnedVector<T>::Iterator::difference_type DenseBinnedVector<T>::Iterator::operator-(
         const DenseBinnedVector<T>::Iterator& rhs) const {
     return (difference_type) index_ - (difference_type) rhs.index_;

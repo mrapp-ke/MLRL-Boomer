@@ -55,6 +55,12 @@ bool DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator!=(
 }
 
 template<class T>
+bool DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator==(
+        const DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator& rhs) const {
+    return index_ == rhs.index_;
+}
+
+template<class T>
 typename DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::difference_type DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator::operator-(
         const DenseBinnedLabelWiseScoreVector<T>::QualityScoreIterator& rhs) const {
     return (difference_type) index_ - (difference_type) rhs.index_;

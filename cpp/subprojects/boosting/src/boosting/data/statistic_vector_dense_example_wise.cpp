@@ -49,6 +49,11 @@ namespace boosting {
         return index_ != rhs.index_;
     }
 
+    bool DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator==(
+            const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
+        return index_ == rhs.index_;
+    }
+
     DenseExampleWiseStatisticVector::HessianDiagonalIterator::difference_type DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator-(
             const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
         return (difference_type) index_ - (difference_type) rhs.index_;
