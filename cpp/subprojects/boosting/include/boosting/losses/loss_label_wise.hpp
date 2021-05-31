@@ -104,7 +104,7 @@ namespace boosting {
      */
     class AbstractLabelWiseLoss : public ILabelWiseLoss {
 
-        protected:
+        private:
 
             /**
              * A function that allows to update the gradient and Hessian for a single example and label. The function
@@ -120,17 +120,17 @@ namespace boosting {
              */
             typedef float64 (*EvaluateFunction)(bool trueLabel, float64 predictedScore);
 
+            UpdateFunction updateFunction_;
+
+            EvaluateFunction evaluateFunction_;
+
+        protected:
+
             /**
              * @param updateFunction    The function to be used for updating gradients and Hessians
              * @param evaluateFunction  The function to be used for evaluating predictions
              */
             AbstractLabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction);
-
-        private:
-
-            UpdateFunction updateFunction_;
-
-            EvaluateFunction evaluateFunction_;
 
         public:
 
