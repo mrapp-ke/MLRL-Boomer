@@ -112,9 +112,17 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
                  * Returns whether this iterator and another one refer to the same element.
                  *
                  * @param rhs   A reference to another iterator
-                 * @return      True, if the iterators refer to the same element, false otherwise
+                 * @return      True, if the iterators do not refer to the same element, false otherwise
                  */
                 bool operator!=(const QualityScoreIterator& rhs) const;
+
+                /**
+                 * Returns whether this iterator and another one refer to the same element.
+                 *
+                 * @param rhs   A reference to another iterator
+                 * @return      True, if the iterators refer to the same element, false otherwise
+                 */
+                bool operator==(const QualityScoreIterator& rhs) const;
 
                 /**
                  * Returns the difference between this iterator and another one.
