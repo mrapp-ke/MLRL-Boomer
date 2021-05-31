@@ -3,9 +3,8 @@
 
 namespace boosting {
 
-    void LabelWiseSquaredErrorLoss::updateGradientAndHessian(DenseVector<float64>::iterator gradient,
-                                                             DenseVector<float64>::iterator hessian, bool trueLabel,
-                                                             float64 predictedScore) const {
+    void LabelWiseSquaredErrorLoss::updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
+                                                             float64* hessian) const {
         float64 expectedScore = trueLabel ? 1 : -1;
         *gradient = (2 * predictedScore) - (2 * expectedScore);
         *hessian = 2;

@@ -110,14 +110,13 @@ namespace boosting {
              * Must be implemented by subclasses in order to update the gradient and Hessian for a single example and
              * label.
              *
-             * @param gradient          A `DenseVector::iterator` to the gradient that should be updated
-             * @param hessian           A `DenseVector::iterator` to the Hessian that should be updated
              * @param trueLabel         True, if the label is relevant, false otherwise
              * @param predictedScore    The score that is predicted for the label
+             * @param gradient          A pointer to the gradient to be updated
+             * @param hessian           A pointer to the Hessian to be updated
              */
-            virtual void updateGradientAndHessian(DenseVector<float64>::iterator gradient,
-                                                  DenseVector<float64>::iterator hessian, bool trueLabel,
-                                                  float64 predictedScore) const = 0;
+            virtual void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
+                                                  float64* hessian) const = 0;
 
             /**
              * Must be implemented by subclasses in order to calculate a numerical score that assesses the quality of

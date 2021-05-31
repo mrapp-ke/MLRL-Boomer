@@ -21,7 +21,7 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             bool trueLabel = labelIterator[i];
             float64 predictedScore = scoreIterator[i];
-            this->updateGradientAndHessian(&gradientIterator[i], &hessianIterator[i], trueLabel, predictedScore);
+            this->updateGradientAndHessian(trueLabel, predictedScore, &gradientIterator[i], &hessianIterator[i]);
         }
     }
 
@@ -43,8 +43,8 @@ namespace boosting {
             uint32 labelIndex = labelIndicesBegin[i];
             bool trueLabel = labelIterator[labelIndex];
             float64 predictedScore = scoreIterator[labelIndex];
-            this->updateGradientAndHessian(&gradientIterator[labelIndex], &hessianIterator[labelIndex], trueLabel,
-                                           predictedScore);
+            this->updateGradientAndHessian(trueLabel, predictedScore, &gradientIterator[labelIndex],
+                                           &hessianIterator[labelIndex]);
         }
     }
 
@@ -65,7 +65,7 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             bool trueLabel = *labelIterator;
             float64 predictedScore = scoreIterator[i];
-            this->updateGradientAndHessian(&gradientIterator[i], &hessianIterator[i], trueLabel, predictedScore);
+            this->updateGradientAndHessian(trueLabel, predictedScore, &gradientIterator[i], &hessianIterator[i]);
             labelIterator++;
         }
     }
@@ -89,8 +89,8 @@ namespace boosting {
             std::advance(labelIterator, labelIndex - previousLabelIndex);
             bool trueLabel = *labelIterator;
             float64 predictedScore = scoreIterator[labelIndex];
-            this->updateGradientAndHessian(&gradientIterator[labelIndex], &hessianIterator[labelIndex], trueLabel,
-                                           predictedScore);
+            this->updateGradientAndHessian(trueLabel, predictedScore, &gradientIterator[labelIndex],
+                                           &hessianIterator[labelIndex]);
             previousLabelIndex = labelIndex;
         }
     }

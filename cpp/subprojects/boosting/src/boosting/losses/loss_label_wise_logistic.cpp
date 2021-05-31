@@ -39,9 +39,8 @@ namespace boosting {
         }
     }
 
-    void LabelWiseLogisticLoss::updateGradientAndHessian(DenseVector<float64>::iterator gradient,
-                                                         DenseVector<float64>::iterator hessian, bool trueLabel,
-                                                         float64 predictedScore) const {
+    void LabelWiseLogisticLoss::updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
+                                                         float64* hessian) const {
         // The gradient computes as `-expectedScore / (1 + exp(expectedScore * predictedScore))`, or as
         // `1 / (1 + exp(-predictedScore)) - 1` if `trueLabel == true`, `1 / (1 + exp(-predictedScore))`, otherwise...
         float64 logistic = logisticFunction(predictedScore);
