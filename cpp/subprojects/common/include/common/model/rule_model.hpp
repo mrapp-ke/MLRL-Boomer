@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/model/rule.hpp"
-#include <list>
+#include <forward_list>
 #include <iterator>
 
 
@@ -22,7 +22,7 @@ class RuleModel final {
 
             private:
 
-                std::list<Rule>::const_iterator iterator_;
+                std::forward_list<Rule>::const_iterator iterator_;
 
                 uint32 index_;
 
@@ -32,7 +32,7 @@ class RuleModel final {
                  * @param list  A reference to the list that stores all available rules
                  * @param index The index to start at
                  */
-                UsedIterator(const std::list<Rule>& list, uint32 index);
+                UsedIterator(const std::forward_list<Rule>& list, uint32 index);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
@@ -98,7 +98,11 @@ class RuleModel final {
 
         };
 
-        std::list<Rule> list_;
+        std::forward_list<Rule> list_;
+
+        std::forward_list<Rule>::iterator it_;
+
+        uint32 numRules_;
 
         uint32 numUsedRules_;
 
@@ -109,7 +113,7 @@ class RuleModel final {
         /**
          * An iterator that provides read-only access to all rules.
          */
-        typedef std::list<Rule>::const_iterator const_iterator;
+        typedef std::forward_list<Rule>::const_iterator const_iterator;
 
         /**
          * An iterator that provides read-only access to the used rules.
