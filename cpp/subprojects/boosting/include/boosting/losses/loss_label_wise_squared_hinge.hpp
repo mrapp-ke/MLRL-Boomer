@@ -12,10 +12,7 @@ namespace boosting {
 
         public:
 
-            void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
-                                          float64* hessian) const override;
-
-            float64 evaluate(bool trueLabel, float64 predictedScore) const override;
+            LabelWiseSquaredHingeLoss();
 
     };
 

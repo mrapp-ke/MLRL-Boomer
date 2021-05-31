@@ -107,26 +107,30 @@ namespace boosting {
         protected:
 
             /**
-             * Must be implemented by subclasses in order to update the gradient and Hessian for a single example and
-             * label.
-             *
-             * @param trueLabel         True, if the label is relevant, false otherwise
-             * @param predictedScore    The score that is predicted for the label
-             * @param gradient          A pointer to the gradient to be updated
-             * @param hessian           A pointer to the Hessian to be updated
+             * A function that allows to update the gradient and Hessian for a single example and label. The function
+             * accepts the true label, the predicted score, as well as pointers to the gradient and Hessian to be
+             * updated, as arguments.
              */
-            virtual void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
-                                                  float64* hessian) const = 0;
+            typedef void (*UpdateFunction)(bool trueLabel, float64 predictedScore, float64* gradient, float64* hessian);
 
             /**
-             * Must be implemented by subclasses in order to calculate a numerical score that assesses the quality of
-             * the prediction for a single example and label.
-             *
-             * @param trueLabel         True, if the label is relevant, false otherwise
-             * @param predictedScore    The score that is predicted for the label
-             * @return                  The numerical score that has been calculated
+             * A function that allows to calculate a numerical score that assesses the quality of the prediction for a
+             * single example and label. The function accepts the true label and the predicted score as arguments and
+             * returns a numerical score.
              */
-            virtual float64 evaluate(bool trueLabel, float64 predictedScore) const = 0;
+            typedef float64 (*EvaluateFunction)(bool trueLabel, float64 predictedScore);
+
+            /**
+             * @param updateFunction    The function to be used for updating gradients and Hessians
+             * @param evaluateFunction  The function to be used for evaluating predictions
+             */
+            AbstractLabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction);
+
+        private:
+
+            UpdateFunction updateFunction_;
+
+            EvaluateFunction evaluateFunction_;
 
         public:
 

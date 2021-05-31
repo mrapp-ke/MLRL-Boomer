@@ -3,17 +3,22 @@
 
 namespace boosting {
 
-    void LabelWiseSquaredErrorLoss::updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
-                                                             float64* hessian) const {
+    static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
+                                                float64* hessian) {
         float64 expectedScore = trueLabel ? 1 : -1;
         *gradient = (2 * predictedScore) - (2 * expectedScore);
         *hessian = 2;
     }
 
-    float64 LabelWiseSquaredErrorLoss::evaluate(bool trueLabel, float64 predictedScore) const {
+    static inline float64 evaluatePrediction(bool trueLabel, float64 predictedScore) {
         float64 expectedScore = trueLabel ? 1 : -1;
         float64 difference = (expectedScore - predictedScore);
         return difference * difference;
+    }
+
+    LabelWiseSquaredErrorLoss::LabelWiseSquaredErrorLoss()
+        : AbstractLabelWiseLoss(&updateGradientAndHessian, &evaluatePrediction) {
+
     }
 
 }
