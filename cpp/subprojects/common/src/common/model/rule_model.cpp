@@ -1,6 +1,6 @@
 #include "common/model/rule_model.hpp"
 
-RuleModel::UsedIterator::UsedIterator(const std::list<Rule>& list, uint32 index)
+RuleModel::UsedIterator::UsedIterator(const std::forward_list<Rule>& list, uint32 index)
     : iterator_(list.cbegin()), index_(index) {
 
 }
@@ -30,7 +30,7 @@ RuleModel::UsedIterator::difference_type RuleModel::UsedIterator::operator-(cons
 }
 
 RuleModel::RuleModel()
-    : numUsedRules_(0) {
+    : it_(list_.begin()), numRules_(0), numUsedRules_(0) {
 
 }
 
@@ -51,11 +51,11 @@ RuleModel::used_const_iterator RuleModel::used_cend() const {
 }
 
 uint32 RuleModel::getNumRules() const {
-    return (uint32) list_.size();
+    return numRules_;
 }
 
 uint32 RuleModel::getNumUsedRules() const {
-    return numUsedRules_ > 0 ? numUsedRules_ : this->getNumRules();
+    return numUsedRules_ > 0 ? numUsedRules_ : numRules_;;
 }
 
 void RuleModel::setNumUsedRules(uint32 numUsedRules) {
@@ -63,7 +63,14 @@ void RuleModel::setNumUsedRules(uint32 numUsedRules) {
 }
 
 void RuleModel::addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) {
-    list_.emplace_back(std::move(bodyPtr), std::move(headPtr));
+    if (numRules_ > 0) {
+        it_ = list_.emplace_after(it_, std::move(bodyPtr), std::move(headPtr));
+    } else {
+        list_.emplace_front(std::move(bodyPtr), std::move(headPtr));
+        it_ = list_.begin();
+    }
+
+    numRules_++;
 }
 
 void RuleModel::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
