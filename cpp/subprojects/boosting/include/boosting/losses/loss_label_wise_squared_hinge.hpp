@@ -12,9 +12,8 @@ namespace boosting {
 
         public:
 
-            void updateGradientAndHessian(DenseVector<float64>::iterator gradient,
-                                          DenseVector<float64>::iterator hessian, bool trueLabel,
-                                          float64 predictedScore) const override;
+            void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
+                                          float64* hessian) const override;
 
             float64 evaluate(bool trueLabel, float64 predictedScore) const override;
 
