@@ -39,8 +39,8 @@ namespace boosting {
         }
     }
 
-    void LabelWiseLogisticLoss::updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
-                                                         float64* hessian) const {
+    static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
+                                                float64* hessian) {
         // The gradient computes as `-expectedScore / (1 + exp(expectedScore * predictedScore))`, or as
         // `1 / (1 + exp(-predictedScore)) - 1` if `trueLabel == true`, `1 / (1 + exp(-predictedScore))`, otherwise...
         float64 logistic = logisticFunction(predictedScore);
@@ -51,10 +51,15 @@ namespace boosting {
         *hessian = logistic - squaredLogisticFunction(predictedScore);
     }
 
-    float64 LabelWiseLogisticLoss::evaluate(bool trueLabel, float64 predictedScore) const {
+    static inline float64 evaluatePrediction(bool trueLabel, float64 predictedScore) {
        // The logistic loss calculates as `log(1 + exp(-expectedScore * predictedScore))`...
         float64 x = trueLabel ? -predictedScore : predictedScore;
         return logSumExp(x);
+    }
+
+    LabelWiseLogisticLoss::LabelWiseLogisticLoss()
+        : AbstractLabelWiseLoss(&updateGradientAndHessian, &evaluatePrediction) {
+
     }
 
 }

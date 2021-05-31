@@ -4,6 +4,11 @@
 
 namespace boosting {
 
+    AbstractLabelWiseLoss::AbstractLabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
+        : updateFunction_(updateFunction), evaluateFunction_(evaluateFunction) {
+
+    }
+
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
                                                           const CContiguousLabelMatrix& labelMatrix,
                                                           const CContiguousConstView<float64>& scoreMatrix,
@@ -21,7 +26,7 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             bool trueLabel = labelIterator[i];
             float64 predictedScore = scoreIterator[i];
-            this->updateGradientAndHessian(trueLabel, predictedScore, &gradientIterator[i], &hessianIterator[i]);
+            (*updateFunction_)(trueLabel, predictedScore, &gradientIterator[i], &hessianIterator[i]);
         }
     }
 
@@ -43,8 +48,7 @@ namespace boosting {
             uint32 labelIndex = labelIndicesBegin[i];
             bool trueLabel = labelIterator[labelIndex];
             float64 predictedScore = scoreIterator[labelIndex];
-            this->updateGradientAndHessian(trueLabel, predictedScore, &gradientIterator[labelIndex],
-                                           &hessianIterator[labelIndex]);
+            (*updateFunction_)(trueLabel, predictedScore, &gradientIterator[labelIndex], &hessianIterator[labelIndex]);
         }
     }
 
@@ -65,7 +69,7 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             bool trueLabel = *labelIterator;
             float64 predictedScore = scoreIterator[i];
-            this->updateGradientAndHessian(trueLabel, predictedScore, &gradientIterator[i], &hessianIterator[i]);
+            (*updateFunction_)(trueLabel, predictedScore, &gradientIterator[i], &hessianIterator[i]);
             labelIterator++;
         }
     }
@@ -89,8 +93,7 @@ namespace boosting {
             std::advance(labelIterator, labelIndex - previousLabelIndex);
             bool trueLabel = *labelIterator;
             float64 predictedScore = scoreIterator[labelIndex];
-            this->updateGradientAndHessian(trueLabel, predictedScore, &gradientIterator[labelIndex],
-                                           &hessianIterator[labelIndex]);
+            (*updateFunction_)(trueLabel, predictedScore, &gradientIterator[labelIndex], &hessianIterator[labelIndex]);
             previousLabelIndex = labelIndex;
         }
     }
@@ -105,7 +108,7 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             float64 predictedScore = scoreIterator[i];
             bool trueLabel = labelIterator[i];
-            float64 score = this->evaluate(trueLabel, predictedScore);
+            float64 score = (*evaluateFunction_)(trueLabel, predictedScore);
             mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
         }
 
@@ -122,7 +125,7 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             float64 predictedScore = scoreIterator[i];
             bool trueLabel= *labelIterator;
-            float64 score = this->evaluate(trueLabel, predictedScore);
+            float64 score = (*evaluateFunction_)(trueLabel, predictedScore);
             mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
             labelIterator++;
         }
@@ -140,7 +143,7 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             float64 predictedScore = scoresBegin[i];
             bool trueLabel = *labelIterator;
-            float64 score = this->evaluate(trueLabel, predictedScore);
+            float64 score = (*evaluateFunction_)(trueLabel, predictedScore);
             mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
             labelIterator++;
         }
