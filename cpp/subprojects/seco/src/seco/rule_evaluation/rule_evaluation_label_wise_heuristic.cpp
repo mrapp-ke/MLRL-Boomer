@@ -50,7 +50,8 @@ namespace seco {
                     scoreVector_.indices_cbegin();
                 typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
                     scoreVector_.quality_scores_begin();
-                BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
+                auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                                    majorityLabelVector.indices_cend());
                 float64 overallQualityScore = 0;
                 uint32 previousIndex = 0;
 
