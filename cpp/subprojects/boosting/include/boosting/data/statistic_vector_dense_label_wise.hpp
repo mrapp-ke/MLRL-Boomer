@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/data/tuple.hpp"
 #include "common/indices/index_vector_full.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
@@ -19,6 +20,8 @@ namespace boosting {
         private:
 
             uint32 numElements_;
+
+            Tuple<float64>* statistics_;
 
             float64* gradients_;
 

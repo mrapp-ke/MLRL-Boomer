@@ -13,6 +13,8 @@ namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
         : numElements_(numElements),
+          statistics_((Tuple<float64>*) (init ? calloc(numElements, sizeof(Tuple<float64>))
+                                              : malloc(numElements * sizeof(Tuple<float64>)))),
           gradients_((float64*) (init ? calloc(numElements, sizeof(float64)) : malloc(numElements * sizeof(float64)))),
           hessians_((float64*) (init ? calloc(numElements, sizeof(float64)) : malloc(numElements * sizeof(float64)))) {
 
@@ -20,11 +22,13 @@ namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& vector)
         : DenseLabelWiseStatisticVector(vector.numElements_) {
+        copyArray(vector.statistics_, statistics_, numElements_);
         copyArray(vector.gradients_, gradients_, numElements_);
         copyArray(vector.hessians_, hessians_, numElements_);
     }
 
     DenseLabelWiseStatisticVector::~DenseLabelWiseStatisticVector() {
+        free(statistics_);
         free(gradients_);
         free(hessians_);
     }
