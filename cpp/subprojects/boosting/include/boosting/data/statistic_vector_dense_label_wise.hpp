@@ -49,6 +49,11 @@ namespace boosting {
             ~DenseLabelWiseStatisticVector();
 
             /**
+             * An iterator that provides read-only access to the elements in the vector.
+             */
+            typedef const Tuple<float64>* const_iterator;
+
+            /**
              * An iterator that provides access to the gradients in the vector and allows to modify them.
              */
             typedef float64* gradient_iterator;
@@ -67,6 +72,20 @@ namespace boosting {
              * An iterator that provides read-only access to the Hessians in the vector.
              */
             typedef const float64* hessian_const_iterator;
+
+            /**
+             * Returns a `const_iterator` to the beginning of the vector.
+             *
+             * @return A `const_iterator` to the beginning
+             */
+            const_iterator cbegin() const;
+
+            /**
+             * Returns a `const_iterator` to the end of the vector.
+             *
+             * @return A `const_iterator` to the end
+             */
+            const_iterator cend() const;
 
             /**
              * Returns a `gradient_iterator` to the beginning of the gradients.
