@@ -27,14 +27,6 @@ BinarySparseArrayVector::index_const_iterator BinarySparseArrayVector::indices_c
     return vector_.cend();
 }
 
-BinarySparseArrayVector::value_const_iterator BinarySparseArrayVector::values_cbegin() const {
-    return make_index_forward_iterator(vector_.cbegin(), vector_.cend());
-}
-
-BinarySparseArrayVector::value_const_iterator BinarySparseArrayVector::values_cend() const {
-    return make_index_forward_iterator(vector_.cbegin(), vector_.cend(), vector_.getNumElements());
-}
-
 uint32 BinarySparseArrayVector::getNumElements() const {
     return vector_.getNumElements();
 }
