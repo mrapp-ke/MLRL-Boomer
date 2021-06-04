@@ -12,7 +12,8 @@ namespace seco {
     static inline void addInternally(DenseConfusionMatrixVector& confusionMatrixVector, uint32 exampleIndex,
                                      const LabelMatrix& labelMatrix, const BinarySparseArrayVector& majorityLabelVector,
                                      const DenseWeightMatrix& weightMatrix, float64 weight) {
-        BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
+        auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                            majorityLabelVector.indices_cend());
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numElements = confusionMatrixVector.getNumElements();
@@ -38,7 +39,8 @@ namespace seco {
                                              const LabelMatrix& labelMatrix,
                                              const BinarySparseArrayVector& majorityLabelVector,
                                              const DenseWeightMatrix& weightMatrix, float64 weight) {
-        BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
+        auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                            majorityLabelVector.indices_cend());
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numElements = confusionMatrixVector.getNumElements();
@@ -161,11 +163,13 @@ namespace seco {
                                                  const BinarySparseArrayVector& majorityLabelVector,
                                                  const DenseWeightMatrix& weightMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
-        BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
+        auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                            majorityLabelVector.indices_cend());
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
+        uint32 previousIndex = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indexIterator[i];
@@ -173,13 +177,13 @@ namespace seco {
 
             if (labelWeight > 0) {
                 bool trueLabel = labelIterator[index];
+                std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
                 iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
                 uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                 confusionMatrixIterator[element] += (labelWeight * weight);
+                previousIndex = index;
             }
-
-            majorityIterator++;
         }
     }
 
@@ -187,7 +191,8 @@ namespace seco {
                                                  const BinarySparseArrayVector& majorityLabelVector,
                                                  const DenseWeightMatrix& weightMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
-        BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
+        auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                            majorityLabelVector.indices_cend());
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         CsrLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
@@ -201,14 +206,13 @@ namespace seco {
             if (labelWeight > 0) {
                 std::advance(labelIterator, index - previousIndex);
                 bool trueLabel = *labelIterator;
+                std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
                 iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
                 uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                 confusionMatrixIterator[element] += (labelWeight * weight);
                 previousIndex = index;
             }
-
-            majorityIterator++;
         }
     }
 
