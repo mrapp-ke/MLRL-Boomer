@@ -146,5 +146,5 @@ class IndexForwardIterator final {
  */
 template<class T>
 static inline IndexForwardIterator<T> make_index_forward_iterator(T begin, T end, uint32 index = 0) {
-    return IndexForwardIterator<T>(begin, end, 0);
+    return IndexForwardIterator<T>(begin, end, index);
 }

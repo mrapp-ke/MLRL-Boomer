@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/data/vector_dense.hpp"
-#include "common/indices/index_forward_iterator.hpp"
 
 
 /**
@@ -40,11 +39,6 @@ class BinarySparseArrayVector final {
         typedef DenseVector<uint32>::const_iterator index_const_iterator;
 
         /**
-         * An iterator that provides read-only access to the values in the vector.
-         */
-        typedef IndexForwardIterator<index_const_iterator> value_const_iterator;
-
-        /**
          * Returns an `index_iterator` to the beginning of the indices in the vector.
          *
          * @return An `index_iterator` to the beginning
@@ -71,20 +65,6 @@ class BinarySparseArrayVector final {
          * @return An `index_const_iterator` to the end
          */
         index_const_iterator indices_cend() const;
-
-        /**
-         * Returns a `value_const_iterator` to the beginning of the values in the vector.
-         *
-         * @return A `value_const_iterator` to the beginning
-         */
-        value_const_iterator values_cbegin() const;
-
-        /**
-         * Returns a `value_const_iterator` to the end of the values in the vector.
-         *
-         * @return A `value_const_iterator` to the end
-         */
-        value_const_iterator values_cend() const;
 
         /**
          * Returns the number of elements in the vector.

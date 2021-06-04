@@ -138,8 +138,8 @@ namespace seco {
              * @param exampleIndex          The index of the example
              * @param labelMatrix           A reference to an object of type `CContiguousLabelMatrix` that provides
              *                              random access to the labels of the training examples
-             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the predictions
-             *                              of the default rule
+             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
+             *                              predictions of the default rule
              * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
              *                              of individual examples and labels
              * @param weight                The weight, the confusion matrix elements should be multiplied by
@@ -155,8 +155,8 @@ namespace seco {
              * @param exampleIndex          The index of the example
              * @param labelMatrix           A reference to an object of type `CsrLabelMatrix` that provides row-wise
              *                              access to the labels of the training examples
-             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the predictions
-             *                              of the default rule
+             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
+             *                              predictions of the default rule
              * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
              *                              of individual examples and labels
              * @param weight                The weight, the confusion matrix elements should be multiplied by
@@ -173,8 +173,8 @@ namespace seco {
              * @param exampleIndex          The index of the example
              * @param labelMatrix           A reference to an object of type `CContiguousLabelMatrix` that provides
              *                              random access to the labels of the training examples
-             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the predictions
-             *                              of the default rule
+             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
+             *                              predictions of the default rule
              * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
              *                              of individual examples and labels
              * @param indices               A reference to a `FullIndexVector' that provides access to the indices
@@ -192,8 +192,8 @@ namespace seco {
              * @param exampleIndex          The index of the example
              * @param labelMatrix           A reference to an object of type `CsrLabelMatrix` that provides row-wise
              *                              access to the labels of the training examples
-             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the predictions
-             *                              of the default rule
+             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
+             *                              predictions of the default rule
              * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
              *                              of individual examples and labels
              * @param indices               A reference to a `FullIndexVector' that provides access to the indices
@@ -211,8 +211,8 @@ namespace seco {
              * @param exampleIndex          The index of the example
              * @param labelMatrix           A reference to an object of type `CContiguousLabelMatrix` that provides
              *                              random access to the labels of the training examples
-             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the predictions
-             *                              of the default rule
+             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
+             *                              predictions of the default rule
              * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
              *                              of individual examples and labels
              * @param indices               A reference to a `PartialIndexVector' that provides access to the indices
@@ -230,8 +230,8 @@ namespace seco {
              * @param exampleIndex          The index of the example
              * @param labelMatrix           A reference to an object of type `CsrLabelMatrix` that provides row-wise
              *                              access to the labels of the training examples
-             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the predictions
-             *                              of the default rule
+             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
+             *                              predictions of the default rule
              * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
              *                              of individual examples and labels
              * @param indices               A reference to a `PartialIndexVector' that provides access to the indices
