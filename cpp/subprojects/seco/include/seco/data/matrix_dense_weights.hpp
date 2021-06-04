@@ -46,8 +46,8 @@ namespace seco {
              * Updates the weights at a specific row of this matrix, given the predictions for certain labels.
              *
              * @param row                   The row
-             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the prediction of
-             *                              the default rule
+             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
+             *                              prediction of the default rule
              * @param predictionBegin       An iterator to the beginning of the predictions
              * @param predictionEnd         An iterator to the end of the predictions
              * @param indicesBegin          An iterator to the beginning of the label indices
@@ -63,8 +63,8 @@ namespace seco {
              * Updates the weights at a specific row of this matrix, given the predictions for certain labels.
              *
              * @param row                   The row
-             * @param majorityLabelVector   A reference to an object of type `DenseVector` that stores the prediction of
-             *                              the default rule
+             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
+             *                              prediction of the default rule
              * @param predictionBegin       An iterator to the beginning of the predictions
              * @param predictionEnd         An iterator to the end of the predictions
              * @param indicesBegin          An iterator to the beginning of the label indices
