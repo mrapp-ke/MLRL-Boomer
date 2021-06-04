@@ -6,9 +6,18 @@
 namespace boosting {
 
     DenseLabelWiseStatisticConstView::DenseLabelWiseStatisticConstView(uint32 numRows, uint32 numCols,
-                                                                       float64* gradients, float64* hessians)
-        : numRows_(numRows), numCols_(numCols), gradients_(gradients), hessians_(hessians) {
+                                                                       Tuple<float64>* statistics, float64* gradients,
+                                                                       float64* hessians)
+        : numRows_(numRows), numCols_(numCols), statistics_(statistics), gradients_(gradients), hessians_(hessians) {
 
+    }
+
+    DenseLabelWiseStatisticConstView::const_iterator DenseLabelWiseStatisticConstView::row_cbegin(uint32 row) const {
+        return &statistics_[row * numCols_];
+    }
+
+    DenseLabelWiseStatisticConstView::const_iterator DenseLabelWiseStatisticConstView::row_cend(uint32 row) const {
+        return &statistics_[(row + 1) * numCols_];
     }
 
     DenseLabelWiseStatisticConstView::gradient_const_iterator DenseLabelWiseStatisticConstView::gradients_row_cbegin(
@@ -39,9 +48,9 @@ namespace boosting {
         return numCols_;
     }
 
-    DenseLabelWiseStatisticView::DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, float64* gradients,
-                                                             float64* hessians)
-        : DenseLabelWiseStatisticConstView(numRows, numCols, gradients, hessians) {
+    DenseLabelWiseStatisticView::DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics,
+                                                             float64* gradients, float64* hessians)
+        : DenseLabelWiseStatisticConstView(numRows, numCols, statistics, gradients, hessians) {
 
     }
 
