@@ -52,11 +52,13 @@ namespace seco {
                     scoreVector_.quality_scores_begin();
                 BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
                 float64 overallQualityScore = 0;
+                uint32 previousIndex = 0;
 
                 for (uint32 i = 0; i < numPredictions; i++) {
                     uint32 index = indexIterator[i];
 
                     // Set the score to be predicted for the current label...
+                    std::advance(majorityIterator, index - previousIndex);
                     bool majorityLabel = *majorityIterator;
                     float64 score = (float64) (predictMajority_ ? majorityLabel : !majorityLabel);
                     scoreIterator[i] = score;
@@ -95,7 +97,7 @@ namespace seco {
                     score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
                     qualityScoreIterator[i] = score;
                     overallQualityScore += score;
-                    majorityIterator++;
+                    previousIndex = index;
                 }
 
                 overallQualityScore /= numPredictions;
