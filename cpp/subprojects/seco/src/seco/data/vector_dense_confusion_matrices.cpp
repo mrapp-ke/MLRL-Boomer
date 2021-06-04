@@ -166,6 +166,7 @@ namespace seco {
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
+        uint32 previousIndex = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indexIterator[i];
@@ -173,13 +174,13 @@ namespace seco {
 
             if (labelWeight > 0) {
                 bool trueLabel = labelIterator[index];
+                std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
                 iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
                 uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                 confusionMatrixIterator[element] += (labelWeight * weight);
+                previousIndex = index;
             }
-
-            majorityIterator++;
         }
     }
 
@@ -201,14 +202,13 @@ namespace seco {
             if (labelWeight > 0) {
                 std::advance(labelIterator, index - previousIndex);
                 bool trueLabel = *labelIterator;
+                std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
                 iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
                 uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
                 confusionMatrixIterator[element] += (labelWeight * weight);
                 previousIndex = index;
             }
-
-            majorityIterator++;
         }
     }
 

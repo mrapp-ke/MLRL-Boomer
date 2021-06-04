@@ -51,10 +51,12 @@ namespace seco {
         uint32 numPredictions = indicesEnd - indicesBegin;
         iterator weightIterator = this->row_begin(row);
         BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
+        uint32 previousIndex = 0;
 
         for (uint32 i = 0; i < numPredictions; i++) {
             uint32 index = indicesBegin[i];
             bool predictedLabel = predictionBegin[i];
+            std::advance(majorityIterator, index - previousIndex);
             bool majorityLabel = *majorityIterator;
 
             if (predictedLabel != majorityLabel) {
@@ -66,7 +68,7 @@ namespace seco {
                 }
             }
 
-            majorityIterator++;
+            previousIndex = index;
         }
     }
 
