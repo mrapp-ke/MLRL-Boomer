@@ -33,6 +33,14 @@ namespace boosting {
         free(hessians_);
     }
 
+    DenseLabelWiseStatisticVector::const_iterator DenseLabelWiseStatisticVector::cbegin() const {
+        return statistics_;
+    }
+
+    DenseLabelWiseStatisticVector::const_iterator DenseLabelWiseStatisticVector::cend() const {
+        return &statistics_[numElements_];
+    }
+
     DenseLabelWiseStatisticVector::gradient_iterator DenseLabelWiseStatisticVector::gradients_begin() {
         return gradients_;
     }
