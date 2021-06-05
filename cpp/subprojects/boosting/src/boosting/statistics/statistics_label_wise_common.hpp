@@ -97,19 +97,14 @@ namespace boosting {
 
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
-                        totalCoverableSumVector_->add(
-                            statistics_.statisticViewPtr_->gradients_row_cbegin(statisticIndex),
-                            statistics_.statisticViewPtr_->gradients_row_cend(statisticIndex),
-                            statistics_.statisticViewPtr_->hessians_row_cbegin(statisticIndex),
-                            statistics_.statisticViewPtr_->hessians_row_cend(statisticIndex), -weight);
+                        totalCoverableSumVector_->add(statistics_.statisticViewPtr_->row_cbegin(statisticIndex),
+                                                      statistics_.statisticViewPtr_->row_cend(statisticIndex), -weight);
                     }
 
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
-                        sumVector_.addToSubset(statistics_.statisticViewPtr_->gradients_row_cbegin(statisticIndex),
-                                               statistics_.statisticViewPtr_->gradients_row_cend(statisticIndex),
-                                               statistics_.statisticViewPtr_->hessians_row_cbegin(statisticIndex),
-                                               statistics_.statisticViewPtr_->hessians_row_cend(statisticIndex),
-                                               labelIndices_, weight);
+                        sumVector_.addToSubset(statistics_.statisticViewPtr_->row_cbegin(statisticIndex),
+                                               statistics_.statisticViewPtr_->row_cend(statisticIndex), labelIndices_,
+                                               weight);
                     }
 
                     void resetSubset() override {
@@ -121,8 +116,7 @@ namespace boosting {
 
                         // Reset the sums of gradients and Hessians to zero and add it to the accumulated sums of
                         // gradients and Hessians...
-                        accumulatedSumVector_->add(sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
-                                                   sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
+                        accumulatedSumVector_->add(sumVector_.cbegin(), sumVector_.cend());
                         sumVector_.clear();
                     }
 
@@ -131,12 +125,8 @@ namespace boosting {
                         const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                         if (uncovered) {
-                            tmpVector_.difference(totalSumVector_->gradients_cbegin(),
-                                                  totalSumVector_->gradients_cend(), totalSumVector_->hessians_cbegin(),
-                                                  totalSumVector_->hessians_cend(), labelIndices_,
-                                                  sumsOfStatistics.gradients_cbegin(),
-                                                  sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
-                                                  sumsOfStatistics.hessians_cend());
+                            tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
+                                                  sumsOfStatistics.cbegin(), sumsOfStatistics.cend());
                             return ruleEvaluationPtr_->calculateLabelWisePrediction(tmpVector_);
                         }
 
@@ -251,10 +241,8 @@ namespace boosting {
             }
 
             void addToBin(uint32 binIndex, uint32 statisticIndex, uint32 weight) override {
-                this->statisticViewPtr_->addToRow(binIndex, originalStatisticView_.gradients_row_cbegin(statisticIndex),
-                                                  originalStatisticView_.gradients_row_cend(statisticIndex),
-                                                  originalStatisticView_.hessians_row_cbegin(statisticIndex),
-                                                  originalStatisticView_.hessians_row_cend(statisticIndex), weight);
+                this->statisticViewPtr_->addToRow(binIndex, originalStatisticView_.row_cbegin(statisticIndex),
+                                                  originalStatisticView_.row_cend(statisticIndex), weight);
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
@@ -365,10 +353,8 @@ namespace boosting {
              */
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
                 float64 signedWeight = remove ? -((float64) weight) : weight;
-                totalSumVectorPtr_->add(this->statisticViewPtr_->gradients_row_cbegin(statisticIndex),
-                                        this->statisticViewPtr_->gradients_row_cend(statisticIndex),
-                                        this->statisticViewPtr_->hessians_row_cbegin(statisticIndex),
-                                        this->statisticViewPtr_->hessians_row_cend(statisticIndex), signedWeight);
+                totalSumVectorPtr_->add(this->statisticViewPtr_->row_cbegin(statisticIndex),
+                                        this->statisticViewPtr_->row_cend(statisticIndex), signedWeight);
             }
 
             /**

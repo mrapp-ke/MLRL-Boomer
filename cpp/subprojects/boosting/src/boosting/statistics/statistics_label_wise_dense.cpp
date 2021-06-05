@@ -24,15 +24,12 @@ namespace boosting {
              */
             DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
                 : DenseLabelWiseStatisticView(numRows, numCols,
-                                              (Tuple<float64>*) malloc(numRows * numCols * sizeof(Tuple<float64>)),
-                                              (float64*) malloc(numRows * numCols * sizeof(float64)),
-                                              (float64*) malloc(numRows * numCols * sizeof(float64))) {
+                                              (Tuple<float64>*) malloc(numRows * numCols * sizeof(Tuple<float64>))) {
 
             }
 
             ~DenseLabelWiseStatisticMatrix() {
-                free(gradients_);
-                free(hessians_);
+                free(statistics_);
             }
 
     };
