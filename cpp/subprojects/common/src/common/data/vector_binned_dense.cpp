@@ -2,7 +2,7 @@
 
 
 template<typename T>
-DenseBinnedVector<T>::Iterator::Iterator(typename DenseVector<uint32>::const_iterator binIndexIterator,
+DenseBinnedVector<T>::Iterator::Iterator(DenseVector<uint32>::const_iterator binIndexIterator,
                                          typename DenseVector<T>::const_iterator valueIterator)
     : binIndexIterator_(binIndexIterator), valueIterator_(valueIterator) {
 
