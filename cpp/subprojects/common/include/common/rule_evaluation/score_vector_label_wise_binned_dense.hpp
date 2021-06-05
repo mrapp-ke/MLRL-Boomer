@@ -22,23 +22,25 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
     private:
 
         /**
-         * Allows to iterate the quality scores that correspond to individual labels.
+         * An iterator that provides read-only access to the quality scores of all elements in a
+         * `DenseBinnedLabelWiseScoreVector`.
          */
         class QualityScoreIterator final {
 
             private:
 
-                const DenseBinnedLabelWiseScoreVector<T>& vector_;
+                DenseVector<uint32>::const_iterator binIndexIterator_;
 
-                uint32 index_;
+                DenseVector<float64>::const_iterator qualityScoreIterator_;
 
             public:
 
                 /**
-                 * @param vector    A reference to the vector that stores the quality scores
-                 * @param index     The index to start at
+                 * @param binIndexIterator  An iterator to the bin indices of individual elements
+                 * @param valueIterator     An iterator to the quality scores of individual bins
                  */
-                QualityScoreIterator(const DenseBinnedLabelWiseScoreVector<T>& vector, uint32 index);
+                QualityScoreIterator(DenseVector<uint32>::const_iterator binIndexIterator,
+                                     DenseVector<float64>::const_iterator qualityScoreIterator);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
