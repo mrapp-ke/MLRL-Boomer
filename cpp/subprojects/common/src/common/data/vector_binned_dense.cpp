@@ -2,61 +2,62 @@
 
 
 template<typename T>
-DenseBinnedVector<T>::Iterator::Iterator(DenseVector<uint32>::const_iterator binIndexIterator,
-                                         typename DenseVector<T>::const_iterator valueIterator)
+DenseBinnedVector<T>::ValueConstIterator::ValueConstIterator(DenseVector<uint32>::const_iterator binIndexIterator,
+                                                             typename DenseVector<T>::const_iterator valueIterator)
     : binIndexIterator_(binIndexIterator), valueIterator_(valueIterator) {
 
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::Iterator::reference DenseBinnedVector<T>::Iterator::operator[](uint32 index) const {
+typename DenseBinnedVector<T>::ValueConstIterator::reference DenseBinnedVector<T>::ValueConstIterator::operator[](
+        uint32 index) const {
     uint32 binIndex = binIndexIterator_[index];
     return valueIterator_[binIndex];
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::Iterator::reference DenseBinnedVector<T>::Iterator::operator*() const {
+typename DenseBinnedVector<T>::ValueConstIterator::reference DenseBinnedVector<T>::ValueConstIterator::operator*() const {
     uint32 binIndex = *binIndexIterator_;
     return valueIterator_[binIndex];
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::Iterator& DenseBinnedVector<T>::Iterator::operator++() {
+typename DenseBinnedVector<T>::ValueConstIterator& DenseBinnedVector<T>::ValueConstIterator::operator++() {
     ++binIndexIterator_;
     return *this;
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::Iterator& DenseBinnedVector<T>::Iterator::operator++(int n) {
+typename DenseBinnedVector<T>::ValueConstIterator& DenseBinnedVector<T>::ValueConstIterator::operator++(int n) {
     binIndexIterator_++;
     return *this;
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::Iterator& DenseBinnedVector<T>::Iterator::operator--() {
+typename DenseBinnedVector<T>::ValueConstIterator& DenseBinnedVector<T>::ValueConstIterator::operator--() {
     --binIndexIterator_;
     return *this;
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::Iterator& DenseBinnedVector<T>::Iterator::operator--(int n) {
+typename DenseBinnedVector<T>::ValueConstIterator& DenseBinnedVector<T>::ValueConstIterator::operator--(int n) {
     binIndexIterator_--;
     return *this;
 }
 
 template<typename T>
-bool DenseBinnedVector<T>::Iterator::operator!=(const DenseBinnedVector<T>::Iterator& rhs) const {
+bool DenseBinnedVector<T>::ValueConstIterator::operator!=(const ValueConstIterator& rhs) const {
     return binIndexIterator_ != rhs.binIndexIterator_;
 }
 
 template<typename T>
-bool DenseBinnedVector<T>::Iterator::operator==(const DenseBinnedVector<T>::Iterator& rhs) const {
+bool DenseBinnedVector<T>::ValueConstIterator::operator==(const ValueConstIterator& rhs) const {
     return binIndexIterator_ == rhs.binIndexIterator_;
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::Iterator::difference_type DenseBinnedVector<T>::Iterator::operator-(
-        const DenseBinnedVector<T>::Iterator& rhs) const {
+typename DenseBinnedVector<T>::ValueConstIterator::difference_type DenseBinnedVector<T>::ValueConstIterator::operator-(
+        const ValueConstIterator& rhs) const {
     return (difference_type) (binIndexIterator_ - rhs.binIndexIterator_);
 }
 
@@ -68,12 +69,12 @@ DenseBinnedVector<T>::DenseBinnedVector(uint32 numElements, uint32 numBins)
 
 template<typename T>
 typename DenseBinnedVector<T>::const_iterator DenseBinnedVector<T>::cbegin() const {
-    return DenseBinnedVector<T>::Iterator(binIndices_.cbegin(), values_.cbegin());
+    return ValueConstIterator(binIndices_.cbegin(), values_.cbegin());
 }
 
 template<typename T>
 typename DenseBinnedVector<T>::const_iterator DenseBinnedVector<T>::cend() const {
-    return DenseBinnedVector<T>::Iterator(binIndices_.cend(), values_.cbegin());
+    return ValueConstIterator(binIndices_.cend(), values_.cbegin());
 }
 
 template<typename T>

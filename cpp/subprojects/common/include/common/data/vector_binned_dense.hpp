@@ -21,7 +21,7 @@ class DenseBinnedVector {
         /**
          * An iterator that provides read-only access to the values of all elements in a `DenseBinnedVector`.
          */
-        class Iterator final {
+        class ValueConstIterator final {
 
             private:
 
@@ -35,8 +35,8 @@ class DenseBinnedVector {
                  * @param binIndexIterator  An iterator to the bin indices of individual elements
                  * @param valueIterator     An iterator to the values of individual bins
                  */
-                Iterator(DenseVector<uint32>::const_iterator binIndexIterator,
-                         typename DenseVector<T>::const_iterator valueIterator);
+                ValueConstIterator(DenseVector<uint32>::const_iterator binIndexIterator,
+                                   typename DenseVector<T>::const_iterator valueIterator);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
@@ -83,28 +83,28 @@ class DenseBinnedVector {
                  *
                  * @return A reference to an iterator to the next element
                  */
-                Iterator& operator++();
+                ValueConstIterator& operator++();
 
                 /**
                  * Returns an iterator to the next element.
                  *
                  * @return A reference to an iterator to the next element
                  */
-                Iterator& operator++(int n);
+                ValueConstIterator& operator++(int n);
 
                 /**
                  * Returns an iterator to the previous element.
                  *
                  * @return A reference to an iterator to the previous element
                  */
-                Iterator& operator--();
+                ValueConstIterator& operator--();
 
                 /**
                  * Returns an iterator to the previous element.
                  *
                  * @return A reference to an iterator to the previous element
                  */
-                Iterator& operator--(int n);
+                ValueConstIterator& operator--(int n);
 
                 /**
                  * Returns whether this iterator and another one refer to the same element.
@@ -112,7 +112,7 @@ class DenseBinnedVector {
                  * @param rhs   A reference to another iterator
                  * @return      True, if the iterators do not refer to the same element, false otherwise
                  */
-                bool operator!=(const Iterator& rhs) const;
+                bool operator!=(const ValueConstIterator& rhs) const;
 
                 /**
                  * Returns whether this iterator and another one refer to the same element.
@@ -120,7 +120,7 @@ class DenseBinnedVector {
                  * @param rhs   A reference to another iterator
                  * @return      True, if the iterators refer to the same element, false otherwise
                  */
-                bool operator==(const Iterator& rhs) const;
+                bool operator==(const ValueConstIterator& rhs) const;
 
                 /**
                  * Returns the difference between this iterator and another one.
@@ -128,7 +128,7 @@ class DenseBinnedVector {
                  * @param rhs   A reference to another iterator
                  * @return      The difference between the iterators
                  */
-                difference_type operator-(const Iterator& rhs) const;
+                difference_type operator-(const ValueConstIterator& rhs) const;
 
         };
 
@@ -168,7 +168,7 @@ class DenseBinnedVector {
         /**
          * An iterator that provides read-only access to the elements in the vector.
          */
-        typedef Iterator const_iterator;
+        typedef ValueConstIterator const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the vector.
