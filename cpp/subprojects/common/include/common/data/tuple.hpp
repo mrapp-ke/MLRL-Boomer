@@ -11,7 +11,7 @@
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 struct Tuple {
 
     Tuple() { };
