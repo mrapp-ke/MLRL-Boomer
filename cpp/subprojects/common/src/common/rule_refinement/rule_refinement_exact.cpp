@@ -2,7 +2,7 @@
 #include "common/math/math.hpp"
 
 
-template<class T>
+template<typename T>
 ExactRuleRefinement<T>::ExactRuleRefinement(
         std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 numExamples,
         uint32 featureIndex, bool nominal,
@@ -12,7 +12,7 @@ ExactRuleRefinement<T>::ExactRuleRefinement(
 
 }
 
-template<class T>
+template<typename T>
 void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* currentHead) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
@@ -462,7 +462,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     refinementPtr_ = std::move(refinementPtr);
 }
 
-template<class T>
+template<typename T>
 std::unique_ptr<Refinement> ExactRuleRefinement<T>::pollRefinement() {
     return std::move(refinementPtr_);
 }

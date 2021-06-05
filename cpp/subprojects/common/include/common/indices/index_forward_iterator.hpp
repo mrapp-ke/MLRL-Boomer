@@ -14,7 +14,7 @@
  *
  * @tparam T The type of the iterator to be adapted
  */
-template<class T>
+template<typename T>
 class IndexForwardIterator final {
 
     private:
@@ -144,7 +144,7 @@ class IndexForwardIterator final {
  * @param end   An iterator to the end of the indices
  * @param index The index to start at
  */
-template<class T>
+template<typename T>
 static inline IndexForwardIterator<T> make_index_forward_iterator(T begin, T end, uint32 index = 0) {
     return IndexForwardIterator<T>(begin, end, index);
 }

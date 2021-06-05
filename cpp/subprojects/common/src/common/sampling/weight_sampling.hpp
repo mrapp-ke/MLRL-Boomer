@@ -20,7 +20,7 @@
  * @param numSamples    The number of weights to be set to 1
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
-template<class Iterator>
+template<typename Iterator>
 static inline void sampleWeightsWithoutReplacementViaTrackingSelection(BitWeightVector& weightVector, Iterator iterator,
                                                                        uint32 numTotal, uint32 numSamples, RNG& rng) {
     weightVector.clear();
@@ -54,7 +54,7 @@ static inline void sampleWeightsWithoutReplacementViaTrackingSelection(BitWeight
  * @param numSamples    The number of weights to be set to 1
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
-template<class Iterator>
+template<typename Iterator>
 static inline void sampleWeightsWithoutReplacementViaPool(BitWeightVector& weightVector, Iterator iterator,
                                                           uint32 numTotal, uint32 numSamples, RNG& rng) {
     weightVector.clear();
@@ -93,7 +93,7 @@ static inline void sampleWeightsWithoutReplacementViaPool(BitWeightVector& weigh
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  *
  */
-template<class Iterator>
+template<typename Iterator>
 static inline void sampleWeightsWithoutReplacement(BitWeightVector& weightVector, Iterator iterator, uint32 numTotal,
                                                    uint32 numSamples, RNG& rng) {
     float64 ratio = numTotal > 0 ? ((float64) numSamples) / ((float64) numTotal) : 1;

@@ -4,7 +4,7 @@
 
 namespace boosting {
 
-    template<class Prediction, class LabelMatrix, class StatisticView, class ScoreMatrix>
+    template<typename Prediction, typename LabelMatrix, typename StatisticView, typename ScoreMatrix>
     static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                  const LabelMatrix& labelMatrix, StatisticView& statisticView,
                                                  ScoreMatrix& scoreMatrix, const ILabelWiseLoss& lossFunction) {
@@ -26,7 +26,7 @@ namespace boosting {
      * @tparam StatisticMatrix  The type of the matrix that is used to store gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
-    template<class StatisticVector, class StatisticView, class StatisticMatrix, class ScoreMatrix>
+    template<typename StatisticVector, typename StatisticView, typename StatisticMatrix, typename ScoreMatrix>
     class AbstractLabelWiseImmutableStatistics : virtual public IImmutableStatistics {
 
         protected:
@@ -38,7 +38,7 @@ namespace boosting {
              * @tparam T The type of the vector that provides access to the indices of the labels that are included in
              *           the subset
              */
-            template<class T>
+            template<typename T>
             class StatisticsSubset final : public AbstractDecomposableStatisticsSubset {
 
                 private:
@@ -201,7 +201,7 @@ namespace boosting {
      * @tparam StatisticMatrix  The type of the matrix that is used to store gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
-    template<class StatisticVector, class StatisticView, class StatisticMatrix, class ScoreMatrix>
+    template<typename StatisticVector, typename StatisticView, typename StatisticMatrix, typename ScoreMatrix>
     class LabelWiseHistogram final : public AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
                                                                                  StatisticMatrix, ScoreMatrix>,
                                      virtual public IHistogram {
@@ -274,7 +274,8 @@ namespace boosting {
      * @tparam StatisticMatrix  The type of the matrix that is used to store gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
      */
-    template<class LabelMatrix, class StatisticVector, class StatisticView, class StatisticMatrix, class ScoreMatrix>
+    template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename StatisticMatrix,
+             typename ScoreMatrix>
     class AbstractLabelWiseStatistics : public AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
                                                                                     StatisticMatrix, ScoreMatrix>,
                                         virtual public ILabelWiseStatistics {

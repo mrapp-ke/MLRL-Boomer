@@ -4,7 +4,7 @@
 
 namespace boosting {
 
-    template<class LabelMatrix>
+    template<typename LabelMatrix>
     static inline void updateExampleWiseStatisticsInternally(uint32 exampleIndex, const LabelMatrix& labelMatrix,
                                                              const CContiguousConstView<float64>& scoreMatrix,
                                                              DenseExampleWiseStatisticView& statisticView) {
@@ -104,7 +104,7 @@ namespace boosting {
         }
     }
 
-    template<class LabelMatrix>
+    template<typename LabelMatrix>
     static inline float64 evaluateInternally(uint32 exampleIndex, const LabelMatrix& labelMatrix,
                                              const CContiguousConstView<float64>& scoreMatrix) {
         // The example-wise logistic loss calculates as

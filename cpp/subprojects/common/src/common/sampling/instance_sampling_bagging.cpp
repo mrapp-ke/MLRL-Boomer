@@ -63,7 +63,7 @@ static inline void subSampleInternally(BiPartition& partition, float32 sampleSiz
  * @tparam Partition The type of the object that provides access to the indices of the examples that are included in the
  *                   training set
  */
-template<class Partition>
+template<typename Partition>
 class Bagging final : public IInstanceSubSampling {
 
     private:

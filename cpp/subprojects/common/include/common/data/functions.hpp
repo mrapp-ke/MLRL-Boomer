@@ -33,7 +33,7 @@ static inline constexpr std::size_t hashArray(const uint32* a, uint32 numElement
  * @param secondNumElements The number of elements in the array `second`
  * @return                  True, if both arrays are equal, false otherwise
  */
-template<class T>
+template<typename T>
 static inline constexpr bool compareArrays(const T* first, uint32 firstNumElements, const T* second,
                                            uint32 secondNumElements) {
     if (firstNumElements != secondNumElements) {

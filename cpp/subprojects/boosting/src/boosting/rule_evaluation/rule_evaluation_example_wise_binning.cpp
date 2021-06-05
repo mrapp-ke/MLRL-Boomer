@@ -34,7 +34,7 @@ namespace boosting {
         return n;
     }
 
-    template<class T>
+    template<typename T>
     static inline void aggregateGradientsAndHessians(const DenseExampleWiseStatisticVector& statisticVector,
                                                      const uint32* binIndices, DenseBinnedScoreVector<T>& scoreVector,
                                                      float64* gradients, float64* hessians, uint32 maxBins) {
@@ -113,7 +113,7 @@ namespace boosting {
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
-    template<class T>
+    template<typename T>
     class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluation<T> {
 
         private:

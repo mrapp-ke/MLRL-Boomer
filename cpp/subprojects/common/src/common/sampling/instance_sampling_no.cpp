@@ -31,7 +31,7 @@ static inline void subSampleInternally(BiPartition& partition, BitWeightVector& 
  *                      the training set
  * @tparam WeightVector The type of the weight vector that is used to store the weights
  */
-template<class Partition, class WeightVector>
+template<typename Partition, typename WeightVector>
 class NoInstanceSubSampling final : public IInstanceSubSampling {
 
     private:

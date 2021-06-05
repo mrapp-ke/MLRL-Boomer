@@ -28,7 +28,7 @@ namespace boosting {
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
-    template<class T>
+    template<typename T>
     class RegularizedExampleWiseRuleEvaluation final : public AbstractExampleWiseRuleEvaluation<T> {
 
         private:

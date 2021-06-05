@@ -4,7 +4,7 @@
 
 namespace seco {
 
-    template<class Prediction, class WeightMatrix>
+    template<typename Prediction, typename WeightMatrix>
     static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                  WeightMatrix& weightMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector) {
@@ -22,7 +22,7 @@ namespace seco {
      *                                  and labels
      * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
      */
-    template<class LabelMatrix, class WeightMatrix, class ConfusionMatrixVector>
+    template<typename LabelMatrix, typename WeightMatrix, typename ConfusionMatrixVector>
     class LabelWiseStatistics final : public ILabelWiseStatistics {
 
         private:
@@ -34,7 +34,7 @@ namespace seco {
              * @tparam T The type of the vector that provides access to the indices of the labels that are included in
              *           the subset
              */
-            template<class T>
+            template<typename T>
             class StatisticsSubset final : public AbstractDecomposableStatisticsSubset {
 
                 private:

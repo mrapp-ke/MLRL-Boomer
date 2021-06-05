@@ -350,7 +350,7 @@ class ExactThresholds final : public AbstractThresholds {
 
             std::unordered_map<uint32, FilteredCacheEntry> cacheFiltered_;
 
-            template<class T>
+            template<typename T>
             std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const T& labelIndices, uint32 featureIndex) {
                 // Retrieve the `FilteredCacheEntry` from the cache, or insert a new one if it does not already exist...
                 auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;

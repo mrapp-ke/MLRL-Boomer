@@ -3,25 +3,25 @@
 #include <cstdlib>
 
 
-template<class T>
+template<typename T>
 DenseVector<T>::DenseVector(uint32 numElements)
     : DenseVector<T>(numElements, false) {
 
 }
 
-template<class T>
+template<typename T>
 DenseVector<T>::DenseVector(uint32 numElements, bool init)
     : VectorView<T>(numElements, (T*) (init ? calloc(numElements, sizeof(T)) : malloc(numElements * sizeof(T)))),
       maxCapacity_(numElements) {
 
 }
 
-template<class T>
+template<typename T>
 DenseVector<T>::~DenseVector() {
     free(this->array_);
 }
 
-template<class T>
+template<typename T>
 void DenseVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
     if (numElements < maxCapacity_) {
         if (freeMemory) {
