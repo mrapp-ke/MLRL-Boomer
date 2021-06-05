@@ -96,14 +96,6 @@ class RuleModel final {
                  */
                 bool operator==(const UsedIterator& rhs) const;
 
-                /**
-                 * Returns the difference between this iterator and another one.
-                 *
-                 * @param rhs   A reference to another iterator
-                 * @return      The difference between the iterators
-                 */
-                difference_type operator-(const UsedIterator& rhs) const;
-
         };
 
         std::forward_list<Rule> list_;
