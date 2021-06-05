@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 
-template<class IndexIterator>
+template<typename IndexIterator>
 static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices, const CContiguousLabelMatrix& labelMatrix,
                                       IndexIterator indicesBegin, IndexIterator indicesEnd) {
     uint32 numExamples = indicesEnd - indicesBegin;
@@ -27,7 +27,7 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices, co
     return (uint32*) realloc(rowIndices, n * sizeof(uint32));
 }
 
-template<class IndexIterator>
+template<typename IndexIterator>
 static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices, const CsrLabelMatrix& labelMatrix,
                                       IndexIterator indicesBegin, IndexIterator indicesEnd) {
     uint32 numExamples = indicesEnd - indicesBegin;

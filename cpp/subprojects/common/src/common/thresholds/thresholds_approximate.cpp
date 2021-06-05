@@ -231,7 +231,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 CoverageSet coverageSet_;
 
-                template<class T>
+                template<typename T>
                 std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
                                                                                  uint32 featureIndex) {
                     thresholds_.cache_.emplace(featureIndex, CacheEntry());

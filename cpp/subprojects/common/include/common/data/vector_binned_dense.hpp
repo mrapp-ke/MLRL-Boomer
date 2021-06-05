@@ -13,7 +13,7 @@
  *
  * @tparam T The type of the data that is stored in the vector
  */
-template<class T>
+template<typename T>
 class DenseBinnedVector {
 
     private:

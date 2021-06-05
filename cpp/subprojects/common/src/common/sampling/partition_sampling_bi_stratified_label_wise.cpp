@@ -11,7 +11,7 @@
  * @tparam LabelMatrix The type of the label matrix that provides random or row-wise access to the labels of the
  *                     training examples
  */
-template<class LabelMatrix>
+template<typename LabelMatrix>
 class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
 
     private:

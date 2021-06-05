@@ -12,7 +12,7 @@
  *
  * @tparam T The type of the weights
  */
-template<class T>
+template<typename T>
 class DenseWeightVector final : public IWeightVector {
 
     private:

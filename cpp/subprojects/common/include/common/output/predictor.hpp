@@ -14,7 +14,7 @@
  *
  * @tparam T The type of the values that are stored by the prediction matrix
  */
-template<class T>
+template<typename T>
 class IPredictor {
 
     public:

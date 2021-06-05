@@ -6,7 +6,7 @@
 
 namespace boosting {
 
-    template<class T>
+    template<typename T>
     static inline void predictClosestLabelVector(uint32 exampleIndex, const float64* scoresBegin,
                                                  const float64* scoresEnd, CContiguousView<uint8>& predictionMatrix,
                                                  const ISimilarityMeasure& measure, const T& labelVectors) {
