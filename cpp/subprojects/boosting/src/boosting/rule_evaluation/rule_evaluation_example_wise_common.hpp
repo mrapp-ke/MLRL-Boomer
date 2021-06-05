@@ -22,7 +22,7 @@ namespace boosting {
      *                          to
      * @param n                 The number of rows and columns in the coefficient matrix
      */
-    template<class HessianIterator>
+    template<typename HessianIterator>
     static inline void copyCoefficients(HessianIterator hessianIterator, float64* output, uint32 n) {
         uint32 i = 0;
 
@@ -47,7 +47,7 @@ namespace boosting {
      * @param output            A pointer to an array of type `float64`, shape `(n)`, the gradients should be copied to
      * @param n                 The number of ordinates
      */
-    template<class GradientIterator>
+    template<typename GradientIterator>
     static inline void copyOrdinates(GradientIterator gradientIterator, float64* output, uint32 n) {
         for (uint32 i = 0; i < n; i++) {
             float64 gradient = gradientIterator[i];
@@ -81,7 +81,7 @@ namespace boosting {
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
-    template<class T>
+    template<typename T>
     class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
 
         protected:

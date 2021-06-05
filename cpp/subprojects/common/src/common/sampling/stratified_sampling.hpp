@@ -63,7 +63,7 @@ static inline bool tiebreak(uint32 numDesiredSamples, uint32 numDesiredOutOfSamp
  * @tparam IndexIterator    The type of the iterator that provides access to the indices of the examples that should be
  *                          considered
  */
-template<class LabelMatrix, class IndexIterator>
+template<typename LabelMatrix, typename IndexIterator>
 class ExampleWiseStratification final {
 
     private:
@@ -218,7 +218,7 @@ class ExampleWiseStratification final {
  * @tparam IndexIterator    The type of the iterator that provides access to the indices of the examples that should be
  *                          considered
  */
-template<class LabelMatrix, class IndexIterator>
+template<typename LabelMatrix, typename IndexIterator>
 class LabelWiseStratification final {
 
     private:

@@ -2,20 +2,20 @@
 #include <cstdlib>
 
 
-template<class T>
+template<typename T>
 DenseMatrix<T>::DenseMatrix(uint32 numRows, uint32 numCols)
     : DenseMatrix<T>(numRows, numCols, false) {
 
 }
 
-template<class T>
+template<typename T>
 DenseMatrix<T>::DenseMatrix(uint32 numRows, uint32 numCols, bool init)
     : CContiguousView<T>(numRows, numCols,
                          (T*) (init ? calloc(numRows * numCols, sizeof(T)) : malloc(numRows * numCols * sizeof(T)))) {
 
 }
 
-template<class T>
+template<typename T>
 DenseMatrix<T>::~DenseMatrix() {
     free(this->array_);
 }

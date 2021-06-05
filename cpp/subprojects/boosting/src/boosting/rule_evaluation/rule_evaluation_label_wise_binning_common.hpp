@@ -9,8 +9,8 @@
 
 namespace boosting {
 
-    template<class ScoreIterator, class QualityScoreIterator, class GradientIterator, class HessianIterator,
-             class WeightIterator>
+    template<typename ScoreIterator, typename QualityScoreIterator, typename GradientIterator, typename HessianIterator,
+             typename WeightIterator>
     static inline float64 calculateLabelWisePredictionInternally(uint32 numPredictions, ScoreIterator scoreIterator,
                                                                  QualityScoreIterator qualityScoreIterator,
                                                                  GradientIterator gradientIterator,

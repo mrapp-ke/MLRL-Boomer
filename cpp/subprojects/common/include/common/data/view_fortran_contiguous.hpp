@@ -11,7 +11,7 @@
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 class FortranContiguousConstView {
 
     protected:
@@ -84,7 +84,7 @@ class FortranContiguousConstView {
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 class FortranContiguousView final : public FortranContiguousConstView<T> {
 
     public:

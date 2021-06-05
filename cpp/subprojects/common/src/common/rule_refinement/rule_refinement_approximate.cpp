@@ -1,7 +1,7 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
 
 
-template<class T>
+template<typename T>
 ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
         std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex, bool nominal,
         const IWeightVector& weights,
@@ -11,7 +11,7 @@ ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
 
 }
 
-template<class T>
+template<typename T>
 void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* currentHead) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
@@ -293,7 +293,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     refinementPtr_ = std::move(refinementPtr);
 }
 
-template<class T>
+template<typename T>
 std::unique_ptr<Refinement> ApproximateRuleRefinement<T>::pollRefinement() {
     return std::move(refinementPtr_);
 }

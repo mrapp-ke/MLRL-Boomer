@@ -11,7 +11,7 @@
  *
  * @tparam T The type of the value
  */
-template<class T>
+template<typename T>
 struct IndexedValue {
 
     /**

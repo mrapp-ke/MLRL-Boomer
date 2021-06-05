@@ -12,7 +12,7 @@ class SingleLabelHeadRefinement final : public IHeadRefinement, public ILabelWis
 
         std::unique_ptr<PartialPrediction> headPtr_;
 
-        template<class T>
+        template<typename T>
         const AbstractEvaluatedPrediction* processScoresInternally(const AbstractEvaluatedPrediction* bestHead,
                                                                    const T& scoreVector) {
             uint32 numPredictions = scoreVector.getNumElements();

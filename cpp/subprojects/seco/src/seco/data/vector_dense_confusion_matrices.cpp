@@ -8,7 +8,7 @@
 
 namespace seco {
 
-    template<class LabelMatrix>
+    template<typename LabelMatrix>
     static inline void addInternally(DenseConfusionMatrixVector& confusionMatrixVector, uint32 exampleIndex,
                                      const LabelMatrix& labelMatrix, const BinarySparseArrayVector& majorityLabelVector,
                                      const DenseWeightMatrix& weightMatrix, float64 weight) {
@@ -34,7 +34,7 @@ namespace seco {
         }
     }
 
-    template<class LabelMatrix>
+    template<typename LabelMatrix>
     static inline void addToSubsetInternally(DenseConfusionMatrixVector& confusionMatrixVector, uint32 exampleIndex,
                                              const LabelMatrix& labelMatrix,
                                              const BinarySparseArrayVector& majorityLabelVector,
