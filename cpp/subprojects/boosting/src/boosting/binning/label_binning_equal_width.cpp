@@ -13,19 +13,19 @@ namespace boosting {
         return divideOrZero<float64>(gradient, hessian + l2RegularizationWeight);
     }
 
-    template<class GradientIterator, class HessianIterator>
+    template<typename GradientIterator, typename HessianIterator>
     EqualWidthLabelBinning<GradientIterator, HessianIterator>::EqualWidthLabelBinning(float32 binRatio, uint32 minBins,
                                                                                       uint32 maxBins)
         : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
 
     }
 
-    template<class GradientIterator, class HessianIterator>
+    template<typename GradientIterator, typename HessianIterator>
     uint32 EqualWidthLabelBinning<GradientIterator, HessianIterator>::getMaxBins(uint32 numLabels) const {
         return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
     }
 
-    template<class GradientIterator, class HessianIterator>
+    template<typename GradientIterator, typename HessianIterator>
     LabelInfo EqualWidthLabelBinning<GradientIterator, HessianIterator>::getLabelInfo(
             GradientIterator gradientsBegin, GradientIterator gradientsEnd, HessianIterator hessiansBegin,
             HessianIterator hessiansEnd, float64 l2RegularizationWeight) const {
@@ -79,7 +79,7 @@ namespace boosting {
         return labelInfo;
     }
 
-    template<class GradientIterator, class HessianIterator>
+    template<typename GradientIterator, typename HessianIterator>
     void EqualWidthLabelBinning<GradientIterator, HessianIterator>::createBins(
             LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
             HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,

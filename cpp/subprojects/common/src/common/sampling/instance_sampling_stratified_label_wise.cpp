@@ -13,7 +13,7 @@
  * @tparam IndexIterator    The type of the iterator that provides access to the indices of the examples that are
  *                          contained by the training set
  */
-template<class LabelMatrix, class IndexIterator>
+template<typename LabelMatrix, typename IndexIterator>
 class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
     private:

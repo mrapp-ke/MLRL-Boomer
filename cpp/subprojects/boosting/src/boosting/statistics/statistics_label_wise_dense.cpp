@@ -41,7 +41,7 @@ namespace boosting {
      *
      * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
-    template<class LabelMatrix>
+    template<typename LabelMatrix>
     class DenseLabelWiseStatistics final : public AbstractLabelWiseStatistics<LabelMatrix,
                                                                               DenseLabelWiseStatisticVector,
                                                                               DenseLabelWiseStatisticView,
@@ -83,7 +83,7 @@ namespace boosting {
 
     };
 
-    template<class LabelMatrix>
+    template<typename LabelMatrix>
     static inline std::unique_ptr<ILabelWiseStatistics> createInternally(
             std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads,

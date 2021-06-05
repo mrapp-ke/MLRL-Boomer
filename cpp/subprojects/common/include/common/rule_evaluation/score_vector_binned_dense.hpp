@@ -14,7 +14,7 @@
  *
  * @tparam T The type of the vector that provides access to the indices of the labels for which the rule may predict
  */
-template<class T>
+template<typename T>
 class DenseBinnedScoreVector : virtual public IScoreVector {
 
     private:

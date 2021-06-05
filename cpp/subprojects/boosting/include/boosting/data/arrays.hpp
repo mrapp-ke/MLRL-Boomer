@@ -18,7 +18,7 @@ namespace boosting {
      * @param c             A pointer to an array of template type `T`
      * @param numElements   The number of elements in the arrays `a`, `b` and `c`
      */
-    template<class T>
+    template<typename T>
     static inline void setArrayToDifference(T* a, const T* b, const T* c, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] = b[i] - c[i];
@@ -38,7 +38,7 @@ namespace boosting {
      *                      `a` and `b` that correspond to the elements in array `a`
      * @param numElements   The number of elements in the array `a`
      */
-    template<class T>
+    template<typename T>
     static inline void setArrayToDifference(T* a, const T* b, const T* c, const uint32* indices, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];
@@ -94,7 +94,7 @@ namespace boosting {
      *                      `b` that correspond to the elements in array `a`
      *
      */
-    template<class T>
+    template<typename T>
     static inline void addToArray(T* a, const T* b, const uint32* indices, uint32 numElements, T weight) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];

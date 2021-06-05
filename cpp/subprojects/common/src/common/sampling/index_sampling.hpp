@@ -17,7 +17,7 @@
  * @param numTotal      The total number of available indices to sample from
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
-template<class Iterator>
+template<typename Iterator>
 static inline void sampleIndicesWithoutReplacementViaTrackingSelection(PartialIndexVector& indexVector,
                                                                        Iterator iterator, uint32 numTotal, RNG& rng) {
     uint32 numSamples = indexVector.getNumElements();
@@ -48,7 +48,7 @@ static inline void sampleIndicesWithoutReplacementViaTrackingSelection(PartialIn
  * @param numTotal      The total number of available indices to sample from
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
-template<class Iterator>
+template<typename Iterator>
 static inline void sampleIndicesWithoutReplacementViaReservoirSampling(PartialIndexVector& indexVector,
                                                                        Iterator iterator, uint32 numTotal, RNG& rng) {
     uint32 numSamples = indexVector.getNumElements();
@@ -82,7 +82,7 @@ static inline void sampleIndicesWithoutReplacementViaReservoirSampling(PartialIn
  * @param numPermutations   The maximum number of permutations to be performed. Must be in [1, numTotal)
  * @param rng               A reference to an object of type `RNG`, implementing the random number generator to be used
  */
-template<class FirstIterator, class SecondIterator>
+template<typename FirstIterator, typename SecondIterator>
 static inline void randomPermutation(FirstIterator firstIterator, SecondIterator secondIterator, uint32 numFirst,
                                      uint32 numTotal, uint32 numPermutations, RNG& rng) {
     for (uint32 i = 0; i < numPermutations; i++) {
@@ -117,7 +117,7 @@ static inline void randomPermutation(FirstIterator firstIterator, SecondIterator
  * @param numTotal      The total number of available indices to sample from
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
-template<class Iterator>
+template<typename Iterator>
 static inline void sampleIndicesWithoutReplacementViaRandomPermutation(PartialIndexVector& indexVector,
                                                                        Iterator iterator, uint32 numTotal, RNG& rng) {
     uint32 numSamples = indexVector.getNumElements();
@@ -146,7 +146,7 @@ static inline void sampleIndicesWithoutReplacementViaRandomPermutation(PartialIn
  * @param numTotal      The total number of available indices to sample from
  * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be used
  */
-template<class Iterator>
+template<typename Iterator>
 static inline void sampleIndicesWithoutReplacement(PartialIndexVector& indexVector, Iterator iterator, uint32 numTotal,
                                                    RNG& rng) {
     float64 ratio = numTotal > 0 ? ((float64) indexVector.getNumElements()) / ((float64) numTotal) : 1;

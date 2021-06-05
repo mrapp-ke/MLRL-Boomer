@@ -12,7 +12,7 @@
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 class CsrConstView {
 
     protected:
@@ -129,7 +129,7 @@ class CsrConstView {
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 class CsrView final : public CsrConstView<T> {
 
     public:

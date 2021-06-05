@@ -11,7 +11,7 @@
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 class VectorConstView {
 
     protected:
@@ -76,7 +76,7 @@ class VectorConstView {
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 class VectorView : public VectorConstView<T> {
 
     public:

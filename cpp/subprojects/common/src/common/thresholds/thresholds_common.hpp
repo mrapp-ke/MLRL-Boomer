@@ -21,7 +21,7 @@ static inline void updateSampledStatisticsInternally(IStatistics& statistics, co
     }
 }
 
-template<class T>
+template<typename T>
 static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
                                                     const CoverageMask& coverageMask, const IStatistics& statistics,
                                                     const IHeadRefinementFactory& headRefinementFactory,
@@ -84,7 +84,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
     return scoreVector.overallQualityScore;
 }
 
-template<class T>
+template<typename T>
 static inline void recalculatePredictionInternally(T iterator, uint32 numExamples, const CoverageMask& coverageMask,
                                                    const IStatistics& statistics,
                                                    const IHeadRefinementFactory& headRefinementFactory,

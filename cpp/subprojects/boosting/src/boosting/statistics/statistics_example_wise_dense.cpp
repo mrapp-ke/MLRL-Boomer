@@ -39,7 +39,7 @@ namespace boosting {
      *
      * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
-    template<class LabelMatrix>
+    template<typename LabelMatrix>
     class DenseExampleWiseStatistics final : public AbstractExampleWiseStatistics<LabelMatrix,
                                                                                   DenseExampleWiseStatisticVector,
                                                                                   DenseExampleWiseStatisticView,
@@ -81,7 +81,7 @@ namespace boosting {
 
     };
 
-    template<class LabelMatrix>
+    template<typename LabelMatrix>
     static inline std::unique_ptr<IExampleWiseStatistics> createInternally(
             std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads,
