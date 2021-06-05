@@ -45,17 +45,17 @@ class DenseBinnedVector {
                 /**
                  * The type of the elements, the iterator provides access to.
                  */
-                typedef T value_type;
+                typedef const T value_type;
 
                 /**
                  * The type of a pointer to an element, the iterator provides access to.
                  */
-                typedef T* pointer;
+                typedef const T* pointer;
 
                 /**
                  * The type of a reference to an element, the iterator provides access to.
                  */
-                typedef T reference;
+                typedef const T& reference;
 
                 /**
                  * The tag that specifies the capabilities of the iterator.

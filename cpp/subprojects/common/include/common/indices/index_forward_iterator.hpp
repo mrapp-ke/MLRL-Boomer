@@ -52,7 +52,7 @@ class IndexForwardIterator final {
         /**
          * The type of a pointer to an element, the iterator provides access to.
          */
-        typedef bool* pointer;
+        typedef const bool* pointer;
 
         /**
          * The type of a reference to an element, the iterator provides access to.

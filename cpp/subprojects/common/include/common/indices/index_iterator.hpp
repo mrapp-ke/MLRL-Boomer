@@ -8,7 +8,7 @@
 
 
 /**
- * An iterator that provides random access to the indices in a continuous range.
+ * An iterator that provides random read-only access to the indices in a continuous range.
  */
 class IndexIterator final {
 
@@ -38,7 +38,7 @@ class IndexIterator final {
         /**
          * The type of a pointer to an element, the iterator provides access to.
          */
-        typedef uint32* pointer;
+        typedef const uint32* pointer;
 
         /**
          * The type of a reference to an element, the iterator provides access to.
