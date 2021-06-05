@@ -19,23 +19,24 @@ class DenseBinnedVector {
     private:
 
         /**
-         * Allows to iterate all elements in the vector.
+         * An iterator that provides read-only access to the values of all elements in a `DenseBinnedVector`.
          */
         class Iterator final {
 
             private:
 
-                const DenseBinnedVector<T>& vector_;
+                typename DenseVector<uint32>::const_iterator binIndexIterator_;
 
-                uint32 index_;
+                typename DenseVector<T>::const_iterator valueIterator_;
 
             public:
 
                 /**
-                 * @param vector    A reference to the vector that stores the elements
-                 * @param index     The index to start at
+                 * @param binIndexIterator  An iterator to the bin indices of individual elements
+                 * @param valueIterator     An iterator to the values of individual bins
                  */
-                Iterator(const DenseBinnedVector<T>& vector, uint32 index);
+                Iterator(typename DenseVector<uint32>::const_iterator binIndexIterator,
+                         typename DenseVector<T>::const_iterator valueIterator);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
