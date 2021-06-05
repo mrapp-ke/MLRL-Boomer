@@ -53,7 +53,7 @@ class SparseArrayVector final {
                 /**
                  * The type of a reference to an element, the iterator provides access to.
                  */
-                typedef uint32 reference;
+                typedef uint32& reference;
 
                 /**
                  * The tag that specifies the capabilities of the iterator.
@@ -162,7 +162,7 @@ class SparseArrayVector final {
                 /**
                  * The type of a reference to an element, the iterator provides access to.
                  */
-                typedef uint32 reference;
+                typedef const uint32& reference;
 
                 /**
                  * The tag that specifies the capabilities of the iterator.

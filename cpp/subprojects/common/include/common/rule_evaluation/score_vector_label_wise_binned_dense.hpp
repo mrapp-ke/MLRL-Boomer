@@ -53,12 +53,12 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
                 /**
                  * The type of a pointer to an element, the iterator provides access to.
                  */
-                typedef float64* pointer;
+                typedef const float64* pointer;
 
                 /**
                  * The type of a reference to an element, the iterator provides access to.
                  */
-                typedef float64 reference;
+                typedef const float64& reference;
 
                 /**
                  * The tag that specifies the capabilities of the iterator.
