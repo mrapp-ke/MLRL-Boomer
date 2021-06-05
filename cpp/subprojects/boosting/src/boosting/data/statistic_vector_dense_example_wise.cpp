@@ -7,19 +7,18 @@
 
 namespace boosting {
 
-    DenseExampleWiseStatisticVector::HessianDiagonalIterator::HessianDiagonalIterator(
-            const DenseExampleWiseStatisticVector& vector, uint32 index)
-        : vector_(vector), index_(index) {
+    DenseExampleWiseStatisticVector::HessianDiagonalIterator::HessianDiagonalIterator(const float64* ptr, uint32 index)
+        : ptr_(ptr), index_(index) {
 
     }
 
     DenseExampleWiseStatisticVector::HessianDiagonalIterator::reference DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator[](
             uint32 index) const {
-        return vector_.hessians_[triangularNumber(index + 1) - 1];
+        return ptr_[triangularNumber(index + 1) - 1];
     }
 
     DenseExampleWiseStatisticVector::HessianDiagonalIterator::reference DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator*() const {
-        return vector_.hessians_[triangularNumber(index_ + 1) - 1];
+        return ptr_[triangularNumber(index_ + 1) - 1];
     }
 
     DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator++() {
@@ -117,11 +116,11 @@ namespace boosting {
     }
 
     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator DenseExampleWiseStatisticVector::hessians_diagonal_cbegin() const  {
-        return DenseExampleWiseStatisticVector::HessianDiagonalIterator(*this, 0);
+        return HessianDiagonalIterator(hessians_, 0);
     }
 
     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator DenseExampleWiseStatisticVector::hessians_diagonal_cend() const  {
-        return DenseExampleWiseStatisticVector::HessianDiagonalIterator(*this, numGradients_);
+        return HessianDiagonalIterator(hessians_, numGradients_);
     }
 
     uint32 DenseExampleWiseStatisticVector::getNumElements() const {

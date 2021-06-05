@@ -20,23 +20,23 @@ namespace boosting {
         private:
 
             /**
-             * Allows to iterate the Hessians on the diagonal.
+             * An iterator that provides read-only access to the Hessians on the diagonal.
              */
             class HessianDiagonalIterator final {
 
                 private:
 
-                    const DenseExampleWiseStatisticVector& vector_;
+                    const float64* ptr_;
 
                     uint32 index_;
 
                 public:
 
                     /**
-                     * @param vector    A reference to the vector that stores the Hessians
-                     * @param index     The index to start at
+                     * @param ptr   A pointer to an array of type `float64` that stores the Hessians
+                     * @param index The index to start at
                      */
-                    HessianDiagonalIterator(const DenseExampleWiseStatisticVector& vector, uint32 index);
+                    HessianDiagonalIterator(const float64* ptr, uint32 index);
 
                     /**
                      * The type that is used to represent the difference between two iterators.
@@ -51,12 +51,12 @@ namespace boosting {
                     /**
                      * The type of a pointer to an element, the iterator provides access to.
                      */
-                    typedef float64* pointer;
+                    typedef const float64* pointer;
 
                     /**
                      * The type of a reference to an element, the iterator provides access to.
                      */
-                    typedef float64& reference;
+                    typedef const float64& reference;
 
                     /**
                      * The tag that specifies the capabilities of the iterator.
