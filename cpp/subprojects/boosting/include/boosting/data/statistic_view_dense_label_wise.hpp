@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/tuple.hpp"
+#include "boosting/data/statistic_iterator_dense.hpp"
 
 
 namespace boosting {
@@ -31,16 +31,6 @@ namespace boosting {
              */
             Tuple<float64>* statistics_;
 
-            /**
-             * A pointer to an array that stores the gradients.
-             */
-            float64* gradients_;
-
-            /**
-             * A pointer to an array that stores the Hessians.
-             */
-            float64* hessians_;
-
         public:
 
             /**
@@ -48,13 +38,8 @@ namespace boosting {
              * @param numCols       The number of columns in the view
              * @param statistics    A pointer to a C-contiguous array fo type `Tuple<float64>` that stores the gradients
              *                      and Hessians, the view provides access to
-             * @param gradients     A pointer to a C-contiguous array of type `float64` that stores the gradients, the
-             *                      view provides access to
-             * @param hessians      A pointer to a C-contiguous array of type `float64` that stores the Hessians, the
-             *                      view provides access to
              */
-            DenseLabelWiseStatisticConstView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics,
-                                             float64* gradients, float64* hessians);
+            DenseLabelWiseStatisticConstView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics);
 
             /**
              * An iterator that provides read-only access to the elements in the view.
@@ -64,12 +49,12 @@ namespace boosting {
             /**
              * An iterator that provides read-only access to the gradients.
              */
-            typedef const float64* gradient_const_iterator;
+            typedef DenseGradientConstIterator gradient_const_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians.
              */
-            typedef const float64* hessian_const_iterator;
+            typedef DenseHessianConstIterator hessian_const_iterator;
 
             /**
              * Returns a `const_iterator` to the beginning of a specific row.
@@ -148,23 +133,18 @@ namespace boosting {
              * @param numCols       The number of columns in the view
              * @param statistics    A pointer to a C-contiguous array fo type `Tuple<float64>` that stores the gradients
              *                      and Hessians, the view provides access to
-             * @param gradients     A pointer to a C-contiguous array of type `float64` that stores the gradients, the
-             *                      view provides access to
-             * @param hessians      A pointer to a C-contiguous array of type `float64` that stores the Hessians, the
-             *                      view provides access to
              */
-            DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics, float64* gradients,
-                                        float64* hessians);
+            DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics);
 
             /**
              * An iterator that provides access to the gradients and allows to modify them.
              */
-            typedef float64* gradient_iterator;
+            typedef DenseGradientIterator gradient_iterator;
 
             /**
              * An iterator that provides access to the Hessians and allows to modify them.
              */
-            typedef float64* hessian_iterator;
+            typedef DenseHessianIterator hessian_iterator;
 
             /**
              * Returns a `gradient_iterator` to the beginning of the gradients at a specific row.
@@ -207,15 +187,12 @@ namespace boosting {
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
              * to be added are multiplied by a specific weight.
              *
-             * @param row               The row
-             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients in the vector
-             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients in the vector
-             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians in the vector
-             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians in the vector
-             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             * @param row       The row
+             * @param begin     A `const_iterator` to the beginning of the vector
+             * @param end       A `const_iterator` to the end of the vector
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToRow(uint32 row, gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
-                          hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight);
+            void addToRow(uint32 row, const_iterator begin, const_iterator end, float64 weight);
 
     };
 

@@ -14,23 +14,17 @@ namespace boosting {
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
         : numElements_(numElements),
           statistics_((Tuple<float64>*) (init ? calloc(numElements, sizeof(Tuple<float64>))
-                                              : malloc(numElements * sizeof(Tuple<float64>)))),
-          gradients_((float64*) (init ? calloc(numElements, sizeof(float64)) : malloc(numElements * sizeof(float64)))),
-          hessians_((float64*) (init ? calloc(numElements, sizeof(float64)) : malloc(numElements * sizeof(float64)))) {
+                                              : malloc(numElements * sizeof(Tuple<float64>)))) {
 
     }
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& vector)
         : DenseLabelWiseStatisticVector(vector.numElements_) {
         copyArray(vector.statistics_, statistics_, numElements_);
-        copyArray(vector.gradients_, gradients_, numElements_);
-        copyArray(vector.hessians_, hessians_, numElements_);
     }
 
     DenseLabelWiseStatisticVector::~DenseLabelWiseStatisticVector() {
         free(statistics_);
-        free(gradients_);
-        free(hessians_);
     }
 
     DenseLabelWiseStatisticVector::const_iterator DenseLabelWiseStatisticVector::cbegin() const {
@@ -41,36 +35,20 @@ namespace boosting {
         return &statistics_[numElements_];
     }
 
-    DenseLabelWiseStatisticVector::gradient_iterator DenseLabelWiseStatisticVector::gradients_begin() {
-        return gradients_;
-    }
-
-    DenseLabelWiseStatisticVector::gradient_iterator DenseLabelWiseStatisticVector::gradients_end() {
-        return &gradients_[numElements_];
-    }
-
     DenseLabelWiseStatisticVector::gradient_const_iterator DenseLabelWiseStatisticVector::gradients_cbegin() const {
-        return gradients_;
+        return DenseGradientConstIterator(statistics_);
     }
 
     DenseLabelWiseStatisticVector::gradient_const_iterator DenseLabelWiseStatisticVector::gradients_cend() const {
-        return &gradients_[numElements_];
-    }
-
-    DenseLabelWiseStatisticVector::hessian_iterator DenseLabelWiseStatisticVector::hessians_begin() {
-        return hessians_;
-    }
-
-    DenseLabelWiseStatisticVector::hessian_iterator DenseLabelWiseStatisticVector::hessians_end() {
-        return &hessians_[numElements_];
+        return DenseGradientConstIterator(&statistics_[numElements_]);
     }
 
     DenseLabelWiseStatisticVector::hessian_const_iterator DenseLabelWiseStatisticVector::hessians_cbegin() const {
-        return hessians_;
+        return DenseHessianConstIterator(statistics_);
     }
 
     DenseLabelWiseStatisticVector::hessian_const_iterator DenseLabelWiseStatisticVector::hessians_cend() const {
-        return &hessians_[numElements_];
+        return DenseHessianConstIterator(&statistics_[numElements_]);
     }
 
     uint32 DenseLabelWiseStatisticVector::getNumElements() const {
@@ -78,68 +56,39 @@ namespace boosting {
     }
 
     void DenseLabelWiseStatisticVector::clear() {
-        setArrayToZeros(gradients_, numElements_);
-        setArrayToZeros(hessians_, numElements_);
+        setArrayToZeros(statistics_, numElements_);
     }
 
-    void DenseLabelWiseStatisticVector::add(gradient_const_iterator gradientsBegin,
-                                            gradient_const_iterator gradientsEnd, hessian_const_iterator hessiansBegin,
-                                            hessian_const_iterator hessiansEnd) {
-        addToArray(gradients_, gradientsBegin, numElements_);
-        addToArray(hessians_, hessiansBegin, numElements_);
+    void DenseLabelWiseStatisticVector::add(const_iterator begin, const_iterator end) {
+        addToArray(statistics_, begin, numElements_);
     }
 
-    void DenseLabelWiseStatisticVector::add(gradient_const_iterator gradientsBegin,
-                                            gradient_const_iterator gradientsEnd, hessian_const_iterator hessiansBegin,
-                                            hessian_const_iterator hessiansEnd, float64 weight) {
-        addToArray(gradients_, gradientsBegin, numElements_, weight);
-        addToArray(hessians_, hessiansBegin, numElements_, weight);
+    void DenseLabelWiseStatisticVector::add(const_iterator begin, const_iterator end, float64 weight) {
+        addToArray(statistics_, begin, numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::addToSubset(gradient_const_iterator gradientsBegin,
-                                                    gradient_const_iterator gradientsEnd,
-                                                    hessian_const_iterator hessiansBegin,
-                                                    hessian_const_iterator hessiansEnd, const FullIndexVector& indices,
-                                                    float64 weight) {
-        addToArray(gradients_, gradientsBegin, numElements_, weight);
-        addToArray(hessians_, hessiansBegin, numElements_, weight);
+    void DenseLabelWiseStatisticVector::addToSubset(const_iterator begin, const_iterator end,
+                                                    const FullIndexVector& indices, float64 weight) {
+        addToArray(statistics_, begin, numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::addToSubset(gradient_const_iterator gradientsBegin,
-                                                    gradient_const_iterator gradientsEnd,
-                                                    hessian_const_iterator hessiansBegin,
-                                                    hessian_const_iterator hessiansEnd,
+    void DenseLabelWiseStatisticVector::addToSubset(const_iterator begin, const_iterator end,
                                                     const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToArray(gradients_, gradientsBegin, indexIterator, numElements_, weight);
-        addToArray(hessians_, hessiansBegin, indexIterator, numElements_, weight);
+        addToArray(statistics_, begin, indexIterator, numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::difference(gradient_const_iterator firstGradientsBegin,
-                                                   gradient_const_iterator firstGradientsEnd,
-                                                   hessian_const_iterator firstHessiansBegin,
-                                                   hessian_const_iterator firstHessiansEnd,
-                                                   const FullIndexVector& firstIndices,
-                                                   gradient_const_iterator secondGradientsBegin,
-                                                   gradient_const_iterator secondGradientsEnd,
-                                                   hessian_const_iterator secondHessiansBegin,
-                                                   hessian_const_iterator secondHessiansEnd) {
-        setArrayToDifference(gradients_, firstGradientsBegin, secondGradientsBegin, numElements_);
-        setArrayToDifference(hessians_, firstHessiansBegin, secondHessiansBegin, numElements_);
+    void DenseLabelWiseStatisticVector::difference(const_iterator firstBegin, const_iterator firstEnd,
+                                                   const FullIndexVector& firstIndices, const_iterator secondBegin,
+                                                   const_iterator secondEnd) {
+        setArrayToDifference(statistics_, firstBegin, secondBegin, numElements_);
     }
 
-    void DenseLabelWiseStatisticVector::difference(gradient_const_iterator firstGradientsBegin,
-                                                   gradient_const_iterator firstGradientsEnd,
-                                                   hessian_const_iterator firstHessiansBegin,
-                                                   hessian_const_iterator firstHessiansEnd,
-                                                   const PartialIndexVector& firstIndices,
-                                                   gradient_const_iterator secondGradientsBegin,
-                                                   gradient_const_iterator secondGradientsEnd,
-                                                   hessian_const_iterator secondHessiansBegin,
-                                                   hessian_const_iterator secondHessiansEnd) {
+    void DenseLabelWiseStatisticVector::difference(const_iterator firstBegin, const_iterator firstEnd,
+                                                   const PartialIndexVector& firstIndices, const_iterator secondBegin,
+                                                   const_iterator secondEnd) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        setArrayToDifference(gradients_, firstGradientsBegin, secondGradientsBegin, indexIterator, numElements_);
-        setArrayToDifference(hessians_, firstHessiansBegin, secondHessiansBegin, indexIterator, numElements_);
+        setArrayToDifference(statistics_, firstBegin, secondBegin, indexIterator, numElements_);
     }
 
 }
