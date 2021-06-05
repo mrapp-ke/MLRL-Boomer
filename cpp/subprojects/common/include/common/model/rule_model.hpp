@@ -57,7 +57,7 @@ class RuleModel final {
                 /**
                  * The tag that specifies the capabilities of the iterator.
                  */
-                typedef std::input_iterator_tag iterator_category;
+                typedef std::forward_iterator_tag iterator_category;
 
                 /**
                  * Returns the element, the iterator currently refers to.
