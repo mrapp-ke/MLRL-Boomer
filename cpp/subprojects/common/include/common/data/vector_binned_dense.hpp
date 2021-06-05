@@ -25,7 +25,7 @@ class DenseBinnedVector {
 
             private:
 
-                typename DenseVector<uint32>::const_iterator binIndexIterator_;
+                DenseVector<uint32>::const_iterator binIndexIterator_;
 
                 typename DenseVector<T>::const_iterator valueIterator_;
 
@@ -35,7 +35,7 @@ class DenseBinnedVector {
                  * @param binIndexIterator  An iterator to the bin indices of individual elements
                  * @param valueIterator     An iterator to the values of individual bins
                  */
-                Iterator(typename DenseVector<uint32>::const_iterator binIndexIterator,
+                Iterator(DenseVector<uint32>::const_iterator binIndexIterator,
                          typename DenseVector<T>::const_iterator valueIterator);
 
                 /**
