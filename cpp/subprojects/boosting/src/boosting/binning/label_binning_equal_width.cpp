@@ -99,7 +99,9 @@ namespace boosting {
         uint32 numStatistics = gradientsEnd - gradientsBegin;
 
         for (uint32 i = 0; i < numStatistics; i++) {
-            float64 statistic = calculateStatistic(gradientsBegin[i], hessiansBegin[i], l2RegularizationWeight);
+            float64 gradient = gradientsBegin[i];
+            float64 hessian = hessiansBegin[i];
+            float64 statistic = calculateStatistic(gradient, hessian, l2RegularizationWeight);
 
             if (statistic > 0) {
                 // Gradient is positive, i.e., label belongs to a negative bin...
@@ -109,7 +111,7 @@ namespace boosting {
                     binIndex = numNegativeBins - 1;
                 }
 
-                callback(binIndex, i, statistic);
+                callback(binIndex, i, gradient, hessian);
             } else if (statistic < 0) {
                 // Gradient is negative, i.e., label belongs to a positive bin...
                 uint32 binIndex = std::floor((statistic - minNegative) / spanPerPositiveBin);
@@ -118,7 +120,7 @@ namespace boosting {
                     binIndex = numPositiveBins - 1;
                 }
 
-                callback(numNegativeBins + binIndex, i, statistic);
+                callback(numNegativeBins + binIndex, i, gradient, hessian);
             } else {
                 zeroCallback(i);
             }
