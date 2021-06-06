@@ -137,46 +137,25 @@ namespace boosting {
             DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics);
 
             /**
-             * An iterator that provides access to the gradients and allows to modify them.
+             * An iterator that provides access to the elements in the view and allows to modify them.
              */
-            typedef DenseGradientIterator gradient_iterator;
+            typedef Tuple<float64>* iterator;
 
             /**
-             * An iterator that provides access to the Hessians and allows to modify them.
-             */
-            typedef DenseHessianIterator hessian_iterator;
-
-            /**
-             * Returns a `gradient_iterator` to the beginning of the gradients at a specific row.
+             * Returns an `iterator` to the beginning of a specific row.
              *
              * @param row   The row
-             * @return      A `gradient_iterator` to the beginning of the given row
+             * @return      An `iterator` to the beginning
              */
-            gradient_iterator gradients_row_begin(uint32 row);
+            iterator row_begin(uint32 row);
 
             /**
-             * Returns a `gradient_iterator` to the end of the gradients at a specific row.
+             * Returns an `iterator` to the end of a specific row.
              *
              * @param row   The row
-             * @return      A `gradient_iterator` to the end of the given row
+             * @return      An `iterator` to the end
              */
-            gradient_iterator gradients_row_end(uint32 row);
-
-            /**
-             * Returns a `hessian_iterator` to the beginning of the Hessians at a specific row.
-             *
-             * @param row   The row
-             * @return      A `hessian_iterator` to the beginning of the given row
-             */
-            hessian_iterator hessians_row_begin(uint32 row);
-
-            /**
-             * Returns a `hessian_iterator` to the end of the Hessians at a specific row.
-             *
-             * @param row   The row
-             * @return      A `hessian_iterator` to the end of the given row
-             */
-            hessian_iterator hessians_row_end(uint32 row);
+            iterator row_end(uint32 row);
 
             /**
              * Sets all gradients and Hessians in the matrix to zero.

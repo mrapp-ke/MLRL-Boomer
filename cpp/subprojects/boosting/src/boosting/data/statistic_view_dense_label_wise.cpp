@@ -52,20 +52,12 @@ namespace boosting {
 
     }
 
-    DenseLabelWiseStatisticView::gradient_iterator DenseLabelWiseStatisticView::gradients_row_begin(uint32 row) {
-        return DenseGradientIterator(&statistics_[row * numCols_]);
+    DenseLabelWiseStatisticView::iterator DenseLabelWiseStatisticView::row_begin(uint32 row) {
+        return &statistics_[row * numCols_];
     }
 
-    DenseLabelWiseStatisticView::gradient_iterator DenseLabelWiseStatisticView::gradients_row_end(uint32 row) {
-        return DenseGradientIterator(&statistics_[(row + 1) * numCols_]);
-    }
-
-    DenseLabelWiseStatisticView::hessian_iterator DenseLabelWiseStatisticView::hessians_row_begin(uint32 row) {
-        return DenseHessianIterator(&statistics_[row * numCols_]);
-    }
-
-    DenseLabelWiseStatisticView::hessian_iterator DenseLabelWiseStatisticView::hessians_row_end(uint32 row) {
-        return DenseHessianIterator(&statistics_[(row + 1) * numCols_]);
+    DenseLabelWiseStatisticView::iterator DenseLabelWiseStatisticView::row_end(uint32 row) {
+        return &statistics_[(row + 1) * numCols_];
     }
 
     void DenseLabelWiseStatisticView::clear() {

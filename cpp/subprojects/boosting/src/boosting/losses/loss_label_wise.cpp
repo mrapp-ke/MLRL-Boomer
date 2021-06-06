@@ -15,10 +15,7 @@ namespace boosting {
                                                           FullIndexVector::const_iterator labelIndicesBegin,
                                                           FullIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticView& statisticView) const {
-        DenseLabelWiseStatisticView::gradient_iterator gradientIterator =
-            statisticView.gradients_row_begin(exampleIndex);
-        DenseLabelWiseStatisticView::hessian_iterator hessianIterator =
-            statisticView.hessians_row_begin(exampleIndex);
+        DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
@@ -26,7 +23,8 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             bool trueLabel = labelIterator[i];
             float64 predictedScore = scoreIterator[i];
-            (*updateFunction_)(trueLabel, predictedScore, &gradientIterator[i], &hessianIterator[i]);
+            Tuple<float64>& tuple = statisticIterator[i];
+            (*updateFunction_)(trueLabel, predictedScore, &(tuple.first), &(tuple.second));
         }
     }
 
@@ -36,10 +34,7 @@ namespace boosting {
                                                           PartialIndexVector::const_iterator labelIndicesBegin,
                                                           PartialIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticView& statisticView) const {
-        DenseLabelWiseStatisticView::gradient_iterator gradientIterator =
-            statisticView.gradients_row_begin(exampleIndex);
-        DenseLabelWiseStatisticView::hessian_iterator hessianIterator =
-            statisticView.hessians_row_begin(exampleIndex);
+        DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
@@ -48,7 +43,8 @@ namespace boosting {
             uint32 labelIndex = labelIndicesBegin[i];
             bool trueLabel = labelIterator[labelIndex];
             float64 predictedScore = scoreIterator[labelIndex];
-            (*updateFunction_)(trueLabel, predictedScore, &gradientIterator[labelIndex], &hessianIterator[labelIndex]);
+            Tuple<float64>& tuple = statisticIterator[labelIndex];
+            (*updateFunction_)(trueLabel, predictedScore, &(tuple.first), &(tuple.second));
         }
     }
 
@@ -58,10 +54,7 @@ namespace boosting {
                                                           FullIndexVector::const_iterator labelIndicesBegin,
                                                           FullIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticView& statisticView) const {
-        DenseLabelWiseStatisticView::gradient_iterator gradientIterator =
-            statisticView.gradients_row_begin(exampleIndex);
-        DenseLabelWiseStatisticView::hessian_iterator hessianIterator =
-            statisticView.hessians_row_begin(exampleIndex);
+        DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CsrLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
@@ -69,7 +62,8 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             bool trueLabel = *labelIterator;
             float64 predictedScore = scoreIterator[i];
-            (*updateFunction_)(trueLabel, predictedScore, &gradientIterator[i], &hessianIterator[i]);
+            Tuple<float64>& tuple = statisticIterator[i];
+            (*updateFunction_)(trueLabel, predictedScore, &(tuple.first), &(tuple.second));
             labelIterator++;
         }
     }
@@ -79,10 +73,7 @@ namespace boosting {
                                                           PartialIndexVector::const_iterator labelIndicesBegin,
                                                           PartialIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticView& statisticView) const {
-        DenseLabelWiseStatisticView::gradient_iterator gradientIterator =
-            statisticView.gradients_row_begin(exampleIndex);
-        DenseLabelWiseStatisticView::hessian_iterator hessianIterator =
-            statisticView.hessians_row_begin(exampleIndex);
+        DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
         CsrLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
@@ -93,7 +84,8 @@ namespace boosting {
             std::advance(labelIterator, labelIndex - previousLabelIndex);
             bool trueLabel = *labelIterator;
             float64 predictedScore = scoreIterator[labelIndex];
-            (*updateFunction_)(trueLabel, predictedScore, &gradientIterator[labelIndex], &hessianIterator[labelIndex]);
+            Tuple<float64>& tuple = statisticIterator[labelIndex];
+            (*updateFunction_)(trueLabel, predictedScore, &(tuple.first), &(tuple.second));
             previousLabelIndex = labelIndex;
         }
     }
