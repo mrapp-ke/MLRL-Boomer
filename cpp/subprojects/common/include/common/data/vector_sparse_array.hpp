@@ -20,115 +20,6 @@ class SparseArrayVector final {
     private:
 
         /**
-         * An iterator that provides random access to the indices in a `SparseArrayVector` and allows to modify them.
-         */
-        class IndexIterator final {
-
-            private:
-
-                typename DenseVector<IndexedValue<T>>::iterator iterator_;
-
-            public:
-
-                /**
-                 * @param iterator An iterator that provides access to the elements in the `SparseArrayVector`
-                 */
-                IndexIterator(typename DenseVector<IndexedValue<T>>::iterator iterator);
-
-                /**
-                 * The type that is used to represent the difference between two iterators.
-                 */
-                typedef int difference_type;
-
-                /**
-                 * The type of the elements, the iterator provides access to.
-                 */
-                typedef uint32 value_type;
-
-                /**
-                 * The type of a pointer to an element, the iterator provides access to.
-                 */
-                typedef uint32* pointer;
-
-                /**
-                 * The type of a reference to an element, the iterator provides access to.
-                 */
-                typedef uint32 reference;
-
-                /**
-                 * The tag that specifies the capabilities of the iterator.
-                 */
-                typedef std::random_access_iterator_tag iterator_category;
-
-                /**
-                 * Returns the element at a specific index.
-                 * @param index The index of the element to be returned
-                 * @return      The element at the given index
-                 */
-                reference operator[](uint32 index) const;
-
-                /**
-                 * Returns the element, the iterator currently refers to.
-                 *
-                 * @return The element, the iterator currently refers to
-                 */
-                reference operator*() const;
-
-                /**
-                 * Returns an iterator to the next element.
-                 *
-                 * @return A reference to an iterator that refers to the next element
-                 */
-                IndexIterator& operator++();
-
-                /**
-                 * Returns an iterator to the next element.
-                 *
-                 * @return A reference to an iterator that refers to the next element
-                 */
-                IndexIterator& operator++(int n);
-
-                /**
-                 * Returns an iterator to the previous element.
-                 *
-                 * @return A reference to an iterator that refers to the previous element
-                 */
-                IndexIterator& operator--();
-
-                /**
-                 * Returns an iterator to the previous element.
-                 *
-                 * @return A reference to an iterator that refers to the previous element
-                 */
-                IndexIterator& operator--(int n);
-
-                /**
-                 * Returns whether this iterator and another one refer to the same element.
-                 *
-                 * @param rhs   A reference to another iterator
-                 * @return      True, if the iterators do not refer to the same element, false otherwise
-                 */
-                bool operator!=(const IndexIterator& rhs) const;
-
-                /**
-                 * Returns whether this iterator and another one refer to the same element.
-                 *
-                 * @param rhs   A reference to another iterator
-                 * @return      True, if the iterators refer to the same element, false otherwise
-                 */
-                bool operator==(const IndexIterator& rhs) const;
-
-                /**
-                 * Returns the difference between this iterator and another one.
-                 *
-                 * @param rhs   A reference to another iterator
-                 * @return      The difference between the iterators
-                 */
-                difference_type operator-(const IndexIterator& rhs) const;
-
-        };
-
-        /**
          * An iterator that provides random read-only access to the indices in a `SparseArrayVector`.
          */
         class IndexConstIterator final {
@@ -162,7 +53,7 @@ class SparseArrayVector final {
                 /**
                  * The type of a reference to an element, the iterator provides access to.
                  */
-                typedef uint32 reference;
+                typedef const uint32& reference;
 
                 /**
                  * The tag that specifies the capabilities of the iterator.
@@ -238,9 +129,9 @@ class SparseArrayVector final {
         };
 
         /**
-         * An iterator that provides random access to the values in a `SparseArrayVector` and allows to modify them.
+         * An iterator that provides random access to the indices in a `SparseArrayVector` and allows to modify them.
          */
-        class ValueIterator final {
+        class IndexIterator final {
 
             private:
 
@@ -251,7 +142,7 @@ class SparseArrayVector final {
                 /**
                  * @param iterator An iterator that provides access to the elements in the `SparseArrayVector`
                  */
-                ValueIterator(typename DenseVector<IndexedValue<T>>::iterator iterator);
+                IndexIterator(typename DenseVector<IndexedValue<T>>::iterator iterator);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
@@ -261,17 +152,17 @@ class SparseArrayVector final {
                 /**
                  * The type of the elements, the iterator provides access to.
                  */
-                typedef T value_type;
+                typedef uint32 value_type;
 
                 /**
                  * The type of a pointer to an element, the iterator provides access to.
                  */
-                typedef T* pointer;
+                typedef uint32* pointer;
 
                 /**
                  * The type of a reference to an element, the iterator provides access to.
                  */
-                typedef T& reference;
+                typedef uint32& reference;
 
                 /**
                  * The tag that specifies the capabilities of the iterator.
@@ -297,28 +188,28 @@ class SparseArrayVector final {
                  *
                  * @return A reference to an iterator that refers to the next element
                  */
-                ValueIterator& operator++();
+                IndexIterator& operator++();
 
                 /**
                  * Returns an iterator to the next element.
                  *
                  * @return A reference to an iterator that refers to the next element
                  */
-                ValueIterator& operator++(int n);
+                IndexIterator& operator++(int n);
 
                 /**
                  * Returns an iterator to the previous element.
                  *
                  * @return A reference to an iterator that refers to the previous element
                  */
-                ValueIterator& operator--();
+                IndexIterator& operator--();
 
                 /**
                  * Returns an iterator to the previous element.
                  *
                  * @return A reference to an iterator that refers to the previous element
                  */
-                ValueIterator& operator--(int n);
+                IndexIterator& operator--(int n);
 
                 /**
                  * Returns whether this iterator and another one refer to the same element.
@@ -326,7 +217,7 @@ class SparseArrayVector final {
                  * @param rhs   A reference to another iterator
                  * @return      True, if the iterators do not refer to the same element, false otherwise
                  */
-                bool operator!=(const ValueIterator& rhs) const;
+                bool operator!=(const IndexIterator& rhs) const;
 
                 /**
                  * Returns whether this iterator and another one refer to the same element.
@@ -334,7 +225,7 @@ class SparseArrayVector final {
                  * @param rhs   A reference to another iterator
                  * @return      True, if the iterators refer to the same element, false otherwise
                  */
-                bool operator==(const ValueIterator& rhs) const;
+                bool operator==(const IndexIterator& rhs) const;
 
                 /**
                  * Returns the difference between this iterator and another one.
@@ -342,7 +233,7 @@ class SparseArrayVector final {
                  * @param rhs   A reference to another iterator
                  * @return      The difference between the iterators
                  */
-                difference_type operator-(const ValueIterator& rhs) const;
+                difference_type operator-(const IndexIterator& rhs) const;
 
         };
 
@@ -452,6 +343,115 @@ class SparseArrayVector final {
                  * @return      The difference between the iterators
                  */
                 difference_type operator-(const ValueConstIterator& rhs) const;
+
+        };
+
+        /**
+         * An iterator that provides random access to the values in a `SparseArrayVector` and allows to modify them.
+         */
+        class ValueIterator final {
+
+            private:
+
+                typename DenseVector<IndexedValue<T>>::iterator iterator_;
+
+            public:
+
+                /**
+                 * @param iterator An iterator that provides access to the elements in the `SparseArrayVector`
+                 */
+                ValueIterator(typename DenseVector<IndexedValue<T>>::iterator iterator);
+
+                /**
+                 * The type that is used to represent the difference between two iterators.
+                 */
+                typedef int difference_type;
+
+                /**
+                 * The type of the elements, the iterator provides access to.
+                 */
+                typedef T value_type;
+
+                /**
+                 * The type of a pointer to an element, the iterator provides access to.
+                 */
+                typedef T* pointer;
+
+                /**
+                 * The type of a reference to an element, the iterator provides access to.
+                 */
+                typedef T& reference;
+
+                /**
+                 * The tag that specifies the capabilities of the iterator.
+                 */
+                typedef std::random_access_iterator_tag iterator_category;
+
+                /**
+                 * Returns the element at a specific index.
+                 * @param index The index of the element to be returned
+                 * @return      The element at the given index
+                 */
+                reference operator[](uint32 index) const;
+
+                /**
+                 * Returns the element, the iterator currently refers to.
+                 *
+                 * @return The element, the iterator currently refers to
+                 */
+                reference operator*() const;
+
+                /**
+                 * Returns an iterator to the next element.
+                 *
+                 * @return A reference to an iterator that refers to the next element
+                 */
+                ValueIterator& operator++();
+
+                /**
+                 * Returns an iterator to the next element.
+                 *
+                 * @return A reference to an iterator that refers to the next element
+                 */
+                ValueIterator& operator++(int n);
+
+                /**
+                 * Returns an iterator to the previous element.
+                 *
+                 * @return A reference to an iterator that refers to the previous element
+                 */
+                ValueIterator& operator--();
+
+                /**
+                 * Returns an iterator to the previous element.
+                 *
+                 * @return A reference to an iterator that refers to the previous element
+                 */
+                ValueIterator& operator--(int n);
+
+                /**
+                 * Returns whether this iterator and another one refer to the same element.
+                 *
+                 * @param rhs   A reference to another iterator
+                 * @return      True, if the iterators do not refer to the same element, false otherwise
+                 */
+                bool operator!=(const ValueIterator& rhs) const;
+
+                /**
+                 * Returns whether this iterator and another one refer to the same element.
+                 *
+                 * @param rhs   A reference to another iterator
+                 * @return      True, if the iterators refer to the same element, false otherwise
+                 */
+                bool operator==(const ValueIterator& rhs) const;
+
+                /**
+                 * Returns the difference between this iterator and another one.
+                 *
+                 * @param rhs   A reference to another iterator
+                 * @return      The difference between the iterators
+                 */
+                difference_type operator-(const ValueIterator& rhs) const;
 
         };
 
