@@ -18,7 +18,7 @@ class RuleModel final {
         /**
          * Allows to iterate only the used rules.
          */
-        class UsedIterator final {
+        class RuleConstIterator final {
 
             private:
 
@@ -32,7 +32,7 @@ class RuleModel final {
                  * @param list  A reference to the list that stores all available rules
                  * @param index The index to start at
                  */
-                UsedIterator(const std::forward_list<Rule>& list, uint32 index);
+                RuleConstIterator(const std::forward_list<Rule>& list, uint32 index);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
@@ -57,7 +57,7 @@ class RuleModel final {
                 /**
                  * The tag that specifies the capabilities of the iterator.
                  */
-                typedef std::input_iterator_tag iterator_category;
+                typedef std::forward_iterator_tag iterator_category;
 
                 /**
                  * Returns the element, the iterator currently refers to.
@@ -71,14 +71,14 @@ class RuleModel final {
                  *
                  * @return A reference to an iterator that refers to the next element
                  */
-                UsedIterator& operator++();
+                RuleConstIterator& operator++();
 
                 /**
                  * Returns an iterator that refers to the next element.
                  *
                  * @return A reference to an iterator that refers to the next element
                  */
-                UsedIterator& operator++(int n);
+                RuleConstIterator& operator++(int n);
 
                 /**
                  * Returns whether this iterator and another one refer to the same element.
@@ -86,7 +86,7 @@ class RuleModel final {
                  * @param rhs   A reference to another iterator
                  * @return      True, if the iterators do not refer to the same element, false otherwise
                  */
-                bool operator!=(const UsedIterator& rhs) const;
+                bool operator!=(const RuleConstIterator& rhs) const;
 
                 /**
                  * Returns whether this iterator and another one refer to the same element.
@@ -94,15 +94,7 @@ class RuleModel final {
                  * @param rhs   A reference to another iterator
                  * @return      True, if the iterators refer to the same element, false otherwise
                  */
-                bool operator==(const UsedIterator& rhs) const;
-
-                /**
-                 * Returns the difference between this iterator and another one.
-                 *
-                 * @param rhs   A reference to another iterator
-                 * @return      The difference between the iterators
-                 */
-                difference_type operator-(const UsedIterator& rhs) const;
+                bool operator==(const RuleConstIterator& rhs) const;
 
         };
 
@@ -126,7 +118,7 @@ class RuleModel final {
         /**
          * An iterator that provides read-only access to the used rules.
          */
-        typedef UsedIterator used_const_iterator;
+        typedef RuleConstIterator used_const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the rules.
