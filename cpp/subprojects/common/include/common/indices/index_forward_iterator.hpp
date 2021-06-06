@@ -78,7 +78,7 @@ class IndexForwardIterator final {
          *
          * @return A reference to an iterator that refers to the next element
          */
-        IndexForwardIterator& operator++() {
+        IndexForwardIterator<T>& operator++() {
             ++index_;
 
             if (iterator_ != end_ && iteratorIndex_ < index_) {
@@ -94,7 +94,7 @@ class IndexForwardIterator final {
          *
          * @return A reference to an iterator that refers to the next element
          */
-        IndexForwardIterator& operator++(int n) {
+        IndexForwardIterator<T>& operator++(int n) {
             index_++;
 
             if (iterator_ != end_ && iteratorIndex_ < index_) {
@@ -111,7 +111,7 @@ class IndexForwardIterator final {
          * @param rhs   A reference to another iterator
          * @return      True, if the iterators do not refer to the same element, false otherwise
          */
-        bool operator!=(const IndexForwardIterator& rhs) const {
+        bool operator!=(const IndexForwardIterator<T>& rhs) const {
             return index_ != rhs.index_;
         }
 
@@ -121,7 +121,7 @@ class IndexForwardIterator final {
          * @param rhs   A reference to another iterator
          * @return      True, if the iterators refer to the same element, false otherwise
          */
-        bool operator==(const IndexForwardIterator& rhs) const {
+        bool operator==(const IndexForwardIterator<T>& rhs) const {
             return index_ == rhs.index_;
         }
 
