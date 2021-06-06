@@ -3,63 +3,6 @@
 
 
 template<typename T>
-SparseArrayVector<T>::IndexIterator::IndexIterator(typename DenseVector<IndexedValue<T>>::iterator iterator)
-    : iterator_(iterator) {
-
-}
-
-template<typename T>
-typename SparseArrayVector<T>::IndexIterator::reference SparseArrayVector<T>::IndexIterator::operator[](
-        uint32 index) const {
-    return iterator_[index].index;
-}
-
-template<typename T>
-typename SparseArrayVector<T>::IndexIterator::reference SparseArrayVector<T>::IndexIterator::operator*() const {
-    return (*iterator_).index;
-}
-
-template<typename T>
-typename SparseArrayVector<T>::IndexIterator& SparseArrayVector<T>::IndexIterator::operator++() {
-    ++iterator_;
-    return *this;
-}
-
-template<typename T>
-typename SparseArrayVector<T>::IndexIterator& SparseArrayVector<T>::IndexIterator::operator++(int n) {
-    iterator_++;
-    return *this;
-}
-
-template<typename T>
-typename SparseArrayVector<T>::IndexIterator& SparseArrayVector<T>::IndexIterator::operator--() {
-    --iterator_;
-    return *this;
-}
-
-template<typename T>
-typename SparseArrayVector<T>::IndexIterator& SparseArrayVector<T>::IndexIterator::operator--(int n) {
-    iterator_--;
-    return *this;
-}
-
-template<typename T>
-bool SparseArrayVector<T>::IndexIterator::operator!=(const IndexIterator& rhs) const {
-    return iterator_ != rhs.iterator_;
-}
-
-template<typename T>
-bool SparseArrayVector<T>::IndexIterator::operator==(const IndexIterator& rhs) const {
-    return iterator_ == rhs.iterator_;
-}
-
-template<typename T>
-typename SparseArrayVector<T>::IndexIterator::difference_type SparseArrayVector<T>::IndexIterator::operator-(
-        const IndexIterator& rhs) const {
-    return iterator_ - rhs.iterator_;
-}
-
-template<typename T>
 SparseArrayVector<T>::IndexConstIterator::IndexConstIterator(
         typename DenseVector<IndexedValue<T>>::const_iterator iterator)
     : iterator_(iterator) {
@@ -118,59 +61,59 @@ typename SparseArrayVector<T>::IndexConstIterator::difference_type SparseArrayVe
 }
 
 template<typename T>
-SparseArrayVector<T>::ValueIterator::ValueIterator(typename DenseVector<IndexedValue<T>>::iterator iterator)
+SparseArrayVector<T>::IndexIterator::IndexIterator(typename DenseVector<IndexedValue<T>>::iterator iterator)
     : iterator_(iterator) {
 
 }
 
 template<typename T>
-typename SparseArrayVector<T>::ValueIterator::reference SparseArrayVector<T>::ValueIterator::operator[](
+typename SparseArrayVector<T>::IndexIterator::reference SparseArrayVector<T>::IndexIterator::operator[](
         uint32 index) const {
-    return iterator_[index].value;
+    return iterator_[index].index;
 }
 
 template<typename T>
-typename SparseArrayVector<T>::ValueIterator::reference SparseArrayVector<T>::ValueIterator::operator*() const {
-    return (*iterator_).value;
+typename SparseArrayVector<T>::IndexIterator::reference SparseArrayVector<T>::IndexIterator::operator*() const {
+    return (*iterator_).index;
 }
 
 template<typename T>
-typename SparseArrayVector<T>::ValueIterator& SparseArrayVector<T>::ValueIterator::operator++() {
+typename SparseArrayVector<T>::IndexIterator& SparseArrayVector<T>::IndexIterator::operator++() {
     ++iterator_;
     return *this;
 }
 
 template<typename T>
-typename SparseArrayVector<T>::ValueIterator& SparseArrayVector<T>::ValueIterator::operator++(int n) {
+typename SparseArrayVector<T>::IndexIterator& SparseArrayVector<T>::IndexIterator::operator++(int n) {
     iterator_++;
     return *this;
 }
 
 template<typename T>
-typename SparseArrayVector<T>::ValueIterator& SparseArrayVector<T>::ValueIterator::operator--() {
+typename SparseArrayVector<T>::IndexIterator& SparseArrayVector<T>::IndexIterator::operator--() {
     --iterator_;
     return *this;
 }
 
 template<typename T>
-typename SparseArrayVector<T>::ValueIterator& SparseArrayVector<T>::ValueIterator::operator--(int n) {
+typename SparseArrayVector<T>::IndexIterator& SparseArrayVector<T>::IndexIterator::operator--(int n) {
     iterator_--;
     return *this;
 }
 
 template<typename T>
-bool SparseArrayVector<T>::ValueIterator::operator!=(const ValueIterator& rhs) const {
+bool SparseArrayVector<T>::IndexIterator::operator!=(const IndexIterator& rhs) const {
     return iterator_ != rhs.iterator_;
 }
 
 template<typename T>
-bool SparseArrayVector<T>::ValueIterator::operator==(const ValueIterator& rhs) const {
+bool SparseArrayVector<T>::IndexIterator::operator==(const IndexIterator& rhs) const {
     return iterator_ == rhs.iterator_;
 }
 
 template<typename T>
-typename SparseArrayVector<T>::ValueIterator::difference_type SparseArrayVector<T>::ValueIterator::operator-(
-        const ValueIterator& rhs) const {
+typename SparseArrayVector<T>::IndexIterator::difference_type SparseArrayVector<T>::IndexIterator::operator-(
+        const IndexIterator& rhs) const {
     return iterator_ - rhs.iterator_;
 }
 
@@ -229,6 +172,64 @@ bool SparseArrayVector<T>::ValueConstIterator::operator==(const ValueConstIterat
 template<typename T>
 typename SparseArrayVector<T>::ValueConstIterator::difference_type SparseArrayVector<T>::ValueConstIterator::operator-(
         const ValueConstIterator& rhs) const {
+    return iterator_ - rhs.iterator_;
+}
+
+
+template<typename T>
+SparseArrayVector<T>::ValueIterator::ValueIterator(typename DenseVector<IndexedValue<T>>::iterator iterator)
+    : iterator_(iterator) {
+
+}
+
+template<typename T>
+typename SparseArrayVector<T>::ValueIterator::reference SparseArrayVector<T>::ValueIterator::operator[](
+        uint32 index) const {
+    return iterator_[index].value;
+}
+
+template<typename T>
+typename SparseArrayVector<T>::ValueIterator::reference SparseArrayVector<T>::ValueIterator::operator*() const {
+    return (*iterator_).value;
+}
+
+template<typename T>
+typename SparseArrayVector<T>::ValueIterator& SparseArrayVector<T>::ValueIterator::operator++() {
+    ++iterator_;
+    return *this;
+}
+
+template<typename T>
+typename SparseArrayVector<T>::ValueIterator& SparseArrayVector<T>::ValueIterator::operator++(int n) {
+    iterator_++;
+    return *this;
+}
+
+template<typename T>
+typename SparseArrayVector<T>::ValueIterator& SparseArrayVector<T>::ValueIterator::operator--() {
+    --iterator_;
+    return *this;
+}
+
+template<typename T>
+typename SparseArrayVector<T>::ValueIterator& SparseArrayVector<T>::ValueIterator::operator--(int n) {
+    iterator_--;
+    return *this;
+}
+
+template<typename T>
+bool SparseArrayVector<T>::ValueIterator::operator!=(const ValueIterator& rhs) const {
+    return iterator_ != rhs.iterator_;
+}
+
+template<typename T>
+bool SparseArrayVector<T>::ValueIterator::operator==(const ValueIterator& rhs) const {
+    return iterator_ == rhs.iterator_;
+}
+
+template<typename T>
+typename SparseArrayVector<T>::ValueIterator::difference_type SparseArrayVector<T>::ValueIterator::operator-(
+        const ValueIterator& rhs) const {
     return iterator_ - rhs.iterator_;
 }
 

@@ -7,55 +7,55 @@
 
 namespace boosting {
 
-    DenseExampleWiseStatisticVector::HessianDiagonalIterator::HessianDiagonalIterator(
-            const DenseExampleWiseStatisticVector& vector, uint32 index)
-        : vector_(vector), index_(index) {
+    DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::HessianDiagonalConstIterator(const float64* ptr,
+                                                                                                uint32 index)
+        : ptr_(ptr), index_(index) {
 
     }
 
-    DenseExampleWiseStatisticVector::HessianDiagonalIterator::reference DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator[](
+    DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::reference DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator[](
             uint32 index) const {
-        return vector_.hessians_[triangularNumber(index + 1) - 1];
+        return ptr_[triangularNumber(index + 1) - 1];
     }
 
-    DenseExampleWiseStatisticVector::HessianDiagonalIterator::reference DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator*() const {
-        return vector_.hessians_[triangularNumber(index_ + 1) - 1];
+    DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::reference DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator*() const {
+        return ptr_[triangularNumber(index_ + 1) - 1];
     }
 
-    DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator++() {
+    DenseExampleWiseStatisticVector::HessianDiagonalConstIterator& DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator++() {
         ++index_;
         return *this;
     }
 
-    DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator++(
+    DenseExampleWiseStatisticVector::HessianDiagonalConstIterator& DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator++(
             int n) {
         index_++;
         return *this;
     }
 
-    DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator--() {
+    DenseExampleWiseStatisticVector::HessianDiagonalConstIterator& DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator--() {
         --index_;
         return *this;
     }
 
-    DenseExampleWiseStatisticVector::HessianDiagonalIterator& DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator--(
+    DenseExampleWiseStatisticVector::HessianDiagonalConstIterator& DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator--(
             int n) {
         index_--;
         return *this;
     }
 
-    bool DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator!=(
-            const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
+    bool DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator!=(
+            const HessianDiagonalConstIterator& rhs) const {
         return index_ != rhs.index_;
     }
 
-    bool DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator==(
-            const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
+    bool DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator==(
+            const HessianDiagonalConstIterator& rhs) const {
         return index_ == rhs.index_;
     }
 
-    DenseExampleWiseStatisticVector::HessianDiagonalIterator::difference_type DenseExampleWiseStatisticVector::HessianDiagonalIterator::operator-(
-            const DenseExampleWiseStatisticVector::HessianDiagonalIterator& rhs) const {
+    DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::difference_type DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator-(
+            const HessianDiagonalConstIterator& rhs) const {
         return (difference_type) index_ - (difference_type) rhs.index_;
     }
 
@@ -117,11 +117,11 @@ namespace boosting {
     }
 
     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator DenseExampleWiseStatisticVector::hessians_diagonal_cbegin() const  {
-        return DenseExampleWiseStatisticVector::HessianDiagonalIterator(*this, 0);
+        return HessianDiagonalConstIterator(hessians_, 0);
     }
 
     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator DenseExampleWiseStatisticVector::hessians_diagonal_cend() const  {
-        return DenseExampleWiseStatisticVector::HessianDiagonalIterator(*this, numGradients_);
+        return HessianDiagonalConstIterator(hessians_, numGradients_);
     }
 
     uint32 DenseExampleWiseStatisticVector::getNumElements() const {

@@ -22,23 +22,25 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
     private:
 
         /**
-         * Allows to iterate the quality scores that correspond to individual labels.
+         * An iterator that provides read-only access to the quality scores of all elements in a
+         * `DenseBinnedLabelWiseScoreVector`.
          */
-        class QualityScoreIterator final {
+        class QualityScoreConstIterator final {
 
             private:
 
-                const DenseBinnedLabelWiseScoreVector<T>& vector_;
+                DenseVector<uint32>::const_iterator binIndexIterator_;
 
-                uint32 index_;
+                DenseVector<float64>::const_iterator qualityScoreIterator_;
 
             public:
 
                 /**
-                 * @param vector    A reference to the vector that stores the quality scores
-                 * @param index     The index to start at
+                 * @param binIndexIterator  An iterator to the bin indices of individual elements
+                 * @param valueIterator     An iterator to the quality scores of individual bins
                  */
-                QualityScoreIterator(const DenseBinnedLabelWiseScoreVector<T>& vector, uint32 index);
+                QualityScoreConstIterator(DenseVector<uint32>::const_iterator binIndexIterator,
+                                          DenseVector<float64>::const_iterator qualityScoreIterator);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
@@ -53,12 +55,12 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
                 /**
                  * The type of a pointer to an element, the iterator provides access to.
                  */
-                typedef float64* pointer;
+                typedef const float64* pointer;
 
                 /**
                  * The type of a reference to an element, the iterator provides access to.
                  */
-                typedef float64 reference;
+                typedef const float64& reference;
 
                 /**
                  * The tag that specifies the capabilities of the iterator.
@@ -85,28 +87,28 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
                  *
                  * @return A reference to an iterator to the next element
                  */
-                QualityScoreIterator& operator++();
+                QualityScoreConstIterator& operator++();
 
                 /**
                  * Returns an iterator to the next element.
                  *
                  * @return A reference to an iterator to the next element
                  */
-                QualityScoreIterator& operator++(int n);
+                QualityScoreConstIterator& operator++(int n);
 
                 /**
                  * Returns an iterator to the previous element.
                  *
                  * @return A reference to an iterator to the previous element
                  */
-                QualityScoreIterator& operator--();
+                QualityScoreConstIterator& operator--();
 
                 /**
                  * Returns an iterator to the previous element.
                  *
                  * @return A reference to an iterator to the previous element
                  */
-                QualityScoreIterator& operator--(int n);
+                QualityScoreConstIterator& operator--(int n);
 
                 /**
                  * Returns whether this iterator and another one refer to the same element.
@@ -114,7 +116,7 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
                  * @param rhs   A reference to another iterator
                  * @return      True, if the iterators do not refer to the same element, false otherwise
                  */
-                bool operator!=(const QualityScoreIterator& rhs) const;
+                bool operator!=(const QualityScoreConstIterator& rhs) const;
 
                 /**
                  * Returns whether this iterator and another one refer to the same element.
@@ -122,7 +124,7 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
                  * @param rhs   A reference to another iterator
                  * @return      True, if the iterators refer to the same element, false otherwise
                  */
-                bool operator==(const QualityScoreIterator& rhs) const;
+                bool operator==(const QualityScoreConstIterator& rhs) const;
 
                 /**
                  * Returns the difference between this iterator and another one.
@@ -130,7 +132,7 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
                  * @param rhs   A reference to another iterator
                  * @return      The difference between the iterators
                  */
-                difference_type operator-(const QualityScoreIterator& rhs) const;
+                difference_type operator-(const QualityScoreConstIterator& rhs) const;
 
         };
 
@@ -148,7 +150,7 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
         /**
          * An iterator that provides read-only access to the quality scores that correspond to individual labels.
          */
-        typedef QualityScoreIterator quality_score_const_iterator;
+        typedef QualityScoreConstIterator quality_score_const_iterator;
 
         /**
          * An iterator that provides access to the quality scores that correspond to individual bins and allows to
