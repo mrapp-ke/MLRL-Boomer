@@ -5,6 +5,7 @@
 
 #include "common/indices/index_vector_full.hpp"
 #include "common/indices/index_vector_partial.hpp"
+#include "boosting/data/statistic_iterator_dense.hpp"
 
 
 namespace boosting {
@@ -20,9 +21,7 @@ namespace boosting {
 
             uint32 numElements_;
 
-            float64* gradients_;
-
-            float64* hessians_;
+            Tuple<float64>* statistics_;
 
         public:
 
@@ -46,38 +45,33 @@ namespace boosting {
             ~DenseLabelWiseStatisticVector();
 
             /**
-             * An iterator that provides access to the gradients in the vector and allows to modify them.
+             * An iterator that provides read-only access to the elements in the vector.
              */
-            typedef float64* gradient_iterator;
+            typedef const Tuple<float64>* const_iterator;
 
             /**
              * An iterator that provides read-only access to the gradients in the vector.
              */
-            typedef const float64* gradient_const_iterator;
-
-            /**
-             * An iterator that provides access to the Hessians in the vector and allows to modify them.
-             */
-            typedef float64* hessian_iterator;
+            typedef DenseGradientConstIterator gradient_const_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians in the vector.
              */
-            typedef const float64* hessian_const_iterator;
+            typedef DenseHessianConstIterator hessian_const_iterator;
 
             /**
-             * Returns a `gradient_iterator` to the beginning of the gradients.
+             * Returns a `const_iterator` to the beginning of the vector.
              *
-             * @return A `gradient_iterator` to the beginning
+             * @return A `const_iterator` to the beginning
              */
-            gradient_iterator gradients_begin();
+            const_iterator cbegin() const;
 
             /**
-             * Returns a `gradient_iterator` to the end of the gradients.
+             * Returns a `const_iterator` to the end of the vector.
              *
-             * @return A `gradient_iterator` to the end
+             * @return A `const_iterator` to the end
              */
-            gradient_iterator gradients_end();
+            const_iterator cend() const;
 
             /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients.
@@ -92,20 +86,6 @@ namespace boosting {
              * @return A `gradient_const_iterator` to the end
              */
             gradient_const_iterator gradients_cend() const;
-
-            /**
-             * Returns a `hessian_iterator` to the beginning of the Hessians.
-             *
-             * @return A `hessian_iterator` to the beginning
-             */
-            hessian_iterator hessians_begin();
-
-            /**
-             * Returns a `hessian_iterator` to the end of the Hessians.
-             *
-             * @return A `hessian_iterator` to the end
-             */
-            hessian_iterator hessians_end();
 
             /**
              * Returns a `hessian_const_iterator` to the beginning of the Hessians.
@@ -136,101 +116,74 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
-             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients
-             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients
-             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
-             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
+             * @param begin A `const_iterator` to the beginning of the vector
+             * @param end   A `const_iterator` to the end of the vector
              */
-            void add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
-                     hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd);
+            void add(const_iterator begin, const_iterator end);
 
             /**
              * Adds all gradients and Hessians in another vector to this vector. The gradients and Hessians to be added
              * are multiplied by a specific weight.
              *
-             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients
-             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients
-             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
-             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
-             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             * @param begin     A `const_iterator` to the beginning of the vector
+             * @param end       A `const_iterator` to the end of the vector
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
-                     hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight);
+            void add(const_iterator begin, const_iterator end, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a `FullIndexVector`,
              * to this vector. The gradients and Hessians to be added are multiplied by a specific weight.
              *
-             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients
-             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients
-             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
-             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
-             * @param indices           A reference to a `FullIndexVector' that provides access to the indices
-             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             * @param begin     A `const_iterator` to the beginning of the vector
+             * @param end       A `const_iterator` to the end of the vector
+             * @param indices   A reference to a `FullIndexVector' that provides access to the indices
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
-                             hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
-                             const FullIndexVector& indices, float64 weight);
+            void addToSubset(const_iterator begin, const_iterator end, const FullIndexVector& indices, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
              * `PartialIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a specific
              * weight.
              *
-             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients
-             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients
-             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
-             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
-             * @param indices           A reference to a `PartialIndexVector' that provides access to the indices
-             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             * @param begin     A `const_iterator` to the beginning of the vector
+             * @param end       A `const_iterator` to the end of the vector
+             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
-                             hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
-                             const PartialIndexVector& indices, float64 weight);
+            void addToSubset(const_iterator begin, const_iterator end, const PartialIndexVector& indices,
+                             float64 weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `FullIndexVector`.
              *
-             * @param firstGradientsBegin   A `gradient_const_iterator` to the beginning of the first gradients
-             * @param firstGradientsEnd     A `gradient_const_iterator` to the end of the first gradients
-             * @param firstHessiansBegin    A `hessian_const_iterator` to the beginning of the first Hessians
-             * @param firstHessiansEnd      A `hessian_const_iterator` to the end of the first Hessians
-             * @param firstIndices          A reference to an object of type `FullIndexVector` that provides access to
-             *                              the indices
-             * @param secondGradientsBegin  A `gradient_const_iterator` to the beginning of the second gradients
-             * @param secondGradientsEnd    A `gradient_const_iterator` to the end of the second gradients
-             * @param secondHessiansBegin   A `hessian_const_iterator` to the beginning of the second Hessians
-             * @param secondHessiansEnd     A `hessian_const_iterator` to the end of the second Hessians
+             * @param firstBegin    A `const_iterator` to the beginning of the first vector
+             * @param firstEnd      A `const_iterator` to the end of the first vector
+             * @param firstIndices  A reference to an object of type `FullIndexVector` that provides access to the
+             *                      indices
+             * @param secondBegin  A `const_iterator` to the beginning of the second vector
+             * @param secondEnd    A `const_iterator` to the end of the second vector
              */
-            void difference(gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
-                            hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
-                            const FullIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
-                            gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
-                            hessian_const_iterator secondHessiansEnd);
+            void difference(const_iterator firstBegin, const_iterator firstEnd, const FullIndexVector& firstIndices,
+                            const_iterator secondBegin, const_iterator secondEnd);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `PartialIndexVector`.
              *
-             * @param firstGradientsBegin   A `gradient_const_iterator` to the beginning of the first gradients
-             * @param firstGradientsEnd     A `gradient_const_iterator` to the end of the first gradients
-             * @param firstHessiansBegin    A `hessian_const_iterator` to the beginning of the first Hessians
-             * @param firstHessiansEnd      A `hessian_const_iterator` to the end of the first Hessians
-             * @param firstIndices          A reference to an object of type `PartialIndexVector` that provides access
-             *                              to the indices
-             * @param secondGradientsBegin  A `gradient_const_iterator` to the beginning of the second gradients
-             * @param secondGradientsEnd    A `gradient_const_iterator` to the end of the second gradients
-             * @param secondHessiansBegin   A `hessian_const_iterator` to the beginning of the second Hessians
-             * @param secondHessiansEnd     A `hessian_const_iterator` to the end of the second Hessians
+             * @param firstBegin    A `const_iterator` to the beginning of the first vector
+             * @param firstEnd      A `const_iterator` to the end of the first vector
+             * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+             *                      indices
+             * @param secondBegin   A `const_iterator` to the beginning of the second vector
+             * @param secondEnd     A `const_iterator` to the end of the second vector
              */
-            void difference(gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
-                            hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
-                            const PartialIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
-                            gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
-                            hessian_const_iterator secondHessiansEnd);
+            void difference(const_iterator firstBegin, const_iterator firstEnd, const PartialIndexVector& firstIndices,
+                            const_iterator secondBegin, const_iterator secondEnd);
 
     };
 

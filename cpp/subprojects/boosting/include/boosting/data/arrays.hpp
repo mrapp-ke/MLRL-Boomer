@@ -67,14 +67,15 @@ namespace boosting {
      * multiplied by a given weight, such that `a = a + (b * weight)`.
      *
      * @tparam T            The type of the arrays `a` and `b`
+     * @tparam W            The type of the weight
      * @param a             A pointer to an array of template type `T` to be updated
      * @param b             A pointer to an array of template type `T`
      * @param numElements   The number of elements in the arrays `a` and `b`
      * @param weight        The weight, the elements in the array `b` should be multiplied by
      *
      */
-    template<typename T>
-    static inline void addToArray(T* a, const T* b, uint32 numElements, T weight) {
+    template<typename T, typename W>
+    static inline void addToArray(T* a, const T* b, uint32 numElements, W weight) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] += (b[i] * weight);
         }
@@ -86,6 +87,7 @@ namespace boosting {
      * correspond to the elements in array `a` are given as an additional array.
      *
      * @tparam T            The type of the arrays `a` and `b`
+     * @tparam W            The type of the weight
      * @param a             A pointer to an array of template type `T` to be updated
      * @param b             A pointer to an array of template type `T`
      * @param numElements   The number of elements in the arrays `a` and `b`
@@ -94,8 +96,8 @@ namespace boosting {
      *                      `b` that correspond to the elements in array `a`
      *
      */
-    template<typename T>
-    static inline void addToArray(T* a, const T* b, const uint32* indices, uint32 numElements, T weight) {
+    template<typename T, typename W>
+    static inline void addToArray(T* a, const T* b, const uint32* indices, uint32 numElements, W weight) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];
             a[i] += (b[index] * weight);
