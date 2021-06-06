@@ -45,17 +45,17 @@ namespace boosting {
     }
 
     bool DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator!=(
-            const DenseExampleWiseStatisticVector::HessianDiagonalConstIterator& rhs) const {
+            const HessianDiagonalConstIterator& rhs) const {
         return index_ != rhs.index_;
     }
 
     bool DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator==(
-            const DenseExampleWiseStatisticVector::HessianDiagonalConstIterator& rhs) const {
+            const HessianDiagonalConstIterator& rhs) const {
         return index_ == rhs.index_;
     }
 
     DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::difference_type DenseExampleWiseStatisticVector::HessianDiagonalConstIterator::operator-(
-            const DenseExampleWiseStatisticVector::HessianDiagonalConstIterator& rhs) const {
+            const HessianDiagonalConstIterator& rhs) const {
         return (difference_type) index_ - (difference_type) rhs.index_;
     }
 
