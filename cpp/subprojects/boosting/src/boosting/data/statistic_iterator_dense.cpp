@@ -49,51 +49,6 @@ namespace boosting {
         return (difference_type) (ptr_ - rhs.ptr_);
     }
 
-    DenseGradientIterator::DenseGradientIterator(Tuple<float64>* ptr)
-        : ptr_(ptr) {
-
-    }
-
-    DenseGradientIterator::reference DenseGradientIterator::operator[](uint32 index) const {
-        return ptr_[index].first;
-    }
-
-    DenseGradientIterator::reference DenseGradientIterator::operator*() const {
-        return (*ptr_).first;
-    }
-
-    DenseGradientIterator& DenseGradientIterator::operator++() {
-        ++ptr_;
-        return *this;
-    }
-
-    DenseGradientIterator& DenseGradientIterator::operator++(int n) {
-        ptr_++;
-        return *this;
-    }
-
-    DenseGradientIterator& DenseGradientIterator::operator--() {
-        --ptr_;
-        return *this;
-    }
-
-    DenseGradientIterator& DenseGradientIterator::operator--(int n) {
-        ptr_--;
-        return *this;
-    }
-
-    bool DenseGradientIterator::operator!=(const DenseGradientIterator& rhs) const {
-        return ptr_ != rhs.ptr_;
-    }
-
-    bool DenseGradientIterator::operator==(const DenseGradientIterator& rhs) const {
-        return ptr_ == rhs.ptr_;
-    }
-
-    DenseGradientIterator::difference_type DenseGradientIterator::operator-(const DenseGradientIterator& rhs) const {
-        return (difference_type) (ptr_ - rhs.ptr_);
-    }
-
     DenseHessianConstIterator::DenseHessianConstIterator(const Tuple<float64>* ptr)
         : ptr_(ptr) {
 
@@ -136,51 +91,6 @@ namespace boosting {
     }
 
     DenseHessianConstIterator::difference_type DenseHessianConstIterator::operator-(const DenseHessianConstIterator& rhs) const {
-        return (difference_type) (ptr_ - rhs.ptr_);
-    }
-
-    DenseHessianIterator::DenseHessianIterator(Tuple<float64>* ptr)
-        : ptr_(ptr) {
-
-    }
-
-    DenseHessianIterator::reference DenseHessianIterator::operator[](uint32 index) const {
-        return ptr_[index].second;
-    }
-
-    DenseHessianIterator::reference DenseHessianIterator::operator*() const {
-        return (*ptr_).second;
-    }
-
-    DenseHessianIterator& DenseHessianIterator::operator++() {
-        ++ptr_;
-        return *this;
-    }
-
-    DenseHessianIterator& DenseHessianIterator::operator++(int n) {
-        ptr_++;
-        return *this;
-    }
-
-    DenseHessianIterator& DenseHessianIterator::operator--() {
-        --ptr_;
-        return *this;
-    }
-
-    DenseHessianIterator& DenseHessianIterator::operator--(int n) {
-        ptr_--;
-        return *this;
-    }
-
-    bool DenseHessianIterator::operator!=(const DenseHessianIterator& rhs) const {
-        return ptr_ != rhs.ptr_;
-    }
-
-    bool DenseHessianIterator::operator==(const DenseHessianIterator& rhs) const {
-        return ptr_ == rhs.ptr_;
-    }
-
-    DenseHessianIterator::difference_type DenseHessianIterator::operator-(const DenseHessianIterator& rhs) const {
         return (difference_type) (ptr_ - rhs.ptr_);
     }
 
