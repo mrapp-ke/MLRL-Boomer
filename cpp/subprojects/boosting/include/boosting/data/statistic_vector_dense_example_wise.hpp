@@ -20,23 +20,23 @@ namespace boosting {
         private:
 
             /**
-             * Allows to iterate the Hessians on the diagonal.
+             * An iterator that provides read-only access to the Hessians on the diagonal.
              */
-            class HessianDiagonalIterator final {
+            class HessianDiagonalConstIterator final {
 
                 private:
 
-                    const DenseExampleWiseStatisticVector& vector_;
+                    const float64* ptr_;
 
                     uint32 index_;
 
                 public:
 
                     /**
-                     * @param vector    A reference to the vector that stores the Hessians
-                     * @param index     The index to start at
+                     * @param ptr   A pointer to an array of type `float64` that stores the Hessians
+                     * @param index The index to start at
                      */
-                    HessianDiagonalIterator(const DenseExampleWiseStatisticVector& vector, uint32 index);
+                    HessianDiagonalConstIterator(const float64* ptr, uint32 index);
 
                     /**
                      * The type that is used to represent the difference between two iterators.
@@ -51,12 +51,12 @@ namespace boosting {
                     /**
                      * The type of a pointer to an element, the iterator provides access to.
                      */
-                    typedef float64* pointer;
+                    typedef const float64* pointer;
 
                     /**
                      * The type of a reference to an element, the iterator provides access to.
                      */
-                    typedef float64 reference;
+                    typedef const float64& reference;
 
                     /**
                      * The tag that specifies the capabilities of the iterator.
@@ -83,28 +83,28 @@ namespace boosting {
                      *
                      * @return A reference to an iterator to the next element
                      */
-                    HessianDiagonalIterator& operator++();
+                    HessianDiagonalConstIterator& operator++();
 
                     /**
                      * Returns an iterator to the next element.
                      *
                      * @return A reference to an iterator to the next element
                      */
-                    HessianDiagonalIterator& operator++(int n);
+                    HessianDiagonalConstIterator& operator++(int n);
 
                     /**
                      * Returns an iterator to the previous element.
                      *
                      * @return A reference to an iterator to the previous element
                      */
-                    HessianDiagonalIterator& operator--();
+                    HessianDiagonalConstIterator& operator--();
 
                     /**
                      * Returns an iterator to the previous element.
                      *
                      * @return A reference to an iterator to the previous element
                      */
-                    HessianDiagonalIterator& operator--(int n);
+                    HessianDiagonalConstIterator& operator--(int n);
 
                     /**
                      * Returns whether this iterator and another one refer to the same element.
@@ -112,7 +112,7 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      True, if the iterators do not refer to the same element, false otherwise
                      */
-                    bool operator!=(const HessianDiagonalIterator& rhs) const;
+                    bool operator!=(const HessianDiagonalConstIterator& rhs) const;
 
                     /**
                      * Returns whether this iterator and another one refer to the same element.
@@ -120,7 +120,7 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      True, if the iterators refer to the same element, false otherwise
                      */
-                    bool operator==(const HessianDiagonalIterator& rhs) const;
+                    bool operator==(const HessianDiagonalConstIterator& rhs) const;
 
                     /**
                      * Returns the difference between this iterator and another one.
@@ -128,7 +128,7 @@ namespace boosting {
                      * @param rhs   A reference to another iterator
                      * @return      The difference between the iterators
                      */
-                    difference_type operator-(const HessianDiagonalIterator& rhs) const;
+                    difference_type operator-(const HessianDiagonalConstIterator& rhs) const;
 
             };
 
@@ -185,7 +185,7 @@ namespace boosting {
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
              * matrix.
              */
-            typedef HessianDiagonalIterator hessian_diagonal_const_iterator;
+            typedef HessianDiagonalConstIterator hessian_diagonal_const_iterator;
 
             /**
              * Returns a `gradient_iterator` to the beginning of the gradients.
