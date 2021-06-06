@@ -125,16 +125,6 @@ class IndexForwardIterator final {
             return index_ == rhs.index_;
         }
 
-        /**
-         * Returns the difference between this iterator and another one.
-         *
-         * @param rhs   A reference to another iterator
-         * @return      The difference between the iterators
-         */
-        difference_type operator-(const IndexForwardIterator& rhs) const {
-            return (difference_type) index_ - (difference_type) rhs.index_;
-        }
-
 };
 
 /**
