@@ -179,6 +179,10 @@ namespace seco {
                 return weightMatrixPtr_->getSumOfUncoveredWeights();
             }
 
+            DenseWeightMatrix* getUncoveredWeights() const override {
+                return weightMatrixPtr_.get();
+            }
+
             void setRuleEvaluationFactory(
                     std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) override {
                 ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;

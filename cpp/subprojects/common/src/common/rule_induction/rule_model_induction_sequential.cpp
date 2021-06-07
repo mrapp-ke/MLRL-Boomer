@@ -96,6 +96,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
 
         Debugger::lb(false);
 
+        instanceSubSamplingPtr->setWeights(statisticsProviderPtr->get());
         const IWeightVector& weights = instanceSubSamplingPtr->subSample(rng);
 
         // Debugger: print distribution of training and pruning sets

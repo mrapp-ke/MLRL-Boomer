@@ -241,6 +241,14 @@ class ArgumentParserBuilder:
                             help='The lift function to be used')
         return self
 
+    def add_jrip_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
+        self.add_seco_learner_arguments()
+        parser = self.parser
+        parser.add_argument('--ripper', type=str,
+                            default=ArgumentParserBuilder.__get_or_default('ripper', "weka", **kwargs),
+                            help='The type of ripper implementation to use')
+        return self
+
     def build(self) -> ArgumentParser:
         return self.parser
 

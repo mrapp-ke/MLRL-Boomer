@@ -8,7 +8,7 @@ fi
 # Command line arguments
 DATASET=$1
 HEURISTIC=$2
-PRUNING_HEURISTIC=${3:=""}
+PRUNING_HEURISTIC=$3
 
 # Constants
 MEMORY=2048

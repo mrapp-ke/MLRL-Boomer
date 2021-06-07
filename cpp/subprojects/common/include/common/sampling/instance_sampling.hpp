@@ -7,6 +7,7 @@
 #include "common/sampling/random.hpp"
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
+#include "common/statistics/statistics.hpp"
 #include <memory>
 
 // Forward declarations
@@ -31,6 +32,15 @@ class IInstanceSubSampling {
          *                  individual training examples
          */
         virtual const IWeightVector& subSample(RNG& rng) = 0;
+
+        /**
+         * Sets the label coverage to be used for sub sampling.
+         *
+         * @param statistics A reference to an object of type "IStatistics",
+         */
+        virtual const void setWeights(IStatistics& statistics) {
+
+        };
 
 };
 

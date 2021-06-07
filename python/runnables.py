@@ -44,6 +44,7 @@ class Runnable(ABC):
 
         log.info('Configuration: %s', args)
 
+        # set debugging flags
         if args.debugging_ is not None:
             if 'full' in args.debugging_:
                 set_full_flag()

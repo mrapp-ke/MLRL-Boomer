@@ -44,6 +44,9 @@ venv:
 	venv/bin/pip install ninja
 	@echo "Installing compile-time dependency \"wheel\" into virtual environment..."
 	venv/bin/pip install wheel
+	@echo "Installing compile-time dependency \"javabridge\" into virtual environment..."
+	venv/bin/pip install javabridge
+	@echo "Installing compile-time dependency \"python-weka-wrapper3\" into virtual environment..."
 
 doc: venv
 	@echo "Installing dependency \"Sphinx\" into virtual environment..."

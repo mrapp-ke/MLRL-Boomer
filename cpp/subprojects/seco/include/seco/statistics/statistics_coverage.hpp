@@ -5,6 +5,7 @@
 #pragma once
 
 #include "common/statistics/statistics.hpp"
+#include "seco/data/matrix_dense_weights.hpp"
 
 
 namespace seco {
@@ -25,6 +26,13 @@ namespace seco {
              * @return The sum of the weights
              */
             virtual float64 getSumOfUncoveredWeights() const = 0;
+
+            /**
+             * Returns the weights of all labels that remains to be covered.
+             *
+             * @return The weights
+             */
+            virtual DenseWeightMatrix* getUncoveredWeights() const = 0;
 
     };
 
