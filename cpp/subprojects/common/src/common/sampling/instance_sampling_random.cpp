@@ -6,15 +6,15 @@
 
 
 static inline void subSampleInternally(const SinglePartition& partition, float32 sampleSize,
-                                       DenseWeightVector<uint8>& weightVector, RNG& rng) {
+                                       BitWeightVector& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize * numExamples);
     sampleWeightsWithoutReplacement<IndexIterator>(weightVector, IndexIterator(numExamples), numExamples, numSamples,
                                                    rng);
 }
 
-static inline void subSampleInternally(BiPartition& partition, float32 sampleSize,
-                                       DenseWeightVector<uint8>& weightVector, RNG& rng) {
+static inline void subSampleInternally(BiPartition& partition, float32 sampleSize, BitWeightVector& weightVector,
+                                       RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize * numTrainingExamples);
     sampleWeightsWithoutReplacement<BiPartition::const_iterator>(weightVector, partition.first_cbegin(),
@@ -27,7 +27,7 @@ static inline void subSampleInternally(BiPartition& partition, float32 sampleSiz
  * @tparam Partition The type of the object that provides access to the indices of the examples that are included in the
  *                   training set
  */
-template<class Partition>
+template<typename Partition>
 class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
 
     private:
@@ -36,7 +36,7 @@ class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
 
         float32 sampleSize_;
 
-        DenseWeightVector<uint8> weightVector_;
+        BitWeightVector weightVector_;
 
     public:
 
@@ -48,7 +48,7 @@ class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
          */
         RandomInstanceSubsetSelection(Partition& partition, float32 sampleSize)
             : partition_(partition), sampleSize_(sampleSize),
-              weightVector_(DenseWeightVector<uint8>(partition.getNumElements())) {
+              weightVector_(BitWeightVector(partition.getNumElements())) {
 
         }
 
@@ -65,21 +65,21 @@ RandomInstanceSubsetSelectionFactory::RandomInstanceSubsetSelectionFactory(float
 }
 
 std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
-        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition) const {
+        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
     return std::make_unique<RandomInstanceSubsetSelection<const SinglePartition>>(partition, sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
-        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition) const {
+        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
     return std::make_unique<RandomInstanceSubsetSelection<BiPartition>>(partition, sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
-        const CsrLabelMatrix& labelMatrix, const SinglePartition& partition) const {
+        const CsrLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
     return std::make_unique<RandomInstanceSubsetSelection<const SinglePartition>>(partition, sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
-        const CsrLabelMatrix& labelMatrix, BiPartition& partition) const {
+        const CsrLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
     return std::make_unique<RandomInstanceSubsetSelection<BiPartition>>(partition, sampleSize_);
 }

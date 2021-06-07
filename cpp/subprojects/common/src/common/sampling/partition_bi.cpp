@@ -5,8 +5,8 @@
 #include "common/head_refinement/prediction.hpp"
 
 
-static inline BinaryDokVector* createDokVector(BiPartition::const_iterator iterator, uint32 numElements) {
-    BinaryDokVector* vector = new BinaryDokVector();
+static inline BitVector* createBitVector(BiPartition::const_iterator iterator, uint32 numElements) {
+    BitVector* vector = new BitVector(numElements, true);
 
     for (uint32 i = 0; i < numElements; i++) {
         uint32 index = iterator[i];
@@ -70,25 +70,26 @@ uint32 BiPartition::getNumElements() const {
     return vector_.getNumElements();
 }
 
-const BinaryDokVector& BiPartition::getFirstSet() {
+const BitVector& BiPartition::getFirstSet() {
     if (firstSet_ == nullptr) {
-        firstSet_ = createDokVector(this->first_cbegin(), this->getNumFirst());
+        firstSet_ = createBitVector(this->first_cbegin(), this->getNumFirst());
     }
 
     return *firstSet_;
 }
 
-const BinaryDokVector& BiPartition::getSecondSet() {
+const BitVector& BiPartition::getSecondSet() {
     if (secondSet_ == nullptr) {
-        secondSet_ = createDokVector(this->second_cbegin(), this->getNumSecond());
+        secondSet_ = createBitVector(this->second_cbegin(), this->getNumSecond());
     }
 
     return *secondSet_;
 }
 
 std::unique_ptr<IInstanceSubSampling> BiPartition::createInstanceSubSampling(const IInstanceSubSamplingFactory& factory,
-                                                                             const ILabelMatrix& labelMatrix) {
-    return labelMatrix.createInstanceSubSampling(factory, *this);
+                                                                             const ILabelMatrix& labelMatrix,
+                                                                             IStatistics& statistics) {
+    return labelMatrix.createInstanceSubSampling(factory, *this, statistics);
 }
 
 float64 BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,

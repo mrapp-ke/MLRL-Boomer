@@ -1,6 +1,6 @@
 #include "common/sampling/instance_sampling_no.hpp"
+#include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/weight_vector_equal.hpp"
-#include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/data/arrays.hpp"
@@ -10,16 +10,14 @@ static inline void subSampleInternally(const SinglePartition& partition, EqualWe
     return;
 }
 
-static inline void subSampleInternally(BiPartition& partition, DenseWeightVector<uint8>& weightVector, RNG& rng) {
-    uint32 numExamples = partition.getNumElements();
+static inline void subSampleInternally(BiPartition& partition, BitWeightVector& weightVector, RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
-    typename DenseWeightVector<uint8>::iterator weightIterator = weightVector.begin();
-    setArrayToZeros(weightIterator, numExamples);
+    weightVector.clear();
 
     for (uint32 i = 0; i < numTrainingExamples; i++) {
         uint32 index = indexIterator[i];
-        weightIterator[index] = 1;
+        weightVector.set(index, true);
     }
 
     weightVector.setNumNonZeroWeights(numTrainingExamples);
@@ -33,7 +31,7 @@ static inline void subSampleInternally(BiPartition& partition, DenseWeightVector
  *                      the training set
  * @tparam WeightVector The type of the weight vector that is used to store the weights
  */
-template<class Partition, class WeightVector>
+template<typename Partition, typename WeightVector>
 class NoInstanceSubSampling final : public IInstanceSubSampling {
 
     private:
@@ -61,21 +59,23 @@ class NoInstanceSubSampling final : public IInstanceSubSampling {
 };
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(
-        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition) const {
+        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
     return std::make_unique<NoInstanceSubSampling<const SinglePartition, EqualWeightVector>>(partition);
 }
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(
-        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition) const {
-    return std::make_unique<NoInstanceSubSampling<BiPartition, DenseWeightVector<uint8>>>(partition);
+        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
+    return std::make_unique<NoInstanceSubSampling<BiPartition, BitWeightVector>>(partition);
 }
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
-                                                                           const SinglePartition& partition) const {
+                                                                           const SinglePartition& partition,
+                                                                           IStatistics& statistics) const {
     return std::make_unique<NoInstanceSubSampling<const SinglePartition, EqualWeightVector>>(partition);
 }
 
 std::unique_ptr<IInstanceSubSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
-                                                                           BiPartition& partition) const {
-    return std::make_unique<NoInstanceSubSampling<BiPartition, DenseWeightVector<uint8>>>(partition);
+                                                                           BiPartition& partition,
+                                                                           IStatistics& statistics) const {
+    return std::make_unique<NoInstanceSubSampling<BiPartition, BitWeightVector>>(partition);
 }

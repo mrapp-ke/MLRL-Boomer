@@ -7,7 +7,7 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
-#include "boosting/data/statistic_matrix_dense_label_wise.hpp"
+#include "boosting/data/statistic_view_dense_label_wise.hpp"
 
 
 namespace boosting {
@@ -32,13 +32,13 @@ namespace boosting {
              *                          currently predicted scores
              * @param labelIndicesBegin A `FullIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `FullIndexVector::const_iterator` to the end of the label indices
-             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
                                                    FullIndexVector::const_iterator labelIndicesBegin,
                                                    FullIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -51,13 +51,13 @@ namespace boosting {
              *                          currently predicted scores
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -70,13 +70,13 @@ namespace boosting {
              *                          currently predicted scores
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
                                                    FullIndexVector::const_iterator labelIndicesBegin,
                                                    FullIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -89,13 +89,13 @@ namespace boosting {
              *                          currently predicted scores
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticMatrix   A reference to an object of type `DenseLabelWiseStatisticMatrix` to be updated
+             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                    const CContiguousConstView<float64> scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticMatrix& statisticMatrix) const = 0;
+                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
 
     };
 
@@ -104,30 +104,33 @@ namespace boosting {
      */
     class AbstractLabelWiseLoss : public ILabelWiseLoss {
 
+        private:
+
+            /**
+             * A function that allows to update the gradient and Hessian for a single example and label. The function
+             * accepts the true label, the predicted score, as well as pointers to the gradient and Hessian to be
+             * updated, as arguments.
+             */
+            typedef void (*UpdateFunction)(bool trueLabel, float64 predictedScore, float64* gradient, float64* hessian);
+
+            /**
+             * A function that allows to calculate a numerical score that assesses the quality of the prediction for a
+             * single example and label. The function accepts the true label and the predicted score as arguments and
+             * returns a numerical score.
+             */
+            typedef float64 (*EvaluateFunction)(bool trueLabel, float64 predictedScore);
+
+            UpdateFunction updateFunction_;
+
+            EvaluateFunction evaluateFunction_;
+
         protected:
 
             /**
-             * Must be implemented by subclasses in order to update the gradient and Hessian for a single example and
-             * label.
-             *
-             * @param gradient          A `DenseVector::iterator` to the gradient that should be updated
-             * @param hessian           A `DenseVector::iterator` to the Hessian that should be updated
-             * @param trueLabel         True, if the label is relevant, false otherwise
-             * @param predictedScore    The score that is predicted for the label
+             * @param updateFunction    The function to be used for updating gradients and Hessians
+             * @param evaluateFunction  The function to be used for evaluating predictions
              */
-            virtual void updateGradientAndHessian(DenseVector<float64>::iterator gradient,
-                                                  DenseVector<float64>::iterator hessian, bool trueLabel,
-                                                  float64 predictedScore) const = 0;
-
-            /**
-             * Must be implemented by subclasses in order to calculate a numerical score that assesses the quality of
-             * the prediction for a single example and label.
-             *
-             * @param trueLabel         True, if the label is relevant, false otherwise
-             * @param predictedScore    The score that is predicted for the label
-             * @return                  The numerical score that has been calculated
-             */
-            virtual float64 evaluate(bool trueLabel, float64 predictedScore) const = 0;
+            AbstractLabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction);
 
         public:
 
@@ -137,25 +140,25 @@ namespace boosting {
                                            const CContiguousConstView<float64>& scoreMatrix,
                                            FullIndexVector::const_iterator labelIndicesBegin,
                                            FullIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
+                                           DenseLabelWiseStatisticView& statisticView) const override final;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                            const CContiguousConstView<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
+                                           DenseLabelWiseStatisticView& statisticView) const override final;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                            const CContiguousConstView<float64>& scoreMatrix,
                                            FullIndexVector::const_iterator labelIndicesBegin,
                                            FullIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
+                                           DenseLabelWiseStatisticView& statisticView) const override final;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                             const CContiguousConstView<float64> scoreMatrix,
                                             PartialIndexVector::const_iterator labelIndicesBegin,
                                             PartialIndexVector::const_iterator labelIndicesEnd,
-                                            DenseLabelWiseStatisticMatrix& statisticMatrix) const override final;
+                                            DenseLabelWiseStatisticView& statisticView) const override final;
 
             float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override final;
@@ -163,6 +166,9 @@ namespace boosting {
             float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override final;
 
+            /**
+             * @see `ISimilarityMeasure::measureSimilarity`
+             */
             float64 measureSimilarity(const LabelVector& labelVector,
                                       CContiguousView<float64>::const_iterator scoresBegin,
                                       CContiguousView<float64>::const_iterator scoresEnd) const override final;

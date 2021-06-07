@@ -54,7 +54,7 @@ namespace boosting {
      * @tparam GradientIterator The type of the iterator that provides access to the gradients
      * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
      */
-    template<class GradientIterator, class HessianIterator>
+    template<typename GradientIterator, typename HessianIterator>
     class ILabelBinning {
 
         public:
@@ -63,9 +63,9 @@ namespace boosting {
 
             /**
              * A callback function that is invoked when a label is assigned to a bin. It takes the index of the bin, the
-             * index of the label, as well as the statistic, as arguments.
+             * index of the label, as well as the corresponding gradient and Hessians, as arguments.
              */
-            typedef std::function<void(uint32 binIndex, uint32 labelIndex, float64 statistic)> Callback;
+            typedef std::function<void(uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian)> Callback;
 
             /**
              * A callback function that is invoked when a label with zero statistics is encountered. It takes the index

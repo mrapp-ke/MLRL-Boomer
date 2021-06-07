@@ -82,7 +82,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
         *partitionSamplingFactoryPtr_);
     IPartition& partition = partitionSamplingPtr->partition(rng);
     std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partition.createInstanceSubSampling(
-        *instanceSubSamplingFactoryPtr_, *labelMatrixPtr);
+        *instanceSubSamplingFactoryPtr_, *labelMatrixPtr, statisticsProviderPtr->get());
     std::unique_ptr<IFeatureSubSampling> featureSubSamplingPtr = featureSubSamplingFactoryPtr_->create(numFeatures);
     std::unique_ptr<ILabelSubSampling> labelSubSamplingPtr = labelSubSamplingFactoryPtr_->create(numLabels);
     IStoppingCriterion::Result stoppingCriterionResult;

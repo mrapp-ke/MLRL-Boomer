@@ -11,7 +11,7 @@
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 class CContiguousConstView {
 
     protected:
@@ -83,7 +83,7 @@ class CContiguousConstView {
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 class CContiguousView : public CContiguousConstView<T> {
 
     public:

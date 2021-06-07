@@ -6,7 +6,7 @@
 
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
-#include "seco/statistics/statistics_coverage.hpp"
+#include "seco/statistics/statistics.hpp"
 #include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 #include <memory>
 

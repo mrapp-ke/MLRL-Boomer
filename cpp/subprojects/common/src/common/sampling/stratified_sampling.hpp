@@ -5,7 +5,7 @@
 
 #include "common/data/indexed_value.hpp"
 #include "common/input/label_matrix_csc.hpp"
-#include "common/sampling/weight_vector_dense.hpp"
+#include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/random.hpp"
 #include <unordered_map>
@@ -63,7 +63,7 @@ static inline bool tiebreak(uint32 numDesiredSamples, uint32 numDesiredOutOfSamp
  * @tparam IndexIterator    The type of the iterator that provides access to the indices of the examples that should be
  *                          considered
  */
-template<class LabelMatrix, class IndexIterator>
+template<typename LabelMatrix, typename IndexIterator>
 class ExampleWiseStratification final {
 
     private:
@@ -82,6 +82,12 @@ class ExampleWiseStratification final {
 
     public:
 
+        /**
+         * @param labelMatrix   A reference to an object of template type `LabelMatrix` that provides random or row-wise
+         *                      access to the labels of the training examples
+         * @param indicesBegin  An iterator to the beginning of the indices of the examples that should be considered
+         * @param indicesEnd    An iterator to the end of the indices of hte examples that should be considered
+         */
         ExampleWiseStratification(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
                                   IndexIterator indicesEnd)
             : numTotal_(indicesEnd - indicesBegin) {
@@ -110,13 +116,12 @@ class ExampleWiseStratification final {
          * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
          * remaining weights are set to 0.
          *
-         * @param weightVector  A reference to an object of type `DenseWeightVector`, the weights should be written to
+         * @param weightVector  A reference to an object of type `BitWeightVector`, the weights should be written to
          * @param sampleSize    The fraction of the available examples to be selected
          * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
          *                      used
          */
-        void sampleWeights(DenseWeightVector<uint8>& weightVector, float32 sampleSize, RNG& rng) const {
-            DenseWeightVector<uint8>::iterator weightIterator = weightVector.begin();
+        void sampleWeights(BitWeightVector& weightVector, float32 sampleSize, RNG& rng) const {
             uint32 numTotalSamples = (uint32) std::round(sampleSize * numTotal_);
             uint32 numTotalOutOfSamples = numTotal_ - numTotalSamples;
             uint32 numNonZeroWeights = 0;
@@ -142,13 +147,13 @@ class ExampleWiseStratification final {
                     uint32 exampleIndex = indexIterator[randomIndex];
                     indexIterator[randomIndex] = indexIterator[i];
                     indexIterator[i] = exampleIndex;
-                    weightIterator[exampleIndex] = 1;
+                    weightVector.set(exampleIndex, true);
                 }
 
                 // Set the weights of the remaining examples to 0...
                 for (; i < numExamples; i++) {
                     uint32 exampleIndex = indexIterator[i];
-                    weightIterator[exampleIndex] = 0;
+                    weightVector.set(exampleIndex, false);
                 }
             }
 
@@ -213,7 +218,7 @@ class ExampleWiseStratification final {
  * @tparam IndexIterator    The type of the iterator that provides access to the indices of the examples that should be
  *                          considered
  */
-template<class LabelMatrix, class IndexIterator>
+template<typename LabelMatrix, typename IndexIterator>
 class LabelWiseStratification final {
 
     private:
@@ -365,13 +370,12 @@ class LabelWiseStratification final {
          * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
          * remaining weights are set to 0.
          *
-         * @param weightVector  A reference to an object of type `DenseWeightVector`, the weights should be written to
+         * @param weightVector  A reference to an object of type `BitWeightVector`, the weights should be written to
          * @param sampleSize    The fraction of the available examples to be selected
          * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
          *                      used
          */
-        void sampleWeights(DenseWeightVector<uint8>& weightVector, float32 sampleSize, RNG& rng) const {
-            DenseWeightVector<uint8>::iterator weightIterator = weightVector.begin();
+        void sampleWeights(BitWeightVector& weightVector, float32 sampleSize, RNG& rng) const {
             uint32 numTotalSamples = (uint32) std::round(sampleSize * numRows_);
             uint32 numTotalOutOfSamples = numRows_ - numTotalSamples;
             uint32 numNonZeroWeights = 0;
@@ -398,13 +402,13 @@ class LabelWiseStratification final {
                     uint32 exampleIndex = exampleIndices[randomIndex];
                     exampleIndices[randomIndex] = exampleIndices[j];
                     exampleIndices[j] = exampleIndex;
-                    weightIterator[exampleIndex] = 1;
+                    weightVector.set(exampleIndex, true);
                 }
 
                 // Set the weights of the remaining examples to 0...
                 for (; j < numExamples; j++) {
                     uint32 exampleIndex = exampleIndices[j];
-                    weightIterator[exampleIndex] = 0;
+                    weightVector.set(exampleIndex, false);
                 }
             }
 

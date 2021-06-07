@@ -5,7 +5,7 @@
 
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
-#include "common/statistics/statistics.hpp"
+#include "boosting/statistics/statistics.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 
 
@@ -15,7 +15,7 @@ namespace boosting {
      * Defines an interface for all classes that store gradients and Hessians that have been calculated according to a
      * differentiable loss-function that is applied example-wise.
      */
-    class IExampleWiseStatistics : virtual public IStatistics {
+    class IExampleWiseStatistics : virtual public IBoostingStatistics {
 
         public:
 

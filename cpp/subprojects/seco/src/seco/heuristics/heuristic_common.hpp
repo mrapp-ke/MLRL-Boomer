@@ -9,7 +9,7 @@
 
 namespace seco {
 
-    static inline float64 precision(float64 cin, float64 cip, float64 crn, float64 crp) {
+    static inline constexpr float64 precision(float64 cin, float64 cip, float64 crn, float64 crp) {
         float64 numCoveredIncorrect = cip + crn;
         float64 numCovered = numCoveredIncorrect + cin + crp;
 
@@ -20,7 +20,7 @@ namespace seco {
         return numCoveredIncorrect / numCovered;
     }
 
-    static inline float64 recall(float64 cin, float64 crp, float64 uin, float64 urp) {
+    static inline constexpr float64 recall(float64 cin, float64 crp, float64 uin, float64 urp) {
         float64 numUncoveredEqual = uin + urp;
         float64 numEqual = numUncoveredEqual + cin + crp;
 
@@ -31,8 +31,8 @@ namespace seco {
         return numUncoveredEqual / numEqual;
     }
 
-    static inline float64 wra(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip, float64 urn,
-                              float64 urp) {
+    static inline constexpr float64 wra(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
+                                        float64 urn, float64 urp) {
         float64 numCoveredEqual = cin + crp;
         float64 numUncoveredEqual = uin + urp;
         float64 numEqual = numUncoveredEqual + numCoveredEqual;

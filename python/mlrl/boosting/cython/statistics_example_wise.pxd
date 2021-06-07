@@ -5,18 +5,18 @@ from mlrl.boosting.cython.rule_evaluation_example_wise cimport IExampleWiseRuleE
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "boosting/statistics/statistics_example_wise_provider.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/statistics/statistics_example_wise_dense.hpp" namespace "boosting" nogil:
 
-    cdef cppclass ExampleWiseStatisticsProviderFactoryImpl"boosting::ExampleWiseStatisticsProviderFactory"(
+    cdef cppclass DenseExampleWiseStatisticsProviderFactoryImpl"boosting::DenseExampleWiseStatisticsProviderFactory"(
             IStatisticsProviderFactory):
 
         # Constructors:
 
-        ExampleWiseStatisticsProviderFactoryImpl(
+        DenseExampleWiseStatisticsProviderFactoryImpl(
             shared_ptr[IExampleWiseLoss] lossFunctionPtr,
             shared_ptr[IExampleWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
             shared_ptr[IExampleWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
 
 
-cdef class ExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
+cdef class DenseExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
     pass

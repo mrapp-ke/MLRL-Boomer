@@ -21,6 +21,6 @@ void BinaryDokVector::set(uint32 pos, bool value) {
     }
 }
 
-void BinaryDokVector::setAllToZero() {
+void BinaryDokVector::clear() {
     data_.clear();
 }

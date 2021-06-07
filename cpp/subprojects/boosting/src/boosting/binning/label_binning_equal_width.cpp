@@ -1,30 +1,31 @@
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/data/statistic_vector_dense_label_wise.hpp"
 #include "boosting/data/statistic_vector_dense_example_wise.hpp"
-#include "boosting/math/math.hpp"
+#include "common/math/math.hpp"
 #include "common/binning/binning.hpp"
 #include <limits>
 
 
 namespace boosting {
 
-    static inline float64 calculateStatistic(float64 gradient, float64 hessian, float64 l2RegularizationWeight) {
+    static inline constexpr float64 calculateStatistic(float64 gradient, float64 hessian,
+                                                       float64 l2RegularizationWeight) {
         return divideOrZero<float64>(gradient, hessian + l2RegularizationWeight);
     }
 
-    template<class GradientIterator, class HessianIterator>
+    template<typename GradientIterator, typename HessianIterator>
     EqualWidthLabelBinning<GradientIterator, HessianIterator>::EqualWidthLabelBinning(float32 binRatio, uint32 minBins,
                                                                                       uint32 maxBins)
         : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
 
     }
 
-    template<class GradientIterator, class HessianIterator>
+    template<typename GradientIterator, typename HessianIterator>
     uint32 EqualWidthLabelBinning<GradientIterator, HessianIterator>::getMaxBins(uint32 numLabels) const {
         return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
     }
 
-    template<class GradientIterator, class HessianIterator>
+    template<typename GradientIterator, typename HessianIterator>
     LabelInfo EqualWidthLabelBinning<GradientIterator, HessianIterator>::getLabelInfo(
             GradientIterator gradientsBegin, GradientIterator gradientsEnd, HessianIterator hessiansBegin,
             HessianIterator hessiansEnd, float64 l2RegularizationWeight) const {
@@ -78,7 +79,7 @@ namespace boosting {
         return labelInfo;
     }
 
-    template<class GradientIterator, class HessianIterator>
+    template<typename GradientIterator, typename HessianIterator>
     void EqualWidthLabelBinning<GradientIterator, HessianIterator>::createBins(
             LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
             HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,
@@ -98,7 +99,9 @@ namespace boosting {
         uint32 numStatistics = gradientsEnd - gradientsBegin;
 
         for (uint32 i = 0; i < numStatistics; i++) {
-            float64 statistic = calculateStatistic(gradientsBegin[i], hessiansBegin[i], l2RegularizationWeight);
+            float64 gradient = gradientsBegin[i];
+            float64 hessian = hessiansBegin[i];
+            float64 statistic = calculateStatistic(gradient, hessian, l2RegularizationWeight);
 
             if (statistic > 0) {
                 // Gradient is positive, i.e., label belongs to a negative bin...
@@ -108,7 +111,7 @@ namespace boosting {
                     binIndex = numNegativeBins - 1;
                 }
 
-                callback(binIndex, i, statistic);
+                callback(binIndex, i, gradient, hessian);
             } else if (statistic < 0) {
                 // Gradient is negative, i.e., label belongs to a positive bin...
                 uint32 binIndex = std::floor((statistic - minNegative) / spanPerPositiveBin);
@@ -117,7 +120,7 @@ namespace boosting {
                     binIndex = numPositiveBins - 1;
                 }
 
-                callback(numNegativeBins + binIndex, i, statistic);
+                callback(numNegativeBins + binIndex, i, gradient, hessian);
             } else {
                 zeroCallback(i);
             }

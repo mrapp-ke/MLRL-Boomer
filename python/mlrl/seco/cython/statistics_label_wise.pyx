@@ -7,7 +7,7 @@ from mlrl.seco.cython.rule_evaluation_label_wise cimport LabelWiseRuleEvaluation
 from libcpp.memory cimport make_shared
 
 
-cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
+cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
     """
     A wrapper for the C++ class `LabelWiseStatisticsProviderFactory`.
     """
@@ -22,6 +22,6 @@ cdef class LabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
                                                 class that should be used for calculating the predictions, as well as
                                                 corresponding quality scores, of rules
         """
-        self.statistics_provider_factory_ptr = <shared_ptr[IStatisticsProviderFactory]>make_shared[LabelWiseStatisticsProviderFactoryImpl](
+        self.statistics_provider_factory_ptr = <shared_ptr[IStatisticsProviderFactory]>make_shared[DenseLabelWiseStatisticsProviderFactoryImpl](
             default_rule_evaluation_factory.rule_evaluation_factory_ptr,
             rule_evaluation_factory.rule_evaluation_factory_ptr)

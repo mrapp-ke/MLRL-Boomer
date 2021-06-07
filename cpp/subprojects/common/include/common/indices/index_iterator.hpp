@@ -8,7 +8,7 @@
 
 
 /**
- * An iterator that provides random access to the indices in a continuous range.
+ * An iterator that provides random read-only access to the indices in a continuous range.
  */
 class IndexIterator final {
 
@@ -38,7 +38,7 @@ class IndexIterator final {
         /**
          * The type of a pointer to an element, the iterator provides access to.
          */
-        typedef uint32* pointer;
+        typedef const uint32* pointer;
 
         /**
          * The type of a reference to an element, the iterator provides access to.
@@ -52,6 +52,7 @@ class IndexIterator final {
 
         /**
          * Returns the element at a specific index.
+         *
          * @param index The index of the element to be returned
          * @return      The element at the given index
          */
@@ -96,9 +97,17 @@ class IndexIterator final {
          * Returns whether this iterator and another one refer to the same element.
          *
          * @param rhs   A reference to another iterator
-         * @return      True, if the iterators refer to the same element, false otherwise
+         * @return      True, if the iterators do not refer to the same element, false otherwise
          */
         bool operator!=(const IndexIterator& rhs) const;
+
+        /**
+         * Returns whether this iterator and another one refer to the same element.
+         *
+         * @param rhs   A reference to another iterator
+         * @return      True, if the iterators refer to the same element, false otherwise
+         */
+        bool operator==(const IndexIterator& rhs) const;
 
         /**
          * Returns the difference between this iterator and another one.

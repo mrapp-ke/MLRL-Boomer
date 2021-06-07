@@ -1,5 +1,5 @@
 #include "seco/stopping/stopping_criterion_coverage.hpp"
-#include "seco/statistics/statistics_coverage.hpp"
+#include "seco/statistics/statistics.hpp"
 #include "common/debugging/debug.hpp"
 
 

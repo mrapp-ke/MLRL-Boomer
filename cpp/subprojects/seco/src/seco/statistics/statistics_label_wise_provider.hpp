@@ -1,5 +1,5 @@
-#include "seco/statistics/statistics_label_wise_provider.hpp"
-#include "seco/statistics/statistics_label_wise_dense.hpp"
+#include "common/statistics/statistics_provider_factory.hpp"
+#include "seco/statistics/statistics_label_wise.hpp"
 
 
 namespace seco {
@@ -38,27 +38,5 @@ namespace seco {
             }
 
     };
-
-    LabelWiseStatisticsProviderFactory::LabelWiseStatisticsProviderFactory(
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
-        : defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
-          ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
-
-    }
-
-    std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
-            const CContiguousLabelMatrix& labelMatrix) const {
-        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_);
-        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
-                                                             statisticsFactory.create(labelMatrix));
-    }
-
-    std::unique_ptr<IStatisticsProvider> LabelWiseStatisticsProviderFactory::create(
-            const CsrLabelMatrix& labelMatrix) const {
-        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_);
-        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
-                                                             statisticsFactory.create(labelMatrix));
-    }
 
 }

@@ -23,7 +23,7 @@ static inline void updateSampledStatisticsInternally(IStatistics& statistics, co
     }
 }
 
-template<class T>
+template<typename T>
 static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
                                                     const CoverageMask& coverageMask, const IStatistics& statistics,
                                                     const IHeadRefinementFactory& headRefinementFactory,
@@ -71,7 +71,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
                                                     const IHeadRefinementFactory& headRefinementFactory,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
-    const BinaryDokVector& holdoutSet = partition.getSecondSet();
+    const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
@@ -88,7 +88,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
     return scoreVector.overallQualityScore;
 }
 
-template<class T>
+template<typename T>
 static inline void recalculatePredictionInternally(T iterator, uint32 numExamples, const CoverageMask& coverageMask,
                                                    const IStatistics& statistics,
                                                    const IHeadRefinementFactory& headRefinementFactory,
@@ -135,7 +135,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
                                                    Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
-    const BinaryDokVector& holdoutSet = partition.getSecondSet();
+    const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 

@@ -26,15 +26,17 @@ class ExampleWiseStratifiedSamplingFactory final : public IInstanceSubSamplingFa
         ExampleWiseStratifiedSamplingFactory(float32 sampleSize);
 
         std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix,
-                                                     const SinglePartition& partition) const override;
+                                                     const SinglePartition& partition,
+                                                     IStatistics& statistics) const override;
 
         std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix,
-                                                     BiPartition& partition) const override;
+                                                     BiPartition& partition, IStatistics& statistics) const override;
 
         std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix,
-                                                     const SinglePartition& partition) const override;
+                                                     const SinglePartition& partition,
+                                                     IStatistics& statistics) const override;
 
         std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix,
-                                                     BiPartition& partition) const override;
+                                                     BiPartition& partition, IStatistics& statistics) const override;
 
 };

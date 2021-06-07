@@ -20,7 +20,6 @@ source_files = [
     'src/seco/rule_evaluation/rule_evaluation_label_wise_heuristic.cpp',
     'src/seco/sampling/instance_sampling_random.cpp',
     'src/seco/statistics/statistics_label_wise_dense.cpp',
-    'src/seco/statistics/statistics_label_wise_provider.cpp',
     'src/seco/stopping/stopping_criterion_coverage.cpp'
 ]
 

@@ -6,7 +6,7 @@
 #include "common/sampling/partition.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/data/vector_dense.hpp"
-#include "common/data/vector_dok_binary.hpp"
+#include "common/data/vector_bit.hpp"
 
 
 /**
@@ -21,9 +21,9 @@ class BiPartition : public IPartition {
 
         uint32 numFirst_;
 
-        BinaryDokVector* firstSet_;
+        BitVector* firstSet_;
 
-        BinaryDokVector* secondSet_;
+        BitVector* secondSet_;
 
     public:
 
@@ -120,17 +120,17 @@ class BiPartition : public IPartition {
          * Returns a vector that provides random access to the indices of all elements that are contained by the first
          * set.
          *
-         * @return A reference to an object of type `BinaryDokVector` that provides random access to the indices
+         * @return A reference to an object of type `BitVector` that provides random access to the indices
          */
-        const BinaryDokVector& getFirstSet();
+        const BitVector& getFirstSet();
 
         /**
          * Returns a vector that provides random access to the indices of all elements that are contained by the second
          * set.
          *
-         * @return A reference to an object of type `BinaryDokVector` that provides random access to the indices
+         * @return A reference to an object of type `BitVector` that provides random access to the indices
          */
-        const BinaryDokVector& getSecondSet();
+        const BitVector& getSecondSet();
 
         /**
          * Returns the total number of elements.
@@ -140,7 +140,8 @@ class BiPartition : public IPartition {
         uint32 getNumElements() const;
 
         std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(const IInstanceSubSamplingFactory& factory,
-                                                                        const ILabelMatrix& labelMatrix) override;
+                                                                        const ILabelMatrix& labelMatrix,
+                                                                        IStatistics& statistics) override;
 
         float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                     const AbstractPrediction& head) override;

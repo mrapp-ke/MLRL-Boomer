@@ -4,10 +4,11 @@ project('boosting', 'cpp', version : '0.6.0')
 source_files = [
     'src/boosting/binning/label_binning_equal_width.cpp',
     'src/boosting/data/matrix_dense_numeric.cpp',
-    'src/boosting/data/statistic_matrix_dense_example_wise.cpp',
-    'src/boosting/data/statistic_matrix_dense_label_wise.cpp',
+    'src/boosting/data/statistic_iterator_dense.cpp',
     'src/boosting/data/statistic_vector_dense_example_wise.cpp',
     'src/boosting/data/statistic_vector_dense_label_wise.cpp',
+    'src/boosting/data/statistic_view_dense_example_wise.cpp',
+    'src/boosting/data/statistic_view_dense_label_wise.cpp',
     'src/boosting/losses/loss_example_wise_logistic.cpp',
     'src/boosting/losses/loss_label_wise.cpp',
     'src/boosting/losses/loss_label_wise_logistic.cpp',
@@ -26,9 +27,7 @@ source_files = [
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_binning.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_regularized.cpp',
     'src/boosting/statistics/statistics_example_wise_dense.cpp',
-    'src/boosting/statistics/statistics_example_wise_provider.cpp',
-    'src/boosting/statistics/statistics_label_wise_dense.cpp',
-    'src/boosting/statistics/statistics_label_wise_provider.cpp'
+    'src/boosting/statistics/statistics_label_wise_dense.cpp'
 ]
 
 # Dependencies

@@ -13,35 +13,30 @@
  *
  * @tparam T The type of the data that is stored in the vector
  */
-template<class T>
+template<typename T>
 class DenseBinnedVector {
 
     private:
 
-        DenseVector<uint32> binIndices_;
-
-        DenseVector<T> values_;
-
-    public:
-
         /**
-         * Allows to iterate all elements in the vector.
+         * An iterator that provides read-only access to the values of all elements in a `DenseBinnedVector`.
          */
-        class Iterator final {
+        class ValueConstIterator final {
 
             private:
 
-                const DenseBinnedVector<T>& vector_;
+                DenseVector<uint32>::const_iterator binIndexIterator_;
 
-                uint32 index_;
+                typename DenseVector<T>::const_iterator valueIterator_;
 
             public:
 
                 /**
-                 * @param vector    A reference to the vector that stores the elements
-                 * @param index     The index to start at
+                 * @param binIndexIterator  An iterator to the bin indices of individual elements
+                 * @param valueIterator     An iterator to the values of individual bins
                  */
-                Iterator(const DenseBinnedVector<T>& vector, uint32 index);
+                ValueConstIterator(DenseVector<uint32>::const_iterator binIndexIterator,
+                                   typename DenseVector<T>::const_iterator valueIterator);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
@@ -51,17 +46,17 @@ class DenseBinnedVector {
                 /**
                  * The type of the elements, the iterator provides access to.
                  */
-                typedef T value_type;
+                typedef const T value_type;
 
                 /**
                  * The type of a pointer to an element, the iterator provides access to.
                  */
-                typedef T* pointer;
+                typedef const T* pointer;
 
                 /**
                  * The type of a reference to an element, the iterator provides access to.
                  */
-                typedef T reference;
+                typedef const T& reference;
 
                 /**
                  * The tag that specifies the capabilities of the iterator.
@@ -88,28 +83,36 @@ class DenseBinnedVector {
                  *
                  * @return A reference to an iterator to the next element
                  */
-                Iterator& operator++();
+                ValueConstIterator& operator++();
 
                 /**
                  * Returns an iterator to the next element.
                  *
                  * @return A reference to an iterator to the next element
                  */
-                Iterator& operator++(int n);
+                ValueConstIterator& operator++(int n);
 
                 /**
                  * Returns an iterator to the previous element.
                  *
                  * @return A reference to an iterator to the previous element
                  */
-                Iterator& operator--();
+                ValueConstIterator& operator--();
 
                 /**
                  * Returns an iterator to the previous element.
                  *
                  * @return A reference to an iterator to the previous element
                  */
-                Iterator& operator--(int n);
+                ValueConstIterator& operator--(int n);
+
+                /**
+                 * Returns whether this iterator and another one refer to the same element.
+                 *
+                 * @param rhs   A reference to another iterator
+                 * @return      True, if the iterators do not refer to the same element, false otherwise
+                 */
+                bool operator!=(const ValueConstIterator& rhs) const;
 
                 /**
                  * Returns whether this iterator and another one refer to the same element.
@@ -117,7 +120,7 @@ class DenseBinnedVector {
                  * @param rhs   A reference to another iterator
                  * @return      True, if the iterators refer to the same element, false otherwise
                  */
-                bool operator!=(const Iterator& rhs) const;
+                bool operator==(const ValueConstIterator& rhs) const;
 
                 /**
                  * Returns the difference between this iterator and another one.
@@ -125,9 +128,15 @@ class DenseBinnedVector {
                  * @param rhs   A reference to another iterator
                  * @return      The difference between the iterators
                  */
-                difference_type operator-(const Iterator& rhs) const;
+                difference_type operator-(const ValueConstIterator& rhs) const;
 
         };
+
+        DenseVector<uint32> binIndices_;
+
+        DenseVector<T> values_;
+
+    public:
 
         /**
          * @param numElements   The number of elements in the vector
@@ -159,7 +168,7 @@ class DenseBinnedVector {
         /**
          * An iterator that provides read-only access to the elements in the vector.
          */
-        typedef Iterator const_iterator;
+        typedef ValueConstIterator const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the vector.

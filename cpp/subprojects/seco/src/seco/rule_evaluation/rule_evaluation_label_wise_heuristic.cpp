@@ -17,7 +17,7 @@ namespace seco {
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
-    template<class T>
+    template<typename T>
     class HeuristicLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
 
         private:
@@ -59,8 +59,10 @@ namespace seco {
                     scoreVector_.indices_cbegin();
                 typename DenseLabelWiseScoreVector<T>::quality_score_iterator qualityScoreIterator =
                     scoreVector_.quality_scores_begin();
-                BinarySparseArrayVector::value_const_iterator majorityIterator = majorityLabelVector.values_cbegin();
+                auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                                    majorityLabelVector.indices_cend());
                 float64 overallQualityScore = 0;
+                uint32 previousIndex = 0;
 
                 // Debugger: print confusion matrices
                 /* TODO: confusion matrices need to be change from float64* to DenseConfusionMatrixVector& in Debugger
@@ -74,6 +76,7 @@ namespace seco {
                     uint32 index = indexIterator[i];
 
                     // Set the score to be predicted for the current label...
+                    std::advance(majorityIterator, index - previousIndex);
                     bool majorityLabel = *majorityIterator;
                     float64 score = (float64) (predictMajority_ ? majorityLabel : !majorityLabel);
                     scoreIterator[i] = score;
@@ -121,7 +124,7 @@ namespace seco {
                     Debugger::printEvaluationConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp, score);
                     qualityScoreIterator[i] = score;
                     overallQualityScore += score;
-                    majorityIterator++;
+                    previousIndex = index;
                 }
 
                 overallQualityScore /= numPredictions;

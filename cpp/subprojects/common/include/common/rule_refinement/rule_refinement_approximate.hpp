@@ -4,6 +4,7 @@
  */
 #pragma once
 
+#include "common/data/vector_bit.hpp"
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/rule_refinement/rule_refinement_callback.hpp"
 #include "common/binning/threshold_vector.hpp"
@@ -14,7 +15,7 @@
 /**
  * A vector that stores the weights of individual bins.
  */
-typedef DenseVector<uint8> BinWeightVector;
+typedef BitVector BinWeightVector;
 
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
@@ -24,7 +25,7 @@ typedef DenseVector<uint8> BinWeightVector;
  * @tparam T The type of the vector that provides access to the indices of the labels for which the refined rule is
  *           allowed to predict
  */
-template<class T>
+template<typename T>
 class ApproximateRuleRefinement final : public IRuleRefinement {
 
     private:

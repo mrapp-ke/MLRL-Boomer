@@ -15,7 +15,7 @@ namespace boosting {
      * @tparam GradientIterator The type of the iterator that provides access to the gradients
      * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
      */
-    template<class GradientIterator, class HessianIterator>
+    template<typename GradientIterator, typename HessianIterator>
     class EqualWidthLabelBinning final : public ILabelBinning<GradientIterator, HessianIterator> {
 
         private:
@@ -43,6 +43,9 @@ namespace boosting {
                                    HessianIterator hessiansBegin, HessianIterator hessiansEnd,
                                    float64 l2RegularizationWeight) const override;
 
+            /**
+             * @see `ILabelBinning::createBins`
+             */
             void createBins(
                 LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
                 HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,

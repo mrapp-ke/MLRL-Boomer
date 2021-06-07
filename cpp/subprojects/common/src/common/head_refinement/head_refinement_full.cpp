@@ -14,7 +14,7 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
 
         std::unique_ptr<AbstractEvaluatedPrediction> headPtr_;
 
-        template<class T>
+        template<typename T>
         const AbstractEvaluatedPrediction* processScoresInternally(const AbstractEvaluatedPrediction* bestHead,
                                                                    const T& scoreVector) {
             float64 overallQualityScore = scoreVector.overallQualityScore;

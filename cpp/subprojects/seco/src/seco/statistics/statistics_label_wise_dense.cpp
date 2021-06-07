@@ -2,6 +2,7 @@
 #include "seco/data/matrix_dense_weights.hpp"
 #include "seco/data/vector_dense_confusion_matrices.hpp"
 #include "statistics_label_wise_common.hpp"
+#include "statistics_label_wise_provider.hpp"
 
 
 namespace seco {
@@ -88,6 +89,29 @@ namespace seco {
         weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
         return std::make_unique<LabelWiseStatistics<CsrLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
             ruleEvaluationFactoryPtr_, labelMatrix, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
+    }
+
+
+    DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+        : defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
+          ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+
+    }
+
+    std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
+            const CContiguousLabelMatrix& labelMatrix) const {
+        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                             statisticsFactory.create(labelMatrix));
+    }
+
+    std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
+            const CsrLabelMatrix& labelMatrix) const {
+        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_);
+        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+                                                             statisticsFactory.create(labelMatrix));
     }
 
 }

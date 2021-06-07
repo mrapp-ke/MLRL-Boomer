@@ -7,7 +7,7 @@
 
 namespace seco {
 
-    template<class Iterator>
+    template<typename Iterator>
     static inline std::unique_ptr<SparseArrayVector<float64>> argsort(Iterator iterator, uint32 numElements) {
         std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr = std::make_unique<SparseArrayVector<float64>>(
             numElements);
@@ -33,7 +33,7 @@ namespace seco {
      * @tparam T The type of the vector that provides access to the indices of the labels that are considered when
      *           searching for the best head
      */
-    template<class T>
+    template<typename T>
     class PartialHeadRefinement final : public IHeadRefinement, public ILabelWiseScoreProcessor {
 
         private:
@@ -44,7 +44,7 @@ namespace seco {
 
             std::unique_ptr<PartialPrediction> headPtr_;
 
-            template<class T2>
+            template<typename T2>
             const AbstractEvaluatedPrediction* processScoresInternally(const AbstractEvaluatedPrediction* bestHead,
                                                                        const T2& scoreVector) {
                 uint32 numPredictions = scoreVector.getNumElements();

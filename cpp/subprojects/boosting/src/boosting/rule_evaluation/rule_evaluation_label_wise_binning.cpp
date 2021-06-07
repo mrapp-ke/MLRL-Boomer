@@ -18,7 +18,7 @@ namespace boosting {
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
-    template<class T>
+    template<typename T>
     class BinningLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
 
         private:
@@ -85,9 +85,9 @@ namespace boosting {
                 setArrayToZeros(numElementsPerBin_, numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-                auto callback = [this, &statisticVector](uint32 binIndex, uint32 labelIndex, float64 statistic) {
-                    tmpGradients_[binIndex] += statisticVector.gradients_cbegin()[labelIndex];
-                    tmpHessians_[binIndex] += statisticVector.hessians_cbegin()[labelIndex];
+                auto callback = [this](uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian) {
+                    tmpGradients_[binIndex] += gradient;
+                    tmpHessians_[binIndex] += hessian;
                     numElementsPerBin_[binIndex] += 1;
                     scoreVector_.indices_binned_begin()[labelIndex] = binIndex;
                 };

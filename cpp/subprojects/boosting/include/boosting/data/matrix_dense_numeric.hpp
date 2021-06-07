@@ -16,8 +16,8 @@ namespace boosting {
      *
      * @tparam T The type of the values that are stored in the matrix
      */
-    template<class T>
-    class DenseNumericMatrix final : public DenseMatrix<T> {
+    template<typename T>
+    class NumericDenseMatrix final : public DenseMatrix<T> {
 
         public:
 
@@ -25,14 +25,14 @@ namespace boosting {
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              */
-            DenseNumericMatrix(uint32 numRows, uint32 numCols);
+            NumericDenseMatrix(uint32 numRows, uint32 numCols);
 
             /**
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
              */
-            DenseNumericMatrix(uint32 numRows, uint32 numCols, bool init);
+            NumericDenseMatrix(uint32 numRows, uint32 numCols, bool init);
 
             /**
              * Adds all values in another vector to certain elements, whose positions are given as a `FullIndexVector`,

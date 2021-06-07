@@ -11,15 +11,24 @@
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 class FortranContiguousConstView {
 
     protected:
 
+        /**
+         * The number of rows in the view.
+         */
         uint32 numRows_;
 
+        /**
+         * The number of columns in the view.
+         */
         uint32 numCols_;
 
+        /**
+         * A pointer to an array that stores the values.
+         */
         T* array_;
 
     public:
@@ -75,7 +84,7 @@ class FortranContiguousConstView {
  *
  * @tparam T The type of the values
  */
-template<class T>
+template<typename T>
 class FortranContiguousView final : public FortranContiguousConstView<T> {
 
     public:

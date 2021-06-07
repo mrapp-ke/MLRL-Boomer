@@ -13,14 +13,14 @@
  * @tparam IndexIterator    The type of the iterator that provides access to the indices of the examples that are
  *                          contained by the training set
  */
-template<class LabelMatrix, class IndexIterator>
+template<typename LabelMatrix, typename IndexIterator>
 class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
 
     private:
 
         float32 sampleSize_;
 
-        DenseWeightVector<uint8> weightVector_;
+        BitWeightVector weightVector_;
 
         LabelWiseStratification<LabelMatrix, IndexIterator> stratification_;
 
@@ -39,8 +39,8 @@ class LabelWiseStratifiedSampling final : public IInstanceSubSampling {
         LabelWiseStratifiedSampling(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
                                     IndexIterator indicesEnd, float32 sampleSize)
             : sampleSize_(sampleSize),
-              weightVector_(DenseWeightVector<uint8>(labelMatrix.getNumRows(),
-                                                     (uint32) (indicesEnd - indicesBegin) < labelMatrix.getNumRows())),
+              weightVector_(BitWeightVector(labelMatrix.getNumRows(),
+                                            (uint32) (indicesEnd - indicesBegin) < labelMatrix.getNumRows())),
               stratification_(LabelWiseStratification<LabelMatrix, IndexIterator>(labelMatrix, indicesBegin,
                                                                                   indicesEnd)) {
 
@@ -59,25 +59,25 @@ LabelWiseStratifiedSamplingFactory::LabelWiseStratifiedSamplingFactory(float32 s
 }
 
 std::unique_ptr<IInstanceSubSampling> LabelWiseStratifiedSamplingFactory::create(
-        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition) const {
+        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
     return std::make_unique<LabelWiseStratifiedSampling<CContiguousLabelMatrix, SinglePartition::const_iterator>>(
         labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> LabelWiseStratifiedSamplingFactory::create(
-        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition) const {
+        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
     return std::make_unique<LabelWiseStratifiedSampling<CContiguousLabelMatrix, BiPartition::const_iterator>>(
         labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> LabelWiseStratifiedSamplingFactory::create(
-        const CsrLabelMatrix& labelMatrix, const SinglePartition& partition) const {
+        const CsrLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
     return std::make_unique<LabelWiseStratifiedSampling<CsrLabelMatrix, SinglePartition::const_iterator>>(
         labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
 }
 
 std::unique_ptr<IInstanceSubSampling> LabelWiseStratifiedSamplingFactory::create(
-        const CsrLabelMatrix& labelMatrix, BiPartition& partition) const {
+        const CsrLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
     return std::make_unique<LabelWiseStratifiedSampling<CsrLabelMatrix, BiPartition::const_iterator>>(
         labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
 }

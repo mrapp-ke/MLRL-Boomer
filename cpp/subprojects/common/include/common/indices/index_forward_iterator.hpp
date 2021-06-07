@@ -14,7 +14,7 @@
  *
  * @tparam T The type of the iterator to be adapted
  */
-template<class T>
+template<typename T>
 class IndexForwardIterator final {
 
     private:
@@ -52,7 +52,7 @@ class IndexForwardIterator final {
         /**
          * The type of a pointer to an element, the iterator provides access to.
          */
-        typedef bool* pointer;
+        typedef const bool* pointer;
 
         /**
          * The type of a reference to an element, the iterator provides access to.
@@ -78,7 +78,7 @@ class IndexForwardIterator final {
          *
          * @return A reference to an iterator that refers to the next element
          */
-        IndexForwardIterator& operator++() {
+        IndexForwardIterator<T>& operator++() {
             ++index_;
 
             if (iterator_ != end_ && iteratorIndex_ < index_) {
@@ -94,7 +94,7 @@ class IndexForwardIterator final {
          *
          * @return A reference to an iterator that refers to the next element
          */
-        IndexForwardIterator& operator++(int n) {
+        IndexForwardIterator<T>& operator++(int n) {
             index_++;
 
             if (iterator_ != end_ && iteratorIndex_ < index_) {
@@ -109,20 +109,20 @@ class IndexForwardIterator final {
          * Returns whether this iterator and another one refer to the same element.
          *
          * @param rhs   A reference to another iterator
-         * @return      True, if the iterators refer to the same element, false otherwise
+         * @return      True, if the iterators do not refer to the same element, false otherwise
          */
-        bool operator!=(const IndexForwardIterator& rhs) const {
+        bool operator!=(const IndexForwardIterator<T>& rhs) const {
             return index_ != rhs.index_;
         }
 
         /**
-         * Returns the difference between this iterator and another one.
+         * Returns whether this iterator and another one refer to the same element.
          *
          * @param rhs   A reference to another iterator
-         * @return      The difference between the iterators
+         * @return      True, if the iterators refer to the same element, false otherwise
          */
-        difference_type operator-(const IndexForwardIterator& rhs) const {
-            return (difference_type) index_ - (difference_type) rhs.index_;
+        bool operator==(const IndexForwardIterator<T>& rhs) const {
+            return index_ == rhs.index_;
         }
 
 };
@@ -134,7 +134,7 @@ class IndexForwardIterator final {
  * @param end   An iterator to the end of the indices
  * @param index The index to start at
  */
-template<class T>
+template<typename T>
 static inline IndexForwardIterator<T> make_index_forward_iterator(T begin, T end, uint32 index = 0) {
-    return IndexForwardIterator<T>(begin, end, 0);
+    return IndexForwardIterator<T>(begin, end, index);
 }

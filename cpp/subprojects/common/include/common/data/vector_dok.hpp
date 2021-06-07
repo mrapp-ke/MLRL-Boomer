@@ -12,7 +12,7 @@
  *
  * @tparam T The type of the data that is stored in the vector
  */
-template<class T>
+template<typename T>
 class DokVector final {
 
     private:
@@ -85,6 +85,6 @@ class DokVector final {
         /**
          * Sets the values of all elements to zero.
          */
-        void setAllToZero();
+        void clear();
 
 };

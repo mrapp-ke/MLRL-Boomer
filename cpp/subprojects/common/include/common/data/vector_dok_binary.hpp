@@ -48,7 +48,7 @@ class BinaryDokVector final {
         /**
          * Sets a value to the element at a specific position.
          *
-         * @param pos The position of the element
+         * @param pos   The position of the element
          * @param value The value to be set
          */
         void set(uint32 pos, bool value);
@@ -56,6 +56,6 @@ class BinaryDokVector final {
         /**
          * Sets the values of all elements to zero.
          */
-        void setAllToZero();
+        void clear();
 
 };
