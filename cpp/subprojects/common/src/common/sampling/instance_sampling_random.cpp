@@ -1,16 +1,16 @@
 #include "common/sampling/instance_sampling_random.hpp"
 #include "common/indices/index_iterator.hpp"
-#include "weight_sampling.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
+#include "weight_sampling.hpp"
 
 
 static inline void subSampleInternally(const SinglePartition& partition, float32 sampleSize,
                                        BitWeightVector& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize * numExamples);
-    sampleWeightsWithoutReplacement<IndexIterator>(weightVector, IndexIterator(numExamples), numExamples, numSamples,
-                                                   rng);
+    sampleWeightsWithoutReplacement<SinglePartition::const_iterator>(weightVector, partition.cbegin(), numExamples,
+                                                                     numSamples, rng);
 }
 
 static inline void subSampleInternally(BiPartition& partition, float32 sampleSize, BitWeightVector& weightVector,
