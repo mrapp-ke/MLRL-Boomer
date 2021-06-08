@@ -3,12 +3,9 @@
  */
 #pragma once
 
+#include "common/input/label_vector_set.hpp"
 #include "common/output/predictor.hpp"
-#include "common/input/label_vector.hpp"
 #include "common/measures/measure_similarity.hpp"
-#include "common/data/functions.hpp"
-#include <unordered_map>
-#include <functional>
 
 
 namespace boosting {
@@ -25,31 +22,7 @@ namespace boosting {
 
         private:
 
-            /**
-             * Allows to compute hashes for objects of type `LabelVector`.
-             */
-            struct Hash {
-
-                inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
-                    return hashArray(v->indices_cbegin(), v->getNumElements());
-                }
-
-            };
-
-            /**
-             * Allows to check whether two objects of type `LabelVector` are equal or not.
-             */
-            struct Pred {
-
-                inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
-                                       const std::unique_ptr<LabelVector>& rhs) const {
-                    return compareArrays(lhs->indices_cbegin(), lhs->getNumElements(), rhs->indices_cbegin(),
-                                         rhs->getNumElements());
-                }
-
-            };
-
-            std::unordered_map<std::unique_ptr<LabelVector>, uint32, Hash, Pred> labelVectors_;
+            LabelVectorSet labelVectors_;
 
             std::shared_ptr<ISimilarityMeasure> measurePtr_;
 
