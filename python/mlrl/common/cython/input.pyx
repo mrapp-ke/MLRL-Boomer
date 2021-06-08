@@ -182,6 +182,15 @@ cdef class LabelVectorSet:
     def __cinit__(self):
         self.label_vector_set_ptr = make_shared[LabelVectorSetImpl]()
 
+    def __reduce__(self):
+        cdef LabelVectorSetSerializer serializer = LabelVectorSetSerializer.__new__(LabelVectorSetSerializer)
+        cdef object state = serializer.serialize(self)
+        return (LabelVectorSet, (), state)
+
+    def __setstate__(self, state):
+        cdef LabelVectorSetSerializer serializer = LabelVectorSetSerializer.__new__(LabelVectorSetSerializer)
+        serializer.deserialize(self, state)
+
 
 cdef inline unique_ptr[LabelVector] __create_label_vector(list state):
     cdef uint32 num_elements = len(state)
