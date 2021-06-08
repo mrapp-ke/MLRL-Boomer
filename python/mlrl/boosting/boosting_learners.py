@@ -23,7 +23,7 @@ from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatist
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, NoHeadRefinementFactory, \
     SingleLabelHeadRefinementFactory, FullHeadRefinementFactory
-from mlrl.common.cython.input import LabelMatrix
+from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
@@ -233,16 +233,18 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> Predictor:
+    def _create_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> (LabelVectorSet, Predictor):
         predictor = self.__get_preferred_predictor()
 
         if predictor == PREDICTOR_LABEL_WISE:
-            return self.__create_label_wise_predictor(num_labels)
+            return None, self.__create_label_wise_predictor(num_labels)
         elif predictor == PREDICTOR_EXAMPLE_WISE:
-            return self.__create_example_wise_predictor(label_matrix)
+            label_vectors = LabelVectorSet.create(label_matrix)
+            return label_vectors, self.__create_example_wise_predictor(label_matrix)
         raise ValueError('Invalid value given for parameter \'predictor\': ' + str(predictor))
 
-    def _create_probability_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> Predictor:
+    def _create_probability_predictor(self, num_labels: int, label_matrix: LabelMatrix,
+                                      label_vectors: LabelVectorSet) -> Predictor:
         predictor = self.__get_preferred_predictor()
 
         if predictor == PREDICTOR_LABEL_WISE and self.loss == LOSS_LABEL_WISE_LOGISTIC:
