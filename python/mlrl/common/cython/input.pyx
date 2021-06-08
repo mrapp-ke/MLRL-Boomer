@@ -182,6 +182,23 @@ cdef class LabelVectorSet:
     def __cinit__(self):
         self.label_vector_set_ptr = make_shared[LabelVectorSetImpl]()
 
+    @classmethod
+    def create(cls, LabelMatrix label_matrix):
+        cdef shared_ptr[ILabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
+        cdef uint32 num_rows = label_matrix_ptr.get().getNumRows()
+        cdef uint32 num_cols = label_matrix_ptr.get().getNumCols()
+        cdef shared_ptr[LabelVectorSetImpl] label_vector_set_ptr = make_shared[LabelVectorSetImpl]()
+        cdef unique_ptr[LabelVector] label_vector_ptr
+        cdef uint32 i
+
+        for i in range(num_rows):
+            label_vector_ptr = label_matrix_ptr.get().createLabelVector(i)
+            label_vector_set_ptr.get().addLabelVector(move(label_vector_ptr))
+
+        cdef LabelVectorSet label_vector_set = LabelVectorSet.__new__(LabelVectorSet)
+        label_vector_set.label_vector_set_ptr = label_vector_set_ptr
+        return label_vector_set
+
     def __reduce__(self):
         cdef LabelVectorSetSerializer serializer = LabelVectorSetSerializer.__new__(LabelVectorSetSerializer)
         cdef object state = serializer.serialize(self)
