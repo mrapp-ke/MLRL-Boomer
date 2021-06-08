@@ -43,6 +43,14 @@ cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
         RandomInstanceSubsetSelectionFactoryImpl(float32 sampleSize) except +
 
 
+cdef extern from "seco/sampling/seco_instance_sampling_random.hpp" nogil:
+    cdef cppclass SecoRandomInstanceSubsetSelectionFactoryImpl"SecoRandomInstanceSubsetSelectionFactory"(
+        IInstanceSubSamplingFactory):
+        # Constructors:
+
+        SecoRandomInstanceSubsetSelectionFactoryImpl(float32 sampleSize) except +
+
+
 cdef extern from "common/sampling/instance_sampling_stratified_label_wise.hpp" nogil:
 
     cdef cppclass LabelWiseStratifiedSamplingFactoryImpl"LabelWiseStratifiedSamplingFactory"(

@@ -25,8 +25,8 @@ from mlrl.common.cython.rule_induction import RuleModelInduction
 from mlrl.common.cython.sampling import FeatureSubSamplingFactory, RandomFeatureSubsetSelectionFactory, \
     NoFeatureSubSamplingFactory
 from mlrl.common.cython.sampling import InstanceSubSamplingFactory, BaggingFactory, \
-    RandomInstanceSubsetSelectionFactory, NoInstanceSubSamplingFactory, LabelWiseStratifiedSamplingFactory, \
-    ExampleWiseStratifiedSamplingFactory
+    RandomInstanceSubsetSelectionFactory, SecoRandomInstanceSubsetSelectionFactory, NoInstanceSubSamplingFactory, \
+    LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.sampling import LabelSubSamplingFactory, RandomLabelSubsetSelectionFactory, \
     NoLabelSubSamplingFactory
 from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
@@ -48,6 +48,8 @@ HEAD_REFINEMENT_SINGLE = 'single-label'
 LABEL_SUB_SAMPLING_RANDOM = 'random-label-selection'
 
 INSTANCE_SUB_SAMPLING_RANDOM = 'random-instance-selection'
+
+SECO_INSTANCE_SUB_SAMPLING_RANDOM = 'seco-random-instance-selection'
 
 INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
 
@@ -119,6 +121,7 @@ def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> Instance
     else:
         prefix, args = parse_prefix_and_dict(instance_sub_sampling,
                                              [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM,
+                                              SECO_INSTANCE_SUB_SAMPLING_RANDOM,
                                               INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE,
                                               INSTANCE_SUB_SAMPLING_STRATIFIED_EXAMPLE_WISE])
 
@@ -128,6 +131,9 @@ def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> Instance
         elif prefix == INSTANCE_SUB_SAMPLING_RANDOM:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return RandomInstanceSubsetSelectionFactory(sample_size)
+        elif prefix == SECO_INSTANCE_SUB_SAMPLING_RANDOM:
+            sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+            return SecoRandomInstanceSubsetSelectionFactory(sample_size)
         elif prefix == INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return LabelWiseStratifiedSamplingFactory(sample_size)

@@ -39,6 +39,20 @@ cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
             sample_size)
 
 
+cdef class SecoRandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
+    """
+    A wrapper for the C++ class `RandomInstanceSubsetSelectionFactory`.
+    """
+
+    def __cinit__(self, float32 sample_size = 0.66):
+        """
+        param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
+                           60 % of the available examples). Must be in (0, 1)
+        """
+        self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[SecoRandomInstanceSubsetSelectionFactoryImpl](
+            sample_size)
+
+
 cdef class LabelWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
     """
     A wrapper for the C++ class `LabelWiseStratifiedSamplingFactory`.

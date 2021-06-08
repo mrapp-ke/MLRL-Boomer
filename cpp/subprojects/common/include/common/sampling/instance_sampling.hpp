@@ -38,7 +38,7 @@ class IInstanceSubSampling {
          *
          * @param statistics A reference to an object of type "IStatistics",
          */
-        virtual const void setWeights(IStatistics& statistics) {
+        virtual void setWeights(IStatistics& statistics) {
 
         };
 

@@ -18,7 +18,7 @@ source_files = [
     'src/seco/model/decision_list.cpp',
     'src/seco/output/predictor_classification_label_wise.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_heuristic.cpp',
-    'src/seco/sampling/instance_sampling_random.cpp',
+    'src/seco/sampling/seco_instance_sampling_random.cpp',
     'src/seco/statistics/statistics_label_wise_dense.cpp',
     'src/seco/stopping/stopping_criterion_coverage.cpp'
 ]
