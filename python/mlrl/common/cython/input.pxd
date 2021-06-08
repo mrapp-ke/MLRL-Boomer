@@ -25,6 +25,20 @@ cdef extern from "common/input/label_vector.hpp" nogil:
         uint32 getNumElements()
 
 
+ctypedef void (*LabelVectorVisitor)(const LabelVector&)
+
+
+cdef extern from "common/input/label_vector_set.hpp" nogil:
+
+    cdef cppclass LabelVectorSetImpl"LabelVectorSet":
+
+        # Functions:
+
+        void addLabelVector(unique_ptr[LabelVector] labelVectorPtr)
+
+        void visit(LabelVectorVisitor)
+
+
 cdef extern from "common/input/label_matrix.hpp" nogil:
 
     cdef cppclass ILabelMatrix:
@@ -193,3 +207,10 @@ cdef class BitNominalFeatureMask(NominalFeatureMask):
 
 cdef class EqualNominalFeatureMask(NominalFeatureMask):
     pass
+
+
+cdef class LabelVectorSet:
+
+    # Attributes:
+
+    cdef shared_ptr[LabelVectorSetImpl] label_vector_set_ptr
