@@ -222,7 +222,7 @@ cdef class LabelVectorSetSerializer:
         :return:                    The state that has been created
         """
         self.state = []
-        cdef LabelVectorSetImpl* label_vector_set_ptr = <LabelVectorSetImpl*>label_vector_set.label_vector_set_ptr.get()
+        cdef LabelVectorSetImpl* label_vector_set_ptr = label_vector_set.label_vector_set_ptr.get()
         label_vector_set_ptr.visit(wrapLabelVectorVisitor(<void*>self,
                                                           <LabelVectorCythonVisitor>self.__visit_label_vector))
         return (SERIALIZATION_VERSION, self.state)
@@ -242,12 +242,10 @@ cdef class LabelVectorSetSerializer:
 
         cdef list label_vector_list = state[1]
         cdef uint32 num_label_vectors = len(label_vector_list)
-        cdef shared_ptr[LabelVectorSetImpl] label_vector_set_ptr = make_shared[LabelVectorSetImpl]()
+        cdef LabelVectorSetImpl* label_vector_set_ptr = label_vector_set.label_vector_set_ptr.get()
         cdef list label_vector_state
         cdef uint32 i
 
         for i in range(num_label_vectors):
             label_vector_state = label_vector_list[i]
-            label_vector_set_ptr.get().addLabelVector(move(__create_label_vector(label_vector_state)))
-
-        label_vector_set.label_vector_set_ptr = label_vector_set_ptr
+            label_vector_set_ptr.addLabelVector(move(__create_label_vector(label_vector_state)))
