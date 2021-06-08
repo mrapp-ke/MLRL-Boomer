@@ -4,6 +4,8 @@
 from libcpp.memory cimport make_unique, make_shared
 from libcpp.utility cimport move
 
+SERIALIZATION_VERSION = 1
+
 
 cdef class LabelMatrix:
     """
@@ -179,3 +181,73 @@ cdef class LabelVectorSet:
 
     def __cinit__(self):
         self.label_vector_set_ptr = make_shared[LabelVectorSetImpl]()
+
+
+cdef inline unique_ptr[LabelVector] __create_label_vector(list state):
+    cdef uint32 num_elements = len(state)
+    cdef unique_ptr[LabelVector] label_vector_ptr = make_unique[LabelVector](num_elements)
+    cdef LabelVector.index_iterator iterator = label_vector_ptr.get().indices_begin()
+    cdef uint32 i, label_index
+
+    for i in range(num_elements):
+        label_index = state[i]
+        iterator[i] = label_index
+
+    return move(label_vector_ptr)
+
+
+cdef class LabelVectorSetSerializer:
+    """
+    Allows to serialize and deserialize the label vectors that are stored by a `LabelVectorSet`.
+    """
+
+    cdef __visit_label_vector(self, const LabelVector& label_vector):
+        cdef list label_vector_state = []
+        cdef uint32 num_elements = label_vector.getNumElements()
+        cdef LabelVector.index_const_iterator iterator = label_vector.indices_cbegin()
+        cdef uint32 i, label_index
+
+        for i in range(num_elements):
+            label_index = iterator[i]
+            label_vector_state.append(label_index)
+
+        self.state.append(label_vector_state)
+
+    cpdef object serialize(self, LabelVectorSet label_vector_set):
+        """
+        Creates and returns a state, which may be serialized using Python's pickle mechanism, from the label vectors
+        that are stored by a given `LabelVectorSet`.
+
+        :param label_vector_set:    The set that stores the label vectors to be serialized
+        :return:                    The state that has been created
+        """
+        self.state = []
+        cdef LabelVectorSetImpl* label_vector_set_ptr = <LabelVectorSetImpl*>label_vector_set.label_vector_set_ptr.get()
+        label_vector_set_ptr.visit(wrapLabelVectorVisitor(<void*>self,
+                                                          <LabelVectorCythonVisitor>self.__visit_label_vector))
+        return (SERIALIZATION_VERSION, self.state)
+
+    cpdef deserialize(self, LabelVectorSet label_vector_set, object state):
+        """
+        Deserializes the label vectors that are stored by a given state and adds them to a `LabelVectorSet`.
+
+        :param label_vector_set:    The set, the deserialized rules should be added to
+        :param state:               A state that has previously been created via the function `serialize`
+        """
+        cdef int version = state[0]
+
+        if version != SERIALIZATION_VERSION:
+            raise AssertionError(
+                'Version of the serialized LabelVectorSet is ' + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
+
+        cdef list label_vector_list = state[1]
+        cdef uint32 num_label_vectors = len(label_vector_list)
+        cdef shared_ptr[LabelVectorSetImpl] label_vector_set_ptr = make_shared[LabelVectorSetImpl]()
+        cdef list label_vector_state
+        cdef uint32 i
+
+        for i in range(num_label_vectors):
+            label_vector_state = label_vector_list[i]
+            label_vector_set_ptr.get().addLabelVector(move(__create_label_vector(label_vector_state)))
+
+        label_vector_set.label_vector_set_ptr = label_vector_set_ptr
