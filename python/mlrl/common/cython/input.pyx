@@ -170,3 +170,12 @@ cdef class EqualNominalFeatureMask(NominalFeatureMask):
         """
         self.nominal_feature_mask_ptr = <shared_ptr[INominalFeatureMask]>make_shared[EqualNominalFeatureMaskImpl](
             nominal)
+
+
+cdef class LabelVectorSet:
+    """
+    A wrapper for the C++ class `LabelVectorSet`.
+    """
+
+    def __cinit__(self):
+        self.label_vector_set_ptr = make_shared[LabelVectorSetImpl]()
