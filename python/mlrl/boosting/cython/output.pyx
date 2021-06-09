@@ -2,12 +2,8 @@
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
 from mlrl.common.cython._types cimport uint32
-from mlrl.common.cython.input cimport LabelMatrix, ILabelMatrix
 
-from libcpp.memory cimport shared_ptr, make_shared, make_unique
-from libcpp.utility cimport move
-
-SERIALIZATION_VERSION = 1
+from libcpp.memory cimport unique_ptr, make_unique, make_shared
 
 
 cdef class LabelWiseTransformationFunction:
@@ -98,109 +94,9 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
         self.num_labels = num_labels
         self.measure = measure
         self.num_threads = num_threads
-
-    @classmethod
-    def create(cls, LabelMatrix label_matrix, SimilarityMeasure measure, uint32 num_threads):
         cdef shared_ptr[ISimilarityMeasure] measure_ptr = measure.get_similarity_measure_ptr()
-        cdef shared_ptr[ILabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
-        cdef uint32 num_rows = label_matrix_ptr.get().getNumRows()
-        cdef uint32 num_cols = label_matrix_ptr.get().getNumCols()
-        cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
+        self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[ExampleWiseClassificationPredictorImpl](
             measure_ptr, num_threads)
-        cdef unique_ptr[LabelVector] label_vector_ptr
-        cdef uint32 i
-
-        for i in range(num_rows):
-            label_vector_ptr = label_matrix_ptr.get().createLabelVector(i)
-            predictor_ptr.get().addLabelVector(move(label_vector_ptr))
-
-        cdef ExampleWiseClassificationPredictor predictor = ExampleWiseClassificationPredictor.__new__(
-            ExampleWiseClassificationPredictor, num_cols, measure, num_threads)
-        predictor.predictor_ptr = <unique_ptr[IPredictor[uint8]]>move(predictor_ptr)
-        return predictor
 
     def __reduce__(self):
-        cdef ExampleWiseClassificationPredictorSerializer serializer = ExampleWiseClassificationPredictorSerializer.__new__(
-            ExampleWiseClassificationPredictorSerializer)
-        cdef object state = serializer.serialize(self)
-        return (ExampleWiseClassificationPredictor, (self.num_labels, self.measure, self.num_threads), state)
-
-    def __setstate__(self, state):
-        cdef ExampleWiseClassificationPredictorSerializer serializer = ExampleWiseClassificationPredictorSerializer.__new__(
-            ExampleWiseClassificationPredictorSerializer)
-        serializer.deserialize(self, self.measure, self.num_threads, state)
-
-
-cdef inline unique_ptr[LabelVector] __create_label_vector(list state):
-    cdef uint32 num_elements = len(state)
-    cdef unique_ptr[LabelVector] label_vector_ptr = make_unique[LabelVector](num_elements)
-    cdef LabelVector.index_iterator iterator = label_vector_ptr.get().indices_begin()
-    cdef uint32 i, label_index
-
-    for i in range(num_elements):
-        label_index = state[i]
-        iterator[i] = label_index
-
-    return move(label_vector_ptr)
-
-
-cdef class ExampleWiseClassificationPredictorSerializer:
-    """
-    Allows to serialize and deserialize the label vectors that are stored by a `ExampleWiseClassificationPredictor`.
-    """
-
-    cdef __visit_label_vector(self, const LabelVector& label_vector):
-        cdef list label_vector_state = []
-        cdef uint32 num_elements = label_vector.getNumElements()
-        cdef LabelVector.index_const_iterator iterator = label_vector.indices_cbegin()
-        cdef uint32 i, label_index
-
-        for i in range(num_elements):
-            label_index = iterator[i]
-            label_vector_state.append(label_index)
-
-        self.state.append(label_vector_state)
-
-    cpdef object serialize(self, ExampleWiseClassificationPredictor predictor):
-        """
-        Creates and returns a state, which may be serialized using Python's pickle mechanism, from the label vectors
-        that are stored by a given `ExampleWiseClassificationPredictor`.
-
-        :param predictor:   The predictor that stores the label vectors to be serialized
-        :return:            The state that has been created
-        """
-        self.state = []
-        cdef ExampleWiseClassificationPredictorImpl* predictor_ptr = <ExampleWiseClassificationPredictorImpl*>predictor.predictor_ptr.get()
-        predictor_ptr.visit(wrapLabelVectorVisitor(<void*>self, <LabelVectorCythonVisitor>self.__visit_label_vector))
-        return (SERIALIZATION_VERSION, self.state)
-
-    cpdef deserialize(self, ExampleWiseClassificationPredictor predictor, SimilarityMeasure measure, uint32 num_threads,
-                      object state):
-        """
-        Deserializes the label vectors that are stored by a given state and adds them to an
-        `ExampleWiseClassificationPredictor`.
-
-        :param predictor:   The predictor, the deserialized rules should be added to
-        :param measure:     The measure to be used by the predictor
-        :param num_threads  The number of CPU cores to be used
-        :param state:       A state that has previously been created via the function `serialize`
-        """
-        cdef int version = state[0]
-
-        if version != SERIALIZATION_VERSION:
-            raise AssertionError(
-                'Version of the serialized predictor is ' + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
-
-        cdef list label_vector_list = state[1]
-        cdef uint32 num_label_vectors = len(label_vector_list)
-        cdef shared_ptr[ISimilarityMeasure] measure_ptr = measure.get_similarity_measure_ptr()
-        cdef unique_ptr[ExampleWiseClassificationPredictorImpl] predictor_ptr = make_unique[ExampleWiseClassificationPredictorImpl](
-            measure_ptr, num_threads)
-        cdef list label_vector_state
-        cdef uint32 i
-
-        for i in range(num_label_vectors):
-            label_vector_state = label_vector_list[i]
-            predictor_ptr.get().addLabelVector(move(__create_label_vector(label_vector_state)))
-
-        predictor.predictor_ptr = <unique_ptr[IPredictor[uint8]]>move(predictor_ptr)
+        return (ExampleWiseClassificationPredictor, (self.num_labels, self.measure, self.num_threads))

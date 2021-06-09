@@ -239,8 +239,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if predictor == PREDICTOR_LABEL_WISE:
             return None, self.__create_label_wise_predictor(num_labels)
         elif predictor == PREDICTOR_EXAMPLE_WISE:
-            label_vectors = LabelVectorSet.create(label_matrix)
-            return label_vectors, self.__create_example_wise_predictor(label_matrix)
+            return LabelVectorSet.create(label_matrix), self.__create_example_wise_predictor(num_labels)
         raise ValueError('Invalid value given for parameter \'predictor\': ' + str(predictor))
 
     def _create_probability_predictor(self, num_labels: int, label_matrix: LabelMatrix,
@@ -275,10 +274,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return LabelWiseProbabilityPredictor(num_labels=num_labels, transformation_function=transformation_function,
                                              num_threads=num_threads)
 
-    def __create_example_wise_predictor(self, label_matrix: LabelMatrix) -> ExampleWiseClassificationPredictor:
+    def __create_example_wise_predictor(self, num_labels: int) -> ExampleWiseClassificationPredictor:
         loss = self.__create_loss_function()
         num_threads = get_preferred_num_threads(self.num_threads_prediction)
-        return ExampleWiseClassificationPredictor.create(label_matrix, loss, num_threads)
+        return ExampleWiseClassificationPredictor(num_labels, loss, num_threads)
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()

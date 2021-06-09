@@ -29,7 +29,7 @@ namespace boosting {
 
     void LabelWiseProbabilityPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
                                                 CContiguousView<float64>& predictionMatrix,
-                                                const RuleModel& model) const {
+                                                const RuleModel& model, const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
         const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
@@ -55,7 +55,7 @@ namespace boosting {
 
     void LabelWiseProbabilityPredictor::predict(const CsrFeatureMatrix& featureMatrix,
                                                 CContiguousView<float64>& predictionMatrix,
-                                                const RuleModel& model) const {
+                                                const RuleModel& model, const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
         uint32 numFeatures = featureMatrix.getNumCols();
