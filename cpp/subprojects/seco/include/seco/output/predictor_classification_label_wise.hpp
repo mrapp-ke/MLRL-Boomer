@@ -31,10 +31,10 @@ namespace seco {
             LabelWiseClassificationPredictor(uint32 numThreads);
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model) const override;
+                         const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model) const override;
+                         const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 
     };
 

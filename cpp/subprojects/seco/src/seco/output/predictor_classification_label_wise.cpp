@@ -55,7 +55,7 @@ namespace seco {
 
     void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
                                                    CContiguousView<uint8>& predictionMatrix,
-                                                   const RuleModel& model) const {
+                                                   const RuleModel& model, const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numLabels = predictionMatrix.getNumCols();
         const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
@@ -81,7 +81,7 @@ namespace seco {
 
     void LabelWiseClassificationPredictor::predict(const CsrFeatureMatrix& featureMatrix,
                                                    CContiguousView<uint8>& predictionMatrix,
-                                                   const RuleModel& model) const {
+                                                   const RuleModel& model, const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
