@@ -469,7 +469,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             return predictor.predict(feature_matrix, model, label_vectors)
 
     @abstractmethod
-    def _create_predictor(self, num_labels: int) -> (LabelVectorSet, Predictor):
+    def _create_predictor(self, num_labels: int) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
 
