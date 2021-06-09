@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "common/input/label_vector_set.hpp"
 #include "common/output/predictor.hpp"
 #include "common/measures/measure_similarity.hpp"
 
@@ -22,8 +21,6 @@ namespace boosting {
 
         private:
 
-            LabelVectorSet labelVectors_;
-
             std::shared_ptr<ISimilarityMeasure> measurePtr_;
 
             uint32 numThreads_;
@@ -39,25 +36,6 @@ namespace boosting {
             ExampleWiseClassificationPredictor(std::shared_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads);
 
             /**
-             * A visitor function for handling objects of the type `LabelVector`.
-             */
-            typedef std::function<void(const LabelVector&)> LabelVectorVisitor;
-
-            /**
-             * Adds a known label vector that may be predicted for individual query examples.
-             *
-             * @param labelVectorPtr An unique pointer to an object of type `LabelVector`
-             */
-            void addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr);
-
-            /**
-             * Invokes the given visitor function for each unique label vector that has been provided via the function `addLabelVector`.
-             *
-             * @param visitor The visitor function for handling objects of the type `LabelVector`
-             */
-            void visit(LabelVectorVisitor visitor) const;
-
-            /**
              * Obtains predictions for different examples, based on predicted scores, and writes them to a given
              * prediction matrix.
              *
@@ -65,15 +43,17 @@ namespace boosting {
              *                          predicted scores
              * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
              *                          written to. May contain arbitrary values
+             * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label
+             *                          vectors or a null pointer, if no such set is available
              */
             void transform(const CContiguousConstView<float64>& scoreMatrix,
-                           CContiguousView<uint8>& predictionMatrix) const;
+                           CContiguousView<uint8>& predictionMatrix, const LabelVectorSet* labelVectors) const;
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model) const override;
+                         const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model) const override;
+                         const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 
     };
 

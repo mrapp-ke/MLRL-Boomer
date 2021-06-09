@@ -435,7 +435,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def _predict(self, x):
         predictor = self.predictor_
-        return self.__predict(predictor, x)
+        label_vectors = self.label_vectors_
+        return self.__predict(predictor, label_vectors, x)
 
     def _predict_proba(self, x):
         predictor = self.probability_predictor_
@@ -443,9 +444,10 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         if predictor is None:
             return super()._predict_proba(x)
         else:
-            return self.__predict(predictor, x)
+            label_vectors = self.label_vectors_
+            return self.__predict(predictor, label_vectors, x)
 
-    def __predict(self, predictor, x):
+    def __predict(self, predictor, label_vectors: LabelVectorSet, x):
         sparse_format = SparseFormat.CSR
         sparse_policy = create_sparse_policy(self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
@@ -460,10 +462,10 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
             feature_matrix = CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
-            return predictor.predict_csr(feature_matrix, model)
+            return predictor.predict_csr(feature_matrix, model, label_vectors)
         else:
             feature_matrix = CContiguousFeatureMatrix(x)
-            return predictor.predict(feature_matrix, model)
+            return predictor.predict(feature_matrix, model, label_vectors)
 
     @abstractmethod
     def _create_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> (LabelVectorSet, Predictor):
