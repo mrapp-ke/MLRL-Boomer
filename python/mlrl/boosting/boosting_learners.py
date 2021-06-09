@@ -233,23 +233,28 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> (LabelVectorSet, Predictor):
+    def _create_predictor(self, num_labels: int) -> Predictor:
         predictor = self.__get_preferred_predictor()
 
         if predictor == PREDICTOR_LABEL_WISE:
-            return None, self.__create_label_wise_predictor(num_labels)
+            return self.__create_label_wise_predictor(num_labels)
         elif predictor == PREDICTOR_EXAMPLE_WISE:
-            return LabelVectorSet.create(label_matrix), self.__create_example_wise_predictor(num_labels)
+            return self.__create_example_wise_predictor(num_labels)
         raise ValueError('Invalid value given for parameter \'predictor\': ' + str(predictor))
 
-    def _create_probability_predictor(self, num_labels: int, label_matrix: LabelMatrix,
-                                      label_vectors: LabelVectorSet) -> Predictor:
+    def _create_probability_predictor(self, num_labels: int) -> Predictor:
         predictor = self.__get_preferred_predictor()
 
         if predictor == PREDICTOR_LABEL_WISE and self.loss == LOSS_LABEL_WISE_LOGISTIC:
             transformation_function = LogisticFunction()
             return self.__create_label_wise_probability_predictor(num_labels, transformation_function)
+        return None
 
+    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> LabelVectorSet:
+        predictor = self.__get_preferred_predictor()
+
+        if predictor == PREDICTOR_EXAMPLE_WISE:
+            return LabelVectorSet.create(label_matrix)
         return None
 
     def __get_preferred_predictor(self) -> str:
