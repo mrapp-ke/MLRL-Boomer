@@ -18,6 +18,7 @@ from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureM
 from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
 from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
+from mlrl.common.cython.input import LabelVectorSet
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
@@ -362,6 +363,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
 
     Attributes
+        label_vectors_          A `LabelVectorSet` that stores the known label vectors, if necessary
         predictor_              The `Predictor` to be used for making predictions
         probability_predictor_  The `Predictor` to be used for predicting probability estimates
     """
@@ -414,8 +416,9 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             label_matrix = CContiguousLabelMatrix(y)
 
         # Create predictors...
-        self.predictor_ = self._create_predictor(num_labels, label_matrix)
-        self.probability_predictor_ = self._create_probability_predictor(num_labels, label_matrix)
+        self.predictor_ = self._create_predictor(num_labels)
+        self.probability_predictor_ = self._create_probability_predictor(num_labels)
+        self.label_vectors_ = self._create_label_vector_set(label_matrix)
 
         # Create a mask that provides access to the information whether individual features are nominal or not...
         if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
@@ -433,7 +436,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def _predict(self, x):
         predictor = self.predictor_
-        return self.__predict(predictor, x)
+        label_vectors = self.label_vectors_
+        return self.__predict(predictor, label_vectors, x)
 
     def _predict_proba(self, x):
         predictor = self.probability_predictor_
@@ -441,9 +445,10 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         if predictor is None:
             return super()._predict_proba(x)
         else:
-            return self.__predict(predictor, x)
+            label_vectors = self.label_vectors_
+            return self.__predict(predictor, label_vectors, x)
 
-    def __predict(self, predictor, x):
+    def __predict(self, predictor, label_vectors: LabelVectorSet, x):
         sparse_format = SparseFormat.CSR
         sparse_policy = create_sparse_policy(self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
@@ -458,31 +463,38 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
             feature_matrix = CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
-            return predictor.predict_csr(feature_matrix, model)
+            return predictor.predict_csr(feature_matrix, model, label_vectors)
         else:
             feature_matrix = CContiguousFeatureMatrix(x)
-            return predictor.predict(feature_matrix, model)
+            return predictor.predict(feature_matrix, model, label_vectors)
 
     @abstractmethod
-    def _create_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> Predictor:
+    def _create_predictor(self, num_labels: int) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
 
-        :param num_labels:      The number of labels in the training data set
-        :param label_matrix:    The label matrix that provides access to the labels of the training examples
-        :return:                The `Predictor` that has been created
+        :param num_labels:  The number of labels in the training data set
+        :return:            The `Predictor` that has been created
         """
         pass
 
-    def _create_probability_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> Predictor:
+    def _create_probability_predictor(self, num_labels: int) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
         estimates.
 
-        :param num_labels:      The number of labels in the training data set
+        :param num_labels:  The number of labels in the training data set
+        :return:            The `Predictor` that has been created or None, if the prediction of probabilities is not
+                            supported
+        """
+        return None
+
+    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> LabelVectorSet:
+        """
+        Must be implemented by subclasses in order to create a `LabelVectorSet` that stores all known label vectors.
+
         :param label_matrix:    The label matrix that provides access to the labels of the training examples
-        :return:                The `Predictor` that has been created or None, if the prediction of probabilities is not
-                                supported
+        :return:                The `LabelVectorSet` that has been created or None, if no such set should be used
         """
         return None
 

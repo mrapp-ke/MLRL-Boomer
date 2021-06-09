@@ -39,6 +39,7 @@ source_files = [
     'src/common/input/label_matrix_c_contiguous.cpp',
     'src/common/input/label_matrix_csc.cpp',
     'src/common/input/label_matrix_csr.cpp',
+    'src/common/input/label_vector_set.cpp',
     'src/common/input/missing_feature_vector.cpp',
     'src/common/input/nominal_feature_mask_bit.cpp',
     'src/common/input/nominal_feature_mask_equal.cpp',
