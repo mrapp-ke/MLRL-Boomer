@@ -416,8 +416,9 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             label_matrix = CContiguousLabelMatrix(y)
 
         # Create predictors...
-        self.label_vectors_, self.predictor_ = self._create_predictor(num_labels, label_matrix)
-        self.probability_predictor_ = self._create_probability_predictor(num_labels, label_matrix, self.label_vectors_)
+        self.predictor_ = self._create_predictor(num_labels)
+        self.probability_predictor_ = self._create_probability_predictor(num_labels)
+        self.label_vectors_ = self._create_label_vector_set(label_matrix)
 
         # Create a mask that provides access to the information whether individual features are nominal or not...
         if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
@@ -468,29 +469,32 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             return predictor.predict(feature_matrix, model, label_vectors)
 
     @abstractmethod
-    def _create_predictor(self, num_labels: int, label_matrix: LabelMatrix) -> (LabelVectorSet, Predictor):
+    def _create_predictor(self, num_labels: int) -> (LabelVectorSet, Predictor):
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
 
-        :param num_labels:      The number of labels in the training data set
-        :param label_matrix:    The label matrix that provides access to the labels of the training examples
-        :return:                A `LabelVectorSet` that stores the known label vectors or None, if no such set is
-                                available, as well as the `Predictor` that has been created
+        :param num_labels:  The number of labels in the training data set
+        :return:            The `Predictor` that has been created
         """
         pass
 
-    def _create_probability_predictor(self, num_labels: int, label_matrix: LabelMatrix,
-                                      label_vectors: LabelVectorSet) -> Predictor:
+    def _create_probability_predictor(self, num_labels: int) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
         estimates.
 
-        :param num_labels:      The number of labels in the training data set
+        :param num_labels:  The number of labels in the training data set
+        :return:            The `Predictor` that has been created or None, if the prediction of probabilities is not
+                            supported
+        """
+        return None
+
+    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> LabelVectorSet:
+        """
+        Must be implemented by subclasses in order to create a `LabelVectorSet` that stores all known label vectors.
+
         :param label_matrix:    The label matrix that provides access to the labels of the training examples
-        :param label_vectors:   A `LabelVectorSet` that stores the known label vectors or None, if no such set is
-                                available
-        :return:                The `Predictor` that has been created or None, if the prediction of probabilities is not
-                                supported
+        :return:                The `LabelVectorSet` that has been created or None, if no such set should be used
         """
         return None
 
