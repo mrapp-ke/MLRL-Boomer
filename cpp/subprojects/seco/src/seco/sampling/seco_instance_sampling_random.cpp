@@ -1,7 +1,6 @@
 #include <common/statistics/statistics.hpp>
 #include <common/statistics/statistics_provider.hpp>
 #include <vector>
-#include <iostream>
 #include "seco/sampling/seco_instance_sampling_random.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
@@ -15,8 +14,6 @@ template <typename Iterator>
 static inline void subSampleInternally(Iterator iterator, float32 sampleSize, uint32 numExamples,
                                        BitWeightVector& weightVector, RNG& rng) {
     auto numSamples = (uint32) (sampleSize * numExamples);
-    // std::cout << "total: " << numExamples << ", numSamples: " << numSamples << ", iterator[total - 1]:"
-    //    << iterator[numExamples - 1] << "\n\n";
     sampleWeightsWithoutReplacement<BiPartition::const_iterator>(weightVector,  iterator, numExamples,
                                                                  numSamples, rng);
 }
@@ -38,7 +35,7 @@ private:
 
     BitWeightVector weightVector_;
 
-    unsigned int * exampleCoverage_;
+    unsigned int* exampleCoverage_;
 
     uint32 size_;
 
@@ -53,7 +50,12 @@ public:
     SecoRandomInstanceSubsetSelection(Partition& partition, float32 sampleSize)
             : partition_(partition), sampleSize_(sampleSize),
               weightVector_(BitWeightVector(partition.getNumElements())) {
+        exampleCoverage_ = new unsigned int[partition.getNumElements()];
+        size_ = 0;
+    }
 
+    ~SecoRandomInstanceSubsetSelection() override {
+        delete[] exampleCoverage_;
     }
 
     const IWeightVector& subSample(RNG& rng) override {
@@ -63,38 +65,32 @@ public:
 
     void setWeights(IStatistics& statistics) override {
         seco::DenseWeightMatrix* weights = dynamic_cast<seco::ICoverageStatistics&>(statistics).getUncoveredWeights();
+        int i = 0;
+        bool unCovered = false;
 
-        size_ = dynamic_cast<seco::ICoverageStatistics&>(statistics).getSumOfUncoveredWeights();
-        exampleCoverage_ = new unsigned int[size_];
-        std::cout << "size:" << size_ << "\n";
-
-        for (auto [row, i, covered] = std::tuple<uint32, int, bool>(0, 0, false); row < weights->getNumRows();
-             row++, covered = false) {
+        for (uint32 row = 0; row < weights->getNumRows(); row++, unCovered = false) {
             seco::DenseWeightMatrix::CContiguousConstView::const_iterator it = weights->row_cbegin(row);
 
             for (uint32 column = 0; column < weights->getNumCols(); column++) {
                 float64 weight = it[column];
-                std::cout << weight << " ";
-                if (weight == 0) {
-                    // example is covered
-                    covered = true;
+                if (weight > 0) {
+                    // example is unCovered
+                    unCovered = true;
                     break;
                 }
             }
-            // if example is not covered it is added to the array
-            if (!covered) {
+            // if example is unCovered it is added to the array
+            if (unCovered) {
                 exampleCoverage_[i++] = row;
-                std::cout << ": " << row;
             }
-            std::cout << "\n";
         }
+        size_ = i;
     }
 
 };
 
 SecoRandomInstanceSubsetSelectionFactory::SecoRandomInstanceSubsetSelectionFactory(float32 sampleSize)
         : sampleSize_(sampleSize) {
-
 }
 
 std::unique_ptr<IInstanceSubSampling> SecoRandomInstanceSubsetSelectionFactory::create(

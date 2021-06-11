@@ -6,6 +6,7 @@
 #include "common/sampling/instance_sampling.hpp"
 
 
+
 /**
  * Allows to create instances of the type `IInstanceSubSampling` that allow to select a subset of the available training
  * examples without replacement.
