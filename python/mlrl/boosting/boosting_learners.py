@@ -272,17 +272,17 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
         return LabelWiseClassificationPredictor(num_labels=num_labels, threshold=threshold, num_threads=num_threads)
 
+    def __create_example_wise_predictor(self, num_labels: int) -> ExampleWiseClassificationPredictor:
+        loss = self.__create_loss_function()
+        num_threads = get_preferred_num_threads(self.num_threads_prediction)
+        return ExampleWiseClassificationPredictor(num_labels=num_labels, measure=loss, num_threads=num_threads)
+
     def __create_label_wise_probability_predictor(
             self, num_labels: int,
             transformation_function: LabelWiseTransformationFunction) -> LabelWiseProbabilityPredictor:
         num_threads = get_preferred_num_threads(self.num_threads_prediction)
         return LabelWiseProbabilityPredictor(num_labels=num_labels, transformation_function=transformation_function,
                                              num_threads=num_threads)
-
-    def __create_example_wise_predictor(self, num_labels: int) -> ExampleWiseClassificationPredictor:
-        loss = self.__create_loss_function()
-        num_threads = get_preferred_num_threads(self.num_threads_prediction)
-        return ExampleWiseClassificationPredictor(num_labels, loss, num_threads)
 
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
