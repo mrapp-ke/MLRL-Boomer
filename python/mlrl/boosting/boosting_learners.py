@@ -245,9 +245,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_probability_predictor(self, num_labels: int) -> Predictor:
         predictor = self.__get_preferred_predictor()
 
-        if predictor == PREDICTOR_LABEL_WISE and self.loss == LOSS_LABEL_WISE_LOGISTIC:
-            transformation_function = LogisticFunction()
-            return self.__create_label_wise_probability_predictor(num_labels, transformation_function)
+        if self.loss == LOSS_LABEL_WISE_LOGISTIC or self.loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+            if predictor == PREDICTOR_LABEL_WISE:
+                transformation_function = LogisticFunction()
+                return self.__create_label_wise_probability_predictor(num_labels, transformation_function)
         return None
 
     def _create_label_vector_set(self, label_matrix: LabelMatrix) -> LabelVectorSet:
