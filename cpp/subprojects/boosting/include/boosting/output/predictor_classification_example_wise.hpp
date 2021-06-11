@@ -14,8 +14,8 @@ namespace boosting {
      * using a boosting algorithm.
      *
      * For prediction, the scores that are provided by the individual rules, are summed up. For each query example, the
-     * aggregated score vector is then compared to known label sets in order to obtain a distance measure. The label set
-     * that is closest to the aggregated score vector is finally predicted.
+     * aggregated score vector is then compared to known label vectors in order to obtain a distance measure. The label
+     * vector that is closest to the aggregated score vector is finally predicted.
      */
     class ExampleWiseClassificationPredictor : public IPredictor<uint8> {
 
