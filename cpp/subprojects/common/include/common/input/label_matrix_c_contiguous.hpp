@@ -99,18 +99,18 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
         typedef CContiguousConstView<const uint8>::const_iterator value_const_iterator;
 
         /**
-         * Returns a `const_iterator` to the beginning of a specific row.
+         * Returns a `value_const_iterator` to the beginning of a specific row.
          *
          * @param row   The row
-         * @return      A `const_iterator` to the beginning of the given row
+         * @return      A `value_const_iterator` to the beginning of the given row
          */
         value_const_iterator row_values_cbegin(uint32 row) const;
 
         /**
-         * Returns a `const_iterator` to the end of a specific row.
+         * Returns a `value_const_iterator` to the end of a specific row.
          *
          * @param row   The row
-         * @return      A `const_iterator` to the end of the given row
+         * @return      A `value_const_iterator` to the end of the given row
          */
         value_const_iterator row_values_cend(uint32 row) const;
 
