@@ -45,18 +45,6 @@ struct Tuple {
     }
 
     /**
-     * Assigns the first and second value of a given tuple to the first and second value of this tuple, respectively.
-     *
-     * @param rhs   A reference to the tuple, whose first and second value should be assigned
-     * @return      A reference to the modified tuple
-     */
-    Tuple<T>& operator=(const Tuple<T>& rhs) {
-        first = rhs.first;
-        second = rhs.second;
-        return *this;
-    }
-
-    /**
      * Adds a specific value to the first and second value of this tuple.
      *
      * @param rhs   A reference to the value to be added
