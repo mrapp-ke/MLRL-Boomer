@@ -10,7 +10,7 @@ from libcpp.memory cimport make_shared
 
 cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
     """
-    A wrapper for the C++ class `LabelWiseStatisticsProviderFactory`.
+    A wrapper for the C++ class `DenseLabelWiseStatisticsProviderFactory`.
     """
 
     def __cinit__(self, LabelWiseLoss loss_function, LabelWiseRuleEvaluationFactory default_rule_evaluation_factory,

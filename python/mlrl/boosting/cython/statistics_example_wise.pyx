@@ -10,7 +10,7 @@ from libcpp.memory cimport make_shared
 
 cdef class DenseExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
     """
-    A wrapper for the C++ class `ExampleWiseStatisticsProviderFactory`.
+    A wrapper for the C++ class `DenseExampleWiseStatisticsProviderFactory`.
     """
 
     def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluationFactory default_rule_evaluation_factory,

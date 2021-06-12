@@ -58,10 +58,10 @@ namespace boosting {
              *                                  rules
              * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
              *                                  access to the labels of the training examples
-             * @param statisticViewPtr          An unique pointer to an object of template type `StatisticView` that
-             *                                  provides access to the gradients and Hessians
-             * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that
-             *                                  stores the currently predicted scores
+             * @param statisticViewPtr          An unique pointer to an object of type `DenseLabelWiseStatisticView`
+             *                                  that provides access to the gradients and Hessians
+             * @param scoreMatrixPtr            An unique pointer to an object of type `NumericDenseMatrix` that stores
+             *                                  the currently predicted scores
              */
             DenseLabelWiseStatistics(std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
                                      std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
