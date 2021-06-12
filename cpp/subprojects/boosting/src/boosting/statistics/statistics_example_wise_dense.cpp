@@ -44,7 +44,8 @@ namespace boosting {
                                                                                   DenseExampleWiseStatisticVector,
                                                                                   DenseExampleWiseStatisticView,
                                                                                   DenseExampleWiseStatisticMatrix,
-                                                                                  NumericDenseMatrix<float64>> {
+                                                                                  NumericDenseMatrix<float64>,
+                                                                                  IExampleWiseLoss> {
 
         public:
 
@@ -68,7 +69,7 @@ namespace boosting {
                                        std::unique_ptr<NumericDenseMatrix<float64>> scoreMatrixPtr)
                 : AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
                                                 DenseExampleWiseStatisticView, DenseExampleWiseStatisticMatrix,
-                                                NumericDenseMatrix<float64>>(
+                                                NumericDenseMatrix<float64>, IExampleWiseLoss>(
                       lossFunctionPtr, ruleEvaluationFactoryPtr, labelMatrix, std::move(statisticViewPtr),
                       std::move(scoreMatrixPtr)) {
 
