@@ -391,11 +391,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         num_features = x.shape[1]
 
         if issparse(x):
+            log.debug('A sparse matrix is used to store the feature values of the training examples')
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
             x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
         else:
+            log.debug('A dense matrix is used to store the feature values of the training examples')
             feature_matrix = FortranContiguousFeatureMatrix(x)
 
         # Validate label matrix and convert it to the preferred format...
@@ -409,10 +411,12 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         num_labels = y.shape[1]
 
         if issparse(y):
+            log.debug('A sparse matrix is used to store the labels of the training examples')
             y_row_indices = np.ascontiguousarray(y.indptr, dtype=DTYPE_UINT32)
             y_col_indices = np.ascontiguousarray(y.indices, dtype=DTYPE_UINT32)
             label_matrix = CsrLabelMatrix(y.shape[0], y.shape[1], y_row_indices, y_col_indices)
         else:
+            log.debug('A dense matrix is used to store the labels of the training examples')
             label_matrix = CContiguousLabelMatrix(y)
 
         # Create predictors...
@@ -459,12 +463,14 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         model = self.model_
 
         if issparse(x):
+            log.debug('A sparse matrix is used to store the feature values of the test examples')
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
             feature_matrix = CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
             return predictor.predict_csr(feature_matrix, model, label_vectors)
         else:
+            log.debug('A dense matrix is used to store the feature values of the test examples')
             feature_matrix = CContiguousFeatureMatrix(x)
             return predictor.predict(feature_matrix, model, label_vectors)
 
