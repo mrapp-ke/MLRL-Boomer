@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/data/matrix_dense.hpp"
-#include "common/indices/index_vector.hpp"
 #include "common/indices/index_vector_full.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
