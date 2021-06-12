@@ -3,10 +3,11 @@
 
 namespace boosting {
 
-    template<typename Prediction, typename LabelMatrix, typename StatisticView, typename ScoreMatrix>
+    template<typename Prediction, typename LabelMatrix, typename StatisticView, typename ScoreMatrix,
+             typename LossFunction>
     void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction, const LabelMatrix& labelMatrix,
                                    StatisticView& statisticView, ScoreMatrix& scoreMatrix,
-                                   const IExampleWiseLoss& lossFunction) {
+                                   const LossFunction& lossFunction) {
         // Update the scores that are currently predicted for the example at the given index...
         scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
                                        prediction.indices_cbegin(), prediction.indices_cend());
@@ -299,9 +300,10 @@ namespace boosting {
      * @tparam StatisticView    The type of the view that provides access to the gradients and Hessians
      * @tparam StatisticMatrix  The type of the matrix that stores the gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrices that are used to store predicted scores
+     * @tparam LossFunction     The type of the loss function that is used to calculate gradients and Hessians
      */
     template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename StatisticMatrix,
-             typename ScoreMatrix>
+             typename ScoreMatrix, typename LossFunction>
     class AbstractExampleWiseStatistics : public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
                                                                                         StatisticMatrix, ScoreMatrix>,
                                           virtual public IExampleWiseStatistics {
@@ -310,7 +312,7 @@ namespace boosting {
 
             std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
-            std::shared_ptr<IExampleWiseLoss> lossFunctionPtr_;
+            std::shared_ptr<LossFunction> lossFunctionPtr_;
 
             const LabelMatrix& labelMatrix_;
 
@@ -319,8 +321,9 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunctionPtr           A shared pointer to an object of type `IExampleWiseLoss`, representing
-             *                                  the loss function to be used for calculating gradients and Hessians
+             * @param lossFunctionPtr           A shared pointer to an object of template type `LossFunction`,
+             *                                  representing the loss function to be used for calculating gradients and
+            *                                   Hessians
              * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
              *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
              *                                  predictions, as well as corresponding quality scores, of rules
@@ -331,7 +334,7 @@ namespace boosting {
              * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that
              *                                  stores the currently predicted scores
              */
-            AbstractExampleWiseStatistics(std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
+            AbstractExampleWiseStatistics(std::shared_ptr<LossFunction> lossFunctionPtr,
                                           std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
                                           const LabelMatrix& labelMatrix,
                                           std::unique_ptr<StatisticView> statisticViewPtr,
@@ -390,7 +393,7 @@ namespace boosting {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-                applyPredictionInternally<FullPrediction, LabelMatrix, StatisticView, ScoreMatrix>(
+                applyPredictionInternally<FullPrediction, LabelMatrix, StatisticView, ScoreMatrix, LossFunction>(
                     statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
                     *lossFunctionPtr_);
             }
@@ -399,7 +402,7 @@ namespace boosting {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
-                applyPredictionInternally<PartialPrediction, LabelMatrix, StatisticView, ScoreMatrix>(
+                applyPredictionInternally<PartialPrediction, LabelMatrix, StatisticView, ScoreMatrix, LossFunction>(
                     statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
                     *lossFunctionPtr_);
             }
