@@ -108,13 +108,13 @@ namespace boosting {
 
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
-     * Hessians that have been calculated according to a loss function that is applied example wise using L2
-     * regularization. The labels are assigned to bins based on the corresponding gradients.
+     * Hessians that are stored by a `DenseExampleWiseStatisticVector` using L2 regularization. The labels are assigned
+     * to bins based on the corresponding gradients.
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class BinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluation<T> {
+    class DenseBinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T> {
 
         private:
 
@@ -153,10 +153,10 @@ namespace boosting {
              * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
-            BinningExampleWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight, uint32 maxBins,
-                                             std::unique_ptr<LabelBinningType> binningPtr,
-                                             std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
-                : AbstractExampleWiseRuleEvaluation<T>(labelIndices, lapackPtr),
+            DenseBinningExampleWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight, uint32 maxBins,
+                                                  std::unique_ptr<LabelBinningType> binningPtr,
+                                                  std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
+                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices, lapackPtr),
                   l2RegularizationWeight_(l2RegularizationWeight), maxBins_(maxBins),
                   binningPtr_(std::move(binningPtr)), blasPtr_(blasPtr), scoreVector_(nullptr),
                   labelWiseScoreVector_(nullptr), tmpGradients_(nullptr), tmpHessians_(nullptr),
@@ -164,7 +164,7 @@ namespace boosting {
 
             }
 
-            ~BinningExampleWiseRuleEvaluation() {
+            ~DenseBinningExampleWiseRuleEvaluation() {
                 delete scoreVector_;
                 delete labelWiseScoreVector_;
                 free(tmpGradients_);
@@ -317,29 +317,31 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluation> EqualWidthBinningExampleWiseRuleEvaluationFactory::create(
+    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> EqualWidthBinningExampleWiseRuleEvaluationFactory::createDense(
             const FullIndexVector& indexVector) const {
         std::unique_ptr<LabelBinningType> binningPtr =
             std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector::gradient_const_iterator,
                                                     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>>(
                                                         binRatio_, minBins_, maxBins_);
         uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
-        return std::make_unique<BinningExampleWiseRuleEvaluation<FullIndexVector>>(indexVector, l2RegularizationWeight_,
-                                                                                   maxBins, std::move(binningPtr),
-                                                                                   blasPtr_, lapackPtr_);
+        return std::make_unique<DenseBinningExampleWiseRuleEvaluation<FullIndexVector>>(indexVector,
+                                                                                        l2RegularizationWeight_,
+                                                                                        maxBins, std::move(binningPtr),
+                                                                                        blasPtr_, lapackPtr_);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluation> EqualWidthBinningExampleWiseRuleEvaluationFactory::create(
+    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> EqualWidthBinningExampleWiseRuleEvaluationFactory::createDense(
             const PartialIndexVector& indexVector) const {
         std::unique_ptr<LabelBinningType> binningPtr =
             std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector::gradient_const_iterator,
                                                     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>>(
                                                         binRatio_, minBins_, maxBins_);
         uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
-        return std::make_unique<BinningExampleWiseRuleEvaluation<PartialIndexVector>>(indexVector,
-                                                                                      l2RegularizationWeight_, maxBins,
-                                                                                      std::move(binningPtr), blasPtr_,
-                                                                                      lapackPtr_);
+        return std::make_unique<DenseBinningExampleWiseRuleEvaluation<PartialIndexVector>>(indexVector,
+                                                                                           l2RegularizationWeight_,
+                                                                                           maxBins,
+                                                                                           std::move(binningPtr),
+                                                                                           blasPtr_, lapackPtr_);
     }
 
 }
