@@ -79,10 +79,12 @@ namespace boosting {
      * quality scores, based on the gradients and Hessians that have been calculated according to a loss function that
      * is applied example-wise.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam T                The type of the vector that provides access to the labels for which predictions should
+     *                          be calculated
      */
-    template<typename T>
-    class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation {
+    template<typename StatisticVector, typename T>
+    class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation<StatisticVector> {
 
         protected:
 
