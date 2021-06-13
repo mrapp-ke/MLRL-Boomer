@@ -5,9 +5,15 @@
 
 #include "common/indices/index_vector_full.hpp"
 #include "common/indices/index_vector_partial.hpp"
+#include <memory>
 
 
 namespace boosting {
+
+    // Forward declarations
+    class IExampleWiseRuleEvaluationFactory;
+    template<typename StatisticVector>
+    class IExampleWiseRuleEvaluation;
 
     /**
      * An one-dimensional vector that stores gradients and Hessians that have been calculated using a non-decomposable
@@ -369,6 +375,36 @@ namespace boosting {
                             const PartialIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
                             gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
                             hessian_const_iterator secondHessiansEnd);
+
+            /**
+             * Creates and returns a new object of type `IExampleWiseRuleEvaluation` that allows to calculate the
+             * predictions of rules, based on the gradients and Hessians that are stored in a
+             * `DenseExampleWiseStatisticVector`.
+             *
+             * @param factory       A reference to an object of type `IExampleWiseRuleEvaluationFactory` that should be
+             *                      used to create the object
+             * @param indexVector   A reference to an object of type `FullIndexVector` that provides access to the
+             *                      indices of the labels for which the rules may predict
+             * @return              An unique pointer to an object of type `IExampleWiseRuleEvaluation` that has been
+             *                      created
+             */
+            std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createRuleEvaluation(
+                const IExampleWiseRuleEvaluationFactory& factory, const FullIndexVector& labelIndices) const;
+
+            /**
+             * Creates and returns a new object of type `IExampleWiseRuleEvaluation` that allows to calculate the
+             * predictions of rules, based on the gradients and Hessians that are stored in a
+             * `DenseExampleWiseStatisticVector`.
+             *
+             * @param factory       A reference to an object of type `IExampleWiseRuleEvaluationFactory` that should be
+             *                      used to create the object
+             * @param indexVector   A reference to an object of type `PartialIndexVector` that provides access to the
+             *                      indices of the labels for which the rules may predict
+             * @return              An unique pointer to an object of type `IExampleWiseRuleEvaluation` that has been
+             *                      created
+             */
+            std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createRuleEvaluation(
+                const IExampleWiseRuleEvaluationFactory& factory, const PartialIndexVector& labelIndices) const;
 
     };
 

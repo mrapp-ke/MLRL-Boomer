@@ -36,9 +36,11 @@ namespace boosting {
             EqualWidthBinningLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight, float32 binRatio,
                                                             uint32 minBins, uint32 maxBins);
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
+                const FullIndexVector& indexVector) const override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const PartialIndexVector& indexVector) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
+                const PartialIndexVector& indexVector) const override;
 
     };
 
