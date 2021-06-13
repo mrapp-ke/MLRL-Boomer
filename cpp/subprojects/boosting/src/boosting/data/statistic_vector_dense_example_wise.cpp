@@ -1,6 +1,7 @@
 #include "boosting/data/statistic_vector_dense_example_wise.hpp"
 #include "boosting/math/math.hpp"
 #include "boosting/data/arrays.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 
@@ -204,6 +205,16 @@ namespace boosting {
             setArrayToDifference(&hessians_[triangularNumber(i)], &firstHessiansBegin[offset],
                                  &secondHessiansBegin[offset], indexIterator, i + 1);
         }
+    }
+
+    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> DenseExampleWiseStatisticVector::createRuleEvaluation(
+            const IExampleWiseRuleEvaluationFactory& factory, const FullIndexVector& labelIndices) const {
+        return factory.createDense(labelIndices);
+    }
+
+    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> DenseExampleWiseStatisticVector::createRuleEvaluation(
+            const IExampleWiseRuleEvaluationFactory& factory, const PartialIndexVector& labelIndices) const {
+        return factory.createDense(labelIndices);
     }
 
 }
