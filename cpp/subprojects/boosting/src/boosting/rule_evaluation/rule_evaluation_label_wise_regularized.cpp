@@ -7,13 +7,12 @@ namespace boosting {
 
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, based on the gradients and
-     * Hessians that have been calculated according to a loss function that is applied label-wise using L2
-     * regularization.
+     * Hessians that are stored by a `DenseLabelWiseStatisticVector` using L2 regularization.
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class RegularizedLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
+    class DenseRegularizedLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector> {
 
         private:
 
@@ -29,7 +28,7 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            RegularizedLabelWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight)
+            DenseRegularizedLabelWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight)
                 : l2RegularizationWeight_(l2RegularizationWeight),
                   scoreVector_(DenseLabelWiseScoreVector<T>(labelIndices)) {
 
@@ -54,16 +53,16 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactory::create(
+    std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> RegularizedLabelWiseRuleEvaluationFactory::createDense(
             const FullIndexVector& indexVector) const {
-        return std::make_unique<RegularizedLabelWiseRuleEvaluation<FullIndexVector>>(indexVector,
-                                                                                     l2RegularizationWeight_);
+        return std::make_unique<DenseRegularizedLabelWiseRuleEvaluation<FullIndexVector>>(indexVector,
+                                                                                          l2RegularizationWeight_);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluation> RegularizedLabelWiseRuleEvaluationFactory::create(
+    std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> RegularizedLabelWiseRuleEvaluationFactory::createDense(
             const PartialIndexVector& indexVector) const {
-        return std::make_unique<RegularizedLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector,
-                                                                                        l2RegularizationWeight_);
+        return std::make_unique<DenseRegularizedLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector,
+                                                                                             l2RegularizationWeight_);
     }
 
 }

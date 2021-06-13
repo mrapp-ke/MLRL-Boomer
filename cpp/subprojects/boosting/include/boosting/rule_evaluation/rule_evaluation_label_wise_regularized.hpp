@@ -25,9 +25,11 @@ namespace boosting {
              */
             RegularizedLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight);
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const FullIndexVector& indexVector) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
+                const FullIndexVector& indexVector) const override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const PartialIndexVector& indexVector) const override;
+            std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
+                const PartialIndexVector& indexVector) const override;
 
     };
 

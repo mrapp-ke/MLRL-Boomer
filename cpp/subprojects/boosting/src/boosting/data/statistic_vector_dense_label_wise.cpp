@@ -1,5 +1,6 @@
 #include "boosting/data/statistic_vector_dense_label_wise.hpp"
 #include "boosting/data/arrays.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 
@@ -89,6 +90,16 @@ namespace boosting {
                                                    const_iterator secondEnd) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
         setArrayToDifference(statistics_, firstBegin, secondBegin, indexIterator, numElements_);
+    }
+
+    std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
+            const ILabelWiseRuleEvaluationFactory& factory, const FullIndexVector& labelIndices) const {
+        return factory.createDense(labelIndices);
+    }
+
+    std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
+            const ILabelWiseRuleEvaluationFactory& factory, const PartialIndexVector& labelIndices) const {
+        return factory.createDense(labelIndices);
     }
 
 }
