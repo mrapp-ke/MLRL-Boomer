@@ -99,9 +99,8 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
             std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
             std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr);
 
-        std::unique_ptr<RuleModel> induceRules(std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                                               std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                                               std::shared_ptr<ILabelMatrix> labelMatrixPtr, RNG& rng,
-                                               IModelBuilder& modelBuilder) override;
+        std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
+                                               const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
+                                               RNG& rng, IModelBuilder& modelBuilder) override;
 
 };

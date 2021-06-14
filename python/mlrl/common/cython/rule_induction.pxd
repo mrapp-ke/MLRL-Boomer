@@ -28,10 +28,9 @@ cdef extern from "common/rule_induction/rule_model_induction.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[RuleModelImpl] induceRules(shared_ptr[INominalFeatureMask] nominalFeatureMaskPtr,
-                                              shared_ptr[IFeatureMatrix] featureMatrixPtr,
-                                              shared_ptr[ILabelMatrix] labelMatrixPtr, RNG& rng,
-                                              IModelBuilder& modelBuilder)
+        unique_ptr[RuleModelImpl] induceRules(const INominalFeatureMask& nominalFeatureMask,
+                                              const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
+                                              RNG& rng, IModelBuilder& modelBuilder)
 
 
 cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:

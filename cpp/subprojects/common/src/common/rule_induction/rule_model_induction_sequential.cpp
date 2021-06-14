@@ -54,29 +54,29 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
 
 }
 
-std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
-        std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr, std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-        std::shared_ptr<ILabelMatrix> labelMatrixPtr, RNG& rng, IModelBuilder& modelBuilder) {
+std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(const INominalFeatureMask& nominalFeatureMask,
+                                                                     const IFeatureMatrix& featureMatrix,
+                                                                     const ILabelMatrix& labelMatrix, RNG& rng,
+                                                                     IModelBuilder& modelBuilder) {
     // Induce default rule...
     const IHeadRefinementFactory* defaultRuleHeadRefinementFactory = defaultRuleHeadRefinementFactoryPtr_.get();
     uint32 numRules = defaultRuleHeadRefinementFactory != nullptr ? 1 : 0;
     uint32 numUsedRules = 0;
-    std::shared_ptr<IStatisticsProvider> statisticsProviderPtr =
-        labelMatrixPtr->createStatisticsProvider(*statisticsProviderFactoryPtr_);
+    std::shared_ptr<IStatisticsProvider> statisticsProviderPtr = labelMatrix.createStatisticsProvider(
+        *statisticsProviderFactoryPtr_);
     ruleInductionPtr_->induceDefaultRule(*statisticsProviderPtr, defaultRuleHeadRefinementFactory, modelBuilder);
 
     // Induce the remaining rules...
-    std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(*featureMatrixPtr,
-                                                                               *nominalFeatureMaskPtr,
+    std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrix, nominalFeatureMask,
                                                                                *statisticsProviderPtr,
                                                                                *headRefinementFactoryPtr_);
     uint32 numFeatures = thresholdsPtr->getNumFeatures();
     uint32 numLabels = thresholdsPtr->getNumLabels();
-    std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrixPtr->createPartitionSampling(
+    std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrix.createPartitionSampling(
         *partitionSamplingFactoryPtr_);
     IPartition& partition = partitionSamplingPtr->partition(rng);
     std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partition.createInstanceSubSampling(
-        *instanceSubSamplingFactoryPtr_, *labelMatrixPtr, statisticsProviderPtr->get());
+        *instanceSubSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
     std::unique_ptr<IFeatureSubSampling> featureSubSamplingPtr = featureSubSamplingFactoryPtr_->create(numFeatures);
     std::unique_ptr<ILabelSubSampling> labelSubSamplingPtr = labelSubSamplingFactoryPtr_->create(numLabels);
     IStoppingCriterion::Result stoppingCriterionResult;
