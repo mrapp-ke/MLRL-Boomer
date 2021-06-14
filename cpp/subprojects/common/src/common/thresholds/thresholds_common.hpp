@@ -155,63 +155,61 @@ class AbstractThresholds : public IThresholds {
     protected:
 
         /**
-         * A shared pointer to an object of type `IFeatureMatrix` that provides access to the feature values of the
-         * training examples.
+         * A reference to an object of type `IFeatureMatrix` that provides access to the feature values of the training
+         * examples.
          */
-        std::shared_ptr<IFeatureMatrix> featureMatrixPtr_;
+        const IFeatureMatrix& featureMatrix_;
 
         /**
-         * A shared pointer to an object of type `INominalFeatureMask` that provides access to the information whether
+         * A reference to an object of type `INominalFeatureMask` that provides access to the information whether
          * individual feature are nominal or not.
          */
-        std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr_;
+        const INominalFeatureMask& nominalFeatureMask_;
 
         /**
-         * A shared pointer to an object of type `IStatisticsProvider` that provides access to statistics about the
-         * labels of the training examples.
+         * A reference to an object of type `IStatisticsProvider` that provides access to statistics about the labels of
+         * the training examples.
          */
-        std::shared_ptr<IStatisticsProvider> statisticsProviderPtr_;
+        const IStatisticsProvider& statisticsProvider_;
 
         /**
-         * A shared pointer to an object of type `IHeadRefinementFactory` that allows to create instances of the class
-         * that should be used to find the heads of rules.
+         * A reference to an object of type `IHeadRefinementFactory` that allows to create instances of the class that
+         * should be used to find the heads of rules.
          */
-        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr_;
+        const IHeadRefinementFactory& headRefinementFactory_;
 
     public:
 
         /**
-         * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
-         *                                  to the feature values of the training examples
-         * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
-         *                                  access to the information whether individual features are nominal or not
-         * @param statisticsProviderPtr     A shared pointer to an object of type `IStatisticsProvider` that provides
-                                            access to statistics about the labels of the training examples
-         * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
-         *                                  to create instances of the class that should be used to find the heads of
-         *                                  rules
+         * @param featureMatrix         A reference to an object of type `IFeatureMatrix` that provides access to the
+         *                              feature values of the training examples
+         * @param nominalFeatureMask    A reference  to an object of type `INominalFeatureMask` that provides access to
+         *                              the information whether individual features are nominal or not
+         * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
+         *                              statistics about the labels of the training examples
+         * @param headRefinementFactory A reference to an object of type `IHeadRefinementFactory` that allows to create
+         *                              instances of the class that should be used to find the heads of rules
          */
-        AbstractThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                           std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                           std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
-                           std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr)
-            : featureMatrixPtr_(featureMatrixPtr), nominalFeatureMaskPtr_(nominalFeatureMaskPtr),
-              statisticsProviderPtr_(statisticsProviderPtr), headRefinementFactoryPtr_(headRefinementFactoryPtr) {
+        AbstractThresholds(const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
+                           const IStatisticsProvider& statisticsProvider,
+                           const IHeadRefinementFactory& headRefinementFactory)
+            : featureMatrix_(featureMatrix), nominalFeatureMask_(nominalFeatureMask),
+              statisticsProvider_(statisticsProvider), headRefinementFactory_(headRefinementFactory) {
 
         }
 
         virtual ~AbstractThresholds() { };
 
         uint32 getNumExamples() const override final {
-            return featureMatrixPtr_->getNumRows();
+            return featureMatrix_.getNumRows();
         }
 
         uint32 getNumFeatures() const override final {
-            return featureMatrixPtr_->getNumCols();
+            return featureMatrix_.getNumCols();
         }
 
         uint32 getNumLabels() const override final {
-            return statisticsProviderPtr_->get().getNumLabels();
+            return statisticsProvider_.get().getNumLabels();
         }
 
 };

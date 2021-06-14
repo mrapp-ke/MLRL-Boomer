@@ -28,10 +28,9 @@ class ApproximateThresholdsFactory final : public IThresholdsFactory {
          */
         ApproximateThresholdsFactory(std::shared_ptr<IFeatureBinning> binningPtr, uint32 numThreads);
 
-        std::unique_ptr<IThresholds> create(
-            std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-            std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-            std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
-            std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const override;
+        std::unique_ptr<IThresholds> create(const IFeatureMatrix& featureMatrix,
+                                            const INominalFeatureMask& nominalFeatureMask,
+                                            const IStatisticsProvider& statisticsProvider,
+                                            const IHeadRefinementFactory& headRefinementFactory) const override;
 
 };
