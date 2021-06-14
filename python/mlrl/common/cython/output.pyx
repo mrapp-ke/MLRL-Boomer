@@ -59,8 +59,8 @@ cdef class AbstractNumericalPredictor(Predictor):
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
-        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr.get()), dereference(view_ptr.get()),
-                                         dereference(model.model_ptr.get()), label_vectors_ptr)
+        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr),
+                                         dereference(model.model_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
     cpdef object predict_csr(self, CsrFeatureMatrix feature_matrix, RuleModel model, LabelVectorSet label_vectors):
@@ -72,8 +72,8 @@ cdef class AbstractNumericalPredictor(Predictor):
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
-        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr.get()), dereference(view_ptr.get()),
-                                         dereference(model.model_ptr.get()), label_vectors_ptr)
+        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr),
+                                         dereference(model.model_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
 
@@ -91,8 +91,8 @@ cdef class AbstractBinaryPredictor(Predictor):
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
-        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr.get()), dereference(view_ptr.get()),
-                                         dereference(model.model_ptr.get()), label_vectors_ptr)
+        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr),
+                                         dereference(model.model_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
     cpdef object predict_csr(self, CsrFeatureMatrix feature_matrix, RuleModel model, LabelVectorSet label_vectors):
@@ -104,6 +104,6 @@ cdef class AbstractBinaryPredictor(Predictor):
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
-        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr.get()), dereference(view_ptr.get()),
-                                         dereference(model.model_ptr.get()), label_vectors_ptr)
+        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr),
+                                         dereference(model.model_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)

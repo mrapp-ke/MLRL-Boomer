@@ -58,8 +58,7 @@ cdef class RuleModelInduction:
         cdef unique_ptr[RNG] rng_ptr = make_unique[RNG](random_state)
         cdef unique_ptr[RuleModelImpl] rule_model_ptr = rule_model_induction_ptr.get().induceRules(
             nominal_feature_mask.nominal_feature_mask_ptr, feature_matrix.feature_matrix_ptr,
-            label_matrix.label_matrix_ptr, dereference(rng_ptr.get()),
-            dereference(model_builder.model_builder_ptr.get()))
+            label_matrix.label_matrix_ptr, dereference(rng_ptr), dereference(model_builder.model_builder_ptr))
         cdef RuleModel model = RuleModel()
         model.model_ptr = move(rule_model_ptr)
         return model
