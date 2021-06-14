@@ -62,7 +62,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(const INomi
     const IHeadRefinementFactory* defaultRuleHeadRefinementFactory = defaultRuleHeadRefinementFactoryPtr_.get();
     uint32 numRules = defaultRuleHeadRefinementFactory != nullptr ? 1 : 0;
     uint32 numUsedRules = 0;
-    std::shared_ptr<IStatisticsProvider> statisticsProviderPtr = labelMatrix.createStatisticsProvider(
+    std::unique_ptr<IStatisticsProvider> statisticsProviderPtr = labelMatrix.createStatisticsProvider(
         *statisticsProviderFactoryPtr_);
     ruleInductionPtr_->induceDefaultRule(*statisticsProviderPtr, defaultRuleHeadRefinementFactory, modelBuilder);
 
