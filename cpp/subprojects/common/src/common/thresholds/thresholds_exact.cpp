@@ -317,8 +317,8 @@ class ExactThresholds final : public AbstractThresholds {
                             featureVector = cacheIterator->second.get();
 
                             if (featureVector == nullptr) {
-                                thresholdsSubset_.thresholds_.featureMatrixPtr_->fetchFeatureVector(
-                                    featureIndex_, cacheIterator->second);
+                                thresholdsSubset_.thresholds_.featureMatrix_.fetchFeatureVector(featureIndex_,
+                                                                                                cacheIterator->second);
                                 cacheIterator->second->sortByValues();
                                 featureVector = cacheIterator->second.get();
                             }
@@ -332,7 +332,7 @@ class ExactThresholds final : public AbstractThresholds {
                             featureVector = cacheEntry.vectorPtr.get();
                         }
 
-                        return std::make_unique<Result>(thresholdsSubset_.thresholds_.statisticsProviderPtr_->get(),
+                        return std::make_unique<Result>(thresholdsSubset_.thresholds_.statisticsProvider_.get(),
                                                         thresholdsSubset_.weights_, *featureVector);
                     }
 
@@ -362,9 +362,9 @@ class ExactThresholds final : public AbstractThresholds {
                     thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
                 }
 
-                bool nominal = thresholds_.nominalFeatureMaskPtr_->isNominal(featureIndex);
+                bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
                 std::unique_ptr<IHeadRefinement> headRefinementPtr =
-                    thresholds_.headRefinementFactoryPtr_->create(labelIndices);
+                    thresholds_.headRefinementFactory_.create(labelIndices);
                 std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
                 return std::make_unique<ExactRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
                                                                 numCoveredExamples_, featureIndex, nominal,
@@ -423,7 +423,7 @@ class ExactThresholds final : public AbstractThresholds {
                     // Identify the examples that are covered by the refined rule...
                     filterCurrentVector(*featureVector, cacheEntry, refinement.start, refinement.end,
                                         refinement.comparator, refinement.covered, numModifications_, coverageMask_,
-                                        thresholds_.statisticsProviderPtr_->get(), weights_);
+                                        thresholds_.statisticsProvider_.get(), weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
@@ -449,7 +449,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                     filterCurrentVector(*featureVector, cacheEntry, condition.start, condition.end,
                                         condition.comparator, condition.covered, numModifications_, coverageMask_,
-                                        thresholds_.statisticsProviderPtr_->get(), weights_);
+                                        thresholds_.statisticsProvider_.get(), weights_);
                 }
 
                 void resetThresholds() override {
@@ -467,58 +467,57 @@ class ExactThresholds final : public AbstractThresholds {
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
                         partition.cbegin(), partition.getNumElements(), weights_, coverageState,
-                        thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);
+                        thresholds_.statisticsProvider_.get(), thresholds_.headRefinementFactory_, head);
                 }
 
                 float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), weights_, coverageState,
-                        thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);
+                        thresholds_.statisticsProvider_.get(), thresholds_.headRefinementFactory_, head);
                 }
 
                 float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
-                    return evaluateOutOfSampleInternally(weights_, coverageState,
-                                                         thresholds_.statisticsProviderPtr_->get(),
-                                                         *thresholds_.headRefinementFactoryPtr_, head);
+                    return evaluateOutOfSampleInternally(weights_, coverageState, thresholds_.statisticsProvider_.get(),
+                                                         thresholds_.headRefinementFactory_, head);
                 }
 
                 float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally(weights_, coverageState, partition,
-                                                         thresholds_.statisticsProviderPtr_->get(),
-                                                         *thresholds_.headRefinementFactoryPtr_, head);
+                                                         thresholds_.statisticsProvider_.get(),
+                                                         thresholds_.headRefinementFactory_, head);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
                         partition.cbegin(), partition.getNumElements(), coverageState,
-                        thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, refinement);
+                        thresholds_.statisticsProvider_.get(), thresholds_.headRefinementFactory_, refinement);
                 }
 
                 void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), coverageState,
-                        thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, refinement);
+                        thresholds_.statisticsProvider_.get(), thresholds_.headRefinementFactory_, refinement);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
-                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProviderPtr_->get(),
-                                                    *thresholds_.headRefinementFactoryPtr_, refinement);
+                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProvider_.get(),
+                                                    thresholds_.headRefinementFactory_, refinement);
                 }
 
                 void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
-                    recalculatePredictionInternally(coverageState, partition, thresholds_.statisticsProviderPtr_->get(),
-                                                    *thresholds_.headRefinementFactoryPtr_, refinement);
+                    recalculatePredictionInternally(coverageState, partition, thresholds_.statisticsProvider_.get(),
+                                                    thresholds_.headRefinementFactory_, refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
-                    IStatistics& statistics = thresholds_.statisticsProviderPtr_->get();
+                    IStatistics& statistics = thresholds_.statisticsProvider_.get();
                     uint32 numStatistics = statistics.getNumStatistics();
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
                     const AbstractPrediction* predictionPtr = &prediction;
@@ -543,28 +542,26 @@ class ExactThresholds final : public AbstractThresholds {
     public:
 
         /**
-         * @param featureMatrixPtr          A shared pointer to an object of type `IFeatureMatrix` that provides access
-         *                                  to the feature values of the training examples
-         * @param nominalFeatureMaskPtr     A shared pointer to an object of type `INominalFeatureMask` that provides
-         *                                  access to the information whether individual features are nominal or not
-         * @param statisticsProviderPtr     A shared pointer to an object of type `IStatisticsProvider` that provides
-         *                                  access to statistics about the labels of the training examples
-         * @param headRefinementFactoryPtr  A shared pointer to an object of type `IHeadRefinementFactory` that allows
-         *                                  to create instances of the class that should be used to find the heads of
-         *                                  rules
-         * @param numThreads                The number of CPU threads to be used to update statistics in parallel
+         * @param featureMatrix         A reference to an object of type `IFeatureMatrix` that provides access to the
+         *                              feature values of the training examples
+         * @param nominalFeatureMask    A reference  to an object of type `INominalFeatureMask` that provides access to
+         *                              the information whether individual features are nominal or not
+         * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
+         *                              statistics about the labels of the training examples
+         * @param headRefinementFactory A reference to an object of type `IHeadRefinementFactory` that allows to create
+         *                              instances of the class that should be used to find the heads of rules
+         * @param numThreads            The number of CPU threads to be used to update statistics in parallel
          */
-        ExactThresholds(std::shared_ptr<IFeatureMatrix> featureMatrixPtr,
-                        std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-                        std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
-                        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr, uint32 numThreads)
-            : AbstractThresholds(featureMatrixPtr, nominalFeatureMaskPtr, statisticsProviderPtr,
-                                 headRefinementFactoryPtr), numThreads_(numThreads) {
+        ExactThresholds(const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
+                        const IStatisticsProvider& statisticsProvider,
+                        const IHeadRefinementFactory& headRefinementFactory, uint32 numThreads)
+            : AbstractThresholds(featureMatrix, nominalFeatureMask, statisticsProvider, headRefinementFactory),
+              numThreads_(numThreads) {
 
         }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
-            updateSampledStatisticsInternally(statisticsProviderPtr_->get(), weights);
+            updateSampledStatisticsInternally(statisticsProvider_.get(), weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset>(*this, weights);
         }
 
@@ -576,9 +573,8 @@ ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
 }
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(
-        std::shared_ptr<IFeatureMatrix> featureMatrixPtr, std::shared_ptr<INominalFeatureMask> nominalFeatureMaskPtr,
-        std::shared_ptr<IStatisticsProvider> statisticsProviderPtr,
-        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) const {
-    return std::make_unique<ExactThresholds>(featureMatrixPtr, nominalFeatureMaskPtr, statisticsProviderPtr,
-                                             headRefinementFactoryPtr, numThreads_);
+        const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
+        const IStatisticsProvider& statisticsProvider, const IHeadRefinementFactory& headRefinementFactory) const {
+    return std::make_unique<ExactThresholds>(featureMatrix, nominalFeatureMask, statisticsProvider,
+                                             headRefinementFactory, numThreads_);
 }

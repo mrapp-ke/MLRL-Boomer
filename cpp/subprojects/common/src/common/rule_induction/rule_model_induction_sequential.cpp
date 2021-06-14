@@ -66,9 +66,10 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(
     ruleInductionPtr_->induceDefaultRule(*statisticsProviderPtr, defaultRuleHeadRefinementFactory, modelBuilder);
 
     // Induce the remaining rules...
-    std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrixPtr, nominalFeatureMaskPtr,
-                                                                               statisticsProviderPtr,
-                                                                               headRefinementFactoryPtr_);
+    std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(*featureMatrixPtr,
+                                                                               *nominalFeatureMaskPtr,
+                                                                               *statisticsProviderPtr,
+                                                                               *headRefinementFactoryPtr_);
     uint32 numFeatures = thresholdsPtr->getNumFeatures();
     uint32 numLabels = thresholdsPtr->getNumLabels();
     std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrixPtr->createPartitionSampling(
