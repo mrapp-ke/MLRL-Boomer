@@ -1,14 +1,15 @@
 #!/bin/bash
 
-if [ "$#" -ne 2 ]; then
+if [[ "$#" -lt 3 || "$#" -gt 4 ]]; then
     echo "Illegal number of arguments!"
     exit 1
 fi
 
 # Command line arguments
 DATASET=$1
-HEURISTIC=$2
-PRUNING_HEURISTIC=$3
+HEAD_REFINEMENT=$2
+HEURISTIC=$3
+PRUNING_HEURISTIC=$4
 
 # Constants
 MEMORY=2048
@@ -16,7 +17,7 @@ CORES=1
 LOG_LEVEL="ERROR"
 MAX_RULES=500
 FOLDS=10
-INSTANCE_SUB_SAMPLING="random-instance-selection"
+INSTANCE_SUB_SAMPLING="seco-random-instance-selection"
 HEAD_REFINEMENT="single-label"
 TIME_LIMIT_HOURS=24
 TIME_LIMIT_SECONDS=$((TIME_LIMIT_HOURS*3600))
@@ -41,10 +42,10 @@ mkdir -p "${OUTPUT_DIR}"
 
 FILE="${SUB_DIR}.sh"
 
+PARAMETERS="--log-level ${LOG_LEVEL} --data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --output-dir ${OUTPUT_DIR} --folds ${FOLDS} --current-fold \$SLURM_ARRAY_TASK_ID --max-rules ${MAX_RULES} --time-limit ${TIME_LIMIT_SECONDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --heuristic ${HEURISTIC} --head-refinement ${HEAD_REFINEMENT}"
+
 if [[ -n $PRUNING_HEURISTIC ]]; then
-  PARAMETERS="--log-level ${LOG_LEVEL} --data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --output-dir ${OUTPUT_DIR} --folds ${FOLDS} --current-fold \$SLURM_ARRAY_TASK_ID --max-rules ${MAX_RULES} --time-limit ${TIME_LIMIT_SECONDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --heuristic ${HEURISTIC} --pruning irep --pruning-heuristic ${PRUNING_HEURISTIC} --head-refinement ${HEAD_REFINEMENT}"
-else
-  PARAMETERS="--log-level ${LOG_LEVEL} --data-dir ${DATA_DIR} --dataset ${DATASET} --model-dir ${MODEL_DIR} --output-dir ${OUTPUT_DIR} --folds ${FOLDS} --current-fold \$SLURM_ARRAY_TASK_ID --max-rules ${MAX_RULES} --time-limit ${TIME_LIMIT_SECONDS} --instance-sub-sampling ${INSTANCE_SUB_SAMPLING} --heuristic ${HEURISTIC} --head-refinement ${HEAD_REFINEMENT}"
+  PARAMETERS="${PARAMETERS} --pruning irep --pruning-heuristic ${PRUNING_HEURISTIC}"
 fi
 
 {
