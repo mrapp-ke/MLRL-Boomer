@@ -8,8 +8,8 @@
 namespace seco {
 
     DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
-        : ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory)
+        : ruleEvaluationFactory_(ruleEvaluationFactory) {
 
     }
 
@@ -46,7 +46,7 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
         return std::make_unique<LabelWiseStatistics<CContiguousLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
-            ruleEvaluationFactoryPtr_, labelMatrix, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
+            ruleEvaluationFactory_, labelMatrix, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
     std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create(
@@ -88,7 +88,7 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         weightMatrixPtr->setSumOfUncoveredWeights(sumOfUncoveredWeights);
         return std::make_unique<LabelWiseStatistics<CsrLabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector>>(
-            ruleEvaluationFactoryPtr_, labelMatrix, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
+            ruleEvaluationFactory_, labelMatrix, std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
 
@@ -102,15 +102,15 @@ namespace seco {
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
             const CContiguousLabelMatrix& labelMatrix) const {
-        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_);
-        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+        DenseLabelWiseStatisticsFactory statisticsFactory(*defaultRuleEvaluationFactoryPtr_);
+        return std::make_unique<LabelWiseStatisticsProvider>(*ruleEvaluationFactoryPtr_,
                                                              statisticsFactory.create(labelMatrix));
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
             const CsrLabelMatrix& labelMatrix) const {
-        DenseLabelWiseStatisticsFactory statisticsFactory(defaultRuleEvaluationFactoryPtr_);
-        return std::make_unique<LabelWiseStatisticsProvider>(ruleEvaluationFactoryPtr_,
+        DenseLabelWiseStatisticsFactory statisticsFactory(*defaultRuleEvaluationFactoryPtr_);
+        return std::make_unique<LabelWiseStatisticsProvider>(*ruleEvaluationFactoryPtr_,
                                                              statisticsFactory.create(labelMatrix));
     }
 

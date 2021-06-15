@@ -27,11 +27,9 @@ namespace seco {
              * Sets the factory that allows to create instances of the class that is used for calculating the
              * predictions, as well as corresponding quality scores, of rules.
              *
-             * @param ruleEvaluationFactoryPtr A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
-             *                                 to be set
+             * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory` to be set
              */
-            virtual void setRuleEvaluationFactory(
-                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) = 0;
+            virtual void setRuleEvaluationFactory(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) = 0;
 
     };
 

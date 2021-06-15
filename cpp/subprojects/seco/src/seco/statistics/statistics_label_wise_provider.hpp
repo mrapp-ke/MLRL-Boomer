@@ -11,21 +11,21 @@ namespace seco {
 
         private:
 
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory_;
 
             std::unique_ptr<ILabelWiseStatistics> statisticsPtr_;
 
         public:
 
             /**
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
-             *                                  to switch to when invoking the function `switchRuleEvaluation`
-             * @param statisticsPtr             An unique pointer to an object of type `ILabelWiseStatistics` to provide
-             *                                  access to
+             * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory` to switch
+             *                              to when invoking the function `switchRuleEvaluation`
+             * @param statisticsPtr         An unique pointer to an object of type `ILabelWiseStatistics` to provide
+             *                              access to
              */
-            LabelWiseStatisticsProvider(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+            LabelWiseStatisticsProvider(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                         std::unique_ptr<ILabelWiseStatistics> statisticsPtr)
-                : ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), statisticsPtr_(std::move(statisticsPtr)) {
+                : ruleEvaluationFactory_(ruleEvaluationFactory), statisticsPtr_(std::move(statisticsPtr)) {
 
             }
 
@@ -34,7 +34,7 @@ namespace seco {
             }
 
             void switchRuleEvaluation() override {
-                statisticsPtr_->setRuleEvaluationFactory(ruleEvaluationFactoryPtr_);
+                statisticsPtr_->setRuleEvaluationFactory(ruleEvaluationFactory_);
             }
 
     };

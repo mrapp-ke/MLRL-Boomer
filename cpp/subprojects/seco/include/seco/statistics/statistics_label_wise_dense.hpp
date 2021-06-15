@@ -18,17 +18,16 @@ namespace seco {
 
         private:
 
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory_;
 
         public:
 
             /**
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
-             *                                  that allows to create instances of the class that is used for
-             *                                  calculating the predictions, as well as corresponding quality scores, of
-             *                                  rules
+             * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
+             *                              allows to create instances of the class that is used for calculating the
+             *                              predictions, as well as corresponding quality scores, of rules
              */
-            DenseLabelWiseStatisticsFactory(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+            DenseLabelWiseStatisticsFactory(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory);
 
             std::unique_ptr<ILabelWiseStatistics> create(const CContiguousLabelMatrix& labelMatrix) const override;
 

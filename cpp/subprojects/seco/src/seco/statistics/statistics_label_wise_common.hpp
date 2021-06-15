@@ -127,7 +127,7 @@ namespace seco {
 
             uint32 numLabels_;
 
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+            const ILabelWiseRuleEvaluationFactory* ruleEvaluationFactoryPtr_;
 
             const LabelMatrix& labelMatrix_;
 
@@ -142,10 +142,9 @@ namespace seco {
         public:
 
             /**
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type `ILabelWiseRuleEvaluationFactory`
-             *                                  that allows to create instances of the class that is used for
-             *                                  calculating the predictions, as well as corresponding quality scores, of
-             *                                  rules
+             * @param ruleEvaluationFactory     A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
+             *                                  allows to create instances of the class that is used for calculating the
+             *                                  predictions, as well as corresponding quality scores, of rules
              * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
              *                                  access to the labels of the training examples
              * @param weightMatrixPtr           An unique pointer to an object of template type `WeightMatrix` that
@@ -153,11 +152,11 @@ namespace seco {
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
              */
-            LabelWiseStatistics(std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+            LabelWiseStatistics(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                 const LabelMatrix& labelMatrix, std::unique_ptr<WeightMatrix> weightMatrixPtr,
                                 std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrix.getNumRows()), numLabels_(labelMatrix.getNumCols()),
-                  ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), labelMatrix_(labelMatrix),
+                  ruleEvaluationFactoryPtr_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   weightMatrixPtr_(std::move(weightMatrixPtr)),
                   majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
                   totalSumVector_(ConfusionMatrixVector(numLabels_)),
@@ -177,9 +176,8 @@ namespace seco {
                 return weightMatrixPtr_->getSumOfUncoveredWeights();
             }
 
-            void setRuleEvaluationFactory(
-                    std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) override {
-                ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
+            void setRuleEvaluationFactory(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) override {
+                ruleEvaluationFactoryPtr_ = &ruleEvaluationFactory;
             }
 
             void resetSampledStatistics() override {
