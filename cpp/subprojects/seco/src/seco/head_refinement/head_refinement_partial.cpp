@@ -40,7 +40,7 @@ namespace seco {
 
             bool keepLabels_;
 
-            std::shared_ptr<ILiftFunction> liftFunctionPtr_;
+            const ILiftFunction& liftFunction_;
 
             std::unique_ptr<PartialPrediction> headPtr_;
 
@@ -61,14 +61,14 @@ namespace seco {
                     }
 
                     bestOverallQualityScore = calculateOverallQualityScore(sumOfQualityScores, numPredictions,
-                                                                           *liftFunctionPtr_);
+                                                                           liftFunction_);
                     bestNumPredictions = numPredictions;
                 } else {
                     sortedVectorPtr = argsort(qualityScoreIterator, numPredictions);
                     SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
-                    float64 maximumLift = liftFunctionPtr_->getMaxLift();
+                    float64 maximumLift = liftFunction_.getMaxLift();
                     float64 sumOfQualityScores = 1 - qualityScoreIterator[sortedIterator[0].index];
-                    bestOverallQualityScore = calculateOverallQualityScore(sumOfQualityScores, 1, *liftFunctionPtr_);
+                    bestOverallQualityScore = calculateOverallQualityScore(sumOfQualityScores, 1, liftFunction_);
                     bestNumPredictions = 1;
 
                     for (uint32 i = 1; i < numPredictions; i++) {
@@ -76,7 +76,7 @@ namespace seco {
                         uint32 currentNumPredictions = i + 1;
                         float64 overallQualityScore = calculateOverallQualityScore(sumOfQualityScores,
                                                                                    currentNumPredictions,
-                                                                                   *liftFunctionPtr_);
+                                                                                   liftFunction_);
 
                         if (overallQualityScore < bestOverallQualityScore) {
                             bestNumPredictions = currentNumPredictions;
@@ -131,13 +131,13 @@ namespace seco {
         public:
 
             /**
-             * @param labelIndices      A reference to an object of template type `T` that provides access to the
-             *                          indices of the labels that should be considered when searching for the best head
-             * @param liftFunctionPtr   A shared pointer to an object of type `ILiftFunction` that should affect the
-             *                          quality scores of rules, depending on how many labels they predict
+             * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
+             *                      the labels that should be considered when searching for the best head
+             * @param liftFunction  A reference to an object of type `ILiftFunction` that should affect the quality
+             *                      scores of rules, depending on how many labels they predict
              */
-            PartialHeadRefinement(const T& labelIndices, std::shared_ptr<ILiftFunction> liftFunctionPtr)
-                : keepLabels_(labelIndices.isPartial()), liftFunctionPtr_(liftFunctionPtr) {
+            PartialHeadRefinement(const T& labelIndices, const ILiftFunction& liftFunction)
+                : keepLabels_(labelIndices.isPartial()), liftFunction_(liftFunction) {
 
             }
 
@@ -191,12 +191,12 @@ namespace seco {
     }
 
     std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create(const FullIndexVector& labelIndices) const {
-        return std::make_unique<PartialHeadRefinement<FullIndexVector>>(labelIndices, liftFunctionPtr_);
+        return std::make_unique<PartialHeadRefinement<FullIndexVector>>(labelIndices, *liftFunctionPtr_);
     }
 
     std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create(
             const PartialIndexVector& labelIndices) const {
-        return std::make_unique<PartialHeadRefinement<PartialIndexVector>>(labelIndices, liftFunctionPtr_);
+        return std::make_unique<PartialHeadRefinement<PartialIndexVector>>(labelIndices, *liftFunctionPtr_);
     }
 
 }
