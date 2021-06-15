@@ -68,7 +68,8 @@ namespace boosting {
      *                          store temporary values
      */
     static inline float64 calculateExampleWiseQualityScore(uint32 numPredictions, float64* scores, float64* gradients,
-                                                           float64* hessians, Blas& blas, float64* dspmvTmpArray) {
+                                                           float64* hessians, const Blas& blas,
+                                                           float64* dspmvTmpArray) {
         float64 overallQualityScore = blas.ddot(scores, gradients, numPredictions);
         blas.dspmv(hessians, scores, dspmvTmpArray, numPredictions);
         return overallQualityScore + (0.5 * blas.ddot(scores, dspmvTmpArray, numPredictions));
@@ -95,9 +96,9 @@ namespace boosting {
             const T& labelIndices_;
 
             /**
-             * A shared pointer to an object of type `Lapack` that allows to execute different LAPACK routines.
+             * A reference to an object of type `Lapack` that allows to execute different LAPACK routines.
              */
-            std::shared_ptr<Lapack> lapackPtr_;
+            const Lapack& lapack_;
 
             /**
              * The `lwork` parameter that is used for executing the LAPACK routine DSYSV.
@@ -135,7 +136,7 @@ namespace boosting {
                 dspmvTmpArray_ = (float64*) malloc(numPredictions * sizeof(float64));
 
                 // Query the optimal "lwork" parameter to be used by LAPACK's DSYSV routine...
-                dsysvLwork_ = lapackPtr_->queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_, numPredictions);
+                dsysvLwork_ = lapack_.queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_, numPredictions);
                 dsysvTmpArray3_ = (double*) malloc(dsysvLwork_ * sizeof(double));
             }
 
@@ -144,12 +145,12 @@ namespace boosting {
             /**
              * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
              *                      the labels for which the rules may predict
-             * @param lapackPtr     A shared pointer to an object of type `Lapack` that allows to execute different
-             *                      LAPACK routines
+             * @param lapack        A reference to an object of type `Lapack` that allows to execute different LAPACK
+             *                      routines
              */
-            AbstractExampleWiseRuleEvaluation(const T& labelIndices, std::shared_ptr<Lapack> lapackPtr)
-                : labelIndices_(labelIndices), lapackPtr_(lapackPtr), dsysvTmpArray1_(nullptr),
-                  dsysvTmpArray2_(nullptr), dsysvTmpArray3_(nullptr), dspmvTmpArray_(nullptr) {
+            AbstractExampleWiseRuleEvaluation(const T& labelIndices, const Lapack& lapack)
+                : labelIndices_(labelIndices), lapack_(lapack), dsysvTmpArray1_(nullptr), dsysvTmpArray2_(nullptr),
+                  dsysvTmpArray3_(nullptr), dspmvTmpArray_(nullptr) {
 
             }
 

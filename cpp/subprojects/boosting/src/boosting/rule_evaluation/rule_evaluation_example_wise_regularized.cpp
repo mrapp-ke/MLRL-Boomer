@@ -33,7 +33,7 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            std::shared_ptr<Blas> blasPtr_;
+            const Blas& blas_;
 
             DenseScoreVector<T>* scoreVector_;
 
@@ -46,15 +46,15 @@ namespace boosting {
              *                                  the indices of the labels for which the rules may predict
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
-             *                                  different BLAS routines
-             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+             * @param blas                      A reference to an object of type `Blas` that allows to execute different
+             *                                  BLAS routines
+             * @param lapack                    A reference to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
             DenseRegularizedExampleWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight,
-                                                      std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
-                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices, lapackPtr),
-                  l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr), scoreVector_(nullptr),
+                                                      const Blas& blas, const Lapack& lapack)
+                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices, lapack),
+                  l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), scoreVector_(nullptr),
                   labelWiseScoreVector_(nullptr) {
 
             }
@@ -94,13 +94,13 @@ namespace boosting {
 
                 // Calculate the scores to be predicted for the individual labels by solving a system of linear
                 // equations...
-                this->lapackPtr_->dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_,
-                                        scoreIterator, numPredictions, this->dsysvLwork_);
+                this->lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
+                                    numPredictions, this->dsysvLwork_);
 
                 // Calculate the overall quality score...
                 float64 qualityScore = calculateExampleWiseQualityScore(numPredictions, scoreIterator,
                                                                         statisticVector.gradients_begin(),
-                                                                        statisticVector.hessians_begin(), *blasPtr_,
+                                                                        statisticVector.hessians_begin(), blas_,
                                                                         this->dspmvTmpArray_);
                 qualityScore += 0.5 * l2RegularizationWeight_ * l2NormPow<typename DenseScoreVector<T>::score_iterator>(
                     scoreIterator, numPredictions);
@@ -120,14 +120,15 @@ namespace boosting {
             const FullIndexVector& indexVector) const {
         return std::make_unique<DenseRegularizedExampleWiseRuleEvaluation<FullIndexVector>>(indexVector,
                                                                                             l2RegularizationWeight_,
-                                                                                            blasPtr_, lapackPtr_);
+                                                                                            *blasPtr_, *lapackPtr_);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> RegularizedExampleWiseRuleEvaluationFactory::createDense(
             const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseRegularizedExampleWiseRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                                l2RegularizationWeight_,
-                                                                                               blasPtr_, lapackPtr_);
+                                                                                               *blasPtr_, *lapackPtr_);
+
     }
 
 }
