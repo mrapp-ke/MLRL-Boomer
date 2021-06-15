@@ -19,26 +19,26 @@ namespace boosting {
 
         private:
 
-            std::shared_ptr<IExampleWiseLoss> lossFunctionPtr_;
+            const IExampleWiseLoss& lossFunction_;
 
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+            const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param lossFunctionPtr           A shared pointer to an object of type `IExampleWiseLoss`, representing
-             *                                  the loss function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
-             *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
-             *                                  predictions, as well as corresponding quality scores, of rules
-             * @param numThreads                The number of CPU threads to be used to calculate the initial statistics
-             *                                  in parallel. Must be at least 1
+             * @param lossFunction          A reference to an object of type `IExampleWiseLoss`, representing the loss
+             *                              function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationFactory A reference to an object of type `IExampleWiseRuleEvaluationFactory`, to be
+             *                              used for calculating the predictions, as well as corresponding quality
+             *                              scores, of rules
+             * @param numThreads            The number of CPU threads to be used to calculate the initial statistics in
+             *                              parallel. Must be at least 1
              */
-            DenseExampleWiseStatisticsFactory(
-                    std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-                    std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads);
+            DenseExampleWiseStatisticsFactory(const IExampleWiseLoss& lossFunction,
+                                              const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
+                                              uint32 numThreads);
 
             std::unique_ptr<IExampleWiseStatistics> create(const CContiguousLabelMatrix& labelMatrix) const override;
 

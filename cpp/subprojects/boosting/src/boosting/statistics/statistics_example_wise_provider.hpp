@@ -11,22 +11,21 @@ namespace boosting {
 
         private:
 
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+            const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory_;
 
             std::unique_ptr<IExampleWiseStatistics> statisticsPtr_;
 
         public:
 
             /**
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
-             *                                  `IExampleWiseRuleEvaluationFactory` to switch to when invoking the
-             *                                  function `switchRuleEvaluation`
-             * @param statisticsPtr             An unique pointer to an object of type `IExampleWiseStatistics` to
-             *                                  provide access to
+             * @param ruleEvaluationFactory A reference to an object of type `IExampleWiseRuleEvaluationFactory` to
+             *                              switch to when invoking the function `switchRuleEvaluation`
+             * @param statisticsPtr         An unique pointer to an object of type `IExampleWiseStatistics` to provide
+             *                              access to
              */
-            ExampleWiseStatisticsProvider(std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+            ExampleWiseStatisticsProvider(const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                           std::unique_ptr<IExampleWiseStatistics> statisticsPtr)
-                : ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), statisticsPtr_(std::move(statisticsPtr)) {
+                : ruleEvaluationFactory_(ruleEvaluationFactory), statisticsPtr_(std::move(statisticsPtr)) {
 
             }
 
@@ -35,7 +34,7 @@ namespace boosting {
             }
 
             void switchRuleEvaluation() override {
-                statisticsPtr_->setRuleEvaluationFactory(ruleEvaluationFactoryPtr_);
+                statisticsPtr_->setRuleEvaluationFactory(ruleEvaluationFactory_);
             }
 
     };
