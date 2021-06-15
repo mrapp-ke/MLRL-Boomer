@@ -186,25 +186,24 @@ namespace boosting {
             std::unique_ptr<StatisticView> statisticViewPtr_;
 
             /**
-             * A shared pointer to an object of type `IExampleWiseRuleEvaluationFactory` to be used for calculating the
+             * A pointer to an object of type `IExampleWiseRuleEvaluationFactory` to be used for calculating the
              * predictions, as well as corresponding quality scores, of rules.
              */
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+            const IExampleWiseRuleEvaluationFactory* ruleEvaluationFactoryPtr_;
 
         public:
 
             /**
-             * @param statisticViewPtr          An unique pointer to an object of template type `StatisticView` that
-             *                                  provides access to the gradients and Hessians
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
-             *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
-             *                                  predictions, as well as corresponding quality scores, of rules
+             * @param statisticViewPtr      An unique pointer to an object of template type `StatisticView` that
+             *                              provides access to the gradients and Hessians
+             * @param ruleEvaluationFactory A reference to an object of type `IExampleWiseRuleEvaluationFactory`, to be
+             *                              used for calculating the predictions, as well as corresponding quality
+             *                              scores, of rules
              */
-            AbstractExampleWiseImmutableStatistics(
-                    std::unique_ptr<StatisticView> statisticViewPtr,
-                    std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+            AbstractExampleWiseImmutableStatistics(std::unique_ptr<StatisticView> statisticViewPtr,
+                                                   const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory)
                 : numStatistics_(statisticViewPtr->getNumRows()), numLabels_(statisticViewPtr->getNumCols()),
-                  statisticViewPtr_(std::move(statisticViewPtr)), ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+                  statisticViewPtr_(std::move(statisticViewPtr)), ruleEvaluationFactoryPtr_(&ruleEvaluationFactory) {
 
             }
 
@@ -241,22 +240,21 @@ namespace boosting {
         public:
 
             /**
-             * @param originalStatisticView     A reference to an object of template type `StatisticView` that provides
-             *                                  access to the original gradients and Hessians, the histogram was created
-             *                                  from
-             * @param totalSumVector            A pointer to an object of template type `StatisticVector` that stores
-             *                                  the total sums of gradients and Hessians
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
-             *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
-             *                                  predictions, as well as corresponding quality scores, of rules
-             * @param numBins                   The number of bins in the histogram
+             * @param originalStatisticView A reference to an object of template type `StatisticView` that provides
+             *                              access to the original gradients and Hessians, the histogram was created
+             *                              from
+             * @param totalSumVector        A pointer to an object of template type `StatisticVector` that stores the
+             *                              total sums of gradients and Hessians
+             * @param ruleEvaluationFactory A reference to an object of type `IExampleWiseRuleEvaluationFactory`, to be
+             *                              used for calculating the predictions, as well as corresponding quality
+             *                              scores, of rules
+             * @param numBins               The number of bins in the histogram
              */
             ExampleWiseHistogram(const StatisticView& originalStatisticView, const StatisticVector* totalSumVector,
-                                 std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
-                                 uint32 numBins)
+                                 const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins)
                 : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, StatisticMatrix, ScoreMatrix>(
                       std::make_unique<StatisticMatrix>(numBins, originalStatisticView.getNumCols()),
-                      ruleEvaluationFactoryPtr),
+                      ruleEvaluationFactory),
                   originalStatisticView_(originalStatisticView), totalSumVector_(totalSumVector) {
 
             }
@@ -312,7 +310,7 @@ namespace boosting {
 
             std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
-            std::shared_ptr<LossFunction> lossFunctionPtr_;
+            const LossFunction& lossFunction_;
 
             const LabelMatrix& labelMatrix_;
 
@@ -321,38 +319,35 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunctionPtr           A shared pointer to an object of template type `LossFunction`,
-             *                                  representing the loss function to be used for calculating gradients and
-            *                                   Hessians
-             * @param ruleEvaluationFactoryPtr  A shared pointer to an object of type
-             *                                  `IExampleWiseRuleEvaluationFactory`, to be used for calculating the
-             *                                  predictions, as well as corresponding quality scores, of rules
-             * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
-             *                                  access to the labels of the training examples
-             * @param statisticViewPtr          An unique pointer to an object of template type `StatisticView` that
-             *                                  provides access to the gradients and Hessians
-             * @param scoreMatrixPtr            An unique pointer to an object of template type `ScoreMatrix` that
-             *                                  stores the currently predicted scores
+             * @param lossFunction          A reference to an object of template type `LossFunction`, representing the
+             *                              loss function to be used for calculating gradients and Hessians
+             * @param ruleEvaluationFactory A reference to an object of type `IExampleWiseRuleEvaluationFactory`, to be
+             *                              used for calculating the predictions, as well as corresponding quality
+             *                              scores, of rules
+             * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
+             *                              to the labels of the training examples
+             * @param statisticViewPtr      An unique pointer to an object of template type `StatisticView` that
+             *                              provides access to the gradients and Hessians
+             * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
+             *                              the currently predicted scores
              */
-            AbstractExampleWiseStatistics(std::shared_ptr<LossFunction> lossFunctionPtr,
-                                          std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr,
+            AbstractExampleWiseStatistics(const LossFunction& lossFunction,
+                                          const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                           const LabelMatrix& labelMatrix,
                                           std::unique_ptr<StatisticView> statisticViewPtr,
                                           std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, StatisticMatrix, ScoreMatrix>(
-                      std::move(statisticViewPtr), ruleEvaluationFactoryPtr),
+                      std::move(statisticViewPtr), ruleEvaluationFactory),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticViewPtr_->getNumCols())),
-                  lossFunctionPtr_(lossFunctionPtr), labelMatrix_(labelMatrix),
-                  scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
+                  lossFunction_(lossFunction), labelMatrix_(labelMatrix), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
 
             }
 
             /**
              * @see `IExampleWiseStatistics::setRuleEvaluationFactory`
              */
-            void setRuleEvaluationFactory(
-                    std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr) override {
-                this->ruleEvaluationFactoryPtr_ = ruleEvaluationFactoryPtr;
+            void setRuleEvaluationFactory(const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory) override {
+                this->ruleEvaluationFactoryPtr_ = &ruleEvaluationFactory;
             }
 
             /**
@@ -395,7 +390,7 @@ namespace boosting {
             void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
                 applyPredictionInternally<FullPrediction, LabelMatrix, StatisticView, ScoreMatrix, LossFunction>(
                     statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
-                    *lossFunctionPtr_);
+                    lossFunction_);
             }
 
             /**
@@ -404,7 +399,7 @@ namespace boosting {
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
                 applyPredictionInternally<PartialPrediction, LabelMatrix, StatisticView, ScoreMatrix, LossFunction>(
                     statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
-                    *lossFunctionPtr_);
+                    lossFunction_);
             }
 
             /**
@@ -419,8 +414,9 @@ namespace boosting {
              */
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, StatisticMatrix,
-                                                             ScoreMatrix>>(
-                    *this->statisticViewPtr_, totalSumVectorPtr_.get(), this->ruleEvaluationFactoryPtr_, numBins);
+                                                             ScoreMatrix>>(*this->statisticViewPtr_,
+                                                                           totalSumVectorPtr_.get(),
+                                                                           *this->ruleEvaluationFactoryPtr_, numBins);
             }
 
             /**
