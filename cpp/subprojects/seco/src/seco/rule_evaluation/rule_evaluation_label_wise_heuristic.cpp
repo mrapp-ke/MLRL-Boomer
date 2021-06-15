@@ -16,7 +16,7 @@ namespace seco {
 
         private:
 
-            std::shared_ptr<IHeuristic> heuristicPtr_;
+            const IHeuristic& heuristic_;
 
             bool predictMajority_;
 
@@ -27,14 +27,13 @@ namespace seco {
             /**
              * @param labelIndices      A reference to an object of template type `T` that provides access to the
              *                          indices of the labels for which the rules may predict
-             * @param heuristicPtr      A shared pointer to an object of type `IHeuristic`, representing the heuristic
-             *                          to be optimized
+             * @param heuristic         A reference to an object of type `IHeuristic`, representing the heuristic to be
+             *                          optimized
              * @param predictMajority   True, if for each label the majority label should be predicted, false, if the
              *                          minority label should be predicted
              */
-            HeuristicLabelWiseRuleEvaluation(const T& labelIndices, std::shared_ptr<IHeuristic> heuristicPtr,
-                                             bool predictMajority)
-                : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority),
+            HeuristicLabelWiseRuleEvaluation(const T& labelIndices, const IHeuristic& heuristic, bool predictMajority)
+                : heuristic_(heuristic), predictMajority_(predictMajority),
                   scoreVector_(DenseLabelWiseScoreVector<T>(labelIndices)) {
 
             }
@@ -95,7 +94,7 @@ namespace seco {
                         urp = totalIterator[RP] - crp;
                     }
 
-                    score = heuristicPtr_->evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
+                    score = heuristic_.evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
                     qualityScoreIterator[i] = score;
                     overallQualityScore += score;
                     previousIndex = index;
@@ -116,13 +115,13 @@ namespace seco {
 
     std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
             const FullIndexVector& indexVector) const {
-        return std::make_unique<HeuristicLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, heuristicPtr_,
+        return std::make_unique<HeuristicLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, *heuristicPtr_,
                                                                                    predictMajority_);
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
-        return std::make_unique<HeuristicLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector, heuristicPtr_,
+        return std::make_unique<HeuristicLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector, *heuristicPtr_,
                                                                                       predictMajority_);
     }
 
