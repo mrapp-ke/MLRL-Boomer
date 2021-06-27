@@ -6,7 +6,11 @@ The algorithm was first published in the following [paper](https://link.springer
 
 *Rapp M., Loza Mencía E., Fürnkranz J., Nguyen VL., Hüllermeier E. (2020) Learning Gradient Boosted Multi-label Classification Rules. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2020. Lecture Notes in Computer Science, pp. 124-140, vol 12459. Springer, Cham*  
 
-If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper.
+Gradient-based label binning (GBLB), which is an extension to the original algorithm, was proposed in the following paper. A preprint version is available [here](https://arxiv.org/pdf/2106.11690.pdf).
+
+*Rapp M., Loza Mencía E., Fürnkranz J., Hüllermeier E. (2021) Gradient-based Label Binning in Multi-label Classification. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2021.*
+
+If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned papers.
 
 ## Features
 
@@ -25,7 +29,8 @@ The algorithm that is provided by this project currently supports the following 
 In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:
 
 * Approximate methods for evaluating potential conditions of rules, based on unsupervised binning methods, can be used.
-* Dense or sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed-up training significantly on some data sets.
+* Gradient-based label binning (GBLB) can be used to assign the available labels to a limited number of bins. The use of label binning may speed up training significantly when using rules that predict for multiple labels to minimize a non-decomposable loss function.
+* Dense or sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed up training significantly on some data sets.
 * Dense or sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets.
 * Multi-threading can be used to parallelize the evaluation of a rule's potential refinements across multiple CPU cores. 
 
@@ -129,7 +134,7 @@ In order to run an experiment, the following command line arguments must be prov
 | `--feature-sub-sampling`     | Yes       | `random-feature-selection` | The name of the strategy to be used for feature sub-sampling. Must be `random-feature-selection` or `None`. Additional arguments may be provided as a dictionary, e.g. `random_feature-selection{'sample_size':0.5}`.                                                                                                                                                                                                 |
 | `--holdout`                  | Yes       | `None`                     | The name of the strategy to be used for creating a holdout set. Must be `random`, `stratified-label-wise`, `stratified-example-wise` or `None`, if no holdout set should be used. Additional arguments may be provided as a dictionary, e.g. `random{'holdout_set_size':0.5'}`.                                                                                                                                       |
 | `--feature-binning`          | Yes       | `None`                     | The name of the strategy to be used for feature binning. Must be `equal-width`, `equal-frequency` or `None`, if no feature binning should be used. Additional arguments may be provided as a dictionary, e.g. `equal-width{'bin_ratio':0.5,'min_bins':2,'max_bins':256}`.                                                                                                                                             |
-| `--label-binning`            | Yes       | `None`                     | The name of the strategy to be used for label binning. Must be `equal-width` or `None`, if no label binning should be used. Additional arguments may be provided as a dictionary, e.g. `equal-width{'bin_ratio':0.04,'min_bins':1,'max_bins':8`.                                                                                                                                                                      |
+| `--label-binning`            | Yes       | `None`                     | The name of the strategy to be used for gradient-based label binning. Must be `equal-width` or `None`, if no label binning should be used. Additional arguments may be provided as a dictionary, e.g. `equal-width{'bin_ratio':0.04,'min_bins':1,'max_bins':8`.                                                                                                                                                       |
 | `--pruning`                  | Yes       | `None`                     | The name of the strategy to be used for pruning rules. Must be `irep` or `None`. Does only have an effect if the parameter `--instance-sub-sampling` is not set to `None`.                                                                                                                                                                                                                                            |
 | `--min-coverage`             | Yes       | `1`                        | The minimum number of training examples that must be covered by a rule. Must be at least `1`.                                                                                                                                                                                                                                                                                                                         |
 | `--max-conditions`           | Yes       | `-1`                       | The maximum number of conditions to be included in a rule's body. Must be at least `1` or `-1`, if the number of conditions should not be restricted.                                                                                                                                                                                                                                                                 |
