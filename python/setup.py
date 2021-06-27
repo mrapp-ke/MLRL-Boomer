@@ -64,7 +64,7 @@ setuptools.setup(
     packages=['mlrl.common', 'mlrl.boosting', 'mlrl.seco', 'mlrl.testbed'],
     install_requires=[
         'numpy>=1.21.0',
-        'scipy>=1.6.0',
+        'scipy>=1.7.0',
         'Cython>=0.29.0',
         'scikit-learn>=0.24.0',
         'liac-arff>=2.5.0'
