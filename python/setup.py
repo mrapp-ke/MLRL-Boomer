@@ -63,7 +63,7 @@ setuptools.setup(
     license='MIT',
     packages=['mlrl.common', 'mlrl.boosting', 'mlrl.seco', 'mlrl.testbed'],
     install_requires=[
-        'numpy>=1.20.0',
+        'numpy>=1.21.0',
         'scipy>=1.6.0',
         'Cython>=0.29.0',
         'scikit-learn>=0.24.0',
