@@ -1,6 +1,7 @@
 """
 @author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+@author Andreas Seidl Fernandez (aseidlfernandez@gmail.com)
 """
 from libcpp.memory cimport make_shared
 
@@ -28,6 +29,15 @@ cdef class Recall(Heuristic):
 
     def __cinit__(self):
         self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[RecallImpl]()
+
+
+cdef class Laplace(Heuristic):
+    """
+    A wrapper for the C++ class 'Laplace'.
+    """
+
+    def __cinit__(self):
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[LaplaceImpl]()
 
 
 cdef class WRA(Heuristic):
