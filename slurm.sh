@@ -24,8 +24,7 @@ TIME_LIMIT_SECONDS=$((TIME_LIMIT_HOURS*3600))
 # Paths
 ROOT_DIR="${PWD}"
 DATA_DIR="${ROOT_DIR}/data"
-
-SUB_DIR="${DATASET}_pruning_${HEURISTIC::1}_${PRUNING_HEURISTIC::1}"
+SUB_DIR="${DATASET}_pruning_${HEAD_REFINEMENT::1}_${HEURISTIC::1}_${PRUNING_HEURISTIC::1}"
 LOG_DIR="${ROOT_DIR}/results/${SUB_DIR}/logs"
 OUTPUT_DIR="${ROOT_DIR}/results/${SUB_DIR}/evaluation"
 MODEL_DIR="${ROOT_DIR}/models/${SUB_DIR}"
@@ -47,7 +46,7 @@ if [[ $HEAD_REFINEMENT == "partial" ]]; then
     exit 22
   fi
 
-  PARAMETERS="${PARAMETERS} --lift-function{\\'peak_label\\':\\'${CARDINALITY}\\', \\'max_lift\\':1.08, \\'curvature\\':1}"
+  PARAMETERS="${PARAMETERS} --lift-function peak{\\'peak_label\\':${CARDINALITY}, \\'max_lift\\':1.08, \\'curvature\\':1}"
 fi
 
 # Create directories
