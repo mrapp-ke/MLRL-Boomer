@@ -32,7 +32,7 @@ static inline void subSampleInternally(BiPartition& partition, BitWeightVector& 
  * @tparam WeightVector The type of the weight vector that is used to store the weights
  */
 template<typename Partition, typename WeightVector>
-class NoInstanceSubSampling final : public IInstanceSampling {
+class NoInstanceSampling final : public IInstanceSampling {
 
     private:
 
@@ -46,7 +46,7 @@ class NoInstanceSubSampling final : public IInstanceSampling {
          * @param partition A reference to an object of template type `Partition` that provides access to the indices of
          *                  the examples that are included in the training set
          */
-        NoInstanceSubSampling(Partition& partition)
+        NoInstanceSampling(Partition& partition)
             : partition_(partition), weightVector_(WeightVector(partition.getNumElements())) {
 
         }
@@ -58,26 +58,26 @@ class NoInstanceSubSampling final : public IInstanceSampling {
 
 };
 
-std::unique_ptr<IInstanceSampling> NoInstanceSubSamplingFactory::create(const CContiguousLabelMatrix& labelMatrix,
-                                                                        const SinglePartition& partition,
-                                                                        IStatistics& statistics) const {
-    return std::make_unique<NoInstanceSubSampling<const SinglePartition, EqualWeightVector>>(partition);
+std::unique_ptr<IInstanceSampling> NoInstanceSamplingFactory::create(const CContiguousLabelMatrix& labelMatrix,
+                                                                     const SinglePartition& partition,
+                                                                     IStatistics& statistics) const {
+    return std::make_unique<NoInstanceSampling<const SinglePartition, EqualWeightVector>>(partition);
 }
 
-std::unique_ptr<IInstanceSampling> NoInstanceSubSamplingFactory::create(const CContiguousLabelMatrix& labelMatrix,
-                                                                        BiPartition& partition,
-                                                                        IStatistics& statistics) const {
-    return std::make_unique<NoInstanceSubSampling<BiPartition, BitWeightVector>>(partition);
+std::unique_ptr<IInstanceSampling> NoInstanceSamplingFactory::create(const CContiguousLabelMatrix& labelMatrix,
+                                                                     BiPartition& partition,
+                                                                     IStatistics& statistics) const {
+    return std::make_unique<NoInstanceSampling<BiPartition, BitWeightVector>>(partition);
 }
 
-std::unique_ptr<IInstanceSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
-                                                                        const SinglePartition& partition,
-                                                                        IStatistics& statistics) const {
-    return std::make_unique<NoInstanceSubSampling<const SinglePartition, EqualWeightVector>>(partition);
+std::unique_ptr<IInstanceSampling> NoInstanceSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                                     const SinglePartition& partition,
+                                                                     IStatistics& statistics) const {
+    return std::make_unique<NoInstanceSampling<const SinglePartition, EqualWeightVector>>(partition);
 }
 
-std::unique_ptr<IInstanceSampling> NoInstanceSubSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
-                                                                        BiPartition& partition,
-                                                                        IStatistics& statistics) const {
-    return std::make_unique<NoInstanceSubSampling<BiPartition, BitWeightVector>>(partition);
+std::unique_ptr<IInstanceSampling> NoInstanceSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                                     BiPartition& partition,
+                                                                     IStatistics& statistics) const {
+    return std::make_unique<NoInstanceSampling<BiPartition, BitWeightVector>>(partition);
 }

@@ -64,7 +64,7 @@ cdef extern from "common/sampling/instance_sampling_stratified_example_wise.hpp"
 
 cdef extern from "common/sampling/instance_sampling_no.hpp" nogil:
 
-    cdef cppclass NoInstanceSubSamplingFactoryImpl"NoInstanceSubSamplingFactory"(IInstanceSamplingFactory):
+    cdef cppclass NoInstanceSamplingFactoryImpl"NoInstanceSamplingFactory"(IInstanceSamplingFactory):
         pass
 
 
@@ -175,7 +175,7 @@ cdef class ExampleWiseStratifiedSamplingFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class NoInstanceSubSamplingFactory(InstanceSamplingFactory):
+cdef class NoInstanceSamplingFactory(InstanceSamplingFactory):
     pass
 
 
