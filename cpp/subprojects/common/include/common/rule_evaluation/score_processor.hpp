@@ -5,7 +5,7 @@
 
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
 // Forward declarations
@@ -23,18 +23,18 @@ class IScoreProcessor {
         virtual ~IScoreProcessor() { };
 
         /**
-         * Processes the scores that are stored by a `DenseScoreVector<FullIndexVector>` in order to convert them into
-         * the head of a rule.
+         * Processes the scores that are stored by a `DenseScoreVector<CompleteIndexVector>` in order to convert them
+         * into the head of a rule.
          *
          * @param bestHead      A pointer to an object of type `AbstractEvaluatedPrediction` that represents the best
          *                      head that has been created so far
-         * @param scoreVector   A reference to an object of type `DenseScoreVector<FullIndexVector>` that stores the
+         * @param scoreVector   A reference to an object of type `DenseScoreVector<CompleteIndexVector>` that stores the
          *                      scores to be processed
          * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
          *                      null pointer if no object has been created
          */
         virtual const AbstractEvaluatedPrediction* processScores(
-            const AbstractEvaluatedPrediction* bestHead, const DenseScoreVector<FullIndexVector>& scoreVector) = 0;
+            const AbstractEvaluatedPrediction* bestHead, const DenseScoreVector<CompleteIndexVector>& scoreVector) = 0;
 
         /**
          * Processes the scores that are stored by a `DenseScoreVector<PartialIndexVector>` in order to convert them
@@ -51,19 +51,19 @@ class IScoreProcessor {
             const AbstractEvaluatedPrediction* bestHead, const DenseScoreVector<PartialIndexVector>& scoreVector) = 0;
 
         /**
-         * Processes the scores that are stored by a `DenseBinnedScoreVector<FullIndexVector>` in order to convert them
-         * into the head of a rule.
+         * Processes the scores that are stored by a `DenseBinnedScoreVector<CompleteIndexVector>` in order to convert
+         * them into the head of a rule.
          *
          * @param bestHead      A pointer to an object of type `AbstractEvaluatedPrediction` that represents the best
          *                      head that has been created so far
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<FullIndexVector>` that stores
-         *                      the scores to be processed
+         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<CompleteIndexVector>` that
+         *                      stores the scores to be processed
          * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
          *                      null pointer if no object has been created
          */
         virtual const AbstractEvaluatedPrediction* processScores(
             const AbstractEvaluatedPrediction* bestHead,
-            const DenseBinnedScoreVector<FullIndexVector>& scoreVector) = 0;
+            const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) = 0;
 
         /**
          * Processes the scores that are stored by a `DenseBinnedScoreVector<PartialIndexVector>` in order to convert

@@ -145,16 +145,16 @@ namespace seco {
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
-                                                 const DenseWeightMatrix& weightMatrix, const FullIndexVector& indices,
-                                                 float64 weight) {
+                                                 const DenseWeightMatrix& weightMatrix,
+                                                 const CompleteIndexVector& indices, float64 weight) {
         addToSubsetInternally<CContiguousLabelMatrix>(*this, exampleIndex, labelMatrix, majorityLabelVector,
                                                       weightMatrix, weight);
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
-                                                 const DenseWeightMatrix& weightMatrix, const FullIndexVector& indices,
-                                                 float64 weight) {
+                                                 const DenseWeightMatrix& weightMatrix,
+                                                 const CompleteIndexVector& indices, float64 weight) {
         addToSubsetInternally<CsrLabelMatrix>(*this, exampleIndex, labelMatrix, majorityLabelVector, weightMatrix,
                                               weight);
     }

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
-    FullHeadRefinementFactory
+    CompleteHeadRefinementFactory
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import NoPostProcessor
@@ -187,7 +187,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         rule_induction = TopDownRuleInduction(min_coverage, max_conditions, max_head_refinements, False,
                                               num_threads_rule_refinement)
         lift_function = self.__create_lift_function(num_labels)
-        default_rule_head_refinement_factory = FullHeadRefinementFactory()
+        default_rule_head_refinement_factory = CompleteHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)
         label_sampling_factory = create_label_sampling_factory(self.label_sampling, num_labels)
         instance_sampling_factory = create_instance_sampling_factory(self.instance_sampling)

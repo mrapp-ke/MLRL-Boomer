@@ -7,13 +7,13 @@
 
 
 /**
- * Allows to create instances of the class `FullHeadRefinement`.
+ * Allows to create instances of the class `CompleteHeadRefinement`.
  */
-class FullHeadRefinementFactory final : public IHeadRefinementFactory {
+class CompleteHeadRefinementFactory final : public IHeadRefinementFactory {
 
     public:
 
-        std::unique_ptr<IHeadRefinement> create(const FullIndexVector& labelIndices) const override;
+        std::unique_ptr<IHeadRefinement> create(const CompleteIndexVector& labelIndices) const override;
 
         std::unique_ptr<IHeadRefinement> create(const PartialIndexVector& labelIndices) const override;
 

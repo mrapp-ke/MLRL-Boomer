@@ -114,9 +114,9 @@ namespace seco {
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
-            const FullIndexVector& indexVector) const {
-        return std::make_unique<HeuristicLabelWiseRuleEvaluation<FullIndexVector>>(indexVector, *heuristicPtr_,
-                                                                                   predictMajority_);
+            const CompleteIndexVector& indexVector) const {
+        return std::make_unique<HeuristicLabelWiseRuleEvaluation<CompleteIndexVector>>(indexVector, *heuristicPtr_,
+                                                                                       predictMajority_);
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(

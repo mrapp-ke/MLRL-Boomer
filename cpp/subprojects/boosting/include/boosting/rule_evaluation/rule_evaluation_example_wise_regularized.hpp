@@ -37,7 +37,7 @@ namespace boosting {
                                                         std::shared_ptr<Lapack> lapackPtr);
 
             std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createDense(
-                const FullIndexVector& indexVector) const override;
+                const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createDense(
                 const PartialIndexVector& indexVector) const override;

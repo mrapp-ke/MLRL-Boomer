@@ -21,8 +21,8 @@ namespace seco {
     void DenseWeightMatrix::updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,
                                       DenseVector<float64>::const_iterator predictionBegin,
                                       DenseVector<float64>::const_iterator predictionEnd,
-                                      FullIndexVector::const_iterator indicesBegin,
-                                      FullIndexVector::const_iterator indicesEnd) {
+                                      CompleteIndexVector::const_iterator indicesBegin,
+                                      CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
         iterator weightIterator = this->row_begin(row);
         auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
