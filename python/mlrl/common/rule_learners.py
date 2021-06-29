@@ -26,7 +26,7 @@ from mlrl.common.cython.rule_induction import RuleModelInduction
 from mlrl.common.cython.sampling import FeatureSubSamplingFactory, RandomFeatureSubsetSelectionFactory, \
     NoFeatureSubSamplingFactory
 from mlrl.common.cython.sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
-    RandomInstanceSubsetSelectionFactory, NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, \
+    InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, \
     ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.sampling import LabelSubSamplingFactory, RandomLabelSubsetSelectionFactory, \
     NoLabelSubSamplingFactory
@@ -128,7 +128,7 @@ def create_instance_sampling_factory(instance_sampling: str) -> InstanceSampling
             return InstanceSamplingWithReplacementFactory(sample_size)
         elif prefix == INSTANCE_SAMPLING_RANDOM:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
-            return RandomInstanceSubsetSelectionFactory(sample_size)
+            return InstanceSamplingWithoutReplacementFactory(sample_size)
         elif prefix == INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return LabelWiseStratifiedSamplingFactory(sample_size)

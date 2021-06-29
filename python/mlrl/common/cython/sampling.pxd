@@ -36,12 +36,12 @@ cdef extern from "common/sampling/instance_sampling_with_replacement.hpp" nogil:
 
 cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
 
-    cdef cppclass RandomInstanceSubsetSelectionFactoryImpl"RandomInstanceSubsetSelectionFactory"(
+    cdef cppclass InstanceSamplingWithoutReplacementFactoryImpl"InstanceSamplingWithoutReplacementFactory"(
             IInstanceSamplingFactory):
 
         # Constructors:
 
-        RandomInstanceSubsetSelectionFactoryImpl(float32 sampleSize) except +
+        InstanceSamplingWithoutReplacementFactoryImpl(float32 sampleSize) except +
 
 
 cdef extern from "common/sampling/instance_sampling_stratified_label_wise.hpp" nogil:
@@ -164,7 +164,7 @@ cdef class InstanceSamplingWithReplacementFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class RandomInstanceSubsetSelectionFactory(InstanceSamplingFactory):
+cdef class InstanceSamplingWithoutReplacementFactory(InstanceSamplingFactory):
     pass
 
 
