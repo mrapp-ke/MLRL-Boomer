@@ -12,7 +12,7 @@ from ast import literal_eval
 import sklearn.metrics as metrics
 
 from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE
-from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT
 from mlrl.seco.seco_learners import HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
 
 
@@ -166,7 +166,7 @@ class ArgumentParserBuilder:
                             help='The name of the strategy to be used for creating a holdout set or None')
         parser.add_argument('--loss', type=str, default=loss, help='The name of the loss function to be used')
         parser.add_argument('--head-type', type=str,
-                            default=ArgumentParserBuilder.__get_or_default('head_type', AUTOMATIC, **kwargs),
+                            default=ArgumentParserBuilder.__get_or_default('head_type', HEAD_TYPE_SINGLE, **kwargs),
                             help='The type of the rule heads that should be used')
         parser.add_argument('--pruning', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('pruning', None, **kwargs),
@@ -195,7 +195,7 @@ class ArgumentParserBuilder:
         return self
 
     def add_boosting_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
-        self.add_rule_learner_arguments(LOSS_LOGISTIC_LABEL_WISE, max_rules=1000,
+        self.add_rule_learner_arguments(LOSS_LOGISTIC_LABEL_WISE, max_rules=1000, head_type=AUTOMATIC,
                                         feature_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
         parser = self.parser
         parser.add_argument('--default-rule', type=boolean_string,
