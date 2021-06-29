@@ -21,7 +21,7 @@ cdef class BaggingFactory(InstanceSubSamplingFactory):
         :param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                             60 % of the available examples). Must be in (0, 1]
         """
-        self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[BaggingFactoryImpl](
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[BaggingFactoryImpl](
             sample_size)
 
 
@@ -35,7 +35,7 @@ cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples). Must be in (0, 1)
         """
-        self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[RandomInstanceSubsetSelectionFactoryImpl](
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[RandomInstanceSubsetSelectionFactoryImpl](
             sample_size)
 
 
@@ -49,7 +49,7 @@ cdef class LabelWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples). Must be in (0, 1)
         """
-        self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[LabelWiseStratifiedSamplingFactoryImpl](
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[LabelWiseStratifiedSamplingFactoryImpl](
             sample_size)
 
 
@@ -63,7 +63,7 @@ cdef class ExampleWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples). Must be in (0, 1)
         """
-        self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[ExampleWiseStratifiedSamplingFactoryImpl](
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[ExampleWiseStratifiedSamplingFactoryImpl](
             sample_size)
 
 
@@ -73,7 +73,7 @@ cdef class NoInstanceSubSamplingFactory(InstanceSubSamplingFactory):
     """
 
     def __cinit__(self):
-        self.instance_sub_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[NoInstanceSubSamplingFactoryImpl]()
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[NoInstanceSubSamplingFactoryImpl]()
 
 
 cdef class FeatureSubSamplingFactory:
@@ -94,7 +94,7 @@ cdef class RandomFeatureSubsetSelectionFactory(FeatureSubSamplingFactory):
                             60 % of the available features). Must be in (0, 1) or 0, if the default sample size
                             `floor(log2(num_features - 1) + 1)` should be used
         """
-        self.feature_sub_sampling_factory_ptr = <shared_ptr[IFeatureSubSamplingFactory]>make_shared[RandomFeatureSubsetSelectionFactoryImpl](
+        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSubSamplingFactory]>make_shared[RandomFeatureSubsetSelectionFactoryImpl](
             sample_size)
 
 
@@ -104,7 +104,7 @@ cdef class NoFeatureSubSamplingFactory(FeatureSubSamplingFactory):
     """
 
     def __cinit__(self):
-        self.feature_sub_sampling_factory_ptr = <shared_ptr[IFeatureSubSamplingFactory]>make_shared[NoFeatureSubSamplingFactoryImpl]()
+        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSubSamplingFactory]>make_shared[NoFeatureSubSamplingFactoryImpl]()
 
 
 cdef class LabelSubSamplingFactory:
@@ -123,7 +123,7 @@ cdef class RandomLabelSubsetSelectionFactory(LabelSubSamplingFactory):
         """
         :param num_samples: The number of labels to be included in the sample
         """
-        self.label_sub_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[RandomLabelSubsetSelectionFactoryImpl](
+        self.label_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[RandomLabelSubsetSelectionFactoryImpl](
             num_samples)
 
 
@@ -133,7 +133,7 @@ cdef class NoLabelSubSamplingFactory(LabelSubSamplingFactory):
     """
 
     def __cinit__(self):
-        self.label_sub_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[NoLabelSubSamplingFactoryImpl]()
+        self.label_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[NoLabelSubSamplingFactoryImpl]()
 
 
 cdef class PartitionSamplingFactory:
