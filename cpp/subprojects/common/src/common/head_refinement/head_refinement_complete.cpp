@@ -1,4 +1,4 @@
-#include "common/head_refinement/head_refinement_full.hpp"
+#include "common/head_refinement/head_refinement_complete.hpp"
 #include "common/head_refinement/prediction_complete.hpp"
 #include "common/head_refinement/prediction_partial.hpp"
 #include "common/rule_evaluation/score_processor.hpp"
@@ -8,7 +8,7 @@
 /**
  * Allows to find the best multi-label head that predicts for all labels.
  */
-class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor {
+class CompleteHeadRefinement final : public IHeadRefinement, public IScoreProcessor {
 
     private:
 
@@ -86,10 +86,10 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
 
 };
 
-std::unique_ptr<IHeadRefinement> FullHeadRefinementFactory::create(const CompleteIndexVector& labelIndices) const {
-    return std::make_unique<FullHeadRefinement>();
+std::unique_ptr<IHeadRefinement> CompleteHeadRefinementFactory::create(const CompleteIndexVector& labelIndices) const {
+    return std::make_unique<CompleteHeadRefinement>();
 }
 
-std::unique_ptr<IHeadRefinement> FullHeadRefinementFactory::create(const PartialIndexVector& labelIndices) const {
-    return std::make_unique<FullHeadRefinement>();
+std::unique_ptr<IHeadRefinement> CompleteHeadRefinementFactory::create(const PartialIndexVector& labelIndices) const {
+    return std::make_unique<CompleteHeadRefinement>();
 }

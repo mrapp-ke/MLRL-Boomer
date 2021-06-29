@@ -7,9 +7,9 @@
 
 
 /**
- * Allows to create instances of the class `FullHeadRefinement`.
+ * Allows to create instances of the class `CompleteHeadRefinement`.
  */
-class FullHeadRefinementFactory final : public IHeadRefinementFactory {
+class CompleteHeadRefinementFactory final : public IHeadRefinementFactory {
 
     public:
 

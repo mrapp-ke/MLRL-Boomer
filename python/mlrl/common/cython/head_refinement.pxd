@@ -13,9 +13,9 @@ cdef extern from "common/head_refinement/head_refinement_single.hpp" nogil:
         pass
 
 
-cdef extern from "common/head_refinement/head_refinement_full.hpp" nogil:
+cdef extern from "common/head_refinement/head_refinement_complete.hpp" nogil:
 
-    cdef cppclass FullHeadRefinementFactoryImpl"FullHeadRefinementFactory"(IHeadRefinementFactory):
+    cdef cppclass CompleteHeadRefinementFactoryImpl"CompleteHeadRefinementFactory"(IHeadRefinementFactory):
         pass
 
 
@@ -34,5 +34,5 @@ cdef class SingleLabelHeadRefinementFactory(HeadRefinementFactory):
     pass
 
 
-cdef class FullHeadRefinementFactory(HeadRefinementFactory):
+cdef class CompleteHeadRefinementFactory(HeadRefinementFactory):
     pass
