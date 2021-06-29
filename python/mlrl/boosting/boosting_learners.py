@@ -93,7 +93,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
-                 time_limit: int = -1, early_stopping: str = None, head_type: str = None,
+                 time_limit: int = -1, early_stopping: str = None, head_type: str = AUTOMATIC,
                  loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = None, label_sampling: str = None,
                  instance_sampling: str = None, recalculate_predictions: bool = True,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
@@ -110,8 +110,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param early_stopping:                      The strategy that is used for early stopping. Must be `measure` or
                                                     None, if no early stopping should be used
         :param head_type:                           The type of the rule heads that should be used. Must be
-                                                    `single-label`, `complete` or None, if the type of the heads should
-                                                    be chosen automatically
+                                                    `single-label`, `complete` or 'auto', if the type of the heads
+                                                    should be chosen automatically
         :param loss:                                The loss function to be minimized. Must be
                                                     `squared-error-label-wise`, `logistic-label-wise` or
                                                     `logistic-example-wise`
@@ -199,7 +199,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         name = 'max-rules=' + str(self.max_rules)
         if self.early_stopping is not None:
             name += '_early-stopping=' + str(self.early_stopping)
-        if self.head_type is not None:
+        if self.head_type != AUTOMATIC:
             name += '_head-type=' + str(self.head_type)
         name += '_loss=' + str(self.loss)
         if self.predictor is not None:
