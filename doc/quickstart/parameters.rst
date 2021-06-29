@@ -173,9 +173,9 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * The maximum number of times the head of a rule may be refined. Must be at least ``1`` or ``-1``, if the number of refinements should not be restricted.
 
-* ``--head-refinement`` (default value ``None``)
+* ``--head-type`` (default value ``None``)
 
-  * ``None`` The most suitable strategy for finding the heads of rules is chosen automatically based on the loss function.
+  * ``None`` The most suitable type of rule heads is chosen automatically based on the loss function.
   * ``single-label`` If all rules should predict for a single label.
   * ``full`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
 
@@ -204,11 +204,11 @@ The following parameters allow to adjust the behavior of the algorithm:
 
 The following parameters allow to enable multi-threading for different aspects of the algorithm:
 
-* ``--num-threads-refinements`` (default value ``1``)
+* ``--num-threads-rule-refinement`` (default value ``1``)
 
   * The number of threads to be used to search for potential refinements of rules in parallel. Must be at least ``1`` or ``-1``, if the number of cores that are available on the machine should be used.
 
-* ``--num-threads-update`` (default value ``1``)
+* ``--num-threads-statistic-update`` (default value ``1``)
 
   * The number of threads to be used for calculating the gradients and Hessians for different examples in parellel. Must be at least ``1`` or ``-1``, if the number of cores that are available on the machine should be used.
 
