@@ -209,7 +209,7 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('early_stopping', None, **kwargs),
                             help='The name of the strategy to be used for early stopping or None')
         parser.add_argument('--label-binning', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('label_binning', None, **kwargs),
+                            default=ArgumentParserBuilder.__get_or_default('label_binning', AUTOMATIC, **kwargs),
                             help='The name of the strategy to be used for label binning or None')
         parser.add_argument('--l2-regularization-weight', type=float,
                             default=ArgumentParserBuilder.__get_or_default('l2_regularization_weight', 1.0, **kwargs),
