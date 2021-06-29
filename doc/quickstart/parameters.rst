@@ -114,7 +114,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 * ``--label-sampling`` (default value ``None``)
 
   * ``None`` All labels are considered for learning a new rule.
-  * ``random-label-selection`` The labels to be considered when learning a new rule are chosen randomly. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random-label-selection{'num_samples':5}``.
+  * ``without-replacement`` The labels to be considered when learning a new rule are chosen randomly. Additional arguments may be provided using the Python dictionary syntax, e.g., ``without-replacement{'num_samples':5}``.
 
 * ``--feature-sampling`` (default value ``random-feature-selection``)
 

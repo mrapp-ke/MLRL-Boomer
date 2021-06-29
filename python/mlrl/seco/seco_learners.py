@@ -82,10 +82,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     Additional arguments may be provided as a dictionary, e.g.
                                                     `f-measure{\"beta\":1.0}`
         :param label_sampling:                      The strategy that is used for sampling the labels each time a new
-                                                    classification rule is learned. Must be 'random-label-selection' or
+                                                    classification rule is learned. Must be 'without-replacement' or
                                                     None, if no sampling should be used. Additional arguments may be
                                                     provided as a dictionary, e.g.
-                                                    `random-label-selection{\"num_samples\":5}`
+                                                    `without-replacement{\"num_samples\":5}`
         :param instance_sampling:                   The strategy that is used for sampling the training examples each
                                                     time a new classification rule is learned. Must be
                                                     `with-replacement`, `without-replacement` or None, if no sampling
