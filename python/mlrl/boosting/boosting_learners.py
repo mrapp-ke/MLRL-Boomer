@@ -94,9 +94,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
                  time_limit: int = -1, early_stopping: str = None, head_refinement: str = None,
-                 loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sub_sampling: str = None,
-                 instance_sub_sampling: str = INSTANCE_SAMPLING_BAGGING, recalculate_predictions: bool = True,
-                 feature_sub_sampling: str = FEATURE_SAMPLING_RANDOM, holdout: str = None, feature_binning: str = None,
+                 loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sampling: str = None,
+                 instance_sampling: str = INSTANCE_SAMPLING_BAGGING, recalculate_predictions: bool = True,
+                 feature_sampling: str = FEATURE_SAMPLING_RANDOM, holdout: str = None, feature_binning: str = None,
                  label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
@@ -118,23 +118,22 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param predictor:                           The strategy that is used for making predictions. Must be
                                                     `label-wise`, `example-wise` or None, if the default strategy should
                                                     be used
-        :param label_sub_sampling:                  The strategy that is used for sub-sampling the labels each time a
-                                                    new classification rule is learned. Must be 'random-label-selection'
-                                                    or None, if no sub-sampling should be used. Additional arguments may
-                                                    be provided as a dictionary, e.g.
+        :param label_sampling:                      The strategy that is used for sampling the labels each time a new
+                                                    classification rule is learned. Must be 'random-label-selection' or
+                                                    None, if no sampling should be used. Additional arguments may be
+                                                    provided as a dictionary, e.g.
                                                     `random-label-selection{\"num_samples\":5}`
-        :param instance_sub_sampling:               The strategy that is used for sub-sampling the training examples
-                                                    each time a new classification rule is learned. Must be `bagging`,
-                                                    `random-instance-selection` or None, if no sub-sampling should be
-                                                    used. Additional arguments may be provided as a dictionary, e.g.
+        :param instance_sampling:                   The strategy that is used for sampling the training examples each
+                                                    time a new classification rule is learned. Must be `bagging`,
+                                                    `random-instance-selection` or None, if no sampling should be used.
+                                                    Additional arguments may be provided as a dictionary, e.g.
                                                     `bagging{\"sample_size\":0.5}`
         :param recalculate_predictions:             True, if the predictions of rules should be recalculated on the
-                                                    entire training data, if instance sub-sampling is used, False
-                                                    otherwise
-        :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
+                                                    entire training data, if instance sampling is used, False otherwise
+        :param feature_sampling:                    The strategy that is used for sampling the features each time a
                                                     classification rule is refined. Must be `random-feature-selection`
-                                                    or None, if no sub-sampling should be used. Additional arguments may
-                                                    be provided as a dictionary, e.g.
+                                                    or None, if no sampling should be used. Additional arguments may be
+                                                    provided as a dictionary, e.g.
                                                     `random-feature-selection{\"sample_size\":0.5}`
         :param holdout:                             The name of the strategy to be used for creating a holdout set. Must
                                                     be `random` or None, if no holdout set should be used. Additional
@@ -179,10 +178,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.head_refinement = head_refinement
         self.loss = loss
         self.predictor = predictor
-        self.label_sub_sampling = label_sub_sampling
-        self.instance_sub_sampling = instance_sub_sampling
+        self.label_sampling = label_sampling
+        self.instance_sampling = instance_sampling
         self.recalculate_predictions = recalculate_predictions
-        self.feature_sub_sampling = feature_sub_sampling
+        self.feature_sampling = feature_sampling
         self.holdout = holdout
         self.feature_binning = feature_binning
         self.label_binning = label_binning
@@ -205,12 +204,12 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         name += '_loss=' + str(self.loss)
         if self.predictor is not None:
             name += '_predictor=' + str(self.predictor)
-        if self.label_sub_sampling is not None:
-            name += '_label-sub-sampling=' + str(self.label_sub_sampling)
-        if self.instance_sub_sampling is not None:
-            name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
-        if self.feature_sub_sampling is not None:
-            name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
+        if self.label_sampling is not None:
+            name += '_label-sampling=' + str(self.label_sampling)
+        if self.instance_sampling is not None:
+            name += '_instance-sampling=' + str(self.instance_sampling)
+        if self.feature_sampling is not None:
+            name += '_feature-sampling=' + str(self.feature_sampling)
         if self.holdout is not None:
             name += '_holdout=' + str(self.holdout)
         if self.feature_binning is not None:
@@ -293,11 +292,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         early_stopping_criterion = self.__create_early_stopping()
         if early_stopping_criterion is not None:
             stopping_criteria.append(early_stopping_criterion)
-        label_sampling_factory = create_label_sampling_factory(self.label_sub_sampling, num_labels)
-        instance_sampling_factory = create_instance_sampling_factory(self.instance_sub_sampling)
-        feature_sampling_factory = create_feature_sampling_factory(self.feature_sub_sampling)
+        label_sampling_factory = create_label_sampling_factory(self.label_sampling, num_labels)
+        instance_sampling_factory = create_instance_sampling_factory(self.instance_sampling)
+        feature_sampling_factory = create_feature_sampling_factory(self.feature_sampling)
         partition_sampling_factory = create_partition_sampling_factory(self.holdout)
-        pruning = create_pruning(self.pruning, self.instance_sub_sampling)
+        pruning = create_pruning(self.pruning, self.instance_sampling)
         shrinkage = self.__create_post_processor()
         loss_function = self.__create_loss_function()
         default_rule_head_refinement_factory = FullHeadRefinementFactory() if self.default_rule \
