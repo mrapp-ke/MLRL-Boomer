@@ -210,16 +210,16 @@ class ArgumentParserBuilder:
                             help='The name of the strategy to be used for early stopping or None')
         parser.add_argument('--label-binning', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('label_binning', AUTOMATIC, **kwargs),
-                            help='The name of the strategy to be used for label binning or None')
+                            help='The name of the strategy to be used for label binning, None or \'auto\'')
         parser.add_argument('--l2-regularization-weight', type=float,
                             default=ArgumentParserBuilder.__get_or_default('l2_regularization_weight', 1.0, **kwargs),
                             help='The weight of the L2 regularization to be used')
         parser.add_argument('--shrinkage', type=float,
                             default=ArgumentParserBuilder.__get_or_default('shrinkage', 0.3, **kwargs),
                             help='The shrinkage parameter to be used')
-        parser.add_argument('--predictor', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('predictor', None, **kwargs),
-                            help='The name of the strategy to be used for making predictions or None')
+        parser.add_argument('--predictor', type=str,
+                            default=ArgumentParserBuilder.__get_or_default('predictor', AUTOMATIC, **kwargs),
+                            help='The name of the strategy to be used for making predictions or \'auto\'')
         return self
 
     def add_seco_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
