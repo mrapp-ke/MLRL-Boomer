@@ -116,10 +116,10 @@ The following parameters allow to adjust the behavior of the algorithm:
   * ``None`` All labels are considered for learning a new rule.
   * ``without-replacement`` The labels to be considered when learning a new rule are chosen randomly. Additional arguments may be provided using the Python dictionary syntax, e.g., ``without-replacement{'num_samples':5}``.
 
-* ``--feature-sampling`` (default value ``random-feature-selection``)
+* ``--feature-sampling`` (default value ``without-replacement``)
 
   * ``None`` All features are considered for learning a new rule.
-  * ``random-feature-selection`` A random subset of the features is used to search for the refinements of rules. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random_feature-selection{'sample_size':0.5}``.
+  * ``without-replacement`` A random subset of the features is used to search for the refinements of rules. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random_feature-selection{'sample_size':0.5}``.
 
 * ``--instance-sampling`` (default value ``with-replacement``)
 

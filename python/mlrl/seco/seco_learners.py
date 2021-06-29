@@ -92,10 +92,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     should be used. Additional arguments may be provided as a
                                                     dictionary, e.g. `with-replacement{\"sample_size\":0.5}`
         :param feature_sampling:                    The strategy that is used for sampling the features each time a
-                                                    classification rule is refined. Must be `random-feature-selection`
-                                                    or None, if no sampling should be used. Additional argument may be
+                                                    classification rule is refined. Must be `without-replacement` or
+                                                    None, if no sampling should be used. Additional argument may be
                                                     provided as a dictionary, e.g.
-                                                    `random-feature-selection{\"sample_size\":0.5}`
+                                                    `without-replacement{\"sample_size\":0.5}`
         :param holdout:                             The name of the strategy to be used for creating a holdout set. Must
                                                     be `random` or None, if no holdout set should be used. Additional
                                                     arguments may be provided as a dictionary, e.g.
