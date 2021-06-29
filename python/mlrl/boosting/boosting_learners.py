@@ -33,16 +33,16 @@ from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFun
     ArithmeticMeanFunction
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
+from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
+from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
     get_preferred_num_threads, create_thresholds_factory, parse_prefix_and_dict, get_int_argument, get_float_argument, \
     get_string_argument, get_bool_argument
 
-EARLY_STOPPING_MEASURE = 'measure'
+EARLY_STOPPING_LOSS = 'loss'
 
 AGGREGATION_FUNCTION_MIN = 'min'
 
@@ -66,17 +66,17 @@ ARGUMENT_FORCE_STOP = 'force_stop'
 
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
-HEAD_TYPE_FULL = 'full'
+HEAD_TYPE_COMPLETE = 'complete'
 
-LOSS_LABEL_WISE_LOGISTIC = 'label-wise-logistic-loss'
+LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
 
-LOSS_LABEL_WISE_SQUARED_ERROR = 'label-wise-squared-error-loss'
+LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
 
-LOSS_LABEL_WISE_SQUARED_HINGE = 'label-wise-squared-hinge-loss'
+LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
 
-LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
+LOSS_SQUARED_HINGE_LABEL_WISE = 'hinge-label-wise'
 
-NON_DECOMPOSABLE_LOSSES = {LOSS_EXAMPLE_WISE_LOGISTIC}
+NON_DECOMPOSABLE_LOSSES = {LOSS_LOGISTIC_EXAMPLE_WISE}
 
 PREDICTOR_LABEL_WISE = 'label-wise'
 
@@ -93,8 +93,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
-                 time_limit: int = -1, early_stopping: str = None, head_type: str = None,
-                 loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sampling: str = None,
+                 time_limit: int = -1, early_stopping: str = None, head_type: str = AUTOMATIC,
+                 loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = None, label_sampling: str = None,
                  instance_sampling: str = None, recalculate_predictions: bool = True,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
@@ -110,11 +110,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param early_stopping:                      The strategy that is used for early stopping. Must be `measure` or
                                                     None, if no early stopping should be used
         :param head_type:                           The type of the rule heads that should be used. Must be
-                                                    `single-label`, `full` or None, if the type of the heads should be
-                                                    chosen automatically
+                                                    `single-label`, `complete` or 'auto', if the type of the heads
+                                                    should be chosen automatically
         :param loss:                                The loss function to be minimized. Must be
-                                                    `label-wise-squared-error-loss`, `label-wise-logistic-loss` or
-                                                    `example-wise-logistic-loss`
+                                                    `squared-error-label-wise`, `logistic-label-wise` or
+                                                    `logistic-example-wise`
         :param predictor:                           The strategy that is used for making predictions. Must be
                                                     `label-wise`, `example-wise` or None, if the default strategy should
                                                     be used
@@ -199,7 +199,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         name = 'max-rules=' + str(self.max_rules)
         if self.early_stopping is not None:
             name += '_early-stopping=' + str(self.early_stopping)
-        if self.head_type is not None:
+        if self.head_type != AUTOMATIC:
             name += '_head-type=' + str(self.head_type)
         name += '_loss=' + str(self.loss)
         if self.predictor is not None:
@@ -244,7 +244,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_probability_predictor(self, num_labels: int) -> Predictor:
         predictor = self.__get_preferred_predictor()
 
-        if self.loss == LOSS_LABEL_WISE_LOGISTIC or self.loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+        if self.loss == LOSS_LOGISTIC_LABEL_WISE or self.loss == LOSS_LOGISTIC_EXAMPLE_WISE:
             if predictor == PREDICTOR_LABEL_WISE:
                 transformation_function = LogisticFunction()
                 return self.__create_label_wise_probability_predictor(num_labels, transformation_function)
@@ -269,7 +269,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
         num_threads = get_preferred_num_threads(self.num_threads_prediction)
-        threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
+        threshold = 0.5 if self.loss == LOSS_SQUARED_HINGE_LABEL_WISE else 0.0
         return LabelWiseClassificationPredictor(num_labels=num_labels, threshold=threshold, num_threads=num_threads)
 
     def __create_example_wise_predictor(self, num_labels: int) -> ExampleWiseClassificationPredictor:
@@ -326,9 +326,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if early_stopping is None:
             return None
         else:
-            prefix, args = parse_prefix_and_dict(early_stopping, [EARLY_STOPPING_MEASURE])
+            prefix, args = parse_prefix_and_dict(early_stopping, [EARLY_STOPPING_LOSS])
 
-            if prefix == EARLY_STOPPING_MEASURE:
+            if prefix == EARLY_STOPPING_LOSS:
                 if self.holdout is None:
                     log.warning('Parameter \'early_stopping\' does not have any effect, because parameter \'holdout\' '
                                 + 'is set to \'None\'!')
@@ -373,13 +373,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __create_loss_function(self):
         loss = self.loss
 
-        if loss == LOSS_LABEL_WISE_SQUARED_ERROR:
+        if loss == LOSS_SQUARED_ERROR_LABEL_WISE:
             return LabelWiseSquaredErrorLoss()
-        elif loss == LOSS_LABEL_WISE_SQUARED_HINGE:
+        elif loss == LOSS_SQUARED_HINGE_LABEL_WISE:
             return LabelWiseSquaredHingeLoss()
-        elif loss == LOSS_LABEL_WISE_LOGISTIC:
+        elif loss == LOSS_LOGISTIC_LABEL_WISE:
             return LabelWiseLogisticLoss()
-        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+        elif loss == LOSS_LOGISTIC_EXAMPLE_WISE:
             return ExampleWiseLogisticLoss()
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
@@ -428,16 +428,16 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
         if head_type == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
-        elif head_type == HEAD_TYPE_FULL:
+        elif head_type == HEAD_TYPE_COMPLETE:
             return FullHeadRefinementFactory()
         raise ValueError('Invalid value given for parameter \'head_type\': ' + str(head_type))
 
     def ___get_preferred_head_type(self) -> str:
         head_type = self.head_type
 
-        if head_type is None:
+        if head_type == AUTOMATIC:
             if self.loss in NON_DECOMPOSABLE_LOSSES:
-                return HEAD_TYPE_FULL
+                return HEAD_TYPE_COMPLETE
             else:
                 return HEAD_TYPE_SINGLE
         return head_type
