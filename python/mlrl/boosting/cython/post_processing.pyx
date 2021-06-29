@@ -9,7 +9,7 @@ cdef class ConstantShrinkage(PostProcessor):
     A wrapper for the C++ class `ConstantShrinkage`.
     """
 
-    def __cinit__(self, float64 shrinkage = 0.3):
+    def __cinit__(self, float64 shrinkage):
         """
         :param shrinkage: The shrinkage parameter. Must be in (0, 1)
         """

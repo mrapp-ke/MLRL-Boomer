@@ -18,8 +18,8 @@ from sklearn.base import ClassifierMixin
 
 from mlrl.common.rule_learners import HEAD_REFINEMENT_SINGLE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import create_pruning, create_feature_sub_sampling_factory, \
-    create_instance_sub_sampling_factory, create_label_sub_sampling_factory, create_partition_sampling_factory, \
+from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
+    create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
     get_preferred_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument, create_thresholds_factory
 
@@ -61,11 +61,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
                  head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
-                 heuristic: str = HEURISTIC_PRECISION, label_sub_sampling: str = None,
-                 instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout: str = None,
-                 feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
-                 num_threads_prediction: int = 1):
+                 heuristic: str = HEURISTIC_PRECISION, label_sampling: str = None, instance_sampling: str = None,
+                 feature_sampling: str = None, holdout: str = None, feature_binning: str = None, pruning: str = None,
+                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1,
+                 num_threads_refinement: int = 1, num_threads_update: int = 1, num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -82,21 +81,21 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     `recall`, `weighted-relative-accuracy`, `f-measure` or `m-estimate`.
                                                     Additional arguments may be provided as a dictionary, e.g.
                                                     `f-measure{\"beta\":1.0}`
-        :param label_sub_sampling:                  The strategy that is used for sub-sampling the labels each time a
-                                                    new classification rule is learned. Must be 'random-label-selection'
-                                                    or None, if no sub-sampling should be used. Additional arguments may
-                                                    be provided as a dictionary, e.g.
-                                                    `random-label-selection{\"num_samples\":5}`
-        :param instance_sub_sampling:               The strategy that is used for sub-sampling the training examples
-                                                    each time a new classification rule is learned. Must be `bagging`,
-                                                    `random-instance-selection` or None, if no sub-sampling should be
-                                                    used. Additional arguments may be provided as a dictionary, e.g.
-                                                    `bagging{\"sample_size\":0.5}`
-        :param feature_sub_sampling:                The strategy that is used for sub-sampling the features each time a
-                                                    classification rule is refined. Must be `random-feature-selection`
-                                                    or None, if no sub-sampling should be used. Additional argument may
-                                                    be provided as a dictionary, e.g.
-                                                    `random-feature-selection{\"sample_size\":0.5}`
+        :param label_sampling:                      The strategy that is used for sampling the labels each time a new
+                                                    classification rule is learned. Must be 'without-replacement' or
+                                                    None, if no sampling should be used. Additional arguments may be
+                                                    provided as a dictionary, e.g.
+                                                    `without-replacement{\"num_samples\":5}`
+        :param instance_sampling:                   The strategy that is used for sampling the training examples each
+                                                    time a new classification rule is learned. Must be
+                                                    `with-replacement`, `without-replacement` or None, if no sampling
+                                                    should be used. Additional arguments may be provided as a
+                                                    dictionary, e.g. `with-replacement{\"sample_size\":0.5}`
+        :param feature_sampling:                    The strategy that is used for sampling the features each time a
+                                                    classification rule is refined. Must be `without-replacement` or
+                                                    None, if no sampling should be used. Additional argument may be
+                                                    provided as a dictionary, e.g.
+                                                    `without-replacement{\"sample_size\":0.5}`
         :param holdout:                             The name of the strategy to be used for creating a holdout set. Must
                                                     be `random` or None, if no holdout set should be used. Additional
                                                     arguments may be provided as a dictionary, e.g.
@@ -130,9 +129,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.lift_function = lift_function
         self.loss = loss
         self.heuristic = heuristic
-        self.label_sub_sampling = label_sub_sampling
-        self.instance_sub_sampling = instance_sub_sampling
-        self.feature_sub_sampling = feature_sub_sampling
+        self.label_sampling = label_sampling
+        self.instance_sampling = instance_sampling
+        self.feature_sampling = feature_sampling
         self.holdout = holdout
         self.feature_binning = feature_binning
         self.pruning = pruning
@@ -150,12 +149,12 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         name += '_lift-function=' + str(self.lift_function)
         name += '_loss=' + str(self.loss)
         name += '_heuristic=' + str(self.heuristic)
-        if self.label_sub_sampling is not None:
-            name += '_label-sub-sampling=' + str(self.label_sub_sampling)
-        if self.instance_sub_sampling is not None:
-            name += '_instance-sub-sampling=' + str(self.instance_sub_sampling)
-        if self.feature_sub_sampling is not None:
-            name += '_feature-sub-sampling=' + str(self.feature_sub_sampling)
+        if self.label_sampling is not None:
+            name += '_label-sampling=' + str(self.label_sampling)
+        if self.instance_sampling is not None:
+            name += '_instance-sampling=' + str(self.instance_sampling)
+        if self.feature_sampling is not None:
+            name += '_feature-sampling=' + str(self.feature_sampling)
         if self.holdout is not None:
             name += '_holdout=' + str(self.holdout)
         if self.feature_binning is not None:
@@ -189,19 +188,18 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)
-        label_sub_sampling_factory = create_label_sub_sampling_factory(self.label_sub_sampling, num_labels)
-        instance_sub_sampling_factory = create_instance_sub_sampling_factory(self.instance_sub_sampling)
-        feature_sub_sampling_factory = create_feature_sub_sampling_factory(self.feature_sub_sampling)
+        label_sampling_factory = create_label_sampling_factory(self.label_sampling, num_labels)
+        instance_sampling_factory = create_instance_sampling_factory(self.instance_sampling)
+        feature_sampling_factory = create_feature_sampling_factory(self.feature_sampling)
         partition_sampling_factory = create_partition_sampling_factory(self.holdout)
-        pruning = create_pruning(self.pruning, self.instance_sub_sampling)
+        pruning = create_pruning(self.pruning, self.instance_sampling)
         post_processor = NoPostProcessor()
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(CoverageStoppingCriterion(0))
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
-                                            label_sub_sampling_factory, instance_sub_sampling_factory,
-                                            feature_sub_sampling_factory, partition_sampling_factory, pruning,
-                                            post_processor, stopping_criteria)
+                                            label_sampling_factory, instance_sampling_factory, feature_sampling_factory,
+                                            partition_sampling_factory, pruning, post_processor, stopping_criteria)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic

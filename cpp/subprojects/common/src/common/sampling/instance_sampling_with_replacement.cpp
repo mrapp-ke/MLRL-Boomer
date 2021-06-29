@@ -1,12 +1,12 @@
-#include "common/sampling/instance_sampling_bagging.hpp"
+#include "common/sampling/instance_sampling_with_replacement.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/data/arrays.hpp"
 
 
-static inline void subSampleInternally(const SinglePartition& partition, float32 sampleSize,
-                                       DenseWeightVector<uint32>& weightVector, RNG& rng) {
+static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize,
+                                    DenseWeightVector<uint32>& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize * numExamples);
     typename DenseWeightVector<uint32>::iterator weightIterator = weightVector.begin();
@@ -29,8 +29,8 @@ static inline void subSampleInternally(const SinglePartition& partition, float32
     weightVector.setNumNonZeroWeights(numNonZeroWeights);
 }
 
-static inline void subSampleInternally(BiPartition& partition, float32 sampleSize,
-                                       DenseWeightVector<uint32>& weightVector, RNG& rng) {
+static inline void sampleInternally(BiPartition& partition, float32 sampleSize, DenseWeightVector<uint32>& weightVector,
+                                    RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize * numTrainingExamples);
@@ -57,14 +57,13 @@ static inline void subSampleInternally(BiPartition& partition, float32 sampleSiz
 }
 
 /**
- * Implements bootstrap aggregating (bagging) for selecting a subset of the available training examples with
- * replacement.
+ * Allows to select a subset of the available training examples with replacement.
  *
  * @tparam Partition The type of the object that provides access to the indices of the examples that are included in the
  *                   training set
  */
 template<typename Partition>
-class Bagging final : public IInstanceSubSampling {
+class InstanceSamplingWithReplacement final : public IInstanceSampling {
 
     private:
 
@@ -82,42 +81,40 @@ class Bagging final : public IInstanceSubSampling {
          * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
          *                   60 % of the available examples). Must be in (0, 1]
          */
-        Bagging(Partition& partition, float32 sampleSize)
+        InstanceSamplingWithReplacement(Partition& partition, float32 sampleSize)
             : partition_(partition), sampleSize_(sampleSize),
               weightVector_(DenseWeightVector<uint32>(partition.getNumElements())) {
 
         }
 
-        const IWeightVector& subSample(RNG& rng) override {
-            subSampleInternally(partition_, sampleSize_, weightVector_, rng);
+        const IWeightVector& sample(RNG& rng) override {
+            sampleInternally(partition_, sampleSize_, weightVector_, rng);
             return weightVector_;
         }
 
 };
 
-BaggingFactory::BaggingFactory(float32 sampleSize)
+InstanceSamplingWithReplacementFactory::InstanceSamplingWithReplacementFactory(float32 sampleSize)
     : sampleSize_(sampleSize) {
 
 }
 
-std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CContiguousLabelMatrix& labelMatrix,
-                                                             const SinglePartition& partition,
-                                                             IStatistics& statistics) const {
-    return std::make_unique<Bagging<const SinglePartition>>(partition, sampleSize_);
+std::unique_ptr<IInstanceSampling> InstanceSamplingWithReplacementFactory::create(
+        const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
+    return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(partition, sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CContiguousLabelMatrix& labelMatrix,
-                                                             BiPartition& partition, IStatistics& statistics) const {
-    return std::make_unique<Bagging<BiPartition>>(partition, sampleSize_);
+std::unique_ptr<IInstanceSampling> InstanceSamplingWithReplacementFactory::create(
+        const CContiguousLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
+    return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(partition, sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CsrLabelMatrix& labelMatrix,
-                                                             const SinglePartition& partition,
-                                                             IStatistics& statistics) const {
-    return std::make_unique<Bagging<const SinglePartition>>(partition, sampleSize_);
+std::unique_ptr<IInstanceSampling> InstanceSamplingWithReplacementFactory::create(
+        const CsrLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
+    return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(partition, sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CsrLabelMatrix& labelMatrix,
-                                                             BiPartition& partition, IStatistics& statistics) const {
-    return std::make_unique<Bagging<BiPartition>>(partition, sampleSize_);
+std::unique_ptr<IInstanceSampling> InstanceSamplingWithReplacementFactory::create(
+        const CsrLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
+    return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(partition, sampleSize_);
 }

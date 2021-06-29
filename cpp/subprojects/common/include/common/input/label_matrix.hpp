@@ -11,8 +11,8 @@ class IStatisticsProvider;
 class IStatisticsProviderFactory;
 class IPartitionSampling;
 class IPartitionSamplingFactory;
-class IInstanceSubSampling;
-class IInstanceSubSamplingFactory;
+class IInstanceSampling;
+class IInstanceSamplingFactory;
 class IStatistics;
 class SinglePartition;
 class BiPartition;
@@ -71,35 +71,34 @@ class ILabelMatrix {
             const IPartitionSamplingFactory& factory) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `IInstanceSubSampling`, based on the type of this label
-         * matrix.
+         * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this label matrix.
          *
-         * @param factory       A reference to an object of type `IInstanceSubSamplingFactory` that should be used to
+         * @param factory       A reference to an object of type `IInstanceSamplingFactory` that should be used to
          *                      create the instance
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that are included in the training set
          * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
          *                      which serve as a basis for learning rules
-         * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
-        virtual std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
-            const IInstanceSubSamplingFactory& factory, const SinglePartition& partition,
-            IStatistics& statistics) const = 0;
+        virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+                                                                          const SinglePartition& partition,
+                                                                          IStatistics& statistics) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `IInstanceSubSampling`, based on the type of this label
-         * matrix.
+         * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this label matrix.
          *
-         * @param factory       A reference to an object of type `IInstanceSubSamplingFactory` that should be used to
+         * @param factory       A reference to an object of type `IInstanceSamplingFactory` that should be used to
          *                      create the instance
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that are included in the training set and the holdout set,
          *                      respectively
          * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
          *                      which serve as a basis for learning rules
-         * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
-        virtual std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
-            const IInstanceSubSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const = 0;
+        virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+                                                                          BiPartition& partition,
+                                                                          IStatistics& statistics) const = 0;
 
 };
