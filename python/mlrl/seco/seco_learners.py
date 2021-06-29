@@ -16,7 +16,7 @@ from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProvi
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE
+from mlrl.common.rule_learners import AUTOMATIC, HEAD_TYPE_SINGLE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
@@ -249,7 +249,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def __create_head_refinement_factory(self, lift_function: LiftFunction) -> HeadRefinementFactory:
         head_type = self.head_type
 
-        if head_type is None:
+        if head_type == AUTOMATIC:
             return SingleLabelHeadRefinementFactory()
         elif head_type == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
