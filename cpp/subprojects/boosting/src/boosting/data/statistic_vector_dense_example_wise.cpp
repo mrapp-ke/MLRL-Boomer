@@ -154,7 +154,7 @@ namespace boosting {
                                                       gradient_const_iterator gradientsEnd,
                                                       hessian_const_iterator hessiansBegin,
                                                       hessian_const_iterator hessiansEnd,
-                                                      const FullIndexVector& indices, float64 weight) {
+                                                      const CompleteIndexVector& indices, float64 weight) {
         addToArray(gradients_, gradientsBegin, numGradients_, weight);
         addToArray(hessians_, hessiansBegin, numHessians_, weight);
     }
@@ -178,7 +178,7 @@ namespace boosting {
                                                      gradient_const_iterator firstGradientsEnd,
                                                      hessian_const_iterator firstHessiansBegin,
                                                      hessian_const_iterator firstHessiansEnd,
-                                                     const FullIndexVector& firstIndices,
+                                                     const CompleteIndexVector& firstIndices,
                                                      gradient_const_iterator secondGradientsBegin,
                                                      gradient_const_iterator secondGradientsEnd,
                                                      hessian_const_iterator secondHessiansBegin,
@@ -208,7 +208,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> DenseExampleWiseStatisticVector::createRuleEvaluation(
-            const IExampleWiseRuleEvaluationFactory& factory, const FullIndexVector& labelIndices) const {
+            const IExampleWiseRuleEvaluationFactory& factory, const CompleteIndexVector& labelIndices) const {
         return factory.createDense(labelIndices);
     }
 

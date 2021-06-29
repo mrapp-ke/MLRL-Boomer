@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include <memory>
 
@@ -302,19 +302,20 @@ namespace boosting {
                      hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight);
 
             /**
-             * Adds certain gradients and Hessians in another vector, whose positions are given as a `FullIndexVector`,
-             * to this vector. The gradients and Hessians to be added are multiplied by a specific weight.
+             * Adds certain gradients and Hessians in another vector, whose positions are given as a
+             * `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a
+             * specific weight.
              *
              * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients
              * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients
              * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
              * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
-             * @param indices           A reference to a `FullIndexVector' that provides access to the indices
+             * @param indices           A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight            The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                              hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
-                             const FullIndexVector& indices, float64 weight);
+                             const CompleteIndexVector& indices, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
@@ -335,14 +336,14 @@ namespace boosting {
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
-             * correspond to the positions provided by a `FullIndexVector`.
+             * correspond to the positions provided by a `CompleteIndexVector`.
              *
              * @param firstGradientsBegin   A `gradient_const_iterator` to the beginning of the first gradients
              * @param firstGradientsEnd     A `gradient_const_iterator` to the end of the first gradients
              * @param firstHessiansBegin    A `hessian_const_iterator` to the beginning of the first Hessians
              * @param firstHessiansEnd      A `hessian_const_iterator` to the end of the first Hessians
-             * @param firstIndices          A reference to an object of type `FullIndexVector` that provides access to
-             *                              the indices
+             * @param firstIndices          A reference to an object of type `CompleteIndexVector` that provides access
+             *                              to the indices
              * @param secondGradientsBegin  A `gradient_const_iterator` to the beginning of the second gradients
              * @param secondGradientsEnd    A `gradient_const_iterator` to the end of the second gradients
              * @param secondHessiansBegin   A `hessian_const_iterator` to the beginning of the second Hessians
@@ -350,7 +351,7 @@ namespace boosting {
              */
             void difference(gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
                             hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
-                            const FullIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
+                            const CompleteIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
                             gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
                             hessian_const_iterator secondHessiansEnd);
 
@@ -383,13 +384,13 @@ namespace boosting {
              *
              * @param factory       A reference to an object of type `IExampleWiseRuleEvaluationFactory` that should be
              *                      used to create the object
-             * @param indexVector   A reference to an object of type `FullIndexVector` that provides access to the
+             * @param indexVector   A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices of the labels for which the rules may predict
              * @return              An unique pointer to an object of type `IExampleWiseRuleEvaluation` that has been
              *                      created
              */
             std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createRuleEvaluation(
-                const IExampleWiseRuleEvaluationFactory& factory, const FullIndexVector& labelIndices) const;
+                const IExampleWiseRuleEvaluationFactory& factory, const CompleteIndexVector& labelIndices) const;
 
             /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluation` that allows to calculate the

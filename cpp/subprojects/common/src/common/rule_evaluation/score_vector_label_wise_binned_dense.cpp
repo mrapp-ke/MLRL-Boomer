@@ -109,4 +109,4 @@ const AbstractEvaluatedPrediction* DenseBinnedLabelWiseScoreVector<T>::processSc
 }
 
 template class DenseBinnedLabelWiseScoreVector<PartialIndexVector>;
-template class DenseBinnedLabelWiseScoreVector<FullIndexVector>;
+template class DenseBinnedLabelWiseScoreVector<CompleteIndexVector>;

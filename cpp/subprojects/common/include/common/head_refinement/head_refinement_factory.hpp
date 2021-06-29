@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/head_refinement/head_refinement.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
 
@@ -21,11 +21,11 @@ class IHeadRefinementFactory {
          * Creates and returns a new object of type `IHeadRefinement` that allows to find the best head considering all
          * available labels.
          *
-         * @param labelIndices  A reference to an object of type `FullIndexVector` that provides access to the indices
-         *                      of the labels that should be considered
+         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the labels that should be considered
          * @return              An unique pointer to an object of type `IHeadRefinement` that has been created
          */
-        virtual std::unique_ptr<IHeadRefinement> create(const FullIndexVector& labelIndices) const = 0;
+        virtual std::unique_ptr<IHeadRefinement> create(const CompleteIndexVector& labelIndices) const = 0;
 
         /**
          * Creates and returns a new object of type `IHeadRefinement` that allows to find the best head considering only

@@ -257,7 +257,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 }
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& labelIndices,
                                                                       uint32 featureIndex) override {
                     return createApproximateRuleRefinement(labelIndices, featureIndex);
                 }

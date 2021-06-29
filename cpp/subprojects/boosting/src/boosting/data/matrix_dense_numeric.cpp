@@ -18,8 +18,8 @@ namespace boosting {
     template<typename T>
     void NumericDenseMatrix<T>::addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
                                                    typename DenseVector<T>::const_iterator end,
-                                                   FullIndexVector::const_iterator indicesBegin,
-                                                   FullIndexVector::const_iterator indicesEnd) {
+                                                   CompleteIndexVector::const_iterator indicesBegin,
+                                                   CompleteIndexVector::const_iterator indicesEnd) {
         typename NumericDenseMatrix<T>::iterator iterator = this->row_begin(row);
         uint32 numCols = this->getNumCols();
 

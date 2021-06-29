@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/head_refinement/prediction_evaluated.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 
 // Forward declarations
 class IImmutableStatistics;
@@ -17,7 +17,7 @@ class FullPrediction final : public AbstractEvaluatedPrediction {
 
     private:
 
-        FullIndexVector indexVector_;
+        CompleteIndexVector indexVector_;
 
     public:
 
@@ -29,7 +29,7 @@ class FullPrediction final : public AbstractEvaluatedPrediction {
         /**
          * An iterator that provides read-only access to the indices of the labels for which the rule predicts.
          */
-        typedef FullIndexVector::const_iterator index_const_iterator;
+        typedef CompleteIndexVector::const_iterator index_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices of the labels for which the rule predicts.
