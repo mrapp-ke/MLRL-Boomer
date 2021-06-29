@@ -102,23 +102,23 @@ def create_sparse_policy(policy: str) -> SparsePolicy:
             [x.value for x in SparsePolicy]))
 
 
-def create_label_sub_sampling_factory(label_sub_sampling: str, num_labels: int) -> LabelSubSamplingFactory:
-    if label_sub_sampling is None:
+def create_label_sub_sampling_factory(label_sampling: str, num_labels: int) -> LabelSubSamplingFactory:
+    if label_sampling is None:
         return NoLabelSubSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(label_sub_sampling, [LABEL_SAMPLING_RANDOM])
+        prefix, args = parse_prefix_and_dict(label_sampling, [LABEL_SAMPLING_RANDOM])
 
         if prefix == LABEL_SAMPLING_RANDOM:
             num_samples = get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
             return RandomLabelSubsetSelectionFactory(num_samples)
-        raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
+        raise ValueError('Invalid value given for parameter \'label_sampling\': ' + str(label_sampling))
 
 
-def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> InstanceSubSamplingFactory:
-    if instance_sub_sampling is None:
+def create_instance_sub_sampling_factory(instance_sampling: str) -> InstanceSubSamplingFactory:
+    if instance_sampling is None:
         return NoInstanceSubSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(instance_sub_sampling,
+        prefix, args = parse_prefix_and_dict(instance_sampling,
                                              [INSTANCE_SAMPLING_BAGGING, INSTANCE_SAMPLING_RANDOM,
                                               INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE,
                                               INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE])
@@ -135,19 +135,19 @@ def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> Instance
         elif prefix == INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return ExampleWiseStratifiedSamplingFactory(sample_size)
-        raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
+        raise ValueError('Invalid value given for parameter \'instance_sampling\': ' + str(instance_sampling))
 
 
-def create_feature_sub_sampling_factory(feature_sub_sampling: str) -> FeatureSubSamplingFactory:
-    if feature_sub_sampling is None:
+def create_feature_sub_sampling_factory(feature_sampling: str) -> FeatureSubSamplingFactory:
+    if feature_sampling is None:
         return NoFeatureSubSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(feature_sub_sampling, [FEATURE_SAMPLING_RANDOM])
+        prefix, args = parse_prefix_and_dict(feature_sampling, [FEATURE_SAMPLING_RANDOM])
 
         if prefix == FEATURE_SAMPLING_RANDOM:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
             return RandomFeatureSubsetSelectionFactory(sample_size)
-        raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
+        raise ValueError('Invalid value given for parameter \'feature_sampling\': ' + str(feature_sampling))
 
 
 def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
@@ -170,14 +170,14 @@ def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
         raise ValueError('Invalid value given for parameter \'holdout\': ' + str(holdout))
 
 
-def create_pruning(pruning: str, instance_sub_sampling: str) -> Pruning:
+def create_pruning(pruning: str, instance_sampling: str) -> Pruning:
     if pruning is None:
         return NoPruning()
     else:
         if pruning == PRUNING_IREP:
-            if instance_sub_sampling is None:
+            if instance_sampling is None:
                 log.warning('Parameter \'pruning\' does not have any effect, because parameter '
-                            + '\'instance_sub_sampling\' is set to \'None\'!')
+                            + '\'instance_sampling\' is set to \'None\'!')
                 return NoPruning()
             return IREP()
         raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
