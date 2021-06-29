@@ -33,9 +33,9 @@ from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFun
     ArithmeticMeanFunction
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
+from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
+from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
@@ -435,7 +435,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def ___get_preferred_head_type(self) -> str:
         head_type = self.head_type
 
-        if head_type is None:
+        if head_type == AUTOMATIC:
             if self.loss in NON_DECOMPOSABLE_LOSSES:
                 return HEAD_TYPE_COMPLETE
             else:

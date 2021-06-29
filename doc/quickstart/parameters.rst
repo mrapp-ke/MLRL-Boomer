@@ -173,9 +173,9 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * The maximum number of times the head of a rule may be refined. Must be at least ``1`` or ``-1``, if the number of refinements should not be restricted.
 
-* ``--head-type`` (default value ``None``)
+* ``--head-type`` (default value ``auto``)
 
-  * ``None`` The most suitable type of rule heads is chosen automatically based on the loss function.
+  * ``auto`` The most suitable type of rule heads is chosen automatically based on the loss function.
   * ``single-label`` If all rules should predict for a single label.
   * ``complete`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
 
