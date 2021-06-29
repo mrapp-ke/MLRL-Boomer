@@ -36,8 +36,8 @@ from sklearn.base import ClassifierMixin
 from mlrl.common.rule_learners import INSTANCE_SAMPLING_BAGGING, FEATURE_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE, \
     ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import create_pruning, create_feature_sub_sampling_factory, \
-    create_instance_sub_sampling_factory, create_label_sub_sampling_factory, create_partition_sampling_factory, \
+from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
+    create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
     get_preferred_num_threads, create_thresholds_factory, parse_prefix_and_dict, get_int_argument, get_float_argument, \
     get_string_argument, get_bool_argument
@@ -293,9 +293,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         early_stopping_criterion = self.__create_early_stopping()
         if early_stopping_criterion is not None:
             stopping_criteria.append(early_stopping_criterion)
-        label_sub_sampling_factory = create_label_sub_sampling_factory(self.label_sub_sampling, num_labels)
-        instance_sub_sampling_factory = create_instance_sub_sampling_factory(self.instance_sub_sampling)
-        feature_sub_sampling_factory = create_feature_sub_sampling_factory(self.feature_sub_sampling)
+        label_sub_sampling_factory = create_label_sampling_factory(self.label_sub_sampling, num_labels)
+        instance_sub_sampling_factory = create_instance_sampling_factory(self.instance_sub_sampling)
+        feature_sub_sampling_factory = create_feature_sampling_factory(self.feature_sub_sampling)
         partition_sampling_factory = create_partition_sampling_factory(self.holdout)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
         shrinkage = self.__create_post_processor()

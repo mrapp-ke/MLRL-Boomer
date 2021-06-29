@@ -102,7 +102,7 @@ def create_sparse_policy(policy: str) -> SparsePolicy:
             [x.value for x in SparsePolicy]))
 
 
-def create_label_sub_sampling_factory(label_sampling: str, num_labels: int) -> LabelSubSamplingFactory:
+def create_label_sampling_factory(label_sampling: str, num_labels: int) -> LabelSubSamplingFactory:
     if label_sampling is None:
         return NoLabelSubSamplingFactory()
     else:
@@ -114,7 +114,7 @@ def create_label_sub_sampling_factory(label_sampling: str, num_labels: int) -> L
         raise ValueError('Invalid value given for parameter \'label_sampling\': ' + str(label_sampling))
 
 
-def create_instance_sub_sampling_factory(instance_sampling: str) -> InstanceSubSamplingFactory:
+def create_instance_sampling_factory(instance_sampling: str) -> InstanceSubSamplingFactory:
     if instance_sampling is None:
         return NoInstanceSubSamplingFactory()
     else:
@@ -138,7 +138,7 @@ def create_instance_sub_sampling_factory(instance_sampling: str) -> InstanceSubS
         raise ValueError('Invalid value given for parameter \'instance_sampling\': ' + str(instance_sampling))
 
 
-def create_feature_sub_sampling_factory(feature_sampling: str) -> FeatureSubSamplingFactory:
+def create_feature_sampling_factory(feature_sampling: str) -> FeatureSubSamplingFactory:
     if feature_sampling is None:
         return NoFeatureSubSamplingFactory()
     else:

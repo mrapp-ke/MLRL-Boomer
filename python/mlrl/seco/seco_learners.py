@@ -18,8 +18,8 @@ from sklearn.base import ClassifierMixin
 
 from mlrl.common.rule_learners import HEAD_REFINEMENT_SINGLE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import create_pruning, create_feature_sub_sampling_factory, \
-    create_instance_sub_sampling_factory, create_label_sub_sampling_factory, create_partition_sampling_factory, \
+from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
+    create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
     get_preferred_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument, create_thresholds_factory
 
@@ -189,9 +189,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)
-        label_sub_sampling_factory = create_label_sub_sampling_factory(self.label_sub_sampling, num_labels)
-        instance_sub_sampling_factory = create_instance_sub_sampling_factory(self.instance_sub_sampling)
-        feature_sub_sampling_factory = create_feature_sub_sampling_factory(self.feature_sub_sampling)
+        label_sub_sampling_factory = create_label_sampling_factory(self.label_sub_sampling, num_labels)
+        instance_sub_sampling_factory = create_instance_sampling_factory(self.instance_sub_sampling)
+        feature_sub_sampling_factory = create_feature_sampling_factory(self.feature_sub_sampling)
         partition_sampling_factory = create_partition_sampling_factory(self.holdout)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
         post_processor = NoPostProcessor()
