@@ -16,7 +16,7 @@ cdef class InstanceSamplingWithReplacementFactory(InstanceSamplingFactory):
     A wrapper for the C++ class `InstanceSamplingWithReplacementFactory`.
     """
 
-    def __cinit__(self, float32 sample_size = 1.0):
+    def __cinit__(self, float32 sample_size):
         """
         :param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                             60 % of the available examples). Must be in (0, 1]
@@ -30,7 +30,7 @@ cdef class InstanceSamplingWithoutReplacementFactory(InstanceSamplingFactory):
     A wrapper for the C++ class `InstanceSamplingWithoutReplacementFactory`.
     """
 
-    def __cinit__(self, float32 sample_size = 0.66):
+    def __cinit__(self, float32 sample_size):
         """
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples). Must be in (0, 1)
@@ -44,7 +44,7 @@ cdef class LabelWiseStratifiedSamplingFactory(InstanceSamplingFactory):
     A wrapper for the C++ class `LabelWiseStratifiedSamplingFactory`.
     """
 
-    def __cinit__(self, float32 sample_size = 0.66):
+    def __cinit__(self, float32 sample_size):
         """
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples). Must be in (0, 1)
@@ -58,7 +58,7 @@ cdef class ExampleWiseStratifiedSamplingFactory(InstanceSamplingFactory):
     A wrapper for the C++ class `ExampleWiseStratifiedSamplingFactory`.
     """
 
-    def __cinit__(self, float32 sample_size = 0.66):
+    def __cinit__(self, float32 sample_size):
         """
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples). Must be in (0, 1)
@@ -88,7 +88,7 @@ cdef class FeatureSamplingWithoutReplacementFactory(FeatureSamplingFactory):
     A wrapper for the C++ class `FeatureSamplingWithoutReplacementFactory`.
     """
 
-    def __cinit__(self, float32 sample_size = 0.0):
+    def __cinit__(self, float32 sample_size):
         """
         :param sample_size: The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds to
                             60 % of the available features). Must be in (0, 1) or 0, if the default sample size
