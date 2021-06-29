@@ -10,7 +10,7 @@
  * Allows to create instances of the type `IInstanceSampling` that allow to select a subset of the available training
  * examples without replacement.
  */
-class RandomInstanceSubsetSelectionFactory final : public IInstanceSamplingFactory {
+class InstanceSamplingWithoutReplacementFactory final : public IInstanceSamplingFactory {
 
     private:
 
@@ -22,7 +22,7 @@ class RandomInstanceSubsetSelectionFactory final : public IInstanceSamplingFacto
          * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
          *                   60 % of the available examples). Must be in (0, 1)
          */
-        RandomInstanceSubsetSelectionFactory(float32 sampleSize);
+        InstanceSamplingWithoutReplacementFactory(float32 sampleSize);
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
                                                   const SinglePartition& partition,
