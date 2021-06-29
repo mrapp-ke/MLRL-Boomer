@@ -68,15 +68,15 @@ ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
 HEAD_TYPE_FULL = 'full'
 
-LOSS_LABEL_WISE_LOGISTIC = 'label-wise-logistic-loss'
+LOSS_LOGISTIC_LABEL_WISE = 'label-wise-logistic-loss'
 
-LOSS_LABEL_WISE_SQUARED_ERROR = 'label-wise-squared-error-loss'
+LOSS_LOGISTIC_EXAMPLE_WISE = 'example-wise-logistic-loss'
 
-LOSS_LABEL_WISE_SQUARED_HINGE = 'label-wise-squared-hinge-loss'
+LOSS_SQUARED_ERROR_LABEL_WISE = 'label-wise-squared-error-loss'
 
-LOSS_EXAMPLE_WISE_LOGISTIC = 'example-wise-logistic-loss'
+LOSS_SQUARED_HINGE_LABEL_WISE = 'label-wise-squared-hinge-loss'
 
-NON_DECOMPOSABLE_LOSSES = {LOSS_EXAMPLE_WISE_LOGISTIC}
+NON_DECOMPOSABLE_LOSSES = {LOSS_LOGISTIC_EXAMPLE_WISE}
 
 PREDICTOR_LABEL_WISE = 'label-wise'
 
@@ -94,7 +94,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
                  time_limit: int = -1, early_stopping: str = None, head_type: str = None,
-                 loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sampling: str = None,
+                 loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = None, label_sampling: str = None,
                  instance_sampling: str = None, recalculate_predictions: bool = True,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
@@ -244,7 +244,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_probability_predictor(self, num_labels: int) -> Predictor:
         predictor = self.__get_preferred_predictor()
 
-        if self.loss == LOSS_LABEL_WISE_LOGISTIC or self.loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+        if self.loss == LOSS_LOGISTIC_LABEL_WISE or self.loss == LOSS_LOGISTIC_EXAMPLE_WISE:
             if predictor == PREDICTOR_LABEL_WISE:
                 transformation_function = LogisticFunction()
                 return self.__create_label_wise_probability_predictor(num_labels, transformation_function)
@@ -269,7 +269,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
         num_threads = get_preferred_num_threads(self.num_threads_prediction)
-        threshold = 0.5 if self.loss == LOSS_LABEL_WISE_SQUARED_HINGE else 0.0
+        threshold = 0.5 if self.loss == LOSS_SQUARED_HINGE_LABEL_WISE else 0.0
         return LabelWiseClassificationPredictor(num_labels=num_labels, threshold=threshold, num_threads=num_threads)
 
     def __create_example_wise_predictor(self, num_labels: int) -> ExampleWiseClassificationPredictor:
@@ -373,13 +373,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __create_loss_function(self):
         loss = self.loss
 
-        if loss == LOSS_LABEL_WISE_SQUARED_ERROR:
+        if loss == LOSS_SQUARED_ERROR_LABEL_WISE:
             return LabelWiseSquaredErrorLoss()
-        elif loss == LOSS_LABEL_WISE_SQUARED_HINGE:
+        elif loss == LOSS_SQUARED_HINGE_LABEL_WISE:
             return LabelWiseSquaredHingeLoss()
-        elif loss == LOSS_LABEL_WISE_LOGISTIC:
+        elif loss == LOSS_LOGISTIC_LABEL_WISE:
             return LabelWiseLogisticLoss()
-        elif loss == LOSS_EXAMPLE_WISE_LOGISTIC:
+        elif loss == LOSS_LOGISTIC_EXAMPLE_WISE:
             return ExampleWiseLogisticLoss()
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
