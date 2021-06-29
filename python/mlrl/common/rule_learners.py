@@ -28,8 +28,7 @@ from mlrl.common.cython.sampling import FeatureSubSamplingFactory, RandomFeature
 from mlrl.common.cython.sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
     InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, \
     ExampleWiseStratifiedSamplingFactory
-from mlrl.common.cython.sampling import LabelSubSamplingFactory, RandomLabelSubsetSelectionFactory, \
-    NoLabelSubSamplingFactory
+from mlrl.common.cython.sampling import LabelSamplingFactory, RandomLabelSubsetSelectionFactory, NoLabelSamplingFactory
 from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
     RandomBiPartitionSamplingFactory, LabelWiseStratifiedBiPartitionSamplingFactory, \
     ExampleWiseStratifiedBiPartitionSamplingFactory
@@ -102,9 +101,9 @@ def create_sparse_policy(policy: str) -> SparsePolicy:
             [x.value for x in SparsePolicy]))
 
 
-def create_label_sampling_factory(label_sampling: str, num_labels: int) -> LabelSubSamplingFactory:
+def create_label_sampling_factory(label_sampling: str, num_labels: int) -> LabelSamplingFactory:
     if label_sampling is None:
-        return NoLabelSubSamplingFactory()
+        return NoLabelSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(label_sampling, [LABEL_SAMPLING_RANDOM])
 

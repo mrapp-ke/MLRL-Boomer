@@ -5,7 +5,7 @@
 /**
  * An implementation of the class `ILabelSampling` that does not perform any sampling, but includes all labels.
  */
-class NoLabelSubSampling final : public ILabelSampling {
+class NoLabelSampling final : public ILabelSampling {
 
     private:
 
@@ -16,7 +16,7 @@ class NoLabelSubSampling final : public ILabelSampling {
         /**
          * @param numLabels The total number of available labels
          */
-        NoLabelSubSampling(uint32 numLabels)
+        NoLabelSampling(uint32 numLabels)
             : indexVector_(numLabels) {
 
         }
@@ -27,6 +27,6 @@ class NoLabelSubSampling final : public ILabelSampling {
 
 };
 
-std::unique_ptr<ILabelSampling> NoLabelSubSamplingFactory::create(uint32 numLabels) const {
-    return std::make_unique<NoLabelSubSampling>(numLabels);
+std::unique_ptr<ILabelSampling> NoLabelSamplingFactory::create(uint32 numLabels) const {
+    return std::make_unique<NoLabelSampling>(numLabels);
 }
