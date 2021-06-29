@@ -121,7 +121,7 @@ The following parameters allow to adjust the behavior of the algorithm:
   * ``None`` All features are considered for learning a new rule.
   * ``without-replacement`` A random subset of the features is used to search for the refinements of rules. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random_feature-selection{'sample_size':0.5}``.
 
-* ``--instance-sampling`` (default value ``with-replacement``)
+* ``--instance-sampling`` (default value ``None``)
 
   * ``None`` All training examples are considered for learning a new rule.
   * ``with-replacement`` The training examples to be considered for learning a new rule are selected randomly with replacement. Additional arguments may be provided using the Python dictionary syntax, e.g., ``with-replacement{'sample_size':0.5}``.

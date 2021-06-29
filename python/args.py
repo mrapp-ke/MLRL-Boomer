@@ -12,7 +12,7 @@ from ast import literal_eval
 import sklearn.metrics as metrics
 
 from mlrl.boosting.boosting_learners import LOSS_LABEL_WISE_LOGISTIC
-from mlrl.common.rule_learners import SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT
+from mlrl.common.rule_learners import SAMPLING_WITHOUT_REPLACEMENT
 from mlrl.seco.seco_learners import HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
 
 
@@ -196,7 +196,6 @@ class ArgumentParserBuilder:
 
     def add_boosting_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
         self.add_rule_learner_arguments(LOSS_LABEL_WISE_LOGISTIC, max_rules=1000,
-                                        instance_sampling=SAMPLING_WITH_REPLACEMENT,
                                         feature_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
         parser = self.parser
         parser.add_argument('--default-rule', type=boolean_string,

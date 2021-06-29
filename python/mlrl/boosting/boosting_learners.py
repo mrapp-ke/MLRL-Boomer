@@ -34,7 +34,7 @@ from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFun
 from sklearn.base import ClassifierMixin
 
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT, HEAD_REFINEMENT_SINGLE, \
+from mlrl.common.rule_learners import SAMPLING_WITHOUT_REPLACEMENT, HEAD_REFINEMENT_SINGLE, \
     ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
@@ -95,7 +95,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
                  time_limit: int = -1, early_stopping: str = None, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sampling: str = None,
-                 instance_sampling: str = SAMPLING_WITH_REPLACEMENT, recalculate_predictions: bool = True,
+                 instance_sampling: str = None, recalculate_predictions: bool = True,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
