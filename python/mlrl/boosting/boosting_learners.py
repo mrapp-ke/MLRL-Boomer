@@ -42,7 +42,7 @@ from mlrl.common.rule_learners import create_pruning, create_feature_sampling_fa
     get_preferred_num_threads, create_thresholds_factory, parse_prefix_and_dict, get_int_argument, get_float_argument, \
     get_string_argument, get_bool_argument
 
-EARLY_STOPPING_MEASURE = 'measure'
+EARLY_STOPPING_LOSS = 'measure'
 
 AGGREGATION_FUNCTION_MIN = 'min'
 
@@ -326,9 +326,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if early_stopping is None:
             return None
         else:
-            prefix, args = parse_prefix_and_dict(early_stopping, [EARLY_STOPPING_MEASURE])
+            prefix, args = parse_prefix_and_dict(early_stopping, [EARLY_STOPPING_LOSS])
 
-            if prefix == EARLY_STOPPING_MEASURE:
+            if prefix == EARLY_STOPPING_LOSS:
                 if self.holdout is None:
                     log.warning('Parameter \'early_stopping\' does not have any effect, because parameter \'holdout\' '
                                 + 'is set to \'None\'!')
