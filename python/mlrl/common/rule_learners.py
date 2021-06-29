@@ -46,7 +46,7 @@ from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
 
-LABEL_SAMPLING_RANDOM = 'random-label-selection'
+LABEL_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
 INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
@@ -106,9 +106,9 @@ def create_label_sampling_factory(label_sampling: str, num_labels: int) -> Label
     if label_sampling is None:
         return NoLabelSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(label_sampling, [LABEL_SAMPLING_RANDOM])
+        prefix, args = parse_prefix_and_dict(label_sampling, [LABEL_SAMPLING_WITHOUT_REPLACEMENT])
 
-        if prefix == LABEL_SAMPLING_RANDOM:
+        if prefix == LABEL_SAMPLING_WITHOUT_REPLACEMENT:
             num_samples = get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
             return LabelSamplingWithoutReplacementFactory(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sampling\': ' + str(label_sampling))
