@@ -21,7 +21,7 @@ class NoLabelSampling final : public ILabelSampling {
 
         }
 
-        const IIndexVector& subSample(RNG& rng) override {
+        const IIndexVector& sample(RNG& rng) override {
             return indexVector_;
         }
 

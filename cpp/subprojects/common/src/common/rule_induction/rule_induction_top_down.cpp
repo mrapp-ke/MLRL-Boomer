@@ -73,7 +73,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         foundRefinement = false;
 
         // Sample features...
-        const IIndexVector& sampledFeatureIndices = featureSampling.subSample(rng);
+        const IIndexVector& sampledFeatureIndices = featureSampling.sample(rng);
         uint32 numSampledFeatures = sampledFeatureIndices.getNumElements();
 
         // For each feature, create an object of type `IRuleRefinement`...

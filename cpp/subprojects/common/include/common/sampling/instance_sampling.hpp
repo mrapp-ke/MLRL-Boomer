@@ -31,7 +31,7 @@ class IInstanceSampling {
          * @return          A reference to an object type `WeightVector` that provides access to the weights of the
          *                  individual training examples
          */
-        virtual const IWeightVector& subSample(RNG& rng) = 0;
+        virtual const IWeightVector& sample(RNG& rng) = 0;
 
 };
 

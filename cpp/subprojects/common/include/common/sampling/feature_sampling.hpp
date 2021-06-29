@@ -24,7 +24,7 @@ class IFeatureSampling {
          * @return      A reference to an object of type `IIndexVector` that provides access to the indices of the
          *              features that are contained in the sample
          */
-        virtual const IIndexVector& subSample(RNG& rng) = 0;
+        virtual const IIndexVector& sample(RNG& rng) = 0;
 
 };
 

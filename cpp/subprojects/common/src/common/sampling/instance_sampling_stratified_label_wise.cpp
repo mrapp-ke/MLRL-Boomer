@@ -46,7 +46,7 @@ class LabelWiseStratifiedSampling final : public IInstanceSampling {
 
         }
 
-        const IWeightVector& subSample(RNG& rng) override {
+        const IWeightVector& sample(RNG& rng) override {
             stratification_.sampleWeights(weightVector_, sampleSize_, rng);
             return weightVector_;
         }

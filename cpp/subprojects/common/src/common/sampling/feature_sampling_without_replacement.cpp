@@ -31,7 +31,7 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
 
         }
 
-        const IIndexVector& subSample(RNG& rng) override {
+        const IIndexVector& sample(RNG& rng) override {
             sampleIndicesWithoutReplacement<IndexIterator>(indexVector_, IndexIterator(numFeatures_), numFeatures_,
                                                            rng);
             return indexVector_;
