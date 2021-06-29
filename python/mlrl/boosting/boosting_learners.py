@@ -99,8 +99,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads_rule_refinement: int = 1, num_threads_update: int = 1,
-                 num_threads_prediction: int = 1):
+                 max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
+                 num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -165,7 +165,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param num_threads_rule_refinement:         The number of threads to be used to search for potential refinements
                                                     of rules or -1, if the number of cores that are available on the
                                                     machine should be used
-        :param num_threads_update:                  The number of threads to be used to update statistics or -1, if the
+        :param num_threads_statistic_update:        The number of threads to be used to update statistics or -1, if the
                                                     number of cores that are available on the machine should be used
         :param num_threads_prediction:              The number of threads to be used to make predictions or -1, if the
                                                     number of cores that are available on the machine should be used
@@ -192,7 +192,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
         self.num_threads_rule_refinement = num_threads_rule_refinement
-        self.num_threads_update = num_threads_update
+        self.num_threads_statistic_update = num_threads_statistic_update
         self.num_threads_prediction = num_threads_prediction
 
     def get_name(self) -> str:
@@ -304,10 +304,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         head_refinement_factory = self.__create_head_refinement_factory()
         l2_regularization_weight = self.__create_l2_regularization_weight()
         rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
-        num_threads_update = get_preferred_num_threads(self.num_threads_update)
+        num_threads_statistic_update = get_preferred_num_threads(self.num_threads_statistic_update)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory,
-                                                                                num_threads_update)
-        thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
+                                                                                num_threads_statistic_update)
+        thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_statistic_update)
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)

@@ -64,7 +64,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  heuristic: str = HEURISTIC_PRECISION, label_sampling: str = None, instance_sampling: str = None,
                  feature_sampling: str = None, holdout: str = None, feature_binning: str = None, pruning: str = None,
                  min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1,
-                 num_threads_rule_refinement: int = 1, num_threads_update: int = 1, num_threads_prediction: int = 1):
+                 num_threads_rule_refinement: int = 1, num_threads_statistic_update: int = 1,
+                 num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -117,7 +118,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         :param num_threads_rule_refinement:         The number of threads to be used to search for potential refinements
                                                     of rules or -1, if the number of cores that are available on the
                                                     machine should be used
-        :param num_threads_update:                  The number of threads to be used to update statistics or -1, if the
+        :param num_threads_statistic_update:        The number of threads to be used to update statistics or -1, if the
                                                     number of cores that are available on the machine should be used
         :param num_threads_prediction:              The number of threads to be used to make predictions or -1, if the
                                                     number of cores that are available on the machine should be used
@@ -139,7 +140,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
         self.num_threads_rule_refinement = num_threads_rule_refinement
-        self.num_threads_update = num_threads_update
+        self.num_threads_statistic_update = num_threads_statistic_update
         self.num_threads_prediction = num_threads_prediction
 
     def get_name(self) -> str:
@@ -177,8 +178,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def _create_rule_model_induction(self, num_labels: int) -> SequentialRuleModelInduction:
         heuristic = self.__create_heuristic()
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
-        num_threads_update = get_preferred_num_threads(self.num_threads_update)
-        thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
+        num_threads_statistic_update = get_preferred_num_threads(self.num_threads_statistic_update)
+        thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_statistic_update)
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
