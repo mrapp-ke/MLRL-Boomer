@@ -8,7 +8,7 @@
 /**
  * Allows to select a subset of the available features without replacement.
  */
-class RandomFeatureSubsetSelection final : public IFeatureSubSampling {
+class RandomFeatureSubsetSelection final : public IFeatureSampling {
 
     private:
 
@@ -44,6 +44,6 @@ RandomFeatureSubsetSelectionFactory::RandomFeatureSubsetSelectionFactory(float32
 
 }
 
-std::unique_ptr<IFeatureSubSampling> RandomFeatureSubsetSelectionFactory::create(uint32 numFeatures) const {
+std::unique_ptr<IFeatureSampling> RandomFeatureSubsetSelectionFactory::create(uint32 numFeatures) const {
     return std::make_unique<RandomFeatureSubsetSelection>(numFeatures, sampleSize_);
 }

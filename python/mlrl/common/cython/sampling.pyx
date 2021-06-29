@@ -76,14 +76,14 @@ cdef class NoInstanceSamplingFactory(InstanceSamplingFactory):
         self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[NoInstanceSamplingFactoryImpl]()
 
 
-cdef class FeatureSubSamplingFactory:
+cdef class FeatureSamplingFactory:
     """
-    A wrapper for the pure virtual C++ class `IFeatureSubSamplingFactory`.
+    A wrapper for the pure virtual C++ class `IFeatureSamplingFactory`.
     """
     pass
 
 
-cdef class RandomFeatureSubsetSelectionFactory(FeatureSubSamplingFactory):
+cdef class RandomFeatureSubsetSelectionFactory(FeatureSamplingFactory):
     """
     A wrapper for the C++ class `RandomFeatureSubsetSelectionFactory`.
     """
@@ -94,17 +94,17 @@ cdef class RandomFeatureSubsetSelectionFactory(FeatureSubSamplingFactory):
                             60 % of the available features). Must be in (0, 1) or 0, if the default sample size
                             `floor(log2(num_features - 1) + 1)` should be used
         """
-        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSubSamplingFactory]>make_shared[RandomFeatureSubsetSelectionFactoryImpl](
+        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSamplingFactory]>make_shared[RandomFeatureSubsetSelectionFactoryImpl](
             sample_size)
 
 
-cdef class NoFeatureSubSamplingFactory(FeatureSubSamplingFactory):
+cdef class NoFeatureSubSamplingFactory(FeatureSamplingFactory):
     """
     A wrapper for the C++ class `NoFeatureSubSamplingFactory`.
     """
 
     def __cinit__(self):
-        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSubSamplingFactory]>make_shared[NoFeatureSubSamplingFactoryImpl]()
+        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSamplingFactory]>make_shared[NoFeatureSubSamplingFactoryImpl]()
 
 
 cdef class LabelSamplingFactory:
