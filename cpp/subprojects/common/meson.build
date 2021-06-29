@@ -65,7 +65,7 @@ source_files = [
     'src/common/rule_refinement/rule_refinement_exact.cpp',
     'src/common/sampling/feature_sampling_no.cpp',
     'src/common/sampling/feature_sampling_random.cpp',
-    'src/common/sampling/instance_sampling_bagging.cpp',
+    'src/common/sampling/instance_sampling_with_replacement.cpp',
     'src/common/sampling/instance_sampling_no.cpp',
     'src/common/sampling/instance_sampling_random.cpp',
     'src/common/sampling/instance_sampling_stratified_example_wise.cpp',
