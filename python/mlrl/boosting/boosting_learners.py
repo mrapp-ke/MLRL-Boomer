@@ -33,8 +33,8 @@ from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFun
     ArithmeticMeanFunction
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import INSTANCE_SUB_SAMPLING_BAGGING, FEATURE_SUB_SAMPLING_RANDOM, \
-    HEAD_REFINEMENT_SINGLE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
+from mlrl.common.rule_learners import INSTANCE_SAMPLING_BAGGING, FEATURE_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE, \
+    ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sub_sampling_factory, \
     create_instance_sub_sampling_factory, create_label_sub_sampling_factory, create_partition_sampling_factory, \
@@ -95,9 +95,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
                  time_limit: int = -1, early_stopping: str = None, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sub_sampling: str = None,
-                 instance_sub_sampling: str = INSTANCE_SUB_SAMPLING_BAGGING, recalculate_predictions: bool = True,
-                 feature_sub_sampling: str = FEATURE_SUB_SAMPLING_RANDOM, holdout: str = None,
-                 feature_binning: str = None, label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
+                 instance_sub_sampling: str = INSTANCE_SAMPLING_BAGGING, recalculate_predictions: bool = True,
+                 feature_sub_sampling: str = FEATURE_SAMPLING_RANDOM, holdout: str = None, feature_binning: str = None,
+                 label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
                  num_threads_prediction: int = 1):

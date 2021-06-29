@@ -46,17 +46,17 @@ from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
 
-LABEL_SUB_SAMPLING_RANDOM = 'random-label-selection'
+LABEL_SAMPLING_RANDOM = 'random-label-selection'
 
-INSTANCE_SUB_SAMPLING_RANDOM = 'random-instance-selection'
+INSTANCE_SAMPLING_RANDOM = 'random-instance-selection'
 
-INSTANCE_SUB_SAMPLING_BAGGING = 'bagging'
+INSTANCE_SAMPLING_BAGGING = 'bagging'
 
-INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 
-INSTANCE_SUB_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
+INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
-FEATURE_SUB_SAMPLING_RANDOM = 'random-feature-selection'
+FEATURE_SAMPLING_RANDOM = 'random-feature-selection'
 
 ARGUMENT_SAMPLE_SIZE = 'sample_size'
 
@@ -106,9 +106,9 @@ def create_label_sub_sampling_factory(label_sub_sampling: str, num_labels: int) 
     if label_sub_sampling is None:
         return NoLabelSubSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(label_sub_sampling, [LABEL_SUB_SAMPLING_RANDOM])
+        prefix, args = parse_prefix_and_dict(label_sub_sampling, [LABEL_SAMPLING_RANDOM])
 
-        if prefix == LABEL_SUB_SAMPLING_RANDOM:
+        if prefix == LABEL_SAMPLING_RANDOM:
             num_samples = get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
             return RandomLabelSubsetSelectionFactory(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sub_sampling\': ' + str(label_sub_sampling))
@@ -119,20 +119,20 @@ def create_instance_sub_sampling_factory(instance_sub_sampling: str) -> Instance
         return NoInstanceSubSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(instance_sub_sampling,
-                                             [INSTANCE_SUB_SAMPLING_BAGGING, INSTANCE_SUB_SAMPLING_RANDOM,
-                                              INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE,
-                                              INSTANCE_SUB_SAMPLING_STRATIFIED_EXAMPLE_WISE])
+                                             [INSTANCE_SAMPLING_BAGGING, INSTANCE_SAMPLING_RANDOM,
+                                              INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE,
+                                              INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE])
 
-        if prefix == INSTANCE_SUB_SAMPLING_BAGGING:
+        if prefix == INSTANCE_SAMPLING_BAGGING:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
             return BaggingFactory(sample_size)
-        elif prefix == INSTANCE_SUB_SAMPLING_RANDOM:
+        elif prefix == INSTANCE_SAMPLING_RANDOM:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return RandomInstanceSubsetSelectionFactory(sample_size)
-        elif prefix == INSTANCE_SUB_SAMPLING_STRATIFIED_LABEL_WISE:
+        elif prefix == INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return LabelWiseStratifiedSamplingFactory(sample_size)
-        elif prefix == INSTANCE_SUB_SAMPLING_STRATIFIED_EXAMPLE_WISE:
+        elif prefix == INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return ExampleWiseStratifiedSamplingFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'instance_sub_sampling\': ' + str(instance_sub_sampling))
@@ -142,9 +142,9 @@ def create_feature_sub_sampling_factory(feature_sub_sampling: str) -> FeatureSub
     if feature_sub_sampling is None:
         return NoFeatureSubSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(feature_sub_sampling, [FEATURE_SUB_SAMPLING_RANDOM])
+        prefix, args = parse_prefix_and_dict(feature_sub_sampling, [FEATURE_SAMPLING_RANDOM])
 
-        if prefix == FEATURE_SUB_SAMPLING_RANDOM:
+        if prefix == FEATURE_SAMPLING_RANDOM:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
             return RandomFeatureSubsetSelectionFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'feature_sub_sampling\': ' + str(feature_sub_sampling))
