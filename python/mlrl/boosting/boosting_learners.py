@@ -97,7 +97,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = None, label_sampling: str = None,
                  instance_sampling: str = None, recalculate_predictions: bool = True,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
-                 label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
+                 label_binning: str = AUTOMATIC, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
                  num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
@@ -144,9 +144,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     None, if no feature binning should be used. Additional arguments may
                                                     be provided as a dictionary, e.g. `equal-width{\"bin_ratio\":0.5}`
         :param label_binning:                       The strategy that is used for assigning labels to bins. Must be
-                                                    `equal-width` or None, if no label binning should be used.
+                                                    `auto`, `equal-width` or None, if no label binning should be used.
                                                     Additional arguments may be provided as a dictionary, e.g.
-                                                    `equal-width{\"num_positive_bins\":8, \"num_negative_bins\":8}`
+                                                    `equal-width{\"num_positive_bins\":8, \"num_negative_bins\":8}`. If
+                                                    `auto` is used, the most suitable strategy is chosen automatically
+                                                    based on the loss function and the type of rule heads
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
         :param shrinkage:                           The shrinkage parameter that should be applied to the predictions of
@@ -214,7 +216,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_holdout=' + str(self.holdout)
         if self.feature_binning is not None:
             name += '_feature-binning=' + str(self.feature_binning)
-        if self.label_binning is not None:
+        if self.label_binning is not None and self.label_binning != AUTOMATIC:
             name += '_label-binning=' + str(self.label_binning)
         if self.pruning is not None:
             name += '_pruning=' + str(self.pruning)
@@ -400,7 +402,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
 
     def __create_label_binning(self) -> (str, float):
-        label_binning = self.label_binning
+        label_binning = self.__get_preferred_label_binning()
 
         if label_binning is None:
             return None, 0, 0, 0
@@ -414,6 +416,16 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return prefix, bin_ratio, min_bins, max_bins
             raise ValueError('Invalid value given for parameter \'label_binning\': ' + str(label_binning))
 
+    def __get_preferred_label_binning(self):
+        label_binning = self.label_binning
+
+        if label_binning == AUTOMATIC:
+            if self.loss in NON_DECOMPOSABLE_LOSSES and self.__get_preferred_head_type() == HEAD_TYPE_COMPLETE:
+                return LABEL_BINNING_EQUAL_WIDTH
+            else:
+                return None
+        return label_binning
+
     def __create_statistics_provider_factory(self, loss_function, rule_evaluation_factory,
                                              num_threads: int) -> StatisticsProviderFactory:
         if isinstance(loss_function, LabelWiseLoss):
@@ -424,7 +436,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                              rule_evaluation_factory, num_threads)
 
     def __create_head_refinement_factory(self) -> HeadRefinementFactory:
-        head_type = self.___get_preferred_head_type()
+        head_type = self.__get_preferred_head_type()
 
         if head_type == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
@@ -432,7 +444,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             return CompleteHeadRefinementFactory()
         raise ValueError('Invalid value given for parameter \'head_type\': ' + str(head_type))
 
-    def ___get_preferred_head_type(self) -> str:
+    def __get_preferred_head_type(self) -> str:
         head_type = self.head_type
 
         if head_type == AUTOMATIC:
