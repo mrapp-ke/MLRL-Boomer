@@ -115,11 +115,11 @@ cdef extern from "common/model/head.hpp" nogil:
         pass
 
 
-cdef extern from "common/model/head_full.hpp" nogil:
+cdef extern from "common/model/head_complete.hpp" nogil:
 
-    cdef cppclass FullHeadImpl"FullHead"(IHead):
+    cdef cppclass CompleteHeadImpl"CompleteHead"(IHead):
 
-        FullHeadImpl(uint32 numElements) except +
+        CompleteHeadImpl(uint32 numElements) except +
 
         ctypedef float64* score_iterator
 
@@ -169,7 +169,7 @@ cdef extern from "common/model/head_partial.hpp" nogil:
         index_const_iterator indices_cend()
 
 
-ctypedef void (*FullHeadVisitor)(const FullHeadImpl&)
+ctypedef void (*CompleteHeadVisitor)(const CompleteHeadImpl&)
 
 ctypedef void (*PartialHeadVisitor)(const PartialHeadImpl&)
 
@@ -219,10 +219,10 @@ cdef extern from "common/model/rule_model.hpp" nogil:
         void addRule(unique_ptr[IBody] bodyPtr, unique_ptr[IHead] headPtr)
 
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                   FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor)
+                   CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor)
 
         void visitUsed(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                       FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor)
+                       CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor)
 
 
 cdef extern from "common/model/model_builder.hpp" nogil:
@@ -241,7 +241,7 @@ cdef extern from *:
 
     typedef void (*ConjunctiveBodyCythonVisitor)(void*, const ConjunctiveBody&);
 
-    typedef void (*FullHeadCythonVisitor)(void*, const FullHead&);
+    typedef void (*CompleteHeadCythonVisitor)(void*, const CompleteHead&);
 
     typedef void (*PartialHeadCythonVisitor)(void*, const PartialHead&);
 
@@ -258,8 +258,8 @@ cdef extern from *:
         };
     }
 
-    static inline IHead::FullHeadVisitor wrapFullHeadVisitor(void* self, FullHeadCythonVisitor visitor) {
-        return [=](const FullHead& head) {
+    static inline IHead::CompleteHeadVisitor wrapCompleteHeadVisitor(void* self, CompleteHeadCythonVisitor visitor) {
+        return [=](const CompleteHead& head) {
             visitor(self, head);
         };
     }
@@ -275,7 +275,7 @@ cdef extern from *:
 
     ctypedef void (*ConjunctiveBodyCythonVisitor)(void*, const ConjunctiveBodyImpl&)
 
-    ctypedef void (*FullHeadCythonVisitor)(void*, const FullHeadImpl&)
+    ctypedef void (*CompleteHeadCythonVisitor)(void*, const CompleteHeadImpl&)
 
     ctypedef void (*PartialHeadCythonVisitor)(void*, const PartialHeadImpl&)
 
@@ -283,7 +283,7 @@ cdef extern from *:
 
     ConjunctiveBodyVisitor wrapConjunctiveBodyVisitor(void* self, ConjunctiveBodyCythonVisitor visitor)
 
-    FullHeadVisitor wrapFullHeadVisitor(void* self, FullHeadCythonVisitor visitor)
+    CompleteHeadVisitor wrapCompleteHeadVisitor(void* self, CompleteHeadCythonVisitor visitor)
 
     PartialHeadVisitor wrapPartialHeadVisitor(void* self, PartialHeadCythonVisitor visitor)
 
@@ -322,7 +322,7 @@ cdef class RuleModelSerializer:
 
     cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body)
 
-    cdef __visit_full_head(self, const FullHeadImpl& head)
+    cdef __visit_complete_head(self, const CompleteHeadImpl& head)
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
 
@@ -353,7 +353,7 @@ cdef class RuleModelFormatter:
 
     cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body)
 
-    cdef __visit_full_head(self, const FullHeadImpl& head)
+    cdef __visit_complete_head(self, const CompleteHeadImpl& head)
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
 

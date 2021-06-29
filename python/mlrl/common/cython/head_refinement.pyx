@@ -27,10 +27,10 @@ cdef class SingleLabelHeadRefinementFactory(HeadRefinementFactory):
         self.head_refinement_factory_ptr = <shared_ptr[IHeadRefinementFactory]>make_shared[SingleLabelHeadRefinementFactoryImpl]()
 
 
-cdef class FullHeadRefinementFactory(HeadRefinementFactory):
+cdef class CompleteHeadRefinementFactory(HeadRefinementFactory):
     """
-    A wrapper for the C++ class `FullHeadRefinementFactory`.
+    A wrapper for the C++ class `CompleteHeadRefinementFactory`.
     """
 
     def __cinit__(self):
-        self.head_refinement_factory_ptr = <shared_ptr[IHeadRefinementFactory]>make_shared[FullHeadRefinementFactoryImpl]()
+        self.head_refinement_factory_ptr = <shared_ptr[IHeadRefinementFactory]>make_shared[CompleteHeadRefinementFactoryImpl]()

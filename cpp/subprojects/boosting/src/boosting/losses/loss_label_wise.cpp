@@ -12,8 +12,8 @@ namespace boosting {
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
                                                           const CContiguousLabelMatrix& labelMatrix,
                                                           const CContiguousConstView<float64>& scoreMatrix,
-                                                          FullIndexVector::const_iterator labelIndicesBegin,
-                                                          FullIndexVector::const_iterator labelIndicesEnd,
+                                                          CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                          CompleteIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticView& statisticView) const {
         DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
@@ -51,8 +51,8 @@ namespace boosting {
     void AbstractLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
                                                           const CsrLabelMatrix& labelMatrix,
                                                           const CContiguousConstView<float64>& scoreMatrix,
-                                                          FullIndexVector::const_iterator labelIndicesBegin,
-                                                          FullIndexVector::const_iterator labelIndicesEnd,
+                                                          CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                          CompleteIndexVector::const_iterator labelIndicesEnd,
                                                           DenseLabelWiseStatisticView& statisticView) const {
         DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
         CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);

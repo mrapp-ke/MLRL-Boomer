@@ -143,8 +143,8 @@ namespace seco {
 
             const AbstractEvaluatedPrediction* processScores(
                     const AbstractEvaluatedPrediction* bestHead,
-                    const DenseLabelWiseScoreVector<FullIndexVector>& scoreVector) override {
-                return processScoresInternally<DenseLabelWiseScoreVector<FullIndexVector>>(bestHead, scoreVector);
+                    const DenseLabelWiseScoreVector<CompleteIndexVector>& scoreVector) override {
+                return processScoresInternally<DenseLabelWiseScoreVector<CompleteIndexVector>>(bestHead, scoreVector);
             }
 
             const AbstractEvaluatedPrediction* processScores(
@@ -155,8 +155,9 @@ namespace seco {
 
             const AbstractEvaluatedPrediction* processScores(
                     const AbstractEvaluatedPrediction* bestHead,
-                    const DenseBinnedLabelWiseScoreVector<FullIndexVector>& scoreVector) override {
-                return processScoresInternally<DenseBinnedLabelWiseScoreVector<FullIndexVector>>(bestHead, scoreVector);
+                    const DenseBinnedLabelWiseScoreVector<CompleteIndexVector>& scoreVector) override {
+                return processScoresInternally<DenseBinnedLabelWiseScoreVector<CompleteIndexVector>>(bestHead,
+                                                                                                     scoreVector);
             }
 
             const AbstractEvaluatedPrediction* processScores(
@@ -190,8 +191,9 @@ namespace seco {
 
     }
 
-    std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create(const FullIndexVector& labelIndices) const {
-        return std::make_unique<PartialHeadRefinement<FullIndexVector>>(labelIndices, *liftFunctionPtr_);
+    std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create(
+            const CompleteIndexVector& labelIndices) const {
+        return std::make_unique<PartialHeadRefinement<CompleteIndexVector>>(labelIndices, *liftFunctionPtr_);
     }
 
     std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create(

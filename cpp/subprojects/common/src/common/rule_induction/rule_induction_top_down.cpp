@@ -1,5 +1,5 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "omp.h"
 #include <unordered_map>
 
@@ -24,7 +24,7 @@ void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProv
             statistics.addSampledStatistic(i, 1);
         }
 
-        FullIndexVector labelIndices(numLabels);
+        CompleteIndexVector labelIndices(numLabels);
         std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices.createSubset(statistics);
         std::unique_ptr<IHeadRefinement> headRefinementPtr = headRefinementFactory->create(labelIndices);
         headRefinementPtr->findHead(nullptr, *statisticsSubsetPtr, true, false);
