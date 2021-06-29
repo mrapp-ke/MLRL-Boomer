@@ -18,7 +18,7 @@ class SecoRunnable(RuleLearnerRunnable):
                                              min_coverage=args.min_coverage, max_conditions=args.max_conditions,
                                              lift_function=args.lift_function,
                                              max_head_refinements=args.max_head_refinements,
-                                             num_threads_refinement=args.num_threads_refinement,
+                                             num_threads_rule_refinement=args.num_threads_refinement,
                                              num_threads_update=args.num_threads_update,
                                              num_threads_prediction=args.num_threads_prediction)
 
