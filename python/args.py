@@ -152,15 +152,15 @@ class ArgumentParserBuilder:
         parser.add_argument('--time-limit', type=int,
                             default=ArgumentParserBuilder.__get_or_default('time_limit', -1, **kwargs),
                             help='The duration in seconds after which the induction of rules should be canceled or -1')
-        parser.add_argument('--label-sub-sampling', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('label_sub_sampling', None, **kwargs),
-                            help='The name of the strategy to be used for label sub-sampling or None')
-        parser.add_argument('--instance-sub-sampling', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('instance_sub_sampling', None, **kwargs),
-                            help='The name of the strategy to be used for instance sub-sampling or None')
-        parser.add_argument('--feature-sub-sampling', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('feature_sub_sampling', None, **kwargs),
-                            help='The name of the strategy to be used for feature sub-sampling or None')
+        parser.add_argument('--label-sampling', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('label_sampling', None, **kwargs),
+                            help='The name of the strategy to be used for label sampling or None')
+        parser.add_argument('--instance-sampling', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('instance_sampling', None, **kwargs),
+                            help='The name of the strategy to be used for instance sampling or None')
+        parser.add_argument('--feature-sampling', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('feature_sampling', None, **kwargs),
+                            help='The name of the strategy to be used for feature sampling or None')
         parser.add_argument('--holdout', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('holdout', None, **kwargs),
                             help='The name of the strategy to be used for creating a holdout set or None')
@@ -205,7 +205,7 @@ class ArgumentParserBuilder:
         parser.add_argument('--recalculate-predictions', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('recalculate_predictions', True, **kwargs),
                             help='True, if the predictions of rules should be recalculated on the entire training '
-                                 + 'data, if instance sub-sampling is used, False otherwise')
+                                 + 'data, if instance sampling is used, False otherwise')
         parser.add_argument('--early-stopping', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('early_stopping', None, **kwargs),
                             help='The name of the strategy to be used for early stopping or None')
