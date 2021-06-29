@@ -46,27 +46,19 @@ from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
 HEAD_REFINEMENT_SINGLE = 'single-label'
 
-LABEL_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
-INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
+SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
-INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 
-INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
-
-INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
-
-FEATURE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 ARGUMENT_SAMPLE_SIZE = 'sample_size'
 
 ARGUMENT_NUM_SAMPLES = 'num_samples'
 
 PARTITION_SAMPLING_RANDOM = 'random'
-
-PARTITION_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
-
-PARTITION_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 ARGUMENT_HOLDOUT_SET_SIZE = 'holdout_set_size'
 
@@ -106,9 +98,9 @@ def create_label_sampling_factory(label_sampling: str, num_labels: int) -> Label
     if label_sampling is None:
         return NoLabelSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(label_sampling, [LABEL_SAMPLING_WITHOUT_REPLACEMENT])
+        prefix, args = parse_prefix_and_dict(label_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
 
-        if prefix == LABEL_SAMPLING_WITHOUT_REPLACEMENT:
+        if prefix == SAMPLING_WITHOUT_REPLACEMENT:
             num_samples = get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
             return LabelSamplingWithoutReplacementFactory(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sampling\': ' + str(label_sampling))
@@ -119,20 +111,19 @@ def create_instance_sampling_factory(instance_sampling: str) -> InstanceSampling
         return NoInstanceSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(instance_sampling,
-                                             [INSTANCE_SAMPLING_WITH_REPLACEMENT, INSTANCE_SAMPLING_WITHOUT_REPLACEMENT,
-                                              INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE,
-                                              INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE])
+                                             [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT,
+                                              SAMPLING_STRATIFIED_LABEL_WISE, SAMPLING_STRATIFIED_EXAMPLE_WISE])
 
-        if prefix == INSTANCE_SAMPLING_WITH_REPLACEMENT:
+        if prefix == SAMPLING_WITH_REPLACEMENT:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
             return InstanceSamplingWithReplacementFactory(sample_size)
-        elif prefix == INSTANCE_SAMPLING_WITHOUT_REPLACEMENT:
+        elif prefix == SAMPLING_WITHOUT_REPLACEMENT:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return InstanceSamplingWithoutReplacementFactory(sample_size)
-        elif prefix == INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE:
+        elif prefix == SAMPLING_STRATIFIED_LABEL_WISE:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return LabelWiseStratifiedSamplingFactory(sample_size)
-        elif prefix == INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE:
+        elif prefix == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return ExampleWiseStratifiedSamplingFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'instance_sampling\': ' + str(instance_sampling))
@@ -142,9 +133,9 @@ def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFac
     if feature_sampling is None:
         return NoFeatureSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(feature_sampling, [FEATURE_SAMPLING_WITHOUT_REPLACEMENT])
+        prefix, args = parse_prefix_and_dict(feature_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
 
-        if prefix == FEATURE_SAMPLING_WITHOUT_REPLACEMENT:
+        if prefix == SAMPLING_WITHOUT_REPLACEMENT:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
             return FeatureSamplingWithoutReplacementFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'feature_sampling\': ' + str(feature_sampling))
@@ -154,17 +145,16 @@ def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
     if holdout is None:
         return NoPartitionSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(holdout, [PARTITION_SAMPLING_RANDOM,
-                                                       PARTITION_SAMPLING_STRATIFIED_LABEL_WISE,
-                                                       PARTITION_SAMPLING_STRATIFIED_EXAMPLE_WISE])
+        prefix, args = parse_prefix_and_dict(holdout, [PARTITION_SAMPLING_RANDOM, SAMPLING_STRATIFIED_LABEL_WISE,
+                                                       SAMPLING_STRATIFIED_EXAMPLE_WISE])
 
         if prefix == PARTITION_SAMPLING_RANDOM:
             holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
             return RandomBiPartitionSamplingFactory(holdout_set_size)
-        if prefix == PARTITION_SAMPLING_STRATIFIED_LABEL_WISE:
+        if prefix == SAMPLING_STRATIFIED_LABEL_WISE:
             holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
             return LabelWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
-        if prefix == PARTITION_SAMPLING_STRATIFIED_EXAMPLE_WISE:
+        if prefix == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
             return ExampleWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
         raise ValueError('Invalid value given for parameter \'holdout\': ' + str(holdout))
