@@ -86,7 +86,7 @@ cdef extern from "common/sampling/feature_sampling_random.hpp" nogil:
 
 cdef extern from "common/sampling/feature_sampling_no.hpp" nogil:
 
-    cdef cppclass NoFeatureSubSamplingFactoryImpl"NoFeatureSubSamplingFactory"(IFeatureSamplingFactory):
+    cdef cppclass NoFeatureSamplingFactoryImpl"NoFeatureSamplingFactory"(IFeatureSamplingFactory):
         pass
 
 
@@ -191,7 +191,7 @@ cdef class RandomFeatureSubsetSelectionFactory(FeatureSamplingFactory):
     pass
 
 
-cdef class NoFeatureSubSamplingFactory(FeatureSamplingFactory):
+cdef class NoFeatureSamplingFactory(FeatureSamplingFactory):
     pass
 
 
