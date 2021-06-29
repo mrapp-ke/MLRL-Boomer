@@ -7,10 +7,10 @@
 
 
 /**
- * Allows to create objects of type `ILabelSubSampling` that select a random subset of the available features without
+ * Allows to create objects of type `ILabelSampling` that select a random subset of the available features without
  * replacement.
  */
-class RandomLabelSubsetSelectionFactory final : public ILabelSubSamplingFactory {
+class RandomLabelSubsetSelectionFactory final : public ILabelSamplingFactory {
 
     private:
 
@@ -23,6 +23,6 @@ class RandomLabelSubsetSelectionFactory final : public ILabelSubSamplingFactory 
          */
         RandomLabelSubsetSelectionFactory(uint32 numSamples);
 
-        std::unique_ptr<ILabelSubSampling> create(uint32 numLabels) const override;
+        std::unique_ptr<ILabelSampling> create(uint32 numLabels) const override;
 
 };

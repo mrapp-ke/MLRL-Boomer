@@ -109,7 +109,7 @@ cdef class NoFeatureSubSamplingFactory(FeatureSubSamplingFactory):
 
 cdef class LabelSubSamplingFactory:
     """
-    A wrapper for the pure virtual C++ class `ILabelSubSamplingFactory`.
+    A wrapper for the pure virtual C++ class `ILabelSamplingFactory`.
     """
     pass
 
@@ -123,7 +123,7 @@ cdef class RandomLabelSubsetSelectionFactory(LabelSubSamplingFactory):
         """
         :param num_samples: The number of labels to be included in the sample
         """
-        self.label_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[RandomLabelSubsetSelectionFactoryImpl](
+        self.label_sampling_factory_ptr = <shared_ptr[ILabelSamplingFactory]>make_shared[RandomLabelSubsetSelectionFactoryImpl](
             num_samples)
 
 
@@ -133,7 +133,7 @@ cdef class NoLabelSubSamplingFactory(LabelSubSamplingFactory):
     """
 
     def __cinit__(self):
-        self.label_sampling_factory_ptr = <shared_ptr[ILabelSubSamplingFactory]>make_shared[NoLabelSubSamplingFactoryImpl]()
+        self.label_sampling_factory_ptr = <shared_ptr[ILabelSamplingFactory]>make_shared[NoLabelSubSamplingFactoryImpl]()
 
 
 cdef class PartitionSamplingFactory:
