@@ -183,12 +183,12 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * The shrinkage parameter, a.k.a. the learning rate, to be used. Must be greater than ``0`` and less or equal to ``1``.
 
-* ``--loss`` (default value ``label-wise-logistic-loss``)
+* ``--loss`` (default value ``logistic-label-wise``)
 
-  * ``label-wise-logistic-loss`` A variant of the logistic loss function that is applied to each label individually.
-  * ``label-wise-squared-error-loss`` A variant of the Squared error loss that is applied to each label individually.
-  * ``label-wise-hinge-loss`` A variant of the Hinge loss that is applied to each label individually.
-  * ``example-wise-logistic-loss`` A variant of the logistic loss function that takes all labels into account at the same time.
+  * ``logistic-label-wise`` A variant of the logistic loss function that is applied to each label individually.
+  * ``logistic-example-wise`` A variant of the logistic loss function that takes all labels into account at the same time.
+  * ``squared-error-label-wise`` A variant of the Squared error loss that is applied to each label individually.
+  * ``hinge-label-wise`` A variant of the Hinge loss that is applied to each label individually.
 
 * ``--predictor`` (default value ``None``)
 

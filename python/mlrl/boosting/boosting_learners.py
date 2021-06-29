@@ -68,13 +68,13 @@ ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
 HEAD_TYPE_FULL = 'full'
 
-LOSS_LOGISTIC_LABEL_WISE = 'label-wise-logistic-loss'
+LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
 
-LOSS_LOGISTIC_EXAMPLE_WISE = 'example-wise-logistic-loss'
+LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
 
-LOSS_SQUARED_ERROR_LABEL_WISE = 'label-wise-squared-error-loss'
+LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
 
-LOSS_SQUARED_HINGE_LABEL_WISE = 'label-wise-squared-hinge-loss'
+LOSS_SQUARED_HINGE_LABEL_WISE = 'hinge-label-wise'
 
 NON_DECOMPOSABLE_LOSSES = {LOSS_LOGISTIC_EXAMPLE_WISE}
 
@@ -113,8 +113,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     `single-label`, `full` or None, if the type of the heads should be
                                                     chosen automatically
         :param loss:                                The loss function to be minimized. Must be
-                                                    `label-wise-squared-error-loss`, `label-wise-logistic-loss` or
-                                                    `example-wise-logistic-loss`
+                                                    `squared-error-label-wise`, `logistic-label-wise` or
+                                                    `logistic-example-wise`
         :param predictor:                           The strategy that is used for making predictions. Must be
                                                     `label-wise`, `example-wise` or None, if the default strategy should
                                                     be used
