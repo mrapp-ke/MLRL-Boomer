@@ -48,9 +48,9 @@ HEAD_REFINEMENT_SINGLE = 'single-label'
 
 LABEL_SAMPLING_RANDOM = 'random-label-selection'
 
-INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'random-instance-selection'
-
 INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
+
+INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
 INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 
