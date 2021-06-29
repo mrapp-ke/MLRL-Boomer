@@ -24,13 +24,14 @@ cdef extern from "common/sampling/instance_sampling.hpp" nogil:
         pass
 
 
-cdef extern from "common/sampling/instance_sampling_bagging.hpp" nogil:
+cdef extern from "common/sampling/instance_sampling_with_replacement.hpp" nogil:
 
-    cdef cppclass BaggingFactoryImpl"BaggingFactory"(IInstanceSamplingFactory):
+    cdef cppclass InstanceSamplingWithReplacementFactoryImpl"InstanceSamplingWithReplacementFactory"(
+            IInstanceSamplingFactory):
 
         # Constructors:
 
-        BaggingFactoryImpl(float32 sampleSize) except +
+        InstanceSamplingWithReplacementFactoryImpl(float32 sampleSize) except +
 
 
 cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
@@ -159,7 +160,7 @@ cdef class InstanceSamplingFactory:
     cdef shared_ptr[IInstanceSamplingFactory] instance_sampling_factory_ptr
 
 
-cdef class BaggingFactory(InstanceSamplingFactory):
+cdef class InstanceSamplingWithReplacementFactory(InstanceSamplingFactory):
     pass
 
 

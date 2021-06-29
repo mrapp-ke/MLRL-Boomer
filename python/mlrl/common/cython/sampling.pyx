@@ -11,9 +11,9 @@ cdef class InstanceSamplingFactory:
     pass
 
 
-cdef class BaggingFactory(InstanceSamplingFactory):
+cdef class InstanceSamplingWithReplacementFactory(InstanceSamplingFactory):
     """
-    A wrapper for the C++ class `BaggingFactory`.
+    A wrapper for the C++ class `InstanceSamplingWithReplacementFactory`.
     """
 
     def __cinit__(self, float32 sample_size = 1.0):
@@ -21,7 +21,7 @@ cdef class BaggingFactory(InstanceSamplingFactory):
         :param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                             60 % of the available examples). Must be in (0, 1]
         """
-        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[BaggingFactoryImpl](
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[InstanceSamplingWithReplacementFactoryImpl](
             sample_size)
 
 
