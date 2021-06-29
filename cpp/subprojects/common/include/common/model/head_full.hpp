@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/model/head.hpp"
-#include "common/head_refinement/prediction_full.hpp"
+#include "common/head_refinement/prediction_complete.hpp"
 
 
 /**
@@ -26,10 +26,10 @@ class FullHead final : public IHead {
         FullHead(uint32 numElements);
 
         /**
-         * @param prediction A reference to an object of type `FullPrediction` that stores the scores to be contained by
-         *                   the head
+         * @param prediction A reference to an object of type `CompletePrediction` that stores the scores to be
+         *                   contained by the head
          */
-        FullHead(const FullPrediction& prediction);
+        FullHead(const CompletePrediction& prediction);
 
         ~FullHead();
 

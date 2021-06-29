@@ -5,7 +5,7 @@
 #pragma once
 
 #include "common/statistics/histogram.hpp"
-#include "common/head_refinement/prediction_full.hpp"
+#include "common/head_refinement/prediction_complete.hpp"
 #include "common/head_refinement/prediction_partial.hpp"
 #include "common/measures/measure_evaluation.hpp"
 
@@ -94,7 +94,7 @@ class IStatistics : virtual public IImmutableStatistics {
          * @param prediction        A reference to an object of type `Prediction` that stores the scores that are
          *                          predicted by the rule
          */
-        virtual void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) = 0;
+        virtual void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) = 0;
 
         /**
          * Updates a specific statistic based on the prediction of a rule that predicts for a subset of the available

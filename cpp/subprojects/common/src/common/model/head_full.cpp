@@ -6,7 +6,7 @@ FullHead::FullHead(uint32 numElements)
 
 }
 
-FullHead::FullHead(const FullPrediction& prediction)
+FullHead::FullHead(const CompletePrediction& prediction)
     : FullHead(prediction.getNumElements()) {
     std::copy(prediction.scores_cbegin(), prediction.scores_cend(), scores_);
 }

@@ -214,9 +214,10 @@ namespace seco {
                                                                               labelIndices);
             }
 
-            void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-                applyPredictionInternally<FullPrediction, WeightMatrix>(statisticIndex, prediction, *weightMatrixPtr_,
-                                                                        *majorityLabelVectorPtr_);
+            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override {
+                applyPredictionInternally<CompletePrediction, WeightMatrix>(statisticIndex, prediction,
+                                                                            *weightMatrixPtr_,
+                                                                            *majorityLabelVectorPtr_);
             }
 
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
