@@ -75,7 +75,7 @@ cdef extern from "common/sampling/feature_sampling.hpp" nogil:
         pass
 
 
-cdef extern from "common/sampling/feature_sampling_random.hpp" nogil:
+cdef extern from "common/sampling/feature_sampling_without_replacement.hpp" nogil:
 
     cdef cppclass FeatureSamplingWithoutReplacementFactoryImpl"FeatureSamplingWithoutReplacementFactory"(
             IFeatureSamplingFactory):

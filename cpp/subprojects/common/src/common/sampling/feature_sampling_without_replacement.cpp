@@ -1,4 +1,4 @@
-#include "common/sampling/feature_sampling_random.hpp"
+#include "common/sampling/feature_sampling_without_replacement.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/indices/index_iterator.hpp"
 #include "index_sampling.hpp"
