@@ -16,7 +16,7 @@ from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProvi
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import AUTOMATIC, HEAD_TYPE_SINGLE
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
@@ -60,20 +60,19 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
-                 head_type: str = AUTOMATIC, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
-                 heuristic: str = HEURISTIC_PRECISION, label_sampling: str = None, instance_sampling: str = None,
-                 feature_sampling: str = None, holdout: str = None, feature_binning: str = None, pruning: str = None,
-                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1,
-                 num_threads_rule_refinement: int = 1, num_threads_statistic_update: int = 1,
-                 num_threads_prediction: int = 1):
+                 head_type: str = HEAD_TYPE_SINGLE, lift_function: str = LIFT_FUNCTION_PEAK,
+                 loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sampling: str = None,
+                 instance_sampling: str = None, feature_sampling: str = None, holdout: str = None,
+                 feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
+                 max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
+                 num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
         :param time_limit:                          The duration in seconds after which the induction of rules should be
                                                     canceled
         :param head_type:                           The type of the rule heads that should be used. Must be
-                                                    `single-label`, `partial` or `auto`, if the type of the heads should
-                                                    be chosen automatically
+                                                    `single-label` or `partial`
         :param lift_function:                       The lift function to use. Must be `peak`. Additional arguments may
                                                     be provided as a dictionary, e.g.
                                                     `peak{\"peak_label\":10,\"max_lift\":2.0,\"curvature\":1.0}`
@@ -145,8 +144,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
-        if self.head_type != AUTOMATIC:
-            name += '_head-type=' + str(self.head_type)
+        name += '_head-type=' + str(self.head_type)
         name += '_lift-function=' + str(self.lift_function)
         name += '_loss=' + str(self.loss)
         name += '_heuristic=' + str(self.heuristic)
@@ -249,9 +247,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def __create_head_refinement_factory(self, lift_function: LiftFunction) -> HeadRefinementFactory:
         head_type = self.head_type
 
-        if head_type == AUTOMATIC:
-            return SingleLabelHeadRefinementFactory()
-        elif head_type == HEAD_TYPE_SINGLE:
+        if head_type == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
         elif head_type == HEAD_TYPE_PARTIAL:
             return PartialHeadRefinementFactory(lift_function)
