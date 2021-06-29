@@ -157,7 +157,7 @@ cdef class InstanceSubSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IInstanceSubSamplingFactory] instance_sub_sampling_factory_ptr
+    cdef shared_ptr[IInstanceSubSamplingFactory] instance_sampling_factory_ptr
 
 
 cdef class BaggingFactory(InstanceSubSamplingFactory):
@@ -184,7 +184,7 @@ cdef class FeatureSubSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IFeatureSubSamplingFactory] feature_sub_sampling_factory_ptr
+    cdef shared_ptr[IFeatureSubSamplingFactory] feature_sampling_factory_ptr
 
 
 cdef class RandomFeatureSubsetSelectionFactory(FeatureSubSamplingFactory):
@@ -199,7 +199,7 @@ cdef class LabelSubSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelSubSamplingFactory] label_sub_sampling_factory_ptr
+    cdef shared_ptr[ILabelSubSamplingFactory] label_sampling_factory_ptr
 
 
 cdef class RandomLabelSubsetSelectionFactory(LabelSubSamplingFactory):
