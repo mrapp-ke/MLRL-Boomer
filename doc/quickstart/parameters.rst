@@ -151,9 +151,10 @@ The following parameters allow to adjust the behavior of the algorithm:
   * ``equal-width`` Examples are assigned to bins, based on their feature values, according to the equal-width binning method. Additional arguments may be provided using the Python dictionary syntax, e.g., ``equal-width{'bin_ratio':0.5,'min_bins':2,'max_bins':256}``.
   * ``equal-frequency``. Examles are assigned to bins, based on their feature values, according to the equal-frequency binning method. Additional arguments may be provided using the Python dictionary syntax, e.g., ``equal-frequency{'bin_ratio':0.5,'min_bins':2,'max_bins':256}``.
 
-* ``--label-binning`` (default value ``None``)
+* ``--label-binning`` (default value ``auto``)
 
   * ``None`` No label binning is used.
+  * ``auto`` The most suitable strategy for label-binning is chosen automatically based on the loss function and the type of rule heads.
   * ``equal-width`` The labels for which a rule may predict are assigned to bins according to the equal-width binning method. Additional arguments may be provided using the Python dictionary syntax, e.g., ``equal-width{'bin_ratio':0.04,'min_bins':1,'max_bins':8``.
 
 * ``--pruning`` (default value ``None``)
