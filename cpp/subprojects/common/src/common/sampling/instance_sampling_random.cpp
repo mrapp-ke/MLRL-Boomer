@@ -28,7 +28,7 @@ static inline void subSampleInternally(BiPartition& partition, float32 sampleSiz
  *                   training set
  */
 template<typename Partition>
-class RandomInstanceSubsetSelection final : public IInstanceSubSampling {
+class RandomInstanceSubsetSelection final : public IInstanceSampling {
 
     private:
 
@@ -64,22 +64,24 @@ RandomInstanceSubsetSelectionFactory::RandomInstanceSubsetSelectionFactory(float
 
 }
 
-std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
+std::unique_ptr<IInstanceSampling> RandomInstanceSubsetSelectionFactory::create(
         const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
     return std::make_unique<RandomInstanceSubsetSelection<const SinglePartition>>(partition, sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
+std::unique_ptr<IInstanceSampling> RandomInstanceSubsetSelectionFactory::create(
         const CContiguousLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
     return std::make_unique<RandomInstanceSubsetSelection<BiPartition>>(partition, sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
-        const CsrLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
+std::unique_ptr<IInstanceSampling> RandomInstanceSubsetSelectionFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                                                const SinglePartition& partition,
+                                                                                IStatistics& statistics) const {
     return std::make_unique<RandomInstanceSubsetSelection<const SinglePartition>>(partition, sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> RandomInstanceSubsetSelectionFactory::create(
-        const CsrLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
+std::unique_ptr<IInstanceSampling> RandomInstanceSubsetSelectionFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                                                BiPartition& partition,
+                                                                                IStatistics& statistics) const {
     return std::make_unique<RandomInstanceSubsetSelection<BiPartition>>(partition, sampleSize_);
 }

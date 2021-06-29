@@ -39,7 +39,7 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
         std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
         std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr,
-        std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr,
+        std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
         std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
         std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr, std::shared_ptr<IPruning> pruningPtr,
         std::shared_ptr<IPostProcessor> postProcessorPtr,
@@ -47,7 +47,7 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), thresholdsFactoryPtr_(thresholdsFactoryPtr),
       ruleInductionPtr_(ruleInductionPtr), defaultRuleHeadRefinementFactoryPtr_(defaultRuleHeadRefinementFactoryPtr),
       headRefinementFactoryPtr_(headRefinementFactoryPtr), labelSubSamplingFactoryPtr_(labelSubSamplingFactoryPtr),
-      instanceSubSamplingFactoryPtr_(instanceSubSamplingFactoryPtr),
+      instanceSamplingFactoryPtr_(instanceSamplingFactoryPtr),
       featureSubSamplingFactoryPtr_(featureSubSamplingFactoryPtr),
       partitionSamplingFactoryPtr_(partitionSamplingFactoryPtr), pruningPtr_(pruningPtr),
       postProcessorPtr_(postProcessorPtr), stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
@@ -75,8 +75,8 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(const INomi
     std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrix.createPartitionSampling(
         *partitionSamplingFactoryPtr_);
     IPartition& partition = partitionSamplingPtr->partition(rng);
-    std::unique_ptr<IInstanceSubSampling> instanceSubSamplingPtr = partition.createInstanceSubSampling(
-        *instanceSubSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
+    std::unique_ptr<IInstanceSampling> instanceSamplingPtr = partition.createInstanceSampling(
+        *instanceSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
     std::unique_ptr<IFeatureSubSampling> featureSubSamplingPtr = featureSubSamplingFactoryPtr_->create(numFeatures);
     std::unique_ptr<ILabelSubSampling> labelSubSamplingPtr = labelSubSamplingFactoryPtr_->create(numLabels);
     IStoppingCriterion::Result stoppingCriterionResult;
@@ -88,7 +88,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(const INomi
             numUsedRules = stoppingCriterionResult.numRules;
         }
 
-        const IWeightVector& weights = instanceSubSamplingPtr->subSample(rng);
+        const IWeightVector& weights = instanceSamplingPtr->subSample(rng);
         const IIndexVector& labelIndices = labelSubSamplingPtr->subSample(rng);
         bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, labelIndices, weights, partition,
                                                      *featureSubSamplingPtr, *pruningPtr_, *postProcessorPtr_, rng,

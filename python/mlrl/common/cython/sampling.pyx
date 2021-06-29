@@ -4,14 +4,14 @@
 from libcpp.memory cimport make_shared
 
 
-cdef class InstanceSubSamplingFactory:
+cdef class InstanceSamplingFactory:
     """
-    A wrapper for the pure virtual C++ class `IInstanceSubSamplingFactory`.
+    A wrapper for the pure virtual C++ class `IInstanceSamplingFactory`.
     """
     pass
 
 
-cdef class BaggingFactory(InstanceSubSamplingFactory):
+cdef class BaggingFactory(InstanceSamplingFactory):
     """
     A wrapper for the C++ class `BaggingFactory`.
     """
@@ -21,11 +21,11 @@ cdef class BaggingFactory(InstanceSubSamplingFactory):
         :param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                             60 % of the available examples). Must be in (0, 1]
         """
-        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[BaggingFactoryImpl](
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[BaggingFactoryImpl](
             sample_size)
 
 
-cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
+cdef class RandomInstanceSubsetSelectionFactory(InstanceSamplingFactory):
     """
     A wrapper for the C++ class `RandomInstanceSubsetSelectionFactory`.
     """
@@ -35,11 +35,11 @@ cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples). Must be in (0, 1)
         """
-        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[RandomInstanceSubsetSelectionFactoryImpl](
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[RandomInstanceSubsetSelectionFactoryImpl](
             sample_size)
 
 
-cdef class LabelWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
+cdef class LabelWiseStratifiedSamplingFactory(InstanceSamplingFactory):
     """
     A wrapper for the C++ class `LabelWiseStratifiedSamplingFactory`.
     """
@@ -49,11 +49,11 @@ cdef class LabelWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples). Must be in (0, 1)
         """
-        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[LabelWiseStratifiedSamplingFactoryImpl](
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[LabelWiseStratifiedSamplingFactoryImpl](
             sample_size)
 
 
-cdef class ExampleWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
+cdef class ExampleWiseStratifiedSamplingFactory(InstanceSamplingFactory):
     """
     A wrapper for the C++ class `ExampleWiseStratifiedSamplingFactory`.
     """
@@ -63,17 +63,17 @@ cdef class ExampleWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
         param sample_size: The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
                            60 % of the available examples). Must be in (0, 1)
         """
-        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[ExampleWiseStratifiedSamplingFactoryImpl](
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[ExampleWiseStratifiedSamplingFactoryImpl](
             sample_size)
 
 
-cdef class NoInstanceSubSamplingFactory(InstanceSubSamplingFactory):
+cdef class NoInstanceSubSamplingFactory(InstanceSamplingFactory):
     """
     A wrapper for the C++ class `NoInstanceSubSamplingFactory`.
     """
 
     def __cinit__(self):
-        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSubSamplingFactory]>make_shared[NoInstanceSubSamplingFactoryImpl]()
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[NoInstanceSubSamplingFactoryImpl]()
 
 
 cdef class FeatureSubSamplingFactory:

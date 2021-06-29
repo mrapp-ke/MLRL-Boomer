@@ -20,13 +20,13 @@ cdef extern from "common/sampling/weight_vector.hpp" nogil:
 
 cdef extern from "common/sampling/instance_sampling.hpp" nogil:
 
-    cdef cppclass IInstanceSubSamplingFactory:
+    cdef cppclass IInstanceSamplingFactory:
         pass
 
 
 cdef extern from "common/sampling/instance_sampling_bagging.hpp" nogil:
 
-    cdef cppclass BaggingFactoryImpl"BaggingFactory"(IInstanceSubSamplingFactory):
+    cdef cppclass BaggingFactoryImpl"BaggingFactory"(IInstanceSamplingFactory):
 
         # Constructors:
 
@@ -36,7 +36,7 @@ cdef extern from "common/sampling/instance_sampling_bagging.hpp" nogil:
 cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
 
     cdef cppclass RandomInstanceSubsetSelectionFactoryImpl"RandomInstanceSubsetSelectionFactory"(
-            IInstanceSubSamplingFactory):
+            IInstanceSamplingFactory):
 
         # Constructors:
 
@@ -45,8 +45,7 @@ cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
 
 cdef extern from "common/sampling/instance_sampling_stratified_label_wise.hpp" nogil:
 
-    cdef cppclass LabelWiseStratifiedSamplingFactoryImpl"LabelWiseStratifiedSamplingFactory"(
-            IInstanceSubSamplingFactory):
+    cdef cppclass LabelWiseStratifiedSamplingFactoryImpl"LabelWiseStratifiedSamplingFactory"(IInstanceSamplingFactory):
 
         # Constructors:
 
@@ -56,7 +55,7 @@ cdef extern from "common/sampling/instance_sampling_stratified_label_wise.hpp" n
 cdef extern from "common/sampling/instance_sampling_stratified_example_wise.hpp" nogil:
 
     cdef cppclass ExampleWiseStratifiedSamplingFactoryImpl"ExampleWiseStratifiedSamplingFactory"(
-            IInstanceSubSamplingFactory):
+            IInstanceSamplingFactory):
 
         # Constructors:
 
@@ -65,7 +64,7 @@ cdef extern from "common/sampling/instance_sampling_stratified_example_wise.hpp"
 
 cdef extern from "common/sampling/instance_sampling_no.hpp" nogil:
 
-    cdef cppclass NoInstanceSubSamplingFactoryImpl"NoInstanceSubSamplingFactory"(IInstanceSubSamplingFactory):
+    cdef cppclass NoInstanceSubSamplingFactoryImpl"NoInstanceSubSamplingFactory"(IInstanceSamplingFactory):
         pass
 
 
@@ -153,30 +152,30 @@ cdef extern from "common/sampling/partition_sampling_bi_stratified_label_wise.hp
         LabelWiseStratifiedBiPartitionSamplingFactoryImpl(float32 holdout_set_size) except +
 
 
-cdef class InstanceSubSamplingFactory:
+cdef class InstanceSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IInstanceSubSamplingFactory] instance_sampling_factory_ptr
+    cdef shared_ptr[IInstanceSamplingFactory] instance_sampling_factory_ptr
 
 
-cdef class BaggingFactory(InstanceSubSamplingFactory):
+cdef class BaggingFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
+cdef class RandomInstanceSubsetSelectionFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class LabelWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
+cdef class LabelWiseStratifiedSamplingFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class ExampleWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
+cdef class ExampleWiseStratifiedSamplingFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class NoInstanceSubSamplingFactory(InstanceSubSamplingFactory):
+cdef class NoInstanceSubSamplingFactory(InstanceSamplingFactory):
     pass
 
 

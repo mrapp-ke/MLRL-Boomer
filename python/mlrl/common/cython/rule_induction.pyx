@@ -4,8 +4,8 @@
 from mlrl.common.cython.head_refinement cimport HeadRefinementFactory
 from mlrl.common.cython.post_processing cimport PostProcessor
 from mlrl.common.cython.pruning cimport Pruning
-from mlrl.common.cython.sampling cimport InstanceSubSamplingFactory, FeatureSubSamplingFactory, \
-    LabelSubSamplingFactory, PartitionSamplingFactory
+from mlrl.common.cython.sampling cimport InstanceSamplingFactory, FeatureSubSamplingFactory, LabelSubSamplingFactory, \
+    PartitionSamplingFactory
 from mlrl.common.cython.statistics cimport StatisticsProviderFactory
 from mlrl.common.cython.stopping cimport StoppingCriterion
 from mlrl.common.cython.thresholds cimport ThresholdsFactory
@@ -73,8 +73,7 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
     def __cinit__(self, StatisticsProviderFactory statistics_provider_factory, ThresholdsFactory thresholds_factory,
                   RuleInduction rule_induction, HeadRefinementFactory default_rule_head_refinement_factory,
                   HeadRefinementFactory head_refinement_factory, LabelSubSamplingFactory label_sampling_factory,
-                  InstanceSubSamplingFactory instance_sampling_factory,
-                  FeatureSubSamplingFactory feature_sampling_factory,
+                  InstanceSamplingFactory instance_sampling_factory, FeatureSubSamplingFactory feature_sampling_factory,
                   PartitionSamplingFactory partition_sampling_factory, Pruning pruning, PostProcessor post_processor,
                   list stopping_criteria):
         """
