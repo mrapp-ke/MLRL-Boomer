@@ -69,7 +69,7 @@ namespace boosting {
     }
 
     void DenseLabelWiseStatisticVector::addToSubset(const_iterator begin, const_iterator end,
-                                                    const FullIndexVector& indices, float64 weight) {
+                                                    const CompleteIndexVector& indices, float64 weight) {
         addToArray(statistics_, begin, numElements_, weight);
     }
 
@@ -80,7 +80,7 @@ namespace boosting {
     }
 
     void DenseLabelWiseStatisticVector::difference(const_iterator firstBegin, const_iterator firstEnd,
-                                                   const FullIndexVector& firstIndices, const_iterator secondBegin,
+                                                   const CompleteIndexVector& firstIndices, const_iterator secondBegin,
                                                    const_iterator secondEnd) {
         setArrayToDifference(statistics_, firstBegin, secondBegin, numElements_);
     }
@@ -93,7 +93,7 @@ namespace boosting {
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
-            const ILabelWiseRuleEvaluationFactory& factory, const FullIndexVector& labelIndices) const {
+            const ILabelWiseRuleEvaluationFactory& factory, const CompleteIndexVector& labelIndices) const {
         return factory.createDense(labelIndices);
     }
 

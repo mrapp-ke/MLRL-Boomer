@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
@@ -23,21 +23,21 @@ namespace boosting {
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
-             * provided by a `FullIndexVector`.
+             * provided by a `CompleteIndexVector`.
              *
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
              * @param labelMatrix       A reference to an object of type `CContiguousLabelMatrix` that provides random
              *                          access to the labels of the training examples
              * @param scoreMatrix       A reference to an object of type `CContiguousConstView` that stores the
              *                          currently predicted scores
-             * @param labelIndicesBegin A `FullIndexVector::const_iterator` to the beginning of the label indices
-             * @param labelIndicesEnd   A `FullIndexVector::const_iterator` to the end of the label indices
+             * @param labelIndicesBegin A `CompleteIndexVector::const_iterator` to the beginning of the label indices
+             * @param labelIndicesEnd   A `CompleteIndexVector::const_iterator` to the end of the label indices
              * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
-                                                   FullIndexVector::const_iterator labelIndicesBegin,
-                                                   FullIndexVector::const_iterator labelIndicesEnd,
+                                                   CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                   CompleteIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const = 0;
 
             /**
@@ -61,7 +61,7 @@ namespace boosting {
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
-             * provided by a `FullIndexVector`.
+             * provided by a `CompleteIndexVector`.
              *
              * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
              * @param labelMatrix       A reference to an object of type `CsrLabelMatrix` that provides row-wise access
@@ -74,8 +74,8 @@ namespace boosting {
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
-                                                   FullIndexVector::const_iterator labelIndicesBegin,
-                                                   FullIndexVector::const_iterator labelIndicesEnd,
+                                                   CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                   CompleteIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const = 0;
 
             /**
@@ -138,8 +138,8 @@ namespace boosting {
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                            const CContiguousConstView<float64>& scoreMatrix,
-                                           FullIndexVector::const_iterator labelIndicesBegin,
-                                           FullIndexVector::const_iterator labelIndicesEnd,
+                                           CompleteIndexVector::const_iterator labelIndicesBegin,
+                                           CompleteIndexVector::const_iterator labelIndicesEnd,
                                            DenseLabelWiseStatisticView& statisticView) const override final;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
@@ -150,8 +150,8 @@ namespace boosting {
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                            const CContiguousConstView<float64>& scoreMatrix,
-                                           FullIndexVector::const_iterator labelIndicesBegin,
-                                           FullIndexVector::const_iterator labelIndicesEnd,
+                                           CompleteIndexVector::const_iterator labelIndicesBegin,
+                                           CompleteIndexVector::const_iterator labelIndicesEnd,
                                            DenseLabelWiseStatisticView& statisticView) const override final;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,

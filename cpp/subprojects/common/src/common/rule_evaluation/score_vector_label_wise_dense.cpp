@@ -35,4 +35,4 @@ const AbstractEvaluatedPrediction* DenseLabelWiseScoreVector<T>::processScores(
 }
 
 template class DenseLabelWiseScoreVector<PartialIndexVector>;
-template class DenseLabelWiseScoreVector<FullIndexVector>;
+template class DenseLabelWiseScoreVector<CompleteIndexVector>;

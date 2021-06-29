@@ -200,11 +200,11 @@ namespace seco {
                                      signedWeight);
             }
 
-            std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices) const override {
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
                     ruleEvaluationFactoryPtr_->create(labelIndices);
-                return std::make_unique<StatisticsSubset<FullIndexVector>>(*this, std::move(ruleEvaluationPtr),
-                                                                           labelIndices);
+                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(*this, std::move(ruleEvaluationPtr),
+                                                                               labelIndices);
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override {
@@ -214,9 +214,10 @@ namespace seco {
                                                                               labelIndices);
             }
 
-            void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-                applyPredictionInternally<FullPrediction, WeightMatrix>(statisticIndex, prediction, *weightMatrixPtr_,
-                                                                        *majorityLabelVectorPtr_);
+            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override {
+                applyPredictionInternally<CompletePrediction, WeightMatrix>(statisticIndex, prediction,
+                                                                            *weightMatrixPtr_,
+                                                                            *majorityLabelVectorPtr_);
             }
 
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {

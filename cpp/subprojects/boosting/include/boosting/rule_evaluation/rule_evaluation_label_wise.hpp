@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/rule_evaluation/score_vector_label_wise.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "boosting/data/statistic_vector_dense_label_wise.hpp"
 #include <memory>
@@ -54,13 +54,13 @@ namespace boosting {
              * of rules that predict for all available labels, based on the gradients and Hessians that are stored by a
              * `DenseLabelWiseStatisticVector`.
              *
-             * @param indexVector   A reference to an object of the type `FullIndexVector` that provides access to the
-             *                      indices of the labels for which the rules may predict
+             * @param indexVector   A reference to an object of the type `CompleteIndexVector` that provides access to
+             *                      the indices of the labels for which the rules may predict
              * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
              *                      created
              */
             virtual std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
-                const FullIndexVector& indexVector) const = 0;
+                const CompleteIndexVector& indexVector) const = 0;
 
             /**
              * Creates a new instance of the class `ILabelWiseRuleEvaluation` that allows to calculate the predictions

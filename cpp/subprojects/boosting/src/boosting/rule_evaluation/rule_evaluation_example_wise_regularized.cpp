@@ -117,10 +117,10 @@ namespace boosting {
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> RegularizedExampleWiseRuleEvaluationFactory::createDense(
-            const FullIndexVector& indexVector) const {
-        return std::make_unique<DenseRegularizedExampleWiseRuleEvaluation<FullIndexVector>>(indexVector,
-                                                                                            l2RegularizationWeight_,
-                                                                                            *blasPtr_, *lapackPtr_);
+            const CompleteIndexVector& indexVector) const {
+        return std::make_unique<DenseRegularizedExampleWiseRuleEvaluation<CompleteIndexVector>>(indexVector,
+                                                                                                l2RegularizationWeight_,
+                                                                                                *blasPtr_, *lapackPtr_);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> RegularizedExampleWiseRuleEvaluationFactory::createDense(

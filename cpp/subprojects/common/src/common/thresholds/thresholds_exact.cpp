@@ -384,7 +384,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 }
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const FullIndexVector& labelIndices,
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& labelIndices,
                                                                       uint32 featureIndex) override {
                     return createExactRuleRefinement(labelIndices, featureIndex);
                 }

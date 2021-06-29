@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "boosting/data/statistic_iterator_dense.hpp"
 #include <memory>
@@ -139,15 +139,17 @@ namespace boosting {
             void add(const_iterator begin, const_iterator end, float64 weight);
 
             /**
-             * Adds certain gradients and Hessians in another vector, whose positions are given as a `FullIndexVector`,
-             * to this vector. The gradients and Hessians to be added are multiplied by a specific weight.
+             * Adds certain gradients and Hessians in another vector, whose positions are given as a
+             * `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a
+             * specific weight.
              *
              * @param begin     A `const_iterator` to the beginning of the vector
              * @param end       A `const_iterator` to the end of the vector
-             * @param indices   A reference to a `FullIndexVector' that provides access to the indices
+             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const_iterator begin, const_iterator end, const FullIndexVector& indices, float64 weight);
+            void addToSubset(const_iterator begin, const_iterator end, const CompleteIndexVector& indices,
+                             float64 weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
@@ -165,16 +167,16 @@ namespace boosting {
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
-             * correspond to the positions provided by a `FullIndexVector`.
+             * correspond to the positions provided by a `CompleteIndexVector`.
              *
              * @param firstBegin    A `const_iterator` to the beginning of the first vector
              * @param firstEnd      A `const_iterator` to the end of the first vector
-             * @param firstIndices  A reference to an object of type `FullIndexVector` that provides access to the
+             * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices
              * @param secondBegin  A `const_iterator` to the beginning of the second vector
              * @param secondEnd    A `const_iterator` to the end of the second vector
              */
-            void difference(const_iterator firstBegin, const_iterator firstEnd, const FullIndexVector& firstIndices,
+            void difference(const_iterator firstBegin, const_iterator firstEnd, const CompleteIndexVector& firstIndices,
                             const_iterator secondBegin, const_iterator secondEnd);
 
             /**
@@ -199,13 +201,13 @@ namespace boosting {
              *
              * @param factory       A reference to an object of type `ILabelWiseRuleEvaluationFactory` that should be
              *                      used to create the object
-             * @param indexVector   A reference to an object of type `FullIndexVector` that provides access to the
+             * @param indexVector   A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices of the labels for which the rules may predict
              * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
              *                      created
              */
             std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createRuleEvaluation(
-                const ILabelWiseRuleEvaluationFactory& factory, const FullIndexVector& labelIndices) const;
+                const ILabelWiseRuleEvaluationFactory& factory, const CompleteIndexVector& labelIndices) const;
 
             /**
              * Creates and returns a new object of type `ILabelWiseRuleEvaluation` that allows to calculate the

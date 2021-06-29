@@ -5,7 +5,7 @@
 
 #include "common/data/matrix_dense.hpp"
 #include "common/data/vector_sparse_array_binary.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
 
@@ -56,8 +56,8 @@ namespace seco {
             void updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,
                            DenseVector<float64>::const_iterator predictionBegin,
                            DenseVector<float64>::const_iterator predictionEnd,
-                           FullIndexVector::const_iterator indicesBegin,
-                           FullIndexVector::const_iterator indicesEnd);
+                           CompleteIndexVector::const_iterator indicesBegin,
+                           CompleteIndexVector::const_iterator indicesEnd);
 
             /**
              * Updates the weights at a specific row of this matrix, given the predictions for certain labels.
