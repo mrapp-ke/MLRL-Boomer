@@ -24,7 +24,7 @@ source_files = [
     'src/common/data/view_csr_binary.cpp',
     'src/common/data/view_fortran_contiguous.cpp',
     'src/common/data/view_vector.cpp',
-    'src/common/head_refinement/head_refinement_full.cpp',
+    'src/common/head_refinement/head_refinement_complete.cpp',
     'src/common/head_refinement/head_refinement_single.cpp',
     'src/common/head_refinement/prediction_complete.cpp',
     'src/common/head_refinement/prediction_evaluated.cpp',
