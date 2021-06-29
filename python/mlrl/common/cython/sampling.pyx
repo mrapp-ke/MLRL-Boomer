@@ -98,13 +98,13 @@ cdef class RandomFeatureSubsetSelectionFactory(FeatureSamplingFactory):
             sample_size)
 
 
-cdef class NoFeatureSubSamplingFactory(FeatureSamplingFactory):
+cdef class NoFeatureSamplingFactory(FeatureSamplingFactory):
     """
-    A wrapper for the C++ class `NoFeatureSubSamplingFactory`.
+    A wrapper for the C++ class `NoFeatureSamplingFactory`.
     """
 
     def __cinit__(self):
-        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSamplingFactory]>make_shared[NoFeatureSubSamplingFactoryImpl]()
+        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSamplingFactory]>make_shared[NoFeatureSamplingFactoryImpl]()
 
 
 cdef class LabelSamplingFactory:

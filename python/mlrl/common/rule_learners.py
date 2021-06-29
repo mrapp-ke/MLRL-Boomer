@@ -24,7 +24,7 @@ from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
 from mlrl.common.cython.rule_induction import RuleModelInduction
 from mlrl.common.cython.sampling import FeatureSamplingFactory, RandomFeatureSubsetSelectionFactory, \
-    NoFeatureSubSamplingFactory
+    NoFeatureSamplingFactory
 from mlrl.common.cython.sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
     InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, \
     ExampleWiseStratifiedSamplingFactory
@@ -140,7 +140,7 @@ def create_instance_sampling_factory(instance_sampling: str) -> InstanceSampling
 
 def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFactory:
     if feature_sampling is None:
-        return NoFeatureSubSamplingFactory()
+        return NoFeatureSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(feature_sampling, [FEATURE_SAMPLING_RANDOM])
 

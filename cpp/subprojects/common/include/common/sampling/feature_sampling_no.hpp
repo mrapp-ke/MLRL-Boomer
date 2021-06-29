@@ -9,7 +9,7 @@
 /**
  * Allows to create instances of the type `IFeatureSampling` that do not perform any sampling, but include all features.
  */
-class NoFeatureSubSamplingFactory final : public IFeatureSamplingFactory {
+class NoFeatureSamplingFactory final : public IFeatureSamplingFactory {
 
     public:
 
