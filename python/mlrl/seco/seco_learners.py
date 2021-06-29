@@ -189,9 +189,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement_factory = FullHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)
-        label_sub_sampling_factory = create_label_sampling_factory(self.label_sub_sampling, num_labels)
-        instance_sub_sampling_factory = create_instance_sampling_factory(self.instance_sub_sampling)
-        feature_sub_sampling_factory = create_feature_sampling_factory(self.feature_sub_sampling)
+        label_sampling_factory = create_label_sampling_factory(self.label_sub_sampling, num_labels)
+        instance_sampling_factory = create_instance_sampling_factory(self.instance_sub_sampling)
+        feature_sampling_factory = create_feature_sampling_factory(self.feature_sub_sampling)
         partition_sampling_factory = create_partition_sampling_factory(self.holdout)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
         post_processor = NoPostProcessor()
@@ -199,9 +199,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         stopping_criteria.append(CoverageStoppingCriterion(0))
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
-                                            label_sub_sampling_factory, instance_sub_sampling_factory,
-                                            feature_sub_sampling_factory, partition_sampling_factory, pruning,
-                                            post_processor, stopping_criteria)
+                                            label_sampling_factory, instance_sampling_factory, feature_sampling_factory,
+                                            partition_sampling_factory, pruning, post_processor, stopping_criteria)
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic

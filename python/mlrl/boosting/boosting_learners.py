@@ -293,9 +293,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         early_stopping_criterion = self.__create_early_stopping()
         if early_stopping_criterion is not None:
             stopping_criteria.append(early_stopping_criterion)
-        label_sub_sampling_factory = create_label_sampling_factory(self.label_sub_sampling, num_labels)
-        instance_sub_sampling_factory = create_instance_sampling_factory(self.instance_sub_sampling)
-        feature_sub_sampling_factory = create_feature_sampling_factory(self.feature_sub_sampling)
+        label_sampling_factory = create_label_sampling_factory(self.label_sub_sampling, num_labels)
+        instance_sampling_factory = create_instance_sampling_factory(self.instance_sub_sampling)
+        feature_sampling_factory = create_feature_sampling_factory(self.feature_sub_sampling)
         partition_sampling_factory = create_partition_sampling_factory(self.holdout)
         pruning = create_pruning(self.pruning, self.instance_sub_sampling)
         shrinkage = self.__create_post_processor()
@@ -318,9 +318,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                               recalculate_predictions, num_threads_refinement)
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
-                                            label_sub_sampling_factory, instance_sub_sampling_factory,
-                                            feature_sub_sampling_factory, partition_sampling_factory, pruning,
-                                            shrinkage, stopping_criteria)
+                                            label_sampling_factory, instance_sampling_factory, feature_sampling_factory,
+                                            partition_sampling_factory, pruning, shrinkage, stopping_criteria)
 
     def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
         early_stopping = self.early_stopping
