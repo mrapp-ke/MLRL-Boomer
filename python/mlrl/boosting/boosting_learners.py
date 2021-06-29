@@ -99,7 +99,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
+                 max_head_refinements: int = 1, num_threads_rule_refinement: int = 1, num_threads_update: int = 1,
                  num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
@@ -162,7 +162,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
-        :param num_threads_refinement:              The number of threads to be used to search for potential refinements
+        :param num_threads_rule_refinement:         The number of threads to be used to search for potential refinements
                                                     of rules or -1, if the number of cores that are available on the
                                                     machine should be used
         :param num_threads_update:                  The number of threads to be used to update statistics or -1, if the
@@ -191,7 +191,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
-        self.num_threads_refinement = num_threads_refinement
+        self.num_threads_rule_refinement = num_threads_rule_refinement
         self.num_threads_update = num_threads_update
         self.num_threads_prediction = num_threads_prediction
 
@@ -312,9 +312,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         recalculate_predictions = self.recalculate_predictions
-        num_threads_refinement = get_preferred_num_threads(self.num_threads_refinement)
+        num_threads_rule_refinement = get_preferred_num_threads(self.num_threads_rule_refinement)
         rule_induction = TopDownRuleInduction(min_coverage, max_conditions, max_head_refinements,
-                                              recalculate_predictions, num_threads_refinement)
+                                              recalculate_predictions, num_threads_rule_refinement)
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
                                             label_sampling_factory, instance_sampling_factory, feature_sampling_factory,
