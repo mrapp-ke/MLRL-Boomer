@@ -108,7 +108,7 @@ cdef extern from "common/sampling/label_sampling_random.hpp" nogil:
 
 cdef extern from "common/sampling/label_sampling_no.hpp" nogil:
 
-    cdef cppclass NoLabelSubSamplingFactoryImpl"NoLabelSubSamplingFactory"(ILabelSamplingFactory):
+    cdef cppclass NoLabelSamplingFactoryImpl"NoLabelSamplingFactory"(ILabelSamplingFactory):
         pass
 
 
@@ -195,18 +195,18 @@ cdef class NoFeatureSubSamplingFactory(FeatureSubSamplingFactory):
     pass
 
 
-cdef class LabelSubSamplingFactory:
+cdef class LabelSamplingFactory:
 
     # Attributes:
 
     cdef shared_ptr[ILabelSamplingFactory] label_sampling_factory_ptr
 
 
-cdef class RandomLabelSubsetSelectionFactory(LabelSubSamplingFactory):
+cdef class RandomLabelSubsetSelectionFactory(LabelSamplingFactory):
     pass
 
 
-cdef class NoLabelSubSamplingFactory(LabelSubSamplingFactory):
+cdef class NoLabelSamplingFactory(LabelSamplingFactory):
     pass
 
 
