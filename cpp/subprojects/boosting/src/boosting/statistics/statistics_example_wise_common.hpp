@@ -165,7 +165,7 @@ namespace boosting {
             /**
              * The type of a `StatisticsSubset` that corresponds to all available labels.
              */
-            typedef StatisticsSubset<CompleteIndexVector> FullSubset;
+            typedef StatisticsSubset<CompleteIndexVector> CompleteSubset;
 
             /**
              * The type of a `StatisticsSubset` that corresponds to a subset of the available labels.
@@ -274,9 +274,9 @@ namespace boosting {
                     const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<IExampleWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVector_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
-                return std::make_unique<typename ExampleWiseHistogram::FullSubset>(*this, totalSumVector_,
-                                                                                   std::move(ruleEvaluationPtr),
-                                                                                   labelIndices);
+                return std::make_unique<typename ExampleWiseHistogram::CompleteSubset>(*this, totalSumVector_,
+                                                                                       std::move(ruleEvaluationPtr),
+                                                                                       labelIndices);
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(
@@ -427,7 +427,7 @@ namespace boosting {
                     const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<IExampleWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVectorPtr_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
-                return std::make_unique<typename AbstractExampleWiseStatistics::FullSubset>(
+                return std::make_unique<typename AbstractExampleWiseStatistics::CompleteSubset>(
                     *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
             }
 
