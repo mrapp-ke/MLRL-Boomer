@@ -7,13 +7,12 @@
 
 
 /**
- * Allows to create instances of the type `IFeatureSubSampling` that do not perform any sampling, but include all
- * features.
+ * Allows to create instances of the type `IFeatureSampling` that do not perform any sampling, but include all features.
  */
-class NoFeatureSubSamplingFactory final : public IFeatureSubSamplingFactory {
+class NoFeatureSamplingFactory final : public IFeatureSamplingFactory {
 
     public:
 
-        std::unique_ptr<IFeatureSubSampling> create(uint32 numFeatures) const override;
+        std::unique_ptr<IFeatureSampling> create(uint32 numFeatures) const override;
 
 };

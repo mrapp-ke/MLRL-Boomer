@@ -4,8 +4,8 @@
 from mlrl.common.cython.head_refinement cimport HeadRefinementFactory
 from mlrl.common.cython.post_processing cimport PostProcessor
 from mlrl.common.cython.pruning cimport Pruning
-from mlrl.common.cython.sampling cimport InstanceSubSamplingFactory, FeatureSubSamplingFactory, \
-    LabelSubSamplingFactory, PartitionSamplingFactory
+from mlrl.common.cython.sampling cimport InstanceSamplingFactory, FeatureSamplingFactory, LabelSamplingFactory, \
+    PartitionSamplingFactory
 from mlrl.common.cython.statistics cimport StatisticsProviderFactory
 from mlrl.common.cython.stopping cimport StoppingCriterion
 from mlrl.common.cython.thresholds cimport ThresholdsFactory
@@ -39,7 +39,7 @@ cdef class TopDownRuleInduction(RuleInduction):
                                         condition has been added to its body. Must be at least 1 or -1, if the number of
                                         refinements should not be restricted
         :param recalculate_predictions: True, if the predictions of rules should be recalculated on the entire training
-                                        data, if instance sub-sampling is used, False otherwise
+                                        data, if instance sampling is used, False otherwise
         :param num_threads:             The number of CPU threads to be used to search for potential refinements of a
                                         rule in parallel. Must be at least 1
         """
@@ -72,9 +72,8 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
 
     def __cinit__(self, StatisticsProviderFactory statistics_provider_factory, ThresholdsFactory thresholds_factory,
                   RuleInduction rule_induction, HeadRefinementFactory default_rule_head_refinement_factory,
-                  HeadRefinementFactory head_refinement_factory, LabelSubSamplingFactory label_sub_sampling_factory,
-                  InstanceSubSamplingFactory instance_sub_sampling_factory,
-                  FeatureSubSamplingFactory feature_sub_sampling_factory,
+                  HeadRefinementFactory head_refinement_factory, LabelSamplingFactory label_sampling_factory,
+                  InstanceSamplingFactory instance_sampling_factory, FeatureSamplingFactory feature_sampling_factory,
                   PartitionSamplingFactory partition_sampling_factory, Pruning pruning, PostProcessor post_processor,
                   list stopping_criteria):
         """
@@ -89,15 +88,15 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
         :param head_refinement_factory:                 The factory that allows to create instances of the class that
                                                         implements the strategy that should be used to find the heads of
                                                         rules
-        :param label_sub_sampling_factory:              The factory that should be used for creating the implementation
-                                                        to be used for sub-sampling the labels each time a new
+        :param label_sampling_factory:                  The factory that should be used for creating the implementation
+                                                        to be used for sampling the labels each time a new
                                                         classification rule is learned
-        :param instance_sub_sampling_factory:           The factory that should be used for creating the implementation
-                                                        to be used for sub-sampling the training examples each time a
-                                                        new classification rule is learned
-        :param feature_sub_sampling_factory:            The factory that should be used for creating the implementation
-                                                        to be used for sub-sampling the features each time a
-                                                        classification rule is refined
+        :param instance_sampling_factory:               The factory that should be used for creating the implementation
+                                                        to be used for sampling the training examples each time a new
+                                                        classification rule is learned
+        :param feature_sampling_factory:                The factory that should be used for creating the implementation
+                                                        to be used for sampling the features each time a classification
+                                                        rule is refined
         :param partition_sampling_factory:              The factory that should be used for creating the implementation
                                                         to be used for partitioning the training examples into a
                                                         training set and a holdout set
@@ -120,9 +119,8 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
         self.rule_model_induction_ptr = <shared_ptr[IRuleModelInduction]>make_shared[SequentialRuleModelInductionImpl](
             statistics_provider_factory.statistics_provider_factory_ptr, thresholds_factory.thresholds_factory_ptr,
             rule_induction.rule_induction_ptr, default_rule_head_refinement_factory.head_refinement_factory_ptr,
-            head_refinement_factory.head_refinement_factory_ptr,
-            label_sub_sampling_factory.label_sub_sampling_factory_ptr,
-            instance_sub_sampling_factory.instance_sub_sampling_factory_ptr,
-            feature_sub_sampling_factory.feature_sub_sampling_factory_ptr,
+            head_refinement_factory.head_refinement_factory_ptr, label_sampling_factory.label_sampling_factory_ptr,
+            instance_sampling_factory.instance_sampling_factory_ptr,
+            feature_sampling_factory.feature_sampling_factory_ptr,
             partition_sampling_factory.partition_sampling_factory_ptr, pruning.pruning_ptr,
             post_processor.post_processor_ptr, move(stopping_criteria_ptr))

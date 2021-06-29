@@ -20,33 +20,33 @@ cdef extern from "common/sampling/weight_vector.hpp" nogil:
 
 cdef extern from "common/sampling/instance_sampling.hpp" nogil:
 
-    cdef cppclass IInstanceSubSamplingFactory:
+    cdef cppclass IInstanceSamplingFactory:
         pass
 
 
-cdef extern from "common/sampling/instance_sampling_bagging.hpp" nogil:
+cdef extern from "common/sampling/instance_sampling_with_replacement.hpp" nogil:
 
-    cdef cppclass BaggingFactoryImpl"BaggingFactory"(IInstanceSubSamplingFactory):
-
-        # Constructors:
-
-        BaggingFactoryImpl(float32 sampleSize) except +
-
-
-cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
-
-    cdef cppclass RandomInstanceSubsetSelectionFactoryImpl"RandomInstanceSubsetSelectionFactory"(
-            IInstanceSubSamplingFactory):
+    cdef cppclass InstanceSamplingWithReplacementFactoryImpl"InstanceSamplingWithReplacementFactory"(
+            IInstanceSamplingFactory):
 
         # Constructors:
 
-        RandomInstanceSubsetSelectionFactoryImpl(float32 sampleSize) except +
+        InstanceSamplingWithReplacementFactoryImpl(float32 sampleSize) except +
+
+
+cdef extern from "common/sampling/instance_sampling_without_replacement.hpp" nogil:
+
+    cdef cppclass InstanceSamplingWithoutReplacementFactoryImpl"InstanceSamplingWithoutReplacementFactory"(
+            IInstanceSamplingFactory):
+
+        # Constructors:
+
+        InstanceSamplingWithoutReplacementFactoryImpl(float32 sampleSize) except +
 
 
 cdef extern from "common/sampling/instance_sampling_stratified_label_wise.hpp" nogil:
 
-    cdef cppclass LabelWiseStratifiedSamplingFactoryImpl"LabelWiseStratifiedSamplingFactory"(
-            IInstanceSubSamplingFactory):
+    cdef cppclass LabelWiseStratifiedSamplingFactoryImpl"LabelWiseStratifiedSamplingFactory"(IInstanceSamplingFactory):
 
         # Constructors:
 
@@ -56,7 +56,7 @@ cdef extern from "common/sampling/instance_sampling_stratified_label_wise.hpp" n
 cdef extern from "common/sampling/instance_sampling_stratified_example_wise.hpp" nogil:
 
     cdef cppclass ExampleWiseStratifiedSamplingFactoryImpl"ExampleWiseStratifiedSamplingFactory"(
-            IInstanceSubSamplingFactory):
+            IInstanceSamplingFactory):
 
         # Constructors:
 
@@ -65,50 +65,51 @@ cdef extern from "common/sampling/instance_sampling_stratified_example_wise.hpp"
 
 cdef extern from "common/sampling/instance_sampling_no.hpp" nogil:
 
-    cdef cppclass NoInstanceSubSamplingFactoryImpl"NoInstanceSubSamplingFactory"(IInstanceSubSamplingFactory):
+    cdef cppclass NoInstanceSamplingFactoryImpl"NoInstanceSamplingFactory"(IInstanceSamplingFactory):
         pass
 
 
 cdef extern from "common/sampling/feature_sampling.hpp" nogil:
 
-    cdef cppclass IFeatureSubSamplingFactory:
+    cdef cppclass IFeatureSamplingFactory:
         pass
 
 
-cdef extern from "common/sampling/feature_sampling_random.hpp" nogil:
+cdef extern from "common/sampling/feature_sampling_without_replacement.hpp" nogil:
 
-    cdef cppclass RandomFeatureSubsetSelectionFactoryImpl"RandomFeatureSubsetSelectionFactory"(
-            IFeatureSubSamplingFactory):
+    cdef cppclass FeatureSamplingWithoutReplacementFactoryImpl"FeatureSamplingWithoutReplacementFactory"(
+            IFeatureSamplingFactory):
 
         # Constructors
 
-        RandomFeatureSubsetSelectionFactoryImpl(float32 sampleSize) except +
+        FeatureSamplingWithoutReplacementFactoryImpl(float32 sampleSize) except +
 
 
 cdef extern from "common/sampling/feature_sampling_no.hpp" nogil:
 
-    cdef cppclass NoFeatureSubSamplingFactoryImpl"NoFeatureSubSamplingFactory"(IFeatureSubSamplingFactory):
+    cdef cppclass NoFeatureSamplingFactoryImpl"NoFeatureSamplingFactory"(IFeatureSamplingFactory):
         pass
 
 
 cdef extern from "common/sampling/label_sampling.hpp" nogil:
 
-    cdef cppclass ILabelSubSamplingFactory:
+    cdef cppclass ILabelSamplingFactory:
         pass
 
 
-cdef extern from "common/sampling/label_sampling_random.hpp" nogil:
+cdef extern from "common/sampling/label_sampling_without_replacement.hpp" nogil:
 
-    cdef cppclass RandomLabelSubsetSelectionFactoryImpl"RandomLabelSubsetSelectionFactory"(ILabelSubSamplingFactory):
+    cdef cppclass LabelSamplingWithoutReplacementFactoryImpl"LabelSamplingWithoutReplacementFactory"(
+            ILabelSamplingFactory):
 
         # Constructors:
 
-        RandomLabelSubsetSelectionFactoryImpl(uint32 numSamples) except +
+        LabelSamplingWithoutReplacementFactoryImpl(uint32 numSamples) except +
 
 
 cdef extern from "common/sampling/label_sampling_no.hpp" nogil:
 
-    cdef cppclass NoLabelSubSamplingFactoryImpl"NoLabelSubSamplingFactory"(ILabelSubSamplingFactory):
+    cdef cppclass NoLabelSamplingFactoryImpl"NoLabelSamplingFactory"(ILabelSamplingFactory):
         pass
 
 
@@ -153,60 +154,60 @@ cdef extern from "common/sampling/partition_sampling_bi_stratified_label_wise.hp
         LabelWiseStratifiedBiPartitionSamplingFactoryImpl(float32 holdout_set_size) except +
 
 
-cdef class InstanceSubSamplingFactory:
+cdef class InstanceSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IInstanceSubSamplingFactory] instance_sub_sampling_factory_ptr
+    cdef shared_ptr[IInstanceSamplingFactory] instance_sampling_factory_ptr
 
 
-cdef class BaggingFactory(InstanceSubSamplingFactory):
+cdef class InstanceSamplingWithReplacementFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class RandomInstanceSubsetSelectionFactory(InstanceSubSamplingFactory):
+cdef class InstanceSamplingWithoutReplacementFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class LabelWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
+cdef class LabelWiseStratifiedSamplingFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class ExampleWiseStratifiedSamplingFactory(InstanceSubSamplingFactory):
+cdef class ExampleWiseStratifiedSamplingFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class NoInstanceSubSamplingFactory(InstanceSubSamplingFactory):
+cdef class NoInstanceSamplingFactory(InstanceSamplingFactory):
     pass
 
 
-cdef class FeatureSubSamplingFactory:
+cdef class FeatureSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IFeatureSubSamplingFactory] feature_sub_sampling_factory_ptr
+    cdef shared_ptr[IFeatureSamplingFactory] feature_sampling_factory_ptr
 
 
-cdef class RandomFeatureSubsetSelectionFactory(FeatureSubSamplingFactory):
+cdef class FeatureSamplingWithoutReplacementFactory(FeatureSamplingFactory):
     pass
 
 
-cdef class NoFeatureSubSamplingFactory(FeatureSubSamplingFactory):
+cdef class NoFeatureSamplingFactory(FeatureSamplingFactory):
     pass
 
 
-cdef class LabelSubSamplingFactory:
+cdef class LabelSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelSubSamplingFactory] label_sub_sampling_factory_ptr
+    cdef shared_ptr[ILabelSamplingFactory] label_sampling_factory_ptr
 
 
-cdef class RandomLabelSubsetSelectionFactory(LabelSubSamplingFactory):
+cdef class LabelSamplingWithoutReplacementFactory(LabelSamplingFactory):
     pass
 
 
-cdef class NoLabelSubSamplingFactory(LabelSubSamplingFactory):
+cdef class NoLabelSamplingFactory(LabelSamplingFactory):
     pass
 
 

@@ -68,12 +68,14 @@ std::unique_ptr<IPartitionSampling> CsrLabelMatrix::createPartitionSampling(
     return factory.create(*this);
 }
 
-std::unique_ptr<IInstanceSubSampling> CsrLabelMatrix::createInstanceSubSampling(
-        const IInstanceSubSamplingFactory& factory, const SinglePartition& partition, IStatistics& statistics) const {
+std::unique_ptr<IInstanceSampling> CsrLabelMatrix::createInstanceSampling(const IInstanceSamplingFactory& factory,
+                                                                          const SinglePartition& partition,
+                                                                          IStatistics& statistics) const {
     return factory.create(*this, partition, statistics);
 }
 
-std::unique_ptr<IInstanceSubSampling> CsrLabelMatrix::createInstanceSubSampling(
-        const IInstanceSubSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const {
+std::unique_ptr<IInstanceSampling> CsrLabelMatrix::createInstanceSampling(const IInstanceSamplingFactory& factory,
+                                                                          BiPartition& partition,
+                                                                          IStatistics& statistics) const {
     return factory.create(*this, partition, statistics);
 }
