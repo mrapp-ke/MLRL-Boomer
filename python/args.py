@@ -140,8 +140,8 @@ class ArgumentParserBuilder:
         parser.add_argument('--num-threads-rule-refinement', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads_rule_refinement', 1, **kwargs),
                             help='The number of threads to be used to search for potential refinements of rules or -1')
-        parser.add_argument('--num-threads-update', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_update', 1, **kwargs),
+        parser.add_argument('--num-threads-statistic-update', type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_statistic_update', 1, **kwargs),
                             help='The number of threads to be used to update statistics or -1')
         parser.add_argument('--num-threads-prediction', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
