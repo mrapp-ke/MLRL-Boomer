@@ -33,7 +33,7 @@ from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFun
     ArithmeticMeanFunction
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import INSTANCE_SAMPLING_WITH_REPLACEMENT, FEATURE_SAMPLING_RANDOM, \
+from mlrl.common.rule_learners import INSTANCE_SAMPLING_WITH_REPLACEMENT, FEATURE_SAMPLING_WITHOUT_REPLACEMENT, \
     HEAD_REFINEMENT_SINGLE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
@@ -96,8 +96,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  time_limit: int = -1, early_stopping: str = None, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sampling: str = None,
                  instance_sampling: str = INSTANCE_SAMPLING_WITH_REPLACEMENT, recalculate_predictions: bool = True,
-                 feature_sampling: str = FEATURE_SAMPLING_RANDOM, holdout: str = None, feature_binning: str = None,
-                 label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
+                 feature_sampling: str = FEATURE_SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None,
+                 feature_binning: str = None, label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
                  num_threads_prediction: int = 1):
@@ -131,10 +131,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param recalculate_predictions:             True, if the predictions of rules should be recalculated on the
                                                     entire training data, if instance sampling is used, False otherwise
         :param feature_sampling:                    The strategy that is used for sampling the features each time a
-                                                    classification rule is refined. Must be `random-feature-selection`
-                                                    or None, if no sampling should be used. Additional arguments may be
+                                                    classification rule is refined. Must be `without-replacement` or
+                                                    None, if no sampling should be used. Additional arguments may be
                                                     provided as a dictionary, e.g.
-                                                    `random-feature-selection{\"sample_size\":0.5}`
+                                                    `without-replacement{\"sample_size\":0.5}`
         :param holdout:                             The name of the strategy to be used for creating a holdout set. Must
                                                     be `random` or None, if no holdout set should be used. Additional
                                                     arguments may be provided as a dictionary, e.g.

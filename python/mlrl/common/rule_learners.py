@@ -56,7 +56,7 @@ INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 
 INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
-FEATURE_SAMPLING_RANDOM = 'random-feature-selection'
+FEATURE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
 ARGUMENT_SAMPLE_SIZE = 'sample_size'
 
@@ -142,9 +142,9 @@ def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFac
     if feature_sampling is None:
         return NoFeatureSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(feature_sampling, [FEATURE_SAMPLING_RANDOM])
+        prefix, args = parse_prefix_and_dict(feature_sampling, [FEATURE_SAMPLING_WITHOUT_REPLACEMENT])
 
-        if prefix == FEATURE_SAMPLING_RANDOM:
+        if prefix == FEATURE_SAMPLING_WITHOUT_REPLACEMENT:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
             return FeatureSamplingWithoutReplacementFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'feature_sampling\': ' + str(feature_sampling))
