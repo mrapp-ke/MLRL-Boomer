@@ -34,8 +34,8 @@ from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFun
 from sklearn.base import ClassifierMixin
 
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import SAMPLING_WITHOUT_REPLACEMENT, HEAD_REFINEMENT_SINGLE, \
-    ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
+from mlrl.common.rule_learners import SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
+    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
@@ -66,7 +66,7 @@ ARGUMENT_FORCE_STOP = 'force_stop'
 
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
-HEAD_REFINEMENT_FULL = 'full'
+HEAD_TYPE_FULL = 'full'
 
 LOSS_LABEL_WISE_LOGISTIC = 'label-wise-logistic-loss'
 
@@ -93,14 +93,14 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
-                 time_limit: int = -1, early_stopping: str = None, head_refinement: str = None,
+                 time_limit: int = -1, early_stopping: str = None, head_type: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sampling: str = None,
                  instance_sampling: str = None, recalculate_predictions: bool = True,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
-                 num_threads_prediction: int = 1):
+                 max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
+                 num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -109,9 +109,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     canceled
         :param early_stopping:                      The strategy that is used for early stopping. Must be `measure` or
                                                     None, if no early stopping should be used
-        :param head_refinement:                     The strategy that is used to find the heads of rules. Must be
-                                                    `single-label`, `full` or None, if the default strategy should be
-                                                    used
+        :param head_type:                           The type of the rule heads that should be used. Must be
+                                                    `single-label`, `full` or None, if the type of the heads should be
+                                                    chosen automatically
         :param loss:                                The loss function to be minimized. Must be
                                                     `label-wise-squared-error-loss`, `label-wise-logistic-loss` or
                                                     `example-wise-logistic-loss`
@@ -162,10 +162,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     -1, if the number of refinements should not be restricted
-        :param num_threads_refinement:              The number of threads to be used to search for potential refinements
+        :param num_threads_rule_refinement:         The number of threads to be used to search for potential refinements
                                                     of rules or -1, if the number of cores that are available on the
                                                     machine should be used
-        :param num_threads_update:                  The number of threads to be used to update statistics or -1, if the
+        :param num_threads_statistic_update:        The number of threads to be used to update statistics or -1, if the
                                                     number of cores that are available on the machine should be used
         :param num_threads_prediction:              The number of threads to be used to make predictions or -1, if the
                                                     number of cores that are available on the machine should be used
@@ -175,7 +175,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.default_rule = default_rule
         self.time_limit = time_limit
         self.early_stopping = early_stopping
-        self.head_refinement = head_refinement
+        self.head_type = head_type
         self.loss = loss
         self.predictor = predictor
         self.label_sampling = label_sampling
@@ -191,16 +191,16 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
-        self.num_threads_refinement = num_threads_refinement
-        self.num_threads_update = num_threads_update
+        self.num_threads_rule_refinement = num_threads_rule_refinement
+        self.num_threads_statistic_update = num_threads_statistic_update
         self.num_threads_prediction = num_threads_prediction
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
         if self.early_stopping is not None:
             name += '_early-stopping=' + str(self.early_stopping)
-        if self.head_refinement is not None:
-            name += '_head-refinement=' + str(self.head_refinement)
+        if self.head_type is not None:
+            name += '_head-type=' + str(self.head_type)
         name += '_loss=' + str(self.loss)
         if self.predictor is not None:
             name += '_predictor=' + str(self.predictor)
@@ -304,17 +304,17 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         head_refinement_factory = self.__create_head_refinement_factory()
         l2_regularization_weight = self.__create_l2_regularization_weight()
         rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
-        num_threads_update = get_preferred_num_threads(self.num_threads_update)
+        num_threads_statistic_update = get_preferred_num_threads(self.num_threads_statistic_update)
         statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory,
-                                                                                num_threads_update)
-        thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_update)
+                                                                                num_threads_statistic_update)
+        thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_statistic_update)
         min_coverage = create_min_coverage(self.min_coverage)
         max_conditions = create_max_conditions(self.max_conditions)
         max_head_refinements = create_max_head_refinements(self.max_head_refinements)
         recalculate_predictions = self.recalculate_predictions
-        num_threads_refinement = get_preferred_num_threads(self.num_threads_refinement)
+        num_threads_rule_refinement = get_preferred_num_threads(self.num_threads_rule_refinement)
         rule_induction = TopDownRuleInduction(min_coverage, max_conditions, max_head_refinements,
-                                              recalculate_predictions, num_threads_refinement)
+                                              recalculate_predictions, num_threads_rule_refinement)
         return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
                                             default_rule_head_refinement_factory, head_refinement_factory,
                                             label_sampling_factory, instance_sampling_factory, feature_sampling_factory,
@@ -424,23 +424,23 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                              rule_evaluation_factory, num_threads)
 
     def __create_head_refinement_factory(self) -> HeadRefinementFactory:
-        head_refinement = self.___get_preferred_head_refinement()
+        head_type = self.___get_preferred_head_type()
 
-        if head_refinement == HEAD_REFINEMENT_SINGLE:
+        if head_type == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
-        elif head_refinement == HEAD_REFINEMENT_FULL:
+        elif head_type == HEAD_TYPE_FULL:
             return FullHeadRefinementFactory()
-        raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
+        raise ValueError('Invalid value given for parameter \'head_type\': ' + str(head_type))
 
-    def ___get_preferred_head_refinement(self) -> str:
-        head_refinement = self.head_refinement
+    def ___get_preferred_head_type(self) -> str:
+        head_type = self.head_type
 
-        if head_refinement is None:
+        if head_type is None:
             if self.loss in NON_DECOMPOSABLE_LOSSES:
-                return HEAD_REFINEMENT_FULL
+                return HEAD_TYPE_FULL
             else:
-                return HEAD_REFINEMENT_SINGLE
-        return head_refinement
+                return HEAD_TYPE_SINGLE
+        return head_type
 
     def __create_post_processor(self) -> PostProcessor:
         shrinkage = float(self.shrinkage)
