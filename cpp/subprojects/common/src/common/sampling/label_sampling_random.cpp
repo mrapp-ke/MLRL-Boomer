@@ -7,7 +7,7 @@
 /**
  * Allows to select a subset of the available labels without replacement.
  */
-class RandomLabelSubsetSelection final : public ILabelSubSampling {
+class RandomLabelSubsetSelection final : public ILabelSampling {
 
     private:
 
@@ -38,6 +38,6 @@ RandomLabelSubsetSelectionFactory::RandomLabelSubsetSelectionFactory(uint32 numS
 
 }
 
-std::unique_ptr<ILabelSubSampling> RandomLabelSubsetSelectionFactory::create(uint32 numLabels) const {
+std::unique_ptr<ILabelSampling> RandomLabelSubsetSelectionFactory::create(uint32 numLabels) const {
     return std::make_unique<RandomLabelSubsetSelection>(numLabels, numSamples_);
 }

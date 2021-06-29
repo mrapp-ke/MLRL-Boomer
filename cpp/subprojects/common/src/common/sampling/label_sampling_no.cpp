@@ -3,9 +3,9 @@
 
 
 /**
- * An implementation of the class `ILabelSubSampling` that does not perform any sampling, but includes all labels.
+ * An implementation of the class `ILabelSampling` that does not perform any sampling, but includes all labels.
  */
-class NoLabelSubSampling final : public ILabelSubSampling {
+class NoLabelSubSampling final : public ILabelSampling {
 
     private:
 
@@ -27,6 +27,6 @@ class NoLabelSubSampling final : public ILabelSubSampling {
 
 };
 
-std::unique_ptr<ILabelSubSampling> NoLabelSubSamplingFactory::create(uint32 numLabels) const {
+std::unique_ptr<ILabelSampling> NoLabelSubSamplingFactory::create(uint32 numLabels) const {
     return std::make_unique<NoLabelSubSampling>(numLabels);
 }

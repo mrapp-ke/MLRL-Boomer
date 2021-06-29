@@ -33,7 +33,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
 
         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr_;
 
-        std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr_;
+        std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr_;
 
         std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr_;
 
@@ -64,7 +64,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          * @param headRefinementFactoryPtr              A shared pointer to an object of type `IHeadRefinement` that
          *                                              allows to create instances of the class that should be used to
          *                                              find the head of all remaining rules
-         * @param labelSubSamplingFactoryPtr            A shared pointer to an object of type `ILabelSubSamplingFactory`
+         * @param labelSamplingFactoryPtr               A shared pointer to an object of type `ILabelSamplingFactory`
          *                                              that allows to create the implementation to be used for sampling
          *                                              the labels whenever a new rule is induced
          * @param instanceSamplingFactoryPtr            A shared pointer to an object of type `IInstanceSamplingFactory`
@@ -91,7 +91,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
             std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
             std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-            std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr,
+            std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
             std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
             std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
             std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
