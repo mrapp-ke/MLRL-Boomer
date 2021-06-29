@@ -16,14 +16,14 @@ from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProvi
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import HEAD_REFINEMENT_SINGLE
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
     get_preferred_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument, create_thresholds_factory
 
-HEAD_REFINEMENT_PARTIAL = 'partial'
+HEAD_TYPE_PARTIAL = 'partial'
 
 AVERAGING_LABEL_WISE = 'label-wise-averaging'
 
@@ -60,7 +60,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
-                 head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
+                 head_type: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sampling: str = None, instance_sampling: str = None,
                  feature_sampling: str = None, holdout: str = None, feature_binning: str = None, pruning: str = None,
                  min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1,
@@ -70,9 +70,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     rule)
         :param time_limit:                          The duration in seconds after which the induction of rules should be
                                                     canceled
-        :param head_refinement:                     The strategy that is used to find the heads of rules. Must be
-                                                    `single-label`, `partial` or None, if the default strategy should be
-                                                    used
+        :param head_type:                           The type of the rule heads that should be used. Must be
+                                                    `single-label`, `partial` or None, if the type of the heads should
+                                                    be chosen automatically
         :param lift_function:                       The lift function to use. Must be `peak`. Additional arguments may
                                                     be provided as a dictionary, e.g.
                                                     `peak{\"peak_label\":10,\"max_lift\":2.0,\"curvature\":1.0}`
@@ -125,7 +125,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         super().__init__(random_state, feature_format, label_format)
         self.max_rules = max_rules
         self.time_limit = time_limit
-        self.head_refinement = head_refinement
+        self.head_type = head_type
         self.lift_function = lift_function
         self.loss = loss
         self.heuristic = heuristic
@@ -144,8 +144,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
-        if self.head_refinement is not None:
-            name += '_head-refinement=' + str(self.head_refinement)
+        if self.head_type is not None:
+            name += '_head-type=' + str(self.head_type)
         name += '_lift-function=' + str(self.lift_function)
         name += '_loss=' + str(self.loss)
         name += '_heuristic=' + str(self.heuristic)
@@ -246,15 +246,15 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         raise ValueError('Invalid value given for parameter \'lift_function\': ' + str(lift_function))
 
     def __create_head_refinement_factory(self, lift_function: LiftFunction) -> HeadRefinementFactory:
-        head_refinement = self.head_refinement
+        head_type = self.head_type
 
-        if head_refinement is None:
+        if head_type is None:
             return SingleLabelHeadRefinementFactory()
-        elif head_refinement == HEAD_REFINEMENT_SINGLE:
+        elif head_type == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
-        elif head_refinement == HEAD_REFINEMENT_PARTIAL:
+        elif head_type == HEAD_TYPE_PARTIAL:
             return PartialHeadRefinementFactory(lift_function)
-        raise ValueError('Invalid value given for parameter \'head_refinement\': ' + str(head_refinement))
+        raise ValueError('Invalid value given for parameter \'head_type\': ' + str(head_type))
 
     def _create_predictor(self, num_labels: int) -> Predictor:
         return self.__create_label_wise_predictor(num_labels)

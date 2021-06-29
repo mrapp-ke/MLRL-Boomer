@@ -165,9 +165,9 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('holdout', None, **kwargs),
                             help='The name of the strategy to be used for creating a holdout set or None')
         parser.add_argument('--loss', type=str, default=loss, help='The name of the loss function to be used')
-        parser.add_argument('--head-refinement', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('head_refinement', None, **kwargs),
-                            help='The name of the strategy to be used for finding the heads of rules')
+        parser.add_argument('--head-type', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('head_type', None, **kwargs),
+                            help='The type of the rule heads that should be used')
         parser.add_argument('--pruning', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('pruning', None, **kwargs),
                             help='The name of the strategy to be used for pruning or None')

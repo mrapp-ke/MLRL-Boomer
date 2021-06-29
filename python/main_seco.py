@@ -14,7 +14,7 @@ class SecoRunnable(RuleLearnerRunnable):
                                              pruning=args.pruning, label_sampling=args.label_sampling,
                                              instance_sampling=args.instance_sampling,
                                              feature_sampling=args.feature_sampling, holdout=args.holdout,
-                                             feature_binning=args.feature_binning, head_refinement=args.head_refinement,
+                                             feature_binning=args.feature_binning, head_type=args.head_type,
                                              min_coverage=args.min_coverage, max_conditions=args.max_conditions,
                                              lift_function=args.lift_function,
                                              max_head_refinements=args.max_head_refinements,
