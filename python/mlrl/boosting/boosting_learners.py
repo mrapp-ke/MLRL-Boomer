@@ -424,7 +424,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                              rule_evaluation_factory, num_threads)
 
     def __create_head_refinement_factory(self) -> HeadRefinementFactory:
-        head_type = self.___get_preferred_head_type()
+        head_type = self.__get_preferred_head_type()
 
         if head_type == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
@@ -432,7 +432,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             return CompleteHeadRefinementFactory()
         raise ValueError('Invalid value given for parameter \'head_type\': ' + str(head_type))
 
-    def ___get_preferred_head_type(self) -> str:
+    def __get_preferred_head_type(self) -> str:
         head_type = self.head_type
 
         if head_type == AUTOMATIC:
