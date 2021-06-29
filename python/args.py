@@ -137,11 +137,11 @@ class ArgumentParserBuilder:
                             help='The format to be used for the feature matrix or \'auto\'')
         parser.add_argument('--label-format', type=optional_string, default='auto',
                             help='The format to be used for the label matrix or \'auto\'')
-        parser.add_argument('--num-threads-refinement', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_refinement', 1, **kwargs),
+        parser.add_argument('--num-threads-rule-refinement', type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_rule_refinement', 1, **kwargs),
                             help='The number of threads to be used to search for potential refinements of rules or -1')
-        parser.add_argument('--num-threads-update', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_update', 1, **kwargs),
+        parser.add_argument('--num-threads-statistic-update', type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_statistic_update', 1, **kwargs),
                             help='The number of threads to be used to update statistics or -1')
         parser.add_argument('--num-threads-prediction', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
@@ -165,9 +165,9 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('holdout', None, **kwargs),
                             help='The name of the strategy to be used for creating a holdout set or None')
         parser.add_argument('--loss', type=str, default=loss, help='The name of the loss function to be used')
-        parser.add_argument('--head-refinement', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('head_refinement', None, **kwargs),
-                            help='The name of the strategy to be used for finding the heads of rules')
+        parser.add_argument('--head-type', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('head_type', None, **kwargs),
+                            help='The type of the rule heads that should be used')
         parser.add_argument('--pruning', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('pruning', None, **kwargs),
                             help='The name of the strategy to be used for pruning or None')

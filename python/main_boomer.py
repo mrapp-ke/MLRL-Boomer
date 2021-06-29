@@ -14,11 +14,11 @@ class BoomerRunnable(RuleLearnerRunnable):
                       predictor=args.predictor, pruning=args.pruning, label_sampling=args.label_sampling,
                       instance_sampling=args.instance_sampling, recalculate_predictions=args.recalculate_predictions,
                       shrinkage=args.shrinkage, feature_sampling=args.feature_sampling, holdout=args.holdout,
-                      feature_binning=args.feature_binning, label_binning=args.label_binning,
-                      head_refinement=args.head_refinement, l2_regularization_weight=args.l2_regularization_weight,
-                      min_coverage=args.min_coverage, max_conditions=args.max_conditions,
-                      max_head_refinements=args.max_head_refinements,
-                      num_threads_refinement=args.num_threads_refinement, num_threads_update=args.num_threads_update,
+                      feature_binning=args.feature_binning, label_binning=args.label_binning, head_type=args.head_type,
+                      l2_regularization_weight=args.l2_regularization_weight, min_coverage=args.min_coverage,
+                      max_conditions=args.max_conditions, max_head_refinements=args.max_head_refinements,
+                      num_threads_rule_refinement=args.num_threads_rule_refinement,
+                      num_threads_statistic_update=args.num_threads_statistic_update,
                       num_threads_prediction=args.num_threads_prediction)
 
 
