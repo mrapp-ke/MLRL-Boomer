@@ -7,12 +7,22 @@
 
 
 /**
- * Allows to create instances of the type `IInstanceSampling` that do not perform any sampling, but assign equal weights
- * to all examples.
+ * Allows to create instances of the type `IInstanceSampling` that allow to select a subset of the available training
+ * examples without replacement.
  */
-class NoInstanceSamplingFactory final : public IInstanceSamplingFactory {
+class InstanceSamplingWithoutReplacementFactory final : public IInstanceSamplingFactory {
+
+    private:
+
+        float32 sampleSize_;
 
     public:
+
+        /**
+         * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
+         *                   60 % of the available examples). Must be in (0, 1)
+         */
+        InstanceSamplingWithoutReplacementFactory(float32 sampleSize);
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
                                                   const SinglePartition& partition,

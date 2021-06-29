@@ -2,6 +2,8 @@
 
 ### Version 0.6.0 (to be released)
 
+***This release comes with changes to the command line API. For brevity and consistency, some parameters and/or their values have been renamed. Moreover, some parameters have been updated to use more reasonable default values. For an updated overview of the available parameters, please refer to the documentation.***
+
 A major update to the BOOMER algorithm that introduces the following changes:
 
 * The parameter `--instance-sub-sampling` does now allow to use stratified sampling (`stratified-label-wise` and `stratified-example-wise`).

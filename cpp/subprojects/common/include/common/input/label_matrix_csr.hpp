@@ -155,11 +155,12 @@ class CsrLabelMatrix final : public ILabelMatrix {
         std::unique_ptr<IPartitionSampling> createPartitionSampling(
             const IPartitionSamplingFactory& factory) const override;
 
-        std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
-            const IInstanceSubSamplingFactory& factory, const SinglePartition& partition,
-            IStatistics& statistics) const override;
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+                                                                  const SinglePartition& partition,
+                                                                  IStatistics& statistics) const override;
 
-        std::unique_ptr<IInstanceSubSampling> createInstanceSubSampling(
-            const IInstanceSubSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const override;
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+                                                                  BiPartition& partition,
+                                                                  IStatistics& statistics) const override;
 
 };
