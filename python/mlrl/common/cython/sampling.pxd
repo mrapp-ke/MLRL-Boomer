@@ -97,7 +97,7 @@ cdef extern from "common/sampling/label_sampling.hpp" nogil:
         pass
 
 
-cdef extern from "common/sampling/label_sampling_random.hpp" nogil:
+cdef extern from "common/sampling/label_sampling_without_replacement.hpp" nogil:
 
     cdef cppclass LabelSamplingWithoutReplacementFactoryImpl"LabelSamplingWithoutReplacementFactory"(
             ILabelSamplingFactory):
