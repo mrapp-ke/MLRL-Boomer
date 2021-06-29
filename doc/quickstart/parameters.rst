@@ -111,17 +111,17 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * The duration in seconds after which the induction of rules should be canceled or ``-1``, if no time limit should be set.
 
-* ``--label-sub-sampling`` (default value ``None``)
+* ``--label-sampling`` (default value ``None``)
 
   * ``None`` All labels are considered for learning a new rule.
   * ``random-label-selection`` The labels to be considered when learning a new rule are chosen randomly. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random-label-selection{'num_samples':5}``.
 
-* ``--feature-sub-sampling`` (default value ``random-feature-selection``)
+* ``--feature-sampling`` (default value ``random-feature-selection``)
 
   * ``None`` All features are considered for learning a new rule.
   * ``random-feature-selection`` A random subset of the features is used to search for the refinements of rules. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random_feature-selection{'sample_size':0.5}``.
 
-* ``--instance-sub-sampling`` (default value ``bagging``)
+* ``--instance-sampling`` (default value ``bagging``)
 
   * ``None`` All training examples are considered for learning a new rule.
   * ``random-instance-selection`` The training examples to be considered for learning a new rule are selected randomly without replacement. Additional arguments may be provided using the Python dictionary syntax, e.g., ``random-instance-selection{'sample_size':0.5}``.
@@ -131,7 +131,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 
 * ``--recalculate-predictions`` (default value ``True``)
 
-  * ``True``, if the predictions of rules should be recalculated on the entire training data, if the parameter ``instance-sub-sampling`` is not set to ``None``, ``False`` otherwise.
+  * ``True``, if the predictions of rules should be recalculated on the entire training data, if the parameter ``instance-sampling`` is not set to ``None``, ``False`` otherwise.
 
 * ``--holdout`` (default value ``None``)
 
@@ -159,7 +159,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 * ``--pruning`` (default value ``None``)
 
   * ``None`` No pruning is used.
-  * ``irep``. Subsequent conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter ``--instance-sub-sampling`` is not set to ``None``.
+  * ``irep``. Subsequent conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter ``--instance-sampling`` is not set to ``None``.
 
 * ``--min-coverage`` (default value ``1``)
 
