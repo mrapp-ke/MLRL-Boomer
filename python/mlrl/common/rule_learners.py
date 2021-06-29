@@ -44,6 +44,8 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
+AUTOMATIC = 'auto'
+
 HEAD_TYPE_SINGLE = 'single-label'
 
 SAMPLING_WITH_REPLACEMENT = 'with-replacement'
@@ -76,7 +78,7 @@ PRUNING_IREP = 'irep'
 
 
 class SparsePolicy(Enum):
-    AUTO = 'auto'
+    AUTO = AUTOMATIC
     FORCE_SPARSE = 'sparse'
     FORCE_DENSE = 'dense'
 

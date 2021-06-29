@@ -143,7 +143,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 * ``--early-stopping`` (default value ``None``)
 
   * ``None`` No strategy for early-stopping is used.
-  * ``measure`` Stops the induction of new rules as soon as the performance of the model does not improve on a holdout set, according to the loss function. Additional arguments may be provided using the Python dictionary syntax, e.g., ``measure{'min_rules':100,'update_interval':1,'stop_interval':1,'num_past':50,'num_recent':50,'aggregation':'min','tolerance':0.001}``. Does only have an effect if the parameter ``--holdout`` is set to a value greater than ``0``.
+  * ``loss`` Stops the induction of new rules as soon as the performance of the model does not improve on a holdout set, according to the loss function. Additional arguments may be provided using the Python dictionary syntax, e.g., ``loss{'min_rules':100,'update_interval':1,'stop_interval':1,'num_past':50,'num_recent':50,'aggregation':'min','tolerance':0.001}``. Does only have an effect if the parameter ``--holdout`` is set to a value greater than ``0``.
 
 * ``--feature-binnig`` (default value ``None``)
 
@@ -173,22 +173,22 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * The maximum number of times the head of a rule may be refined. Must be at least ``1`` or ``-1``, if the number of refinements should not be restricted.
 
-* ``--head-type`` (default value ``None``)
+* ``--head-type`` (default value ``auto``)
 
-  * ``None`` The most suitable type of rule heads is chosen automatically based on the loss function.
+  * ``auto`` The most suitable type of rule heads is chosen automatically based on the loss function.
   * ``single-label`` If all rules should predict for a single label.
-  * ``full`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
+  * ``complete`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
 
 * ``--shrinkage`` (default value ``0.3``)
 
   * The shrinkage parameter, a.k.a. the learning rate, to be used. Must be greater than ``0`` and less or equal to ``1``.
 
-* ``--loss`` (default value ``label-wise-logistic-loss``)
+* ``--loss`` (default value ``logistic-label-wise``)
 
-  * ``label-wise-logistic-loss`` A variant of the logistic loss function that is applied to each label individually.
-  * ``label-wise-squared-error-loss`` A variant of the Squared error loss that is applied to each label individually.
-  * ``label-wise-hinge-loss`` A variant of the Hinge loss that is applied to each label individually.
-  * ``example-wise-logistic-loss`` A variant of the logistic loss function that takes all labels into account at the same time.
+  * ``logistic-label-wise`` A variant of the logistic loss function that is applied to each label individually.
+  * ``logistic-example-wise`` A variant of the logistic loss function that takes all labels into account at the same time.
+  * ``squared-error-label-wise`` A variant of the Squared error loss that is applied to each label individually.
+  * ``hinge-label-wise`` A variant of the Hinge loss that is applied to each label individually.
 
 * ``--predictor`` (default value ``None``)
 
