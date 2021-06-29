@@ -60,7 +60,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
-                 head_type: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
+                 head_type: str = AUTOMATIC, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, label_sampling: str = None, instance_sampling: str = None,
                  feature_sampling: str = None, holdout: str = None, feature_binning: str = None, pruning: str = None,
                  min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1,
@@ -72,7 +72,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         :param time_limit:                          The duration in seconds after which the induction of rules should be
                                                     canceled
         :param head_type:                           The type of the rule heads that should be used. Must be
-                                                    `single-label`, `partial` or None, if the type of the heads should
+                                                    `single-label`, `partial` or `auto`, if the type of the heads should
                                                     be chosen automatically
         :param lift_function:                       The lift function to use. Must be `peak`. Additional arguments may
                                                     be provided as a dictionary, e.g.
@@ -145,7 +145,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
-        if self.head_type is not None:
+        if self.head_type != AUTOMATIC:
             name += '_head-type=' + str(self.head_type)
         name += '_lift-function=' + str(self.lift_function)
         name += '_loss=' + str(self.loss)
