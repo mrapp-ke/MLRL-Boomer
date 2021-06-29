@@ -88,8 +88,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     `random-label-selection{\"num_samples\":5}`
         :param instance_sampling:                   The strategy that is used for sampling the training examples each
                                                     time a new classification rule is learned. Must be
-                                                    `with-replacement`, `random-instance-selection` or None, if no
-                                                    sampling should be used. Additional arguments may be provided as a
+                                                    `with-replacement`, `without-replacement` or None, if no sampling
+                                                    should be used. Additional arguments may be provided as a
                                                     dictionary, e.g. `with-replacement{\"sample_size\":0.5}`
         :param feature_sampling:                    The strategy that is used for sampling the features each time a
                                                     classification rule is refined. Must be `random-feature-selection`
