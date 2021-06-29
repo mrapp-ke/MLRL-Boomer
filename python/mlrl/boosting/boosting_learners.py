@@ -66,7 +66,7 @@ ARGUMENT_FORCE_STOP = 'force_stop'
 
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
-HEAD_TYPE_COMPLETE = 'full'
+HEAD_TYPE_COMPLETE = 'complete'
 
 LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
 
@@ -110,8 +110,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param early_stopping:                      The strategy that is used for early stopping. Must be `measure` or
                                                     None, if no early stopping should be used
         :param head_type:                           The type of the rule heads that should be used. Must be
-                                                    `single-label`, `full` or None, if the type of the heads should be
-                                                    chosen automatically
+                                                    `single-label`, `complete` or None, if the type of the heads should
+                                                    be chosen automatically
         :param loss:                                The loss function to be minimized. Must be
                                                     `squared-error-label-wise`, `logistic-label-wise` or
                                                     `logistic-example-wise`
