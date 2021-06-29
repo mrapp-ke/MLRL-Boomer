@@ -44,7 +44,7 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
-HEAD_REFINEMENT_SINGLE = 'single-label'
+HEAD_TYPE_SINGLE = 'single-label'
 
 SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
