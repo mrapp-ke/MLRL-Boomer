@@ -64,7 +64,7 @@ static inline void subSampleInternally(BiPartition& partition, float32 sampleSiz
  *                   training set
  */
 template<typename Partition>
-class Bagging final : public IInstanceSubSampling {
+class Bagging final : public IInstanceSampling {
 
     private:
 
@@ -100,24 +100,24 @@ BaggingFactory::BaggingFactory(float32 sampleSize)
 
 }
 
-std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CContiguousLabelMatrix& labelMatrix,
-                                                             const SinglePartition& partition,
-                                                             IStatistics& statistics) const {
+std::unique_ptr<IInstanceSampling> BaggingFactory::create(const CContiguousLabelMatrix& labelMatrix,
+                                                          const SinglePartition& partition,
+                                                          IStatistics& statistics) const {
     return std::make_unique<Bagging<const SinglePartition>>(partition, sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CContiguousLabelMatrix& labelMatrix,
-                                                             BiPartition& partition, IStatistics& statistics) const {
+std::unique_ptr<IInstanceSampling> BaggingFactory::create(const CContiguousLabelMatrix& labelMatrix,
+                                                          BiPartition& partition, IStatistics& statistics) const {
     return std::make_unique<Bagging<BiPartition>>(partition, sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CsrLabelMatrix& labelMatrix,
-                                                             const SinglePartition& partition,
-                                                             IStatistics& statistics) const {
+std::unique_ptr<IInstanceSampling> BaggingFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                          const SinglePartition& partition,
+                                                          IStatistics& statistics) const {
     return std::make_unique<Bagging<const SinglePartition>>(partition, sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> BaggingFactory::create(const CsrLabelMatrix& labelMatrix,
-                                                             BiPartition& partition, IStatistics& statistics) const {
+std::unique_ptr<IInstanceSampling> BaggingFactory::create(const CsrLabelMatrix& labelMatrix, BiPartition& partition,
+                                                          IStatistics& statistics) const {
     return std::make_unique<Bagging<BiPartition>>(partition, sampleSize_);
 }

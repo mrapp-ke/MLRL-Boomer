@@ -7,10 +7,10 @@
 
 
 /**
- * Allows to create instances of the type `IInstanceSubSampling` that implement boostrap aggregation (bagging) for
+ * Allows to create instances of the type `IInstanceSampling` that implement boostrap aggregation (bagging) for
  * selecting a subset of the available training examples with replacement.
  */
-class BaggingFactory final : public IInstanceSubSamplingFactory {
+class BaggingFactory final : public IInstanceSamplingFactory {
 
     private:
 
@@ -24,18 +24,17 @@ class BaggingFactory final : public IInstanceSubSamplingFactory {
          */
         BaggingFactory(float32 sampleSize);
 
-        std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix,
-                                                     const SinglePartition& partition,
-                                                     IStatistics& statistics) const override;
+        std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
+                                                  const SinglePartition& partition,
+                                                  IStatistics& statistics) const override;
 
-        std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix,
-                                                     BiPartition& partition, IStatistics& statistics) const override;
+        std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix, BiPartition& partition,
+                                                  IStatistics& statistics) const override;
 
-        std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix,
-                                                     const SinglePartition& partition,
-                                                     IStatistics& statistics) const override;
+        std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix, const SinglePartition& partition,
+                                                  IStatistics& statistics) const override;
 
-        std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix,
-                                                     BiPartition& partition, IStatistics& statistics) const override;
+        std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix, BiPartition& partition,
+                                                  IStatistics& statistics) const override;
 
 };

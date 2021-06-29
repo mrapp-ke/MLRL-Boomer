@@ -25,9 +25,8 @@ from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
 from mlrl.common.cython.rule_induction import RuleModelInduction
 from mlrl.common.cython.sampling import FeatureSubSamplingFactory, RandomFeatureSubsetSelectionFactory, \
     NoFeatureSubSamplingFactory
-from mlrl.common.cython.sampling import InstanceSubSamplingFactory, BaggingFactory, \
-    RandomInstanceSubsetSelectionFactory, NoInstanceSubSamplingFactory, LabelWiseStratifiedSamplingFactory, \
-    ExampleWiseStratifiedSamplingFactory
+from mlrl.common.cython.sampling import InstanceSamplingFactory, BaggingFactory, RandomInstanceSubsetSelectionFactory, \
+    NoInstanceSubSamplingFactory, LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.sampling import LabelSubSamplingFactory, RandomLabelSubsetSelectionFactory, \
     NoLabelSubSamplingFactory
 from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
@@ -114,7 +113,7 @@ def create_label_sampling_factory(label_sampling: str, num_labels: int) -> Label
         raise ValueError('Invalid value given for parameter \'label_sampling\': ' + str(label_sampling))
 
 
-def create_instance_sampling_factory(instance_sampling: str) -> InstanceSubSamplingFactory:
+def create_instance_sampling_factory(instance_sampling: str) -> InstanceSamplingFactory:
     if instance_sampling is None:
         return NoInstanceSubSamplingFactory()
     else:

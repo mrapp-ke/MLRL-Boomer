@@ -35,7 +35,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
 
         std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr_;
 
-        std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr_;
+        std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr_;
 
         std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr_;
 
@@ -67,10 +67,9 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          * @param labelSubSamplingFactoryPtr            A shared pointer to an object of type `ILabelSubSamplingFactory`
          *                                              that allows to create the implementation to be used for sampling
          *                                              the labels whenever a new rule is induced
-         * @param instanceSubSamplingFactoryPtr         A shared pointer to an object of type
-         *                                              `IInstanceSubSamplingFactory` that allows create the
-         *                                              implementation to be used for sampling the examples whenever a
-         *                                              new rule is induced
+         * @param instanceSamplingFactoryPtr            A shared pointer to an object of type `IInstanceSamplingFactory`
+         *                                              that allows create the implementation to be used for sampling
+         *                                              the examples whenever a new rule is induced
          * @param featureSubSamplingFactoryPtr          A shared pointer to an object of type
          *                                              `IFeatureSubSamplingFactory` that allows to create the
          *                                              implementation to be used for sampling the features that may be
@@ -93,7 +92,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
             std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
             std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
             std::shared_ptr<ILabelSubSamplingFactory> labelSubSamplingFactoryPtr,
-            std::shared_ptr<IInstanceSubSamplingFactory> instanceSubSamplingFactoryPtr,
+            std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
             std::shared_ptr<IFeatureSubSamplingFactory> featureSubSamplingFactoryPtr,
             std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,

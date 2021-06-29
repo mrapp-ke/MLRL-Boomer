@@ -16,16 +16,16 @@ class SinglePartition;
 
 
 /**
- * Defines an interface for all classes that implement a strategy for sub-sampling training examples.
+ * Defines an interface for all classes that implement a strategy for sampling training examples.
  */
-class IInstanceSubSampling {
+class IInstanceSampling {
 
     public:
 
-        virtual ~IInstanceSubSampling() { };
+        virtual ~IInstanceSampling() { };
 
         /**
-         * Creates and returns a sub-sample of the available training examples.
+         * Creates and returns a sample of the available training examples.
          *
          * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
          * @return          A reference to an object type `WeightVector` that provides access to the weights of the
@@ -37,16 +37,16 @@ class IInstanceSubSampling {
 
 
 /**
- * Defines an interface for all factories that allow to create instances of the type `IInstanceSubSampling`.
+ * Defines an interface for all factories that allow to create instances of the type `IInstanceSampling`.
  */
-class IInstanceSubSamplingFactory {
+class IInstanceSamplingFactory {
 
     public:
 
-        virtual ~IInstanceSubSamplingFactory() { };
+        virtual ~IInstanceSamplingFactory() { };
 
         /**
-         * Creates and returns a new object of type `IInstanceSubSampling`.
+         * Creates and returns a new object of type `IInstanceSampling`.
          *
          * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides access to the
          *                      labels of the training examples
@@ -54,14 +54,14 @@ class IInstanceSubSamplingFactory {
          *                      of the training examples that are included in the training set
          * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics +
          *                      which serve as a basis for learning rules
-         * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
-        virtual std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix,
-                                                             const SinglePartition& partition,
-                                                             IStatistics& statistics) const = 0;
+        virtual std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
+                                                          const SinglePartition& partition,
+                                                          IStatistics& statistics) const = 0;
 
         /**
-         * Creates and returns a new object of type `IInstanceSubSampling`.
+         * Creates and returns a new object of type `IInstanceSampling`.
          *
          * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides access to the
          *                      labels of the training examples
@@ -70,13 +70,13 @@ class IInstanceSubSamplingFactory {
          *                      respectively
          * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics +
          *                      which serve as a basis for learning rules
-         * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
-        virtual std::unique_ptr<IInstanceSubSampling> create(const CContiguousLabelMatrix& labelMatrix,
-                                                             BiPartition& partition, IStatistics& statistics) const = 0;
+        virtual std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
+                                                          BiPartition& partition, IStatistics& statistics) const = 0;
 
         /**
-         * Creates and returns a new object of type `IInstanceSubSampling`.
+         * Creates and returns a new object of type `IInstanceSampling`.
          *
          * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` that provides access to the labels of
          *                      the training examples
@@ -84,14 +84,14 @@ class IInstanceSubSamplingFactory {
          *                      of the training examples that are included in the training set
          * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics +
          *                      which serve as a basis for learning rules
-         * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
-        virtual std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix,
-                                                             const SinglePartition& partition,
-                                                             IStatistics& statistics) const = 0;
+        virtual std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix,
+                                                          const SinglePartition& partition,
+                                                          IStatistics& statistics) const = 0;
 
         /**
-         * Creates and returns a new object of type `IInstanceSubSampling`.
+         * Creates and returns a new object of type `IInstanceSampling`.
          *
          * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` that provides access to the labels of
          *                      the training examples
@@ -100,9 +100,9 @@ class IInstanceSubSamplingFactory {
          *                      respectively
          * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics +
          *                      which serve as a basis for learning rules
-         * @return              An unique pointer to an object of type `IInstanceSubSampling` that has been created
+         * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
-        virtual std::unique_ptr<IInstanceSubSampling> create(const CsrLabelMatrix& labelMatrix,
-                                                             BiPartition& partition, IStatistics& statistics) const = 0;
+        virtual std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix,
+                                                          BiPartition& partition, IStatistics& statistics) const = 0;
 
 };

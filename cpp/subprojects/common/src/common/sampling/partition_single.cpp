@@ -22,9 +22,10 @@ uint32 SinglePartition::getNumElements() const {
     return numElements_;
 }
 
-std::unique_ptr<IInstanceSubSampling> SinglePartition::createInstanceSubSampling(
-        const IInstanceSubSamplingFactory& factory, const ILabelMatrix& labelMatrix, IStatistics& statistics) {
-    return labelMatrix.createInstanceSubSampling(factory, *this, statistics);
+std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(const IInstanceSamplingFactory& factory,
+                                                                           const ILabelMatrix& labelMatrix,
+                                                                           IStatistics& statistics) {
+    return labelMatrix.createInstanceSampling(factory, *this, statistics);
 }
 
 float64 SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
