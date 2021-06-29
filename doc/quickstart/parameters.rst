@@ -177,7 +177,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * ``None`` The most suitable type of rule heads is chosen automatically based on the loss function.
   * ``single-label`` If all rules should predict for a single label.
-  * ``full`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
+  * ``complete`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
 
 * ``--shrinkage`` (default value ``0.3``)
 
