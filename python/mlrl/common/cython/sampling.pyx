@@ -83,9 +83,9 @@ cdef class FeatureSamplingFactory:
     pass
 
 
-cdef class RandomFeatureSubsetSelectionFactory(FeatureSamplingFactory):
+cdef class FeatureSamplingWithoutReplacementFactory(FeatureSamplingFactory):
     """
-    A wrapper for the C++ class `RandomFeatureSubsetSelectionFactory`.
+    A wrapper for the C++ class `FeatureSamplingWithoutReplacementFactory`.
     """
 
     def __cinit__(self, float32 sample_size = 0.0):
@@ -94,7 +94,7 @@ cdef class RandomFeatureSubsetSelectionFactory(FeatureSamplingFactory):
                             60 % of the available features). Must be in (0, 1) or 0, if the default sample size
                             `floor(log2(num_features - 1) + 1)` should be used
         """
-        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSamplingFactory]>make_shared[RandomFeatureSubsetSelectionFactoryImpl](
+        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSamplingFactory]>make_shared[FeatureSamplingWithoutReplacementFactoryImpl](
             sample_size)
 
 
