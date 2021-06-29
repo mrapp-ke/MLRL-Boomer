@@ -10,7 +10,7 @@
  * Allows to create instances of the type `IFeatureSampling` that select a random subset of the available features
  * without replacement.
  */
-class RandomFeatureSubsetSelectionFactory final : public IFeatureSamplingFactory {
+class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFactory {
 
     private:
 
@@ -23,7 +23,7 @@ class RandomFeatureSubsetSelectionFactory final : public IFeatureSamplingFactory
          *                   60 % of the available features). Must be in (0, 1) or 0, if the default sample size
          *                   `floor(log2(num_features - 1) + 1)` should be used
          */
-        RandomFeatureSubsetSelectionFactory(float32 sampleSize);
+        FeatureSamplingWithoutReplacementFactory(float32 sampleSize);
 
         std::unique_ptr<IFeatureSampling> create(uint32 numFeatures) const override;
 

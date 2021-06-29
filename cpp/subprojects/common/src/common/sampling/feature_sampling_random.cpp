@@ -8,7 +8,7 @@
 /**
  * Allows to select a subset of the available features without replacement.
  */
-class RandomFeatureSubsetSelection final : public IFeatureSampling {
+class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
 
     private:
 
@@ -24,7 +24,7 @@ class RandomFeatureSubsetSelection final : public IFeatureSampling {
          *                      to 60 % of the available features). Must be in (0, 1) or 0, if the default sample size
          *                      `floor(log2(num_features - 1) + 1)` should be used
          */
-        RandomFeatureSubsetSelection(uint32 numFeatures, float32 sampleSize)
+        FeatureSamplingWithoutReplacement(uint32 numFeatures, float32 sampleSize)
             : numFeatures_(numFeatures),
               indexVector_(PartialIndexVector((uint32) (sampleSize > 0 ? sampleSize * numFeatures
                                                                        : log2(numFeatures - 1) + 1))) {
@@ -39,11 +39,11 @@ class RandomFeatureSubsetSelection final : public IFeatureSampling {
 
 };
 
-RandomFeatureSubsetSelectionFactory::RandomFeatureSubsetSelectionFactory(float32 sampleSize)
+FeatureSamplingWithoutReplacementFactory::FeatureSamplingWithoutReplacementFactory(float32 sampleSize)
     : sampleSize_(sampleSize) {
 
 }
 
-std::unique_ptr<IFeatureSampling> RandomFeatureSubsetSelectionFactory::create(uint32 numFeatures) const {
-    return std::make_unique<RandomFeatureSubsetSelection>(numFeatures, sampleSize_);
+std::unique_ptr<IFeatureSampling> FeatureSamplingWithoutReplacementFactory::create(uint32 numFeatures) const {
+    return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures, sampleSize_);
 }
