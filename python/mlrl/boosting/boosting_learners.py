@@ -66,7 +66,7 @@ ARGUMENT_FORCE_STOP = 'force_stop'
 
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
-HEAD_TYPE_FULL = 'full'
+HEAD_TYPE_COMPLETE = 'full'
 
 LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
 
@@ -428,7 +428,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
         if head_type == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
-        elif head_type == HEAD_TYPE_FULL:
+        elif head_type == HEAD_TYPE_COMPLETE:
             return FullHeadRefinementFactory()
         raise ValueError('Invalid value given for parameter \'head_type\': ' + str(head_type))
 
@@ -437,7 +437,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
         if head_type is None:
             if self.loss in NON_DECOMPOSABLE_LOSSES:
-                return HEAD_TYPE_FULL
+                return HEAD_TYPE_COMPLETE
             else:
                 return HEAD_TYPE_SINGLE
         return head_type
