@@ -34,7 +34,7 @@ cdef extern from "common/sampling/instance_sampling_with_replacement.hpp" nogil:
         InstanceSamplingWithReplacementFactoryImpl(float32 sampleSize) except +
 
 
-cdef extern from "common/sampling/instance_sampling_random.hpp" nogil:
+cdef extern from "common/sampling/instance_sampling_without_replacement.hpp" nogil:
 
     cdef cppclass InstanceSamplingWithoutReplacementFactoryImpl"InstanceSamplingWithoutReplacementFactory"(
             IInstanceSamplingFactory):
