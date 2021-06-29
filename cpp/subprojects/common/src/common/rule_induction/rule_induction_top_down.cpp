@@ -43,11 +43,11 @@ void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProv
 
 bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
                                       const IWeightVector& weights, IPartition& partition,
-                                      IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
+                                      IFeatureSampling& featureSampling, const IPruning& pruning,
                                       const IPostProcessor& postProcessor, RNG& rng,
                                       IModelBuilder& modelBuilder) const {
-    // True, if the rule is learned on a sub-sample of the available training examples, False otherwise
-    bool instanceSubSamplingUsed = weights.hasZeroWeights();
+    // True, if the rule is learned on a sample of the available training examples, False otherwise
+    bool instanceSamplingUsed = weights.hasZeroWeights();
     // The label indices for which the next refinement of the rule may predict
     const IIndexVector* currentLabelIndices = &labelIndices;
     // A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been learned)
@@ -73,7 +73,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         foundRefinement = false;
 
         // Sample features...
-        const IIndexVector& sampledFeatureIndices = featureSubSampling.subSample(rng);
+        const IIndexVector& sampledFeatureIndices = featureSampling.subSample(rng);
         uint32 numSampledFeatures = sampledFeatureIndices.getNumElements();
 
         // For each feature, create an object of type `IRuleRefinement`...
@@ -133,7 +133,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         // have the same values for the considered features.
         return false;
     } else {
-        if (instanceSubSamplingUsed) {
+        if (instanceSamplingUsed) {
             // Prune rule...
             std::unique_ptr<ICoverageState> coverageStatePtr = pruning.prune(*thresholdsSubsetPtr, partition,
                                                                              conditions, *bestHead);

@@ -3,9 +3,9 @@
 
 
 /**
- * An implementation of the class `IFeatureSubSampling` that does not perform any sampling, but includes all features.
+ * An implementation of the class `IFeatureSampling` that does not perform any sampling, but includes all features.
  */
-class NoFeatureSubSampling final : public IFeatureSubSampling {
+class NoFeatureSubSampling final : public IFeatureSampling {
 
     private:
 
@@ -27,6 +27,6 @@ class NoFeatureSubSampling final : public IFeatureSubSampling {
 
 };
 
-std::unique_ptr<IFeatureSubSampling> NoFeatureSubSamplingFactory::create(uint32 numFeatures) const {
+std::unique_ptr<IFeatureSampling> NoFeatureSubSamplingFactory::create(uint32 numFeatures) const {
     return std::make_unique<NoFeatureSubSampling>(numFeatures);
 }

@@ -23,7 +23,7 @@ from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
 from mlrl.common.cython.rule_induction import RuleModelInduction
-from mlrl.common.cython.sampling import FeatureSubSamplingFactory, RandomFeatureSubsetSelectionFactory, \
+from mlrl.common.cython.sampling import FeatureSamplingFactory, RandomFeatureSubsetSelectionFactory, \
     NoFeatureSubSamplingFactory
 from mlrl.common.cython.sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
     InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, \
@@ -138,7 +138,7 @@ def create_instance_sampling_factory(instance_sampling: str) -> InstanceSampling
         raise ValueError('Invalid value given for parameter \'instance_sampling\': ' + str(instance_sampling))
 
 
-def create_feature_sampling_factory(feature_sampling: str) -> FeatureSubSamplingFactory:
+def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFactory:
     if feature_sampling is None:
         return NoFeatureSubSamplingFactory()
     else:

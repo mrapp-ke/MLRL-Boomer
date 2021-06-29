@@ -7,10 +7,10 @@
 
 
 /**
- * Allows to create instances of the type `IFeatureSubSampling` that select a random subset of the available features
+ * Allows to create instances of the type `IFeatureSampling` that select a random subset of the available features
  * without replacement.
  */
-class RandomFeatureSubsetSelectionFactory final : public IFeatureSubSamplingFactory {
+class RandomFeatureSubsetSelectionFactory final : public IFeatureSamplingFactory {
 
     private:
 
@@ -25,6 +25,6 @@ class RandomFeatureSubsetSelectionFactory final : public IFeatureSubSamplingFact
          */
         RandomFeatureSubsetSelectionFactory(float32 sampleSize);
 
-        std::unique_ptr<IFeatureSubSampling> create(uint32 numFeatures) const override;
+        std::unique_ptr<IFeatureSampling> create(uint32 numFeatures) const override;
 
 };
