@@ -67,13 +67,13 @@ cdef class ExampleWiseStratifiedSamplingFactory(InstanceSamplingFactory):
             sample_size)
 
 
-cdef class NoInstanceSubSamplingFactory(InstanceSamplingFactory):
+cdef class NoInstanceSamplingFactory(InstanceSamplingFactory):
     """
-    A wrapper for the C++ class `NoInstanceSubSamplingFactory`.
+    A wrapper for the C++ class `NoInstanceSamplingFactory`.
     """
 
     def __cinit__(self):
-        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[NoInstanceSubSamplingFactoryImpl]()
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[NoInstanceSamplingFactoryImpl]()
 
 
 cdef class FeatureSubSamplingFactory:

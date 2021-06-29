@@ -26,7 +26,7 @@ from mlrl.common.cython.rule_induction import RuleModelInduction
 from mlrl.common.cython.sampling import FeatureSubSamplingFactory, RandomFeatureSubsetSelectionFactory, \
     NoFeatureSubSamplingFactory
 from mlrl.common.cython.sampling import InstanceSamplingFactory, BaggingFactory, RandomInstanceSubsetSelectionFactory, \
-    NoInstanceSubSamplingFactory, LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
+    NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.sampling import LabelSubSamplingFactory, RandomLabelSubsetSelectionFactory, \
     NoLabelSubSamplingFactory
 from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
@@ -115,7 +115,7 @@ def create_label_sampling_factory(label_sampling: str, num_labels: int) -> Label
 
 def create_instance_sampling_factory(instance_sampling: str) -> InstanceSamplingFactory:
     if instance_sampling is None:
-        return NoInstanceSubSamplingFactory()
+        return NoInstanceSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(instance_sampling,
                                              [INSTANCE_SAMPLING_BAGGING, INSTANCE_SAMPLING_RANDOM,
