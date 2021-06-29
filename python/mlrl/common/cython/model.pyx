@@ -125,15 +125,15 @@ cdef unique_ptr[IHead] __create_head(object state):
         indices = state[1]
         return __create_partial_head(scores, indices)
     else:
-        return __create_full_head(scores)
+        return __create_complete_head(scores)
 
 
-cdef unique_ptr[IHead] __create_full_head(const float64[::1] scores):
+cdef unique_ptr[IHead] __create_complete_head(const float64[::1] scores):
     cdef uint32 num_elements = scores.shape[0]
-    cdef unique_ptr[FullHeadImpl] head_ptr = make_unique[FullHeadImpl](num_elements)
+    cdef unique_ptr[CompleteHeadImpl] head_ptr = make_unique[CompleteHeadImpl](num_elements)
     cdef const float64* scores_begin = &scores[0]
     cdef const float64* scores_end = &scores[num_elements]
-    cdef FullHeadImpl.score_iterator score_iterator = head_ptr.get().scores_begin()
+    cdef CompleteHeadImpl.score_iterator score_iterator = head_ptr.get().scores_begin()
     copy(scores_begin, scores_end, score_iterator)
     return <unique_ptr[IHead]>move(head_ptr)
 
@@ -178,7 +178,7 @@ cdef class RuleModelSerializer:
         rule_state = [body_state, None]
         self.state.append(rule_state)
 
-    cdef __visit_full_head(self, const FullHeadImpl& head):
+    cdef __visit_complete_head(self, const CompleteHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         rule_state = self.state[len(self.state) - 1]
         head_state = (np.asarray(<float64[:num_elements]>head.scores_cbegin()),)
@@ -203,7 +203,7 @@ cdef class RuleModelSerializer:
         model.model_ptr.get().visit(
             wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
             wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
-            wrapFullHeadVisitor(<void*>self, <FullHeadCythonVisitor>self.__visit_full_head),
+            wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
             wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
         cdef uint32 num_used_rules = model.model_ptr.get().getNumUsedRules()
         return (SERIALIZATION_VERSION, (self.state, num_used_rules))
@@ -339,11 +339,11 @@ cdef class RuleModelFormatter:
 
         text.write('}')
 
-    cdef __visit_full_head(self, const FullHeadImpl& head):
+    cdef __visit_complete_head(self, const CompleteHeadImpl& head):
         cdef object text = self.text
         cdef bint print_label_names = self.print_label_names
         cdef list labels = self.labels
-        cdef FullHeadImpl.score_const_iterator score_iterator = head.scores_cbegin()
+        cdef CompleteHeadImpl.score_const_iterator score_iterator = head.scores_cbegin()
         cdef uint32 num_elements = head.getNumElements()
         cdef uint32 i
 
@@ -399,7 +399,7 @@ cdef class RuleModelFormatter:
         model.model_ptr.get().visitUsed(
             wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
             wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
-            wrapFullHeadVisitor(<void*>self, <FullHeadCythonVisitor>self.__visit_full_head),
+            wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
             wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
 
     cpdef object get_text(self):

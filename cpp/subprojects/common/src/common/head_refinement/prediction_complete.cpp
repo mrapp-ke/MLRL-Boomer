@@ -2,7 +2,7 @@
 #include "common/head_refinement/head_refinement.hpp"
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/statistics/statistics.hpp"
-#include "common/model/head_full.hpp"
+#include "common/model/head_complete.hpp"
 
 
 CompletePrediction::CompletePrediction(uint32 numElements)
@@ -49,5 +49,5 @@ void CompletePrediction::apply(IStatistics& statistics, uint32 statisticIndex) c
 }
 
 std::unique_ptr<IHead> CompletePrediction::toHead() const {
-    return std::make_unique<FullHead>(*this);
+    return std::make_unique<CompleteHead>(*this);
 }

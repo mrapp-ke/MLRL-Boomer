@@ -1,14 +1,14 @@
 #include "seco/output/predictor_classification_label_wise.hpp"
-#include "common/model/head_full.hpp"
+#include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
 #include "omp.h"
 
 
 namespace seco {
 
-    static inline void applyFullHead(const FullHead& head, CContiguousView<uint8>::iterator begin,
-                                     CContiguousView<uint8>::iterator end, CContiguousView<uint8>::iterator mask) {
-        FullHead::score_const_iterator iterator = head.scores_cbegin();
+    static inline void applyCompleteHead(const CompleteHead& head, CContiguousView<uint8>::iterator begin,
+                                         CContiguousView<uint8>::iterator end, CContiguousView<uint8>::iterator mask) {
+        CompleteHead::score_const_iterator iterator = head.scores_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -39,13 +39,13 @@ namespace seco {
 
     static inline void applyHead(const IHead& head, CContiguousView<uint8>& predictionMatrix,
                                  CContiguousView<uint8>::iterator mask, uint32 row) {
-        auto fullHeadVisitor = [&, row](const FullHead& head) {
-            applyFullHead(head, predictionMatrix.row_begin(row), predictionMatrix.row_end(row), mask);
+        auto completeHeadVisitor = [&, row](const CompleteHead& head) {
+            applyCompleteHead(head, predictionMatrix.row_begin(row), predictionMatrix.row_end(row), mask);
         };
         auto partialHeadVisitor = [&, row](const PartialHead& head) {
             applyPartialHead(head, predictionMatrix.row_begin(row), predictionMatrix.row_end(row), mask);
         };
-        head.visit(fullHeadVisitor, partialHeadVisitor);
+        head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
     LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(uint32 numThreads)

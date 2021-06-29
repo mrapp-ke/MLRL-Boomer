@@ -183,11 +183,11 @@ class RuleModel final {
          *
          * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
          * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param fullHeadVisitor           The visitor function for handling objects of the type `FullHead`
+         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
          * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
          */
         void visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                   IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const;
+                   IHead::CompleteHeadVisitor completeHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const;
 
 
         /**
@@ -196,10 +196,11 @@ class RuleModel final {
          *
          * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
          * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param fullHeadVisitor           The visitor function for handling objects of the type `FullHead`
+         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
          * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
          */
         void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                       IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const;
+                       IHead::CompleteHeadVisitor completeHeadVisitor,
+                       IHead::PartialHeadVisitor partialHeadVisitor) const;
 
 };
