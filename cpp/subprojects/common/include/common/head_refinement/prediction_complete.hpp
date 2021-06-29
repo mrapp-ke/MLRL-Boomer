@@ -13,7 +13,7 @@ class IImmutableStatistics;
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
  */
-class FullPrediction final : public AbstractEvaluatedPrediction {
+class CompletePrediction final : public AbstractEvaluatedPrediction {
 
     private:
 
@@ -24,7 +24,7 @@ class FullPrediction final : public AbstractEvaluatedPrediction {
         /**
          * @param numElements The number of labels for which the rule predicts
          */
-        FullPrediction(uint32 numElements);
+        CompletePrediction(uint32 numElements);
 
         /**
          * An iterator that provides read-only access to the indices of the labels for which the rule predicts.

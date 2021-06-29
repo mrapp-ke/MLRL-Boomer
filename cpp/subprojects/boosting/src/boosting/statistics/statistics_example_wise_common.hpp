@@ -388,8 +388,8 @@ namespace boosting {
             /**
              * @see `IStatistics::applyPrediction`
              */
-            void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-                applyPredictionInternally<FullPrediction, LabelMatrix, StatisticView, ScoreMatrix, LossFunction>(
+            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override {
+                applyPredictionInternally<CompletePrediction, LabelMatrix, StatisticView, ScoreMatrix, LossFunction>(
                     statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
                     lossFunction_);
             }

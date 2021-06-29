@@ -1,5 +1,5 @@
 #include "common/head_refinement/head_refinement_full.hpp"
-#include "common/head_refinement/prediction_full.hpp"
+#include "common/head_refinement/prediction_complete.hpp"
 #include "common/head_refinement/prediction_partial.hpp"
 #include "common/rule_evaluation/score_processor.hpp"
 #include <algorithm>
@@ -30,7 +30,7 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
                         std::copy(scoreVector.indices_cbegin(), scoreVector.indices_cend(), headPtr->indices_begin());
                         headPtr_ = std::move(headPtr);
                     } else {
-                        headPtr_ = std::make_unique<FullPrediction>(numPredictions);
+                        headPtr_ = std::make_unique<CompletePrediction>(numPredictions);
                     }
                 }
 
