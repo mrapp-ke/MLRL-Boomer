@@ -71,7 +71,7 @@ source_files = [
     'src/common/sampling/instance_sampling_with_replacement.cpp',
     'src/common/sampling/instance_sampling_without_replacement.cpp',
     'src/common/sampling/label_sampling_no.cpp',
-    'src/common/sampling/label_sampling_random.cpp',
+    'src/common/sampling/label_sampling_without_replacement.cpp',
     'src/common/sampling/partition_bi.cpp',
     'src/common/sampling/partition_sampling_bi_random.cpp',
     'src/common/sampling/partition_sampling_bi_stratified_example_wise.cpp',
