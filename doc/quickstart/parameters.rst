@@ -151,9 +151,10 @@ The following parameters allow to adjust the behavior of the algorithm:
   * ``equal-width`` Examples are assigned to bins, based on their feature values, according to the equal-width binning method. Additional arguments may be provided using the Python dictionary syntax, e.g., ``equal-width{'bin_ratio':0.5,'min_bins':2,'max_bins':256}``.
   * ``equal-frequency``. Examles are assigned to bins, based on their feature values, according to the equal-frequency binning method. Additional arguments may be provided using the Python dictionary syntax, e.g., ``equal-frequency{'bin_ratio':0.5,'min_bins':2,'max_bins':256}``.
 
-* ``--label-binning`` (default value ``None``)
+* ``--label-binning`` (default value ``auto``)
 
   * ``None`` No label binning is used.
+  * ``auto`` The most suitable strategy for label-binning is chosen automatically based on the loss function and the type of rule heads.
   * ``equal-width`` The labels for which a rule may predict are assigned to bins according to the equal-width binning method. Additional arguments may be provided using the Python dictionary syntax, e.g., ``equal-width{'bin_ratio':0.04,'min_bins':1,'max_bins':8``.
 
 * ``--pruning`` (default value ``None``)
@@ -190,9 +191,9 @@ The following parameters allow to adjust the behavior of the algorithm:
   * ``squared-error-label-wise`` A variant of the Squared error loss that is applied to each label individually.
   * ``hinge-label-wise`` A variant of the Hinge loss that is applied to each label individually.
 
-* ``--predictor`` (default value ``None``)
+* ``--predictor`` (default value ``auto``)
 
-  * ``None`` The most suitable strategy for making predictions is chosen automatically, depending on the loss function.
+  * ``auto`` The most suitable strategy for making predictions is chosen automatically, depending on the loss function.
   * ``label-wise`` The prediction for an example is determined for each label independently.
   * ``example-wise`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data.
 
