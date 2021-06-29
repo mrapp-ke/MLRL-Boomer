@@ -5,16 +5,16 @@
 #include "weight_sampling.hpp"
 
 
-static inline void subSampleInternally(const SinglePartition& partition, float32 sampleSize,
-                                       BitWeightVector& weightVector, RNG& rng) {
+static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize, BitWeightVector& weightVector,
+                                    RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize * numExamples);
     sampleWeightsWithoutReplacement<SinglePartition::const_iterator>(weightVector, partition.cbegin(), numExamples,
                                                                      numSamples, rng);
 }
 
-static inline void subSampleInternally(BiPartition& partition, float32 sampleSize, BitWeightVector& weightVector,
-                                       RNG& rng) {
+static inline void sampleInternally(BiPartition& partition, float32 sampleSize, BitWeightVector& weightVector,
+                                    RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize * numTrainingExamples);
     sampleWeightsWithoutReplacement<BiPartition::const_iterator>(weightVector, partition.first_cbegin(),
@@ -52,8 +52,8 @@ class InstanceSamplingWithoutReplacement final : public IInstanceSampling {
 
         }
 
-        const IWeightVector& subSample(RNG& rng) override {
-            subSampleInternally(partition_, sampleSize_, weightVector_, rng);
+        const IWeightVector& sample(RNG& rng) override {
+            sampleInternally(partition_, sampleSize_, weightVector_, rng);
             return weightVector_;
         }
 

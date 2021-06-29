@@ -6,11 +6,11 @@
 #include "common/data/arrays.hpp"
 
 
-static inline void subSampleInternally(const SinglePartition& partition, EqualWeightVector& weightVector, RNG& rng) {
+static inline void sampleInternally(const SinglePartition& partition, EqualWeightVector& weightVector, RNG& rng) {
     return;
 }
 
-static inline void subSampleInternally(BiPartition& partition, BitWeightVector& weightVector, RNG& rng) {
+static inline void sampleInternally(BiPartition& partition, BitWeightVector& weightVector, RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
     weightVector.clear();
@@ -51,8 +51,8 @@ class NoInstanceSampling final : public IInstanceSampling {
 
         }
 
-        const IWeightVector& subSample(RNG& rng) override {
-            subSampleInternally(partition_, weightVector_, rng);
+        const IWeightVector& sample(RNG& rng) override {
+            sampleInternally(partition_, weightVector_, rng);
             return weightVector_;
         }
 

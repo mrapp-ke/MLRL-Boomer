@@ -5,8 +5,8 @@
 #include "common/data/arrays.hpp"
 
 
-static inline void subSampleInternally(const SinglePartition& partition, float32 sampleSize,
-                                       DenseWeightVector<uint32>& weightVector, RNG& rng) {
+static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize,
+                                    DenseWeightVector<uint32>& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize * numExamples);
     typename DenseWeightVector<uint32>::iterator weightIterator = weightVector.begin();
@@ -29,8 +29,8 @@ static inline void subSampleInternally(const SinglePartition& partition, float32
     weightVector.setNumNonZeroWeights(numNonZeroWeights);
 }
 
-static inline void subSampleInternally(BiPartition& partition, float32 sampleSize,
-                                       DenseWeightVector<uint32>& weightVector, RNG& rng) {
+static inline void sampleInternally(BiPartition& partition, float32 sampleSize, DenseWeightVector<uint32>& weightVector,
+                                    RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = (uint32) (sampleSize * numTrainingExamples);
@@ -87,8 +87,8 @@ class InstanceSamplingWithReplacement final : public IInstanceSampling {
 
         }
 
-        const IWeightVector& subSample(RNG& rng) override {
-            subSampleInternally(partition_, sampleSize_, weightVector_, rng);
+        const IWeightVector& sample(RNG& rng) override {
+            sampleInternally(partition_, sampleSize_, weightVector_, rng);
             return weightVector_;
         }
 
