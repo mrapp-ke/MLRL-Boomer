@@ -6,7 +6,7 @@
 
 
 FullPrediction::FullPrediction(uint32 numElements)
-    : AbstractEvaluatedPrediction(numElements), indexVector_(FullIndexVector(numElements)) {
+    : AbstractEvaluatedPrediction(numElements), indexVector_(CompleteIndexVector(numElements)) {
 
 }
 

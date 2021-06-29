@@ -46,8 +46,8 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
 
         const AbstractEvaluatedPrediction* processScores(
                 const AbstractEvaluatedPrediction* bestHead,
-                const DenseScoreVector<FullIndexVector>& scoreVector) override {
-            return processScoresInternally<DenseScoreVector<FullIndexVector>>(bestHead, scoreVector);
+                const DenseScoreVector<CompleteIndexVector>& scoreVector) override {
+            return processScoresInternally<DenseScoreVector<CompleteIndexVector>>(bestHead, scoreVector);
         }
 
         const AbstractEvaluatedPrediction* processScores(
@@ -58,8 +58,8 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
 
         const AbstractEvaluatedPrediction* processScores(
                 const AbstractEvaluatedPrediction* bestHead,
-                const DenseBinnedScoreVector<FullIndexVector>& scoreVector) override {
-            return processScoresInternally<DenseBinnedScoreVector<FullIndexVector>>(bestHead, scoreVector);
+                const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) override {
+            return processScoresInternally<DenseBinnedScoreVector<CompleteIndexVector>>(bestHead, scoreVector);
         }
 
         const AbstractEvaluatedPrediction* processScores(
@@ -86,7 +86,7 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
 
 };
 
-std::unique_ptr<IHeadRefinement> FullHeadRefinementFactory::create(const FullIndexVector& labelIndices) const {
+std::unique_ptr<IHeadRefinement> FullHeadRefinementFactory::create(const CompleteIndexVector& labelIndices) const {
     return std::make_unique<FullHeadRefinement>();
 }
 

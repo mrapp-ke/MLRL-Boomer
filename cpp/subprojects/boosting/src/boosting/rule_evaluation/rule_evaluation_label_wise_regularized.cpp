@@ -54,9 +54,9 @@ namespace boosting {
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> RegularizedLabelWiseRuleEvaluationFactory::createDense(
-            const FullIndexVector& indexVector) const {
-        return std::make_unique<DenseRegularizedLabelWiseRuleEvaluation<FullIndexVector>>(indexVector,
-                                                                                          l2RegularizationWeight_);
+            const CompleteIndexVector& indexVector) const {
+        return std::make_unique<DenseRegularizedLabelWiseRuleEvaluation<CompleteIndexVector>>(indexVector,
+                                                                                              l2RegularizationWeight_);
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> RegularizedLabelWiseRuleEvaluationFactory::createDense(

@@ -140,7 +140,7 @@ namespace boosting {
             /**
              * The type of a `StatisticsSubset` that corresponds to all available labels.
              */
-            typedef StatisticsSubset<FullIndexVector> FullSubset;
+            typedef StatisticsSubset<CompleteIndexVector> FullSubset;
 
             /**
              * The type of a `StatisticsSubset` that corresponds to a subset of the available labels.
@@ -244,7 +244,7 @@ namespace boosting {
                                                   originalStatisticView_.row_cend(statisticIndex), weight);
             }
 
-            std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices) const override {
                 std::unique_ptr<ILabelWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVector_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
                 return std::make_unique<typename LabelWiseHistogram::FullSubset>(*this, totalSumVector_,
@@ -393,7 +393,7 @@ namespace boosting {
             /**
              * @see `IStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override {
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices) const override {
                 std::unique_ptr<ILabelWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVectorPtr_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
                 return std::make_unique<typename AbstractLabelWiseStatistics::FullSubset>(

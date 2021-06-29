@@ -31,7 +31,7 @@ source_files = [
     'src/common/head_refinement/prediction_partial.cpp',
     'src/common/head_refinement/prediction.cpp',
     'src/common/indices/index_iterator.cpp',
-    'src/common/indices/index_vector_full.cpp',
+    'src/common/indices/index_vector_complete.cpp',
     'src/common/indices/index_vector_partial.cpp',
     'src/common/input/feature_matrix_csc.cpp',
     'src/common/input/feature_matrix_fortran_contiguous.cpp',

@@ -167,8 +167,8 @@ namespace seco {
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
-             * `FullIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a specific
-             * weight.
+             * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
+             * specific weight.
              *
              * @param exampleIndex          The index of the example
              * @param labelMatrix           A reference to an object of type `CContiguousLabelMatrix` that provides
@@ -177,17 +177,17 @@ namespace seco {
              *                              predictions of the default rule
              * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
              *                              of individual examples and labels
-             * @param indices               A reference to a `FullIndexVector' that provides access to the indices
+             * @param indices               A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                              const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
-                             const FullIndexVector& indices, float64 weight);
+                             const CompleteIndexVector& indices, float64 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
-             * `FullIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a specific
-             * weight.
+             * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
+             * specific weight.
              *
              * @param exampleIndex          The index of the example
              * @param labelMatrix           A reference to an object of type `CsrLabelMatrix` that provides row-wise
@@ -196,17 +196,17 @@ namespace seco {
              *                              predictions of the default rule
              * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
              *                              of individual examples and labels
-             * @param indices               A reference to a `FullIndexVector' that provides access to the indices
+             * @param indices               A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                              const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
-                             const FullIndexVector& indices, float64 weight);
+                             const CompleteIndexVector& indices, float64 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
-             * `FullIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a specific
-             * weight.
+             * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
+             * specific weight.
              *
              * @param exampleIndex          The index of the example
              * @param labelMatrix           A reference to an object of type `CContiguousLabelMatrix` that provides

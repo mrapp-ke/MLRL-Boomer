@@ -5,7 +5,7 @@
 
 #include "common/rule_evaluation/score_vector_label_wise_dense.hpp"
 #include "common/rule_evaluation/score_vector_label_wise_binned_dense.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
 // Forward declarations
@@ -23,19 +23,19 @@ class ILabelWiseScoreProcessor {
         virtual ~ILabelWiseScoreProcessor() { };
 
         /**
-         * Processes the scores that are stored by a `DenseLabelWiseScoreVector<FullIndexVector>` in order to convert
-         * them into the head of a rule.
+         * Processes the scores that are stored by a `DenseLabelWiseScoreVector<CompleteIndexVector>` in order to
+         * convert them into the head of a rule.
          *
          * @param bestHead      A pointer to an object of type `AbstractEvaluatedPrediction` that represents the best
          *                      head that has been created so far
-         * @param scoreVector   A reference to an object of type `DenseLabelWiseScoreVector<FullIndexVector>` that
+         * @param scoreVector   A reference to an object of type `DenseLabelWiseScoreVector<CompleteIndexVector>` that
          *                      stores the scores to be processed
          * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
          *                      null pointer if no object has been created
          */
         virtual const AbstractEvaluatedPrediction* processScores(
             const AbstractEvaluatedPrediction* bestHead,
-            const DenseLabelWiseScoreVector<FullIndexVector>& scoreVector) = 0;
+            const DenseLabelWiseScoreVector<CompleteIndexVector>& scoreVector) = 0;
 
         /**
          * Processes the scores that are stored by a `DenseLabelWiseScoreVector<PartialIndexVector>` in order to convert
@@ -53,19 +53,19 @@ class ILabelWiseScoreProcessor {
             const DenseLabelWiseScoreVector<PartialIndexVector>& scoreVector) = 0;
 
         /**
-         * Processes the scores that are stored by a `DenseBinnedLabelWiseScoreVector<FullIndexVector>` in order to
+         * Processes the scores that are stored by a `DenseBinnedLabelWiseScoreVector<CompleteIndexVector>` in order to
          * convert them into the head of a rule.
          *
          * @param bestHead      A pointer to an object of type `AbstractEvaluatedPrediction` that represents the best
          *                      head that has been created so far
-         * @param scoreVector   A reference to an object of type `DenseBinnedLabelWiseScoreVector<FullIndexVector>` that
-         *                      stores the scores to be processed
+         * @param scoreVector   A reference to an object of type `DenseBinnedLabelWiseScoreVector<CompleteIndexVector>`
+         *                      that stores the scores to be processed
          * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
          *                      null pointer if no object has been created
          */
         virtual const AbstractEvaluatedPrediction* processScores(
             const AbstractEvaluatedPrediction* bestHead,
-            const DenseBinnedLabelWiseScoreVector<FullIndexVector>& scoreVector) = 0;
+            const DenseBinnedLabelWiseScoreVector<CompleteIndexVector>& scoreVector) = 0;
 
         /**
          * Processes the scores that are stored by a `DenseBinnedLabelWiseScoreVector<PartialIndexVector>` in order to
