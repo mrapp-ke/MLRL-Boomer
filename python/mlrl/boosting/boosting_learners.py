@@ -94,7 +94,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
                  time_limit: int = -1, early_stopping: str = None, head_type: str = AUTOMATIC,
-                 loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = None, label_sampling: str = None,
+                 loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = AUTOMATIC, label_sampling: str = None,
                  instance_sampling: str = None, recalculate_predictions: bool = True,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = AUTOMATIC, pruning: str = None, shrinkage: float = 0.3,
@@ -116,8 +116,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     `squared-error-label-wise`, `logistic-label-wise` or
                                                     `logistic-example-wise`
         :param predictor:                           The strategy that is used for making predictions. Must be
-                                                    `label-wise`, `example-wise` or None, if the default strategy should
-                                                    be used
+                                                    `label-wise`, `example-wise` or `auto`, if the most suitable
+                                                    strategy should be chosen automatically depending on the loss
+                                                    function
         :param label_sampling:                      The strategy that is used for sampling the labels each time a new
                                                     classification rule is learned. Must be 'without-replacement' or
                                                     None, if no sampling should be used. Additional arguments may be
@@ -204,7 +205,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if self.head_type != AUTOMATIC:
             name += '_head-type=' + str(self.head_type)
         name += '_loss=' + str(self.loss)
-        if self.predictor is not None:
+        if self.predictor != AUTOMATIC:
             name += '_predictor=' + str(self.predictor)
         if self.label_sampling is not None:
             name += '_label-sampling=' + str(self.label_sampling)
@@ -262,7 +263,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __get_preferred_predictor(self) -> str:
         predictor = self.predictor
 
-        if predictor is None:
+        if predictor == AUTOMATIC:
             if self.loss in NON_DECOMPOSABLE_LOSSES:
                 return PREDICTOR_EXAMPLE_WISE
             else:
