@@ -42,30 +42,28 @@ class IRuleInduction {
         /**
          * Induces a new rule.
          *
-         * @param thresholds                A reference to an object of type `IThresholds` that provides access to the
-         *                                  thresholds that may be used by the conditions of the rule
-         * @param labelIndices              A reference to an object of type `IIndexVector` that provides access to the
-         *                                  indices of the labels for which the rule may predict
-         * @param weights                   A reference to an object of type `IWeightVector` that provides access to the
-         *                                  weights of individual training examples
-         * @param partition                 A reference to an object of type `IPartition` that provides access to the
-         *                                  indices of the training examples that belong to the training set and the
-         *                                  holdout set, respectively
-         * @param featureSubSampling        A reference to an object of type `IFeatureSubSampling` that should be used
-         *                                  for sampling the features that may be used by a new condition
-         * @param pruning                   A reference to an object of type `IPruning` that should be used to prune the
-         *                                  rule
-         * @param postProcessor             A reference to an object of type `IPostProcessor` that should be used to
-         *                                  post-process the predictions of the rule
-         * @param rng                       A reference to an object of type `RNG` that implements the random number
-         *                                  generator to be used
-         * @param modelBuilder              A reference to an object of type `IModelBuilder`, the rule should be added
-         *                                  to
-         * @return                          True, if a rule has been induced, false otherwise
+         * @param thresholds        A reference to an object of type `IThresholds` that provides access to the
+         *                          thresholds that may be used by the conditions of the rule
+         * @param labelIndices      A reference to an object of type `IIndexVector` that provides access to the indices
+         *                          of the labels for which the rule may predict
+         * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
+         *                          of individual training examples
+         * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
+         *                          the training examples that belong to the training set and the holdout set,
+         *                          respectively
+         * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
+         *                          the features that may be used by a new condition
+         * @param pruning           A reference to an object of type `IPruning` that should be used to prune the rule
+         * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
+         *                          post-process the predictions of the rule
+         * @param rng               A reference to an object of type `RNG` that implements the random number generator
+         *                          to be used
+         * @param modelBuilder      A reference to an object of type `IModelBuilder`, the rule should be added to
+         * @return                  True, if a rule has been induced, false otherwise
          */
         virtual bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
-                                const IWeightVector& weights, IPartition& partition,
-                                IFeatureSubSampling& featureSubSampling, const IPruning& pruning,
-                                const IPostProcessor& postProcessor, RNG& rng, IModelBuilder& modelBuilder) const = 0;
+                                const IWeightVector& weights, IPartition& partition, IFeatureSampling& featureSampling,
+                                const IPruning& pruning, const IPostProcessor& postProcessor, RNG& rng,
+                                IModelBuilder& modelBuilder) const = 0;
 
 };

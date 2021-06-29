@@ -13,7 +13,7 @@
  *                          contained by the training set
  */
 template<typename LabelMatrix, typename IndexIterator>
-class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
+class ExampleWiseStratifiedSampling final : public IInstanceSampling {
 
     private:
 
@@ -45,7 +45,7 @@ class ExampleWiseStratifiedSampling final : public IInstanceSubSampling {
 
         }
 
-        const IWeightVector& subSample(RNG& rng) override {
+        const IWeightVector& sample(RNG& rng) override {
             stratification_.sampleWeights(weightVector_, sampleSize_, rng);
             return weightVector_;
         }
@@ -57,26 +57,28 @@ ExampleWiseStratifiedSamplingFactory::ExampleWiseStratifiedSamplingFactory(float
 
 }
 
-std::unique_ptr<IInstanceSubSampling> ExampleWiseStratifiedSamplingFactory::create(
+std::unique_ptr<IInstanceSampling> ExampleWiseStratifiedSamplingFactory::create(
         const CContiguousLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
     return std::make_unique<ExampleWiseStratifiedSampling<CContiguousLabelMatrix, SinglePartition::const_iterator>>(
         labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> ExampleWiseStratifiedSamplingFactory::create(
+std::unique_ptr<IInstanceSampling> ExampleWiseStratifiedSamplingFactory::create(
         const CContiguousLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
     return std::make_unique<ExampleWiseStratifiedSampling<CContiguousLabelMatrix, BiPartition::const_iterator>>(
         labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> ExampleWiseStratifiedSamplingFactory::create(
-        const CsrLabelMatrix& labelMatrix, const SinglePartition& partition, IStatistics& statistics) const {
+std::unique_ptr<IInstanceSampling> ExampleWiseStratifiedSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                                                const SinglePartition& partition,
+                                                                                IStatistics& statistics) const {
     return std::make_unique<ExampleWiseStratifiedSampling<CsrLabelMatrix, SinglePartition::const_iterator>>(
         labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
 }
 
-std::unique_ptr<IInstanceSubSampling> ExampleWiseStratifiedSamplingFactory::create(
-        const CsrLabelMatrix& labelMatrix, BiPartition& partition, IStatistics& statistics) const {
+std::unique_ptr<IInstanceSampling> ExampleWiseStratifiedSamplingFactory::create(const CsrLabelMatrix& labelMatrix,
+                                                                                BiPartition& partition,
+                                                                                IStatistics& statistics) const {
     return std::make_unique<ExampleWiseStratifiedSampling<CsrLabelMatrix, BiPartition::const_iterator>>(
         labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
 }

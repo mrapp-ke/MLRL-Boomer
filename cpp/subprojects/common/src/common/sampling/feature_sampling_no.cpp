@@ -3,9 +3,9 @@
 
 
 /**
- * An implementation of the class `IFeatureSubSampling` that does not perform any sampling, but includes all features.
+ * An implementation of the class `IFeatureSampling` that does not perform any sampling, but includes all features.
  */
-class NoFeatureSubSampling final : public IFeatureSubSampling {
+class NoFeatureSampling final : public IFeatureSampling {
 
     private:
 
@@ -16,17 +16,17 @@ class NoFeatureSubSampling final : public IFeatureSubSampling {
         /**
          * @param numFeatures The total number of available features
          */
-        NoFeatureSubSampling(uint32 numFeatures)
+        NoFeatureSampling(uint32 numFeatures)
             : indexVector_(FullIndexVector(numFeatures)) {
 
         }
 
-        const IIndexVector& subSample(RNG& rng) override {
+        const IIndexVector& sample(RNG& rng) override {
             return indexVector_;
         }
 
 };
 
-std::unique_ptr<IFeatureSubSampling> NoFeatureSubSamplingFactory::create(uint32 numFeatures) const {
-    return std::make_unique<NoFeatureSubSampling>(numFeatures);
+std::unique_ptr<IFeatureSampling> NoFeatureSamplingFactory::create(uint32 numFeatures) const {
+    return std::make_unique<NoFeatureSampling>(numFeatures);
 }
