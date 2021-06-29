@@ -47,7 +47,7 @@ source_files = [
     'src/common/model/body_empty.cpp',
     'src/common/model/condition_list.cpp',
     'src/common/model/condition.cpp',
-    'src/common/model/head_full.cpp',
+    'src/common/model/head_complete.cpp',
     'src/common/model/head_partial.cpp',
     'src/common/model/rule_model.cpp',
     'src/common/model/rule.cpp',
