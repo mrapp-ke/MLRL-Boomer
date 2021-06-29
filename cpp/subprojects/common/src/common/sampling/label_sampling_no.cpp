@@ -1,5 +1,5 @@
 #include "common/sampling/label_sampling_no.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 
 
 /**
@@ -9,7 +9,7 @@ class NoLabelSampling final : public ILabelSampling {
 
     private:
 
-        FullIndexVector indexVector_;
+        CompleteIndexVector indexVector_;
 
     public:
 

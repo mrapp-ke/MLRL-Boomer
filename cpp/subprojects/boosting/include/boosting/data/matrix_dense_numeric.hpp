@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/data/matrix_dense.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
 
@@ -34,8 +34,8 @@ namespace boosting {
             NumericDenseMatrix(uint32 numRows, uint32 numCols, bool init);
 
             /**
-             * Adds all values in another vector to certain elements, whose positions are given as a `FullIndexVector`,
-             * at a specific row of this matrix.
+             * Adds all values in another vector to certain elements, whose positions are given as a
+             * `CompleteIndexVector`, at a specific row of this matrix.
              *
              * @param row           The row
              * @param begin         An iterator to the beginning of the vector
@@ -45,8 +45,8 @@ namespace boosting {
              */
             void addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
                                     typename DenseVector<T>::const_iterator end,
-                                    FullIndexVector::const_iterator indicesBegin,
-                                    FullIndexVector::const_iterator indicesEnd);
+                                    CompleteIndexVector::const_iterator indicesBegin,
+                                    CompleteIndexVector::const_iterator indicesEnd);
 
             /**
              * Adds all values in another vector to certain elements, whose positions are given as a

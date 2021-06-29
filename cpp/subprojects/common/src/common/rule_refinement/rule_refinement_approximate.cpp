@@ -298,5 +298,5 @@ std::unique_ptr<Refinement> ApproximateRuleRefinement<T>::pollRefinement() {
     return std::move(refinementPtr_);
 }
 
-template class ApproximateRuleRefinement<FullIndexVector>;
+template class ApproximateRuleRefinement<CompleteIndexVector>;
 template class ApproximateRuleRefinement<PartialIndexVector>;

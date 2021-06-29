@@ -37,7 +37,7 @@ namespace boosting {
                                                             uint32 minBins, uint32 maxBins);
 
             std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
-                const FullIndexVector& indexVector) const override;
+                const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
                 const PartialIndexVector& indexVector) const override;

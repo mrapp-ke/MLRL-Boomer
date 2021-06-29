@@ -10,7 +10,7 @@
 /**
  * Provides random access to all indices within a continuous range [0, numIndices).
  */
-class FullIndexVector final : public IIndexVector {
+class CompleteIndexVector final : public IIndexVector {
 
     private:
 
@@ -21,7 +21,7 @@ class FullIndexVector final : public IIndexVector {
         /**
          * @param numElements The number of indices, the vector provides access to
          */
-        FullIndexVector(uint32 numElements);
+        CompleteIndexVector(uint32 numElements);
 
         /**
          * An iterator that provides read-only access to the indices in the vector.

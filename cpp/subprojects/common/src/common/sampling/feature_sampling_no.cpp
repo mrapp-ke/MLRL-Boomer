@@ -1,5 +1,5 @@
 #include "common/sampling/feature_sampling_no.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 
 
 /**
@@ -9,7 +9,7 @@ class NoFeatureSampling final : public IFeatureSampling {
 
     private:
 
-        FullIndexVector indexVector_;
+        CompleteIndexVector indexVector_;
 
     public:
 
@@ -17,7 +17,7 @@ class NoFeatureSampling final : public IFeatureSampling {
          * @param numFeatures The total number of available features
          */
         NoFeatureSampling(uint32 numFeatures)
-            : indexVector_(FullIndexVector(numFeatures)) {
+            : indexVector_(CompleteIndexVector(numFeatures)) {
 
         }
 

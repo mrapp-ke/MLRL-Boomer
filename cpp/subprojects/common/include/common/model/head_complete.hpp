@@ -4,13 +4,13 @@
 #pragma once
 
 #include "common/model/head.hpp"
-#include "common/head_refinement/prediction_full.hpp"
+#include "common/head_refinement/prediction_complete.hpp"
 
 
 /**
  * A head that contains a numerical score for each available label.
  */
-class FullHead final : public IHead {
+class CompleteHead final : public IHead {
 
     private:
 
@@ -23,15 +23,15 @@ class FullHead final : public IHead {
         /**
          * @param numElements The number of scores that are contained by the head.
          */
-        FullHead(uint32 numElements);
+        CompleteHead(uint32 numElements);
 
         /**
-         * @param prediction A reference to an object of type `FullPrediction` that stores the scores to be contained by
-         *                   the head
+         * @param prediction A reference to an object of type `CompletePrediction` that stores the scores to be
+         *                   contained by the head
          */
-        FullHead(const FullPrediction& prediction);
+        CompleteHead(const CompletePrediction& prediction);
 
-        ~FullHead();
+        ~CompleteHead();
 
         /**
          * An iterator that provides access to the scores the are contained by the head and allows to modify them.
@@ -78,6 +78,6 @@ class FullHead final : public IHead {
          */
         score_const_iterator scores_cend() const;
 
-        void visit(FullHeadVisitor fullHeadVisitor, PartialHeadVisitor partialHeadVisitor) const override;
+        void visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const override;
 
 };

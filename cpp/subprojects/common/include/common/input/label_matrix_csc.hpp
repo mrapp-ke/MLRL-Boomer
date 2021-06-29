@@ -6,7 +6,7 @@
 #include "common/data/view_csc_binary.hpp"
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
 
@@ -32,13 +32,13 @@ class CscLabelMatrix final {
 
         /**
          * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` to be copied
-         * @param indicesBegin  A `FullIndexVector::const_iterator` to the beginning of the indices of the examples to
-         *                      be considered
-         * @param indicesEnd    A `FullIndexVector::const_iterator` to the end of the indices of the examples to be
+         * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the indices of the examples
+         *                      to be considered
+         * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the indices of the examples to be
          *                      considered
          */
-        CscLabelMatrix(const CContiguousLabelMatrix& labelMatrix, FullIndexVector::const_iterator indicesBegin,
-                       FullIndexVector::const_iterator indicesEnd);
+        CscLabelMatrix(const CContiguousLabelMatrix& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
+                       CompleteIndexVector::const_iterator indicesEnd);
 
         /**
          * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` to be copied
@@ -52,13 +52,13 @@ class CscLabelMatrix final {
 
         /**
          * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` to be copied
-         * @param indicesBegin  A `FullIndexVector::const_iterator` to the beginning of the indices of the examples to
-         *                      be considered
-         * @param indicesEnd    A `FullIndexVector::const_iterator` to the end of the indices of the examples to be
+         * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the indices of the examples
+         *                      to be considered
+         * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the indices of the examples to be
          *                      considered
          */
-        CscLabelMatrix(const CsrLabelMatrix& labelMatrix, FullIndexVector::const_iterator indicesBegin,
-                       FullIndexVector::const_iterator indicesEnd);
+        CscLabelMatrix(const CsrLabelMatrix& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
+                       CompleteIndexVector::const_iterator indicesEnd);
 
         /**
          * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` to be copied

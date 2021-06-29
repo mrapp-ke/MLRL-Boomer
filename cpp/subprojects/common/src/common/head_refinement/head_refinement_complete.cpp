@@ -1,5 +1,5 @@
-#include "common/head_refinement/head_refinement_full.hpp"
-#include "common/head_refinement/prediction_full.hpp"
+#include "common/head_refinement/head_refinement_complete.hpp"
+#include "common/head_refinement/prediction_complete.hpp"
 #include "common/head_refinement/prediction_partial.hpp"
 #include "common/rule_evaluation/score_processor.hpp"
 #include <algorithm>
@@ -8,7 +8,7 @@
 /**
  * Allows to find the best multi-label head that predicts for all labels.
  */
-class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor {
+class CompleteHeadRefinement final : public IHeadRefinement, public IScoreProcessor {
 
     private:
 
@@ -30,7 +30,7 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
                         std::copy(scoreVector.indices_cbegin(), scoreVector.indices_cend(), headPtr->indices_begin());
                         headPtr_ = std::move(headPtr);
                     } else {
-                        headPtr_ = std::make_unique<FullPrediction>(numPredictions);
+                        headPtr_ = std::make_unique<CompletePrediction>(numPredictions);
                     }
                 }
 
@@ -46,8 +46,8 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
 
         const AbstractEvaluatedPrediction* processScores(
                 const AbstractEvaluatedPrediction* bestHead,
-                const DenseScoreVector<FullIndexVector>& scoreVector) override {
-            return processScoresInternally<DenseScoreVector<FullIndexVector>>(bestHead, scoreVector);
+                const DenseScoreVector<CompleteIndexVector>& scoreVector) override {
+            return processScoresInternally<DenseScoreVector<CompleteIndexVector>>(bestHead, scoreVector);
         }
 
         const AbstractEvaluatedPrediction* processScores(
@@ -58,8 +58,8 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
 
         const AbstractEvaluatedPrediction* processScores(
                 const AbstractEvaluatedPrediction* bestHead,
-                const DenseBinnedScoreVector<FullIndexVector>& scoreVector) override {
-            return processScoresInternally<DenseBinnedScoreVector<FullIndexVector>>(bestHead, scoreVector);
+                const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) override {
+            return processScoresInternally<DenseBinnedScoreVector<CompleteIndexVector>>(bestHead, scoreVector);
         }
 
         const AbstractEvaluatedPrediction* processScores(
@@ -86,10 +86,10 @@ class FullHeadRefinement final : public IHeadRefinement, public IScoreProcessor 
 
 };
 
-std::unique_ptr<IHeadRefinement> FullHeadRefinementFactory::create(const FullIndexVector& labelIndices) const {
-    return std::make_unique<FullHeadRefinement>();
+std::unique_ptr<IHeadRefinement> CompleteHeadRefinementFactory::create(const CompleteIndexVector& labelIndices) const {
+    return std::make_unique<CompleteHeadRefinement>();
 }
 
-std::unique_ptr<IHeadRefinement> FullHeadRefinementFactory::create(const PartialIndexVector& labelIndices) const {
-    return std::make_unique<FullHeadRefinement>();
+std::unique_ptr<IHeadRefinement> CompleteHeadRefinementFactory::create(const PartialIndexVector& labelIndices) const {
+    return std::make_unique<CompleteHeadRefinement>();
 }

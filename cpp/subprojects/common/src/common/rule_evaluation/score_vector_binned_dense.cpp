@@ -1,7 +1,7 @@
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "common/rule_evaluation/score_processor.hpp"
 #include "common/head_refinement/prediction.hpp"
-#include "common/indices/index_vector_full.hpp"
+#include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
 
@@ -103,4 +103,4 @@ const AbstractEvaluatedPrediction* DenseBinnedScoreVector<T>::processScores(cons
 }
 
 template class DenseBinnedScoreVector<PartialIndexVector>;
-template class DenseBinnedScoreVector<FullIndexVector>;
+template class DenseBinnedScoreVector<CompleteIndexVector>;

@@ -165,7 +165,7 @@ namespace boosting {
             /**
              * The type of a `StatisticsSubset` that corresponds to all available labels.
              */
-            typedef StatisticsSubset<FullIndexVector> FullSubset;
+            typedef StatisticsSubset<CompleteIndexVector> CompleteSubset;
 
             /**
              * The type of a `StatisticsSubset` that corresponds to a subset of the available labels.
@@ -270,12 +270,13 @@ namespace boosting {
                                                   originalStatisticView_.hessians_row_cend(statisticIndex), weight);
             }
 
-            std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<IExampleWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVector_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
-                return std::make_unique<typename ExampleWiseHistogram::FullSubset>(*this, totalSumVector_,
-                                                                                   std::move(ruleEvaluationPtr),
-                                                                                   labelIndices);
+                return std::make_unique<typename ExampleWiseHistogram::CompleteSubset>(*this, totalSumVector_,
+                                                                                       std::move(ruleEvaluationPtr),
+                                                                                       labelIndices);
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(
@@ -387,8 +388,8 @@ namespace boosting {
             /**
              * @see `IStatistics::applyPrediction`
              */
-            void applyPrediction(uint32 statisticIndex, const FullPrediction& prediction) override {
-                applyPredictionInternally<FullPrediction, LabelMatrix, StatisticView, ScoreMatrix, LossFunction>(
+            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override {
+                applyPredictionInternally<CompletePrediction, LabelMatrix, StatisticView, ScoreMatrix, LossFunction>(
                     statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
                     lossFunction_);
             }
@@ -422,10 +423,11 @@ namespace boosting {
             /**
              * @see `IStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(const FullIndexVector& labelIndices) const override final {
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<IExampleWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVectorPtr_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
-                return std::make_unique<typename AbstractExampleWiseStatistics::FullSubset>(
+                return std::make_unique<typename AbstractExampleWiseStatistics::CompleteSubset>(
                     *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
             }
 

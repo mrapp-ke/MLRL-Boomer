@@ -53,8 +53,8 @@ class SingleLabelHeadRefinement final : public IHeadRefinement, public ILabelWis
 
         const AbstractEvaluatedPrediction* processScores(
                 const AbstractEvaluatedPrediction* bestHead,
-                const DenseLabelWiseScoreVector<FullIndexVector>& scoreVector) override {
-            return processScoresInternally<DenseLabelWiseScoreVector<FullIndexVector>>(bestHead, scoreVector);
+                const DenseLabelWiseScoreVector<CompleteIndexVector>& scoreVector) override {
+            return processScoresInternally<DenseLabelWiseScoreVector<CompleteIndexVector>>(bestHead, scoreVector);
         }
 
         const AbstractEvaluatedPrediction* processScores(
@@ -65,8 +65,8 @@ class SingleLabelHeadRefinement final : public IHeadRefinement, public ILabelWis
 
         const AbstractEvaluatedPrediction* processScores(
                 const AbstractEvaluatedPrediction* bestHead,
-                const DenseBinnedLabelWiseScoreVector<FullIndexVector>& scoreVector) override {
-            return processScoresInternally<DenseBinnedLabelWiseScoreVector<FullIndexVector>>(bestHead, scoreVector);
+                const DenseBinnedLabelWiseScoreVector<CompleteIndexVector>& scoreVector) override {
+            return processScoresInternally<DenseBinnedLabelWiseScoreVector<CompleteIndexVector>>(bestHead, scoreVector);
         }
 
         const AbstractEvaluatedPrediction* processScores(
@@ -94,7 +94,8 @@ class SingleLabelHeadRefinement final : public IHeadRefinement, public ILabelWis
 
 };
 
-std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactory::create(const FullIndexVector& labelIndices) const {
+std::unique_ptr<IHeadRefinement> SingleLabelHeadRefinementFactory::create(
+        const CompleteIndexVector& labelIndices) const {
     return std::make_unique<SingleLabelHeadRefinement>();
 }
 

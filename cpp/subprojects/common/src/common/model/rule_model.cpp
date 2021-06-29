@@ -74,18 +74,20 @@ void RuleModel::addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> h
 }
 
 void RuleModel::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                      IHead::FullHeadVisitor fullHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const {
+                      IHead::CompleteHeadVisitor completeHeadVisitor,
+                      IHead::PartialHeadVisitor partialHeadVisitor) const {
     for (auto it = list_.cbegin(); it != list_.cend(); it++) {
         const Rule& rule = *it;
-        rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, fullHeadVisitor, partialHeadVisitor);
+        rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeHeadVisitor, partialHeadVisitor);
     }
 }
 
 void RuleModel::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                          IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor, IHead::FullHeadVisitor fullHeadVisitor,
+                          IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                          IHead::CompleteHeadVisitor completeHeadVisitor,
                           IHead::PartialHeadVisitor partialHeadVisitor) const {
     for (auto it = this->used_cbegin(); it != this->used_cend(); it++) {
         const Rule& rule = *it;
-        rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, fullHeadVisitor, partialHeadVisitor);
+        rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeHeadVisitor, partialHeadVisitor);
     }
 }
