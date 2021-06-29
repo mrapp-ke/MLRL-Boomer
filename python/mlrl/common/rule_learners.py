@@ -48,9 +48,9 @@ HEAD_REFINEMENT_SINGLE = 'single-label'
 
 LABEL_SAMPLING_RANDOM = 'random-label-selection'
 
-INSTANCE_SAMPLING_RANDOM = 'random-instance-selection'
+INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'random-instance-selection'
 
-INSTANCE_SAMPLING_BAGGING = 'bagging'
+INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
 INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 
@@ -119,14 +119,14 @@ def create_instance_sampling_factory(instance_sampling: str) -> InstanceSampling
         return NoInstanceSamplingFactory()
     else:
         prefix, args = parse_prefix_and_dict(instance_sampling,
-                                             [INSTANCE_SAMPLING_BAGGING, INSTANCE_SAMPLING_RANDOM,
+                                             [INSTANCE_SAMPLING_WITH_REPLACEMENT, INSTANCE_SAMPLING_WITHOUT_REPLACEMENT,
                                               INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE,
                                               INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE])
 
-        if prefix == INSTANCE_SAMPLING_BAGGING:
+        if prefix == INSTANCE_SAMPLING_WITH_REPLACEMENT:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
             return InstanceSamplingWithReplacementFactory(sample_size)
-        elif prefix == INSTANCE_SAMPLING_RANDOM:
+        elif prefix == INSTANCE_SAMPLING_WITHOUT_REPLACEMENT:
             sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return InstanceSamplingWithoutReplacementFactory(sample_size)
         elif prefix == INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE:

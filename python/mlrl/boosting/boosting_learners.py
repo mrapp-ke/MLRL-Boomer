@@ -33,8 +33,8 @@ from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFun
     ArithmeticMeanFunction
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import INSTANCE_SAMPLING_BAGGING, FEATURE_SAMPLING_RANDOM, HEAD_REFINEMENT_SINGLE, \
-    ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
+from mlrl.common.rule_learners import INSTANCE_SAMPLING_WITH_REPLACEMENT, FEATURE_SAMPLING_RANDOM, \
+    HEAD_REFINEMENT_SINGLE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
@@ -95,7 +95,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
                  time_limit: int = -1, early_stopping: str = None, head_refinement: str = None,
                  loss: str = LOSS_LABEL_WISE_LOGISTIC, predictor: str = None, label_sampling: str = None,
-                 instance_sampling: str = INSTANCE_SAMPLING_BAGGING, recalculate_predictions: bool = True,
+                 instance_sampling: str = INSTANCE_SAMPLING_WITH_REPLACEMENT, recalculate_predictions: bool = True,
                  feature_sampling: str = FEATURE_SAMPLING_RANDOM, holdout: str = None, feature_binning: str = None,
                  label_binning: str = None, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
@@ -124,10 +124,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     provided as a dictionary, e.g.
                                                     `random-label-selection{\"num_samples\":5}`
         :param instance_sampling:                   The strategy that is used for sampling the training examples each
-                                                    time a new classification rule is learned. Must be `bagging`,
-                                                    `random-instance-selection` or None, if no sampling should be used.
-                                                    Additional arguments may be provided as a dictionary, e.g.
-                                                    `bagging{\"sample_size\":0.5}`
+                                                    time a new classification rule is learned. Must be
+                                                    `with-replacement`, `random-instance-selection` or None, if no
+                                                    sampling should be used. Additional arguments may be provided as a
+                                                    dictionary, e.g. `with-replacement{\"sample_size\":0.5}`
         :param recalculate_predictions:             True, if the predictions of rules should be recalculated on the
                                                     entire training data, if instance sampling is used, False otherwise
         :param feature_sampling:                    The strategy that is used for sampling the features each time a
