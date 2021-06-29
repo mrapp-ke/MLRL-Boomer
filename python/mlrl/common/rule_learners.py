@@ -28,7 +28,8 @@ from mlrl.common.cython.sampling import FeatureSubSamplingFactory, RandomFeature
 from mlrl.common.cython.sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
     InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, \
     ExampleWiseStratifiedSamplingFactory
-from mlrl.common.cython.sampling import LabelSamplingFactory, RandomLabelSubsetSelectionFactory, NoLabelSamplingFactory
+from mlrl.common.cython.sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory, \
+    NoLabelSamplingFactory
 from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
     RandomBiPartitionSamplingFactory, LabelWiseStratifiedBiPartitionSamplingFactory, \
     ExampleWiseStratifiedBiPartitionSamplingFactory
@@ -109,7 +110,7 @@ def create_label_sampling_factory(label_sampling: str, num_labels: int) -> Label
 
         if prefix == LABEL_SAMPLING_RANDOM:
             num_samples = get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
-            return RandomLabelSubsetSelectionFactory(num_samples)
+            return LabelSamplingWithoutReplacementFactory(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sampling\': ' + str(label_sampling))
 
 

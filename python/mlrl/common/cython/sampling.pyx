@@ -114,16 +114,16 @@ cdef class LabelSamplingFactory:
     pass
 
 
-cdef class RandomLabelSubsetSelectionFactory(LabelSamplingFactory):
+cdef class LabelSamplingWithoutReplacementFactory(LabelSamplingFactory):
     """
-    A wrapper for the C++ class `RandomLabelSubsetSelectionFactory`.
+    A wrapper for the C++ class `LabelSamplingWithoutReplacementFactory`.
     """
 
     def __cinit__(self, uint32 num_samples):
         """
         :param num_samples: The number of labels to be included in the sample
         """
-        self.label_sampling_factory_ptr = <shared_ptr[ILabelSamplingFactory]>make_shared[RandomLabelSubsetSelectionFactoryImpl](
+        self.label_sampling_factory_ptr = <shared_ptr[ILabelSamplingFactory]>make_shared[LabelSamplingWithoutReplacementFactoryImpl](
             num_samples)
 
 
