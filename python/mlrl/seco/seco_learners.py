@@ -26,7 +26,7 @@ from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
-    get_preferred_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument, create_thresholds_factory
+    get_preferred_num_threads, parse_prefix_and_options, create_thresholds_factory
 
 HEAD_TYPE_PARTIAL = 'partial'
 
@@ -207,8 +207,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
-        prefix, args = parse_prefix_and_dict(heuristic, [HEURISTIC_PRECISION, HEURISTIC_HAMMING_LOSS, HEURISTIC_RECALL,
-                                                         HEURISTIC_WRA, HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE])
+        prefix, options = parse_prefix_and_options('heuristic', heuristic, [HEURISTIC_PRECISION, HEURISTIC_HAMMING_LOSS,
+                                                                            HEURISTIC_RECALL, HEURISTIC_WRA,
+                                                                            HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE])
 
         if prefix == HEURISTIC_PRECISION:
             return Precision()
@@ -219,10 +220,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         elif prefix == HEURISTIC_WRA:
             return WRA()
         elif prefix == HEURISTIC_F_MEASURE:
-            beta = get_float_argument(args, ARGUMENT_BETA, 0.5, lambda x: x >= 0)
+            beta = options.get_float(ARGUMENT_BETA, 0.5, lambda x: x >= 0)
             return FMeasure(beta)
         elif prefix == HEURISTIC_M_ESTIMATE:
-            m = get_float_argument(args, ARGUMENT_M, 22.466, lambda x: x >= 0)
+            m = options.get_float(ARGUMENT_M, 22.466, lambda x: x >= 0)
             return MEstimate(m)
         raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
 
@@ -237,14 +238,12 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:
         lift_function = self.lift_function
-
-        prefix, args = parse_prefix_and_dict(lift_function, [LIFT_FUNCTION_PEAK])
+        prefix, options = parse_prefix_and_options('lift_function', lift_function, [LIFT_FUNCTION_PEAK])
 
         if prefix == LIFT_FUNCTION_PEAK:
-            peak_label = get_int_argument(args, ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1,
-                                          lambda x: 1 <= x <= num_labels)
-            max_lift = get_float_argument(args, ARGUMENT_MAX_LIFT, 1.5, lambda x: x >= 1)
-            curvature = get_float_argument(args, ARGUMENT_CURVATURE, 1.0, lambda x: x > 0)
+            peak_label = options.get_int(ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1, lambda x: 1 <= x <= num_labels)
+            max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.5, lambda x: x >= 1)
+            curvature = options.get_float(ARGUMENT_CURVATURE, 1.0, lambda x: x > 0)
             return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
 
         raise ValueError('Invalid value given for parameter \'lift_function\': ' + str(lift_function))
