@@ -393,7 +393,7 @@ class LabelWiseStratification final {
                 uint32 numSamples = (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ?
                                               std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
                 numNonZeroWeights += numSamples;
-                numZeroWeights =+ (numExamples - numSamples);
+                numZeroWeights += (numExamples - numSamples);
                 uint32 j;
 
                 // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and set their weights to 1...
