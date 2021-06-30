@@ -3,7 +3,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
-Provides a scikit-learn implementations of boosting algorithms
+Provides scikit-learn implementations of boosting algorithms.
 """
 import logging as log
 from typing import Optional
@@ -329,7 +329,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if early_stopping is None:
             return None
         else:
-            prefix, args = parse_prefix_and_dict(early_stopping, [EARLY_STOPPING_LOSS])
+            prefix, args = parse_prefix_and_dict('early_stopping', early_stopping, [EARLY_STOPPING_LOSS])
 
             if prefix == EARLY_STOPPING_LOSS:
                 if self.holdout is None:
@@ -408,7 +408,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if label_binning is None:
             return None, 0, 0, 0
         else:
-            prefix, args = parse_prefix_and_dict(label_binning, [LABEL_BINNING_EQUAL_WIDTH])
+            prefix, args = parse_prefix_and_dict('label_binning', label_binning, [LABEL_BINNING_EQUAL_WIDTH])
 
             if prefix == LABEL_BINNING_EQUAL_WIDTH:
                 bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.04, lambda x: 0 < x < 1)
