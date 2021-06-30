@@ -82,12 +82,13 @@ class Options:
         :return:                The value that is associated with the given key or the given default value
         """
         if key in self.dict:
-            value = self.dict[key]
+            value = str(self.dict[key]).lower()
 
-            try:
-                return bool(value)
-            except ValueError:
-                raise ValueError('Value for key \'' + key + '\' cannot be converted to boolean')
+            if value == 'false':
+                return False
+            if value == 'true':
+                return True
+            raise ValueError('Value for key \'' + key + '\' cannot be converted to boolean')
 
         return default_value
 
