@@ -1,0 +1,117 @@
+#!/usr/bin/python
+
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides a data structure that allows to store and parse options that are provided as key-value pairs.
+"""
+
+
+class Options:
+    """
+    Stores key-value pairs in a dictionary and provides methods to access and validate them.
+    """
+
+    def __init__(self):
+        self.dict = {}
+
+    @classmethod
+    def create(cls, string: str):
+        """
+        Parses the options that are provided via a given string that is formatted according to the following syntax:
+        "[key1=value1,key2=value2]". If the given string is malformed, a `ValueError` will be raised.
+
+        :param string:  The string to be parsed
+        :return:        An object of type `Options` that stores the key-value pairs that have been parsed from the given
+                        string
+        """
+        if not string.startswith('[') or not string.endswith(']'):
+            raise ValueError()
+        string = string[1:-1]
+        options = cls()
+        if len(string) > 0:
+            for argument in string.split(','):
+                if len(argument) == 0:
+                    raise ValueError()
+                parts = argument.split('=')
+                if len(parts) != 2:
+                    raise ValueError()
+                key = parts[0]
+                value = parts[1]
+                if len(key) == 0 or len(value) == 0:
+                    raise ValueError()
+                options.dict[key] = value
+        return options
+
+    def get_string(self, key: str, default_value: str, validation=None) -> str:
+        """
+        Returns a string that corresponds to a specific key.
+
+        :param key:             The key
+        :param default_value:   The default value to be returned, if no value is associated with the given key
+        :param validation:      A function that validates the value that is associated with the given key or None, if no
+                                validation should be used
+        :return:                The value that is associated with the given key or the given default value
+        """
+        if key in self.dict:
+            value = str(self.dict[key])
+
+            if validation is not None and not validation(value):
+                raise ValueError('Invalid value given for string argument \'' + key + '\': ' + str(value))
+
+            return value
+
+        return default_value
+
+    def get_bool(self, key: str, default_value: bool) -> bool:
+        """
+        Returns a boolean that corresponds to a specific key.
+
+        :param key:             The key
+        :param default_value:   The default value to be returned, if no value is associated with the given key
+        :return:                The value that is associated with the given key or the given default value
+        """
+        if key in self.dict:
+            return bool(self.dict[key])
+
+        return default_value
+
+    def get_int(self, key: str, default_value: int, validation=None) -> int:
+        """
+        Returns an integer that corresponds to a specific key.
+
+        :param key:             The key
+        :param default_value:   The default value to be returned, if no value is associated with the given key
+        :param validation:      A function that validates the value that is associated with the given key or None, if no
+                                validation should be used
+        :return:                The value that is associated with the given key or the given default value
+        """
+        if key in self.dict:
+            value = int(self.dict[key])
+
+            if validation is not None and not validation(value):
+                raise ValueError('Invalid value given for int argument \'' + key + '\': ' + str(value))
+
+            return value
+
+        return default_value
+
+    def get_float(self, key: str, default_value: float, validation=None) -> float:
+        """
+        Returns a float that corresponds to a specific key.
+
+        :param key:             The key
+        :param default_value:   The default value to be returned, if no value is associated with the given key
+        :param validation:      A function that validates the value that is associated with the given key or None, if no
+                                validation should be used
+        :return:                THe value that is associated with the given key or the given default value
+        """
+        if key in self.dict:
+            value = float(self.dict[key])
+
+            if validation is not None and not validation(value):
+                raise ValueError('Invalid value given for float argument \'' + key + '\': ' + str(value))
+
+            return value
+
+        return default_value
