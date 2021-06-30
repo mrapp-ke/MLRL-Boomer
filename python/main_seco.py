@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+"""
 from args import ArgumentParserBuilder
 from mlrl.seco.seco_learners import SeparateAndConquerRuleLearner
 from runnables import RuleLearnerRunnable

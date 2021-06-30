@@ -1,5 +1,10 @@
 #!/usr/bin/python
 
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+
+Provides scikit-learn implementations of separate-and-conquer algorithms.
+"""
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     CompleteHeadRefinementFactory
 from mlrl.common.cython.model import ModelBuilder
