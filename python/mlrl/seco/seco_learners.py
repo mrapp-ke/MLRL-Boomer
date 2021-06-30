@@ -8,7 +8,7 @@ from mlrl.common.cython.post_processing import NoPostProcessor
 from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
-from mlrl.seco.cython.heuristics import Heuristic, Precision, Recall, WRA, HammingLoss, FMeasure, MEstimate
+from mlrl.seco.cython.heuristics import Heuristic, Precision, Recall, Laplace, WRA, HammingLoss, FMeasure, MEstimate
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
 from mlrl.seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
@@ -28,6 +28,8 @@ HEAD_TYPE_PARTIAL = 'partial'
 AVERAGING_LABEL_WISE = 'label-wise-averaging'
 
 HEURISTIC_PRECISION = 'precision'
+
+HEURISTIC_LAPLACE = 'laplace'
 
 HEURISTIC_HAMMING_LOSS = 'hamming-loss'
 
@@ -78,9 +80,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     `peak{\"peak_label\":10,\"max_lift\":2.0,\"curvature\":1.0}`
         :param loss:                                The loss function to be minimized. Must be `label-wise-averaging`
         :param heuristic:                           The heuristic to be minimized. Must be `precision`, `hamming-loss`,
-                                                    `recall`, `weighted-relative-accuracy`, `f-measure` or `m-estimate`.
-                                                    Additional arguments may be provided as a dictionary, e.g.
-                                                    `f-measure{\"beta\":1.0}`
+                                                    `recall`, `weighted-relative-accuracy`, `f-measure`, `m-estimate` or
+                                                    `laplace`. Additional arguments may be provided as a dictionary,
+                                                    e.g. `f-measure{\"beta\":1.0}`
         :param label_sampling:                      The strategy that is used for sampling the labels each time a new
                                                     classification rule is learned. Must be 'without-replacement' or
                                                     None, if no sampling should be used. Additional arguments may be
@@ -211,6 +213,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             return HammingLoss()
         elif prefix == HEURISTIC_RECALL:
             return Recall()
+        elif prefix == HEURISTIC_LAPLACE:
+            return Laplace()
         elif prefix == HEURISTIC_WRA:
             return WRA()
         elif prefix == HEURISTIC_F_MEASURE:
