@@ -11,7 +11,7 @@ Gradient-based label binning (GBLB), which is an extension to the original algor
 
 *Rapp M., Loza Mencía E., Fürnkranz J., Hüllermeier E. (2021) Gradient-based Label Binning in Multi-label Classification. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2021.*
 
-If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper.
+If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned papers.
 
 .. toctree::
    :maxdepth: 2
