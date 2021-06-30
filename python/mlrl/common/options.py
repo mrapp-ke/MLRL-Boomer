@@ -25,22 +25,32 @@ class Options:
         :return:        An object of type `Options` that stores the key-value pairs that have been parsed from the given
                         string
         """
-        if not string.startswith('[') or not string.endswith(']'):
-            raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
-        string = string[1:-1]
         options = cls()
-        if len(string) > 0:
-            for argument in string.split(','):
-                if len(argument) == 0:
-                    raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
-                parts = argument.split('=')
-                if len(parts) != 2:
-                    raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
-                key = parts[0]
-                value = parts[1]
-                if len(key) == 0 or len(value) == 0:
-                    raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
-                options.dict[key] = value
+
+        if string is not None and len(string) > 0:
+            if not string.startswith('[') or not string.endswith(']'):
+                raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+
+            string = string[1:-1]
+
+            if len(string) > 0:
+                for argument in string.split(','):
+                    if len(argument) == 0:
+                        raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+
+                    parts = argument.split('=')
+
+                    if len(parts) != 2:
+                        raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+
+                    key = parts[0]
+                    value = parts[1]
+
+                    if len(key) == 0 or len(value) == 0:
+                        raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+
+                    options.dict[key] = value
+
         return options
 
     def get_string(self, key: str, default_value: str, validation=None) -> str:
