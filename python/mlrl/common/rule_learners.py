@@ -8,7 +8,6 @@ Provides base classes for implementing single- or multi-label rule learning algo
 import logging as log
 import os
 from abc import abstractmethod
-from ast import literal_eval
 from enum import Enum
 from typing import List
 
@@ -42,6 +41,7 @@ from sklearn.utils import check_array
 
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.learners import Learner, NominalAttributeLearner
+from mlrl.common.options import Options
 from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
 AUTOMATIC = 'auto'
@@ -100,10 +100,10 @@ def create_label_sampling_factory(label_sampling: str, num_labels: int) -> Label
     if label_sampling is None:
         return NoLabelSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(label_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
+        prefix, options = parse_prefix_and_options('label_sampling', label_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
 
         if prefix == SAMPLING_WITHOUT_REPLACEMENT:
-            num_samples = get_int_argument(args, ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
+            num_samples = options.get_int(ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
             return LabelSamplingWithoutReplacementFactory(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sampling\': ' + str(label_sampling))
 
@@ -112,21 +112,21 @@ def create_instance_sampling_factory(instance_sampling: str) -> InstanceSampling
     if instance_sampling is None:
         return NoInstanceSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(instance_sampling,
-                                             [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT,
-                                              SAMPLING_STRATIFIED_LABEL_WISE, SAMPLING_STRATIFIED_EXAMPLE_WISE])
+        prefix, options = parse_prefix_and_options('instance_sampling', instance_sampling,
+                                                   [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT,
+                                                    SAMPLING_STRATIFIED_LABEL_WISE, SAMPLING_STRATIFIED_EXAMPLE_WISE])
 
         if prefix == SAMPLING_WITH_REPLACEMENT:
-            sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
             return InstanceSamplingWithReplacementFactory(sample_size)
         elif prefix == SAMPLING_WITHOUT_REPLACEMENT:
-            sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return InstanceSamplingWithoutReplacementFactory(sample_size)
         elif prefix == SAMPLING_STRATIFIED_LABEL_WISE:
-            sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return LabelWiseStratifiedSamplingFactory(sample_size)
         elif prefix == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
             return ExampleWiseStratifiedSamplingFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'instance_sampling\': ' + str(instance_sampling))
 
@@ -135,10 +135,10 @@ def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFac
     if feature_sampling is None:
         return NoFeatureSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(feature_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
+        prefix, options = parse_prefix_and_options('feature_sampling', feature_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
 
         if prefix == SAMPLING_WITHOUT_REPLACEMENT:
-            sample_size = get_float_argument(args, ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
             return FeatureSamplingWithoutReplacementFactory(sample_size)
         raise ValueError('Invalid value given for parameter \'feature_sampling\': ' + str(feature_sampling))
 
@@ -147,17 +147,18 @@ def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
     if holdout is None:
         return NoPartitionSamplingFactory()
     else:
-        prefix, args = parse_prefix_and_dict(holdout, [PARTITION_SAMPLING_RANDOM, SAMPLING_STRATIFIED_LABEL_WISE,
-                                                       SAMPLING_STRATIFIED_EXAMPLE_WISE])
+        prefix, options = parse_prefix_and_options('holdout', holdout, [PARTITION_SAMPLING_RANDOM,
+                                                                        SAMPLING_STRATIFIED_LABEL_WISE,
+                                                                        SAMPLING_STRATIFIED_EXAMPLE_WISE])
 
         if prefix == PARTITION_SAMPLING_RANDOM:
-            holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
             return RandomBiPartitionSamplingFactory(holdout_set_size)
         if prefix == SAMPLING_STRATIFIED_LABEL_WISE:
-            holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
             return LabelWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
         if prefix == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            holdout_set_size = get_float_argument(args, ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
             return ExampleWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
         raise ValueError('Invalid value given for parameter \'holdout\': ' + str(holdout))
 
@@ -227,76 +228,38 @@ def create_thresholds_factory(feature_binning: str, num_threads: int) -> Thresho
     if feature_binning is None:
         return ExactThresholdsFactory(num_threads)
     else:
-        prefix, args = parse_prefix_and_dict(feature_binning, [BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH])
+        prefix, options = parse_prefix_and_options('feature_binning', feature_binning, [BINNING_EQUAL_FREQUENCY,
+                                                                                        BINNING_EQUAL_WIDTH])
 
         if prefix == BINNING_EQUAL_FREQUENCY:
-            bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-            min_bins = get_int_argument(args, ARGUMENT_MIN_BINS, 2, lambda x: x >= 2)
-            max_bins = get_int_argument(args, ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
+            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2, lambda x: x >= 2)
+            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
             return ApproximateThresholdsFactory(EqualFrequencyFeatureBinning(bin_ratio, min_bins, max_bins),
                                                 num_threads)
         elif prefix == BINNING_EQUAL_WIDTH:
-            bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-            min_bins = get_int_argument(args, ARGUMENT_MIN_BINS, 2, lambda x: x >= 2)
-            max_bins = get_int_argument(args, ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
+            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2, lambda x: x >= 2)
+            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
             return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio, min_bins, max_bins), num_threads)
         raise ValueError('Invalid value given for parameter \'feature_binning\': ' + str(feature_binning))
 
 
-def parse_prefix_and_dict(string: str, prefixes: List[str]) -> [str, dict]:
+def parse_prefix_and_options(parameter_name: str, value: str, prefixes: List[str]) -> (str, Options):
     for prefix in prefixes:
-        if string.startswith(prefix):
-            suffix = string[len(prefix):].strip()
+        if value.startswith(prefix):
+            suffix = value[len(prefix):].strip()
 
             if len(suffix) > 0:
-                return prefix, literal_eval(suffix)
+                try:
+                    return prefix, Options.create(suffix)
+                except ValueError:
+                    raise ValueError('Invalid value given for parameter \'' + parameter_name
+                                     + '\'. Invalid syntax used to specify key-value pairs: ' + str(suffix))
 
-            return prefix, {}
+            return prefix, Options()
 
     return None, None
-
-
-def get_string_argument(args: dict, key: str, default: str, validation=None) -> str:
-    if args is not None and key in args:
-        value = str(args[key])
-
-        if validation is not None and not validation(value):
-            raise ValueError('Invalid value given for string argument \'' + key + '\': ' + str(value))
-
-        return value
-
-    return default
-
-
-def get_bool_argument(args: dict, key: str, default: bool) -> bool:
-    if args is not None and key in args:
-        return bool(args[key])
-
-    return default
-
-
-def get_int_argument(args: dict, key: str, default: int, validation=None) -> int:
-    if args is not None and key in args:
-        value = int(args[key])
-
-        if validation is not None and not validation(value):
-            raise ValueError('Invalid value given for int argument \'' + key + '\': ' + str(value))
-
-        return value
-
-    return default
-
-
-def get_float_argument(args: dict, key: str, default: float, validation=None) -> float:
-    if args is not None and key in args:
-        value = float(args[key])
-
-        if validation is not None and not validation(value):
-            raise ValueError('Invalid value given for float argument \'' + key + '\': ' + str(value))
-
-        return value
-
-    return default
 
 
 def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, dtype,

@@ -39,8 +39,7 @@ from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
-    get_preferred_num_threads, create_thresholds_factory, parse_prefix_and_dict, get_int_argument, get_float_argument, \
-    get_string_argument, get_bool_argument
+    get_preferred_num_threads, create_thresholds_factory, parse_prefix_and_options
 
 EARLY_STOPPING_LOSS = 'loss'
 
@@ -329,7 +328,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if early_stopping is None:
             return None
         else:
-            prefix, args = parse_prefix_and_dict('early_stopping', early_stopping, [EARLY_STOPPING_LOSS])
+            prefix, options = parse_prefix_and_options('early_stopping', early_stopping, [EARLY_STOPPING_LOSS])
 
             if prefix == EARLY_STOPPING_LOSS:
                 if self.holdout is None:
@@ -339,15 +338,15 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 else:
                     loss = self.__create_loss_function()
                     aggregation_function = self.__create_aggregation_function(
-                        get_string_argument(args, ARGUMENT_AGGREGATION_FUNCTION, 'avg'))
-                    min_rules = get_int_argument(args, ARGUMENT_MIN_RULES, 100, lambda x: 1 <= x)
-                    update_interval = get_int_argument(args, ARGUMENT_UPDATE_INTERVAL, 1, lambda x: 1 <= x)
-                    stop_interval = get_int_argument(args, ARGUMENT_STOP_INTERVAL, 1,
-                                                     lambda x: 1 <= x and x % update_interval == 0)
-                    num_past = get_int_argument(args, ARGUMENT_NUM_PAST, 50, lambda x: 1 <= x)
-                    num_recent = get_int_argument(args, ARGUMENT_NUM_RECENT, 50, lambda x: 1 <= x)
-                    min_improvement = get_float_argument(args, ARGUMENT_MIN_IMPROVEMENT, 0.005, lambda x: 0 <= x <= 1)
-                    force_stop = get_bool_argument(args, ARGUMENT_FORCE_STOP, True)
+                        options.get_string(ARGUMENT_AGGREGATION_FUNCTION, 'avg'))
+                    min_rules = options.get_int(ARGUMENT_MIN_RULES, 100, lambda x: 1 <= x)
+                    update_interval = options.get_int(ARGUMENT_UPDATE_INTERVAL, 1, lambda x: 1 <= x)
+                    stop_interval = options.get_int(ARGUMENT_STOP_INTERVAL, 1,
+                                                    lambda x: 1 <= x and x % update_interval == 0)
+                    num_past = options.get_int(ARGUMENT_NUM_PAST, 50, lambda x: 1 <= x)
+                    num_recent = options.get_int(ARGUMENT_NUM_RECENT, 50, lambda x: 1 <= x)
+                    min_improvement = options.get_float(ARGUMENT_MIN_IMPROVEMENT, 0.005, lambda x: 0 <= x <= 1)
+                    force_stop = options.get_bool(ARGUMENT_FORCE_STOP, True)
                     return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
                                                     update_interval=update_interval, stop_interval=stop_interval,
                                                     num_past=num_past, num_recent=num_recent,
@@ -408,12 +407,12 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if label_binning is None:
             return None, 0, 0, 0
         else:
-            prefix, args = parse_prefix_and_dict('label_binning', label_binning, [LABEL_BINNING_EQUAL_WIDTH])
+            prefix, options = parse_prefix_and_options('label_binning', label_binning, [LABEL_BINNING_EQUAL_WIDTH])
 
             if prefix == LABEL_BINNING_EQUAL_WIDTH:
-                bin_ratio = get_float_argument(args, ARGUMENT_BIN_RATIO, 0.04, lambda x: 0 < x < 1)
-                min_bins = get_int_argument(args, ARGUMENT_MIN_BINS, 1, lambda x: x >= 1)
-                max_bins = get_int_argument(args, ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+                bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.04, lambda x: 0 < x < 1)
+                min_bins = options.get_int_argument(ARGUMENT_MIN_BINS, 1, lambda x: x >= 1)
+                max_bins = options.get_int_argument(ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
                 return prefix, bin_ratio, min_bins, max_bins
             raise ValueError('Invalid value given for parameter \'label_binning\': ' + str(label_binning))
 
