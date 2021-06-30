@@ -57,7 +57,7 @@ class Options:
             value = str(self.dict[key])
 
             if validation is not None and not validation(value):
-                raise ValueError('Invalid value given for string argument \'' + key + '\': ' + str(value))
+                raise ValueError('Invalid value given for key \'' + key + '\': ' + str(value))
 
             return value
 
@@ -72,7 +72,12 @@ class Options:
         :return:                The value that is associated with the given key or the given default value
         """
         if key in self.dict:
-            return bool(self.dict[key])
+            value = self.dict[key]
+
+            try:
+                return bool(value)
+            except ValueError:
+                raise ValueError('Value for key \'' + key + '\' cannot be converted to boolean')
 
         return default_value
 
@@ -87,10 +92,15 @@ class Options:
         :return:                The value that is associated with the given key or the given default value
         """
         if key in self.dict:
-            value = int(self.dict[key])
+            value = self.dict[key]
+
+            try:
+                value = int(value)
+            except ValueError:
+                raise ValueError('Value for key \'' + key + '\' cannot be converted to integer: ' + str(value))
 
             if validation is not None and not validation(value):
-                raise ValueError('Invalid value given for int argument \'' + key + '\': ' + str(value))
+                raise ValueError('Invalid value given for key \'' + key + '\': ' + str(value))
 
             return value
 
@@ -107,10 +117,15 @@ class Options:
         :return:                THe value that is associated with the given key or the given default value
         """
         if key in self.dict:
-            value = float(self.dict[key])
+            value = self.dict[key]
+
+            try:
+                value = float(value)
+            except ValueError:
+                raise ValueError('Value for key \'' + key + '\' cannot be converted to float: ' + str(value))
 
             if validation is not None and not validation(value):
-                raise ValueError('Invalid value given for float argument \'' + key + '\': ' + str(value))
+                raise ValueError('Invalid value given for key \'' + key + '\': ' + str(value))
 
             return value
 
