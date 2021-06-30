@@ -1,3 +1,8 @@
+#!/usr/bin/python
+
+"""
+@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+"""
 import numpy
 import setuptools
 from Cython.Build import cythonize

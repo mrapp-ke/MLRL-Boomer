@@ -281,8 +281,8 @@ cdef class RuleModelFormatter:
     Allows to create textual representations of the rules that are contained by a `RuleModel`.
     """
 
-    def __cinit__(self, list attributes, list labels, bint print_feature_names=True, bint print_label_names=True,
-                  bint print_nominal_values=False):
+    def __cinit__(self, list attributes, list labels, bint print_feature_names, bint print_label_names,
+                  bint print_nominal_values):
         """
         :param attributes:              A list that contains the attributes
         :param labels:                  A list that contains the labels
