@@ -7,7 +7,6 @@ Provides functions for parsing command line arguments.
 """
 import logging as log
 from argparse import ArgumentParser
-from ast import literal_eval
 
 import sklearn.metrics as metrics
 
@@ -76,11 +75,6 @@ def int_list(s):
 
 def float_list(s):
     return [float(x) for x in string_list(s)]
-
-
-def optional_dict(s):
-    string = optional_string(s)
-    return {} if string is None else literal_eval(string)
 
 
 class ArgumentParserBuilder:
@@ -183,8 +177,8 @@ class ArgumentParserBuilder:
         parser.add_argument('--print-rules', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('print_rules', False, **kwargs),
                             help='True, if the induced rules should be printed on the console, False otherwise')
-        parser.add_argument('--print-options', type=optional_dict,
-                            default=ArgumentParserBuilder.__get_or_default('print_options', {}, **kwargs),
+        parser.add_argument('--print-options', type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('print_options', None, **kwargs),
                             help='A dictionary that specifies options for printing rules')
         parser.add_argument('--store-rules', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_rules', False, **kwargs),

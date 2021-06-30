@@ -8,13 +8,21 @@ e.g. to the console or to a file.
 """
 import logging as log
 from abc import ABC, abstractmethod
-from typing import Dict, List
+from typing import List
 
 from mlrl.common.cython.model import RuleModelFormatter
 
 from mlrl.common.learners import Learner
+from mlrl.common.options import Options
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.io import clear_directory, open_writable_txt_file
+
+
+ARGUMENT_PRINT_FEATURE_NAMES = 'print_feature_names'
+
+ARGUMENT_PRINT_LABEL_NAMES = 'print_label_names'
+
+ARGUMENT_PRINT_NOMINAL_VALUES = 'print_nominal_values'
 
 
 class ModelPrinterOutput(ABC):
@@ -41,9 +49,9 @@ class ModelPrinter(ABC):
     An abstract base class for all classes that allow to print a textual representation of a `MLLearner`'s model.
     """
 
-    def __init__(self, options: Dict, outputs: List[ModelPrinterOutput]):
+    def __init__(self, options: Options, outputs: List[ModelPrinterOutput]):
         """
-        :param options: A dictionary that contains the options to be used for printing models
+        :param options: An object of type `Options` that stores the options to be used for printing models
         :param outputs: The outputs, the textual representations of models should be written to
         """
         self.options = options
@@ -115,10 +123,16 @@ class RulePrinter(ModelPrinter):
     Allows to print a textual representation of a `MLRuleLearner`'s rule-based model.
     """
 
-    def __init__(self, options: Dict, outputs: List[ModelPrinterOutput]):
+    def __init__(self, options: Options, outputs: List[ModelPrinterOutput]):
         super().__init__(options, outputs)
 
     def _format_model(self, meta_data: MetaData, model) -> str:
-        formatter = RuleModelFormatter(attributes=meta_data.attributes, labels=meta_data.labels, **self.options)
+        options = self.options
+        print_feature_names = options.get_bool(ARGUMENT_PRINT_FEATURE_NAMES, True)
+        print_label_names = options.get_bool(ARGUMENT_PRINT_LABEL_NAMES, True)
+        print_nominal_values = options.get_bool(ARGUMENT_PRINT_NOMINAL_VALUES, True)
+        formatter = RuleModelFormatter(attributes=meta_data.attributes, labels=meta_data.labels,
+                                       print_feature_names=print_feature_names, print_label_names=print_label_names,
+                                       print_nominal_values=print_nominal_values)
         formatter.format(model)
         return formatter.get_text()
