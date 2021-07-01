@@ -9,6 +9,12 @@ cdef extern from "seco/heuristics/heuristic.hpp" namespace "seco" nogil:
         pass
 
 
+cdef extern from "seco/heuristics/heuristic_accuracy.hpp" namespace "seco" nogil:
+
+    cdef cppclass AccuracyImpl"seco::Accuracy"(IHeuristic):
+        pass
+
+
 cdef extern from "seco/heuristics/heuristic_precision.hpp" namespace "seco" nogil:
 
     cdef cppclass PrecisionImpl"seco::Precision"(IHeuristic):
@@ -56,6 +62,10 @@ cdef class Heuristic:
     # Attributes:
 
     cdef shared_ptr[IHeuristic] heuristic_ptr
+
+
+cdef class Accuracy(Heuristic):
+    pass
 
 
 cdef class Precision(Heuristic):
