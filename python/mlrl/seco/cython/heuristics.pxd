@@ -33,12 +33,6 @@ cdef extern from "seco/heuristics/heuristic_wra.hpp" namespace "seco" nogil:
         pass
 
 
-cdef extern from "seco/heuristics/heuristic_hamming_loss.hpp" namespace "seco" nogil:
-
-    cdef cppclass HammingLossImpl"seco::HammingLoss"(IHeuristic):
-        pass
-
-
 cdef extern from "seco/heuristics/heuristic_f_measure.hpp" namespace "seco" nogil:
 
     cdef cppclass FMeasureImpl"seco::FMeasure"(IHeuristic):
@@ -77,10 +71,6 @@ cdef class Laplace(Heuristic):
 
 
 cdef class WRA(Heuristic):
-    pass
-
-
-cdef class HammingLoss(Heuristic):
     pass
 
 
