@@ -49,15 +49,6 @@ cdef class WRA(Heuristic):
         self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[WRAImpl]()
 
 
-cdef class HammingLoss(Heuristic):
-    """
-    A wrapper for the C++ class `HammingLoss`.
-    """
-
-    def __cinit__(self):
-        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[HammingLossImpl]()
-
-
 cdef class FMeasure(Heuristic):
     """
     A wrapper for the C++ class `FMeasure`.
