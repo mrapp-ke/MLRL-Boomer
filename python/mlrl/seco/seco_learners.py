@@ -13,7 +13,7 @@ from mlrl.common.cython.post_processing import NoPostProcessor
 from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
-from mlrl.seco.cython.heuristics import Heuristic, Precision, Recall, Laplace, WRA, FMeasure, MEstimate
+from mlrl.seco.cython.heuristics import Heuristic, Accuracy, Precision, Recall, Laplace, WRA, FMeasure, MEstimate
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
 from mlrl.seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
@@ -31,6 +31,8 @@ from mlrl.common.rule_learners import create_pruning, create_feature_sampling_fa
 HEAD_TYPE_PARTIAL = 'partial'
 
 AVERAGING_LABEL_WISE = 'label-wise-averaging'
+
+HEURISTIC_ACCURACY = 'accuracy'
 
 HEURISTIC_PRECISION = 'precision'
 
@@ -82,8 +84,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     be provided as a dictionary, e.g.
                                                     `peak{\"peak_label\":10,\"max_lift\":2.0,\"curvature\":1.0}`
         :param loss:                                The loss function to be minimized. Must be `label-wise-averaging`
-        :param heuristic:                           The heuristic to be minimized. Must be `precision`, `recall`,
-                                                    `weighted-relative-accuracy`, `f-measure`, `m-estimate` or
+        :param heuristic:                           The heuristic to be minimized. Must be `accuracy`, `precision`,
+                                                    `recall`, `weighted-relative-accuracy`, `f-measure`, `m-estimate` or
                                                     `laplace`. Additional arguments may be provided as a dictionary,
                                                     e.g. `f-measure{\"beta\":1.0}`
         :param label_sampling:                      The strategy that is used for sampling the labels each time a new
@@ -207,11 +209,14 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def __create_heuristic(self) -> Heuristic:
         heuristic = self.heuristic
-        prefix, options = parse_prefix_and_options('heuristic', heuristic, [HEURISTIC_PRECISION, HEURISTIC_RECALL,
-                                                                            HEURISTIC_LAPLACE, HEURISTIC_WRA,
-                                                                            HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE])
+        prefix, options = parse_prefix_and_options('heuristic', heuristic, [HEURISTIC_ACCURACY, HEURISTIC_PRECISION,
+                                                                            HEURISTIC_RECALL, HEURISTIC_LAPLACE,
+                                                                            HEURISTIC_WRA, HEURISTIC_F_MEASURE,
+                                                                            HEURISTIC_M_ESTIMATE])
 
-        if prefix == HEURISTIC_PRECISION:
+        if prefix == HEURISTIC_ACCURACY:
+            return Accuracy()
+        elif prefix == HEURISTIC_PRECISION:
             return Precision()
         elif prefix == HEURISTIC_RECALL:
             return Recall()
