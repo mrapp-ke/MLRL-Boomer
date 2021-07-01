@@ -6,6 +6,7 @@ source_files = [
     'src/seco/data/vector_dense_confusion_matrices.cpp',
     'src/seco/head_refinement/head_refinement_partial.cpp',
     'src/seco/head_refinement/lift_function_peak.cpp',
+    'src/seco/heuristics/heuristic_accuracy.cpp',
     'src/seco/heuristics/heuristic_f_measure.cpp',
     'src/seco/heuristics/heuristic_laplace.cpp',
     'src/seco/heuristics/heuristic_m_estimate.cpp',
