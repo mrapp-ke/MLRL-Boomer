@@ -80,37 +80,37 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     canceled
         :param head_type:                           The type of the rule heads that should be used. Must be
                                                     `single-label` or `partial`
-        :param lift_function:                       The lift function to use. Must be `peak`. Additional arguments may
-                                                    be provided as a dictionary, e.g.
-                                                    `peak{\"peak_label\":10,\"max_lift\":2.0,\"curvature\":1.0}`
+        :param lift_function:                       The lift function to use. Must be `peak`. Additional options may be
+                                                    provided using the bracket notation
+                                                    `peak[peak_label=10,max_lift=2.0,curvature=1.0]`
         :param loss:                                The loss function to be minimized. Must be `label-wise-averaging`
         :param heuristic:                           The heuristic to be minimized. Must be `accuracy`, `precision`,
                                                     `recall`, `weighted-relative-accuracy`, `f-measure`, `m-estimate` or
-                                                    `laplace`. Additional arguments may be provided as a dictionary,
-                                                    e.g. `f-measure{\"beta\":1.0}`
+                                                    `laplace`. Additional options may be provided using the bracket
+                                                    notation `f-measure[beta=1.0]`
         :param label_sampling:                      The strategy that is used for sampling the labels each time a new
                                                     classification rule is learned. Must be 'without-replacement' or
-                                                    None, if no sampling should be used. Additional arguments may be
-                                                    provided as a dictionary, e.g.
-                                                    `without-replacement{\"num_samples\":5}`
+                                                    None, if no sampling should be used. Additional options may be
+                                                    provided using the bracket notation
+                                                    `without-replacement[num_samples=5]`
         :param instance_sampling:                   The strategy that is used for sampling the training examples each
                                                     time a new classification rule is learned. Must be
                                                     `with-replacement`, `without-replacement` or None, if no sampling
-                                                    should be used. Additional arguments may be provided as a
-                                                    dictionary, e.g. `with-replacement{\"sample_size\":0.5}`
+                                                    should be used. Additional options may be provided using the bracket
+                                                    notation `with-replacement[sample_size=0.5]`
         :param feature_sampling:                    The strategy that is used for sampling the features each time a
                                                     classification rule is refined. Must be `without-replacement` or
-                                                    None, if no sampling should be used. Additional argument may be
-                                                    provided as a dictionary, e.g.
-                                                    `without-replacement{\"sample_size\":0.5}`
+                                                    None, if no sampling should be used. Additional options may be
+                                                    provided using the bracket notation
+                                                    `without-replacement[sample_size=0.5]`
         :param holdout:                             The name of the strategy to be used for creating a holdout set. Must
                                                     be `random` or None, if no holdout set should be used. Additional
-                                                    arguments may be provided as a dictionary, e.g.
-                                                    `random{\"holdout_set_size\":0.5}`
+                                                    options may be provided using the bracket notation
+                                                    `random[holdout_set_size=0.5]`
         :param feature_binning:                     The strategy that is used for assigning examples to bins based on
                                                     their feature values. Must be `equal-width`, `equal-frequency` or
-                                                    None, if no feature binning should be used. Additional arguments may
-                                                    be provided as a dictionary, e.g. `equal-width{\"bin_ratio\":0.5}`
+                                                    None, if no feature binning should be used. Additional options may
+                                                    be provided using the bracket notation `equal-width[bin_ratio=0.5]`
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
         :param min_coverage:                        The minimum number of training examples that must be covered by a
