@@ -13,6 +13,15 @@ cdef class Heuristic:
     pass
 
 
+cdef class Accuracy(Heuristic):
+    """
+    A wrapper for the C++ class `Accuracy`.
+    """
+
+    def __cinit__(self):
+        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[AccuracyImpl]()
+
+
 cdef class Precision(Heuristic):
     """
     A wrapper for the C++ class `Precision`.
