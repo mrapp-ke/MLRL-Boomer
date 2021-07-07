@@ -131,9 +131,9 @@ namespace boosting {
     DenseExampleWiseStatisticsProviderFactory::DenseExampleWiseStatisticsProviderFactory(
             std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr, uint32 numThreads)
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr, uint32 numThreads)
         : lossFunctionPtr_(lossFunctionPtr), defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
-          ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr), numThreads_(numThreads) {
+          regularRuleEvaluationFactoryPtr_(regularRuleEvaluationFactoryPtr), numThreads_(numThreads) {
 
     }
 
@@ -141,7 +141,7 @@ namespace boosting {
             const CContiguousLabelMatrix& labelMatrix) const {
         DenseExampleWiseStatisticsFactory statisticsFactory(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_,
                                                             numThreads_);
-        return std::make_unique<ExampleWiseStatisticsProvider>(*ruleEvaluationFactoryPtr_,
+        return std::make_unique<ExampleWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
                                                                statisticsFactory.create(labelMatrix));
     }
 
@@ -149,7 +149,7 @@ namespace boosting {
             const CsrLabelMatrix& labelMatrix) const {
         DenseExampleWiseStatisticsFactory statisticsFactory(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_,
                                                             numThreads_);
-        return std::make_unique<ExampleWiseStatisticsProvider>(*ruleEvaluationFactoryPtr_,
+        return std::make_unique<ExampleWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
                                                                statisticsFactory.create(labelMatrix));
     }
 

@@ -94,23 +94,23 @@ namespace seco {
 
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr)
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr)
         : defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
-          ruleEvaluationFactoryPtr_(ruleEvaluationFactoryPtr) {
+          regularRuleEvaluationFactoryPtr_(regularRuleEvaluationFactoryPtr) {
 
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
             const CContiguousLabelMatrix& labelMatrix) const {
         DenseLabelWiseStatisticsFactory statisticsFactory(*defaultRuleEvaluationFactoryPtr_);
-        return std::make_unique<LabelWiseStatisticsProvider>(*ruleEvaluationFactoryPtr_,
+        return std::make_unique<LabelWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
                                                              statisticsFactory.create(labelMatrix));
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
             const CsrLabelMatrix& labelMatrix) const {
         DenseLabelWiseStatisticsFactory statisticsFactory(*defaultRuleEvaluationFactoryPtr_);
-        return std::make_unique<LabelWiseStatisticsProvider>(*ruleEvaluationFactoryPtr_,
+        return std::make_unique<LabelWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
                                                              statisticsFactory.create(labelMatrix));
     }
 
