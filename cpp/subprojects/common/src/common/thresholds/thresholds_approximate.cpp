@@ -389,7 +389,7 @@ class ApproximateThresholds final : public AbstractThresholds {
          * @param numThreads            The number of CPU threads to be used to update statistics in parallel
          */
         ApproximateThresholds(const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-                              const IStatisticsProvider& statisticsProvider,
+                              IStatisticsProvider& statisticsProvider,
                               const IHeadRefinementFactory& headRefinementFactory, const IFeatureBinning& binning,
                               uint32 numThreads)
             : AbstractThresholds(featureMatrix, nominalFeatureMask, statisticsProvider, headRefinementFactory),
@@ -412,7 +412,7 @@ ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::shared_ptr<IFeat
 
 std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(
         const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-        const IStatisticsProvider& statisticsProvider, const IHeadRefinementFactory& headRefinementFactory) const {
+        IStatisticsProvider& statisticsProvider, const IHeadRefinementFactory& headRefinementFactory) const {
     return std::make_unique<ApproximateThresholds>(featureMatrix, nominalFeatureMask, statisticsProvider,
                                                    headRefinementFactory, *binningPtr_, numThreads_);
 }

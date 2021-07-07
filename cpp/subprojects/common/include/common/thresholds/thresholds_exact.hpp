@@ -24,7 +24,7 @@ class ExactThresholdsFactory final : public IThresholdsFactory {
 
         std::unique_ptr<IThresholds> create(const IFeatureMatrix& featureMatrix,
                                             const INominalFeatureMask& nominalFeatureMask,
-                                            const IStatisticsProvider& statisticsProvider,
+                                            IStatisticsProvider& statisticsProvider,
                                             const IHeadRefinementFactory& headRefinementFactory) const override;
 
 };
