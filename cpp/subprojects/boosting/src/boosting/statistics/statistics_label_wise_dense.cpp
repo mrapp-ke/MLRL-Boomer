@@ -133,9 +133,11 @@ namespace boosting {
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
             std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr, uint32 numThreads)
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
         : lossFunctionPtr_(lossFunctionPtr), defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
-          regularRuleEvaluationFactoryPtr_(regularRuleEvaluationFactoryPtr), numThreads_(numThreads) {
+          regularRuleEvaluationFactoryPtr_(regularRuleEvaluationFactoryPtr),
+          pruningRuleEvaluationFactoryPtr_(pruningRuleEvaluationFactoryPtr), numThreads_(numThreads) {
 
     }
 
@@ -144,6 +146,7 @@ namespace boosting {
         DenseLabelWiseStatisticsFactory statisticsFactory(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_,
                                                           numThreads_);
         return std::make_unique<LabelWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
+                                                             *pruningRuleEvaluationFactoryPtr_,
                                                              statisticsFactory.create(labelMatrix));
     }
 
@@ -152,6 +155,7 @@ namespace boosting {
         DenseLabelWiseStatisticsFactory statisticsFactory(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_,
                                                           numThreads_);
         return std::make_unique<LabelWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
+                                                             *pruningRuleEvaluationFactoryPtr_,
                                                              statisticsFactory.create(labelMatrix));
     }
 
