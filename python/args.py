@@ -12,7 +12,7 @@ import sklearn.metrics as metrics
 
 from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE
 from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT
-from mlrl.seco.seco_learners import HEURISTIC_F_MEASURE, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
+from mlrl.seco.seco_learners import HEURISTIC_F_MEASURE, HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
 
 
 def log_level(s):
@@ -222,6 +222,10 @@ class ArgumentParserBuilder:
         parser.add_argument('--heuristic', type=str,
                             default=ArgumentParserBuilder.__get_or_default('heuristic', HEURISTIC_F_MEASURE, **kwargs),
                             help='The name of the heuristic to be used')
+        parser.add_argument('--pruning-heuristic', type=str,
+                            default=ArgumentParserBuilder.__get_or_default('pruning_heuristic', HEURISTIC_PRECISION,
+                                                                           **kwargs),
+                            help='The name of the heuristic to be used for pruning')
         parser.add_argument('--lift-function', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('lift_function', LIFT_FUNCTION_PEAK,
                                                                            **kwargs),
