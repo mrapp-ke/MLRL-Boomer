@@ -21,7 +21,7 @@ from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProvi
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
@@ -70,10 +70,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  head_type: str = HEAD_TYPE_SINGLE, lift_function: str = LIFT_FUNCTION_PEAK,
                  loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_F_MEASURE,
                  pruning_heuristic:str = HEURISTIC_PRECISION, label_sampling: str = None, instance_sampling: str = None,
-                 feature_sampling: str = None, holdout: str = None, feature_binning: str = None, pruning: str = None,
-                 min_coverage: int = 1, max_conditions: int = -1, max_head_refinements: int = 1,
-                 num_threads_rule_refinement: int = 1, num_threads_statistic_update: int = 1,
-                 num_threads_prediction: int = 1):
+                 feature_sampling: str = None, holdout: str = None, feature_binning: str = None,
+                 pruning: str = PRUNING_IREP, min_coverage: int = 1, max_conditions: int = -1,
+                 max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
+                 num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
