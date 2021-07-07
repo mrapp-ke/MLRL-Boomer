@@ -29,7 +29,7 @@ void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProv
         std::unique_ptr<IHeadRefinement> headRefinementPtr = headRefinementFactory->create(labelIndices);
         headRefinementPtr->findHead(nullptr, *statisticsSubsetPtr, true, false);
         std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr = headRefinementPtr->pollHead();
-        statisticsProvider.switchRuleEvaluation();
+        statisticsProvider.switchToRegularRuleEvaluation();
 
         for (uint32 i = 0; i < numStatistics; i++) {
             defaultPredictionPtr->apply(statistics, i);
@@ -37,7 +37,7 @@ void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProv
 
         modelBuilder.setDefaultRule(*defaultPredictionPtr);
     } else {
-        statisticsProvider.switchRuleEvaluation();
+        statisticsProvider.switchToRegularRuleEvaluation();
     }
 }
 

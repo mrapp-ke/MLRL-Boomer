@@ -11,21 +11,23 @@ namespace boosting {
 
         private:
 
-            const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory_;
+            const IExampleWiseRuleEvaluationFactory& regularRuleEvaluationFactory_;
 
             std::unique_ptr<IExampleWiseStatistics> statisticsPtr_;
 
         public:
 
             /**
-             * @param ruleEvaluationFactory A reference to an object of type `IExampleWiseRuleEvaluationFactory` to
-             *                              switch to when invoking the function `switchRuleEvaluation`
-             * @param statisticsPtr         An unique pointer to an object of type `IExampleWiseStatistics` to provide
-             *                              access to
+             * @param regularRuleEvaluationFactory  A reference to an object of type `IExampleWiseRuleEvaluationFactory`
+             *                                      to switch to when invoking the function
+             *                                      `switchToRegularRuleEvaluation`
+             * @param statisticsPtr                 An unique pointer to an object of type `IExampleWiseStatistics` to
+             *                                      provide access to
              */
-            ExampleWiseStatisticsProvider(const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
+            ExampleWiseStatisticsProvider(const IExampleWiseRuleEvaluationFactory& regularRuleEvaluationFactory,
                                           std::unique_ptr<IExampleWiseStatistics> statisticsPtr)
-                : ruleEvaluationFactory_(ruleEvaluationFactory), statisticsPtr_(std::move(statisticsPtr)) {
+                : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
+                  statisticsPtr_(std::move(statisticsPtr)) {
 
             }
 
@@ -33,8 +35,8 @@ namespace boosting {
                 return *statisticsPtr_;
             }
 
-            void switchRuleEvaluation() override {
-                statisticsPtr_->setRuleEvaluationFactory(ruleEvaluationFactory_);
+            void switchToRegularRuleEvaluation() override {
+                statisticsPtr_->setRuleEvaluationFactory(regularRuleEvaluationFactory_);
             }
 
     };

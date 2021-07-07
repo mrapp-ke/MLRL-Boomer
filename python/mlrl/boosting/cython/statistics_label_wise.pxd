@@ -15,7 +15,7 @@ cdef extern from "boosting/statistics/statistics_label_wise_dense.hpp" namespace
         DenseLabelWiseStatisticsProviderFactoryImpl(
             shared_ptr[ILabelWiseLoss] lossFunctionPtr,
             shared_ptr[ILabelWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
-            shared_ptr[ILabelWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
+            shared_ptr[ILabelWiseRuleEvaluationFactory] regularRuleEvaluationFactoryPtr) except +
 
 
 cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
