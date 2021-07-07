@@ -225,7 +225,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         elif prefix == HEURISTIC_WRA:
             return WRA()
         elif prefix == HEURISTIC_F_MEASURE:
-            beta = options.get_float(ARGUMENT_BETA, 0.5, lambda x: x >= 0)
+            beta = options.get_float(ARGUMENT_BETA, 0.25, lambda x: x >= 0)
             return FMeasure(beta)
         elif prefix == HEURISTIC_M_ESTIMATE:
             m = options.get_float(ARGUMENT_M, 22.466, lambda x: x >= 0)
