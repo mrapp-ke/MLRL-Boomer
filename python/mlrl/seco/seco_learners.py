@@ -68,7 +68,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
                  head_type: str = HEAD_TYPE_SINGLE, lift_function: str = LIFT_FUNCTION_PEAK,
-                 loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sampling: str = None,
+                 loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_F_MEASURE, label_sampling: str = None,
                  instance_sampling: str = None, feature_sampling: str = None, holdout: str = None,
                  feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
