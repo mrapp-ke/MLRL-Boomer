@@ -239,6 +239,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, predictMajority=True)
             regular_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic)
             return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory,
+                                                           regular_rule_evaluation_factory,
                                                            regular_rule_evaluation_factory)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
