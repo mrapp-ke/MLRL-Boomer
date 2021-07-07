@@ -25,8 +25,8 @@ class IStatisticsProvider {
         /**
          * Allows to switch the implementation that is used for calculating the predictions of rules, as well as
          * corresponding quality scores, from the one that was initially used for learning the default rule, to another
-         * one that will be used for all remaining rules.
+         * one that will be used for learning all remaining rules.
          */
-        virtual void switchRuleEvaluation() = 0;
+        virtual void switchToRegularRuleEvaluation() = 0;
 
 };

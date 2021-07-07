@@ -13,15 +13,15 @@ cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
     """
 
     def __cinit__(self, LabelWiseRuleEvaluationFactory default_rule_evaluation_factory,
-                  LabelWiseRuleEvaluationFactory rule_evaluation_factory):
+                  LabelWiseRuleEvaluationFactory regular_rule_evaluation_factory):
         """
         :param default_rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` that allows to create instances of
                                                 the class that should be used for calculating the predictions, as well
                                                 as corresponding quality scores, of the default rule
-        :param rule_evaluation_factory:         The `LabelWiseRuleEvaluation` that allows to create instances of the
+        :param regular_rule_evaluation_factory: The `LabelWiseRuleEvaluation` that allows to create instances of the
                                                 class that should be used for calculating the predictions, as well as
-                                                corresponding quality scores, of rules
+                                                corresponding quality scores, of all remaining rules
         """
         self.statistics_provider_factory_ptr = <shared_ptr[IStatisticsProviderFactory]>make_shared[DenseLabelWiseStatisticsProviderFactoryImpl](
             default_rule_evaluation_factory.rule_evaluation_factory_ptr,
-            rule_evaluation_factory.rule_evaluation_factory_ptr)
+            regular_rule_evaluation_factory.rule_evaluation_factory_ptr)

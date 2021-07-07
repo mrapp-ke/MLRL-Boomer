@@ -15,7 +15,7 @@ cdef extern from "boosting/statistics/statistics_example_wise_dense.hpp" namespa
         DenseExampleWiseStatisticsProviderFactoryImpl(
             shared_ptr[IExampleWiseLoss] lossFunctionPtr,
             shared_ptr[IExampleWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
-            shared_ptr[IExampleWiseRuleEvaluationFactory] ruleEvaluationFactoryPtr) except +
+            shared_ptr[IExampleWiseRuleEvaluationFactory] regularRuleEvaluationFactoryPtr) except +
 
 
 cdef class DenseExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):

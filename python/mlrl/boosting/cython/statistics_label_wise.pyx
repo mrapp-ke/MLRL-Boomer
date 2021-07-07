@@ -14,18 +14,18 @@ cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
     """
 
     def __cinit__(self, LabelWiseLoss loss_function, LabelWiseRuleEvaluationFactory default_rule_evaluation_factory,
-                  LabelWiseRuleEvaluationFactory rule_evaluation_factory, uint32 num_threads):
+                  LabelWiseRuleEvaluationFactory regular_rule_evaluation_factory, uint32 num_threads):
         """
         :param loss_function:                   The loss function to be used for calculating gradients and Hessians
         :param default_rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` that allows to create instances of
                                                 the class that should be used for calculating the predictions, as well
                                                 as corresponding quality scores, of the default rule
-        :param rule_evaluation:                 The `LabelWiseRuleEvaluationFactory` that allows to create instances of
+        :param regular_rule_evaluation:         The `LabelWiseRuleEvaluationFactory` that allows to create instances of
                                                 the class that should be used for calculating the predictions, as well
-                                                as corresponding quality scores, of rules
+                                                as corresponding quality scores, of all remaining rules
         :param num_threads:                     The number of CPU threads to be used to calculate the initial statistics
                                                 in parallel. Must be at least 1
         """
         self.statistics_provider_factory_ptr = <shared_ptr[IStatisticsProviderFactory]>make_shared[DenseLabelWiseStatisticsProviderFactoryImpl](
             loss_function.loss_function_ptr, default_rule_evaluation_factory.rule_evaluation_factory_ptr,
-            rule_evaluation_factory.rule_evaluation_factory_ptr, num_threads)
+            regular_rule_evaluation_factory.rule_evaluation_factory_ptr, num_threads)
