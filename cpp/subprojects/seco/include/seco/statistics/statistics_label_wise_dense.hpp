@@ -45,7 +45,7 @@ namespace seco {
 
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr_;
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
         public:
 
@@ -54,14 +54,14 @@ namespace seco {
              *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, of the default rule
-             * @param ruleEvaluationFactoryPtr          A shared pointer to an object of type
+             * @param regularRuleEvaluationFactoryPtr   A shared pointer to an object of type
              *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, of all remaining rules
              */
             DenseLabelWiseStatisticsProviderFactory(
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-                std::shared_ptr<ILabelWiseRuleEvaluationFactory> ruleEvaluationFactoryPtr);
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr);
 
             std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const override;
 
