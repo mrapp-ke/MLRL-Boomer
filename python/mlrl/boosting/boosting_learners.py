@@ -430,10 +430,12 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                              num_threads: int) -> StatisticsProviderFactory:
         if isinstance(loss_function, LabelWiseLoss):
             return DenseLabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory,
-                                                           rule_evaluation_factory, num_threads)
+                                                           rule_evaluation_factory, rule_evaluation_factory,
+                                                           num_threads)
         else:
             return DenseExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory,
-                                                             rule_evaluation_factory, num_threads)
+                                                             rule_evaluation_factory, rule_evaluation_factory,
+                                                             num_threads)
 
     def __create_head_refinement_factory(self) -> HeadRefinementFactory:
         head_type = self.__get_preferred_head_type()

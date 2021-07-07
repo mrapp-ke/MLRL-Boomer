@@ -135,8 +135,11 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
     } else {
         if (instanceSamplingUsed) {
             // Prune rule...
+            IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
+            statisticsProvider.switchToPruningRuleEvaluation();
             std::unique_ptr<ICoverageState> coverageStatePtr = pruning.prune(*thresholdsSubsetPtr, partition,
                                                                              conditions, *bestHead);
+            statisticsProvider.switchToRegularRuleEvaluation();
 
             // Re-calculate the scores in the head based on the entire training data...
             if (recalculatePredictions_) {

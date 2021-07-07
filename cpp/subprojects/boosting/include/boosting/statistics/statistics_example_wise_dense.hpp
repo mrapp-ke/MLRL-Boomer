@@ -60,6 +60,8 @@ namespace boosting {
 
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+
             uint32 numThreads_;
 
         public:
@@ -75,13 +77,18 @@ namespace boosting {
              *                                          `IExampleWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, of all remaining rules
+             * @param pruningRuleEvaluationFactoryPtr   A shared pointer to an object of type
+             *                                          `IExampleWiseRuleEvaluationFactory` that should be used for
+             *                                          calculating the predictions, as well as corresponding quality
+             *                                          scores, when pruning rules
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
              *                                          statistics in parallel. Must be at least 1
              */
             DenseExampleWiseStatisticsProviderFactory(
                 std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
                 std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-                std::shared_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr, uint32 numThreads);
+                std::shared_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+                std::shared_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
 
             std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const override;
 
