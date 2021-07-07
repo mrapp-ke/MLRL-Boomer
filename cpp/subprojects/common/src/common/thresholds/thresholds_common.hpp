@@ -7,7 +7,6 @@
 #include "common/input/feature_matrix.hpp"
 #include "common/input/nominal_feature_mask.hpp"
 #include "common/head_refinement/head_refinement_factory.hpp"
-#include "common/statistics/statistics_provider.hpp"
 #include "omp.h"
 
 
@@ -170,7 +169,7 @@ class AbstractThresholds : public IThresholds {
          * A reference to an object of type `IStatisticsProvider` that provides access to statistics about the labels of
          * the training examples.
          */
-        const IStatisticsProvider& statisticsProvider_;
+        IStatisticsProvider& statisticsProvider_;
 
         /**
          * A reference to an object of type `IHeadRefinementFactory` that allows to create instances of the class that
@@ -191,8 +190,7 @@ class AbstractThresholds : public IThresholds {
          *                              instances of the class that should be used to find the heads of rules
          */
         AbstractThresholds(const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-                           const IStatisticsProvider& statisticsProvider,
-                           const IHeadRefinementFactory& headRefinementFactory)
+                           IStatisticsProvider& statisticsProvider, const IHeadRefinementFactory& headRefinementFactory)
             : featureMatrix_(featureMatrix), nominalFeatureMask_(nominalFeatureMask),
               statisticsProvider_(statisticsProvider), headRefinementFactory_(headRefinementFactory) {
 
@@ -210,6 +208,10 @@ class AbstractThresholds : public IThresholds {
 
         uint32 getNumLabels() const override final {
             return statisticsProvider_.get().getNumLabels();
+        }
+
+        IStatisticsProvider& getStatisticsProvider() const override final {
+            return statisticsProvider_;
         }
 
 };

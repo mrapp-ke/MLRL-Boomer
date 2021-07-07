@@ -553,8 +553,8 @@ class ExactThresholds final : public AbstractThresholds {
          * @param numThreads            The number of CPU threads to be used to update statistics in parallel
          */
         ExactThresholds(const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-                        const IStatisticsProvider& statisticsProvider,
-                        const IHeadRefinementFactory& headRefinementFactory, uint32 numThreads)
+                        IStatisticsProvider& statisticsProvider, const IHeadRefinementFactory& headRefinementFactory,
+                        uint32 numThreads)
             : AbstractThresholds(featureMatrix, nominalFeatureMask, statisticsProvider, headRefinementFactory),
               numThreads_(numThreads) {
 
@@ -574,7 +574,7 @@ ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(
         const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-        const IStatisticsProvider& statisticsProvider, const IHeadRefinementFactory& headRefinementFactory) const {
+        IStatisticsProvider& statisticsProvider, const IHeadRefinementFactory& headRefinementFactory) const {
     return std::make_unique<ExactThresholds>(featureMatrix, nominalFeatureMask, statisticsProvider,
                                              headRefinementFactory, numThreads_);
 }
