@@ -131,9 +131,11 @@ namespace boosting {
     DenseExampleWiseStatisticsProviderFactory::DenseExampleWiseStatisticsProviderFactory(
             std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr, uint32 numThreads)
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+            std::shared_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
         : lossFunctionPtr_(lossFunctionPtr), defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
-          regularRuleEvaluationFactoryPtr_(regularRuleEvaluationFactoryPtr), numThreads_(numThreads) {
+          regularRuleEvaluationFactoryPtr_(regularRuleEvaluationFactoryPtr),
+          pruningRuleEvaluationFactoryPtr_(pruningRuleEvaluationFactoryPtr), numThreads_(numThreads) {
 
     }
 
@@ -142,6 +144,7 @@ namespace boosting {
         DenseExampleWiseStatisticsFactory statisticsFactory(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_,
                                                             numThreads_);
         return std::make_unique<ExampleWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
+                                                               *pruningRuleEvaluationFactoryPtr_,
                                                                statisticsFactory.create(labelMatrix));
     }
 
@@ -150,6 +153,7 @@ namespace boosting {
         DenseExampleWiseStatisticsFactory statisticsFactory(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_,
                                                             numThreads_);
         return std::make_unique<ExampleWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
+                                                               *pruningRuleEvaluationFactoryPtr_,
                                                                statisticsFactory.create(labelMatrix));
     }
 

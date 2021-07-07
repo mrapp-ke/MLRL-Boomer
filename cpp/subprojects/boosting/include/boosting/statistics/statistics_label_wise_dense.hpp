@@ -60,6 +60,8 @@ namespace boosting {
 
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
+            std::shared_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+
             uint32 numThreads_;
 
         public:
@@ -75,13 +77,18 @@ namespace boosting {
              *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, of all remaining rules
+             * @param pruningRuleEvaluationFactoryPtr   A shared pointer to an object of type
+             *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
+             *                                          calculating the predictions, as well as corresponding quality
+             *                                          scores, when pruning rules
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
              *                                          statistics in parallel. Must be at least 1
              */
             DenseLabelWiseStatisticsProviderFactory(
                 std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-                std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr, uint32 numThreads);
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+                std::shared_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
 
             std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const override;
 
