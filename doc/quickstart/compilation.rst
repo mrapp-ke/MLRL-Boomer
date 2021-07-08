@@ -47,7 +47,7 @@ In order to generate the documentation (this document), `Doxygen <https://source
 
    make doc 
 
-Afterwards, the generated files can be found in the directory "doc/build_/html".
+Afterwards, the generated files can be found in the directory `doc/build_/html`.
 
 **Cleanup**
 
