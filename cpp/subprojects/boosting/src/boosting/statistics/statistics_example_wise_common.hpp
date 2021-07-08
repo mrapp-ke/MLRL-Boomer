@@ -422,7 +422,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatistics::createSubset`
+             * @see `IImmutableStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
@@ -433,7 +433,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatistics::createSubset`
+             * @see `IImmutableStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
