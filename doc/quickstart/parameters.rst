@@ -146,7 +146,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * ``without-replacement`` The training examples to be considered for learning a new rule are selected randomly without replacement. The following options may be provided using the bracket notation:
   
-    * ``sample_size (Default value = 0.66) The percentage of examples to be included in a sample, e.g., a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
+    * ``sample_size`` (Default value = 0.66) The percentage of examples to be included in a sample, e.g., a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
 
   * ``stratified-label-wise`` The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the bracket notation:
   
@@ -195,13 +195,13 @@ The following parameters allow to adjust the behavior of the algorithm:
   * ``equal-width`` Examples are assigned to bins, based on their feature values, according to the equal-width binning method. The following options may be provided using the bracket notation:
   
     * ``bin_ratio`` (Default value = 0.33) A percentage that specifies how many bins should be used, e.g., a value of 0.3 means that the number of bins should be set to 30% of the number of distinct values for a feature.
-    * ``min_bins``(Default value = 2) The minimum number of bins to be used. Must be at least 2.
+    * ``min_bins`` (Default value = 2) The minimum number of bins to be used. Must be at least 2.
     * ``max_bins`` (Default value = 0) The maximum number of bins to be used. Must be at least min_bins or 0, if the number of bins should not be restricted.
 
   * ``equal-frequency``. Examples are assigned to bins, based on their feature values, according to the equal-frequency binning method. The following options may be provided using the bracket notation:
   
     * ``bin_ratio`` (Default value = 0.33) A percentage that specifies how many bins should be used, e.g., a value of 0.3 means that the number of bins should be set to 30% of the number of distinct values for a feature.
-    * ``min_bins``(Default value = 2) The minimum number of bins to be used. Must be at least 2.
+    * ``min_bins`` (Default value = 2) The minimum number of bins to be used. Must be at least 2.
     * ``max_bins`` (Default value = 0) The maximum number of bins to be used. Must be at least min_bins or 0, if the number of bins should not be restricted.
 
 * ``--label-binning`` (Default Value = auto)
