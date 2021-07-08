@@ -201,7 +201,7 @@ namespace boosting {
              *
              * @param factory       A reference to an object of type `ILabelWiseRuleEvaluationFactory` that should be
              *                      used to create the object
-             * @param indexVector   A reference to an object of type `CompleteIndexVector` that provides access to the
+             * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices of the labels for which the rules may predict
              * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
              *                      created
@@ -216,7 +216,7 @@ namespace boosting {
              *
              * @param factory       A reference to an object of type `ILabelWiseRuleEvaluationFactory` that should be
              *                      used to create the object
-             * @param indexVector   A reference to an object of type `PartialIndexVector` that provides access to the
+             * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices of the labels for which the rules may predict
              * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
              *                      created
