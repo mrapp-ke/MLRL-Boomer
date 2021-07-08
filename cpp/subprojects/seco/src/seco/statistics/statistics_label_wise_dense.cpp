@@ -17,6 +17,17 @@ namespace seco {
 
         public:
 
+            /**
+             * @param ruleEvaluationFactory     A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
+             *                                  allows to create instances of the class that is used for calculating the
+             *                                  predictions, as well as corresponding quality scores, of rules
+             * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
+             *                                  access to the labels of the training examples
+             * @param weightMatrixPtr           An unique pointer to an object of type `DenseWeightMatrix` that stores
+             *                                  the weights of individual examples and labels
+             * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
+             *                                  stores the predictions of the default rule
+             */
             DenseLabelWiseStatistics(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                      const LabelMatrix& labelMatrix, std::unique_ptr<DenseWeightMatrix> weightMatrixPtr,
                                      std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
