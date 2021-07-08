@@ -61,6 +61,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IExampleWiseRuleEvaluation::calculateLabelWisePrediction`
+             */
             const ILabelWiseScoreVector& calculateLabelWisePrediction(
                     const DenseExampleWiseStatisticVector& statisticVector) override {
                 if (labelWiseScoreVector_ == nullptr) {
@@ -78,6 +81,9 @@ namespace boosting {
                 return *labelWiseScoreVector_;
             }
 
+            /**
+             * @see `IExampleWiseRuleEvaluation::calculateExampleWisePrediction`
+             */
             const IScoreVector& calculateExampleWisePrediction(
                     DenseExampleWiseStatisticVector& statisticVector) override {
                 uint32 numPredictions = this->labelIndices_.getNumElements();

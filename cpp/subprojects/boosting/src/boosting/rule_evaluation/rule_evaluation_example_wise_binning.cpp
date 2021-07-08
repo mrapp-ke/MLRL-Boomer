@@ -174,6 +174,9 @@ namespace boosting {
                 free(binIndices_);
             }
 
+            /**
+             * @see `IExampleWiseRuleEvaluation::calculateLabelWisePrediction`
+             */
             const ILabelWiseScoreVector& calculateLabelWisePrediction(
                     const DenseExampleWiseStatisticVector& statisticVector) override {
                 if (labelWiseScoreVector_ == nullptr) {
@@ -228,6 +231,9 @@ namespace boosting {
                 return *labelWiseScoreVector_;
             }
 
+            /**
+             * @see `IExampleWiseRuleEvaluation::calculateExampleWisePrediction`
+             */
             const IScoreVector& calculateExampleWisePrediction(
                     DenseExampleWiseStatisticVector& statisticVector) override {
                 if (scoreVector_ == nullptr) {
