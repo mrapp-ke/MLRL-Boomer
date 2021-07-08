@@ -28,7 +28,9 @@ namespace boosting {
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class DenseRegularizedExampleWiseRuleEvaluation final : public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T> {
+    class DenseRegularizedExampleWiseRuleEvaluation final :
+            public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T> {
+
         private:
 
             float64 l2RegularizationWeight_;
