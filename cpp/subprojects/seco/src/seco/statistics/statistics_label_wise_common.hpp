@@ -13,8 +13,8 @@ namespace seco {
     }
 
     /**
-     * Provides access to the elements of confusion matrices that are computed independently for each label using dense
-     * data structures.
+     * An abstract base class for all statistics that provide access to the elements of confusion matrices that are
+     * computed independently for each label.
      *
      * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
      *                                  examples
@@ -23,13 +23,13 @@ namespace seco {
      * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
      */
     template<typename LabelMatrix, typename WeightMatrix, typename ConfusionMatrixVector>
-    class LabelWiseStatistics final : public ILabelWiseStatistics {
+    class AbstractLabelWiseStatistics : public ILabelWiseStatistics {
 
         private:
 
             /**
              * Provides access to a subset of the confusion matrices that are stored by an instance of the class
-             * `LabelWiseStatistics`.
+             * `AbstractLabelWiseStatistics`.
              *
              * @tparam T The type of the vector that provides access to the indices of the labels that are included in
              *           the subset
@@ -39,7 +39,7 @@ namespace seco {
 
                 private:
 
-                    const LabelWiseStatistics& statistics_;
+                    const AbstractLabelWiseStatistics& statistics_;
 
                     const ConfusionMatrixVector* totalSumVector_;
 
@@ -56,15 +56,15 @@ namespace seco {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `LabelWiseStatistics` that stores the
-                     *                          confusion matrices
+                     * @param statistics        A reference to an object of type `AbstractLabelWiseStatistics` that
+                     *                          stores the confusion matrices
                      * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
                      *                          should be used to calculate the predictions, as well as corresponding
                      *                          quality scores, of rules
                      * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(const LabelWiseStatistics& statistics,
+                    StatisticsSubset(const AbstractLabelWiseStatistics& statistics,
                                      std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                         : statistics_(statistics), totalSumVector_(&statistics_.subsetSumVector_),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
@@ -152,9 +152,9 @@ namespace seco {
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
              */
-            LabelWiseStatistics(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
-                                const LabelMatrix& labelMatrix, std::unique_ptr<WeightMatrix> weightMatrixPtr,
-                                std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
+            AbstractLabelWiseStatistics(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
+                                        const LabelMatrix& labelMatrix, std::unique_ptr<WeightMatrix> weightMatrixPtr,
+                                        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrix.getNumRows()), numLabels_(labelMatrix.getNumCols()),
                   ruleEvaluationFactoryPtr_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   weightMatrixPtr_(std::move(weightMatrixPtr)),
