@@ -164,42 +164,69 @@ namespace seco {
 
             }
 
+            /**
+             * @see `IImmutableStatistics::getNumStatistics`
+             */
             uint32 getNumStatistics() const override final {
                 return numStatistics_;
             }
 
+            /**
+             * @see `IImmutableStatistics::getNumLabels`
+             */
             uint32 getNumLabels() const override final {
                 return numLabels_;
             }
 
+            /**
+             * @see `ICoverageStatistics::getSumOfUncoveredWeights`
+             */
             float64 getSumOfUncoveredWeights() const override final {
                 return weightMatrixPtr_->getSumOfUncoveredWeights();
             }
 
+            /**
+             * @see `ILabelWiseStatistics::setRuleEvaluationFactory`
+             */
             void setRuleEvaluationFactory(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
                 ruleEvaluationFactoryPtr_ = &ruleEvaluationFactory;
             }
 
+            /**
+             * @see `IStatistics::resetSampledStatistics`
+             */
             void resetSampledStatistics() override final {
                 totalSumVector_.clear();
                 subsetSumVector_.clear();
             }
 
+            /**
+             * @see `IStatistics::addSampledStatistic`
+             */
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override final {
                 totalSumVector_.add(statisticIndex, labelMatrix_, *majorityLabelVectorPtr_, *weightMatrixPtr_, weight);
                 subsetSumVector_.add(statisticIndex, labelMatrix_, *majorityLabelVectorPtr_, *weightMatrixPtr_, weight);
             }
 
+            /**
+             * @see `IStatistics::resetCoveredStatistics`
+             */
             void resetCoveredStatistics() override final {
                 subsetSumVector_.clear();
             }
 
+            /**
+             * @see `IStatistics::updateCoveredStatistic`
+             */
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override final {
                 float64 signedWeight = remove ? -weight : weight;
                 subsetSumVector_.add(statisticIndex, labelMatrix_, *majorityLabelVectorPtr_, *weightMatrixPtr_,
                                      signedWeight);
             }
 
+            /**
+             * @see `IImmutableStatistics::createSubset`
+             */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
@@ -208,6 +235,9 @@ namespace seco {
                                                                                labelIndices);
             }
 
+            /**
+             * @see `IImmutableStatistics::createSubset`
+             */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
@@ -216,22 +246,34 @@ namespace seco {
                                                                               labelIndices);
             }
 
+            /**
+             * @see `IStatistics::applyPrediction`
+             */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 applyPredictionInternally<CompletePrediction, WeightMatrix>(statisticIndex, prediction,
                                                                             *weightMatrixPtr_,
                                                                             *majorityLabelVectorPtr_);
             }
 
+            /**
+             * @see `IStatistics::applyPrediction`
+             */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 applyPredictionInternally<PartialPrediction, WeightMatrix>(statisticIndex, prediction,
                                                                            *weightMatrixPtr_, *majorityLabelVectorPtr_);
             }
 
+            /**
+             * @see `IStatistics::evaluatePrediction`
+             */
             float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override final {
                 // TODO Support evaluation of predictions
                 return 0;
             }
 
+            /**
+             * @see `IStatistics::createHistogram`
+             */
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override final {
                 //TODO Support creation of histograms
                 return nullptr;
