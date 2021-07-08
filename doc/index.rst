@@ -19,4 +19,4 @@ If you use the algorithm in a scientific publication, we would appreciate citati
 
    quickstart/index
 
-   apidoc/index
+   api/index

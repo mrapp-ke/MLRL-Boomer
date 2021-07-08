@@ -30,24 +30,7 @@ release = '0.6.0'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['breathe', 'exhale']
-
-# Setup the breathe extension
-breathe_projects = {'boomer': 'doxygen/xml/' }
-breathe_default_project = 'boomer'
-
-# Setup the exhale extension
-exhale_args = {
-    'containmentFolder': 'apidoc/',
-    'rootFileName': 'index.rst',
-    'rootFileTitle': 'API Documentation',
-    'doxygenStripFromPath': '..',
-    'createTreeView': True,
-    'exhaleExecutesDoxygen': True,
-    'exhaleDoxygenStdin': 'INPUT = ../cpp/'
-}
-primary_domain = 'cpp'
-highlight_language = 'cpp'
+extensions = []
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -68,4 +51,10 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
+
+# A list of paths that contain extra files not directly related to the
+# documentation, such as robots.txt or .htaccess. Relative paths are taken
+# as relative to the configuration directory. They are copied to the output
+# directory. They will overwrite any existing file of the same name.
+html_extra_path = ['doxygen']
