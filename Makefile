@@ -25,6 +25,7 @@ clean_doc:
 	@echo "Removing documentation..."
 	rm -rf doc/_build/
 	rm -rf doc/doxygen/
+	rm -rf doc/api/python/
 
 clean: clean_doc clean_compile clean_venv
 
@@ -44,16 +45,6 @@ venv:
 	@echo "Installing compile-time dependency \"wheel\" into virtual environment..."
 	venv/bin/pip install wheel
 
-doc: venv
-	@echo "Installing dependency \"Sphinx\" into virtual environment..."
-	venv/bin/pip install Sphinx
-	@echo "Installing dependency \"sphinx_rtd_theme\" into virtual environment..."
-	venv/bin/pip install sphinx_rtd_theme
-	@echo "Generating C++ API documentation via Doxygen..."
-	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile
-	@echo "Generating Sphinx documentation..."
-	cd doc/ && PATH=$$PATH:../venv/bin/ make html
-
 compile: venv
 	@echo "Compiling C++ code..."
 	cd cpp/ && PATH=$$PATH:../venv/bin/ ../venv/bin/meson setup build/ -Doptimization=3
@@ -64,3 +55,15 @@ compile: venv
 install: compile
 	@echo "Installing package into virtual environment..."
 	venv/bin/pip install python/
+
+doc: install
+	@echo "Installing dependency \"Sphinx\" into virtual environment..."
+	venv/bin/pip install Sphinx
+	@echo "Installing dependency \"sphinx_rtd_theme\" into virtual environment..."
+	venv/bin/pip install sphinx_rtd_theme
+	@echo "Generating C++ API documentation via Doxygen..."
+	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile
+	@echo "Generating Python API documentation via sphinx-apidoc..."
+	venv/bin/sphinx-apidoc --tocfile index -f -o doc/api/python python/mlrl **/cython
+	@echo "Generating Sphinx documentation..."
+	cd doc/ && PATH=$$PATH:../venv/bin/ make html
