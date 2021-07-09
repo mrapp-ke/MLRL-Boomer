@@ -23,9 +23,8 @@ clean_compile: clean_cpp clean_cython
 
 clean_doc:
 	@echo "Removing documentation..."
-	rm -rf doc/_build/*
-	rm -rf doc/apidoc/*
-	rm -rf doc/doxygen/*
+	rm -rf doc/_build/
+	rm -rf doc/doxygen/
 
 clean: clean_doc clean_compile clean_venv
 
@@ -50,10 +49,8 @@ doc: venv
 	venv/bin/pip install Sphinx
 	@echo "Installing dependency \"sphinx_rtd_theme\" into virtual environment..."
 	venv/bin/pip install sphinx_rtd_theme
-	@echo "Installing dependency \"breathe\" into virtual environment..."
-	venv/bin/pip install breathe
-	@echo "Installing dependency \"exhale\" into virtual environment..."
-	venv/bin/pip install exhale
+	@echo "Generating C++ API documentation via Doxygen..."
+	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile
 	@echo "Generating Sphinx documentation..."
 	cd doc/ && PATH=$$PATH:../venv/bin/ make html
 

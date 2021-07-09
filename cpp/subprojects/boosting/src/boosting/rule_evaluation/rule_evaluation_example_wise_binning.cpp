@@ -114,7 +114,8 @@ namespace boosting {
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class DenseBinningExampleWiseRuleEvaluation : public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T> {
+    class DenseBinningExampleWiseRuleEvaluation :
+            public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T> {
 
         private:
 
@@ -173,6 +174,9 @@ namespace boosting {
                 free(binIndices_);
             }
 
+            /**
+             * @see `IExampleWiseRuleEvaluation::calculateLabelWisePrediction`
+             */
             const ILabelWiseScoreVector& calculateLabelWisePrediction(
                     const DenseExampleWiseStatisticVector& statisticVector) override {
                 if (labelWiseScoreVector_ == nullptr) {
@@ -227,6 +231,9 @@ namespace boosting {
                 return *labelWiseScoreVector_;
             }
 
+            /**
+             * @see `IExampleWiseRuleEvaluation::calculateExampleWisePrediction`
+             */
             const IScoreVector& calculateExampleWisePrediction(
                     DenseExampleWiseStatisticVector& statisticVector) override {
                 if (scoreVector_ == nullptr) {

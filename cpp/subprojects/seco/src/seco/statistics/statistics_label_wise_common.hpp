@@ -13,8 +13,8 @@ namespace seco {
     }
 
     /**
-     * Provides access to the elements of confusion matrices that are computed independently for each label using dense
-     * data structures.
+     * An abstract base class for all statistics that provide access to the elements of confusion matrices that are
+     * computed independently for each label.
      *
      * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
      *                                  examples
@@ -23,13 +23,13 @@ namespace seco {
      * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
      */
     template<typename LabelMatrix, typename WeightMatrix, typename ConfusionMatrixVector>
-    class LabelWiseStatistics final : public ILabelWiseStatistics {
+    class AbstractLabelWiseStatistics : public ILabelWiseStatistics {
 
         private:
 
             /**
              * Provides access to a subset of the confusion matrices that are stored by an instance of the class
-             * `LabelWiseStatistics`.
+             * `AbstractLabelWiseStatistics`.
              *
              * @tparam T The type of the vector that provides access to the indices of the labels that are included in
              *           the subset
@@ -39,7 +39,7 @@ namespace seco {
 
                 private:
 
-                    const LabelWiseStatistics& statistics_;
+                    const AbstractLabelWiseStatistics& statistics_;
 
                     const ConfusionMatrixVector* totalSumVector_;
 
@@ -56,15 +56,15 @@ namespace seco {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `LabelWiseStatistics` that stores the
-                     *                          confusion matrices
+                     * @param statistics        A reference to an object of type `AbstractLabelWiseStatistics` that
+                     *                          stores the confusion matrices
                      * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
                      *                          should be used to calculate the predictions, as well as corresponding
                      *                          quality scores, of rules
                      * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(const LabelWiseStatistics& statistics,
+                    StatisticsSubset(const AbstractLabelWiseStatistics& statistics,
                                      std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                         : statistics_(statistics), totalSumVector_(&statistics_.subsetSumVector_),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
@@ -152,9 +152,9 @@ namespace seco {
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
              */
-            LabelWiseStatistics(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
-                                const LabelMatrix& labelMatrix, std::unique_ptr<WeightMatrix> weightMatrixPtr,
-                                std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
+            AbstractLabelWiseStatistics(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
+                                        const LabelMatrix& labelMatrix, std::unique_ptr<WeightMatrix> weightMatrixPtr,
+                                        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrix.getNumRows()), numLabels_(labelMatrix.getNumCols()),
                   ruleEvaluationFactoryPtr_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   weightMatrixPtr_(std::move(weightMatrixPtr)),
@@ -164,73 +164,117 @@ namespace seco {
 
             }
 
-            uint32 getNumStatistics() const override {
+            /**
+             * @see `IImmutableStatistics::getNumStatistics`
+             */
+            uint32 getNumStatistics() const override final {
                 return numStatistics_;
             }
 
-            uint32 getNumLabels() const override {
+            /**
+             * @see `IImmutableStatistics::getNumLabels`
+             */
+            uint32 getNumLabels() const override final {
                 return numLabels_;
             }
 
-            float64 getSumOfUncoveredWeights() const override {
+            /**
+             * @see `ICoverageStatistics::getSumOfUncoveredWeights`
+             */
+            float64 getSumOfUncoveredWeights() const override final {
                 return weightMatrixPtr_->getSumOfUncoveredWeights();
             }
 
-            void setRuleEvaluationFactory(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) override {
+            /**
+             * @see `ILabelWiseStatistics::setRuleEvaluationFactory`
+             */
+            void setRuleEvaluationFactory(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
                 ruleEvaluationFactoryPtr_ = &ruleEvaluationFactory;
             }
 
-            void resetSampledStatistics() override {
+            /**
+             * @see `IStatistics::resetSampledStatistics`
+             */
+            void resetSampledStatistics() override final {
                 totalSumVector_.clear();
                 subsetSumVector_.clear();
             }
 
-            void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
+            /**
+             * @see `IStatistics::addSampledStatistic`
+             */
+            void addSampledStatistic(uint32 statisticIndex, float64 weight) override final {
                 totalSumVector_.add(statisticIndex, labelMatrix_, *majorityLabelVectorPtr_, *weightMatrixPtr_, weight);
                 subsetSumVector_.add(statisticIndex, labelMatrix_, *majorityLabelVectorPtr_, *weightMatrixPtr_, weight);
             }
 
-            void resetCoveredStatistics() override {
+            /**
+             * @see `IStatistics::resetCoveredStatistics`
+             */
+            void resetCoveredStatistics() override final {
                 subsetSumVector_.clear();
             }
 
-            void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
+            /**
+             * @see `IStatistics::updateCoveredStatistic`
+             */
+            void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override final {
                 float64 signedWeight = remove ? -weight : weight;
                 subsetSumVector_.add(statisticIndex, labelMatrix_, *majorityLabelVectorPtr_, *weightMatrixPtr_,
                                      signedWeight);
             }
 
-            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices) const override {
+            /**
+             * @see `IImmutableStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
                     ruleEvaluationFactoryPtr_->create(labelIndices);
                 return std::make_unique<StatisticsSubset<CompleteIndexVector>>(*this, std::move(ruleEvaluationPtr),
                                                                                labelIndices);
             }
 
-            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override {
+            /**
+             * @see `IImmutableStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const PartialIndexVector& labelIndices) const override final {
                 std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
                     ruleEvaluationFactoryPtr_->create(labelIndices);
                 return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr),
                                                                               labelIndices);
             }
 
-            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override {
+            /**
+             * @see `IStatistics::applyPrediction`
+             */
+            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 applyPredictionInternally<CompletePrediction, WeightMatrix>(statisticIndex, prediction,
                                                                             *weightMatrixPtr_,
                                                                             *majorityLabelVectorPtr_);
             }
 
-            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
+            /**
+             * @see `IStatistics::applyPrediction`
+             */
+            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 applyPredictionInternally<PartialPrediction, WeightMatrix>(statisticIndex, prediction,
                                                                            *weightMatrixPtr_, *majorityLabelVectorPtr_);
             }
 
-            float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
+            /**
+             * @see `IStatistics::evaluatePrediction`
+             */
+            float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override final {
                 // TODO Support evaluation of predictions
                 return 0;
             }
 
-            std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
+            /**
+             * @see `IStatistics::createHistogram`
+             */
+            std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override final {
                 //TODO Support creation of histograms
                 return nullptr;
             }
