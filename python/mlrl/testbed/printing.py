@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 """
-@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
 Provides classes for printing textual representations of models. The models can be written to one or several outputs,
 e.g. to the console or to a file.
@@ -16,7 +16,6 @@ from mlrl.common.learners import Learner
 from mlrl.common.options import Options
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.io import clear_directory, open_writable_txt_file
-
 
 ARGUMENT_PRINT_FEATURE_NAMES = 'print_feature_names'
 
