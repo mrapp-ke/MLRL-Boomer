@@ -20,4 +20,3 @@ If you use the algorithm in a scientific publication, we would appreciate citati
    quickstart/index
 
    api/index
-   test/modules
