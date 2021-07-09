@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 """
-@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
 Provides base classes for implementing single- or multi-label rule learning algorithms.
 """
@@ -269,21 +269,20 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
     `scipy.sparse.csc_matrix` or `scipy.sparse.dok_matrix`, depending on the format of the given matrix and a given
     `SparsePolicy`:
 
-    - If the given policy is `SparsePolicy.AUTO`, the matrix will be converted into the given sparse format, if
-      possible, if the sparse matrix is expected to occupy less memory than a dense matrix. To be able to convert the
-      matrix into a sparse format, it must be a `scipy.sparse.lil_matrix`, `scipy.sparse.dok_matrix` or
-      `scipy.sparse.coo_matrix`. If the given sparse format is `csr` or `csc` and the matrix is a already in that
-      format, it will not be converted.
+    If the given policy is `SparsePolicy.AUTO`, the matrix will be converted into the given sparse format, if possible,
+    if the sparse matrix is expected to occupy less memory than a dense matrix. To be able to convert the matrix into a
+    sparse format, it must be a `scipy.sparse.lil_matrix`, `scipy.sparse.dok_matrix` or `scipy.sparse.coo_matrix`. If
+    the given sparse format is `csr` or `csc` and the matrix is a already in that format, it will not be converted.
 
-    - If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into the specified sparse
+    If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into the specified sparse
     format, if possible.
 
-    - If the given policy is `SparsePolicy.FORCE_SPARSE`, the matrix will always be converted into a dense matrix.
+    If the given policy is `SparsePolicy.FORCE_SPARSE`, the matrix will always be converted into a dense matrix.
 
     :param m:               A `np.ndarray` or `scipy.sparse.matrix` to be checked
     :param sparse_format:   The `SparseFormat` to be used
     :param policy:          The `SparsePolicy` to be used
-    :param dtype            The type of the values that should be stored in the matrix
+    :param dtype:           The type of the values that should be stored in the matrix
     :param sparse_values:   True, if the values must explicitly be stored when using a sparse format, False otherwise
     :return:                True, if it is preferable to convert the matrix into a sparse matrix of the given format,
                             False otherwise
@@ -316,11 +315,6 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
 class MLRuleLearner(Learner, NominalAttributeLearner):
     """
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
-
-    Attributes
-        label_vectors_          A `LabelVectorSet` that stores the known label vectors, if necessary
-        predictor_              The `Predictor` to be used for making predictions
-        probability_predictor_  The `Predictor` to be used for predicting probability estimates
     """
 
     def __init__(self, random_state: int, feature_format: str, label_format: str):
