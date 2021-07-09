@@ -11,8 +11,9 @@ cpp/build/
 __pycache__/
 
 # Documentation files
-doc/_build/**/*
-doc/doxygen/**/*
+doc/_build/
+doc/doxygen/
+doc/api/python
 
 # Virtual Environment
 venv/
