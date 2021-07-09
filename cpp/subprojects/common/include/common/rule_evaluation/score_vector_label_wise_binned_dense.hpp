@@ -36,8 +36,8 @@ class DenseBinnedLabelWiseScoreVector final : public DenseBinnedScoreVector<T>, 
             public:
 
                 /**
-                 * @param binIndexIterator  An iterator to the bin indices of individual elements
-                 * @param valueIterator     An iterator to the quality scores of individual bins
+                 * @param binIndexIterator      An iterator to the bin indices of individual elements
+                 * @param qualityScoreIterator  An iterator to the quality scores of individual bins
                  */
                 QualityScoreConstIterator(DenseVector<uint32>::const_iterator binIndexIterator,
                                           DenseVector<float64>::const_iterator qualityScoreIterator);

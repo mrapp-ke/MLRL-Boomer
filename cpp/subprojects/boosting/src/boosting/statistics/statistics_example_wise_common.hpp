@@ -347,14 +347,15 @@ namespace boosting {
             /**
              * @see `IExampleWiseStatistics::setRuleEvaluationFactory`
              */
-            void setRuleEvaluationFactory(const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory) override {
+            void setRuleEvaluationFactory(
+                    const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
                 this->ruleEvaluationFactoryPtr_ = &ruleEvaluationFactory;
             }
 
             /**
              * @see `IStatistics::resetSampledStatistics`
              */
-            void resetSampledStatistics() override {
+            void resetSampledStatistics() override final {
                 // This function is equivalent to the function `resetCoveredStatistics`...
                 this->resetCoveredStatistics();
             }
@@ -362,7 +363,7 @@ namespace boosting {
             /**
              * @see `IStatistics::addSampledStatistic`
              */
-            void addSampledStatistic(uint32 statisticIndex, float64 weight) override {
+            void addSampledStatistic(uint32 statisticIndex, float64 weight) override final {
                 // This function is equivalent to the function `updateCoveredStatistic`...
                 this->updateCoveredStatistic(statisticIndex, weight, false);
             }
@@ -370,14 +371,14 @@ namespace boosting {
             /**
              * @see `IStatistics::resetCoveredStatistics`
              */
-            void resetCoveredStatistics() override {
+            void resetCoveredStatistics() override final {
                 totalSumVectorPtr_->clear();
             }
 
             /**
              * @see `IStatistics::updateCoveredStatistic`
              */
-            void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override {
+            void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override final {
                 float64 signedWeight = remove ? -weight : weight;
                 totalSumVectorPtr_->add(this->statisticViewPtr_->gradients_row_cbegin(statisticIndex),
                                         this->statisticViewPtr_->gradients_row_cend(statisticIndex),
@@ -388,7 +389,7 @@ namespace boosting {
             /**
              * @see `IStatistics::applyPrediction`
              */
-            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override {
+            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 applyPredictionInternally<CompletePrediction, LabelMatrix, StatisticView, ScoreMatrix, LossFunction>(
                     statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
                     lossFunction_);
@@ -397,7 +398,7 @@ namespace boosting {
             /**
              * @see `IStatistics::applyPrediction`
              */
-            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override {
+            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 applyPredictionInternally<PartialPrediction, LabelMatrix, StatisticView, ScoreMatrix, LossFunction>(
                     statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_,
                     lossFunction_);
@@ -406,14 +407,14 @@ namespace boosting {
             /**
              * @see `IStatistics::evaluatePrediction`
              */
-            float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override {
+            float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override final {
                 return measure.evaluate(statisticIndex, labelMatrix_, *scoreMatrixPtr_);
             }
 
             /**
              * @see `IStatistics::createHistogram`
              */
-            std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override {
+            std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override final {
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, StatisticMatrix,
                                                              ScoreMatrix>>(*this->statisticViewPtr_,
                                                                            totalSumVectorPtr_.get(),
@@ -421,7 +422,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatistics::createSubset`
+             * @see `IImmutableStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
@@ -432,7 +433,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatistics::createSubset`
+             * @see `IImmutableStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
