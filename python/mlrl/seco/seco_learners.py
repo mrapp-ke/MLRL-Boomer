@@ -21,7 +21,7 @@ from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProvi
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
@@ -68,9 +68,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
                  head_type: str = HEAD_TYPE_SINGLE, lift_function: str = LIFT_FUNCTION_PEAK,
-                 loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_PRECISION, label_sampling: str = None,
-                 instance_sampling: str = None, feature_sampling: str = None, holdout: str = None,
-                 feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
+                 loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_F_MEASURE,
+                 pruning_heuristic:str = HEURISTIC_ACCURACY, label_sampling: str = None, instance_sampling: str = None,
+                 feature_sampling: str = None, holdout: str = None, feature_binning: str = None,
+                 pruning: str = PRUNING_IREP, min_coverage: int = 1, max_conditions: int = -1,
                  max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
                  num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
         """
@@ -88,6 +89,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     `recall`, `weighted-relative-accuracy`, `f-measure`, `m-estimate` or
                                                     `laplace`. Additional options may be provided using the bracket
                                                     notation `f-measure[beta=1.0]`
+        :param pruning_heuristic:                   The heuristic to be used for pruning. Must be `accuracy`,
+                                                    `precision`, `recall`, `weighted-relative-accuracy`, `f-measure`,
+                                                    `m-estimate` or `laplace`. Additional options may be provided using
+                                                    the bracket notation `f-measure[beta=1.0]`
         :param label_sampling:                      The strategy that is used for sampling the labels each time a new
                                                     classification rule is learned. Must be 'without-replacement' or
                                                     None, if no sampling should be used. Additional options may be
@@ -136,6 +141,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.lift_function = lift_function
         self.loss = loss
         self.heuristic = heuristic
+        self.pruning_heuristic = pruning_heuristic
         self.label_sampling = label_sampling
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
@@ -166,6 +172,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         if self.feature_binning is not None:
             name += '_feature-binning=' + str(self.feature_binning)
         if self.pruning is not None:
+            name += '_pruning-heuristic=' + str(self.pruning_heuristic)
             name += '_pruning=' + str(self.pruning)
         if int(self.min_coverage) > 1:
             name += '_min-coverage=' + str(self.min_coverage)
@@ -181,8 +188,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         return DecisionListBuilder()
 
     def _create_rule_model_induction(self, num_labels: int) -> SequentialRuleModelInduction:
-        heuristic = self.__create_heuristic()
-        statistics_provider_factory = self.__create_statistics_provider_factory(heuristic)
+        heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
+        pruning_heuristic = self.__create_heuristic(self.pruning_heuristic, 'pruning_heuristic')
+        statistics_provider_factory = self.__create_statistics_provider_factory(heuristic, pruning_heuristic)
         num_threads_statistic_update = get_preferred_num_threads(self.num_threads_statistic_update)
         thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_statistic_update)
         min_coverage = create_min_coverage(self.min_coverage)
@@ -207,12 +215,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                             label_sampling_factory, instance_sampling_factory, feature_sampling_factory,
                                             partition_sampling_factory, pruning, post_processor, stopping_criteria)
 
-    def __create_heuristic(self) -> Heuristic:
-        heuristic = self.heuristic
-        prefix, options = parse_prefix_and_options('heuristic', heuristic, [HEURISTIC_ACCURACY, HEURISTIC_PRECISION,
-                                                                            HEURISTIC_RECALL, HEURISTIC_LAPLACE,
-                                                                            HEURISTIC_WRA, HEURISTIC_F_MEASURE,
-                                                                            HEURISTIC_M_ESTIMATE])
+    def __create_heuristic(self, heuristic: str, parameter_name: str) -> Heuristic:
+        prefix, options = parse_prefix_and_options(parameter_name, heuristic, [HEURISTIC_ACCURACY, HEURISTIC_PRECISION,
+                                                                               HEURISTIC_RECALL, HEURISTIC_LAPLACE,
+                                                                               HEURISTIC_WRA, HEURISTIC_F_MEASURE,
+                                                                               HEURISTIC_M_ESTIMATE])
 
         if prefix == HEURISTIC_ACCURACY:
             return Accuracy()
@@ -225,22 +232,24 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         elif prefix == HEURISTIC_WRA:
             return WRA()
         elif prefix == HEURISTIC_F_MEASURE:
-            beta = options.get_float(ARGUMENT_BETA, 0.5, lambda x: x >= 0)
+            beta = options.get_float(ARGUMENT_BETA, 0.25, lambda x: x >= 0)
             return FMeasure(beta)
         elif prefix == HEURISTIC_M_ESTIMATE:
             m = options.get_float(ARGUMENT_M, 22.466, lambda x: x >= 0)
             return MEstimate(m)
-        raise ValueError('Invalid value given for parameter \'heuristic\': ' + str(heuristic))
+        raise ValueError('Invalid value given for parameter \'' + parameter_name + '\': ' + str(heuristic))
 
-    def __create_statistics_provider_factory(self, heuristic: Heuristic) -> StatisticsProviderFactory:
+    def __create_statistics_provider_factory(self, heuristic: Heuristic,
+                                             pruning_heuristic: Heuristic) -> StatisticsProviderFactory:
         loss = self.loss
 
         if loss == AVERAGING_LABEL_WISE:
             default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, predictMajority=True)
             regular_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic)
+            pruning_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(pruning_heuristic)
             return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory,
                                                            regular_rule_evaluation_factory,
-                                                           regular_rule_evaluation_factory)
+                                                           pruning_rule_evaluation_factory)
         raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:

@@ -63,7 +63,7 @@ cdef class FMeasure(Heuristic):
     A wrapper for the C++ class `FMeasure`.
     """
 
-    def __cinit__(self, float64 beta = 0.5):
+    def __cinit__(self, float64 beta):
         """
         :param beta: The value of the beta-parameter. Must be at least 0
         """
@@ -75,7 +75,7 @@ cdef class MEstimate(Heuristic):
     A wrapper for the C++ class `MEstimate`.
     """
 
-    def __cinit__(self, float64 m = 22.466):
+    def __cinit__(self, float64 m):
         """
         :param m: The value of the m-parameter. Must be at least 0
         """

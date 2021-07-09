@@ -11,8 +11,8 @@ from argparse import ArgumentParser
 import sklearn.metrics as metrics
 
 from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT
-from mlrl.seco.seco_learners import HEURISTIC_PRECISION, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, PRUNING_IREP
+from mlrl.seco.seco_learners import HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
 
 
 def log_level(s):
@@ -217,11 +217,15 @@ class ArgumentParserBuilder:
         return self
 
     def add_seco_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
-        self.add_rule_learner_arguments(AVERAGING_LABEL_WISE, print_rules=True, **kwargs)
+        self.add_rule_learner_arguments(AVERAGING_LABEL_WISE, print_rules=True, pruning=PRUNING_IREP, **kwargs)
         parser = self.parser
         parser.add_argument('--heuristic', type=str,
-                            default=ArgumentParserBuilder.__get_or_default('heuristic', HEURISTIC_PRECISION, **kwargs),
+                            default=ArgumentParserBuilder.__get_or_default('heuristic', HEURISTIC_F_MEASURE, **kwargs),
                             help='The name of the heuristic to be used')
+        parser.add_argument('--pruning-heuristic', type=str,
+                            default=ArgumentParserBuilder.__get_or_default('pruning_heuristic', HEURISTIC_ACCURACY,
+                                                                           **kwargs),
+                            help='The name of the heuristic to be used for pruning')
         parser.add_argument('--lift-function', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('lift_function', LIFT_FUNCTION_PEAK,
                                                                            **kwargs),
