@@ -2,7 +2,7 @@
 #include "common/indices/index_iterator.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
-#include "weight_sampling.hpp"
+#include "common/sampling/weight_sampling.hpp"
 
 
 static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize, BitWeightVector& weightVector,
