@@ -4,7 +4,6 @@
 #include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
-#include "common/data/arrays.hpp"
 
 
 namespace seco {
