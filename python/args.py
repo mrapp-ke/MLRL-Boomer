@@ -217,7 +217,8 @@ class ArgumentParserBuilder:
         return self
 
     def add_seco_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
-        self.add_rule_learner_arguments(AVERAGING_LABEL_WISE, print_rules=True, pruning=PRUNING_IREP, **kwargs)
+        self.add_rule_learner_arguments(AVERAGING_LABEL_WISE, print_rules=True, pruning=PRUNING_IREP,
+                                        instance_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
         parser = self.parser
         parser.add_argument('--heuristic', type=str,
                             default=ArgumentParserBuilder.__get_or_default('heuristic', HEURISTIC_F_MEASURE, **kwargs),
