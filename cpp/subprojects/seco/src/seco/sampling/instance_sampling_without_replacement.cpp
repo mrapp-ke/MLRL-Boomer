@@ -51,13 +51,6 @@ namespace seco {
         return n;
     }
 
-    static inline void sampleInternally(const uint32* exampleIndices, uint32 numExampleIndices, float32 sampleSize,
-                                        BitWeightVector& weightVector, RNG& rng) {
-        uint32 numSamples = (uint32) (sampleSize * numExampleIndices);
-        sampleWeightsWithoutReplacement<const uint32*>(weightVector, exampleIndices, numExampleIndices, numSamples,
-                                                       rng);
-    }
-
     /**
      * Allows to select a subset of the available training examples that have at least one label with non-zero weight
      * without replacement.
@@ -105,7 +98,9 @@ namespace seco {
 
             const IWeightVector& sample(RNG& rng) override {
                 uint32 numExampleIndices = updateExampleIndices(partition_, weightMatrix_, exampleIndices_);
-                sampleInternally(exampleIndices_, numExampleIndices, sampleSize_, weightVector_, rng);
+                uint32 numSamples = (uint32) (sampleSize_ * numExampleIndices);
+                sampleWeightsWithoutReplacement<const uint32*>(weightVector_, exampleIndices_, numExampleIndices,
+                                                               numSamples, rng);
                 return weightVector_;
             }
 
