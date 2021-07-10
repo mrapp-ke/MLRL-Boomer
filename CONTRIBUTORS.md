@@ -1,6 +1,6 @@
 # Contributors
 
-BOOMER is an open source project. Everyone is welcomed to contribute to the project to enhance its functionality and make it more accessible to a broader audience.
+BOOMER is open source software. Everyone is welcomed to contribute to the project to enhance its functionality and make it more accessible to a broader audience.
 
 ### List of Contributors
 
