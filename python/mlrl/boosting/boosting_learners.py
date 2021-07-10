@@ -19,6 +19,9 @@ from mlrl.boosting.cython.rule_evaluation_example_wise import RegularizedExample
     EqualWidthBinningExampleWiseRuleEvaluationFactory
 from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory, \
     EqualWidthBinningLabelWiseRuleEvaluationFactory
+from mlrl.boosting.cython.sampling import InstanceSamplingWithReplacementFactory, \
+    InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, \
+    ExampleWiseStratifiedSamplingFactory
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, NoHeadRefinementFactory, \
@@ -28,9 +31,7 @@ from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
 from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
-from mlrl.common.cython.sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
-    InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, \
-    ExampleWiseStratifiedSamplingFactory
+from mlrl.common.cython.sampling import InstanceSamplingFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFunction, MinFunction, MaxFunction, \
     ArithmeticMeanFunction
