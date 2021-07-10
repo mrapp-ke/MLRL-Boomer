@@ -131,13 +131,19 @@ namespace seco {
 
             const LabelMatrix& labelMatrix_;
 
-            std::unique_ptr<WeightMatrix> weightMatrixPtr_;
-
             std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr_;
 
             ConfusionMatrixVector totalSumVector_;
 
             ConfusionMatrixVector subsetSumVector_;
+
+        protected:
+
+            /**
+             * An unique pointer to an object of template type `WeightMatrix` that stores the weights of individual
+             * examples and labels.
+             */
+            std::unique_ptr<WeightMatrix> weightMatrixPtr_;
 
         public:
 
@@ -157,10 +163,9 @@ namespace seco {
                                         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrix.getNumRows()), numLabels_(labelMatrix.getNumCols()),
                   ruleEvaluationFactoryPtr_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
-                  weightMatrixPtr_(std::move(weightMatrixPtr)),
                   majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
                   totalSumVector_(ConfusionMatrixVector(numLabels_)),
-                  subsetSumVector_(ConfusionMatrixVector(numLabels_)) {
+                  subsetSumVector_(ConfusionMatrixVector(numLabels_)), weightMatrixPtr_(std::move(weightMatrixPtr)) {
 
             }
 
