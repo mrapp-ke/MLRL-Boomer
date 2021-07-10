@@ -22,6 +22,7 @@ namespace seco {
                 if (weightIterator[j] > 0) {
                     exampleIndices[n] = i;
                     n++;
+                    break;
                 }
             }
         }
@@ -44,6 +45,7 @@ namespace seco {
                 if (weightIterator[j] > 0) {
                     exampleIndices[n] = index;
                     n++;
+                    break;
                 }
             }
         }
