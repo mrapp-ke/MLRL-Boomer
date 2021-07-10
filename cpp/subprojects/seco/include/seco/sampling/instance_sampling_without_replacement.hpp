@@ -1,4 +1,5 @@
 /*
+ * @author Andreas Seidl Fernandez (aseidlfernandez@gmail.com)
  * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
  */
 #pragma once
