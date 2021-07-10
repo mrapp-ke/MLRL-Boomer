@@ -4,15 +4,6 @@
 from libcpp.memory cimport shared_ptr, make_shared
 
 
-cdef class NoInstanceSamplingFactory(InstanceSamplingFactory):
-    """
-    A wrapper for the C++ class `NoInstanceSamplingFactory`.
-    """
-
-    def __cinit__(self):
-        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[NoInstanceSamplingFactoryImpl]()
-
-
 cdef class InstanceSamplingWithoutReplacementFactory(InstanceSamplingFactory):
     """
     A wrapper for the C++ class `InstanceSamplingWithoutReplacementFactory`.
@@ -25,3 +16,12 @@ cdef class InstanceSamplingWithoutReplacementFactory(InstanceSamplingFactory):
         """
         self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[InstanceSamplingWithoutReplacementFactoryImpl](
             sample_size)
+
+
+cdef class NoInstanceSamplingFactory(InstanceSamplingFactory):
+    """
+    A wrapper for the C++ class `NoInstanceSamplingFactory`.
+    """
+
+    def __cinit__(self):
+        self.instance_sampling_factory_ptr = <shared_ptr[IInstanceSamplingFactory]>make_shared[NoInstanceSamplingFactoryImpl]()

@@ -2,12 +2,6 @@ from mlrl.common.cython._types cimport float32
 from mlrl.common.cython.sampling cimport IInstanceSamplingFactory, InstanceSamplingFactory
 
 
-cdef extern from "seco/sampling/instance_sampling_no.hpp" namespace "seco" nogil:
-
-    cdef cppclass NoInstanceSamplingFactoryImpl"seco::NoInstanceSamplingFactory"(IInstanceSamplingFactory):
-        pass
-
-
 cdef extern from "seco/sampling/instance_sampling_without_replacement.hpp" namespace "seco" nogil:
 
     cdef cppclass InstanceSamplingWithoutReplacementFactoryImpl"seco::InstanceSamplingWithoutReplacementFactory"(
@@ -18,9 +12,15 @@ cdef extern from "seco/sampling/instance_sampling_without_replacement.hpp" names
         InstanceSamplingWithoutReplacementFactoryImpl(float32 sampleSize) except +
 
 
-cdef class NoInstanceSamplingFactory(InstanceSamplingFactory):
-    pass
+cdef extern from "seco/sampling/instance_sampling_no.hpp" namespace "seco" nogil:
+
+    cdef cppclass NoInstanceSamplingFactoryImpl"seco::NoInstanceSamplingFactory"(IInstanceSamplingFactory):
+        pass
 
 
 cdef class InstanceSamplingWithoutReplacementFactory(InstanceSamplingFactory):
+    pass
+
+
+cdef class NoInstanceSamplingFactory(InstanceSamplingFactory):
     pass
