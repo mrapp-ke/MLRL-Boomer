@@ -469,7 +469,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             return NoPostProcessor()
         raise ValueError('Invalid value given for parameter \'shrinkage\': ' + str(shrinkage))
 
-
     def __create_instance_sampling_factory(self) -> InstanceSamplingFactory:
         instance_sampling = self.instance_sampling
 
