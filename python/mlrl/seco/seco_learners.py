@@ -18,12 +18,14 @@ from mlrl.seco.cython.heuristics import Heuristic, Accuracy, Precision, Recall, 
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
 from mlrl.seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
-from mlrl.seco.cython.sampling import InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory
+from mlrl.seco.cython.sampling import InstanceSamplingWithReplacementFactory, \
+    InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory
 from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_WITHOUT_REPLACEMENT, ARGUMENT_SAMPLE_SIZE
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_WITH_REPLACEMENT, \
+    SAMPLING_WITHOUT_REPLACEMENT, ARGUMENT_SAMPLE_SIZE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_label_sampling_factory, create_partition_sampling_factory, create_max_conditions, create_stopping_criteria, \
@@ -102,9 +104,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     `without-replacement[num_samples=5]`
         :param instance_sampling:                   The strategy that is used for sampling the training examples each
                                                     time a new classification rule is learned. Must be
-                                                    `without-replacement` or None, if no sampling should be used.
-                                                    Additional options may be provided using the bracket notation
-                                                    `without-replacement[sample_size=0.5]`
+                                                    `with-replacement`, `without-replacement` or None, if no sampling
+                                                    should be used. Additional options may be provided using the bracket
+                                                    notation `with-replacement[sample_size=0.5]`
         :param feature_sampling:                    The strategy that is used for sampling the features each time a
                                                     classification rule is refined. Must be `without-replacement` or
                                                     None, if no sampling should be used. Additional options may be
@@ -282,9 +284,12 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             return NoInstanceSamplingFactory()
         else:
             prefix, options = parse_prefix_and_options('instance_sampling', instance_sampling,
-                                                       [SAMPLING_WITHOUT_REPLACEMENT])
+                                                       [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT])
 
-            if prefix == SAMPLING_WITHOUT_REPLACEMENT:
+            if prefix == SAMPLING_WITH_REPLACEMENT:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
+                return InstanceSamplingWithReplacementFactory(sample_size)
+            elif prefix == SAMPLING_WITHOUT_REPLACEMENT:
                 sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
                 return InstanceSamplingWithoutReplacementFactory(sample_size)
             raise ValueError('Invalid value given for parameter \'instance_sampling\': ' + str(instance_sampling))
