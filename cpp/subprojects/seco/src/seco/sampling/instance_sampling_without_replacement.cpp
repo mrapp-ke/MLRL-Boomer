@@ -1,57 +1,11 @@
 #include "seco/sampling/instance_sampling_without_replacement.hpp"
 #include "seco/statistics/statistics.hpp"
-#include "seco/data/matrix_dense_weights.hpp"
 #include "common/sampling/weight_vector_bit.hpp"
-#include "common/sampling/partition_bi.hpp"
-#include "common/sampling/partition_single.hpp"
 #include "common/sampling/weight_sampling.hpp"
+#include "instance_sampling_common.hpp"
 
 
 namespace seco {
-
-    static inline uint32 updateExampleIndices(const SinglePartition& partition, const DenseWeightMatrix& weightMatrix,
-                                              uint32* exampleIndices) {
-        uint32 numTrainingExamples = partition.getNumElements();
-        uint32 numLabels = weightMatrix.getNumCols();
-        uint32 n = 0;
-
-        for (uint32 i = 0; i < numTrainingExamples; i++) {
-            DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(i);
-
-            for (uint32 j = 0; j < numLabels; j++) {
-                if (weightIterator[j] > 0) {
-                    exampleIndices[n] = i;
-                    n++;
-                    break;
-                }
-            }
-        }
-
-        return n;
-    }
-
-    static inline uint32 updateExampleIndices(BiPartition& partition, const DenseWeightMatrix& weightMatrix,
-                                              uint32* exampleIndices) {
-        uint32 numTrainingExamples = partition.getNumFirst();
-        uint32 numLabels = weightMatrix.getNumCols();
-        uint32 n = 0;
-        BiPartition::const_iterator indexIterator = partition.first_cbegin();
-
-        for (uint32 i = 0; i < numTrainingExamples; i++) {
-            uint32 index = indexIterator[i];
-            DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(index);
-
-            for (uint32 j = 0; j < numLabels; j++) {
-                if (weightIterator[j] > 0) {
-                    exampleIndices[n] = index;
-                    n++;
-                    break;
-                }
-            }
-        }
-
-        return n;
-    }
 
     /**
      * Allows to select a subset of the available training examples that have at least one label with non-zero weight
@@ -62,19 +16,13 @@ namespace seco {
      * @tparam WeightMatrix The type of the matrix that provides access to the weights of individual examples and labels
      */
     template<typename Partition, typename WeightMatrix>
-    class InstanceSamplingWithoutReplacement final : public IInstanceSampling {
+    class InstanceSamplingWithoutReplacement final : public AbstractInstanceSampling<Partition, WeightMatrix> {
 
         private:
-
-            Partition& partition_;
-
-            const WeightMatrix& weightMatrix_;
 
             float32 sampleSize_;
 
             BitWeightVector weightVector_;
-
-            uint32* exampleIndices_;
 
         public:
 
@@ -88,20 +36,16 @@ namespace seco {
              */
             InstanceSamplingWithoutReplacement(Partition& partition, const WeightMatrix& weightMatrix,
                                                float32 sampleSize)
-                : partition_(partition), weightMatrix_(weightMatrix), sampleSize_(sampleSize),
-                  weightVector_(BitWeightVector(partition.getNumElements())),
-                  exampleIndices_(new uint32[partition.getNumElements()]) {
+                : AbstractInstanceSampling<Partition, WeightMatrix>(partition, weightMatrix), sampleSize_(sampleSize),
+                  weightVector_(BitWeightVector(partition.getNumElements())) {
 
             }
 
-            ~InstanceSamplingWithoutReplacement() {
-                delete[] exampleIndices_;
-            }
+        protected:
 
-            const IWeightVector& sample(RNG& rng) override {
-                uint32 numExampleIndices = updateExampleIndices(partition_, weightMatrix_, exampleIndices_);
+            const IWeightVector& sample(const uint32* exampleIndices, uint32 numExampleIndices, RNG& rng) override {
                 uint32 numSamples = (uint32) (sampleSize_ * numExampleIndices);
-                sampleWeightsWithoutReplacement<const uint32*>(weightVector_, exampleIndices_, numExampleIndices,
+                sampleWeightsWithoutReplacement<const uint32*>(weightVector_, exampleIndices, numExampleIndices,
                                                                numSamples, rng);
                 return weightVector_;
             }
