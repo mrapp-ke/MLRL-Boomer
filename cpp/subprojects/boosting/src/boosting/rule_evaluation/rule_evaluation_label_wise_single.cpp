@@ -68,6 +68,7 @@ namespace boosting {
 
                 scoreVector_.scores_begin()[0] = bestScore;
                 indexVector_.begin()[0] = bestIndex;
+                scoreVector_.overallQualityScore = 0; // TODO Calculate quality score
                 return scoreVector_;
             }
 
