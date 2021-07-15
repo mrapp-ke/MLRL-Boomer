@@ -1,5 +1,6 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
+#include "rule_evaluation_label_wise_common.hpp"
 
 
 namespace boosting {
@@ -15,7 +16,11 @@ namespace boosting {
 
         private:
 
-            DenseScoreVector<T> scoreVector_;
+            T labelIndices_;
+
+            PartialIndexVector indexVector_;
+
+            DenseScoreVector<PartialIndexVector> scoreVector_;
 
             float64 l2RegularizationWeight_;
 
@@ -28,7 +33,9 @@ namespace boosting {
              *                                  scores to be predicted by rules
              */
             LabelWiseSingleLabelRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight)
-                : scoreVector_(DenseScoreVector<T>(labelIndices)), l2RegularizationWeight_(l2RegularizationWeight) {
+                : labelIndices_(labelIndices), indexVector_(PartialIndexVector(1)),
+                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)),
+                  l2RegularizationWeight_(l2RegularizationWeight) {
 
             }
 
@@ -38,7 +45,29 @@ namespace boosting {
             }
 
             const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
-                // TODO Implement
+                uint32 numElements = statisticVector.getNumElements();
+                typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                const Tuple<float64>& firstTuple = statisticIterator[0];
+                float64 bestScore = calculateLabelWiseScore(firstTuple.first, firstTuple.second,
+                                                            l2RegularizationWeight_);
+                float64 bestAbsScore = std::abs(bestScore);
+                uint32 bestIndex = indexIterator[0];
+
+                for (uint32 i = 1; i < numElements; i++) {
+                    const Tuple<float64>& tuple = statisticIterator[i];
+                    float64 score = calculateLabelWiseScore(tuple.first, tuple.second, l2RegularizationWeight_);
+                    float64 absScore = std::abs(score);
+
+                    if (absScore > bestAbsScore) {
+                        bestScore = score;
+                        bestAbsScore = absScore;
+                        bestIndex = indexIterator[i];
+                    }
+                }
+
+                scoreVector_.scores_begin()[0] = bestScore;
+                indexVector_.begin()[0] = bestIndex;
                 return scoreVector_;
             }
 
