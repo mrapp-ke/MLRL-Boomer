@@ -135,6 +135,18 @@ namespace boosting {
                         return ruleEvaluationPtr_->calculateLabelWisePrediction(sumsOfStatistics);
                     }
 
+                    const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
+                        const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
+
+                        if (uncovered) {
+                            tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
+                                                  sumsOfStatistics.cbegin(), sumsOfStatistics.cend());
+                            return ruleEvaluationPtr_->calculatePrediction(tmpVector_);
+                        }
+
+                        return ruleEvaluationPtr_->calculatePrediction(sumsOfStatistics);
+                    }
+
             };
 
             /**

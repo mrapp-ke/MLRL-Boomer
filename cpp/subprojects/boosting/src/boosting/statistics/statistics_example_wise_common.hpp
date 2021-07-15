@@ -160,6 +160,22 @@ namespace boosting {
                         return ruleEvaluationPtr_->calculateExampleWisePrediction(sumsOfStatistics);
                     }
 
+                    const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
+                        StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
+
+                        if (uncovered) {
+                            tmpVector_.difference(totalSumVector_->gradients_cbegin(),
+                                                  totalSumVector_->gradients_cend(), totalSumVector_->hessians_cbegin(),
+                                                  totalSumVector_->hessians_cend(), labelIndices_,
+                                                  sumsOfStatistics.gradients_cbegin(),
+                                                  sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
+                                                  sumsOfStatistics.hessians_cend());
+                            return ruleEvaluationPtr_->calculatePrediction(tmpVector_);
+                        }
+
+                        return ruleEvaluationPtr_->calculatePrediction(sumsOfStatistics);
+                    }
+
             };
 
             /**
