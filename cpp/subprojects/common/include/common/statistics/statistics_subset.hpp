@@ -93,6 +93,7 @@ class IStatisticsSubset {
          *                      predicted by the rule for each considered label, as well as the corresponding quality
          *                      scores
          */
+        // TODO Remove
         virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered, bool accumulated) = 0;
 
         /**
@@ -127,6 +128,35 @@ class IStatisticsSubset {
          * @return              A reference to an object of type `IScoreVector` that stores the scores to be predicted
          *                      by the rule for each considered label, as well as an overall quality score
          */
+        // TODO Remove
         virtual const IScoreVector& calculateExampleWisePrediction(bool uncovered, bool accumulated) = 0;
+
+        /**
+         * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
+         * to the subset so far via the function `addToSubset`, as well as an overall quality score that assesses the
+         * quality of the predicted scores.
+         *
+         * If the argument `uncovered` is true, the rule is considered to cover all statistics that belong to the
+         * difference between the statistics that have been provided via the function `Statistics#addSampledStatistic`
+         * or `Statistics#updateCoveredStatistic` and the statistics that have been added to the subset via the function
+         * `addToSubset`.
+         *
+         * If the argument `accumulated` is true, all statistics that have been added since the subset has been created
+         * via the function `Statistics#createSubset` are taken into account even if the function `resetSubset` has been
+         * called since then. If said function has not been invoked, this argument does not have any effect.
+         *
+         * @param uncovered     False, if the rule covers all statistics that have been added to the subset via the
+         *                      function `addToSubset`, true, if the rule covers all statistics that belong to the
+         *                      difference between the statistics that have been provided via the function
+         *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
+         *                      statistics that have been added via the function `addToSubset`
+         * @param accumulated   False, if the rule covers all statistics that have been added to the subset via the
+         *                      function `addToSubset` since the function `resetSubset` has been called for the last
+         *                      time, true, if the rule covers all examples that have been provided since the subset has
+         *                      been created via the function `Statistics#createSubset`
+         * @return              A reference to an object of type `IScoreVector` that stores the scores to be predicted
+         *                      by the rule for each considered label, as well as an overall quality score
+         */
+        virtual const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) = 0;
 
 };

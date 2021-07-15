@@ -121,6 +121,14 @@ namespace seco {
                                                                                 sumsOfConfusionMatrices, uncovered);
                     }
 
+                    const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
+                        const ConfusionMatrixVector& sumsOfConfusionMatrices =
+                            accumulated ? *accumulatedSumVector_ : sumVector_;
+                        return ruleEvaluationPtr_->calculatePrediction(*statistics_.majorityLabelVectorPtr_,
+                                                                       statistics_.totalSumVector_, *totalSumVector_,
+                                                                       sumsOfConfusionMatrices, uncovered);
+                    }
+
             };
 
             uint32 numStatistics_;
