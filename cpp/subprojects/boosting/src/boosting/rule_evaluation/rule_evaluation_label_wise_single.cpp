@@ -6,8 +6,8 @@
 namespace boosting {
 
     /**
-     * Allows to calculate the predictions of rules, as well as an overall quality score, based on the gradients and
-     * Hessians that are stored by a `DenseLabelWiseStatisticVector` using L2 regularization.
+     * Allows to calculate the predictions of single-label rules, as well as an overall quality score, based on the
+     * gradients and Hessians that are stored by a `DenseLabelWiseStatisticVector` using L2 regularization.
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
