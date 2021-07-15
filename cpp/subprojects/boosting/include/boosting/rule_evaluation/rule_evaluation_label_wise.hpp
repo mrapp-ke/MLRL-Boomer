@@ -28,7 +28,7 @@ namespace boosting {
 
             /**
              * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
-             * label-wise sums of gradients and Hessians that are covered by the rule.
+             * label-wise sums of gradients and Hessians that are covered by a rule.
              *
              * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the
              *                          gradients and Hessians
