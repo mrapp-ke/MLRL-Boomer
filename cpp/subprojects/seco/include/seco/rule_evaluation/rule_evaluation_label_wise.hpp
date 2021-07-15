@@ -82,7 +82,6 @@ namespace seco {
     /**
      * Defines an interface for all factories that allow to create instances of the type `ILabelWiseRuleEvaluation`.
      */
-    // TODO Rename to `IRuleEvaluationFactory`
     class ILabelWiseRuleEvaluationFactory {
 
         public:
