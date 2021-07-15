@@ -20,6 +20,7 @@ namespace boosting {
      *
      * @tparam StatisticVector The type of the vector that provides access to the gradients and Hessians
      */
+    // TODO Merge with interface `ILabelWiseRuleEvaluation` by creating a single interface `IRuleEvaluation`
     template<typename StatisticVector>
     class IExampleWiseRuleEvaluation {
 
