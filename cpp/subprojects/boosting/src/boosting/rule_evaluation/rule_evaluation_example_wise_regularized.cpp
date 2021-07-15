@@ -116,6 +116,14 @@ namespace boosting {
                 return *scoreVector_;
             }
 
+            /**
+             * @see `IExampleWiseRuleEvaluation::calculatePrediction`
+             */
+            const IScoreVector& calculatePrediction(const DenseExampleWiseStatisticVector& statisticVector) override {
+                // TODO Implement
+                return *scoreVector_;
+            }
+
     };
 
     RegularizedExampleWiseRuleEvaluationFactory::RegularizedExampleWiseRuleEvaluationFactory(
