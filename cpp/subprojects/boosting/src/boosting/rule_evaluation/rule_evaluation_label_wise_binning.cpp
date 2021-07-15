@@ -108,6 +108,11 @@ namespace boosting {
                 return scoreVector_;
             }
 
+            const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
+                // TODO Implement
+                return scoreVector_;
+            }
+
     };
 
     EqualWidthBinningLabelWiseRuleEvaluationFactory::EqualWidthBinningLabelWiseRuleEvaluationFactory(
