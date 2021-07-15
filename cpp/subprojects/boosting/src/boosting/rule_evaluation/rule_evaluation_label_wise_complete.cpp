@@ -39,6 +39,15 @@ namespace boosting {
             }
 
             const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
+                uint32 numElements = statisticVector.getNumElements();
+                DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
+
+                for (uint32 i = 0; i < numElements; i++) {
+                    const Tuple<float64>& tuple = statisticIterator[i];
+                    scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, l2RegularizationWeight_);
+                }
+
                 // TODO Calculate scores
                 scoreVector_.overallQualityScore = 0; // TODO Calculate quality score
                 return scoreVector_;
