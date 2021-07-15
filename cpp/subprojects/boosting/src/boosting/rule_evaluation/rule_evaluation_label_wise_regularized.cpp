@@ -46,6 +46,11 @@ namespace boosting {
                 return scoreVector_;
             }
 
+            const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
+                // TODO Implement
+                return scoreVector_;
+            }
+
     };
 
     RegularizedLabelWiseRuleEvaluationFactory::RegularizedLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight)
