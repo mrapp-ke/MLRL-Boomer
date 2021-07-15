@@ -105,6 +105,15 @@ namespace seco {
                 return scoreVector_;
             }
 
+            const IScoreVector& calculatePrediction(const BinarySparseArrayVector& majorityLabelVector,
+                                                    const DenseConfusionMatrixVector& confusionMatricesTotal,
+                                                    const DenseConfusionMatrixVector& confusionMatricesSubset,
+                                                    const DenseConfusionMatrixVector& confusionMatricesCovered,
+                                                    bool uncovered) override {
+                // TODO Implement
+                return scoreVector_;
+            }
+
     };
 
     HeuristicLabelWiseRuleEvaluationFactory::HeuristicLabelWiseRuleEvaluationFactory(
