@@ -48,7 +48,6 @@ namespace boosting {
                     scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, l2RegularizationWeight_);
                 }
 
-                // TODO Calculate scores
                 scoreVector_.overallQualityScore = 0; // TODO Calculate quality score
                 return scoreVector_;
             }
