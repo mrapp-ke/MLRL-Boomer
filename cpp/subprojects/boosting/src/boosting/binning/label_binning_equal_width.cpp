@@ -14,22 +14,10 @@ namespace boosting {
     }
 
     template<typename GradientIterator, typename HessianIterator>
-    EqualWidthLabelBinning<GradientIterator, HessianIterator>::EqualWidthLabelBinning(float32 binRatio, uint32 minBins,
-                                                                                      uint32 maxBins)
-        : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-
-    }
-
-    template<typename GradientIterator, typename HessianIterator>
-    uint32 EqualWidthLabelBinning<GradientIterator, HessianIterator>::getMaxBins(uint32 numLabels) const {
-        return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
-    }
-
-    template<typename GradientIterator, typename HessianIterator>
-    LabelInfo EqualWidthLabelBinning<GradientIterator, HessianIterator>::getLabelInfo(
-            GradientIterator gradientsBegin, GradientIterator gradientsEnd, HessianIterator hessiansBegin,
-            HessianIterator hessiansEnd, float64 l2RegularizationWeight) const {
-        LabelInfo labelInfo;
+    static inline void fetchLabelInfo(GradientIterator gradientsBegin, GradientIterator gradientsEnd,
+                                      HessianIterator hessiansBegin, HessianIterator hessiansEnd,
+                                      float64 l2RegularizationWeight, LabelInfo& labelInfo, float32 binRatio,
+                                      uint32 minBins, uint32 maxBins) {
         uint32 numStatistics = gradientsEnd - gradientsBegin;
 
         if (numStatistics > 0) {
@@ -68,23 +56,21 @@ namespace boosting {
             }
 
             labelInfo.numNegativeBins =
-                numPositive > 0 ? calculateNumBins(numPositive, binRatio_, minBins_, maxBins_) : 0;
+                numPositive > 0 ? calculateNumBins(numPositive, binRatio, minBins, maxBins) : 0;
             labelInfo.numPositiveBins =
-                numNegative > 0 ? calculateNumBins(numNegative, binRatio_, minBins_, maxBins_) : 0;
+                numNegative > 0 ? calculateNumBins(numNegative, binRatio, minBins, maxBins) : 0;
         } else {
             labelInfo.numPositiveBins = 0;
             labelInfo.numNegativeBins = 0;
         }
-
-        return labelInfo;
     }
 
     template<typename GradientIterator, typename HessianIterator>
-    void EqualWidthLabelBinning<GradientIterator, HessianIterator>::createBins(
-            LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
-            HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,
-            typename ILabelBinning<GradientIterator, HessianIterator>::Callback callback,
-            typename ILabelBinning<GradientIterator, HessianIterator>::ZeroCallback zeroCallback) const {
+    static inline void createBinsInternally(LabelInfo& labelInfo, GradientIterator gradientsBegin,
+                                            GradientIterator gradientsEnd, HessianIterator hessiansBegin,
+                                            HessianIterator hessiansEnd, float64 l2RegularizationWeight,
+                                            ILabelBinning::Callback callback,
+                                            ILabelBinning::ZeroCallback zeroCallback) {
         uint32 numPositiveBins = labelInfo.numPositiveBins;
         float64 minPositive = labelInfo.minPositive;
         float64 maxPositive = labelInfo.maxPositive;
@@ -127,9 +113,90 @@ namespace boosting {
         }
     }
 
-    template class EqualWidthLabelBinning<DenseLabelWiseStatisticVector::gradient_const_iterator,
-                                          DenseLabelWiseStatisticVector::hessian_const_iterator>;
-    template class EqualWidthLabelBinning<DenseExampleWiseStatisticVector::gradient_const_iterator,
-                                          DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>;
+    /**
+     * Assigns labels to bins, based on the corresponding gradients and Hessians, in a way such that each bin contains
+     * labels for which the predicted score is expected to belong to the same value range.
+     */
+    class EqualWidthLabelBinning final : public ILabelBinning {
+
+        private:
+
+            float32 binRatio_;
+
+            uint32 minBins_;
+
+            uint32 maxBins_;
+
+        public:
+
+            /**
+             * @param binRatio  A percentage that specifies how many bins should be used to assign labels to, e.g., if
+             *                  100 labels are available, 0.5 means that `ceil(0.5 * 100) = 50` bins should be used
+             * @param minBins   The minimum number of bins to be used to assign labels to. Must be at least 2
+             * @param maxBins   The maximum number of bins to be used to assign labels to. Must be at least `minBins` or
+             *                  0, if the maximum number of bins should not be restricted
+             */
+            EqualWidthLabelBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
+                : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
+
+            }
+
+            uint32 getMaxBins(uint32 numLabels) const override {
+                return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
+            }
+
+            LabelInfo getLabelInfo(DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
+                                   DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
+                                   DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
+                                   DenseLabelWiseStatisticVector::hessian_const_iterator hessiansEnd,
+                                   float64 l2RegularizationWeight) const override {
+                LabelInfo labelInfo;
+                fetchLabelInfo(gradientsBegin, gradientsEnd, hessiansBegin, hessiansEnd, l2RegularizationWeight,
+                               labelInfo, binRatio_, minBins_, maxBins_);
+                return labelInfo;
+            }
+
+            LabelInfo getLabelInfo(DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
+                                   DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
+                                   DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansBegin,
+                                   DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansEnd,
+                                   float64 l2RegularizationWeight) const override {
+                LabelInfo labelInfo;
+                fetchLabelInfo(gradientsBegin, gradientsEnd, hessiansBegin, hessiansEnd, l2RegularizationWeight,
+                               labelInfo, binRatio_, minBins_, maxBins_);
+                return labelInfo;
+            }
+
+            void createBins(LabelInfo labelInfo, DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
+                            DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
+                            DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
+                            DenseLabelWiseStatisticVector::hessian_const_iterator hessiansEnd,
+                            float64 l2RegularizationWeight, Callback callback,
+                            ZeroCallback zeroCallback) const override {
+                createBinsInternally(labelInfo, gradientsBegin, gradientsEnd, hessiansBegin, hessiansEnd,
+                                     l2RegularizationWeight, callback, zeroCallback);
+            }
+
+            void createBins(LabelInfo labelInfo,
+                            DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
+                            DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
+                            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansBegin,
+                            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansEnd,
+                            float64 l2RegularizationWeight, Callback callback,
+                            ZeroCallback zeroCallback) const override {
+                createBinsInternally(labelInfo, gradientsBegin, gradientsEnd, hessiansBegin, hessiansEnd,
+                                     l2RegularizationWeight, callback, zeroCallback);
+            }
+
+    };
+
+    EqualWidthLabelBinningFactory::EqualWidthLabelBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
+        : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
+
+    }
+
+    std::unique_ptr<ILabelBinning> EqualWidthLabelBinningFactory::create() const {
+        return std::make_unique<EqualWidthLabelBinning>(binRatio_, minBins_, maxBins_);
+    }
 
 }
