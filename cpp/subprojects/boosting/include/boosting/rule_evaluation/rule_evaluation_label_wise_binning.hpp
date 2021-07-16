@@ -10,9 +10,9 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `BinningLabelWiseRuleEvaluation` that uses equal-width binning.
+     * Allows to create instances of the class `BinningLabelWiseRuleEvaluation` that uses label binning.
      */
-    class EqualWidthBinningLabelWiseRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
+    class BinnedLabelWiseRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
 
         private:
 
@@ -28,8 +28,8 @@ namespace boosting {
              * @param labelBinningFactoryPtr    A shared pointer to an object of type `ILabelBinningFactory` that allows
              *                                  to create the implementation to be used to assign labels to bins
              */
-            EqualWidthBinningLabelWiseRuleEvaluationFactory(
-                float64 l2RegularizationWeight, std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
+            BinnedLabelWiseRuleEvaluationFactory(float64 l2RegularizationWeight,
+                                                 std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
 
             std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
                 const CompleteIndexVector& indexVector) const override;

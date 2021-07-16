@@ -17,9 +17,9 @@ from mlrl.boosting.cython.output import LabelWiseClassificationPredictor, Exampl
     LabelWiseProbabilityPredictor, LabelWiseTransformationFunction, LogisticFunction
 from mlrl.boosting.cython.post_processing import ConstantShrinkage
 from mlrl.boosting.cython.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory, \
-    EqualWidthBinningExampleWiseRuleEvaluationFactory
+    BinnedExampleWiseRuleEvaluationFactory
 from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory, \
-    EqualWidthBinningLabelWiseRuleEvaluationFactory
+    BinnedLabelWiseRuleEvaluationFactory
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, NoHeadRefinementFactory, \
@@ -388,19 +388,17 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __create_rule_evaluation_factory(self, loss_function, l2_regularization_weight: float):
         label_binning_factory = self.__create_label_binning_factory()
-        label_binning, bin_ratio, min_bins, max_bins = self.__create_label_binning()
 
         if isinstance(loss_function, LabelWiseLoss):
-            if label_binning is None:
+            if label_binning_factory is None:
                 return RegularizedLabelWiseRuleEvaluationFactory(l2_regularization_weight)
             else:
-                return EqualWidthBinningLabelWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
+                return BinnedLabelWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
         else:
-            if label_binning is None:
+            if label_binning_factory is None:
                 return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
             else:
-                return EqualWidthBinningExampleWiseRuleEvaluationFactory(l2_regularization_weight,
-                                                                         label_binning_factory)
+                return BinnedExampleWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
 
     def __create_label_binning_factory(self) -> LabelBinningFactory:
         label_binning = self.__get_preferred_label_binning()
@@ -412,8 +410,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
             if prefix == LABEL_BINNING_EQUAL_WIDTH:
                 bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.04, lambda x: 0 < x < 1)
-                min_bins = options.get_int_argument(ARGUMENT_MIN_BINS, 1, lambda x: x >= 1)
-                max_bins = options.get_int_argument(ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+                min_bins = options.get_int(ARGUMENT_MIN_BINS, 1, lambda x: x >= 1)
+                max_bins = options.get_int(ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
                 return EqualWidthLabelBinningFactory(bin_ratio, min_bins, max_bins)
             raise ValueError('Invalid value given for parameter \'label_binning\': ' + str(label_binning))
 

@@ -12,9 +12,9 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `BinningExampleWiseRuleEvaluation` that uses equal-width binning.
+     * Allows to create instances of the class `BinningExampleWiseRuleEvaluation` that uses label binning.
      */
-    class EqualWidthBinningExampleWiseRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
+    class BinnedExampleWiseRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
 
         private:
 
@@ -38,9 +38,9 @@ namespace boosting {
              * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
-            EqualWidthBinningExampleWiseRuleEvaluationFactory(
-                float64 l2RegularizationWeight, std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
-                std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr);
+            BinnedExampleWiseRuleEvaluationFactory(float64 l2RegularizationWeight,
+                                                   std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
+                                                   std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr);
 
             std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createDense(
                 const CompleteIndexVector& indexVector) const override;
