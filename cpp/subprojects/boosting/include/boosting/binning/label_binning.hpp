@@ -7,6 +7,7 @@
 #include "boosting/data/statistic_vector_dense_example_wise.hpp"
 #include "boosting/data/statistic_vector_dense_label_wise.hpp"
 #include <functional>
+#include <memory>
 
 
 namespace boosting {
@@ -184,6 +185,24 @@ namespace boosting {
                                     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansEnd,
                                     float64 l2RegularizationWeight, Callback callback,
                                     ZeroCallback zeroCallback) const = 0;
+
+    };
+
+    /**
+     * Defines an interface for all factories that allows to create instances of the type `ILabelBinning`.
+     */
+    class ILabelBinningFactory {
+
+        public:
+
+            virtual ~ILabelBinningFactory() { };
+
+            /**
+             * Creates and returns a new object of type `ILabelBinning`.
+             *
+             * @return An unique pointer to an object of type `ILabelBinning` that has been created
+             */
+            std::unique_ptr<ILabelBinning> create();
 
     };
 
