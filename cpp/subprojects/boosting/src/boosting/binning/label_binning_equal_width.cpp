@@ -14,22 +14,10 @@ namespace boosting {
     }
 
     template<typename GradientIterator, typename HessianIterator>
-    EqualWidthLabelBinning<GradientIterator, HessianIterator>::EqualWidthLabelBinning(float32 binRatio, uint32 minBins,
-                                                                                      uint32 maxBins)
-        : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-
-    }
-
-    template<typename GradientIterator, typename HessianIterator>
-    uint32 EqualWidthLabelBinning<GradientIterator, HessianIterator>::getMaxBins(uint32 numLabels) const {
-        return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
-    }
-
-    template<typename GradientIterator, typename HessianIterator>
-    LabelInfo EqualWidthLabelBinning<GradientIterator, HessianIterator>::getLabelInfo(
-            GradientIterator gradientsBegin, GradientIterator gradientsEnd, HessianIterator hessiansBegin,
-            HessianIterator hessiansEnd, float64 l2RegularizationWeight) const {
-        LabelInfo labelInfo;
+    static inline void fetchLabelInfo(GradientIterator gradientsBegin, GradientIterator gradientsEnd,
+                                      HessianIterator hessiansBegin, HessianIterator hessiansEnd,
+                                      float64 l2RegularizationWeight, LabelInfo& labelInfo, float32 binRatio,
+                                      uint32 minBins, uint32 maxBins) {
         uint32 numStatistics = gradientsEnd - gradientsBegin;
 
         if (numStatistics > 0) {
@@ -68,23 +56,21 @@ namespace boosting {
             }
 
             labelInfo.numNegativeBins =
-                numPositive > 0 ? calculateNumBins(numPositive, binRatio_, minBins_, maxBins_) : 0;
+                numPositive > 0 ? calculateNumBins(numPositive, binRatio, minBins, maxBins) : 0;
             labelInfo.numPositiveBins =
-                numNegative > 0 ? calculateNumBins(numNegative, binRatio_, minBins_, maxBins_) : 0;
+                numNegative > 0 ? calculateNumBins(numNegative, binRatio, minBins, maxBins) : 0;
         } else {
             labelInfo.numPositiveBins = 0;
             labelInfo.numNegativeBins = 0;
         }
-
-        return labelInfo;
     }
 
     template<typename GradientIterator, typename HessianIterator>
-    void EqualWidthLabelBinning<GradientIterator, HessianIterator>::createBins(
-            LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
-            HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,
-            typename ILabelBinning<GradientIterator, HessianIterator>::Callback callback,
-            typename ILabelBinning<GradientIterator, HessianIterator>::ZeroCallback zeroCallback) const {
+    static inline void createBinsInternally(LabelInfo& labelInfo, GradientIterator gradientsBegin,
+                                            GradientIterator gradientsEnd, HessianIterator hessiansBegin,
+                                            HessianIterator hessiansEnd, float64 l2RegularizationWeight,
+                                            ILabelBinning::Callback callback,
+                                            ILabelBinning::ZeroCallback zeroCallback) {
         uint32 numPositiveBins = labelInfo.numPositiveBins;
         float64 minPositive = labelInfo.minPositive;
         float64 maxPositive = labelInfo.maxPositive;
@@ -127,9 +113,58 @@ namespace boosting {
         }
     }
 
-    template class EqualWidthLabelBinning<DenseLabelWiseStatisticVector::gradient_const_iterator,
-                                          DenseLabelWiseStatisticVector::hessian_const_iterator>;
-    template class EqualWidthLabelBinning<DenseExampleWiseStatisticVector::gradient_const_iterator,
-                                          DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>;
+    EqualWidthLabelBinning::EqualWidthLabelBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
+        : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
+
+    }
+
+    uint32 EqualWidthLabelBinning::getMaxBins(uint32 numLabels) const {
+        return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
+    }
+
+    LabelInfo EqualWidthLabelBinning::getLabelInfo(
+            DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
+            DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
+            DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
+            DenseLabelWiseStatisticVector::hessian_const_iterator hessiansEnd, float64 l2RegularizationWeight) const {
+        LabelInfo labelInfo;
+        fetchLabelInfo(gradientsBegin, gradientsEnd, hessiansBegin, hessiansEnd, l2RegularizationWeight, labelInfo,
+                       binRatio_, minBins_, maxBins_);
+        return labelInfo;
+    }
+
+    LabelInfo EqualWidthLabelBinning::getLabelInfo(
+            DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
+            DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
+            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansBegin,
+            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansEnd,
+            float64 l2RegularizationWeight) const {
+        LabelInfo labelInfo;
+        fetchLabelInfo(gradientsBegin, gradientsEnd, hessiansBegin, hessiansEnd, l2RegularizationWeight, labelInfo,
+                       binRatio_, minBins_, maxBins_);
+        return labelInfo;
+    }
+
+    void EqualWidthLabelBinning::createBins(LabelInfo labelInfo,
+                                            DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
+                                            DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
+                                            DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
+                                            DenseLabelWiseStatisticVector::hessian_const_iterator hessiansEnd,
+                                            float64 l2RegularizationWeight, ILabelBinning::Callback callback,
+                                            ILabelBinning::ZeroCallback zeroCallback) const {
+        createBinsInternally(labelInfo, gradientsBegin, gradientsEnd, hessiansBegin, hessiansEnd,
+                             l2RegularizationWeight, callback, zeroCallback);
+    }
+
+    void EqualWidthLabelBinning::createBins(
+            LabelInfo labelInfo, DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
+            DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
+            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansBegin,
+            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansEnd,
+            float64 l2RegularizationWeight, ILabelBinning::Callback callback,
+            ILabelBinning::ZeroCallback zeroCallback) const {
+        createBinsInternally(labelInfo, gradientsBegin, gradientsEnd, hessiansBegin, hessiansEnd,
+                             l2RegularizationWeight, callback, zeroCallback);
+    }
 
 }
