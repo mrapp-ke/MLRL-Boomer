@@ -11,13 +11,6 @@
 
 namespace boosting {
 
-    /**
-     * The type of the class that allows to assign labels to bins, based on the gradients and Hessians that are stored
-     * in a `DenseExampleWiseStatisticVector`.
-     */
-    typedef ILabelBinning<DenseExampleWiseStatisticVector::gradient_const_iterator,
-                          DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator> LabelBinningType;
-
     static inline uint32 removeEmptyBins(uint32* numElementsPerBin, uint32* binIndices, uint32 numBins) {
         uint32 n = 0;
 
@@ -123,7 +116,7 @@ namespace boosting {
 
             uint32 maxBins_;
 
-            std::unique_ptr<LabelBinningType> binningPtr_;
+            std::unique_ptr<ILabelBinning> binningPtr_;
 
             const Blas& blas_;
 
@@ -155,7 +148,7 @@ namespace boosting {
              *                                  different LAPACK routines
              */
             DenseBinningExampleWiseRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight, uint32 maxBins,
-                                                  std::unique_ptr<LabelBinningType> binningPtr, const Blas& blas,
+                                                  std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                   const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices, lapack),
                   l2RegularizationWeight_(l2RegularizationWeight), maxBins_(maxBins),
@@ -326,10 +319,8 @@ namespace boosting {
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> EqualWidthBinningExampleWiseRuleEvaluationFactory::createDense(
             const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<LabelBinningType> binningPtr =
-            std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector::gradient_const_iterator,
-                                                    DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>>(
-                                                        binRatio_, minBins_, maxBins_);
+        std::unique_ptr<ILabelBinning> binningPtr = std::make_unique<EqualWidthLabelBinning>(binRatio_, minBins_,
+                                                                                             maxBins_);
         uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseBinningExampleWiseRuleEvaluation<CompleteIndexVector>>(indexVector,
                                                                                             l2RegularizationWeight_,
@@ -340,10 +331,8 @@ namespace boosting {
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> EqualWidthBinningExampleWiseRuleEvaluationFactory::createDense(
             const PartialIndexVector& indexVector) const {
-        std::unique_ptr<LabelBinningType> binningPtr =
-            std::make_unique<EqualWidthLabelBinning<DenseExampleWiseStatisticVector::gradient_const_iterator,
-                                                    DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator>>(
-                                                        binRatio_, minBins_, maxBins_);
+        std::unique_ptr<ILabelBinning> binningPtr = std::make_unique<EqualWidthLabelBinning>(binRatio_, minBins_,
+                                                                                             maxBins_);
         uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseBinningExampleWiseRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                            l2RegularizationWeight_,

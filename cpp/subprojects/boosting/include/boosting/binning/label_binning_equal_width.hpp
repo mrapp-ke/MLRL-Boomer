@@ -11,12 +11,8 @@ namespace boosting {
     /**
      * Assigns labels to bins, based on the corresponding gradients and Hessians, in a way such that each bin contains
      * labels for which the predicted score is expected to belong to the same value range.
-     *
-     * @tparam GradientIterator The type of the iterator that provides access to the gradients
-     * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
      */
-    template<typename GradientIterator, typename HessianIterator>
-    class EqualWidthLabelBinning final : public ILabelBinning<GradientIterator, HessianIterator> {
+    class EqualWidthLabelBinning final : public ILabelBinning {
 
         private:
 
@@ -39,18 +35,32 @@ namespace boosting {
 
             uint32 getMaxBins(uint32 numLabels) const override;
 
-            LabelInfo getLabelInfo(GradientIterator gradientsBegin, GradientIterator gradientsEnd,
-                                   HessianIterator hessiansBegin, HessianIterator hessiansEnd,
+            LabelInfo getLabelInfo(DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
+                                   DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
+                                   DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
+                                   DenseLabelWiseStatisticVector::hessian_const_iterator hessiansEnd,
                                    float64 l2RegularizationWeight) const override;
 
-            /**
-             * @see `ILabelBinning::createBins`
-             */
-            void createBins(
-                LabelInfo labelInfo, GradientIterator gradientsBegin, GradientIterator gradientsEnd,
-                HessianIterator hessiansBegin, HessianIterator hessiansEnd, float64 l2RegularizationWeight,
-                typename ILabelBinning<GradientIterator, HessianIterator>::Callback callback,
-                typename ILabelBinning<GradientIterator, HessianIterator>::ZeroCallback zeroCallback) const override;
+            LabelInfo getLabelInfo(DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
+                                   DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
+                                   DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansBegin,
+                                   DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansEnd,
+                                   float64 l2RegularizationWeight) const override;
+
+            void createBins(LabelInfo labelInfo, DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
+                            DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
+                            DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
+                            DenseLabelWiseStatisticVector::hessian_const_iterator hessiansEnd,
+                            float64 l2RegularizationWeight, Callback callback,
+                            ZeroCallback zeroCallback) const override;
+
+            void createBins(LabelInfo labelInfo,
+                            DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
+                            DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
+                            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansBegin,
+                            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansEnd,
+                            float64 l2RegularizationWeight, Callback callback,
+                            ZeroCallback zeroCallback) const override;
 
     };
 
