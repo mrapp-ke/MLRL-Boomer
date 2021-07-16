@@ -202,7 +202,7 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `ILabelBinning` that has been created
              */
-            std::unique_ptr<ILabelBinning> create();
+            virtual std::unique_ptr<ILabelBinning> create() const = 0;
 
     };
 

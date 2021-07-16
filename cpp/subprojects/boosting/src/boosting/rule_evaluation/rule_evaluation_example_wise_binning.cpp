@@ -310,34 +310,32 @@ namespace boosting {
     };
 
     EqualWidthBinningExampleWiseRuleEvaluationFactory::EqualWidthBinningExampleWiseRuleEvaluationFactory(
-            float64 l2RegularizationWeight, float32 binRatio, uint32 minBins, uint32 maxBins,
+            float64 l2RegularizationWeight, std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
             std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
-        : l2RegularizationWeight_(l2RegularizationWeight), binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins),
+        : l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(labelBinningFactoryPtr),
           blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
 
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> EqualWidthBinningExampleWiseRuleEvaluationFactory::createDense(
             const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<ILabelBinning> binningPtr = std::make_unique<EqualWidthLabelBinning>(binRatio_, minBins_,
-                                                                                             maxBins_);
-        uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
+        std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
+        uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseBinningExampleWiseRuleEvaluation<CompleteIndexVector>>(indexVector,
                                                                                             l2RegularizationWeight_,
                                                                                             maxBins,
-                                                                                            std::move(binningPtr),
+                                                                                            std::move(labelBinningPtr),
                                                                                             *blasPtr_, *lapackPtr_);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> EqualWidthBinningExampleWiseRuleEvaluationFactory::createDense(
             const PartialIndexVector& indexVector) const {
-        std::unique_ptr<ILabelBinning> binningPtr = std::make_unique<EqualWidthLabelBinning>(binRatio_, minBins_,
-                                                                                             maxBins_);
-        uint32 maxBins = binningPtr->getMaxBins(indexVector.getNumElements());
+            std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
+        uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseBinningExampleWiseRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                            l2RegularizationWeight_,
                                                                                            maxBins,
-                                                                                           std::move(binningPtr),
+                                                                                           std::move(labelBinningPtr),
                                                                                            *blasPtr_, *lapackPtr_);
     }
 
