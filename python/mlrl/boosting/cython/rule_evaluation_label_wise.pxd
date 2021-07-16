@@ -22,13 +22,13 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_regularize
 
 cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_binning.hpp" namespace "boosting" nogil:
 
-    cdef cppclass EqualWidthBinningLabelWiseRuleEvaluationFactoryImpl"boosting::EqualWidthBinningLabelWiseRuleEvaluationFactory"(
+    cdef cppclass BinnedLabelWiseRuleEvaluationFactoryImpl"boosting::BinnedLabelWiseRuleEvaluationFactory"(
             ILabelWiseRuleEvaluationFactory):
 
         # Constructors:
 
-        EqualWidthBinningLabelWiseRuleEvaluationFactoryImpl(
-            float64 l2RegularizationWeight, shared_ptr[ILabelBinningFactory] labelBinningFactoryPtr) except +
+        BinnedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
+                                                 shared_ptr[ILabelBinningFactory] labelBinningFactoryPtr) except +
 
 
 cdef class LabelWiseRuleEvaluationFactory:
@@ -42,5 +42,5 @@ cdef class RegularizedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFact
     pass
 
 
-cdef class EqualWidthBinningLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+cdef class BinnedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     pass

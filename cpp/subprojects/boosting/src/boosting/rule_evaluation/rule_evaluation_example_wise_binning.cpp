@@ -1,5 +1,4 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_binning.hpp"
-#include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
@@ -309,7 +308,7 @@ namespace boosting {
 
     };
 
-    EqualWidthBinningExampleWiseRuleEvaluationFactory::EqualWidthBinningExampleWiseRuleEvaluationFactory(
+    BinnedExampleWiseRuleEvaluationFactory::BinnedExampleWiseRuleEvaluationFactory(
             float64 l2RegularizationWeight, std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
             std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
         : l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(labelBinningFactoryPtr),
@@ -317,7 +316,7 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> EqualWidthBinningExampleWiseRuleEvaluationFactory::createDense(
+    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> BinnedExampleWiseRuleEvaluationFactory::createDense(
             const CompleteIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
@@ -328,7 +327,7 @@ namespace boosting {
                                                                                             *blasPtr_, *lapackPtr_);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> EqualWidthBinningExampleWiseRuleEvaluationFactory::createDense(
+    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> BinnedExampleWiseRuleEvaluationFactory::createDense(
             const PartialIndexVector& indexVector) const {
             std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
