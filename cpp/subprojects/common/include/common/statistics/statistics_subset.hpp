@@ -65,12 +65,12 @@ class IStatisticsSubset {
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
          * to the subset so far via the function `addToSubset`.
          *
-         * If the argument `uncovered` is 1, the rule is considered to cover all statistics that belong to the
+         * If the argument `uncovered` is true, the rule is considered to cover all statistics that belong to the
          * difference between the statistics that have been provided via the function `Statistics#addSampledStatistic`
          * or `Statistics#updateCoveredStatistic` and the statistics that have been added to the subset via the function
          * `addToSubset`.
          *
-         * If the argument `accumulated` is 1, all statistics that have been added since the subset has been created
+         * If the argument `accumulated` is true, all statistics that have been added since the subset has been created
          * via the function `Statistics#createSubset` are taken into account even if the function `resetSubset` has been
          * called since then. If said function has not been invoked, this argument does not have any effect.
          *
@@ -99,12 +99,12 @@ class IStatisticsSubset {
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
          * to the subset so far via the function `addToSubset`.
          *
-         * If the argument `uncovered` is 1, the rule is considered to cover all statistics that belong to the
+         * If the argument `uncovered` is true, the rule is considered to cover all statistics that belong to the
          * difference between the statistics that have been provided via the function `Statistics#addSampledStatistic`
          * or `Statistics#updateCoveredStatistic` and the statistics that have been added to the subset via the function
          * `addToSubset`.
          *
-         * If the argument `accumulated` is 1, all statistics that have been added since the subset has been created
+         * If the argument `accumulated` is true, all statistics that have been added since the subset has been created
          * via the function `Statistics#createSubset` are taken into account even if the function `resetSubset` has been
          * called since then. If said function has not been invoked, this argument does not have any effect.
          *

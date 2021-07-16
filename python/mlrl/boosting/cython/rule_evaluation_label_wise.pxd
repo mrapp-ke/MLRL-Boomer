@@ -1,4 +1,5 @@
 from mlrl.common.cython._types cimport uint32, float32, float64
+from mlrl.boosting.cython.binning cimport ILabelBinningFactory
 
 from libcpp.memory cimport shared_ptr
 
@@ -21,13 +22,13 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_regularize
 
 cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_binning.hpp" namespace "boosting" nogil:
 
-    cdef cppclass EqualWidthBinningLabelWiseRuleEvaluationFactoryImpl"boosting::EqualWidthBinningLabelWiseRuleEvaluationFactory"(
+    cdef cppclass BinnedLabelWiseRuleEvaluationFactoryImpl"boosting::BinnedLabelWiseRuleEvaluationFactory"(
             ILabelWiseRuleEvaluationFactory):
 
         # Constructors:
 
-        EqualWidthBinningLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, float32 binRatio,
-                                                            uint32 minBins, uint32 maxBins) except +
+        BinnedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
+                                                 shared_ptr[ILabelBinningFactory] labelBinningFactoryPtr) except +
 
 
 cdef class LabelWiseRuleEvaluationFactory:
@@ -41,5 +42,5 @@ cdef class RegularizedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFact
     pass
 
 
-cdef class EqualWidthBinningLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+cdef class BinnedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     pass
