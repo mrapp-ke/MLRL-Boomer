@@ -34,10 +34,8 @@ def log_level(s):
 
 def current_fold_string(s):
     n = int(s)
-    if n > 0:
+    if n >= 0:
         return n - 1
-    elif n == -1:
-        return -1
     raise ValueError('Invalid argument given for parameter \'--current-fold\': ' + str(n))
 
 
@@ -110,8 +108,8 @@ class ArgumentParserBuilder:
                             help='True, if one-hot-encoding should be used, False otherwise')
         parser.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
         parser.add_argument('--current-fold', type=current_fold_string,
-                            default=ArgumentParserBuilder.__get_or_default('current_fold', -1, **kwargs),
-                            help='The cross validation fold to be performed')
+                            default=ArgumentParserBuilder.__get_or_default('current_fold', 0, **kwargs),
+                            help='The cross validation fold to be performed or 0')
         parser.add_argument('--store-predictions', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_predictions', False, **kwargs),
                             help='True, if the predictions should be stored as ARFF files, False otherwise')
@@ -133,19 +131,19 @@ class ArgumentParserBuilder:
                             help='The format to be used for the label matrix or \'auto\'')
         parser.add_argument('--num-threads-rule-refinement', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads_rule_refinement', 1, **kwargs),
-                            help='The number of threads to be used to search for potential refinements of rules or -1')
+                            help='The number of threads to be used to search for potential refinements of rules or 0')
         parser.add_argument('--num-threads-statistic-update', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads_statistic_update', 1, **kwargs),
-                            help='The number of threads to be used to update statistics or -1')
+                            help='The number of threads to be used to update statistics or 0')
         parser.add_argument('--num-threads-prediction', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
-                            help='The number of threads to be used to make predictions or -1')
+                            help='The number of threads to be used to make predictions or 0')
         parser.add_argument('--max-rules', type=int,
                             default=ArgumentParserBuilder.__get_or_default('max_rules', 500, **kwargs),
-                            help='The maximum number of rules to be induced or -1')
+                            help='The maximum number of rules to be induced or 0')
         parser.add_argument('--time-limit', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('time_limit', -1, **kwargs),
-                            help='The duration in seconds after which the induction of rules should be canceled or -1')
+                            default=ArgumentParserBuilder.__get_or_default('time_limit', 0, **kwargs),
+                            help='The duration in seconds after which the induction of rules should be canceled or 0')
         parser.add_argument('--label-sampling', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('label_sampling', None, **kwargs),
                             help='The name of the strategy to be used for label sampling or None')
@@ -169,11 +167,11 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('min_coverage', 1, **kwargs),
                             help='The minimum number of training examples that must be covered by a rule')
         parser.add_argument('--max-conditions', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('max_conditions', -1, **kwargs),
-                            help='The maximum number of conditions to be included in a rule\'s body or -1')
+                            default=ArgumentParserBuilder.__get_or_default('max_conditions', 0, **kwargs),
+                            help='The maximum number of conditions to be included in a rule\'s body or 0')
         parser.add_argument('--max-head-refinements', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('max_head_refinements', -1, **kwargs),
-                            help='The maximum number of times the head of a rule may be refined or -1')
+                            default=ArgumentParserBuilder.__get_or_default('max_head_refinements', 0, **kwargs),
+                            help='The maximum number of times the head of a rule may be refined or 0')
         parser.add_argument('--print-rules', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('print_rules', False, **kwargs),
                             help='True, if the induced rules should be printed on the console, False otherwise')

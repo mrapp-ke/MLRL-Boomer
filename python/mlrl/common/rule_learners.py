@@ -153,13 +153,13 @@ def create_pruning(pruning: str, instance_sampling: str) -> Pruning:
 def create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCriterion]:
     stopping_criteria: List[StoppingCriterion] = []
 
-    if max_rules != -1:
+    if max_rules != 0:
         if max_rules > 0:
             stopping_criteria.append(SizeStoppingCriterion(max_rules))
         else:
             raise ValueError('Invalid value given for parameter \'max_rules\': ' + str(max_rules))
 
-    if time_limit != -1:
+    if time_limit != 0:
         if time_limit > 0:
             stopping_criteria.append(TimeStoppingCriterion(time_limit))
         else:
@@ -176,21 +176,21 @@ def create_min_coverage(min_coverage: int) -> int:
 
 
 def create_max_conditions(max_conditions: int) -> int:
-    if max_conditions != -1 and max_conditions < 1:
+    if max_conditions != 0 and max_conditions < 1:
         raise ValueError('Invalid value given for parameter \'max_conditions\': ' + str(max_conditions))
 
     return max_conditions
 
 
 def create_max_head_refinements(max_head_refinements: int) -> int:
-    if max_head_refinements != -1 and max_head_refinements < 1:
+    if max_head_refinements != 0 and max_head_refinements < 1:
         raise ValueError('Invalid value given for parameter \'max_head_refinements\': ' + str(max_head_refinements))
 
     return max_head_refinements
 
 
 def get_preferred_num_threads(num_threads: int) -> int:
-    if num_threads == -1:
+    if num_threads == 0:
         return os.cpu_count()
     if num_threads < 1:
         raise ValueError('Invalid number of threads given: ' + str(num_threads))
