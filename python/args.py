@@ -34,10 +34,8 @@ def log_level(s):
 
 def current_fold_string(s):
     n = int(s)
-    if n > 0:
+    if n >= 0:
         return n - 1
-    elif n == 0:
-        return -1
     raise ValueError('Invalid argument given for parameter \'--current-fold\': ' + str(n))
 
 
