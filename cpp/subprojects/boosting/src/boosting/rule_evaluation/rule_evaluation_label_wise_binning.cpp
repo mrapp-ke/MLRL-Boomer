@@ -1,6 +1,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_binning.hpp"
 #include "common/data/arrays.hpp"
 #include "common/rule_evaluation/score_vector_label_wise_binned_dense.hpp"
+#include "common/validation.hpp"
 #include "rule_evaluation_label_wise_binning_common.hpp"
 #include <cstdlib>
 
@@ -109,7 +110,7 @@ namespace boosting {
     BinnedLabelWiseRuleEvaluationFactory::BinnedLabelWiseRuleEvaluationFactory(
             float64 l2RegularizationWeight, std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
         : l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(labelBinningFactoryPtr) {
-
+        assertGreaterOrEqual<float64>(l2RegularizationWeight, 0);
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> BinnedLabelWiseRuleEvaluationFactory::createDense(
