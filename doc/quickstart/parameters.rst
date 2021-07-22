@@ -119,9 +119,9 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * True, if the first rule should be a default rule, False otherwise.
 
-* ``--time-limit`` (Default value = -1)
+* ``--time-limit`` (Default value = 0)
 
-  * The duration in seconds after which the induction of rules should be canceled or -1, if no time limit should be set.
+  * The duration in seconds after which the induction of rules should be canceled or 0, if no time limit should be set.
 
 * ``--label-sampling`` (Default value = None)
 
