@@ -11,22 +11,26 @@ from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import NoPostProcessor
 from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelAssemblage
+from mlrl.common.cython.sampling import InstanceSamplingFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
 from mlrl.seco.cython.heuristics import Heuristic, Accuracy, Precision, Recall, Laplace, WRA, FMeasure, MEstimate
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
 from mlrl.seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
+from mlrl.seco.cython.sampling import InstanceSamplingWithReplacementFactory, \
+    InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory
 from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_WITH_REPLACEMENT, \
+    SAMPLING_WITHOUT_REPLACEMENT, ARGUMENT_SAMPLE_SIZE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
-    create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
-    create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
-    get_preferred_num_threads, parse_prefix_and_options, create_thresholds_factory
+    create_label_sampling_factory, create_partition_sampling_factory, create_max_conditions, create_stopping_criteria, \
+    create_min_coverage, create_max_head_refinements, get_preferred_num_threads, parse_prefix_and_options, \
+    create_thresholds_factory
 
 HEAD_TYPE_PARTIAL = 'partial'
 
@@ -69,10 +73,10 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
                  head_type: str = HEAD_TYPE_SINGLE, lift_function: str = LIFT_FUNCTION_PEAK,
                  loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_F_MEASURE,
-                 pruning_heuristic:str = HEURISTIC_ACCURACY, label_sampling: str = None, instance_sampling: str = None,
-                 feature_sampling: str = None, holdout: str = None, feature_binning: str = None,
-                 pruning: str = PRUNING_IREP, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
+                 pruning_heuristic:str = HEURISTIC_ACCURACY, label_sampling: str = None,
+                 instance_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, feature_sampling: str = None,
+                 holdout: str = None, feature_binning: str = None, pruning: str = PRUNING_IREP, min_coverage: int = 1,
+                 max_conditions: int = -1, max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
                  num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
@@ -203,7 +207,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         default_rule_head_refinement_factory = CompleteHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)
         label_sampling_factory = create_label_sampling_factory(self.label_sampling, num_labels)
-        instance_sampling_factory = create_instance_sampling_factory(self.instance_sampling)
+        instance_sampling_factory = self.__create_instance_sampling_factory()
         feature_sampling_factory = create_feature_sampling_factory(self.feature_sampling)
         partition_sampling_factory = create_partition_sampling_factory(self.holdout)
         pruning = create_pruning(self.pruning, self.instance_sampling)
@@ -273,6 +277,23 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         elif head_type == HEAD_TYPE_PARTIAL:
             return PartialHeadRefinementFactory(lift_function)
         raise ValueError('Invalid value given for parameter \'head_type\': ' + str(head_type))
+
+    def __create_instance_sampling_factory(self) -> InstanceSamplingFactory:
+        instance_sampling = self.instance_sampling
+
+        if instance_sampling is None:
+            return NoInstanceSamplingFactory()
+        else:
+            prefix, options = parse_prefix_and_options('instance_sampling', instance_sampling,
+                                                       [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT])
+
+            if prefix == SAMPLING_WITH_REPLACEMENT:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
+                return InstanceSamplingWithReplacementFactory(sample_size)
+            elif prefix == SAMPLING_WITHOUT_REPLACEMENT:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+                return InstanceSamplingWithoutReplacementFactory(sample_size)
+            raise ValueError('Invalid value given for parameter \'instance_sampling\': ' + str(instance_sampling))
 
     def _create_predictor(self, num_labels: int) -> Predictor:
         return self.__create_label_wise_predictor(num_labels)

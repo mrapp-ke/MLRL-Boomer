@@ -37,6 +37,10 @@ namespace seco {
 
             }
 
+            void visitWeightMatrix(ICoverageStatistics::DenseWeightMatrixVisitor denseWeightMatrixVisitor) override {
+                denseWeightMatrixVisitor(this->weightMatrixPtr_);
+            }
+
     };
 
     DenseLabelWiseStatisticsFactory::DenseLabelWiseStatisticsFactory(

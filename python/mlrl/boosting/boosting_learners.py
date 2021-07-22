@@ -20,6 +20,9 @@ from mlrl.boosting.cython.rule_evaluation_example_wise import RegularizedExample
     BinnedExampleWiseRuleEvaluationFactory
 from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory, \
     BinnedLabelWiseRuleEvaluationFactory
+from mlrl.boosting.cython.sampling import InstanceSamplingWithReplacementFactory, \
+    InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, \
+    ExampleWiseStratifiedSamplingFactory
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, NoHeadRefinementFactory, \
@@ -29,18 +32,19 @@ from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
 from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelAssemblage
+from mlrl.common.cython.sampling import InstanceSamplingFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFunction, MinFunction, MaxFunction, \
     ArithmeticMeanFunction
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
-    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
+from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT, \
+    SAMPLING_STRATIFIED_LABEL_WISE, SAMPLING_STRATIFIED_EXAMPLE_WISE, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
+    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_SAMPLE_SIZE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
-    create_instance_sampling_factory, create_label_sampling_factory, create_partition_sampling_factory, \
-    create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
-    get_preferred_num_threads, create_thresholds_factory, parse_prefix_and_options
+from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, create_label_sampling_factory, \
+    create_partition_sampling_factory, create_max_conditions, create_stopping_criteria, create_min_coverage, \
+    create_max_head_refinements, get_preferred_num_threads, create_thresholds_factory, parse_prefix_and_options
 
 EARLY_STOPPING_LOSS = 'loss'
 
@@ -296,7 +300,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if early_stopping_criterion is not None:
             stopping_criteria.append(early_stopping_criterion)
         label_sampling_factory = create_label_sampling_factory(self.label_sampling, num_labels)
-        instance_sampling_factory = create_instance_sampling_factory(self.instance_sampling)
+        instance_sampling_factory = self.__create_instance_sampling_factory()
         feature_sampling_factory = create_feature_sampling_factory(self.feature_sampling)
         partition_sampling_factory = create_partition_sampling_factory(self.holdout)
         pruning = create_pruning(self.pruning, self.instance_sampling)
@@ -464,3 +468,28 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if shrinkage == 1.0:
             return NoPostProcessor()
         raise ValueError('Invalid value given for parameter \'shrinkage\': ' + str(shrinkage))
+
+    def __create_instance_sampling_factory(self) -> InstanceSamplingFactory:
+        instance_sampling = self.instance_sampling
+
+        if instance_sampling is None:
+            return NoInstanceSamplingFactory()
+        else:
+            prefix, options = parse_prefix_and_options('instance_sampling', instance_sampling,
+                                                       [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT,
+                                                        SAMPLING_STRATIFIED_LABEL_WISE,
+                                                        SAMPLING_STRATIFIED_EXAMPLE_WISE])
+
+            if prefix == SAMPLING_WITH_REPLACEMENT:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
+                return InstanceSamplingWithReplacementFactory(sample_size)
+            elif prefix == SAMPLING_WITHOUT_REPLACEMENT:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+                return InstanceSamplingWithoutReplacementFactory(sample_size)
+            elif prefix == SAMPLING_STRATIFIED_LABEL_WISE:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+                return LabelWiseStratifiedSamplingFactory(sample_size)
+            elif prefix == SAMPLING_STRATIFIED_EXAMPLE_WISE:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+                return ExampleWiseStratifiedSamplingFactory(sample_size)
+            raise ValueError('Invalid value given for parameter \'instance_sampling\': ' + str(instance_sampling))
