@@ -7,8 +7,9 @@
 
 
 /**
- * Throws an exception if a given value is not greater than a threshold.
+ * Throws an exception if a given value is not greater than a specific threshold.
  *
+ * @tparam T        The type of the value and threshold
  * @param value     The value
  * @param threshold The threshold
  */
@@ -21,8 +22,9 @@ static inline constexpr void assertGreater(const T value, const T threshold) {
 }
 
 /**
- * Throws an exception if a given value is not smaller than a threshold.
+ * Throws an exception if a given value is not smaller than a specific threshold.
  *
+ * @tparam T        The type of the value and threshold
  * @param value     The value
  * @param threshold The threshold
  */
