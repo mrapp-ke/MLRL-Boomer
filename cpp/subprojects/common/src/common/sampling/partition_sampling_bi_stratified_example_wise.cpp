@@ -1,6 +1,7 @@
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 #include "common/sampling/stratified_sampling.hpp"
 #include "common/indices/index_iterator.hpp"
+#include "common/validation.hpp"
 
 
 /**
@@ -43,7 +44,8 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
 
 ExampleWiseStratifiedBiPartitionSamplingFactory::ExampleWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize)
     : holdoutSetSize_(holdoutSetSize) {
-
+    assertGreater<float32>(holdoutSetSize, 0);
+    assertSmaller<float32>(holdoutSetSize, 1);
 }
 
 std::unique_ptr<IPartitionSampling> ExampleWiseStratifiedBiPartitionSamplingFactory::create(
