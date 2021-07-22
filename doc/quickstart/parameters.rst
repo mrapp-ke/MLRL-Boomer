@@ -30,9 +30,9 @@ The following parameters are always needed to specify the data set that should b
 
   * The total number of folds to be used for cross validation or 1, if no cross validation should be used.
 
-* ``--current-fold`` (Default value = -1)
+* ``--current-fold`` (Default value = 0)
 
-  * The cross-validation fold to be performed or -1, if all folds should be performed. Must be -1 or greater than 0 and less or equal to --folds. If --folds is set to 1, this parameter is ignored.
+  * The cross-validation fold to be performed or 0, if all folds should be performed. Must be 0 or at least 1 and less or equal to --folds. If --folds is set to 1, this parameter is ignored.
 
 * ``--evaluate-training-data`` (Default value = False)
 
@@ -113,15 +113,15 @@ The following parameters allow to adjust the behavior of the algorithm:
 
 * ``--max-rules`` (Default value = 1000)
 
-  * The number of rules to be induced or -1, if the number of rules should not be restricted.
+  * The number of rules to be induced or 0, if the number of rules should not be restricted.
 
 * ``--default-rule`` (Default value = True)
 
   * True, if the first rule should be a default rule, False otherwise.
 
-* ``--time-limit`` (Default value = -1)
+* ``--time-limit`` (Default value = 0)
 
-  * The duration in seconds after which the induction of rules should be canceled or -1, if no time limit should be set.
+  * The duration in seconds after which the induction of rules should be canceled or 0, if no time limit should be set.
 
 * ``--label-sampling`` (Default value = None)
 
@@ -223,13 +223,13 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * The minimum number of training examples that must be covered by a rule. Must be at least 1.
 
-* ``--max-conditions`` (Default value = -1)
+* ``--max-conditions`` (Default value = 0)
 
-  * The maximum number of conditions to be included in a rule's body. Must be at least 1 or -1, if the number of conditions should not be restricted.
+  * The maximum number of conditions to be included in a rule's body. Must be at least 1 or 0, if the number of conditions should not be restricted.
 
-* ``--max-head-refinements`` (Default value = -1)
+* ``--max-head-refinements`` (Default value = 0)
 
-  * The maximum number of times the head of a rule may be refined. Must be at least 1 or -1, if the number of refinements should not be restricted.
+  * The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, if the number of refinements should not be restricted.
 
 * ``--head-type`` (Default value = auto)
 
@@ -264,12 +264,12 @@ The following parameters allow to enable multi-threading for different aspects o
 
 * ``--num-threads-rule-refinement`` (Default value = 1)
 
-  * The number of threads to be used to search for potential refinements of rules in parallel. Must be at least 1 or -1, if the number of cores that are available on the machine should be used.
+  * The number of threads to be used to search for potential refinements of rules in parallel. Must be at least 1 or 0, if the number of cores that are available on the machine should be used.
 
 * ``--num-threads-statistic-update`` (Default value = 1)
 
-  * The number of threads to be used for calculating the gradients and Hessians for different examples in parallel. Must be at least 1 or -1, if the number of cores that are available on the machine should be used.
+  * The number of threads to be used for calculating the gradients and Hessians for different examples in parallel. Must be at least 1 or 0, if the number of cores that are available on the machine should be used.
 
 * ``--num-threads-prediction`` (Default value = 1)
 
-  * The number of threads to be used for making predictions for different examples in parallel. Must be at least 1 or -1, if the number of cores that are available on the machine should be used.
+  * The number of threads to be used for making predictions for different examples in parallel. Must be at least 1 or 0, if the number of cores that are available on the machine should be used.
