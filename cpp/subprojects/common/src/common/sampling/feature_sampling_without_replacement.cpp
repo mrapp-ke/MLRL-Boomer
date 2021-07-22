@@ -1,6 +1,7 @@
 #include "common/sampling/feature_sampling_without_replacement.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/indices/index_iterator.hpp"
+#include "common/validation.hpp"
 #include "index_sampling.hpp"
 #include <cmath>
 
@@ -41,7 +42,8 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
 
 FeatureSamplingWithoutReplacementFactory::FeatureSamplingWithoutReplacementFactory(float32 sampleSize)
     : sampleSize_(sampleSize) {
-
+    assertGreater<float32>(sampleSize, 0);
+    assertSmaller<float32>(sampleSize, 1);
 }
 
 std::unique_ptr<IFeatureSampling> FeatureSamplingWithoutReplacementFactory::create(uint32 numFeatures) const {
