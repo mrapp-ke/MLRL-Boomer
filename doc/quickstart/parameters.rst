@@ -223,13 +223,13 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * The minimum number of training examples that must be covered by a rule. Must be at least 1.
 
-* ``--max-conditions`` (Default value = -1)
+* ``--max-conditions`` (Default value = 0)
 
-  * The maximum number of conditions to be included in a rule's body. Must be at least 1 or -1, if the number of conditions should not be restricted.
+  * The maximum number of conditions to be included in a rule's body. Must be at least 1 or 0, if the number of conditions should not be restricted.
 
-* ``--max-head-refinements`` (Default value = -1)
+* ``--max-head-refinements`` (Default value = 0)
 
-  * The maximum number of times the head of a rule may be refined. Must be at least 1 or -1, if the number of refinements should not be restricted.
+  * The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, if the number of refinements should not be restricted.
 
 * ``--head-type`` (Default value = auto)
 

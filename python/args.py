@@ -169,11 +169,11 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('min_coverage', 1, **kwargs),
                             help='The minimum number of training examples that must be covered by a rule')
         parser.add_argument('--max-conditions', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('max_conditions', -1, **kwargs),
-                            help='The maximum number of conditions to be included in a rule\'s body or -1')
+                            default=ArgumentParserBuilder.__get_or_default('max_conditions', 0, **kwargs),
+                            help='The maximum number of conditions to be included in a rule\'s body or 0')
         parser.add_argument('--max-head-refinements', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('max_head_refinements', -1, **kwargs),
-                            help='The maximum number of times the head of a rule may be refined or -1')
+                            default=ArgumentParserBuilder.__get_or_default('max_head_refinements', 0, **kwargs),
+                            help='The maximum number of times the head of a rule may be refined or 0')
         parser.add_argument('--print-rules', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('print_rules', False, **kwargs),
                             help='True, if the induced rules should be printed on the console, False otherwise')
