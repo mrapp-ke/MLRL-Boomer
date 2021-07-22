@@ -19,7 +19,7 @@ class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactor
     public:
 
         /**
-         * @param numSamples The number of labels to be included in the sample
+         * @param numSamples The number of labels to be included in the sample. Must be at least 1
          */
         LabelSamplingWithoutReplacementFactory(uint32 numSamples);
 
