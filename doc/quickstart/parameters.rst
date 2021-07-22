@@ -113,7 +113,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 
 * ``--max-rules`` (Default value = 1000)
 
-  * The number of rules to be induced or -1, if the number of rules should not be restricted.
+  * The number of rules to be induced or 0, if the number of rules should not be restricted.
 
 * ``--default-rule`` (Default value = True)
 

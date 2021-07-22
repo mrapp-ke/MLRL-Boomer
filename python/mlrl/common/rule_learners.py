@@ -153,7 +153,7 @@ def create_pruning(pruning: str, instance_sampling: str) -> Pruning:
 def create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCriterion]:
     stopping_criteria: List[StoppingCriterion] = []
 
-    if max_rules != -1:
+    if max_rules != 0:
         if max_rules > 0:
             stopping_criteria.append(SizeStoppingCriterion(max_rules))
         else:
