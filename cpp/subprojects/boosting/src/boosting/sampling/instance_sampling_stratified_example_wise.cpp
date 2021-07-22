@@ -2,6 +2,7 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/sampling/stratified_sampling.hpp"
+#include "common/validation.hpp"
 
 
 namespace boosting {
@@ -56,7 +57,8 @@ namespace boosting {
 
     ExampleWiseStratifiedSamplingFactory::ExampleWiseStratifiedSamplingFactory(float32 sampleSize)
         : sampleSize_(sampleSize) {
-
+        assertGreater<float32>(sampleSize, 0);
+        assertSmaller<float32>(sampleSize, 1);
     }
 
     std::unique_ptr<IInstanceSampling> ExampleWiseStratifiedSamplingFactory::create(
