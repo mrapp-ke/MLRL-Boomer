@@ -47,16 +47,16 @@ cdef class TopDownRuleInduction(RuleInduction):
             min_coverage, max_conditions, max_head_refinements, recalculate_predictions, num_threads)
 
 
-cdef class RuleModelInduction:
+cdef class RuleModelAssemblage:
     """
-    A wrapper for the pure virtual C++ class `IRuleModelInduction`.
+    A wrapper for the pure virtual C++ class `IRuleModelAssemblage`.
     """
 
     cpdef RuleModel induce_rules(self, NominalFeatureMask nominal_feature_mask, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
-        cdef shared_ptr[IRuleModelInduction] rule_model_induction_ptr = self.rule_model_induction_ptr
+        cdef shared_ptr[IRuleModelAssemblage] rule_model_assemblage_ptr = self.rule_model_assemblage_ptr
         cdef unique_ptr[RNG] rng_ptr = make_unique[RNG](random_state)
-        cdef unique_ptr[RuleModelImpl] rule_model_ptr = rule_model_induction_ptr.get().induceRules(
+        cdef unique_ptr[RuleModelImpl] rule_model_ptr = rule_model_assemblage_ptr.get().induceRules(
             dereference(nominal_feature_mask.nominal_feature_mask_ptr), dereference(feature_matrix.feature_matrix_ptr),
             dereference(label_matrix.label_matrix_ptr), dereference(rng_ptr),
             dereference(model_builder.model_builder_ptr))
@@ -65,9 +65,9 @@ cdef class RuleModelInduction:
         return model
 
 
-cdef class SequentialRuleModelInduction(RuleModelInduction):
+cdef class SequentialRuleModelAssemblage(RuleModelAssemblage):
     """
-    A wrapper for the C++ class `SequentialRuleModelInduction`.
+    A wrapper for the C++ class `SequentialRuleModelAssemblage`.
     """
 
     def __cinit__(self, StatisticsProviderFactory statistics_provider_factory, ThresholdsFactory thresholds_factory,
@@ -116,7 +116,7 @@ cdef class SequentialRuleModelInduction(RuleModelInduction):
             stopping_criterion = stopping_criteria[i]
             stopping_criteria_ptr.get().push_front(stopping_criterion.stopping_criterion_ptr)
 
-        self.rule_model_induction_ptr = <shared_ptr[IRuleModelInduction]>make_shared[SequentialRuleModelInductionImpl](
+        self.rule_model_assemblage_ptr = <shared_ptr[IRuleModelAssemblage]>make_shared[SequentialRuleModelAssemblageImpl](
             statistics_provider_factory.statistics_provider_factory_ptr, thresholds_factory.thresholds_factory_ptr,
             rule_induction.rule_induction_ptr, default_rule_head_refinement_factory.head_refinement_factory_ptr,
             head_refinement_factory.head_refinement_factory_ptr, label_sampling_factory.label_sampling_factory_ptr,
