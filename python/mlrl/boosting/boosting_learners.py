@@ -31,7 +31,7 @@ from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
-from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
+from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelAssemblage
 from mlrl.common.cython.sampling import InstanceSamplingFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFunction, MinFunction, MaxFunction, \
@@ -294,7 +294,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
 
-    def _create_rule_model_induction(self, num_labels: int) -> SequentialRuleModelInduction:
+    def _create_rule_model_assemblage(self, num_labels: int) -> SequentialRuleModelAssemblage:
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         early_stopping_criterion = self.__create_early_stopping()
         if early_stopping_criterion is not None:
@@ -322,10 +322,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         num_threads_rule_refinement = get_preferred_num_threads(self.num_threads_rule_refinement)
         rule_induction = TopDownRuleInduction(min_coverage, max_conditions, max_head_refinements,
                                               recalculate_predictions, num_threads_rule_refinement)
-        return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
-                                            default_rule_head_refinement_factory, head_refinement_factory,
-                                            label_sampling_factory, instance_sampling_factory, feature_sampling_factory,
-                                            partition_sampling_factory, pruning, shrinkage, stopping_criteria)
+        return SequentialRuleModelAssemblage(statistics_provider_factory, thresholds_factory, rule_induction,
+                                             default_rule_head_refinement_factory, head_refinement_factory,
+                                             label_sampling_factory, instance_sampling_factory,
+                                             feature_sampling_factory, partition_sampling_factory, pruning, shrinkage,
+                                             stopping_criteria)
 
     def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
         early_stopping = self.early_stopping

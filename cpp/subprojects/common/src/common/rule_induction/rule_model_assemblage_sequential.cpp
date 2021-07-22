@@ -1,4 +1,4 @@
-#include "common/rule_induction/rule_model_induction_sequential.hpp"
+#include "common/rule_induction/rule_model_assemblage_sequential.hpp"
 
 
 static inline IStoppingCriterion::Result testStoppingCriteria(
@@ -33,7 +33,7 @@ static inline IStoppingCriterion::Result testStoppingCriteria(
     return result;
 }
 
-SequentialRuleModelInduction::SequentialRuleModelInduction(
+SequentialRuleModelAssemblage::SequentialRuleModelAssemblage(
         std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
         std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
         std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
@@ -53,10 +53,10 @@ SequentialRuleModelInduction::SequentialRuleModelInduction(
 
 }
 
-std::unique_ptr<RuleModel> SequentialRuleModelInduction::induceRules(const INominalFeatureMask& nominalFeatureMask,
-                                                                     const IFeatureMatrix& featureMatrix,
-                                                                     const ILabelMatrix& labelMatrix, RNG& rng,
-                                                                     IModelBuilder& modelBuilder) {
+std::unique_ptr<RuleModel> SequentialRuleModelAssemblage::induceRules(const INominalFeatureMask& nominalFeatureMask,
+                                                                      const IFeatureMatrix& featureMatrix,
+                                                                      const ILabelMatrix& labelMatrix, RNG& rng,
+                                                                      IModelBuilder& modelBuilder) {
     // Induce default rule...
     const IHeadRefinementFactory* defaultRuleHeadRefinementFactory = defaultRuleHeadRefinementFactoryPtr_.get();
     uint32 numRules = defaultRuleHeadRefinementFactory != nullptr ? 1 : 0;
