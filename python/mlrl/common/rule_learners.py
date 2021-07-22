@@ -159,7 +159,7 @@ def create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCr
         else:
             raise ValueError('Invalid value given for parameter \'max_rules\': ' + str(max_rules))
 
-    if time_limit != -1:
+    if time_limit != 0:
         if time_limit > 0:
             stopping_criteria.append(TimeStoppingCriterion(time_limit))
         else:
