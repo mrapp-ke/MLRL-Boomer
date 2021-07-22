@@ -225,7 +225,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_label-binning=' + str(self.label_binning)
         if self.pruning is not None:
             name += '_pruning=' + str(self.pruning)
-        if 0.0 < float(self.shrinkage) < 1.0:
+        if float(self.shrinkage) < 1.0:
             name += '_shrinkage=' + str(self.shrinkage)
         if float(self.l2_regularization_weight) > 0.0:
             name += '_l2=' + str(self.l2_regularization_weight)
