@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/rule_induction/rule_model_induction.hpp"
+#include "common/rule_induction/rule_model_assemblage.hpp"
 #include "common/rule_induction/rule_induction.hpp"
 #include "common/sampling/label_sampling.hpp"
 #include "common/sampling/instance_sampling.hpp"
@@ -19,7 +19,7 @@
  * Allows to sequentially induce several rules, starting with a default rule, that will be added to a resulting
  * `RuleModel`.
  */
-class SequentialRuleModelInduction : public IRuleModelInduction {
+class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
 
     private:
 
@@ -85,7 +85,7 @@ class SequentialRuleModelInduction : public IRuleModelInduction {
          *                                              which should be used to decide whether additional rules should
          *                                              be induced or not
          */
-        SequentialRuleModelInduction(
+        SequentialRuleModelAssemblage(
             std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
             std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
             std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
