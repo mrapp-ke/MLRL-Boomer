@@ -1,6 +1,7 @@
 #include "common/sampling/label_sampling_without_replacement.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/indices/index_iterator.hpp"
+#include "common/validation.hpp"
 #include "index_sampling.hpp"
 
 
@@ -35,7 +36,7 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
 
 LabelSamplingWithoutReplacementFactory::LabelSamplingWithoutReplacementFactory(uint32 numSamples)
     : numSamples_(numSamples) {
-
+    assertGreaterOrEqual<uint32>(numSamples, 1);
 }
 
 std::unique_ptr<ILabelSampling> LabelSamplingWithoutReplacementFactory::create(uint32 numLabels) const {
