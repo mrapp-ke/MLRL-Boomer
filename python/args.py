@@ -109,7 +109,7 @@ class ArgumentParserBuilder:
         parser.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
         parser.add_argument('--current-fold', type=current_fold_string,
                             default=ArgumentParserBuilder.__get_or_default('current_fold', 0, **kwargs),
-                            help='The cross validation fold to be performed')
+                            help='The cross validation fold to be performed or 0')
         parser.add_argument('--store-predictions', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_predictions', False, **kwargs),
                             help='True, if the predictions should be stored as ARFF files, False otherwise')
