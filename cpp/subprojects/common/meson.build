@@ -59,7 +59,7 @@ source_files = [
     'src/common/rule_evaluation/score_vector_label_wise_binned_dense.cpp',
     'src/common/rule_evaluation/score_vector_label_wise_dense.cpp',
     'src/common/rule_induction/rule_induction_top_down.cpp',
-    'src/common/rule_induction/rule_model_induction_sequential.cpp',
+    'src/common/rule_induction/rule_model_assemblage_sequential.cpp',
     'src/common/rule_refinement/refinement.cpp',
     'src/common/rule_refinement/rule_refinement_approximate.cpp',
     'src/common/rule_refinement/rule_refinement_exact.cpp',

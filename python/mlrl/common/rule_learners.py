@@ -21,7 +21,7 @@ from mlrl.common.cython.input import LabelVectorSet
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
-from mlrl.common.cython.rule_induction import RuleModelInduction
+from mlrl.common.cython.rule_induction import RuleModelAssemblage
 from mlrl.common.cython.sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory, \
     NoFeatureSamplingFactory
 from mlrl.common.cython.sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory, \
@@ -356,10 +356,10 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = BitNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        rule_model_induction = self._create_rule_model_induction(num_labels)
+        rule_model_assemblage = self._create_rule_model_assemblage(num_labels)
         model_builder = self._create_model_builder()
-        return rule_model_induction.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
-                                                 model_builder)
+        return rule_model_assemblage.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
+                                                  model_builder)
 
     def _predict(self, x):
         predictor = self.predictor_
@@ -428,7 +428,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         return None
 
     @abstractmethod
-    def _create_rule_model_induction(self, num_labels: int) -> RuleModelInduction:
+    def _create_rule_model_assemblage(self, num_labels: int) -> RuleModelAssemblage:
         """
         Must be implemented by subclasses in order to create the algorithm that should be used for inducing a rule
         model.

@@ -10,7 +10,7 @@ from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabe
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import NoPostProcessor
-from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
+from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelAssemblage
 from mlrl.common.cython.sampling import InstanceSamplingFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
@@ -191,7 +191,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def _create_model_builder(self) -> ModelBuilder:
         return DecisionListBuilder()
 
-    def _create_rule_model_induction(self, num_labels: int) -> SequentialRuleModelInduction:
+    def _create_rule_model_assemblage(self, num_labels: int) -> SequentialRuleModelAssemblage:
         heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
         pruning_heuristic = self.__create_heuristic(self.pruning_heuristic, 'pruning_heuristic')
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic, pruning_heuristic)
@@ -214,10 +214,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         post_processor = NoPostProcessor()
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(CoverageStoppingCriterion(0))
-        return SequentialRuleModelInduction(statistics_provider_factory, thresholds_factory, rule_induction,
-                                            default_rule_head_refinement_factory, head_refinement_factory,
-                                            label_sampling_factory, instance_sampling_factory, feature_sampling_factory,
-                                            partition_sampling_factory, pruning, post_processor, stopping_criteria)
+        return SequentialRuleModelAssemblage(statistics_provider_factory, thresholds_factory, rule_induction,
+                                             default_rule_head_refinement_factory, head_refinement_factory,
+                                             label_sampling_factory, instance_sampling_factory,
+                                             feature_sampling_factory, partition_sampling_factory,
+                                             pruning, post_processor, stopping_criteria)
 
     def __create_heuristic(self, heuristic: str, parameter_name: str) -> Heuristic:
         prefix, options = parse_prefix_and_options(parameter_name, heuristic, [HEURISTIC_ACCURACY, HEURISTIC_PRECISION,
