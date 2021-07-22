@@ -1,6 +1,7 @@
 #include "seco/output/predictor_classification_label_wise.hpp"
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
+#include "common/validation.hpp"
 #include "omp.h"
 
 
@@ -50,7 +51,7 @@ namespace seco {
 
     LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(uint32 numThreads)
         : numThreads_(numThreads) {
-
+        assertGreaterOrEqual<uint32>(numThreads, 1);
     }
 
     void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
