@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 
-TopDownRuleInduction::TopDownRuleInduction(uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
+TopDownRuleInduction::TopDownRuleInduction(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
                                            bool recalculatePredictions, uint32 numThreads)
     : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
       recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
@@ -69,7 +69,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
 
     // Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore or
     // the maximum number of conditions has been reached...
-    while (foundRefinement && (maxConditions_ == -1 || numConditions < maxConditions_)) {
+    while (foundRefinement && (maxConditions_ == 0 || numConditions < maxConditions_)) {
         foundRefinement = false;
 
         // Sample features...
