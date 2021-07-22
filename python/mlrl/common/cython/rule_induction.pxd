@@ -22,9 +22,9 @@ cdef extern from "common/rule_induction/rule_induction.hpp" nogil:
         pass
 
 
-cdef extern from "common/rule_induction/rule_model_induction.hpp" nogil:
+cdef extern from "common/rule_induction/rule_model_assemblage.hpp" nogil:
 
-    cdef cppclass IRuleModelInduction:
+    cdef cppclass IRuleModelAssemblage:
 
         # Functions:
 
@@ -43,13 +43,13 @@ cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
                                  bool recalculatePredictions, uint32 numThreads) except +
 
 
-cdef extern from "common/rule_induction/rule_model_induction_sequential.hpp" nogil:
+cdef extern from "common/rule_induction/rule_model_assemblage_sequential.hpp" nogil:
 
-    cdef cppclass SequentialRuleModelInductionImpl"SequentialRuleModelInduction"(IRuleModelInduction):
+    cdef cppclass SequentialRuleModelAssemblageImpl"SequentialRuleModelAssemblage"(IRuleModelAssemblage):
 
         # Constructors:
 
-        SequentialRuleModelInductionImpl(
+        SequentialRuleModelAssemblageImpl(
                 shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
                 shared_ptr[IThresholdsFactory] thresholdsFactoryPtr, shared_ptr[IRuleInduction] ruleInductionPtr,
                 shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
@@ -73,11 +73,11 @@ cdef class TopDownRuleInduction(RuleInduction):
     pass
 
 
-cdef class RuleModelInduction:
+cdef class RuleModelAssemblage:
 
     # Attributes:
 
-    cdef shared_ptr[IRuleModelInduction] rule_model_induction_ptr
+    cdef shared_ptr[IRuleModelAssemblage] rule_model_assemblage_ptr
 
     # Functions:
 
@@ -86,5 +86,5 @@ cdef class RuleModelInduction:
 
 
 
-cdef class SequentialRuleModelInduction(RuleModelInduction):
+cdef class SequentialRuleModelAssemblage(RuleModelAssemblage):
     pass

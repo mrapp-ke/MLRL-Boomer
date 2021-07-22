@@ -14,14 +14,14 @@
  * Defines an interface for all classes that implement an algorithm for inducing several rules that will be added to a
  * resulting `RuleModel`.
  */
-class IRuleModelInduction {
+class IRuleModelAssemblage {
 
     public:
 
-        virtual ~IRuleModelInduction() { };
+        virtual ~IRuleModelAssemblage() { };
 
         /**
-         * Trains and returns a `RuleModel` that consists of several rules.
+         * Assembles and returns a `RuleModel` that consists of several rules.
          *
          * @param nominalFeatureMask    A reference to an object of type `INominalFeatureMask` that provides access to
          *                              the information whether individual features are nominal or not
