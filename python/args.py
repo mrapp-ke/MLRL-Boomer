@@ -131,13 +131,13 @@ class ArgumentParserBuilder:
                             help='The format to be used for the label matrix or \'auto\'')
         parser.add_argument('--num-threads-rule-refinement', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads_rule_refinement', 1, **kwargs),
-                            help='The number of threads to be used to search for potential refinements of rules or -1')
+                            help='The number of threads to be used to search for potential refinements of rules or 0')
         parser.add_argument('--num-threads-statistic-update', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads_statistic_update', 1, **kwargs),
-                            help='The number of threads to be used to update statistics or -1')
+                            help='The number of threads to be used to update statistics or 0')
         parser.add_argument('--num-threads-prediction', type=int,
                             default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
-                            help='The number of threads to be used to make predictions or -1')
+                            help='The number of threads to be used to make predictions or 0')
         parser.add_argument('--max-rules', type=int,
                             default=ArgumentParserBuilder.__get_or_default('max_rules', 500, **kwargs),
                             help='The maximum number of rules to be induced or 0')
