@@ -50,3 +50,18 @@ static inline constexpr void assertSmaller(const T value, const T threshold) {
                                     + std::to_string(value));
     }
 }
+
+/**
+ * Throws an exception if a given value is not smaller or equal to a specific threshold.
+ *
+ * @tparam T        The type of the value and threshold
+ * @param value     The value
+ * @param threshold The threshold
+ */
+template<typename T>
+static inline constexpr void assertSmallerOrEqual(const T value, const T threshold) {
+    if (value > threshold) {
+        throw std::invalid_argument("Value must be smaller or equal to " + std::to_string(threshold) + ", but is "
+                                    + std::to_string(value));
+    }
+}
