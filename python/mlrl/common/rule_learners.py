@@ -190,7 +190,7 @@ def create_max_head_refinements(max_head_refinements: int) -> int:
 
 
 def get_preferred_num_threads(num_threads: int) -> int:
-    if num_threads == -1:
+    if num_threads == 0:
         return os.cpu_count()
     if num_threads < 1:
         raise ValueError('Invalid number of threads given: ' + str(num_threads))
