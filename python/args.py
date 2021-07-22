@@ -36,7 +36,7 @@ def current_fold_string(s):
     n = int(s)
     if n > 0:
         return n - 1
-    elif n == -1:
+    elif n == 0:
         return -1
     raise ValueError('Invalid argument given for parameter \'--current-fold\': ' + str(n))
 
@@ -110,7 +110,7 @@ class ArgumentParserBuilder:
                             help='True, if one-hot-encoding should be used, False otherwise')
         parser.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
         parser.add_argument('--current-fold', type=current_fold_string,
-                            default=ArgumentParserBuilder.__get_or_default('current_fold', -1, **kwargs),
+                            default=ArgumentParserBuilder.__get_or_default('current_fold', 0, **kwargs),
                             help='The cross validation fold to be performed')
         parser.add_argument('--store-predictions', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_predictions', False, **kwargs),

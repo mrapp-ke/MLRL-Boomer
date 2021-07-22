@@ -30,9 +30,9 @@ The following parameters are always needed to specify the data set that should b
 
   * The total number of folds to be used for cross validation or 1, if no cross validation should be used.
 
-* ``--current-fold`` (Default value = -1)
+* ``--current-fold`` (Default value = 0)
 
-  * The cross-validation fold to be performed or -1, if all folds should be performed. Must be -1 or greater than 0 and less or equal to --folds. If --folds is set to 1, this parameter is ignored.
+  * The cross-validation fold to be performed or 0, if all folds should be performed. Must be 0 or at least 1 and less or equal to --folds. If --folds is set to 1, this parameter is ignored.
 
 * ``--evaluate-training-data`` (Default value = False)
 
