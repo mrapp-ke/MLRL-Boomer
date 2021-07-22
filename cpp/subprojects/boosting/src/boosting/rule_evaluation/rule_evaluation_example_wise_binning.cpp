@@ -3,6 +3,7 @@
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
 #include "common/rule_evaluation/score_vector_label_wise_binned_dense.hpp"
+#include "common/validation.hpp"
 #include "rule_evaluation_label_wise_binning_common.hpp"
 #include "rule_evaluation_example_wise_common.hpp"
 #include <cstdlib>
@@ -313,7 +314,7 @@ namespace boosting {
             std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
         : l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(labelBinningFactoryPtr),
           blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
-
+        assertGreaterOrEqual<float64>(l2RegularizationWeight, 0);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> BinnedExampleWiseRuleEvaluationFactory::createDense(
