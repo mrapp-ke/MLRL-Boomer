@@ -1,5 +1,6 @@
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_bi.hpp"
+#include "common/validation.hpp"
 #include "index_sampling.hpp"
 
 
@@ -48,7 +49,8 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
 
 RandomBiPartitionSamplingFactory::RandomBiPartitionSamplingFactory(float32 holdoutSetSize)
     : holdoutSetSize_(holdoutSetSize) {
-
+    assertGreater<float32>(holdoutSetSize, 0);
+    assertSmaller<float32>(holdoutSetSize, 1);
 }
 
 std::unique_ptr<IPartitionSampling> RandomBiPartitionSamplingFactory::create(
