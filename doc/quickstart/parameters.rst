@@ -268,7 +268,7 @@ The following parameters allow to enable multi-threading for different aspects o
 
 * ``--num-threads-statistic-update`` (Default value = 1)
 
-  * The number of threads to be used for calculating the gradients and Hessians for different examples in parellel. Must be at least 1 or -1, if the number of cores that are available on the machine should be used.
+  * The number of threads to be used for calculating the gradients and Hessians for different examples in parallel. Must be at least 1 or -1, if the number of cores that are available on the machine should be used.
 
 * ``--num-threads-prediction`` (Default value = 1)
 
