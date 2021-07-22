@@ -140,10 +140,10 @@ class ArgumentParserBuilder:
                             help='The number of threads to be used to make predictions or -1')
         parser.add_argument('--max-rules', type=int,
                             default=ArgumentParserBuilder.__get_or_default('max_rules', 500, **kwargs),
-                            help='The maximum number of rules to be induced or -1')
+                            help='The maximum number of rules to be induced or 0')
         parser.add_argument('--time-limit', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('time_limit', -1, **kwargs),
-                            help='The duration in seconds after which the induction of rules should be canceled or -1')
+                            default=ArgumentParserBuilder.__get_or_default('time_limit', 0, **kwargs),
+                            help='The duration in seconds after which the induction of rules should be canceled or 0')
         parser.add_argument('--label-sampling', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('label_sampling', None, **kwargs),
                             help='The name of the strategy to be used for label sampling or None')

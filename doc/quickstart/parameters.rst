@@ -113,15 +113,15 @@ The following parameters allow to adjust the behavior of the algorithm:
 
 * ``--max-rules`` (Default value = 1000)
 
-  * The number of rules to be induced or -1, if the number of rules should not be restricted.
+  * The number of rules to be induced or 0, if the number of rules should not be restricted.
 
 * ``--default-rule`` (Default value = True)
 
   * True, if the first rule should be a default rule, False otherwise.
 
-* ``--time-limit`` (Default value = -1)
+* ``--time-limit`` (Default value = 0)
 
-  * The duration in seconds after which the induction of rules should be canceled or -1, if no time limit should be set.
+  * The duration in seconds after which the induction of rules should be canceled or 0, if no time limit should be set.
 
 * ``--label-sampling`` (Default value = None)
 
