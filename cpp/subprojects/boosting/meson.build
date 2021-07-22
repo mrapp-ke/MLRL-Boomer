@@ -28,6 +28,11 @@ source_files = [
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_complete.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_regularized.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_single.cpp',
+    'src/boosting/sampling/instance_sampling_no.cpp',
+    'src/boosting/sampling/instance_sampling_stratified_example_wise.cpp',
+    'src/boosting/sampling/instance_sampling_stratified_label_wise.cpp',
+    'src/boosting/sampling/instance_sampling_with_replacement.cpp',
+    'src/boosting/sampling/instance_sampling_without_replacement.cpp',
     'src/boosting/statistics/statistics_example_wise_dense.cpp',
     'src/boosting/statistics/statistics_label_wise_dense.cpp'
 ]

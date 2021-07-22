@@ -24,9 +24,6 @@ from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
 from mlrl.common.cython.rule_induction import RuleModelAssemblage
 from mlrl.common.cython.sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory, \
     NoFeatureSamplingFactory
-from mlrl.common.cython.sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
-    InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory, LabelWiseStratifiedSamplingFactory, \
-    ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory, \
     NoLabelSamplingFactory
 from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
@@ -106,29 +103,6 @@ def create_label_sampling_factory(label_sampling: str, num_labels: int) -> Label
             num_samples = options.get_int(ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
             return LabelSamplingWithoutReplacementFactory(num_samples)
         raise ValueError('Invalid value given for parameter \'label_sampling\': ' + str(label_sampling))
-
-
-def create_instance_sampling_factory(instance_sampling: str) -> InstanceSamplingFactory:
-    if instance_sampling is None:
-        return NoInstanceSamplingFactory()
-    else:
-        prefix, options = parse_prefix_and_options('instance_sampling', instance_sampling,
-                                                   [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT,
-                                                    SAMPLING_STRATIFIED_LABEL_WISE, SAMPLING_STRATIFIED_EXAMPLE_WISE])
-
-        if prefix == SAMPLING_WITH_REPLACEMENT:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
-            return InstanceSamplingWithReplacementFactory(sample_size)
-        elif prefix == SAMPLING_WITHOUT_REPLACEMENT:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
-            return InstanceSamplingWithoutReplacementFactory(sample_size)
-        elif prefix == SAMPLING_STRATIFIED_LABEL_WISE:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
-            return LabelWiseStratifiedSamplingFactory(sample_size)
-        elif prefix == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
-            return ExampleWiseStratifiedSamplingFactory(sample_size)
-        raise ValueError('Invalid value given for parameter \'instance_sampling\': ' + str(instance_sampling))
 
 
 def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFactory:
