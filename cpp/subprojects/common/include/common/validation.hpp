@@ -22,7 +22,7 @@ static inline constexpr void assertGreater(const T value, const T threshold) {
 }
 
 /**
- * Throws an exception if a given value not greater or equal to a specific threshold.
+ * Throws an exception if a given value not greater than or equal to a specific threshold.
  *
  * @tparam T        The type of the value and threshold
  * @param value     The value
@@ -52,7 +52,7 @@ static inline constexpr void assertSmaller(const T value, const T threshold) {
 }
 
 /**
- * Throws an exception if a given value is not smaller or equal to a specific threshold.
+ * Throws an exception if a given value is not smaller than or equal to a specific threshold.
  *
  * @tparam T        The type of the value and threshold
  * @param value     The value
