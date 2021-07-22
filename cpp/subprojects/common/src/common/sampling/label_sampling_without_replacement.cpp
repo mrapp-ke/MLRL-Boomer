@@ -39,5 +39,6 @@ LabelSamplingWithoutReplacementFactory::LabelSamplingWithoutReplacementFactory(u
 }
 
 std::unique_ptr<ILabelSampling> LabelSamplingWithoutReplacementFactory::create(uint32 numLabels) const {
-    return std::make_unique<LabelSamplingWithoutReplacement>(numLabels, numSamples_);
+    return std::make_unique<LabelSamplingWithoutReplacement>(numLabels,
+                                                             numSamples_ > numLabels ? numLabels : numSamples_);
 }
