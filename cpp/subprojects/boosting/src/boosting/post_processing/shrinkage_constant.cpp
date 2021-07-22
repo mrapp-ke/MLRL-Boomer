@@ -6,8 +6,8 @@ namespace boosting {
 
     ConstantShrinkage::ConstantShrinkage(float64 shrinkage)
         : shrinkage_(shrinkage) {
-        assertGreater(shrinkage, 0.0);
-        assertSmaller(shrinkage, 1.0);
+        assertGreater<float64>(shrinkage, 0);
+        assertSmaller<float64>(shrinkage, 1);
     }
 
     void ConstantShrinkage::postProcess(AbstractPrediction& prediction) const {
