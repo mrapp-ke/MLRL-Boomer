@@ -42,7 +42,7 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
 
 FeatureSamplingWithoutReplacementFactory::FeatureSamplingWithoutReplacementFactory(float32 sampleSize)
     : sampleSize_(sampleSize) {
-    assertGreater<float32>(sampleSize, 0);
+    assertGreaterOrEqual<float32>(sampleSize, 0);
     assertSmaller<float32>(sampleSize, 1);
 }
 
