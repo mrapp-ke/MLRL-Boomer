@@ -23,7 +23,7 @@ static inline constexpr void assertGreater(const std::string& name, const T valu
 }
 
 /**
- * Throws an exception if a given value not greater than or equal to a specific threshold.
+ * Throws an exception if a given value not greater or equal to a specific threshold.
  *
  * @tparam T        The type of the value and threshold
  * @param name      The name of the parameter, the value corresponds to
@@ -39,7 +39,7 @@ static inline constexpr void assertGreaterOrEqual(const std::string& name, const
 }
 
 /**
- * Throws an exception if a given value is not smaller than a specific threshold.
+ * Throws an exception if a given value is not less than a specific threshold.
  *
  * @tparam T        The type of the value and threshold
  * @param name      The name of the parameter, the value corresponds to
@@ -55,7 +55,7 @@ static inline constexpr void assertSmaller(const std::string& name, const T valu
 }
 
 /**
- * Throws an exception if a given value is not smaller than or equal to a specific threshold.
+ * Throws an exception if a given value is not less or equal to a specific threshold.
  *
  * @tparam T        The type of the value and threshold
  * @param name      The name of the parameter, the value corresponds to
