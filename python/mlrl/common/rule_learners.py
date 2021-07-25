@@ -9,6 +9,7 @@ import logging as log
 import os
 from abc import abstractmethod
 from enum import Enum
+from functools import reduce
 from typing import List
 
 import numpy as np
@@ -89,8 +90,9 @@ def create_sparse_policy(policy: str) -> SparsePolicy:
     try:
         return SparsePolicy(policy)
     except ValueError:
-        raise ValueError('Invalid matrix format given: \'' + str(policy) + '\'. Must be one of ' + str(
-            [x.value for x in SparsePolicy]))
+        raise ValueError('Invalid matrix format given: Must be one of {'
+                         + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b.value + '"', SparsePolicy,
+                                  '') + '}, but is "' + str(policy) + '"')
 
 
 def create_label_sampling_factory(label_sampling: str, num_labels: int) -> LabelSamplingFactory:
