@@ -53,23 +53,16 @@ class Options:
 
         return options
 
-    def get_string(self, key: str, default_value: str, validation=None) -> str:
+    def get_string(self, key: str, default_value: str) -> str:
         """
         Returns a string that corresponds to a specific key.
 
         :param key:             The key
         :param default_value:   The default value to be returned, if no value is associated with the given key
-        :param validation:      A function that validates the value that is associated with the given key or None, if no
-                                validation should be used
         :return:                The value that is associated with the given key or the given default value
         """
         if key in self.dict:
-            value = str(self.dict[key])
-
-            if validation is not None and not validation(value):
-                raise ValueError('Invalid value given for key \'' + key + '\': ' + str(value))
-
-            return value
+            return str(self.dict[key])
 
         return default_value
 
@@ -92,14 +85,12 @@ class Options:
 
         return default_value
 
-    def get_int(self, key: str, default_value: int, validation=None) -> int:
+    def get_int(self, key: str, default_value: int) -> int:
         """
         Returns an integer that corresponds to a specific key.
 
         :param key:             The key
         :param default_value:   The default value to be returned, if no value is associated with the given key
-        :param validation:      A function that validates the value that is associated with the given key or None, if no
-                                validation should be used
         :return:                The value that is associated with the given key or the given default value
         """
         if key in self.dict:
@@ -110,21 +101,16 @@ class Options:
             except ValueError:
                 raise ValueError('Value for key \'' + key + '\' cannot be converted to integer: ' + str(value))
 
-            if validation is not None and not validation(value):
-                raise ValueError('Invalid value given for key \'' + key + '\': ' + str(value))
-
             return value
 
         return default_value
 
-    def get_float(self, key: str, default_value: float, validation=None) -> float:
+    def get_float(self, key: str, default_value: float) -> float:
         """
         Returns a float that corresponds to a specific key.
 
         :param key:             The key
         :param default_value:   The default value to be returned, if no value is associated with the given key
-        :param validation:      A function that validates the value that is associated with the given key or None, if no
-                                validation should be used
         :return:                THe value that is associated with the given key or the given default value
         """
         if key in self.dict:
@@ -134,9 +120,6 @@ class Options:
                 value = float(value)
             except ValueError:
                 raise ValueError('Value for key \'' + key + '\' cannot be converted to float: ' + str(value))
-
-            if validation is not None and not validation(value):
-                raise ValueError('Invalid value given for key \'' + key + '\': ' + str(value))
 
             return value
 
