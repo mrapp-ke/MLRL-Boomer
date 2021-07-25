@@ -86,12 +86,12 @@ class SparseFormat(Enum):
     CSR = 'csr'
 
 
-def create_sparse_policy(policy: str) -> SparsePolicy:
+def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
     try:
         return SparsePolicy(policy)
     except ValueError:
-        raise ValueError('Invalid matrix format given: Must be one of ' + __format_enum_values(SparsePolicy)
-                         + ', but is "' + str(policy) + '"')
+        raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+                         + __format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
 
 
 def create_label_sampling_factory(label_sampling: str) -> LabelSamplingFactory:
@@ -290,7 +290,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
     def _fit(self, x, y):
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = SparseFormat.CSC
-        x_sparse_policy = create_sparse_policy(self.feature_format)
+        x_sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy,
                                                  dtype=DTYPE_FLOAT32)
         x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F', dtype=DTYPE_FLOAT32)),
@@ -310,7 +310,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_format = SparseFormat.CSR
-        y_sparse_policy = create_sparse_policy(self.label_format)
+        y_sparse_policy = create_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y, sparse_format=y_sparse_format, policy=y_sparse_policy,
                                                  dtype=DTYPE_UINT8, sparse_values=False)
         y = check_array((y if y_enforce_sparse else y.toarray(order='C')),
@@ -362,7 +362,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def __predict(self, predictor, label_vectors: LabelVectorSet, x):
         sparse_format = SparseFormat.CSR
-        sparse_policy = create_sparse_policy(self.feature_format)
+        sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
                                                dtype=DTYPE_FLOAT32)
         x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C', dtype=DTYPE_FLOAT32), reset=False,
