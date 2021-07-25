@@ -28,9 +28,8 @@ from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_W
     SAMPLING_WITHOUT_REPLACEMENT, ARGUMENT_SAMPLE_SIZE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
-    create_label_sampling_factory, create_partition_sampling_factory, create_max_conditions, create_stopping_criteria, \
-    create_min_coverage, create_max_head_refinements, get_preferred_num_threads, parse_prefix_and_options, \
-    create_thresholds_factory
+    create_label_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
+    get_preferred_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
 
 HEAD_TYPE_PARTIAL = 'partial'
 
@@ -73,7 +72,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
                  head_type: str = HEAD_TYPE_SINGLE, lift_function: str = LIFT_FUNCTION_PEAK,
                  loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_F_MEASURE,
-                 pruning_heuristic:str = HEURISTIC_ACCURACY, label_sampling: str = None,
+                 pruning_heuristic: str = HEURISTIC_ACCURACY, label_sampling: str = None,
                  instance_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, feature_sampling: str = None,
                  holdout: str = None, feature_binning: str = None, pruning: str = PRUNING_IREP, min_coverage: int = 1,
                  max_conditions: int = -1, max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
@@ -195,18 +194,15 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
         pruning_heuristic = self.__create_heuristic(self.pruning_heuristic, 'pruning_heuristic')
         statistics_provider_factory = self.__create_statistics_provider_factory(heuristic, pruning_heuristic)
-        num_threads_statistic_update = get_preferred_num_threads(self.num_threads_statistic_update)
+        num_threads_statistic_update = get_preferred_num_threads(int(self.num_threads_statistic_update))
         thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_statistic_update)
-        min_coverage = create_min_coverage(self.min_coverage)
-        max_conditions = create_max_conditions(self.max_conditions)
-        max_head_refinements = create_max_head_refinements(self.max_head_refinements)
-        num_threads_rule_refinement = get_preferred_num_threads(self.num_threads_rule_refinement)
-        rule_induction = TopDownRuleInduction(min_coverage, max_conditions, max_head_refinements, False,
-                                              num_threads_rule_refinement)
+        num_threads_rule_refinement = get_preferred_num_threads(int(self.num_threads_rule_refinement))
+        rule_induction = TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions),
+                                              int(self.max_head_refinements), False, num_threads_rule_refinement)
         lift_function = self.__create_lift_function(num_labels)
         default_rule_head_refinement_factory = CompleteHeadRefinementFactory()
         head_refinement_factory = self.__create_head_refinement_factory(lift_function)
-        label_sampling_factory = create_label_sampling_factory(self.label_sampling, num_labels)
+        label_sampling_factory = create_label_sampling_factory(self.label_sampling)
         instance_sampling_factory = self.__create_instance_sampling_factory()
         feature_sampling_factory = create_feature_sampling_factory(self.feature_sampling)
         partition_sampling_factory = create_partition_sampling_factory(self.holdout)
@@ -220,63 +216,58 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                              feature_sampling_factory, partition_sampling_factory,
                                              pruning, post_processor, stopping_criteria)
 
-    def __create_heuristic(self, heuristic: str, parameter_name: str) -> Heuristic:
-        prefix, options = parse_prefix_and_options(parameter_name, heuristic, [HEURISTIC_ACCURACY, HEURISTIC_PRECISION,
-                                                                               HEURISTIC_RECALL, HEURISTIC_LAPLACE,
-                                                                               HEURISTIC_WRA, HEURISTIC_F_MEASURE,
-                                                                               HEURISTIC_M_ESTIMATE])
+    @staticmethod
+    def __create_heuristic(heuristic: str, parameter_name: str) -> Heuristic:
+        value, options = parse_param_and_options(parameter_name, heuristic, [HEURISTIC_ACCURACY, HEURISTIC_PRECISION,
+                                                                             HEURISTIC_RECALL, HEURISTIC_LAPLACE,
+                                                                             HEURISTIC_WRA, HEURISTIC_F_MEASURE,
+                                                                             HEURISTIC_M_ESTIMATE])
 
-        if prefix == HEURISTIC_ACCURACY:
+        if value == HEURISTIC_ACCURACY:
             return Accuracy()
-        elif prefix == HEURISTIC_PRECISION:
+        elif value == HEURISTIC_PRECISION:
             return Precision()
-        elif prefix == HEURISTIC_RECALL:
+        elif value == HEURISTIC_RECALL:
             return Recall()
-        elif prefix == HEURISTIC_LAPLACE:
+        elif value == HEURISTIC_LAPLACE:
             return Laplace()
-        elif prefix == HEURISTIC_WRA:
+        elif value == HEURISTIC_WRA:
             return WRA()
-        elif prefix == HEURISTIC_F_MEASURE:
-            beta = options.get_float(ARGUMENT_BETA, 0.25, lambda x: x >= 0)
+        elif value == HEURISTIC_F_MEASURE:
+            beta = options.get_float(ARGUMENT_BETA, 0.25)
             return FMeasure(beta)
-        elif prefix == HEURISTIC_M_ESTIMATE:
-            m = options.get_float(ARGUMENT_M, 22.466, lambda x: x >= 0)
+        elif value == HEURISTIC_M_ESTIMATE:
+            m = options.get_float(ARGUMENT_M, 22.466)
             return MEstimate(m)
-        raise ValueError('Invalid value given for parameter \'' + parameter_name + '\': ' + str(heuristic))
 
     def __create_statistics_provider_factory(self, heuristic: Heuristic,
                                              pruning_heuristic: Heuristic) -> StatisticsProviderFactory:
-        loss = self.loss
+        value = parse_param('loss', self.loss, [AVERAGING_LABEL_WISE])
 
-        if loss == AVERAGING_LABEL_WISE:
+        if value == AVERAGING_LABEL_WISE:
             default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, predictMajority=True)
             regular_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic)
             pruning_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(pruning_heuristic)
             return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory,
                                                            regular_rule_evaluation_factory,
                                                            pruning_rule_evaluation_factory)
-        raise ValueError('Invalid value given for parameter \'loss\': ' + str(loss))
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:
-        lift_function = self.lift_function
-        prefix, options = parse_prefix_and_options('lift_function', lift_function, [LIFT_FUNCTION_PEAK])
+        value, options = parse_param_and_options('lift_function', self.lift_function, [LIFT_FUNCTION_PEAK])
 
-        if prefix == LIFT_FUNCTION_PEAK:
-            peak_label = options.get_int(ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1, lambda x: 1 <= x <= num_labels)
-            max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.5, lambda x: x >= 1)
-            curvature = options.get_float(ARGUMENT_CURVATURE, 1.0, lambda x: x > 0)
+        if value == LIFT_FUNCTION_PEAK:
+            peak_label = options.get_int(ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1)
+            max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.5)
+            curvature = options.get_float(ARGUMENT_CURVATURE, 1.0)
             return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
 
-        raise ValueError('Invalid value given for parameter \'lift_function\': ' + str(lift_function))
-
     def __create_head_refinement_factory(self, lift_function: LiftFunction) -> HeadRefinementFactory:
-        head_type = self.head_type
+        value = parse_param('head_type', self.head_type, [HEAD_TYPE_SINGLE, HEAD_TYPE_PARTIAL])
 
-        if head_type == HEAD_TYPE_SINGLE:
+        if value == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
-        elif head_type == HEAD_TYPE_PARTIAL:
+        elif value == HEAD_TYPE_PARTIAL:
             return PartialHeadRefinementFactory(lift_function)
-        raise ValueError('Invalid value given for parameter \'head_type\': ' + str(head_type))
 
     def __create_instance_sampling_factory(self) -> InstanceSamplingFactory:
         instance_sampling = self.instance_sampling
@@ -284,16 +275,15 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         if instance_sampling is None:
             return NoInstanceSamplingFactory()
         else:
-            prefix, options = parse_prefix_and_options('instance_sampling', instance_sampling,
-                                                       [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT])
+            value, options = parse_param_and_options('instance_sampling', instance_sampling,
+                                                     [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT])
 
-            if prefix == SAMPLING_WITH_REPLACEMENT:
-                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0, lambda x: 0 < x <= 1)
+            if value == SAMPLING_WITH_REPLACEMENT:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0)
                 return InstanceSamplingWithReplacementFactory(sample_size)
-            elif prefix == SAMPLING_WITHOUT_REPLACEMENT:
-                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66, lambda x: 0 < x < 1)
+            elif value == SAMPLING_WITHOUT_REPLACEMENT:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
                 return InstanceSamplingWithoutReplacementFactory(sample_size)
-            raise ValueError('Invalid value given for parameter \'instance_sampling\': ' + str(instance_sampling))
 
     def _create_predictor(self, num_labels: int) -> Predictor:
         return self.__create_label_wise_predictor(num_labels)
