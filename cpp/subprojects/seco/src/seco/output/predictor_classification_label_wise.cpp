@@ -51,7 +51,7 @@ namespace seco {
 
     LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(uint32 numThreads)
         : numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>(numThreads, 1);
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,

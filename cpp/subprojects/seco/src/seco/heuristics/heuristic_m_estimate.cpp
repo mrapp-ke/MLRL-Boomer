@@ -8,7 +8,7 @@ namespace seco {
 
     MEstimate::MEstimate(float64 m)
         : m_(m) {
-        assertGreaterOrEqual<float64>(m, 0);
+        assertGreaterOrEqual<float64>("m", m, 0);
     }
 
     float64 MEstimate::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,

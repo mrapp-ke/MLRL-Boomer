@@ -42,10 +42,10 @@ static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float
 
 EqualFrequencyFeatureBinning::EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
     : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-    assertGreater<float32>(binRatio, 0);
-    assertSmaller<float32>(binRatio, 1);
-    assertGreaterOrEqual<uint32>(minBins, 2);
-    if (maxBins != 0) { assertGreaterOrEqual<uint32>(maxBins, minBins); }
+    assertGreater<float32>("binRatio", binRatio, 0);
+    assertSmaller<float32>("binRatio", binRatio, 1);
+    assertGreaterOrEqual<uint32>("minBins", minBins, 2);
+    if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins); }
 }
 
 IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& featureVector,

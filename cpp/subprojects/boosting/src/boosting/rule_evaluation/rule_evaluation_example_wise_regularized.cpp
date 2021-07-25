@@ -122,7 +122,7 @@ namespace boosting {
     RegularizedExampleWiseRuleEvaluationFactory::RegularizedExampleWiseRuleEvaluationFactory(
             float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
         : l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
-        assertGreaterOrEqual<float64>(l2RegularizationWeight, 0);
+        assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> RegularizedExampleWiseRuleEvaluationFactory::createDense(

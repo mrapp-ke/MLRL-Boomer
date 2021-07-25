@@ -408,7 +408,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::shared_ptr<IFeatureBinning> binningPtr,
                                                            uint32 numThreads)
     : binningPtr_(binningPtr), numThreads_(numThreads) {
-    assertGreaterOrEqual<uint32>(numThreads, 1);
+    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
 }
 
 std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(

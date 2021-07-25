@@ -7,7 +7,7 @@ namespace seco {
 
     CoverageStoppingCriterion::CoverageStoppingCriterion(float64 threshold)
         : threshold_(threshold) {
-        assertGreaterOrEqual<float64>(threshold, 0);
+        assertGreaterOrEqual<float64>("threshold", threshold, 0);
     }
 
     IStoppingCriterion::Result CoverageStoppingCriterion::test(const IPartition& partition,

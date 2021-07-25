@@ -25,7 +25,7 @@ namespace boosting {
     LabelWiseProbabilityPredictor::LabelWiseProbabilityPredictor(
             std::shared_ptr<ILabelWiseTransformationFunction> transformationFunctionPtr, uint32 numThreads)
         : transformationFunctionPtr_(transformationFunctionPtr), numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>(numThreads, 1);
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     void LabelWiseProbabilityPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,

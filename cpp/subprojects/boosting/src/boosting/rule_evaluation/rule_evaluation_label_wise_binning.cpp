@@ -110,7 +110,7 @@ namespace boosting {
     BinnedLabelWiseRuleEvaluationFactory::BinnedLabelWiseRuleEvaluationFactory(
             float64 l2RegularizationWeight, std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
         : l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(labelBinningFactoryPtr) {
-        assertGreaterOrEqual<float64>(l2RegularizationWeight, 0);
+        assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> BinnedLabelWiseRuleEvaluationFactory::createDense(

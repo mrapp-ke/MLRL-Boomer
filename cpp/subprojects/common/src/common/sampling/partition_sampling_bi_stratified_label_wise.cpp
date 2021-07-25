@@ -45,8 +45,8 @@ class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
 
 LabelWiseStratifiedBiPartitionSamplingFactory::LabelWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize)
     : holdoutSetSize_(holdoutSetSize) {
-    assertGreater<float32>(holdoutSetSize, 0);
-    assertSmaller<float32>(holdoutSetSize, 1);
+    assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
+    assertSmaller<float32>("holdoutSetSize", holdoutSetSize, 1);
 }
 
 std::unique_ptr<IPartitionSampling> LabelWiseStratifiedBiPartitionSamplingFactory::create(

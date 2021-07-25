@@ -74,13 +74,13 @@ MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMe
       stopInterval_(stopInterval), minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
       recentBuffer_(RingBuffer<float64>(numCurrent)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
       bestScore_(std::numeric_limits<float64>::infinity()), stopped_(false) {
-    assertGreaterOrEqual<uint32>(minRules, 1);
-    assertGreaterOrEqual<uint32>(updateInterval, 1);
-    assertMultiple<uint32>(stopInterval, updateInterval);
-    assertGreaterOrEqual<uint32>(numPast, 1);
-    assertGreaterOrEqual<uint32>(numCurrent, 1);
-    assertGreaterOrEqual<float64>(minImprovement, 0);
-    assertSmallerOrEqual<float64>(minImprovement, 1);
+    assertGreaterOrEqual<uint32>("minRules", minRules, 1);
+    assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
+    assertMultiple<uint32>("stopInterval", stopInterval, updateInterval);
+    assertGreaterOrEqual<uint32>("numPast", numPast, 1);
+    assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
+    assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
+    assertSmallerOrEqual<float64>("minImprovement", minImprovement, 1);
     uint32 bufferInterval = (numPast * updateInterval) + (numCurrent * updateInterval);
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
 }

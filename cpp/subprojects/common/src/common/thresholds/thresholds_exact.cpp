@@ -570,7 +570,7 @@ class ExactThresholds final : public AbstractThresholds {
 
 ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
     : numThreads_(numThreads) {
-    assertGreaterOrEqual<uint32>(numThreads, 1);
+    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
 }
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(

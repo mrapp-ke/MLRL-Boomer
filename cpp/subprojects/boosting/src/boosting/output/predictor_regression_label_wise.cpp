@@ -8,7 +8,7 @@ namespace boosting {
 
     LabelWiseRegressionPredictor::LabelWiseRegressionPredictor(uint32 numThreads)
         : numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>(numThreads, 1);
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     void LabelWiseRegressionPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,

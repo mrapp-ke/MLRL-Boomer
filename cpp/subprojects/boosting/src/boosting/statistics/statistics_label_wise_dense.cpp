@@ -117,7 +117,7 @@ namespace boosting {
             const ILabelWiseLoss& lossFunction, const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
             uint32 numThreads)
         : lossFunction_(lossFunction), ruleEvaluationFactory_(ruleEvaluationFactory), numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>(numThreads, 1);
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create(

@@ -4,7 +4,7 @@
 
 SizeStoppingCriterion::SizeStoppingCriterion(uint32 maxRules)
     : maxRules_(maxRules) {
-    assertGreaterOrEqual<uint32>(maxRules, 1);
+    assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
 }
 
 IStoppingCriterion::Result SizeStoppingCriterion::test(const IPartition& partition, const IStatistics& statistics,

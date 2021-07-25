@@ -36,7 +36,7 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
 
 LabelSamplingWithoutReplacementFactory::LabelSamplingWithoutReplacementFactory(uint32 numSamples)
     : numSamples_(numSamples) {
-    assertGreaterOrEqual<uint32>(numSamples, 1);
+    assertGreaterOrEqual<uint32>("numSamples", numSamples, 1);
 }
 
 std::unique_ptr<ILabelSampling> LabelSamplingWithoutReplacementFactory::create(uint32 numLabels) const {
