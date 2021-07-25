@@ -463,11 +463,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __create_post_processor(self) -> PostProcessor:
         shrinkage = float(self.shrinkage)
 
-        if 0.0 < shrinkage < 1.0:
-            return ConstantShrinkage(shrinkage)
         if shrinkage == 1.0:
             return NoPostProcessor()
-        raise ValueError('Invalid value given for parameter \'shrinkage\': ' + str(shrinkage))
+        else:
+            return ConstantShrinkage(shrinkage)
 
     def __create_instance_sampling_factory(self) -> InstanceSamplingFactory:
         instance_sampling = self.instance_sampling

@@ -7,11 +7,11 @@ namespace seco {
 
     PeakLiftFunction::PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature)
         : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), exponent_(1.0 / curvature) {
-        assertGreater<uint32>(numLabels, 0);
-        assertGreaterOrEqual<uint32>(peakLabel, 0);
-        assertSmallerOrEqual<uint32>(peakLabel, numLabels);
-        assertGreaterOrEqual<float64>(maxLift, 1);
-        assertGreater<float64>(curvature, 0);
+        assertGreater<uint32>("numLabels", numLabels, 0);
+        assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 0);
+        assertSmallerOrEqual<uint32>("peakLabel", peakLabel, numLabels);
+        assertGreaterOrEqual<float64>("maxLift", maxLift, 1);
+        assertGreater<float64>("curvature", curvature, 0);
     }
 
     float64 PeakLiftFunction::calculateLift(uint32 numLabels) const {

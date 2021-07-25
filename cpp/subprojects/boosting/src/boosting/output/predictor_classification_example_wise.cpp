@@ -47,7 +47,7 @@ namespace boosting {
     ExampleWiseClassificationPredictor::ExampleWiseClassificationPredictor(
             std::shared_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads)
         : measurePtr_(measurePtr), numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>(numThreads, 1);
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     void ExampleWiseClassificationPredictor::transform(const CContiguousConstView<float64>& scoreMatrix,

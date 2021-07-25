@@ -5,7 +5,7 @@
 TimeStoppingCriterion::TimeStoppingCriterion(uint32 timeLimit)
     : timeLimit_(std::chrono::duration_cast<timer_unit>(std::chrono::seconds(timeLimit))), startTime_(timer::now()),
       timerStarted_(false) {
-    assertGreaterOrEqual<uint32>(timeLimit, 1);
+    assertGreaterOrEqual<uint32>("timeLimit", timeLimit, 1);
 }
 
 IStoppingCriterion::Result TimeStoppingCriterion::test(const IPartition& partition, const IStatistics& statistics,
