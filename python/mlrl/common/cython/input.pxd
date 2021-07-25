@@ -78,7 +78,7 @@ cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
 
         # Constructors:
 
-        CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint8* array) except +
+        CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint8* array)
 
 
 cdef extern from "common/input/label_matrix_csr.hpp" nogil:
@@ -87,7 +87,7 @@ cdef extern from "common/input/label_matrix_csr.hpp" nogil:
 
         # Constructors:
 
-        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices) except +
+        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
 
 
 cdef extern from "common/input/feature_matrix.hpp" nogil:
@@ -102,7 +102,7 @@ cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
 
         # Constructors:
 
-        CContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array) except +
+        CContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array)
 
         # Functions:
 
@@ -115,7 +115,7 @@ cdef extern from "common/input/feature_matrix_fortran_contiguous.hpp" nogil:
 
         # Constructors:
 
-        FortranContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array) except +
+        FortranContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array)
 
 
 cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
@@ -125,7 +125,7 @@ cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
         # Constructors:
 
         CscFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices,
-                             uint32* colIndices) except +
+                             uint32* colIndices)
 
 
 cdef extern from "common/input/feature_matrix_csr.hpp" nogil:
@@ -134,8 +134,7 @@ cdef extern from "common/input/feature_matrix_csr.hpp" nogil:
 
         # Constructors:
 
-        CsrFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices,
-                             uint32 colIndices) except +
+        CsrFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32 colIndices)
 
         # Functions:
 
@@ -163,7 +162,7 @@ cdef extern from "common/input/nominal_feature_mask_equal.hpp" nogil:
 
         # Constructors:
 
-        EqualNominalFeatureMaskImpl(bool nominal) except +
+        EqualNominalFeatureMaskImpl(bool nominal)
 
 
 cdef class LabelMatrix:

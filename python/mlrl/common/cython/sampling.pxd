@@ -9,7 +9,7 @@ cdef extern from "common/sampling/random.hpp" nogil:
 
         # Constructors:
 
-        RNG(uint32 randomState) except +
+        RNG(uint32 randomState)
 
 
 cdef extern from "common/sampling/weight_vector.hpp" nogil:
