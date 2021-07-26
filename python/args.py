@@ -95,14 +95,15 @@ class ArgumentParserBuilder:
 
     def add_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
         parser = self.parser
-        parser.add_argument('--data-dir', type=str, help='The path of the directory where the data sets are located')
+        parser.add_argument('--data-dir', type=str, required=True,
+                            help='The path of the directory where the data sets are located')
         parser.add_argument('--output-dir', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('output_dir', None, **kwargs),
                             help='The path of the directory into which results should be written')
         parser.add_argument('--model-dir', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('model_dir', None, **kwargs),
                             help='The path of the directory where models should be saved')
-        parser.add_argument('--dataset', type=str, help='The name of the data set to be used')
+        parser.add_argument('--dataset', type=str, required=True, help='The name of the data set to be used')
         parser.add_argument('--one-hot-encoding', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('one_hot_encoding', False, **kwargs),
                             help='True, if one-hot-encoding should be used, False otherwise')
