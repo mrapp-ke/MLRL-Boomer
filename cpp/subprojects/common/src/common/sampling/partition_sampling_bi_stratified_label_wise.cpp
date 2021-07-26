@@ -1,6 +1,7 @@
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
 #include "common/sampling/stratified_sampling.hpp"
 #include "common/indices/index_iterator.hpp"
+#include "common/validation.hpp"
 
 
 /**
@@ -44,7 +45,8 @@ class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
 
 LabelWiseStratifiedBiPartitionSamplingFactory::LabelWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize)
     : holdoutSetSize_(holdoutSetSize) {
-
+    assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
+    assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
 }
 
 std::unique_ptr<IPartitionSampling> LabelWiseStratifiedBiPartitionSamplingFactory::create(

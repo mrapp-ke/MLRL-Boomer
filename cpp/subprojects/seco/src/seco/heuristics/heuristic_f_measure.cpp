@@ -1,4 +1,5 @@
 #include "seco/heuristics/heuristic_f_measure.hpp"
+#include "common/validation.hpp"
 #include "heuristic_common.hpp"
 #include <cmath>
 
@@ -7,7 +8,7 @@ namespace seco {
 
     FMeasure::FMeasure(float64 beta)
         : beta_(beta) {
-
+        assertGreaterOrEqual<float64>("beta", beta, 0);
     }
 
     float64 FMeasure::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,

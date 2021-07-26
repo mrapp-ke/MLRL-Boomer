@@ -9,6 +9,7 @@ import logging as log
 import os
 from abc import abstractmethod
 from enum import Enum
+from functools import reduce
 from typing import List
 
 import numpy as np
@@ -85,116 +86,84 @@ class SparseFormat(Enum):
     CSR = 'csr'
 
 
-def create_sparse_policy(policy: str) -> SparsePolicy:
+def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
     try:
         return SparsePolicy(policy)
     except ValueError:
-        raise ValueError('Invalid matrix format given: \'' + str(policy) + '\'. Must be one of ' + str(
-            [x.value for x in SparsePolicy]))
+        raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+                         + __format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
 
 
-def create_label_sampling_factory(label_sampling: str, num_labels: int) -> LabelSamplingFactory:
+def create_label_sampling_factory(label_sampling: str) -> LabelSamplingFactory:
     if label_sampling is None:
         return NoLabelSamplingFactory()
     else:
-        prefix, options = parse_prefix_and_options('label_sampling', label_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
+        value, options = parse_param_and_options('label_sampling', label_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
 
-        if prefix == SAMPLING_WITHOUT_REPLACEMENT:
-            num_samples = options.get_int(ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
+        if value == SAMPLING_WITHOUT_REPLACEMENT:
+            num_samples = options.get_int(ARGUMENT_NUM_SAMPLES, 1)
             return LabelSamplingWithoutReplacementFactory(num_samples)
-        raise ValueError('Invalid value given for parameter \'label_sampling\': ' + str(label_sampling))
 
 
 def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFactory:
     if feature_sampling is None:
         return NoFeatureSamplingFactory()
     else:
-        prefix, options = parse_prefix_and_options('feature_sampling', feature_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
+        value, options = parse_param_and_options('feature_sampling', feature_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
 
-        if prefix == SAMPLING_WITHOUT_REPLACEMENT:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
+        if value == SAMPLING_WITHOUT_REPLACEMENT:
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0)
             return FeatureSamplingWithoutReplacementFactory(sample_size)
-        raise ValueError('Invalid value given for parameter \'feature_sampling\': ' + str(feature_sampling))
 
 
 def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
     if holdout is None:
         return NoPartitionSamplingFactory()
     else:
-        prefix, options = parse_prefix_and_options('holdout', holdout, [PARTITION_SAMPLING_RANDOM,
-                                                                        SAMPLING_STRATIFIED_LABEL_WISE,
-                                                                        SAMPLING_STRATIFIED_EXAMPLE_WISE])
+        value, options = parse_param_and_options('holdout', holdout, [PARTITION_SAMPLING_RANDOM,
+                                                                      SAMPLING_STRATIFIED_LABEL_WISE,
+                                                                      SAMPLING_STRATIFIED_EXAMPLE_WISE])
 
-        if prefix == PARTITION_SAMPLING_RANDOM:
-            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+        if value == PARTITION_SAMPLING_RANDOM:
+            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
             return RandomBiPartitionSamplingFactory(holdout_set_size)
-        if prefix == SAMPLING_STRATIFIED_LABEL_WISE:
-            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+        if value == SAMPLING_STRATIFIED_LABEL_WISE:
+            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
             return LabelWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
-        if prefix == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+        if value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
+            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
             return ExampleWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
-        raise ValueError('Invalid value given for parameter \'holdout\': ' + str(holdout))
 
 
 def create_pruning(pruning: str, instance_sampling: str) -> Pruning:
     if pruning is None:
         return NoPruning()
     else:
-        if pruning == PRUNING_IREP:
+        value = parse_param('pruning', pruning, [PRUNING_IREP])
+
+        if value == PRUNING_IREP:
             if instance_sampling is None:
-                log.warning('Parameter \'pruning\' does not have any effect, because parameter '
-                            + '\'instance_sampling\' is set to \'None\'!')
+                log.warning('Parameter "pruning" does not have any effect, because parameter "instance_sampling" is '
+                            + 'set to "None"!')
                 return NoPruning()
             return IREP()
-        raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
 
 
 def create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCriterion]:
     stopping_criteria: List[StoppingCriterion] = []
 
     if max_rules != 0:
-        if max_rules > 0:
-            stopping_criteria.append(SizeStoppingCriterion(max_rules))
-        else:
-            raise ValueError('Invalid value given for parameter \'max_rules\': ' + str(max_rules))
+        stopping_criteria.append(SizeStoppingCriterion(max_rules))
 
     if time_limit != 0:
-        if time_limit > 0:
-            stopping_criteria.append(TimeStoppingCriterion(time_limit))
-        else:
-            raise ValueError('Invalid value given for parameter \'time_limit\': ' + str(time_limit))
+        stopping_criteria.append(TimeStoppingCriterion(time_limit))
 
     return stopping_criteria
-
-
-def create_min_coverage(min_coverage: int) -> int:
-    if min_coverage < 1:
-        raise ValueError('Invalid value given for parameter \'min_coverage\': ' + str(min_coverage))
-
-    return min_coverage
-
-
-def create_max_conditions(max_conditions: int) -> int:
-    if max_conditions != 0 and max_conditions < 1:
-        raise ValueError('Invalid value given for parameter \'max_conditions\': ' + str(max_conditions))
-
-    return max_conditions
-
-
-def create_max_head_refinements(max_head_refinements: int) -> int:
-    if max_head_refinements != 0 and max_head_refinements < 1:
-        raise ValueError('Invalid value given for parameter \'max_head_refinements\': ' + str(max_head_refinements))
-
-    return max_head_refinements
 
 
 def get_preferred_num_threads(num_threads: int) -> int:
     if num_threads == 0:
         return os.cpu_count()
-    if num_threads < 1:
-        raise ValueError('Invalid number of threads given: ' + str(num_threads))
-
     return num_threads
 
 
@@ -202,38 +171,54 @@ def create_thresholds_factory(feature_binning: str, num_threads: int) -> Thresho
     if feature_binning is None:
         return ExactThresholdsFactory(num_threads)
     else:
-        prefix, options = parse_prefix_and_options('feature_binning', feature_binning, [BINNING_EQUAL_FREQUENCY,
-                                                                                        BINNING_EQUAL_WIDTH])
+        value, options = parse_param_and_options('feature_binning', feature_binning, [BINNING_EQUAL_FREQUENCY,
+                                                                                      BINNING_EQUAL_WIDTH])
 
-        if prefix == BINNING_EQUAL_FREQUENCY:
-            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2, lambda x: x >= 2)
-            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+        if value == BINNING_EQUAL_FREQUENCY:
+            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33)
+            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2)
+            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0)
             return ApproximateThresholdsFactory(EqualFrequencyFeatureBinning(bin_ratio, min_bins, max_bins),
                                                 num_threads)
-        elif prefix == BINNING_EQUAL_WIDTH:
-            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2, lambda x: x >= 2)
-            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+        elif value == BINNING_EQUAL_WIDTH:
+            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33)
+            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2)
+            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0)
             return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio, min_bins, max_bins), num_threads)
-        raise ValueError('Invalid value given for parameter \'feature_binning\': ' + str(feature_binning))
 
 
-def parse_prefix_and_options(parameter_name: str, value: str, prefixes: List[str]) -> (str, Options):
-    for prefix in prefixes:
-        if value.startswith(prefix):
-            suffix = value[len(prefix):].strip()
+def parse_param(parameter_name: str, value: str, possible_values: List[str]) -> str:
+    if value in possible_values:
+        return value
+
+    raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+                     + __format_string_list(possible_values) + ', but is "' + value + '"')
+
+
+def parse_param_and_options(parameter_name: str, value: str, possible_values: List[str]) -> (str, Options):
+    for possible_value in possible_values:
+        if value.startswith(possible_value):
+            suffix = value[len(possible_value):].strip()
 
             if len(suffix) > 0:
                 try:
-                    return prefix, Options.create(suffix)
+                    return possible_value, Options.create(suffix)
                 except ValueError:
-                    raise ValueError('Invalid value given for parameter \'' + parameter_name
-                                     + '\'. Invalid syntax used to specify key-value pairs: ' + str(suffix))
+                    raise ValueError('Invalid value given for parameter "' + parameter_name
+                                     + '". Invalid syntax used to specify key-value pairs: "' + str(suffix) + '"')
 
-            return prefix, Options()
+            return possible_value, Options()
 
-    return None, None
+    raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+                     + __format_string_list(possible_values) + ', but is "' + value + '"')
+
+
+def __format_enum_values(enum) -> str:
+    return '{' + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b.value + '"', enum, '') + '}'
+
+
+def __format_string_list(strings: List[str]) -> str:
+    return '{' + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b + '"', strings, '') + '}'
 
 
 def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, dtype,
@@ -305,7 +290,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
     def _fit(self, x, y):
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = SparseFormat.CSC
-        x_sparse_policy = create_sparse_policy(self.feature_format)
+        x_sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy,
                                                  dtype=DTYPE_FLOAT32)
         x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F', dtype=DTYPE_FLOAT32)),
@@ -325,7 +310,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_format = SparseFormat.CSR
-        y_sparse_policy = create_sparse_policy(self.label_format)
+        y_sparse_policy = create_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y, sparse_format=y_sparse_format, policy=y_sparse_policy,
                                                  dtype=DTYPE_UINT8, sparse_values=False)
         y = check_array((y if y_enforce_sparse else y.toarray(order='C')),
@@ -377,7 +362,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def __predict(self, predictor, label_vectors: LabelVectorSet, x):
         sparse_format = SparseFormat.CSR
-        sparse_policy = create_sparse_policy(self.feature_format)
+        sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
                                                dtype=DTYPE_FLOAT32)
         x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C', dtype=DTYPE_FLOAT32), reset=False,

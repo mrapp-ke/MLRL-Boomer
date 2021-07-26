@@ -2,6 +2,7 @@
 #include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/statistic_vector_dense_label_wise.hpp"
 #include "boosting/data/statistic_view_dense_label_wise.hpp"
+#include "common/validation.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_label_wise_provider.hpp"
 #include "omp.h"
@@ -116,7 +117,7 @@ namespace boosting {
             const ILabelWiseLoss& lossFunction, const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
             uint32 numThreads)
         : lossFunction_(lossFunction), ruleEvaluationFactory_(ruleEvaluationFactory), numThreads_(numThreads) {
-
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create(

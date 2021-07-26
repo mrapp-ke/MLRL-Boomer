@@ -3,6 +3,7 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/data/arrays.hpp"
+#include "common/validation.hpp"
 
 
 namespace boosting {
@@ -98,7 +99,8 @@ namespace boosting {
 
     InstanceSamplingWithReplacementFactory::InstanceSamplingWithReplacementFactory(float32 sampleSize)
         : sampleSize_(sampleSize) {
-
+        assertGreater<float32>("sampleSize", sampleSize, 0);
+        assertLessOrEqual<float32>("sampleSize", sampleSize, 1);
     }
 
     std::unique_ptr<IInstanceSampling> InstanceSamplingWithReplacementFactory::create(

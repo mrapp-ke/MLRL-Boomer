@@ -1,4 +1,5 @@
 #include "boosting/output/predictor_classification_label_wise.hpp"
+#include "common/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
@@ -17,7 +18,7 @@ namespace boosting {
 
     LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(float64 threshold, uint32 numThreads)
         : threshold_(threshold), numThreads_(numThreads) {
-
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
