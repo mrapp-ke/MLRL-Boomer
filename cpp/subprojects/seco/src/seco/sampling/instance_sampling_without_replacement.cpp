@@ -72,7 +72,7 @@ namespace seco {
     InstanceSamplingWithoutReplacementFactory::InstanceSamplingWithoutReplacementFactory(float32 sampleSize)
         : sampleSize_(sampleSize) {
         assertGreater<float32>("sampleSize", sampleSize, 0);
-        assertSmaller<float32>("sampleSize", sampleSize, 1);
+        assertLess<float32>("sampleSize", sampleSize, 1);
     }
 
     std::unique_ptr<IInstanceSampling> InstanceSamplingWithoutReplacementFactory::create(

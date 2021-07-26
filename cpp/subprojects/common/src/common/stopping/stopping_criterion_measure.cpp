@@ -80,7 +80,7 @@ MeasureStoppingCriterion::MeasureStoppingCriterion(std::shared_ptr<IEvaluationMe
     assertGreaterOrEqual<uint32>("numPast", numPast, 1);
     assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
     assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
-    assertSmallerOrEqual<float64>("minImprovement", minImprovement, 1);
+    assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
     uint32 bufferInterval = (numPast * updateInterval) + (numCurrent * updateInterval);
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
 }

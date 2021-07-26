@@ -45,7 +45,7 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
 ExampleWiseStratifiedBiPartitionSamplingFactory::ExampleWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize)
     : holdoutSetSize_(holdoutSetSize) {
     assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
-    assertSmaller<float32>("holdoutSetSize", holdoutSetSize, 1);
+    assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
 }
 
 std::unique_ptr<IPartitionSampling> ExampleWiseStratifiedBiPartitionSamplingFactory::create(

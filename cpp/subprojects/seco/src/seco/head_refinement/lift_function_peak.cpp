@@ -9,7 +9,7 @@ namespace seco {
         : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), exponent_(1.0 / curvature) {
         assertGreater<uint32>("numLabels", numLabels, 0);
         assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 0);
-        assertSmallerOrEqual<uint32>("peakLabel", peakLabel, numLabels);
+        assertLessOrEqual<uint32>("peakLabel", peakLabel, numLabels);
         assertGreaterOrEqual<float64>("maxLift", maxLift, 1);
         assertGreater<float64>("curvature", curvature, 0);
     }

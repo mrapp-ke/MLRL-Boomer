@@ -100,7 +100,7 @@ namespace boosting {
     InstanceSamplingWithReplacementFactory::InstanceSamplingWithReplacementFactory(float32 sampleSize)
         : sampleSize_(sampleSize) {
         assertGreater<float32>("sampleSize", sampleSize, 0);
-        assertSmallerOrEqual<float32>("sampleSize", sampleSize, 1);
+        assertLessOrEqual<float32>("sampleSize", sampleSize, 1);
     }
 
     std::unique_ptr<IInstanceSampling> InstanceSamplingWithReplacementFactory::create(

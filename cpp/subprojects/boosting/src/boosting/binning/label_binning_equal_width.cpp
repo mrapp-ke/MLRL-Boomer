@@ -141,7 +141,7 @@ namespace boosting {
             EqualWidthLabelBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
                 : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
                 assertGreater<float32>("binRatio", binRatio, 0.0);
-                assertSmaller<uint32>("binRatio", binRatio, 1.0);
+                assertLess<uint32>("binRatio", binRatio, 1.0);
                 assertGreaterOrEqual<uint32>("minBins", minBins, 2);
                 if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins); }
             }
