@@ -7,44 +7,139 @@ Provides functions for parsing command line arguments.
 """
 import logging as log
 from argparse import ArgumentParser
+from enum import Enum
 
-import sklearn.metrics as metrics
+from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE, \
+    INSTANCE_SAMPLING_VALUES as BOOSTING_INSTANCE_SAMPLING_VALUES, HEAD_TYPE_VALUES as BOOSTING_HEAD_TYPE_VALUES, \
+    EARLY_STOPPING_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, PREDICTOR_VALUES
+from mlrl.common.rule_learners import SparsePolicy, HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, \
+    PRUNING_IREP, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, \
+    PRUNING_VALUES
+from mlrl.common.strings import format_enum_values, format_string_list
+from mlrl.seco.seco_learners import HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK, \
+    INSTANCE_SAMPLING_VALUES as SECO_INSTANCE_SAMPLING_VALUES, HEAD_TYPE_VALUES as SECO_HEAD_TYPE_VALUES, \
+    HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, HEAD_TYPE_PARTIAL
 
-from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, PRUNING_IREP
-from mlrl.seco.seco_learners import HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK
+PARAM_LOG_LEVEL = '--log-level'
+
+PARAM_CURRENT_FOLD = '--current-fold'
+
+PARAM_RANDOM_STATE = '--random-state'
+
+PARAM_DATA_DIR = '--data-dir'
+
+PARAM_DATASET = '--dataset'
+
+PARAM_FOLDS = '--folds'
+
+PARAM_EVALUATE_TRAINING_DATA = '--evaluate-training-data'
+
+PARAM_ONE_HOT_ENCODING = '--one-hot-encoding'
+
+PARAM_MODEL_DIR = '--model-dir'
+
+PARAM_PARAMETER_DIR = '--parameter-dir'
+
+PARAM_OUTPUT_DIR = '--output-dir'
+
+PARAM_STORE_PREDICTIONS = '--store-predictions'
+
+PARAM_PRINT_RULES = '--print-rules'
+
+PARAM_STORE_RULES = '--store-rules'
+
+PARAM_PRINT_OPTIONS = '--print-options'
+
+PARAM_FEATURE_FORMAT = '--feature-format'
+
+PARAM_LABEL_FORMAT = '--label-format'
+
+PARAM_MAX_RULES = '--max-rules'
+
+PARAM_TIME_LIMIT = '--time-limit'
+
+PARAM_LABEL_SAMPLING = '--label-sampling'
+
+PARAM_FEATURE_SAMPLING = '--feature-sampling'
+
+PARAM_PARTITION_SAMPLING = '--holdout'
+
+PARAM_PRUNING = '--pruning'
+
+PARAM_FEATURE_BINNING = '--feature-binning'
+
+PARAM_MIN_COVERAGE = '--min-coverage'
+
+PARAM_MAX_CONDITIONS = '--max-conditions'
+
+PARAM_MAX_HEAD_REFINEMENTS = '--max-head-refinements'
+
+PARAM_NUM_THREADS_RULE_REFINEMENT = '--num-threads-rule-refinement'
+
+PARAM_NUM_THREADS_STATISTIC_UPDATE = '--num-threads-statistic-update'
+
+PARAM_NUM_THREADS_PREDICTION = '--num-threads-prediction'
+
+PARAM_DEFAULT_RULE = '--default-rule'
+
+PARAM_RECALCULATE_PREDICTIONS = '--recalculate-predictions'
+
+PARAM_EARLY_STOPPING = '--early-stopping'
+
+PARAM_INSTANCE_SAMPLING = '--instance-sampling'
+
+PARAM_LABEL_BINNING = '--label-binning'
+
+PARAM_SHRINKAGE = '--shrinkage'
+
+PARAM_LOSS = '--loss'
+
+PARAM_PREDICTOR = '--predictor'
+
+PARAM_L2_REGULARIZATION_WEIGHT = '--l2-regularization-weight'
+
+PARAM_HEAD_TYPE = '--head-type'
+
+PARAM_HEURISTIC = '--heuristic'
+
+PARAM_PRUNING_HEURISTIC = '--pruning-heuristic'
+
+PARAM_LIFT_FUNCTION = '--lift-function'
+
+
+class LogLevel(Enum):
+    DEBUG = 'debug'
+    INFO = 'info'
+    WARN = 'warn'
+    WARNING = 'warning'
+    ERROR = 'error'
+    CRITICAL = 'critical'
+    FATAL = 'fatal'
+    NOTSET = 'notset'
 
 
 def log_level(s):
     s = s.lower()
-    if s == 'debug':
+    if s == LogLevel.DEBUG.value:
         return log.DEBUG
-    elif s == 'info':
+    elif s == LogLevel.INFO.value:
         return log.INFO
-    elif s == 'warn' or s == 'warning':
+    elif s == LogLevel.WARN.value or s == LogLevel.WARNING.value:
         return log.WARN
-    elif s == 'error':
+    elif s == LogLevel.ERROR.value:
         return log.ERROR
-    elif s == 'critical' or s == 'fatal':
+    elif s == LogLevel.CRITICAL.value or s == LogLevel.FATAL.value:
         return log.CRITICAL
-    elif s == 'notset':
+    elif s == LogLevel.NOTSET.value:
         return log.NOTSET
-    raise ValueError('Invalid argument given for parameter \'--log-level\': ' + str(s))
+    raise ValueError('Invalid argument given for parameter "' + PARAM_LOG_LEVEL + '": ' + str(s))
 
 
 def current_fold_string(s):
     n = int(s)
     if n >= 0:
         return n - 1
-    raise ValueError('Invalid argument given for parameter \'--current-fold\': ' + str(n))
-
-
-def target_measure(s):
-    if s == 'hamming-loss':
-        return metrics.hamming_loss, True
-    elif s == 'subset-0-1-loss':
-        return metrics.accuracy_score, False
-    raise ValueError('Invalid argument given for parameter \'--target-measure\': ' + str(s))
+    raise ValueError('Invalid argument given for parameter "' + PARAM_CURRENT_FOLD + '": ' + str(n))
 
 
 def boolean_string(s):
@@ -82,155 +177,224 @@ class ArgumentParserBuilder:
 
     def __init__(self, description: str, **kwargs):
         parser = ArgumentParser(description=description)
-        parser.add_argument('--log-level', type=log_level,
+        parser.add_argument(PARAM_LOG_LEVEL, type=log_level,
                             default=ArgumentParserBuilder.__get_or_default('log_level', 'info', **kwargs),
-                            help='The log level to be used')
+                            help='The log level to be used. Must be ony of ' + format_enum_values(LogLevel) + '.')
         self.parser = parser
 
     def add_random_state_argument(self, **kwargs) -> 'ArgumentParserBuilder':
-        self.parser.add_argument('--random-state', type=int,
+        self.parser.add_argument(PARAM_RANDOM_STATE, type=int,
                                  default=ArgumentParserBuilder.__get_or_default('random_state', 1, **kwargs),
-                                 help='The seed to be used by RNGs')
+                                 help='The seed to be used by random number generators. Must be at least 1.')
         return self
 
     def add_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
         parser = self.parser
-        parser.add_argument('--data-dir', type=str, required=True,
-                            help='The path of the directory where the data sets are located')
-        parser.add_argument('--output-dir', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('output_dir', None, **kwargs),
-                            help='The path of the directory into which results should be written')
-        parser.add_argument('--model-dir', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('model_dir', None, **kwargs),
-                            help='The path of the directory where models should be saved')
-        parser.add_argument('--dataset', type=str, required=True, help='The name of the data set to be used')
-        parser.add_argument('--one-hot-encoding', type=boolean_string,
-                            default=ArgumentParserBuilder.__get_or_default('one_hot_encoding', False, **kwargs),
-                            help='True, if one-hot-encoding should be used, False otherwise')
-        parser.add_argument('--folds', type=int, default=1, help='Total number of folds to be used by cross validation')
-        parser.add_argument('--current-fold', type=current_fold_string,
+        parser.add_argument(PARAM_DATA_DIR, type=str, required=True,
+                            help='The path of the directory where the data set files are located.')
+        parser.add_argument(PARAM_DATASET, type=str, required=True,
+                            help='The name of the data set files without suffix.')
+        parser.add_argument(PARAM_FOLDS, type=int, default=1,
+                            help='The total number of folds to be used for cross validation. Must be greater than 1 '
+                                 + 'or 1, if no cross validation should be used.')
+        parser.add_argument(PARAM_CURRENT_FOLD, type=current_fold_string,
                             default=ArgumentParserBuilder.__get_or_default('current_fold', -1, **kwargs),
-                            help='The cross validation fold to be performed or 0')
-        parser.add_argument('--store-predictions', type=boolean_string,
-                            default=ArgumentParserBuilder.__get_or_default('store_predictions', False, **kwargs),
-                            help='True, if the predictions should be stored as ARFF files, False otherwise')
-        parser.add_argument('--parameter-dir', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('parameter_dir', None, **kwargs),
-                            help='The path of the directory, parameter settings should be loaded from')
-        parser.add_argument('--evaluate-training-data', type=boolean_string,
+                            help='The cross validation fold to be performed. Must be in [1, ' + PARAM_FOLDS + '] or 0, '
+                                 + 'if all folds should be performed. This parameter is ignored if ' + PARAM_FOLDS
+                                 + ' is set to 1.')
+        parser.add_argument(PARAM_EVALUATE_TRAINING_DATA, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('evaluate_training_data', False, **kwargs),
-                            help='True, if the models should be evaluated on the training data, False otherwise')
+                            help='True, if the models should not only be evaluated on the test data, but also on the '
+                                 + 'training data, False otherwise.')
+        parser.add_argument(PARAM_ONE_HOT_ENCODING, type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('one_hot_encoding', False, **kwargs),
+                            help='True, if one-hot-encoding should be used to encode nominal attributes, False '
+                                 + 'otherwise.')
+        parser.add_argument(PARAM_MODEL_DIR, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('model_dir', None, **kwargs),
+                            help='The path of the directory where models should be stored.')
+        parser.add_argument(PARAM_PARAMETER_DIR, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('parameter_dir', None, **kwargs),
+                            help='The path of the directory where configuration files, which specify the parameters to '
+                                 + 'be used by the algorithm, are located.')
+        parser.add_argument(PARAM_OUTPUT_DIR, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('output_dir', None, **kwargs),
+                            help='The path of the directory where experimental results should be saved.')
+        parser.add_argument(PARAM_STORE_PREDICTIONS, type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('store_predictions', False, **kwargs),
+                            help='True, if the predictions for individual examples and labels should be written into '
+                                 + 'output files, False otherwise. Does only have an effect, if the parameter '
+                                 + PARAM_OUTPUT_DIR + ' is specified.')
         return self
 
     def add_rule_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
         self.add_learner_arguments(**kwargs)
         self.add_random_state_argument(**kwargs)
         parser = self.parser
-        parser.add_argument('--feature-format', type=optional_string, default='auto',
-                            help='The format to be used for the feature matrix or \'auto\'')
-        parser.add_argument('--label-format', type=optional_string, default='auto',
-                            help='The format to be used for the label matrix or \'auto\'')
-        parser.add_argument('--num-threads-rule-refinement', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_rule_refinement', 1, **kwargs),
-                            help='The number of threads to be used to search for potential refinements of rules or 0')
-        parser.add_argument('--num-threads-statistic-update', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_statistic_update', 1, **kwargs),
-                            help='The number of threads to be used to update statistics or 0')
-        parser.add_argument('--num-threads-prediction', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
-                            help='The number of threads to be used to make predictions or 0')
-        parser.add_argument('--max-rules', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('max_rules', 500, **kwargs),
-                            help='The maximum number of rules to be induced or 0')
-        parser.add_argument('--time-limit', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('time_limit', 0, **kwargs),
-                            help='The duration in seconds after which the induction of rules should be canceled or 0')
-        parser.add_argument('--label-sampling', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('label_sampling', None, **kwargs),
-                            help='The name of the strategy to be used for label sampling or None')
-        parser.add_argument('--instance-sampling', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('instance_sampling', None, **kwargs),
-                            help='The name of the strategy to be used for instance sampling or None')
-        parser.add_argument('--feature-sampling', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('feature_sampling', None, **kwargs),
-                            help='The name of the strategy to be used for feature sampling or None')
-        parser.add_argument('--holdout', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('holdout', None, **kwargs),
-                            help='The name of the strategy to be used for creating a holdout set or None')
-        parser.add_argument('--head-type', type=str,
-                            default=ArgumentParserBuilder.__get_or_default('head_type', HEAD_TYPE_SINGLE, **kwargs),
-                            help='The type of the rule heads that should be used')
-        parser.add_argument('--pruning', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('pruning', None, **kwargs),
-                            help='The name of the strategy to be used for pruning or None')
-        parser.add_argument('--min-coverage', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('min_coverage', 1, **kwargs),
-                            help='The minimum number of training examples that must be covered by a rule')
-        parser.add_argument('--max-conditions', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('max_conditions', 0, **kwargs),
-                            help='The maximum number of conditions to be included in a rule\'s body or 0')
-        parser.add_argument('--max-head-refinements', type=int,
-                            default=ArgumentParserBuilder.__get_or_default('max_head_refinements', 0, **kwargs),
-                            help='The maximum number of times the head of a rule may be refined or 0')
-        parser.add_argument('--print-rules', type=boolean_string,
+        parser.add_argument(PARAM_PRINT_RULES, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('print_rules', False, **kwargs),
-                            help='True, if the induced rules should be printed on the console, False otherwise')
-        parser.add_argument('--print-options', type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('print_options', None, **kwargs),
-                            help='A dictionary that specifies options for printing rules')
-        parser.add_argument('--store-rules', type=boolean_string,
+                            help='True, if the induced rules should be printed to the console, False otherwise.')
+        parser.add_argument(PARAM_STORE_RULES, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_rules', False, **kwargs),
-                            help='True, if the induced rules should be stored in text files, False otherwise')
-        parser.add_argument('--feature-binning', type=optional_string,
+                            help='True, if the induced rules should be written into a text file, False otherwise. Does '
+                                 + 'only have an effect if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
+        parser.add_argument(PARAM_PRINT_OPTIONS, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('print_options', None, **kwargs),
+                            help='Additional options to be taken into account when writing rules to the console or an '
+                                 + 'output file. Does only have an effect if the parameter ' + PARAM_PRINT_RULES
+                                 + ' or ' + PARAM_STORE_RULES + ' is set to True. For a list of the available options '
+                                 + 'refer to the documentation.')
+        parser.add_argument(PARAM_FEATURE_FORMAT, type=optional_string, default=SparsePolicy.AUTO.value,
+                            help='The format to be used for the representation of the feature matrix. Must be one of '
+                                 + format_enum_values(SparsePolicy) + '.')
+        parser.add_argument(PARAM_LABEL_FORMAT, type=optional_string, default=SparsePolicy.AUTO.value,
+                            help='The format to be used for the representation of the label matrix. Must be one of '
+                                 + format_enum_values(SparsePolicy) + '.')
+        parser.add_argument(PARAM_MAX_RULES, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('max_rules', 500, **kwargs),
+                            help='The maximum number of rules to be induced. Must be at least 1 or 0, if the number of '
+                                 + 'rules should not be restricted.')
+        parser.add_argument(PARAM_TIME_LIMIT, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('time_limit', 0, **kwargs),
+                            help='The duration in seconds after which the induction of rules should be canceled. Must '
+                                 + 'be at least 1 or 0, if no time limit should be set.')
+        parser.add_argument(PARAM_LABEL_SAMPLING, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('label_sampling', None, **kwargs),
+                            help='The name of the strategy to be used for label sampling. Must be one of '
+                                 + format_string_list(LABEL_SAMPLING_VALUES) + ' or "None", if no label sampling '
+                                 + 'should be used. For additional options refer to the documentation.')
+        parser.add_argument(PARAM_FEATURE_SAMPLING, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('feature_sampling', None, **kwargs),
+                            help='The name of the strategy to be used for feature sampling. Must be one of '
+                                 + format_string_list(FEATURE_SAMPLING_VALUES) + ' or "None", if no feature sampling '
+                                 + 'should be used. For additional options refer to the documentation.')
+        parser.add_argument(PARAM_PARTITION_SAMPLING, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('holdout', None, **kwargs),
+                            help='The name of the strategy to be used for creating a holdout set. Must be one of '
+                                 + format_string_list(PARTITION_SAMPLING_VALUES) + ' or "None", if no holdout set '
+                                 + 'should be created. For additional options refer to the documentation.')
+        parser.add_argument(PARAM_FEATURE_BINNING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('feature_binning', None, **kwargs),
-                            help='The name of the strategy to be used for feature binning or None')
+                            help='The name of the strategy to be used for feature binning. Must be one of '
+                                 + format_string_list(FEATURE_BINNING_VALUES) + ' or "None", if no feature binning '
+                                 + 'should be used. For additional arguments refer to the documentation.')
+        parser.add_argument(PARAM_PRUNING, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('pruning', None, **kwargs),
+                            help='The name of the strategy to be used for pruning rules. Must be one of '
+                                 + format_string_list(PRUNING_VALUES) + ' or "None", if no pruning should be used. '
+                                 + 'Does only have an effect if the parameter ' + PARAM_INSTANCE_SAMPLING + ' is not '
+                                 + 'set to "None".')
+        parser.add_argument(PARAM_MIN_COVERAGE, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('min_coverage', 1, **kwargs),
+                            help='The minimum number of training examples that must be covered by a rule. Must be at '
+                                 + 'least 1.')
+        parser.add_argument(PARAM_MAX_CONDITIONS, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('max_conditions', 0, **kwargs),
+                            help='The maximum number of conditions to be included in a rule\'s body. Must be at least '
+                                 + '1 or 0, if the number of conditions should not be restricted.')
+        parser.add_argument(PARAM_MAX_HEAD_REFINEMENTS, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('max_head_refinements', 0, **kwargs),
+                            help='The maximum number of times the head of a rule may be refined. Must be at least 1 or '
+                                 + '0, if the number of refinements should not be restricted.')
+        parser.add_argument(PARAM_NUM_THREADS_RULE_REFINEMENT, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_rule_refinement', 1, **kwargs),
+                            help='The number of threads to be used to search for potential refinements of rules in '
+                                 + 'parallel. Must be at least 1 or 0, if the number of cores that are available on '
+                                 + 'the machine should be used.')
+        parser.add_argument(PARAM_NUM_THREADS_STATISTIC_UPDATE, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_statistic_update', 1, **kwargs),
+                            help='The number of threads to be used to calculate gradients and Hessians for different '
+                                 + 'examples in parallel. Must be at least 1 or 0, if the number of cores that are '
+                                 + 'available on the machine should be used.')
+        parser.add_argument(PARAM_NUM_THREADS_PREDICTION, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
+                            help='The number of threads to be used to make predictions for different examples in '
+                                 + 'parallel. Must be at least 1 or 0, if the number of cores that are available on '
+                                 + 'the machine should be used.')
         return self
 
     def add_boosting_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
-        self.add_rule_learner_arguments(max_rules=1000, head_type=AUTOMATIC,
-                                        feature_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
+        self.add_rule_learner_arguments(max_rules=1000, feature_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
         parser = self.parser
-        parser.add_argument('--loss', type=str, default=LOSS_LOGISTIC_LABEL_WISE,
-                            help='The name of the loss function to be used')
-        parser.add_argument('--default-rule', type=boolean_string,
+        parser.add_argument(PARAM_DEFAULT_RULE, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('default_rule', True, **kwargs),
-                            help='True, if the first rule should be a default rule, False otherwise')
-        parser.add_argument('--recalculate-predictions', type=boolean_string,
+                            help='True, if the first rule should be a default rule, False otherwise.')
+        parser.add_argument(PARAM_RECALCULATE_PREDICTIONS, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('recalculate_predictions', True, **kwargs),
                             help='True, if the predictions of rules should be recalculated on the entire training '
-                                 + 'data, if instance sampling is used, False otherwise')
-        parser.add_argument('--early-stopping', type=optional_string,
+                                 + 'data, if the parameter ' + PARAM_INSTANCE_SAMPLING + ' is not set to None, False '
+                                 + 'otherwise.')
+        parser.add_argument(PARAM_EARLY_STOPPING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('early_stopping', None, **kwargs),
-                            help='The name of the strategy to be used for early stopping or None')
-        parser.add_argument('--label-binning', type=optional_string,
+                            help='The name of the strategy to be used for early stopping. Must be one of '
+                                 + format_string_list(EARLY_STOPPING_VALUES) + ' or "None", if no early stopping '
+                                 + 'should be used. Does only have an effect if the parameter '
+                                 + PARAM_PARTITION_SAMPLING + ' is not set to "None". For additional options refer to '
+                                 + 'the documentation.')
+        parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('instance_sampling', None, **kwargs),
+                            help='The name of the strategy to be used for instance sampling. Must be one of'
+                                 + format_string_list(BOOSTING_INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance '
+                                 + 'sampling should be used. For additional options refer to the documentation.')
+        parser.add_argument(PARAM_LABEL_BINNING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('label_binning', AUTOMATIC, **kwargs),
-                            help='The name of the strategy to be used for label binning, None or \'auto\'')
-        parser.add_argument('--l2-regularization-weight', type=float,
-                            default=ArgumentParserBuilder.__get_or_default('l2_regularization_weight', 1.0, **kwargs),
-                            help='The weight of the L2 regularization to be used')
-        parser.add_argument('--shrinkage', type=float,
+                            help='The name of the strategy to be used for gradient-based label binning (GBLB). Must be '
+                                 + 'one of ' + format_string_list(LABEL_BINNING_VALUES) + ' or "None", if no label '
+                                 + 'binning should be used. If set to "' + AUTOMATIC + '", the most suitable strategy '
+                                 + 'is chosen automatically based on the parameters ' + PARAM_LOSS + ' and '
+                                 + PARAM_HEAD_TYPE + '. For additional arguments refer to the documentation.')
+        parser.add_argument(PARAM_SHRINKAGE, type=float,
                             default=ArgumentParserBuilder.__get_or_default('shrinkage', 0.3, **kwargs),
-                            help='The shrinkage parameter to be used')
-        parser.add_argument('--predictor', type=str,
+                            help='The shrinkage parameter, a.k.a. the learning rate, to be used. Must be in (0, 1].')
+        parser.add_argument(PARAM_LOSS, type=str, default=LOSS_LOGISTIC_LABEL_WISE,
+                            help='The name of the loss function to be minimized during training. Must be one of '
+                                 + format_string_list(LOSS_VALUES) + '.')
+        parser.add_argument(PARAM_PREDICTOR, type=str,
                             default=ArgumentParserBuilder.__get_or_default('predictor', AUTOMATIC, **kwargs),
-                            help='The name of the strategy to be used for making predictions or \'auto\'')
+                            help='The name of the strategy to be used for making predictions. Must be one of '
+                                 + format_string_list(PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
+                                 + 'suitable strategy is chosen automatically based on the parameter ' + PARAM_LOSS
+                                 + '.')
+        parser.add_argument(PARAM_L2_REGULARIZATION_WEIGHT, type=float,
+                            default=ArgumentParserBuilder.__get_or_default('l2_regularization_weight', 1.0, **kwargs),
+                            help='The weight of the L2 regularization. Must be at least 0.')
+        parser.add_argument(PARAM_HEAD_TYPE, type=str,
+                            default=ArgumentParserBuilder.__get_or_default('head_type', HEAD_TYPE_SINGLE, **kwargs),
+                            help='The type of the rule heads that should be used. Must be one of '
+                                 + format_string_list(BOOSTING_HEAD_TYPE_VALUES) + '. If set to "' + AUTOMATIC + '", '
+                                 + 'the most suitable type is chosen automatically based on the parameter ' + PARAM_LOSS
+                                 + '.')
         return self
 
     def add_seco_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
-        self.add_rule_learner_arguments(print_rules=True, pruning=PRUNING_IREP,
-                                        instance_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
+        self.add_rule_learner_arguments(print_rules=True, pruning=PRUNING_IREP, **kwargs)
         parser = self.parser
-        parser.add_argument('--heuristic', type=str,
+        parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('instance_sampling', None, **kwargs),
+                            help='The name of the strategy to be used for instance sampling. Must be one of'
+                                 + format_string_list(SECO_INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance '
+                                 + 'sampling should be used. For additional options refer to the documentation.')
+        parser.add_argument(PARAM_HEURISTIC, type=str,
                             default=ArgumentParserBuilder.__get_or_default('heuristic', HEURISTIC_F_MEASURE, **kwargs),
-                            help='The name of the heuristic to be used')
-        parser.add_argument('--pruning-heuristic', type=str,
+                            help='The name of the heuristic to be used for learning rules. Must be one of '
+                                 + format_string_list(HEURISTIC_VALUES) + '. For additional arguments refer to the '
+                                 + 'documentation.')
+        parser.add_argument(PARAM_PRUNING_HEURISTIC, type=str,
                             default=ArgumentParserBuilder.__get_or_default('pruning_heuristic', HEURISTIC_ACCURACY,
                                                                            **kwargs),
-                            help='The name of the heuristic to be used for pruning')
-        parser.add_argument('--lift-function', type=optional_string,
+                            help='The name of the heuristic to be used for pruning rules. Must be one of '
+                                 + format_string_list(HEURISTIC_VALUES) + '. For additional arguments refer to the '
+                                 + 'documentation.')
+        parser.add_argument(PARAM_LIFT_FUNCTION, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('lift_function', LIFT_FUNCTION_PEAK,
                                                                            **kwargs),
-                            help='The lift function to be used')
+                            help='The lift function to be used for the induction of multi-label rules. Must be one of '
+                                 + format_string_list(LIFT_FUNCTION_VALUES) + '. Does only have an effect if the '
+                                 + 'parameter ' + PARAM_HEAD_TYPE + ' is set to "' + HEAD_TYPE_PARTIAL + '".')
+        parser.add_argument(PARAM_HEAD_TYPE, type=str,
+                            default=ArgumentParserBuilder.__get_or_default('head_type', HEAD_TYPE_SINGLE, **kwargs),
+                            help='The type of the rule heads that should be used. Must be one of '
+                                 + format_string_list(SECO_HEAD_TYPE_VALUES) + '.')
         return self
 
     def build(self) -> ArgumentParser:
