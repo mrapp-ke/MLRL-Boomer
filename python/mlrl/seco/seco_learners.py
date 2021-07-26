@@ -60,10 +60,10 @@ ARGUMENT_BETA = 'beta'
 ARGUMENT_M = 'm'
 
 
-class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
+class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     """
-    A scikit-multilearn implementation of an Separate-and-Conquer algorithm for learning multi-label classification
-    rules.
+    A scikit-multilearn implementation of an Separate-and-Conquer (SeCo) algorithm for learning multi-label
+    classification rules.
     """
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
