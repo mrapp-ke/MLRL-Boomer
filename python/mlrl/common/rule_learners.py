@@ -74,6 +74,17 @@ ARGUMENT_MAX_BINS = 'max_bins'
 
 PRUNING_IREP = 'irep'
 
+LABEL_SAMPLING_VALUES = [SAMPLING_WITHOUT_REPLACEMENT]
+
+FEATURE_SAMPLING_VALUES = [SAMPLING_WITHOUT_REPLACEMENT]
+
+PARTITION_SAMPLING_VALUES = [PARTITION_SAMPLING_RANDOM, SAMPLING_STRATIFIED_LABEL_WISE,
+                             SAMPLING_STRATIFIED_EXAMPLE_WISE]
+
+FEATURE_BINNING_VALUES = [BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH]
+
+PRUNING_VALUES = [PRUNING_IREP]
+
 
 class SparsePolicy(Enum):
     AUTO = AUTOMATIC
@@ -98,7 +109,7 @@ def create_label_sampling_factory(label_sampling: str) -> LabelSamplingFactory:
     if label_sampling is None:
         return NoLabelSamplingFactory()
     else:
-        value, options = parse_param_and_options('label_sampling', label_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
+        value, options = parse_param_and_options('label_sampling', label_sampling, LABEL_SAMPLING_VALUES)
 
         if value == SAMPLING_WITHOUT_REPLACEMENT:
             num_samples = options.get_int(ARGUMENT_NUM_SAMPLES, 1)
@@ -109,7 +120,7 @@ def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFac
     if feature_sampling is None:
         return NoFeatureSamplingFactory()
     else:
-        value, options = parse_param_and_options('feature_sampling', feature_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
+        value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
 
         if value == SAMPLING_WITHOUT_REPLACEMENT:
             sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0)
@@ -120,9 +131,7 @@ def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
     if holdout is None:
         return NoPartitionSamplingFactory()
     else:
-        value, options = parse_param_and_options('holdout', holdout, [PARTITION_SAMPLING_RANDOM,
-                                                                      SAMPLING_STRATIFIED_LABEL_WISE,
-                                                                      SAMPLING_STRATIFIED_EXAMPLE_WISE])
+        value, options = parse_param_and_options('holdout', holdout, PARTITION_SAMPLING_VALUES)
 
         if value == PARTITION_SAMPLING_RANDOM:
             holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
@@ -139,7 +148,7 @@ def create_pruning(pruning: str, instance_sampling: str) -> Pruning:
     if pruning is None:
         return NoPruning()
     else:
-        value = parse_param('pruning', pruning, [PRUNING_IREP])
+        value = parse_param('pruning', pruning, PRUNING_VALUES)
 
         if value == PRUNING_IREP:
             if instance_sampling is None:
@@ -171,8 +180,7 @@ def create_thresholds_factory(feature_binning: str, num_threads: int) -> Thresho
     if feature_binning is None:
         return ExactThresholdsFactory(num_threads)
     else:
-        value, options = parse_param_and_options('feature_binning', feature_binning, [BINNING_EQUAL_FREQUENCY,
-                                                                                      BINNING_EQUAL_WIDTH])
+        value, options = parse_param_and_options('feature_binning', feature_binning, FEATURE_BINNING_VALUES)
 
         if value == BINNING_EQUAL_FREQUENCY:
             bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33)

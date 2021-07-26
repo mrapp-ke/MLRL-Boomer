@@ -88,6 +88,20 @@ PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
 LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
 
+INSTANCE_SAMPLING_VALUES = [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT, SAMPLING_STRATIFIED_LABEL_WISE,
+                            SAMPLING_STRATIFIED_EXAMPLE_WISE]
+
+HEAD_TYPE_VALUES = [HEAD_TYPE_SINGLE, HEAD_TYPE_COMPLETE, AUTOMATIC]
+
+EARLY_STOPPING_VALUES = [EARLY_STOPPING_LOSS]
+
+LABEL_BINNING_VALUES = [LABEL_BINNING_EQUAL_WIDTH, AUTOMATIC]
+
+LOSS_VALUES = [LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE, LOSS_LOGISTIC_LABEL_WISE,
+               LOSS_LOGISTIC_EXAMPLE_WISE]
+
+PREDICTOR_VALUES = [PREDICTOR_LABEL_WISE, PREDICTOR_EXAMPLE_WISE, AUTOMATIC]
+
 
 class Boomer(MLRuleLearner, ClassifierMixin):
     """
@@ -241,7 +255,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def _create_predictor(self, num_labels: int) -> Predictor:
         predictor = self.__get_preferred_predictor()
-        value = parse_param('predictor', predictor, [PREDICTOR_LABEL_WISE, PREDICTOR_EXAMPLE_WISE])
+        value = parse_param('predictor', predictor, PREDICTOR_VALUES)
 
         if value == PREDICTOR_LABEL_WISE:
             return self.__create_label_wise_predictor(num_labels)
@@ -331,7 +345,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if early_stopping is None:
             return None
         else:
-            value, options = parse_param_and_options('early_stopping', early_stopping, [EARLY_STOPPING_LOSS])
+            value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
 
             if value == EARLY_STOPPING_LOSS:
                 if self.holdout is None:
@@ -367,8 +381,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             return ArithmeticMeanFunction()
 
     def __create_loss_function(self):
-        value = parse_param("loss", self.loss, [LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE,
-                                                LOSS_LOGISTIC_LABEL_WISE, LOSS_LOGISTIC_EXAMPLE_WISE])
+        value = parse_param("loss", self.loss, LOSS_VALUES)
 
         if value == LOSS_SQUARED_ERROR_LABEL_WISE:
             return LabelWiseSquaredErrorLoss()
@@ -399,7 +412,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if label_binning is None:
             return None
         else:
-            value, options = parse_param_and_options('label_binning', label_binning, [LABEL_BINNING_EQUAL_WIDTH])
+            value, options = parse_param_and_options('label_binning', label_binning, LABEL_BINNING_VALUES)
 
             if value == LABEL_BINNING_EQUAL_WIDTH:
                 bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.04)
@@ -431,7 +444,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __create_head_refinement_factory(self) -> HeadRefinementFactory:
         head_type = self.__get_preferred_head_type()
-        value = parse_param("head_type", head_type, [HEAD_TYPE_SINGLE, HEAD_TYPE_COMPLETE])
+        value = parse_param("head_type", head_type, HEAD_TYPE_VALUES)
 
         if value == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
@@ -462,9 +475,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if instance_sampling is None:
             return NoInstanceSamplingFactory()
         else:
-            value, options = parse_param_and_options('instance_sampling', instance_sampling,
-                                                     [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT,
-                                                      SAMPLING_STRATIFIED_LABEL_WISE, SAMPLING_STRATIFIED_EXAMPLE_WISE])
+            value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
 
             if value == SAMPLING_WITH_REPLACEMENT:
                 sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0)

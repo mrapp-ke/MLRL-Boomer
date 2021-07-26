@@ -59,6 +59,15 @@ ARGUMENT_BETA = 'beta'
 
 ARGUMENT_M = 'm'
 
+INSTANCE_SAMPLING_VALUES = [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT]
+
+HEAD_TYPE_VALUES = [HEAD_TYPE_SINGLE, HEAD_TYPE_PARTIAL]
+
+HEURISTIC_VALUES = [HEURISTIC_ACCURACY, HEURISTIC_PRECISION, HEURISTIC_RECALL, HEURISTIC_LAPLACE, HEURISTIC_WRA,
+                    HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE]
+
+LIFT_FUNCTION_VALUES = [LIFT_FUNCTION_PEAK]
+
 
 class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     """
@@ -213,10 +222,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
 
     @staticmethod
     def __create_heuristic(heuristic: str, parameter_name: str) -> Heuristic:
-        value, options = parse_param_and_options(parameter_name, heuristic, [HEURISTIC_ACCURACY, HEURISTIC_PRECISION,
-                                                                             HEURISTIC_RECALL, HEURISTIC_LAPLACE,
-                                                                             HEURISTIC_WRA, HEURISTIC_F_MEASURE,
-                                                                             HEURISTIC_M_ESTIMATE])
+        value, options = parse_param_and_options(parameter_name, heuristic, HEURISTIC_VALUES)
 
         if value == HEURISTIC_ACCURACY:
             return Accuracy()
@@ -245,7 +251,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                                        pruning_rule_evaluation_factory)
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:
-        value, options = parse_param_and_options('lift_function', self.lift_function, [LIFT_FUNCTION_PEAK])
+        value, options = parse_param_and_options('lift_function', self.lift_function, LIFT_FUNCTION_VALUES)
 
         if value == LIFT_FUNCTION_PEAK:
             peak_label = options.get_int(ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1)
@@ -254,7 +260,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
 
     def __create_head_refinement_factory(self, lift_function: LiftFunction) -> HeadRefinementFactory:
-        value = parse_param('head_type', self.head_type, [HEAD_TYPE_SINGLE, HEAD_TYPE_PARTIAL])
+        value = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
 
         if value == HEAD_TYPE_SINGLE:
             return SingleLabelHeadRefinementFactory()
@@ -267,8 +273,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         if instance_sampling is None:
             return NoInstanceSamplingFactory()
         else:
-            value, options = parse_param_and_options('instance_sampling', instance_sampling,
-                                                     [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT])
+            value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
 
             if value == SAMPLING_WITH_REPLACEMENT:
                 sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0)
