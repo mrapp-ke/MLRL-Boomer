@@ -25,7 +25,7 @@ class SeCoRunnable(RuleLearnerRunnable):
 
 
 if __name__ == '__main__':
-    parser = ArgumentParserBuilder(description='A multi-label classification experiment using Separate and Conquer') \
+    parser = ArgumentParserBuilder(description='Allows to run experiments using the Separate-and-Conquer algorithm') \
         .add_seco_learner_arguments() \
         .build()
     runnable = SeCoRunnable()

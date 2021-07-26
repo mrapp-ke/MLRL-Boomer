@@ -26,7 +26,7 @@ class BoomerRunnable(RuleLearnerRunnable):
 
 
 if __name__ == '__main__':
-    parser = ArgumentParserBuilder(description='A multi-label classification experiment using BOOMER') \
+    parser = ArgumentParserBuilder(description='Allows to run experiments using the BOOMER algorithm') \
         .add_boosting_learner_arguments() \
         .build()
     runnable = BoomerRunnable()
