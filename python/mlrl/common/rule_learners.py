@@ -211,9 +211,8 @@ def parse_param_and_options(parameter_name: str, value: str, possible_values: Li
             if len(suffix) > 0:
                 try:
                     return possible_value, Options.create(suffix)
-                except ValueError:
-                    raise ValueError('Invalid value given for parameter "' + parameter_name
-                                     + '". Invalid syntax used to specify key-value pairs: "' + str(suffix) + '"')
+                except ValueError as e:
+                    raise ValueError('Invalid value given for parameter "' + parameter_name + '". ' + str(e))
 
             return possible_value, Options()
 
