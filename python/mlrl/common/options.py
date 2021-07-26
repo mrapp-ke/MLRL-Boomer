@@ -6,6 +6,8 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
 
+ERROR_MESSAGE_INVALID_SYNTAX = 'Invalid syntax used to specify additional options.'
+
 
 class Options:
     """
@@ -28,28 +30,36 @@ class Options:
         options = cls()
 
         if string is not None and len(string) > 0:
-            if not string.startswith('{') or not string.endswith('}'):
-                raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+            if not string.startswith('{'):
+                raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + ' Must start with "{", but is "' + string + '"')
+            if not string.endswith('}'):
+                raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + ' Must end with "}", but is "' + string + '"')
 
-            string = string[1:-1]
+            option_string = string[1:-1]
 
-            if len(string) > 0:
-                for argument in string.split(','):
-                    if len(argument) == 0:
-                        raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+            if len(option_string) > 0:
+                for argument in option_string.split(','):
+                    if len(argument) > 0:
+                        parts = argument.split('=')
+                        print(str(parts))
 
-                    parts = argument.split('=')
+                        if len(parts) != 2:
+                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX
+                                             + ' Expected comma-separated list of key-value pairs, but is "' + string
+                                             + '"')
 
-                    if len(parts) != 2:
-                        raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+                        key = parts[0]
 
-                    key = parts[0]
-                    value = parts[1]
+                        if len(key) == 0:
+                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX
+                                             + ' Each value must be associated with a key, but is "' + string + '"')
 
-                    if len(key) == 0 or len(value) == 0:
-                        raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+                        value = parts[1]
 
-                    options.dict[key] = value
+                        if len(value) == 0:
+                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + ' No value specified for key "' + key + '"')
+
+                        options.dict[key] = value
 
         return options
 
