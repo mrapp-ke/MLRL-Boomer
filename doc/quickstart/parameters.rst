@@ -8,9 +8,13 @@ The behavior of the BOOMER algorithm can be controlled in a fine-grained manner 
 
     ``--parameter-name value``
 
-    In addition to the specified value, some parameters allow to specify additional options as key-value pairs. These options must be provided by using the following bracket notation:
+    In addition to the specified value, some parameters allow to specify additional options as key-value pairs. These options may be provided by using the following bracket notation:
 
     ``--parameter-name value{key1=value1,key2=value2}``
+
+    Parameter values that include additional options may not contain any spaces. Depending on the shell that is used to run the program, special characters like ``{`` or ``}`` must eventually be escaped. When using bash or sh this can be achieved by adding single quotes as follows:
+
+    ``--parameter-name value'{key1=value1,key2=value2}'``.
 
 **Data set**
 
@@ -28,11 +32,11 @@ The following parameters are always needed to specify the data set that should b
 
 * ``--folds`` (Default value = 1)
 
-  * The total number of folds to be used for cross validation or 1, if no cross validation should be used.
+  * The total number of folds to be used for cross validation. Must be greater than 1 or 1, if no cross validation should be used.
 
 * ``--current-fold`` (Default value = 0)
 
-  * The cross-validation fold to be performed or 0, if all folds should be performed. Must be 0 or at least 1 and less or equal to --folds. If --folds is set to 1, this parameter is ignored.
+  * The cross validation fold to be performed. Must be in [1, --folds] or 0, if all folds should be performed. This parameter is ignored if --folds is set to 1.
 
 * ``--evaluate-training-data`` (Default value = False)
 
@@ -44,7 +48,7 @@ The following parameters allow to specify how the training data should be organi
 
 * ``--one-hot-encoding`` (Default value = False)
 
-  * True, if one-hot-encoding should be used for encoding nominal attributes, False otherwise. One-hot-encoding is not necessary to be able to handle nominal attributes, as the algorithm can handle this kind of attributes natively. 
+  * True, if one-hot-encoding should be used to encode nominal attributes, False otherwise. One-hot-encoding is not required to be able to handle nominal attributes, as the algorithm can handle this kind of attributes natively.
 
 * ``--feature-format`` (Default value = auto)
 
@@ -64,11 +68,11 @@ The following parameters allow to specify the directories, where input files can
 
 * ``--model-dir`` (Default value = None)
 
-  * The path of the directory where saved models are located. If such models are found in the specified directory, they will be used instead of training from scratch. If no models are available, the trained models will be saved in the specified directory once training has completed.
+  * The path of the directory where models should be stored. If such models are found in the specified directory, they will be used instead of training from scratch. If no models are available, the trained models will be saved in the specified directory once training has completed.
 
 * ``--parameter-dir`` (Default value = None)
 
-  * The path of the directory where configuration files that provide parameter settings are located. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line parameters.
+  * The path of the directory where configuration files, which specify the parameters to be used by the algorithm, are located. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line parameters.
 
 **Output**
 
@@ -76,7 +80,7 @@ The following parameters allow to customize the console output and output files 
 
 * ``--output-dir`` (Default value = None)
 
-  * The path of the directory into which the experimental results should be written.
+  * The path of the directory where experimental results should be saved.
 
 * ``--store-predictions`` (Default value = False)
 
@@ -88,7 +92,7 @@ The following parameters allow to customize the console output and output files 
 
 * ``--store-rules`` (Default value = False)
 
-  * True, if the induced rules should be written to a text file, False otherwise. Does only have an effect if the parameter --output-dir is specified.
+  * True, if the induced rules should be written into a text file, False otherwise. Does only have an effect if the parameter --output-dir is specified.
 
 * ``--print-options`` (Default value = None)
 
@@ -113,7 +117,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 
 * ``--max-rules`` (Default value = 1000)
 
-  * The number of rules to be induced or 0, if the number of rules should not be restricted.
+  * The maximum number of rules to be induced. Must be at least 1 or 0, if the number of rules should not be restricted.
 
 * ``--default-rule`` (Default value = True)
 
@@ -121,7 +125,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 
 * ``--time-limit`` (Default value = 0)
 
-  * The duration in seconds after which the induction of rules should be canceled or 0, if no time limit should be set.
+  * The duration in seconds after which the induction of rules should be canceled. Must be at least 1 or 0, if no time limit should be set.
 
 * ``--label-sampling`` (Default value = None)
 
