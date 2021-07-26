@@ -13,7 +13,7 @@ class SecoRunnable(RuleLearnerRunnable):
     def _create_learner(self, args):
         return SeparateAndConquerRuleLearner(random_state=args.random_state, feature_format=args.feature_format,
                                              label_format=args.label_format, max_rules=args.max_rules,
-                                             time_limit=args.time_limit, loss=args.loss, heuristic=args.heuristic,
+                                             time_limit=args.time_limit, heuristic=args.heuristic,
                                              pruning_heuristic=args.pruning_heuristic, pruning=args.pruning,
                                              label_sampling=args.label_sampling,
                                              instance_sampling=args.instance_sampling,

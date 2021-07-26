@@ -33,8 +33,6 @@ from mlrl.common.rule_learners import create_pruning, create_feature_sampling_fa
 
 HEAD_TYPE_PARTIAL = 'partial'
 
-AVERAGING_LABEL_WISE = 'label-wise-averaging'
-
 HEURISTIC_ACCURACY = 'accuracy'
 
 HEURISTIC_PRECISION = 'precision'
@@ -71,11 +69,11 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
                  head_type: str = HEAD_TYPE_SINGLE, lift_function: str = LIFT_FUNCTION_PEAK,
-                 loss: str = AVERAGING_LABEL_WISE, heuristic: str = HEURISTIC_F_MEASURE,
-                 pruning_heuristic: str = HEURISTIC_ACCURACY, label_sampling: str = None,
-                 instance_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, feature_sampling: str = None,
-                 holdout: str = None, feature_binning: str = None, pruning: str = PRUNING_IREP, min_coverage: int = 1,
-                 max_conditions: int = -1, max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
+                 heuristic: str = HEURISTIC_F_MEASURE, pruning_heuristic: str = HEURISTIC_ACCURACY,
+                 label_sampling: str = None, instance_sampling: str = SAMPLING_WITHOUT_REPLACEMENT,
+                 feature_sampling: str = None, holdout: str = None, feature_binning: str = None,
+                 pruning: str = PRUNING_IREP, min_coverage: int = 1, max_conditions: int = -1,
+                 max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
                  num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
@@ -87,7 +85,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         :param lift_function:                       The lift function to use. Must be `peak`. Additional options may be
                                                     provided using the bracket notation
                                                     `peak[peak_label=10,max_lift=2.0,curvature=1.0]`
-        :param loss:                                The loss function to be minimized. Must be `label-wise-averaging`
         :param heuristic:                           The heuristic to be minimized. Must be `accuracy`, `precision`,
                                                     `recall`, `weighted-relative-accuracy`, `f-measure`, `m-estimate` or
                                                     `laplace`. Additional options may be provided using the bracket
@@ -142,7 +139,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.time_limit = time_limit
         self.head_type = head_type
         self.lift_function = lift_function
-        self.loss = loss
         self.heuristic = heuristic
         self.pruning_heuristic = pruning_heuristic
         self.label_sampling = label_sampling
@@ -162,7 +158,6 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         name = 'max-rules=' + str(self.max_rules)
         name += '_head-type=' + str(self.head_type)
         name += '_lift-function=' + str(self.lift_function)
-        name += '_loss=' + str(self.loss)
         name += '_heuristic=' + str(self.heuristic)
         if self.label_sampling is not None:
             name += '_label-sampling=' + str(self.label_sampling)
@@ -240,17 +235,14 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             m = options.get_float(ARGUMENT_M, 22.466)
             return MEstimate(m)
 
-    def __create_statistics_provider_factory(self, heuristic: Heuristic,
+    @staticmethod
+    def __create_statistics_provider_factory(heuristic: Heuristic,
                                              pruning_heuristic: Heuristic) -> StatisticsProviderFactory:
-        value = parse_param('loss', self.loss, [AVERAGING_LABEL_WISE])
-
-        if value == AVERAGING_LABEL_WISE:
-            default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, predictMajority=True)
-            regular_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic)
-            pruning_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(pruning_heuristic)
-            return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory,
-                                                           regular_rule_evaluation_factory,
-                                                           pruning_rule_evaluation_factory)
+        default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, predictMajority=True)
+        regular_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic)
+        pruning_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(pruning_heuristic)
+        return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, regular_rule_evaluation_factory,
+                                                       pruning_rule_evaluation_factory)
 
     def __create_lift_function(self, num_labels: int) -> LiftFunction:
         value, options = parse_param_and_options('lift_function', self.lift_function, [LIFT_FUNCTION_PEAK])
