@@ -28,7 +28,7 @@ class Options:
         options = cls()
 
         if string is not None and len(string) > 0:
-            if not string.startswith('[') or not string.endswith(']'):
+            if not string.startswith('{') or not string.endswith('}'):
                 raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
 
             string = string[1:-1]

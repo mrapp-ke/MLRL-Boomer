@@ -10,7 +10,7 @@ The behavior of the BOOMER algorithm can be controlled in a fine-grained manner 
 
     In addition to the specified value, some parameters allow to specify additional options as key-value pairs. These options must be provided by using the following bracket notation:
 
-    ``--parameter-name value[key1=value1,key2=value2]``
+    ``--parameter-name value{key1=value1,key2=value2}``
 
 **Data set**
 
