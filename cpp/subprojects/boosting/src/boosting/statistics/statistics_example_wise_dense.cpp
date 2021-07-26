@@ -3,6 +3,7 @@
 #include "boosting/data/statistic_vector_dense_example_wise.hpp"
 #include "boosting/data/statistic_view_dense_example_wise.hpp"
 #include "boosting/math/math.hpp"
+#include "common/validation.hpp"
 #include "statistics_example_wise_common.hpp"
 #include "statistics_example_wise_provider.hpp"
 #include "omp.h"
@@ -114,7 +115,7 @@ namespace boosting {
             const IExampleWiseLoss& lossFunction, const  IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
             uint32 numThreads)
         : lossFunction_(lossFunction), ruleEvaluationFactory_(ruleEvaluationFactory), numThreads_(numThreads) {
-
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactory::create(

@@ -3,6 +3,7 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/sampling/weight_sampling.hpp"
+#include "common/validation.hpp"
 
 
 namespace boosting {
@@ -63,7 +64,8 @@ namespace boosting {
 
     InstanceSamplingWithoutReplacementFactory::InstanceSamplingWithoutReplacementFactory(float32 sampleSize)
         : sampleSize_(sampleSize) {
-
+        assertGreater<float32>("sampleSize", sampleSize, 0);
+        assertLess<float32>("sampleSize", sampleSize, 1);
     }
 
     std::unique_ptr<IInstanceSampling> InstanceSamplingWithoutReplacementFactory::create(

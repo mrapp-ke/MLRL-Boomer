@@ -10,4 +10,4 @@ cdef extern from "common/data/view_c_contiguous.hpp" nogil:
 
         # Constructors
 
-        CContiguousView(uint32 numRows, uint32 numCols, T* array) except +
+        CContiguousView(uint32 numRows, uint32 numCols, T* array)
