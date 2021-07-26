@@ -9,7 +9,6 @@ import logging as log
 import os
 from abc import abstractmethod
 from enum import Enum
-from functools import reduce
 from typing import List
 
 import numpy as np
@@ -40,6 +39,7 @@ from sklearn.utils import check_array
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.common.options import Options
+from mlrl.common.strings import format_enum_values, format_string_list
 from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
 AUTOMATIC = 'auto'
@@ -91,7 +91,7 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
         return SparsePolicy(policy)
     except ValueError:
         raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                         + __format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
+                         + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
 
 
 def create_label_sampling_factory(label_sampling: str) -> LabelSamplingFactory:
@@ -192,7 +192,7 @@ def parse_param(parameter_name: str, value: str, possible_values: List[str]) -> 
         return value
 
     raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + __format_string_list(possible_values) + ', but is "' + value + '"')
+                     + format_string_list(possible_values) + ', but is "' + value + '"')
 
 
 def parse_param_and_options(parameter_name: str, value: str, possible_values: List[str]) -> (str, Options):
@@ -210,15 +210,7 @@ def parse_param_and_options(parameter_name: str, value: str, possible_values: Li
             return possible_value, Options()
 
     raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + __format_string_list(possible_values) + ', but is "' + value + '"')
-
-
-def __format_enum_values(enum) -> str:
-    return '{' + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b.value + '"', enum, '') + '}'
-
-
-def __format_string_list(strings: List[str]) -> str:
-    return '{' + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b + '"', strings, '') + '}'
+                     + format_string_list(possible_values) + ', but is "' + value + '"')
 
 
 def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, dtype,
