@@ -12,7 +12,7 @@ import sklearn.metrics as metrics
 
 from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE
 from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, PRUNING_IREP
-from mlrl.seco.seco_learners import HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK, AVERAGING_LABEL_WISE
+from mlrl.seco.seco_learners import HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK
 
 
 def log_level(s):
@@ -121,7 +121,7 @@ class ArgumentParserBuilder:
                             help='True, if the models should be evaluated on the training data, False otherwise')
         return self
 
-    def add_rule_learner_arguments(self, loss: str, **kwargs) -> 'ArgumentParserBuilder':
+    def add_rule_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
         self.add_learner_arguments(**kwargs)
         self.add_random_state_argument(**kwargs)
         parser = self.parser
@@ -156,7 +156,6 @@ class ArgumentParserBuilder:
         parser.add_argument('--holdout', type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('holdout', None, **kwargs),
                             help='The name of the strategy to be used for creating a holdout set or None')
-        parser.add_argument('--loss', type=str, default=loss, help='The name of the loss function to be used')
         parser.add_argument('--head-type', type=str,
                             default=ArgumentParserBuilder.__get_or_default('head_type', HEAD_TYPE_SINGLE, **kwargs),
                             help='The type of the rule heads that should be used')
@@ -187,9 +186,11 @@ class ArgumentParserBuilder:
         return self
 
     def add_boosting_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
-        self.add_rule_learner_arguments(LOSS_LOGISTIC_LABEL_WISE, max_rules=1000, head_type=AUTOMATIC,
+        self.add_rule_learner_arguments(max_rules=1000, head_type=AUTOMATIC,
                                         feature_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
         parser = self.parser
+        parser.add_argument('--loss', type=str, default=LOSS_LOGISTIC_LABEL_WISE,
+                            help='The name of the loss function to be used')
         parser.add_argument('--default-rule', type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('default_rule', True, **kwargs),
                             help='True, if the first rule should be a default rule, False otherwise')
@@ -215,7 +216,7 @@ class ArgumentParserBuilder:
         return self
 
     def add_seco_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
-        self.add_rule_learner_arguments(AVERAGING_LABEL_WISE, print_rules=True, pruning=PRUNING_IREP,
+        self.add_rule_learner_arguments(print_rules=True, pruning=PRUNING_IREP,
                                         instance_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
         parser = self.parser
         parser.add_argument('--heuristic', type=str,
