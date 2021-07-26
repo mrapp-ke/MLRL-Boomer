@@ -91,7 +91,7 @@ LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
 
 class Boomer(MLRuleLearner, ClassifierMixin):
     """
-    A scikit-multilearn implementation of "BOOMER" -- an algorithm for learning gradient boosted multi-label
+    A scikit-multilearn implementation of "BOOMER", an algorithm for learning gradient boosted multi-label
     classification rules.
     """
 
@@ -127,31 +127,31 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     classification rule is learned. Must be 'without-replacement' or
                                                     None, if no sampling should be used. Additional options may be
                                                     provided using the bracket notation
-                                                    `without-replacement[num_samples=5]`
+                                                    `without-replacement{num_samples=5}`
         :param instance_sampling:                   The strategy that is used for sampling the training examples each
                                                     time a new classification rule is learned. Must be
                                                     `with-replacement`, `without-replacement` or None, if no sampling
                                                     should be used. Additional options may be provided using the bracket
-                                                    notation `with-replacement[sample_size=0.5]`
+                                                    notation `with-replacement{sample_size=0.5}`
         :param recalculate_predictions:             True, if the predictions of rules should be recalculated on the
                                                     entire training data, if instance sampling is used, False otherwise
         :param feature_sampling:                    The strategy that is used for sampling the features each time a
                                                     classification rule is refined. Must be `without-replacement` or
                                                     None, if no sampling should be used. Additional options may be
                                                     provided using the bracket notation
-                                                    `without-replacement[sample_size=0.5]`
+                                                    `without-replacement{sample_size=0.5}`
         :param holdout:                             The name of the strategy to be used for creating a holdout set. Must
                                                     be `random` or None, if no holdout set should be used. Additional
                                                     options may be provided using the bracket notation
-                                                    `random[holdout_set_size=0.5]`
+                                                    `random{holdout_set_size=0.5}`
         :param feature_binning:                     The strategy that is used for assigning examples to bins based on
                                                     their feature values. Must be `equal-width`, `equal-frequency` or
                                                     None, if no feature binning should be used. Additional options may
-                                                    be provided using the bracket notation `equal-width[bin_ratio=0.5]`
+                                                    be provided using the bracket notation `equal-width{bin_ratio=0.5}`
         :param label_binning:                       The strategy that is used for assigning labels to bins. Must be
                                                     `auto`, `equal-width` or None, if no label binning should be used.
                                                     Additional options may be provided using the bracket notation
-                                                    `equal-width[bin_ratio=0.04,min_bins=1,max_bins=0]`. If `auto` is
+                                                    `equal-width{bin_ratio=0.04,min_bins=1,max_bins=0}`. If `auto` is
                                                     used, the most suitable strategy is chosen automatically based on
                                                     the loss function and the type of rule heads
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
