@@ -277,7 +277,7 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('feature_binning', None, **kwargs),
                             help='The name of the strategy to be used for feature binning. Must be one of '
                                  + format_string_list(FEATURE_BINNING_VALUES) + ' or "None", if no feature binning '
-                                 + 'should be used. For additional arguments refer to the documentation.')
+                                 + 'should be used. For additional options refer to the documentation.')
         parser.add_argument(PARAM_PRUNING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('pruning', None, **kwargs),
                             help='The name of the strategy to be used for pruning rules. Must be one of '
@@ -342,7 +342,7 @@ class ArgumentParserBuilder:
                                  + 'one of ' + format_string_list(LABEL_BINNING_VALUES) + ' or "None", if no label '
                                  + 'binning should be used. If set to "' + AUTOMATIC + '", the most suitable strategy '
                                  + 'is chosen automatically based on the parameters ' + PARAM_LOSS + ' and '
-                                 + PARAM_HEAD_TYPE + '. For additional arguments refer to the documentation.')
+                                 + PARAM_HEAD_TYPE + '. For additional options refer to the documentation.')
         parser.add_argument(PARAM_SHRINKAGE, type=float,
                             default=ArgumentParserBuilder.__get_or_default('shrinkage', 0.3, **kwargs),
                             help='The shrinkage parameter, a.k.a. the learning rate, to be used. Must be in (0, 1].')
@@ -377,13 +377,13 @@ class ArgumentParserBuilder:
         parser.add_argument(PARAM_HEURISTIC, type=str,
                             default=ArgumentParserBuilder.__get_or_default('heuristic', HEURISTIC_F_MEASURE, **kwargs),
                             help='The name of the heuristic to be used for learning rules. Must be one of '
-                                 + format_string_list(HEURISTIC_VALUES) + '. For additional arguments refer to the '
+                                 + format_string_list(HEURISTIC_VALUES) + '. For additional options refer to the '
                                  + 'documentation.')
         parser.add_argument(PARAM_PRUNING_HEURISTIC, type=str,
                             default=ArgumentParserBuilder.__get_or_default('pruning_heuristic', HEURISTIC_ACCURACY,
                                                                            **kwargs),
                             help='The name of the heuristic to be used for pruning rules. Must be one of '
-                                 + format_string_list(HEURISTIC_VALUES) + '. For additional arguments refer to the '
+                                 + format_string_list(HEURISTIC_VALUES) + '. For additional options refer to the '
                                  + 'documentation.')
         parser.add_argument(PARAM_LIFT_FUNCTION, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('lift_function', LIFT_FUNCTION_PEAK,
