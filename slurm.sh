@@ -46,7 +46,7 @@ if [[ $HEAD_REFINEMENT == "partial" ]]; then
     exit 22
   fi
 
-  PARAMETERS="${PARAMETERS} --lift-function peak{\\'peak_label\\':${CARDINALITY}, \\'max_lift\\':1.08, \\'curvature\\':1}"
+  PARAMETERS="${PARAMETERS} --lift-function peak\\{\\'peak_label\\':${CARDINALITY},\\'max_lift\\':1.08,\\'curvature\\':1\\}"
 fi
 
 # Create directories

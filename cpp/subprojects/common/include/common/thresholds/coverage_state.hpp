@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include "common/rule_evaluation/score_vector.hpp"
 #include <memory>
 
 // Forward declarations
@@ -42,7 +43,7 @@ class ICoverageState {
          *                          are predicted by the rule
          * @return                  The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
+        virtual const IScoreVector& evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
                                             const AbstractPrediction& head) const = 0;
 
         /**
@@ -57,7 +58,7 @@ class ICoverageState {
          *                          are predicted by the rule
          * @return                  The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
+        virtual const IScoreVector& evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                             const AbstractPrediction& head) const = 0;
 
         /**

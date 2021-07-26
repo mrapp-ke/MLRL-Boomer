@@ -27,7 +27,7 @@ std::unique_ptr<IInstanceSubSampling> SinglePartition::createInstanceSubSampling
     return labelMatrix.createInstanceSubSampling(factory, *this, statistics);
 }
 
-float64 SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
+const IScoreVector& SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
                                              const ICoverageState& coverageState, const AbstractPrediction& head) {
     return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
 }

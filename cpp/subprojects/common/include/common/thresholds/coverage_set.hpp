@@ -100,10 +100,10 @@ class CoverageSet final : public ICoverageState {
 
         std::unique_ptr<ICoverageState> copy() const override;
 
-        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
+        const IScoreVector& evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
                                     const AbstractPrediction& head) const override;
 
-        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
+        const IScoreVector& evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                     const AbstractPrediction& head) const override;
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,

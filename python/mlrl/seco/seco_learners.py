@@ -1,29 +1,33 @@
 #!/usr/bin/python
 
+import logging as log
+
+from sklearn.base import ClassifierMixin
+
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     FullHeadRefinementFactory
 from mlrl.common.cython.input import LabelMatrix
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import NoPostProcessor
+from mlrl.common.cython.pruning import Pruning, IREP
 from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelInduction
 from mlrl.common.cython.statistics import StatisticsProviderFactory
-from mlrl.seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
-from mlrl.seco.cython.heuristics import Heuristic, Precision, Recall, Laplace, WRA, HammingLoss, FMeasure, MEstimate, \
-    IREP, Ripper
-from mlrl.seco.cython.model import DecisionListBuilder
-from mlrl.seco.cython.output import LabelWiseClassificationPredictor
-from mlrl.seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
-from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
-from mlrl.seco.cython.stopping import CoverageStoppingCriterion
-from sklearn.base import ClassifierMixin
-
 from mlrl.common.rule_learners import HEAD_REFINEMENT_SINGLE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sub_sampling_factory, \
     create_instance_sub_sampling_factory, create_label_sub_sampling_factory, create_partition_sampling_factory, \
     create_max_conditions, create_stopping_criteria, create_min_coverage, create_max_head_refinements, \
     get_preferred_num_threads, parse_prefix_and_dict, get_int_argument, get_float_argument, create_thresholds_factory
+from mlrl.seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
+from mlrl.seco.cython.heuristics import Heuristic, Precision, Recall, Laplace, WRA, HammingLoss, FMeasure, MEstimate, \
+    IREP, Ripper
+from mlrl.seco.cython.model import DecisionListBuilder
+from mlrl.seco.cython.output import LabelWiseClassificationPredictor
+from mlrl.seco.cython.pruning import SecoPruning
+from mlrl.seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
+from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
+from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 
 HEAD_REFINEMENT_PARTIAL = 'partial'
 
@@ -71,9 +75,9 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                  head_refinement: str = None, lift_function: str = LIFT_FUNCTION_PEAK, loss: str = AVERAGING_LABEL_WISE,
                  heuristic: str = HEURISTIC_PRECISION, pruning_heuristic: str = None, label_sub_sampling: str = None,
                  instance_sub_sampling: str = None, feature_sub_sampling: str = None, holdout: str = None,
-                 feature_binning: str = None, pruning: str = None, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads_refinement: int = 1, num_threads_update: int = 1,
-                 num_threads_prediction: int = 1, debugging_: str = None):
+                 feature_binning: str = None, pruning: str = None, prune_head: bool = False, min_coverage: int = 1,
+                 max_conditions: int = -1, max_head_refinements: int = 1, num_threads_refinement: int = 1,
+                 num_threads_update: int = 1, num_threads_prediction: int = 1, debugging_: str = None):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -117,6 +121,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     be provided as a dictionary, e.g. `equal-width{\"bin_ratio\":0.5}`
         :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
                                                     if no pruning should be used
+        :param prune_head:                          If the head should be adapted when pruning
         :param min_coverage:                        The minimum number of training examples that must be covered by a
                                                     rule. Must be at least 1
         :param max_conditions:                      The maximum number of conditions to be included in a rule's body.
@@ -149,6 +154,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         self.holdout = holdout
         self.feature_binning = feature_binning
         self.pruning = pruning
+        self.prune_head = prune_head
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
@@ -178,6 +184,8 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_feature-binning=' + str(self.feature_binning)
         if self.pruning is not None:
             name += '_pruning=' + str(self.pruning)
+        if self.prune_head:
+            name += '_prune-head'
         if int(self.min_coverage) > 1:
             name += '_min-coverage=' + str(self.min_coverage)
         if int(self.max_conditions) != -1:
@@ -211,7 +219,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         instance_sub_sampling_factory = create_instance_sub_sampling_factory(self.instance_sub_sampling)
         feature_sub_sampling_factory = create_feature_sub_sampling_factory(self.feature_sub_sampling)
         partition_sampling_factory = create_partition_sampling_factory(self.holdout)
-        pruning = create_pruning(self.pruning, self.instance_sub_sampling)
+        pruning = self.__create_pruning(lift_function)
         post_processor = NoPostProcessor()
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(CoverageStoppingCriterion(0))
@@ -284,8 +292,7 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
         if prefix == LIFT_FUNCTION_PEAK:
             peak_label = get_int_argument(args, ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1,
                                           lambda x: 1 <= x <= num_labels)
-            # TODO: default was 1.5
-            max_lift = get_float_argument(args, ARGUMENT_MAX_LIFT, 1.08, lambda x: x >= 1)
+            max_lift = get_float_argument(args, ARGUMENT_MAX_LIFT, 1.5, lambda x: x >= 1)
             curvature = get_float_argument(args, ARGUMENT_CURVATURE, 1.0, lambda x: x > 0)
             return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
 
@@ -308,3 +315,12 @@ class SeparateAndConquerRuleLearner(MLRuleLearner, ClassifierMixin):
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
         num_threads = get_preferred_num_threads(self.num_threads_prediction)
         return LabelWiseClassificationPredictor(num_labels, num_threads)
+
+    def __create_pruning(self, lift_function: LiftFunction) -> Pruning:
+        if self.prune_head and self.pruning is not None:
+            if self.head_refinement != HEAD_REFINEMENT_SINGLE:
+                return SecoPruning(lift_function)
+            else:
+                log.warning('Parameter \'prune_head\' does not have any effect, because '
+                            + 'parameter \'head_refinement\' is set to single')
+        return create_pruning(self.pruning, self.instance_sub_sampling)

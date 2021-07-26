@@ -98,3 +98,9 @@ cdef class FMeasure(Heuristic):
 
 cdef class MEstimate(Heuristic):
     pass
+
+cdef class IREP(Heuristic):
+    pass
+
+cdef class RIPPER(Heuristic):
+    pass

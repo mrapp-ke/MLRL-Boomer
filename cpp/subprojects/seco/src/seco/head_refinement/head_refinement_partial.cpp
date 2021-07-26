@@ -8,7 +8,7 @@
 namespace seco {
 
     template<typename Iterator>
-    static inline std::unique_ptr<SparseArrayVector<float64>> argsort(Iterator iterator, uint32 numElements) {
+    static inline std::unique_ptr<SparseArrayVector<float64>> argSort(Iterator iterator, uint32 numElements) {
         std::unique_ptr<SparseArrayVector<float64>> sortedVectorPtr = std::make_unique<SparseArrayVector<float64>>(
             numElements);
         SparseArrayVector<float64>::iterator sortedIterator = sortedVectorPtr->begin();
@@ -64,7 +64,7 @@ namespace seco {
                                                                            *liftFunctionPtr_);
                     bestNumPredictions = numPredictions;
                 } else {
-                    sortedVectorPtr = argsort(qualityScoreIterator, numPredictions);
+                    sortedVectorPtr = argSort(qualityScoreIterator, numPredictions);
                     SparseArrayVector<float64>::const_iterator sortedIterator = sortedVectorPtr->cbegin();
                     float64 maximumLift = liftFunctionPtr_->getMaxLift();
                     float64 sumOfQualityScores = 1 - qualityScoreIterator[sortedIterator[0].index];

@@ -1,6 +1,7 @@
 from libcpp.memory cimport shared_ptr
 
 
+
 cdef extern from "common/pruning/pruning.hpp" nogil:
 
     cdef cppclass IPruning:

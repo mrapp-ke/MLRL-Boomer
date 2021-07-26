@@ -143,7 +143,7 @@ class BiPartition : public IPartition {
                                                                         const ILabelMatrix& labelMatrix,
                                                                         IStatistics& statistics) override;
 
-        float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+        const IScoreVector& evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                     const AbstractPrediction& head) override;
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,

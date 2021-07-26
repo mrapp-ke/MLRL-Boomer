@@ -1,4 +1,3 @@
-#include <iostream>
 #include "common/pruning/pruning_irep.hpp"
 
 #include "common/head_refinement/prediction.hpp"
@@ -6,7 +5,7 @@
 
 
 std::unique_ptr<ICoverageState> IREP::prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
-                                            ConditionList& conditions, const AbstractPrediction& head) const {
+                                            ConditionList& conditions, const AbstractEvaluatedPrediction* head) const {
     ConditionList::size_type numConditions = conditions.getNumConditions();
     std::unique_ptr<ICoverageState> bestCoverageStatePtr;
 
@@ -17,7 +16,8 @@ std::unique_ptr<ICoverageState> IREP::prune(IThresholdsSubset& thresholdsSubset,
 
         // Calculate the quality score of the original rule on the prune set...
         const ICoverageState& originalCoverageState = thresholdsSubset.getCoverageState();
-        float64 bestQualityScore = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageState, head);
+        float64 bestQualityScore = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageState, *head)
+                .overallQualityScore;
 
         // Debugger: print the original coverage mask
         Debugger::printCoverageMask(originalCoverageState, true);
@@ -41,11 +41,12 @@ std::unique_ptr<ICoverageState> IREP::prune(IThresholdsSubset& thresholdsSubset,
 
 
             // Debugger: print rule
-            Debugger::printRule(conditions.cbegin(), numConditions, head);
+            Debugger::printRule(conditions.cbegin(), numConditions, *head);
 
             // Calculate the quality score of a rule that contains the conditions that have been processed so far...
             const ICoverageState& coverageState = thresholdsSubset.getCoverageState();
-            float64 qualityScore = partition.evaluateOutOfSample(thresholdsSubset, coverageState, head);
+            float qualityScore = partition.evaluateOutOfSample(thresholdsSubset, coverageState, *head)
+                    .overallQualityScore;
 
             // Debugger: print iteration mask
             Debugger::printCoverageMask(coverageState, false, n);

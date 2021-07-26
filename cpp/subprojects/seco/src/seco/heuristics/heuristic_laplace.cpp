@@ -10,7 +10,7 @@ namespace seco {
         float64 numCoveredIncorrect = cip + crn;
         float64 numCovered = numCoveredIncorrect + cin + crp;
 
-        return numCoveredIncorrect + 1 / numCovered + 2;
+        return (numCoveredIncorrect + 1) / (numCovered + 2);
     }
 
     std::string Laplace::getName() const {

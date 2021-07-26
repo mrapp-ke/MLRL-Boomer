@@ -24,7 +24,7 @@ static inline void updateSampledStatisticsInternally(IStatistics& statistics, co
 }
 
 template<typename T>
-static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
+static inline const IScoreVector& evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
                                                     const CoverageMask& coverageMask, const IStatistics& statistics,
                                                     const IHeadRefinementFactory& headRefinementFactory,
                                                     const AbstractPrediction& prediction) {
@@ -42,10 +42,10 @@ static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExampl
     Debugger::printOutOfSample();
     std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
     const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false, true);
-    return scoreVector.overallQualityScore;
+    return scoreVector;
 }
 
-static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
+static inline const IScoreVector& evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
                                                     const IStatistics& statistics,
                                                     const IHeadRefinementFactory& headRefinementFactory,
                                                     const AbstractPrediction& prediction) {
@@ -63,10 +63,10 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
 
     std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
     const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false, true);
-    return scoreVector.overallQualityScore;
+    return scoreVector;
 }
 
-static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
+static inline const IScoreVector& evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
                                                     BiPartition& partition, const IStatistics& statistics,
                                                     const IHeadRefinementFactory& headRefinementFactory,
                                                     const AbstractPrediction& prediction) {
@@ -85,7 +85,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
 
     std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
     const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false, true);
-    return scoreVector.overallQualityScore;
+    return scoreVector;
 }
 
 template<typename T>

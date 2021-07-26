@@ -239,6 +239,7 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('lift_function', LIFT_FUNCTION_PEAK,
                                                                            **kwargs),
                             help='The lift function to be used')
+        parser.add_argument('--prune-head', action='store_true', default=False)
         return self
 
     def add_jrip_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include "common/rule_evaluation/score_vector.hpp"
 #include <memory>
 
 // Forward declarations
@@ -55,7 +56,7 @@ class IPartition {
          *                          are predicted by the rule
          * @return                  The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
+        virtual const IScoreVector& evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
                                             const ICoverageState& coverageState,
                                             const AbstractPrediction& head) = 0;
 

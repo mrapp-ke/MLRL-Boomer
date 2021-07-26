@@ -296,28 +296,28 @@ class ApproximateThresholds final : public AbstractThresholds {
                     return coverageSet_;
                 }
 
-                float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
+                const IScoreVector& evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
                         partition.cbegin(), partition.getNumElements(), weights_, coverageState,
                         thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);
                 }
 
-                float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
+                const IScoreVector& evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), weights_, coverageState,
                         thresholds_.statisticsProviderPtr_->get(), *thresholds_.headRefinementFactoryPtr_, head);
                 }
 
-                float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
+                const IScoreVector& evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally(weights_, coverageState,
                                                          thresholds_.statisticsProviderPtr_->get(),
                                                          *thresholds_.headRefinementFactoryPtr_, head);
                 }
 
-                float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
+                const IScoreVector& evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally(weights_, coverageState, partition,
                                                          thresholds_.statisticsProviderPtr_->get(),

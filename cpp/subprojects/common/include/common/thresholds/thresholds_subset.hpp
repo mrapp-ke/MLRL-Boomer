@@ -104,7 +104,7 @@ class IThresholdsSubset {
          *                      predicted by the rule
          * @return              The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
+        virtual const IScoreVector& evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
 
@@ -124,7 +124,7 @@ class IThresholdsSubset {
          *                      predicted by the rule
          * @return              The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
+        virtual const IScoreVector& evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
         /**
@@ -143,7 +143,7 @@ class IThresholdsSubset {
          *                      predicted by the rule
          * @return              The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
+        virtual const IScoreVector& evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
 
@@ -163,7 +163,7 @@ class IThresholdsSubset {
          *                      predicted by the rule
          * @return              The calculated quality score
          */
-        virtual float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
+        virtual const IScoreVector& evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
         /**
