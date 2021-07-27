@@ -101,13 +101,14 @@ class Options:
         :return:                The value that is associated with the given key or the given default value
         """
         if key in self.dict:
-            value = str(self.dict[key]).lower()
+            value = str(self.dict[key])
+            lowercase = value.lower()
 
-            if value == 'false':
+            if lowercase == 'false':
                 return False
-            if value == 'true':
+            if lowercase == 'true':
                 return True
-            raise ValueError('Value for key \'' + key + '\' cannot be converted to boolean')
+            raise ValueError('Value for key \'' + key + '\' cannot be converted to boolean: ' + value)
 
         return default_value
 
