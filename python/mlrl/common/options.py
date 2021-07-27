@@ -108,7 +108,7 @@ class Options:
                 return False
             if lowercase == 'true':
                 return True
-            raise ValueError('Value for key \'' + key + '\' cannot be converted to boolean: ' + value)
+            raise ValueError('Value for key "' + key + '" is expected to be a boolean, but is "' + value + '"')
 
         return default_value
 
@@ -126,7 +126,8 @@ class Options:
             try:
                 value = int(value)
             except ValueError:
-                raise ValueError('Value for key \'' + key + '\' cannot be converted to integer: ' + str(value))
+                raise ValueError('Value for key "' + key + '" is expected to be an integer, but is "' + str(value)
+                                 + '"')
 
             return value
 
@@ -146,7 +147,7 @@ class Options:
             try:
                 value = float(value)
             except ValueError:
-                raise ValueError('Value for key \'' + key + '\' cannot be converted to float: ' + str(value))
+                raise ValueError('Value for key "' + key + '" is expected to be a float, but is "' + str(value) + '"')
 
             return value
 
