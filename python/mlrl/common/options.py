@@ -63,9 +63,8 @@ class Options:
                                              + str(argument_index))
 
                         if key not in allowed_keys:
-                            raise ValueError('Encountered invalid option. Key must be one of '
-                                             + format_string_set(allowed_keys) + ', but got key "' + key
-                                             + '" at index ' + str(argument_index))
+                            raise ValueError('Key must be one of ' + format_string_set(allowed_keys) + ', but got key "'
+                                             + key + '" at index ' + str(argument_index))
 
                         value = parts[1]
 

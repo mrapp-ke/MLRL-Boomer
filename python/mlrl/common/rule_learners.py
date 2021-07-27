@@ -223,7 +223,8 @@ def parse_param_and_options(parameter_name: str, value: str,
                 try:
                     return allowed_value, Options.create(suffix, allowed_options)
                 except ValueError as e:
-                    raise ValueError('Invalid value given for parameter "' + parameter_name + '". ' + str(e))
+                    raise ValueError('Invalid options specified for parameter "' + parameter_name + '" with value "'
+                                     + allowed_value + '": ' + str(e))
 
             return allowed_value, Options()
 
