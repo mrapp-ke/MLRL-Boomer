@@ -6,7 +6,9 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
 
-ERROR_MESSAGE_INVALID_SYNTAX = 'Invalid syntax used to specify additional options.'
+ERROR_MESSAGE_INVALID_SYNTAX = 'Invalid syntax used to specify additional options'
+
+ERROR_MESSAGE_INVALID_KEY_VALUE_PAIR = 'Expected comma-separated list of key-value pairs'
 
 
 class Options:
@@ -31,33 +33,34 @@ class Options:
 
         if string is not None and len(string) > 0:
             if not string.startswith('{'):
-                raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + ' Must start with "{", but is "' + string + '"')
+                raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. Must start with "{", but is "' + string + '"')
             if not string.endswith('}'):
-                raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + ' Must end with "}", but is "' + string + '"')
+                raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. Must end with "}", but is "' + string + '"')
 
-            option_string = string[1:-1]
+            string = string[1:-1]
 
-            if len(option_string) > 0:
-                for argument in option_string.split(','):
+            if len(string) > 0:
+                for argument_index, argument in enumerate(string.split(',')):
                     if len(argument) > 0:
                         parts = argument.split('=')
-                        print(str(parts))
 
                         if len(parts) != 2:
-                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX
-                                             + ' Expected comma-separated list of key-value pairs, but is "' + string
-                                             + '"')
+                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_KEY_VALUE_PAIR
+                                             + ', but got element "' + argument + '" at index ' + str(argument_index))
 
                         key = parts[0]
 
                         if len(key) == 0:
-                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX
-                                             + ' Each value must be associated with a key, but is "' + string + '"')
+                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_KEY_VALUE_PAIR
+                                             + ', but key is missing from element "' + argument + '" at index '
+                                             + str(argument_index))
 
                         value = parts[1]
 
                         if len(value) == 0:
-                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + ' No value specified for key "' + key + '"')
+                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_KEY_VALUE_PAIR
+                                             + ', but value is missing from element "' + argument + '" at index '
+                                             + str(argument_index))
 
                         options.dict[key] = value
 
