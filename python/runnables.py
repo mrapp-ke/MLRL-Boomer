@@ -10,7 +10,6 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
-from mlrl.common.options import Options
 from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.parameters import ParameterCsvInput
@@ -76,8 +75,7 @@ class RuleLearnerRunnable(Runnable, ABC):
         model_dir = args.model_dir
         persistence = None if model_dir is None else ModelPersistence(model_dir)
         learner = self._create_learner(args)
-        print_options = Options.create(args.print_options)
-        model_printer = RulePrinter(print_options, model_printer_outputs) if len(
+        model_printer = RulePrinter(args.print_options, model_printer_outputs) if len(
             model_printer_outputs) > 0 else None
         train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
         test_evaluation = ClassificationEvaluation(*evaluation_outputs)

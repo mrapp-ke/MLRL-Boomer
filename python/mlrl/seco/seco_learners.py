@@ -5,6 +5,8 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
 Provides scikit-learn implementations of separate-and-conquer algorithms.
 """
+from typing import Dict, Set
+
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     CompleteHeadRefinementFactory
 from mlrl.common.cython.model import ModelBuilder
@@ -59,14 +61,26 @@ ARGUMENT_BETA = 'beta'
 
 ARGUMENT_M = 'm'
 
-INSTANCE_SAMPLING_VALUES = [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT]
+INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    SAMPLING_WITH_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
+    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}
+}
 
-HEAD_TYPE_VALUES = [HEAD_TYPE_SINGLE, HEAD_TYPE_PARTIAL]
+HEAD_TYPE_VALUES: Set[str] = {HEAD_TYPE_SINGLE, HEAD_TYPE_PARTIAL}
 
-HEURISTIC_VALUES = [HEURISTIC_ACCURACY, HEURISTIC_PRECISION, HEURISTIC_RECALL, HEURISTIC_LAPLACE, HEURISTIC_WRA,
-                    HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE]
+HEURISTIC_VALUES: Dict[str, Set[str]] = {
+    HEURISTIC_ACCURACY: {},
+    HEURISTIC_PRECISION: {},
+    HEURISTIC_RECALL: {},
+    HEURISTIC_LAPLACE: {},
+    HEURISTIC_WRA: {},
+    HEURISTIC_F_MEASURE: {ARGUMENT_BETA},
+    HEURISTIC_M_ESTIMATE: {ARGUMENT_M}
+}
 
-LIFT_FUNCTION_VALUES = [LIFT_FUNCTION_PEAK]
+LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
+    LIFT_FUNCTION_PEAK: {ARGUMENT_PEAK_LABEL, ARGUMENT_MAX_LIFT, ARGUMENT_CURVATURE}
+}
 
 
 class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):

@@ -15,7 +15,7 @@ from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE, \
 from mlrl.common.rule_learners import SparsePolicy, HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, \
     PRUNING_IREP, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, \
     PRUNING_VALUES
-from mlrl.common.strings import format_enum_values, format_string_list
+from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 from mlrl.seco.seco_learners import HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK, \
     INSTANCE_SAMPLING_VALUES as SECO_INSTANCE_SAMPLING_VALUES, HEAD_TYPE_VALUES as SECO_HEAD_TYPE_VALUES, \
     HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, HEAD_TYPE_PARTIAL
@@ -261,27 +261,27 @@ class ArgumentParserBuilder:
         parser.add_argument(PARAM_LABEL_SAMPLING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('label_sampling', None, **kwargs),
                             help='The name of the strategy to be used for label sampling. Must be one of '
-                                 + format_string_list(LABEL_SAMPLING_VALUES) + ' or "None", if no label sampling '
+                                 + format_dict_keys(LABEL_SAMPLING_VALUES) + ' or "None", if no label sampling '
                                  + 'should be used. For additional options refer to the documentation.')
         parser.add_argument(PARAM_FEATURE_SAMPLING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('feature_sampling', None, **kwargs),
                             help='The name of the strategy to be used for feature sampling. Must be one of '
-                                 + format_string_list(FEATURE_SAMPLING_VALUES) + ' or "None", if no feature sampling '
+                                 + format_dict_keys(FEATURE_SAMPLING_VALUES) + ' or "None", if no feature sampling '
                                  + 'should be used. For additional options refer to the documentation.')
         parser.add_argument(PARAM_PARTITION_SAMPLING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('holdout', None, **kwargs),
                             help='The name of the strategy to be used for creating a holdout set. Must be one of '
-                                 + format_string_list(PARTITION_SAMPLING_VALUES) + ' or "None", if no holdout set '
+                                 + format_dict_keys(PARTITION_SAMPLING_VALUES) + ' or "None", if no holdout set '
                                  + 'should be created. For additional options refer to the documentation.')
         parser.add_argument(PARAM_FEATURE_BINNING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('feature_binning', None, **kwargs),
                             help='The name of the strategy to be used for feature binning. Must be one of '
-                                 + format_string_list(FEATURE_BINNING_VALUES) + ' or "None", if no feature binning '
+                                 + format_dict_keys(FEATURE_BINNING_VALUES) + ' or "None", if no feature binning '
                                  + 'should be used. For additional options refer to the documentation.')
         parser.add_argument(PARAM_PRUNING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('pruning', None, **kwargs),
                             help='The name of the strategy to be used for pruning rules. Must be one of '
-                                 + format_string_list(PRUNING_VALUES) + ' or "None", if no pruning should be used. '
+                                 + format_string_set(PRUNING_VALUES) + ' or "None", if no pruning should be used. '
                                  + 'Does only have an effect if the parameter ' + PARAM_INSTANCE_SAMPLING + ' is not '
                                  + 'set to "None".')
         parser.add_argument(PARAM_MIN_COVERAGE, type=int,
@@ -327,19 +327,19 @@ class ArgumentParserBuilder:
         parser.add_argument(PARAM_EARLY_STOPPING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('early_stopping', None, **kwargs),
                             help='The name of the strategy to be used for early stopping. Must be one of '
-                                 + format_string_list(EARLY_STOPPING_VALUES) + ' or "None", if no early stopping '
+                                 + format_dict_keys(EARLY_STOPPING_VALUES) + ' or "None", if no early stopping '
                                  + 'should be used. Does only have an effect if the parameter '
                                  + PARAM_PARTITION_SAMPLING + ' is not set to "None". For additional options refer to '
                                  + 'the documentation.')
         parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('instance_sampling', None, **kwargs),
                             help='The name of the strategy to be used for instance sampling. Must be one of'
-                                 + format_string_list(BOOSTING_INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance '
+                                 + format_dict_keys(BOOSTING_INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance '
                                  + 'sampling should be used. For additional options refer to the documentation.')
         parser.add_argument(PARAM_LABEL_BINNING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('label_binning', AUTOMATIC, **kwargs),
                             help='The name of the strategy to be used for gradient-based label binning (GBLB). Must be '
-                                 + 'one of ' + format_string_list(LABEL_BINNING_VALUES) + ' or "None", if no label '
+                                 + 'one of ' + format_dict_keys(LABEL_BINNING_VALUES) + ' or "None", if no label '
                                  + 'binning should be used. If set to "' + AUTOMATIC + '", the most suitable strategy '
                                  + 'is chosen automatically based on the parameters ' + PARAM_LOSS + ' and '
                                  + PARAM_HEAD_TYPE + '. For additional options refer to the documentation.')
@@ -348,11 +348,11 @@ class ArgumentParserBuilder:
                             help='The shrinkage parameter, a.k.a. the learning rate, to be used. Must be in (0, 1].')
         parser.add_argument(PARAM_LOSS, type=str, default=LOSS_LOGISTIC_LABEL_WISE,
                             help='The name of the loss function to be minimized during training. Must be one of '
-                                 + format_string_list(LOSS_VALUES) + '.')
+                                 + format_string_set(LOSS_VALUES) + '.')
         parser.add_argument(PARAM_PREDICTOR, type=str,
                             default=ArgumentParserBuilder.__get_or_default('predictor', AUTOMATIC, **kwargs),
                             help='The name of the strategy to be used for making predictions. Must be one of '
-                                 + format_string_list(PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
+                                 + format_string_set(PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
                                  + 'suitable strategy is chosen automatically based on the parameter ' + PARAM_LOSS
                                  + '.')
         parser.add_argument(PARAM_L2_REGULARIZATION_WEIGHT, type=float,
@@ -361,7 +361,7 @@ class ArgumentParserBuilder:
         parser.add_argument(PARAM_HEAD_TYPE, type=str,
                             default=ArgumentParserBuilder.__get_or_default('head_type', HEAD_TYPE_SINGLE, **kwargs),
                             help='The type of the rule heads that should be used. Must be one of '
-                                 + format_string_list(BOOSTING_HEAD_TYPE_VALUES) + '. If set to "' + AUTOMATIC + '", '
+                                 + format_string_set(BOOSTING_HEAD_TYPE_VALUES) + '. If set to "' + AUTOMATIC + '", '
                                  + 'the most suitable type is chosen automatically based on the parameter ' + PARAM_LOSS
                                  + '.')
         return self
@@ -372,29 +372,29 @@ class ArgumentParserBuilder:
         parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('instance_sampling', None, **kwargs),
                             help='The name of the strategy to be used for instance sampling. Must be one of'
-                                 + format_string_list(SECO_INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance '
+                                 + format_dict_keys(SECO_INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance '
                                  + 'sampling should be used. For additional options refer to the documentation.')
         parser.add_argument(PARAM_HEURISTIC, type=str,
                             default=ArgumentParserBuilder.__get_or_default('heuristic', HEURISTIC_F_MEASURE, **kwargs),
                             help='The name of the heuristic to be used for learning rules. Must be one of '
-                                 + format_string_list(HEURISTIC_VALUES) + '. For additional options refer to the '
+                                 + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
                                  + 'documentation.')
         parser.add_argument(PARAM_PRUNING_HEURISTIC, type=str,
                             default=ArgumentParserBuilder.__get_or_default('pruning_heuristic', HEURISTIC_ACCURACY,
                                                                            **kwargs),
                             help='The name of the heuristic to be used for pruning rules. Must be one of '
-                                 + format_string_list(HEURISTIC_VALUES) + '. For additional options refer to the '
+                                 + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
                                  + 'documentation.')
         parser.add_argument(PARAM_LIFT_FUNCTION, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('lift_function', LIFT_FUNCTION_PEAK,
                                                                            **kwargs),
                             help='The lift function to be used for the induction of multi-label rules. Must be one of '
-                                 + format_string_list(LIFT_FUNCTION_VALUES) + '. Does only have an effect if the '
+                                 + format_dict_keys(LIFT_FUNCTION_VALUES) + '. Does only have an effect if the '
                                  + 'parameter ' + PARAM_HEAD_TYPE + ' is set to "' + HEAD_TYPE_PARTIAL + '".')
         parser.add_argument(PARAM_HEAD_TYPE, type=str,
                             default=ArgumentParserBuilder.__get_or_default('head_type', HEAD_TYPE_SINGLE, **kwargs),
                             help='The type of the rule heads that should be used. Must be one of '
-                                 + format_string_list(SECO_HEAD_TYPE_VALUES) + '.')
+                                 + format_string_set(SECO_HEAD_TYPE_VALUES) + '.')
         return self
 
     def build(self) -> ArgumentParser:

@@ -9,7 +9,7 @@ import logging as log
 import os
 from abc import abstractmethod
 from enum import Enum
-from typing import List
+from typing import List, Dict, Set
 
 import numpy as np
 from mlrl.common.cython.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
@@ -39,7 +39,7 @@ from sklearn.utils import check_array
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.common.options import Options
-from mlrl.common.strings import format_enum_values, format_string_list
+from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
 AUTOMATIC = 'auto'
@@ -74,16 +74,26 @@ ARGUMENT_MAX_BINS = 'max_bins'
 
 PRUNING_IREP = 'irep'
 
-LABEL_SAMPLING_VALUES = [SAMPLING_WITHOUT_REPLACEMENT]
+LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}
+}
 
-FEATURE_SAMPLING_VALUES = [SAMPLING_WITHOUT_REPLACEMENT]
+FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}
+}
 
-PARTITION_SAMPLING_VALUES = [PARTITION_SAMPLING_RANDOM, SAMPLING_STRATIFIED_LABEL_WISE,
-                             SAMPLING_STRATIFIED_EXAMPLE_WISE]
+PARTITION_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    PARTITION_SAMPLING_RANDOM: {ARGUMENT_HOLDOUT_SET_SIZE},
+    SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_HOLDOUT_SET_SIZE},
+    SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_HOLDOUT_SET_SIZE}
+}
 
-FEATURE_BINNING_VALUES = [BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH]
+FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
+    BINNING_EQUAL_FREQUENCY: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS},
+    BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS}
+}
 
-PRUNING_VALUES = [PRUNING_IREP]
+PRUNING_VALUES: Set[str] = {PRUNING_IREP}
 
 
 class SparsePolicy(Enum):
@@ -195,29 +205,30 @@ def create_thresholds_factory(feature_binning: str, num_threads: int) -> Thresho
             return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio, min_bins, max_bins), num_threads)
 
 
-def parse_param(parameter_name: str, value: str, allowed_values: List[str]) -> str:
+def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
     if value in allowed_values:
         return value
 
     raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_string_list(allowed_values) + ', but is "' + value + '"')
+                     + format_string_set(allowed_values) + ', but is "' + value + '"')
 
 
-def parse_param_and_options(parameter_name: str, value: str, allowed_values: List[str]) -> (str, Options):
-    for allowed_value in allowed_values:
+def parse_param_and_options(parameter_name: str, value: str,
+                            allowed_values_and_options: Dict[str, Set[str]]) -> (str, Options):
+    for allowed_value, allowed_options in allowed_values_and_options.items():
         if value.startswith(allowed_value):
             suffix = value[len(allowed_value):].strip()
 
             if len(suffix) > 0:
                 try:
-                    return allowed_value, Options.create(suffix)
+                    return allowed_value, Options.create(suffix, allowed_options)
                 except ValueError as e:
                     raise ValueError('Invalid value given for parameter "' + parameter_name + '". ' + str(e))
 
             return allowed_value, Options()
 
     raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_string_list(allowed_values) + ', but is "' + value + '"')
+                     + format_dict_keys(allowed_values_and_options) + ', but is "' + value + '"')
 
 
 def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, dtype,

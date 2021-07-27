@@ -5,6 +5,9 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
+from typing import Set
+
+from mlrl.common.strings import format_string_set
 
 ERROR_MESSAGE_INVALID_SYNTAX = 'Invalid syntax used to specify additional options'
 
@@ -20,14 +23,15 @@ class Options:
         self.dict = {}
 
     @classmethod
-    def create(cls, string: str):
+    def create(cls, string: str, allowed_keys: Set[str]):
         """
         Parses the options that are provided via a given string that is formatted according to the following syntax:
         "[key1=value1,key2=value2]". If the given string is malformed, a `ValueError` will be raised.
 
-        :param string:  The string to be parsed
-        :return:        An object of type `Options` that stores the key-value pairs that have been parsed from the given
-                        string
+        :param string:          The string to be parsed
+        :param allowed_keys:    A set that contains all valid keys
+        :return:                An object of type `Options` that stores the key-value pairs that have been parsed from
+                                the given string
         """
         options = cls()
 
@@ -54,6 +58,11 @@ class Options:
                             raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_OPTION
                                              + ', but key is missing from element "' + argument + '" at index '
                                              + str(argument_index))
+
+                        if key not in allowed_keys:
+                            raise ValueError('Encountered invalid option. Key must be one of '
+                                             + format_string_set(allowed_keys) + ', but got key "' + key
+                                             + '" at index ' + str(argument_index))
 
                         value = parts[1]
 
