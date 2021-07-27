@@ -8,7 +8,7 @@ Provides a data structure that allows to store and parse options that are provid
 
 ERROR_MESSAGE_INVALID_SYNTAX = 'Invalid syntax used to specify additional options'
 
-ERROR_MESSAGE_INVALID_KEY_VALUE_PAIR = 'Expected comma-separated list of key-value pairs'
+ERROR_MESSAGE_INVALID_OPTION = 'Expected comma-separated list of key-value pairs'
 
 
 class Options:
@@ -45,20 +45,20 @@ class Options:
                         parts = argument.split('=')
 
                         if len(parts) != 2:
-                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_KEY_VALUE_PAIR
+                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_OPTION
                                              + ', but got element "' + argument + '" at index ' + str(argument_index))
 
                         key = parts[0]
 
                         if len(key) == 0:
-                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_KEY_VALUE_PAIR
+                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_OPTION
                                              + ', but key is missing from element "' + argument + '" at index '
                                              + str(argument_index))
 
                         value = parts[1]
 
                         if len(value) == 0:
-                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_KEY_VALUE_PAIR
+                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_OPTION
                                              + ', but value is missing from element "' + argument + '" at index '
                                              + str(argument_index))
 
