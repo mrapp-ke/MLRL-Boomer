@@ -9,15 +9,15 @@ from typing import Set
 
 from mlrl.common.strings import format_string_set
 
-ERROR_MESSAGE_INVALID_SYNTAX = 'Invalid syntax used to specify additional options'
-
-ERROR_MESSAGE_INVALID_OPTION = 'Expected comma-separated list of key-value pairs'
-
 
 class Options:
     """
     Stores key-value pairs in a dictionary and provides methods to access and validate them.
     """
+
+    ERROR_MESSAGE_INVALID_SYNTAX = 'Invalid syntax used to specify additional options'
+
+    ERROR_MESSAGE_INVALID_OPTION = 'Expected comma-separated list of key-value pairs'
 
     def __init__(self):
         self.dict = {}
@@ -37,9 +37,10 @@ class Options:
 
         if string is not None and len(string) > 0:
             if not string.startswith('{'):
-                raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. Must start with "{", but is "' + string + '"')
+                raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must start with "{", but is "'
+                                 + string + '"')
             if not string.endswith('}'):
-                raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. Must end with "}", but is "' + string + '"')
+                raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must end with "}", but is "' + string + '"')
 
             string = string[1:-1]
 
@@ -49,13 +50,15 @@ class Options:
                         parts = argument.split('=')
 
                         if len(parts) != 2:
-                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_OPTION
-                                             + ', but got element "' + argument + '" at index ' + str(argument_index))
+                            raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
+                                             + Options.ERROR_MESSAGE_INVALID_OPTION + ', but got element "' + argument
+                                             + '" at index ' + str(argument_index))
 
                         key = parts[0]
 
                         if len(key) == 0:
-                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_OPTION
+                            raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
+                                             + Options.ERROR_MESSAGE_INVALID_OPTION
                                              + ', but key is missing from element "' + argument + '" at index '
                                              + str(argument_index))
 
@@ -67,7 +70,8 @@ class Options:
                         value = parts[1]
 
                         if len(value) == 0:
-                            raise ValueError(ERROR_MESSAGE_INVALID_SYNTAX + '. ' + ERROR_MESSAGE_INVALID_OPTION
+                            raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
+                                             + Options.ERROR_MESSAGE_INVALID_OPTION
                                              + ', but value is missing from element "' + argument + '" at index '
                                              + str(argument_index))
 
