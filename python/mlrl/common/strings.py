@@ -6,7 +6,7 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 Provides utility functions for dealing with strings.
 """
 from functools import reduce
-from typing import List
+from typing import Set, Dict
 
 
 def format_enum_values(enum) -> str:
@@ -19,11 +19,21 @@ def format_enum_values(enum) -> str:
     return '{' + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b.value + '"', enum, '') + '}'
 
 
-def format_string_list(strings: List[str]) -> str:
+def format_string_set(strings: Set[str]) -> str:
     """
-    Creates and returns a textual representation of the strings in a list.
+    Creates and returns a textual representation of the strings in a set.
 
-    :param strings: The list of strings to be formatted
+    :param strings: The set of strings to be formatted
     :return:        The textual representation that has been created
     """
     return '{' + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b + '"', strings, '') + '}'
+
+
+def format_dict_keys(dictionary: Dict[str, Set[str]]) -> str:
+    """
+    Creates and returns a textual representation of the keys in a dictionary.
+
+    :param dictionary:  The dictionary to be formatted
+    :return:            The textual representation that has been created
+    """
+    return format_string_set(set(dictionary.keys()))

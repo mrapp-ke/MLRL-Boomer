@@ -6,7 +6,7 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 Provides scikit-learn implementations of boosting algorithms.
 """
 import logging as log
-from typing import Optional
+from typing import Optional, Dict, Set
 
 from mlrl.boosting.cython.binning import LabelBinningFactory, EqualWidthLabelBinningFactory
 from mlrl.boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
@@ -88,19 +88,30 @@ PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
 LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
 
-INSTANCE_SAMPLING_VALUES = [SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT, SAMPLING_STRATIFIED_LABEL_WISE,
-                            SAMPLING_STRATIFIED_EXAMPLE_WISE]
+INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    SAMPLING_WITH_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
+    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
+    SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_SAMPLE_SIZE},
+    SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_SAMPLE_SIZE}
+}
 
-HEAD_TYPE_VALUES = [HEAD_TYPE_SINGLE, HEAD_TYPE_COMPLETE, AUTOMATIC]
+HEAD_TYPE_VALUES: Set[str] = {HEAD_TYPE_SINGLE, HEAD_TYPE_COMPLETE, AUTOMATIC}
 
-EARLY_STOPPING_VALUES = [EARLY_STOPPING_LOSS]
+EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
+    EARLY_STOPPING_LOSS: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_MIN_RULES, ARGUMENT_UPDATE_INTERVAL,
+                          ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT, ARGUMENT_MIN_IMPROVEMENT,
+                          ARGUMENT_FORCE_STOP}
+}
 
-LABEL_BINNING_VALUES = [LABEL_BINNING_EQUAL_WIDTH, AUTOMATIC]
+LABEL_BINNING_VALUES: Dict[str, Set[str]] = {
+    LABEL_BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS},
+    AUTOMATIC: {}
+}
 
-LOSS_VALUES = [LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE, LOSS_LOGISTIC_LABEL_WISE,
-               LOSS_LOGISTIC_EXAMPLE_WISE]
+LOSS_VALUES: Set[str] = {LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE, LOSS_LOGISTIC_LABEL_WISE,
+                         LOSS_LOGISTIC_EXAMPLE_WISE}
 
-PREDICTOR_VALUES = [PREDICTOR_LABEL_WISE, PREDICTOR_EXAMPLE_WISE, AUTOMATIC]
+PREDICTOR_VALUES: Set[str] = {PREDICTOR_LABEL_WISE, PREDICTOR_EXAMPLE_WISE, AUTOMATIC}
 
 
 class Boomer(MLRuleLearner, ClassifierMixin):
@@ -370,9 +381,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     @staticmethod
     def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:
-        value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function, [AGGREGATION_FUNCTION_MIN,
+        value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function, {AGGREGATION_FUNCTION_MIN,
                                                                                   AGGREGATION_FUNCTION_MAX,
-                                                                                  AGGREGATION_FUNCTION_ARITHMETIC_MEAN])
+                                                                                  AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
         if value == AGGREGATION_FUNCTION_MIN:
             return MinFunction()
         elif value == AGGREGATION_FUNCTION_MAX:
