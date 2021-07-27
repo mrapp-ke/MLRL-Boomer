@@ -195,29 +195,29 @@ def create_thresholds_factory(feature_binning: str, num_threads: int) -> Thresho
             return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio, min_bins, max_bins), num_threads)
 
 
-def parse_param(parameter_name: str, value: str, possible_values: List[str]) -> str:
-    if value in possible_values:
+def parse_param(parameter_name: str, value: str, allowed_values: List[str]) -> str:
+    if value in allowed_values:
         return value
 
     raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_string_list(possible_values) + ', but is "' + value + '"')
+                     + format_string_list(allowed_values) + ', but is "' + value + '"')
 
 
-def parse_param_and_options(parameter_name: str, value: str, possible_values: List[str]) -> (str, Options):
-    for possible_value in possible_values:
-        if value.startswith(possible_value):
-            suffix = value[len(possible_value):].strip()
+def parse_param_and_options(parameter_name: str, value: str, allowed_values: List[str]) -> (str, Options):
+    for allowed_value in allowed_values:
+        if value.startswith(allowed_value):
+            suffix = value[len(allowed_value):].strip()
 
             if len(suffix) > 0:
                 try:
-                    return possible_value, Options.create(suffix)
+                    return allowed_value, Options.create(suffix)
                 except ValueError as e:
                     raise ValueError('Invalid value given for parameter "' + parameter_name + '". ' + str(e))
 
-            return possible_value, Options()
+            return allowed_value, Options()
 
     raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_string_list(possible_values) + ', but is "' + value + '"')
+                     + format_string_list(allowed_values) + ', but is "' + value + '"')
 
 
 def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, dtype,
