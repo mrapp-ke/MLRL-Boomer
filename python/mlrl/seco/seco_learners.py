@@ -18,11 +18,11 @@ from mlrl.common.cython.sampling import InstanceSamplingFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
 from mlrl.seco.cython.heuristics import Heuristic, Accuracy, Precision, Recall, Laplace, WRA, FMeasure, MEstimate
+from mlrl.seco.cython.instance_sampling import NoInstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
+    InstanceSamplingWithoutReplacementFactory
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
 from mlrl.seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
-from mlrl.seco.cython.sampling import InstanceSamplingWithReplacementFactory, \
-    InstanceSamplingWithoutReplacementFactory, NoInstanceSamplingFactory
 from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
