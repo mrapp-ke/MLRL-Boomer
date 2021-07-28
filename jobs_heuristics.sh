@@ -15,10 +15,10 @@ if [[ $HEAD_REFINEMENT != "partial" && $HEAD_REFINEMENT != "single-label" ]]; th
   exit 22
 fi
 
-./slurm.sh "${DATASET}" "${HEAD_REFINEMENT}" "laplace" "precision"
-./slurm.sh "${DATASET}" "${HEAD_REFINEMENT}" "f-measure{\\'beta\\':0.25}" "precision"
-./slurm.sh "${DATASET}" "${HEAD_REFINEMENT}" "laplace" "irep"
-./slurm.sh "${DATASET}" "${HEAD_REFINEMENT}" "f-measure{\\'beta\\':0.25}" "irep"
-./slurm.sh "${DATASET}" "${HEAD_REFINEMENT}" "laplace"
-./slurm.sh "${DATASET}" "${HEAD_REFINEMENT}" "f-measure{\\'beta\\':0.25}"
-./slurm.sh "${DATASET}" "${HEAD_REFINEMENT}" "precision"
+./slurm.sh "main_seco" "${DATASET}" "${HEAD_REFINEMENT}" "laplace" "precision"
+./slurm.sh "main_seco" "${DATASET}" "${HEAD_REFINEMENT}" "f-measure{\\'beta\\':0.25}" "precision"
+./slurm.sh "main_seco" "${DATASET}" "${HEAD_REFINEMENT}" "laplace" "irep"
+./slurm.sh "main_seco" "${DATASET}" "${HEAD_REFINEMENT}" "f-measure{\\'beta\\':0.25}" "irep"
+./slurm.sh "main_seco" "${DATASET}" "${HEAD_REFINEMENT}" "laplace"
+./slurm.sh "main_seco" "${DATASET}" "${HEAD_REFINEMENT}" "f-measure{\\'beta\\':0.25}"
+./slurm.sh "main_seco" "${DATASET}" "${HEAD_REFINEMENT}" "precision"

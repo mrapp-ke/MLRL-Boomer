@@ -4,8 +4,6 @@
 #include "common/head_refinement/prediction.hpp"
 #include "common/debugging/debug.hpp"
 
-#include <iostream>
-
 
 namespace seco {
 
