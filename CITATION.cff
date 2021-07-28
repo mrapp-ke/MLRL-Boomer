@@ -68,6 +68,6 @@ references:
     volume: 12459
     publisher: "Springer, Cham"
     year: 2020
-    doi: 10.1007/978-3-030-67664-3_8
-    isbn: 978-3-030-67663-6
-    url: https://link.springer.com/chapter/10.1007/978-3-030-67664-3_8
+    doi: "10.1007/978-3-030-67664-3_8"
+    isbn: "978-3-030-67663-6"
+    url: "https://link.springer.com/chapter/10.1007/978-3-030-67664-3_8"
