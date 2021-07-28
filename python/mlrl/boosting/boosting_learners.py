@@ -25,14 +25,14 @@ from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsP
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, NoHeadRefinementFactory, \
     SingleLabelHeadRefinementFactory, CompleteHeadRefinementFactory
 from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
+from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, NoInstanceSamplingFactory, \
+    InstanceSamplingWithReplacementFactory, InstanceSamplingWithoutReplacementFactory, \
+    LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
 from mlrl.common.cython.rule_induction import TopDownRuleInduction
 from mlrl.common.cython.rule_model_assemblage import SequentialRuleModelAssemblage
-from mlrl.common.cython.sampling import InstanceSamplingFactory, NoInstanceSamplingFactory, \
-    InstanceSamplingWithReplacementFactory, InstanceSamplingWithoutReplacementFactory, \
-    LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFunction, MinFunction, MaxFunction, \
     ArithmeticMeanFunction
