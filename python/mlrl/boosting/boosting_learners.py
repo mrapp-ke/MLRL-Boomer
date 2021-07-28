@@ -28,7 +28,8 @@ from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
-from mlrl.common.cython.rule_induction import TopDownRuleInduction, SequentialRuleModelAssemblage
+from mlrl.common.cython.rule_induction import TopDownRuleInduction
+from mlrl.common.cython.rule_model_assemblage import SequentialRuleModelAssemblage
 from mlrl.common.cython.sampling import InstanceSamplingFactory, NoInstanceSamplingFactory, \
     InstanceSamplingWithReplacementFactory, InstanceSamplingWithoutReplacementFactory, \
     LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
