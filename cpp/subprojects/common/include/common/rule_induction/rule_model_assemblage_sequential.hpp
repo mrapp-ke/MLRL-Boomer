@@ -99,6 +99,6 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
 
         std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
                                                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
-                                               RNG& rng, IModelBuilder& modelBuilder) override;
+                                               uint32 randomState, IModelBuilder& modelBuilder) override;
 
 };

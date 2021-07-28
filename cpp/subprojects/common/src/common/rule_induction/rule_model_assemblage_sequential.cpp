@@ -55,8 +55,8 @@ SequentialRuleModelAssemblage::SequentialRuleModelAssemblage(
 
 std::unique_ptr<RuleModel> SequentialRuleModelAssemblage::induceRules(const INominalFeatureMask& nominalFeatureMask,
                                                                       const IFeatureMatrix& featureMatrix,
-                                                                      const ILabelMatrix& labelMatrix, RNG& rng,
-                                                                      IModelBuilder& modelBuilder) {
+                                                                      const ILabelMatrix& labelMatrix,
+                                                                      uint32 randomState, IModelBuilder& modelBuilder) {
     // Induce default rule...
     const IHeadRefinementFactory* defaultRuleHeadRefinementFactory = defaultRuleHeadRefinementFactoryPtr_.get();
     uint32 numRules = defaultRuleHeadRefinementFactory != nullptr ? 1 : 0;
@@ -73,6 +73,7 @@ std::unique_ptr<RuleModel> SequentialRuleModelAssemblage::induceRules(const INom
     uint32 numLabels = thresholdsPtr->getNumLabels();
     std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrix.createPartitionSampling(
         *partitionSamplingFactoryPtr_);
+    RNG rng(randomState);
     IPartition& partition = partitionSamplingPtr->partition(rng);
     std::unique_ptr<IInstanceSampling> instanceSamplingPtr = partition.createInstanceSampling(
         *instanceSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());

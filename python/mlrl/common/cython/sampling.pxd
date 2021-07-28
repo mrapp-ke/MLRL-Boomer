@@ -3,15 +3,6 @@ from mlrl.common.cython._types cimport uint32, float32
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "common/sampling/random.hpp" nogil:
-
-    cdef cppclass RNG:
-
-        # Constructors:
-
-        RNG(uint32 randomState)
-
-
 cdef extern from "common/sampling/weight_vector.hpp" nogil:
 
     cdef cppclass IWeightVector:
