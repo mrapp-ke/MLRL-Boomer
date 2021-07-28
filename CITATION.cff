@@ -1,0 +1,34 @@
+# YAML 1.2
+---
+abstract: "In multi-label classification, where the evaluation of predictions is less straightforward than in single-label classification, various meaningful, though different, loss functions have been proposed. Ideally, the learning algorithm should be customizable towards a specific choice of the performance measure. Modern implementations of boosting, most prominently gradient boosted decision trees, appear to be appealing from this point of view. However, they are mostly limited to single-label classification, and hence not amenable to multi-label losses unless these are label-wise decomposable. In this work, we develop a generalization of the gradient boosting framework to multi-output problems and propose an algorithm for learning multi-label classification rules that is able to minimize decomposable as well as non-decomposable loss functions. Using the well-known Hamming loss and subset 0/1 loss as representatives, we analyze the abilities and limitations of our approach on synthetic data and evaluate its predictive performance on multi-label benchmarks."
+authors: 
+  -
+    affiliation: "Knowledge Engineering Group, TU Darmstadt, Germany"
+    family-names: Rapp
+    given-names: Michael
+    orcid: "https://orcid.org/0000-0001-8570-8240"
+  -
+    affiliation: "Knowledge Engineering Group, TU Darmstadt, Germany"
+    family-names: "Loza Mencía"
+    given-names: Eneldo
+    orcid: "https://orcid.org/0000-0002-2735-9326"
+  -
+    affiliation: "Heinz Nixdorf Institute, Paderborn University, Germany"
+    family-names: Nguyen
+    given-names: "Vu-Linh"
+    orcid: "https://orcid.org/0000-0003-1642-4468"
+  -
+    affiliation: "Computational Data Analysis Group, JKU Linz, Austria"
+    family-names: "Fürnkranz"
+    given-names: Johannes
+    orcid: "https://orcid.org/0000-0002-1207-0159"
+  -
+    affiliation: "Heinz Nixdorf Institute, Paderborn University, Germany"
+    family-names: "Hüllermeier"
+    given-names: Eyke
+    orcid: "https://orcid.org/0000-0002-9944-4108"
+cff-version: "1.1.0"
+doi: "10.1007/978-3-030-67664-3_8"
+message: "If you use this software, please cite it as shown below."
+title: "Learning Gradient Boosted Multi-label Classification Rules"
+...
