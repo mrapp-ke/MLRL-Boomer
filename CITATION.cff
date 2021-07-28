@@ -1,9 +1,13 @@
 cff-version: 1.1.0
 message: "If you use this software, please cite it as shown below."
+title: BOOMER
+repository-code: https://github.com/mrapp-ke/Boomer
+  - authors:
+    - family-names: Rapp
+      given-names: Michael
+license: MIT
 version: 0.6.0
 date-released: 2021-06-27
-license: MIT
-repository-code: https://github.com/mrapp-ke/Boomer
 references:
   - type: proceedings
     title: "Learning Gradient Boosted Multi-label Classification Rules"
