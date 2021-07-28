@@ -64,7 +64,7 @@ references:
       - family-names: Valera
         given-names: Isabel
     conference:
-      - name: "European Conference on Machine Learning and Knowledge Discovery (ECML-PKDD)"
+      - name: "European Conference on Machine Learning and Knowledge Discovery in Databases (ECML-PKDD)"
       - city: Ghent
       - country: Belgium
       - date-start: 2020-09-14
