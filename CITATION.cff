@@ -54,6 +54,15 @@ references:
         country: Germany
         email: "eyke@upb.de"
         orcid: "https://orcid.org/0000-0002-9944-4108"
+    editors:
+      - family-names: Hutter
+        given-names: Frank
+      - family-names: Kersting
+        given-names: Kristian
+      - family-names: Lijffijt
+        given-names: Jefrey
+      - family-names: Valera
+        given-names: Isabel
     conference: "European Conference on Machine Learning and Knowledge Discovery (ECML-PKDD)"
     year: 2020
     collection-title: "Lecture Notes in Computer Science"
