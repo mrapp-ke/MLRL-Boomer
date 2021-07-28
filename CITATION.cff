@@ -54,3 +54,11 @@ references:
         country: Germany
         email: "eyke@upb.de"
         orcid: "https://orcid.org/0000-0002-9944-4108"
+    conference: "European Conference on Machine Learning and Knowledge Discovery (ECML-PKDD)"
+    year: 2020
+    collection-title: "Lecture Notes in Computer Science"
+    volume: 12459
+    publisher: "Springer, Cham"
+    doi: 10.1007/978-3-030-67664-3_8
+    isbn: 978-3-030-67663-6
+    url: https://link.springer.com/chapter/10.1007/978-3-030-67664-3_8
