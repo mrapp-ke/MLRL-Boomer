@@ -55,10 +55,9 @@ cdef class RuleModelAssemblage:
     cpdef RuleModel induce_rules(self, NominalFeatureMask nominal_feature_mask, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
         cdef shared_ptr[IRuleModelAssemblage] rule_model_assemblage_ptr = self.rule_model_assemblage_ptr
-        cdef unique_ptr[RNG] rng_ptr = make_unique[RNG](random_state)
         cdef unique_ptr[RuleModelImpl] rule_model_ptr = rule_model_assemblage_ptr.get().induceRules(
             dereference(nominal_feature_mask.nominal_feature_mask_ptr), dereference(feature_matrix.feature_matrix_ptr),
-            dereference(label_matrix.label_matrix_ptr), dereference(rng_ptr),
+            dereference(label_matrix.label_matrix_ptr), random_state,
             dereference(model_builder.model_builder_ptr))
         cdef RuleModel model = RuleModel()
         model.model_ptr = move(rule_model_ptr)

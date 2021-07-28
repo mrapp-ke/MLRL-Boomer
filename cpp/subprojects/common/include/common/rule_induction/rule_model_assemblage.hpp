@@ -7,7 +7,6 @@
 #include "common/input/feature_matrix.hpp"
 #include "common/input/label_matrix.hpp"
 #include "common/model/model_builder.hpp"
-#include "common/sampling/random.hpp"
 
 
 /**
@@ -29,8 +28,7 @@ class IRuleModelAssemblage {
          *                              feature values of the training examples
          * @param labelMatrix           A reference to an object of type `ILabelMatrix` that provides access to the
          *                              labels of the training examples
-         * @param rng                   A reference to an object of type `RNG` that implements the random number
-         *                              generator to be used
+         * @param randomState           The seed to be used by the random number generators
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the induced rules should be
          *                              added to
          * @return                      An unique pointer to an object of type `RuleModel` that consists of the rules
@@ -38,7 +36,7 @@ class IRuleModelAssemblage {
          */
         virtual std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
                                                        const IFeatureMatrix& featureMatrix,
-                                                       const ILabelMatrix& labelMatrix, RNG& rng,
+                                                       const ILabelMatrix& labelMatrix, uint32 randomState,
                                                        IModelBuilder& modelBuilder) = 0;
 
 };

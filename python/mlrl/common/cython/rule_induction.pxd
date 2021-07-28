@@ -4,7 +4,7 @@ from mlrl.common.cython.input cimport FeatureMatrix, IFeatureMatrix
 from mlrl.common.cython.input cimport LabelMatrix, ILabelMatrix
 from mlrl.common.cython.model cimport ModelBuilder, RuleModel, IModelBuilder, RuleModelImpl
 from mlrl.common.cython.sampling cimport ILabelSamplingFactory, IInstanceSamplingFactory, IFeatureSamplingFactory, \
-    IPartitionSamplingFactory, RNG
+    IPartitionSamplingFactory
 from mlrl.common.cython.statistics cimport IStatisticsProviderFactory
 from mlrl.common.cython.stopping cimport IStoppingCriterion
 from mlrl.common.cython.thresholds cimport IThresholdsFactory
@@ -30,7 +30,7 @@ cdef extern from "common/rule_induction/rule_model_assemblage.hpp" nogil:
 
         unique_ptr[RuleModelImpl] induceRules(const INominalFeatureMask& nominalFeatureMask,
                                               const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
-                                              RNG& rng, IModelBuilder& modelBuilder)
+                                              uint32 randomState, IModelBuilder& modelBuilder)
 
 
 cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
