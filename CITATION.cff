@@ -39,7 +39,7 @@ references:
       - family-names: Fürnkranz
         given-names: Johannes
         affiliation: "Computational Data Analysis Group, JKU Linz"
-        country: Linz
+        city: Linz
         country: Austria
         email: juffi@faw.jku.at
         orcid: https://orcid.org/0000-0002-1207-0159
