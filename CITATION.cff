@@ -63,7 +63,12 @@ references:
         given-names: Jefrey
       - family-names: Valera
         given-names: Isabel
-    conference: "European Conference on Machine Learning and Knowledge Discovery (ECML-PKDD)"
+    conference:
+      - name: "European Conference on Machine Learning and Knowledge Discovery (ECML-PKDD)"
+      - city: Ghent
+      - country: Belgium
+      - date-start: 2020-09-14
+      - date-end: 2020-09-18
     collection-title: "Lecture Notes in Computer Science"
     volume: 12459
     publisher:
