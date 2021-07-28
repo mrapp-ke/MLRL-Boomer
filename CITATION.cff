@@ -66,7 +66,9 @@ references:
     conference: "European Conference on Machine Learning and Knowledge Discovery (ECML-PKDD)"
     collection-title: "Lecture Notes in Computer Science"
     volume: 12459
-    publisher: "Springer, Cham"
+    publisher:
+      - name: Springer
+        location: Cham
     year: 2020
     doi: "10.1007/978-3-030-67664-3_8"
     isbn: "978-3-030-67663-6"
