@@ -1,49 +1,49 @@
-cff-version: 1.1.0
+cff-version: "1.1.0"
 message: "If you use this software, please cite it as shown below."
-title: BOOMER
-repository-code: https://github.com/mrapp-ke/Boomer
+title: "BOOMER"
+repository-code: "https://github.com/mrapp-ke/Boomer"
   - authors:
-    - family-names: Rapp
-      given-names: Michael
-license: MIT
-version: 0.6.0
-date-released: 2021-06-27
+    - family-names: "Rapp"
+      given-names: "Michael"
+license: "MIT"
+version: "0.6.0"
+date-released: "2021-06-27"
 references:
-  - type: proceedings
+  - type: "proceedings"
     title: "Learning Gradient Boosted Multi-label Classification Rules"
     authors:
-      - family-names: Rapp
-        given-names: Michael
+      - family-names: "Rapp"
+        given-names: "Michael"
         affiliation: "Knowledge Engineering Group, TU Darmstadt"
-        city: Darmstadt
-        country: Germany
-        email: mrapp@ke.tu-darmstadt.de
-        orcid: https://orcid.org/0000-0001-8570-8240
-      - family-names: Loza Mencía
-        given-names: Eneldo
+        city: "Darmstadt"
+        country: "Germany"
+        email: "mrapp@ke.tu-darmstadt.de"
+        orcid: "https://orcid.org/0000-0001-8570-8240"
+      - family-names: "Loza Mencía"
+        given-names: "Eneldo"
         affiliation: "Knowledge Engineering Group, TU Darmstadt"
-        city: Darmstadt
-        country: Germany
-        email: research@eneldo.net
-        orcid: https://orcid.org/0000-0002-2735-9326
-      - family-names: Nguyen
-        given-names: Vu-Linh
+        city: "Darmstadt"
+        country: "Germany"
+        email: "research@eneldo.net"
+        orcid: "https://orcid.org/0000-0002-2735-9326"
+      - family-names: "Nguyen"
+        given-names: "Vu-Linh"
         affiliation: "Heinz Nixdorf Institute, Paderborn University"
-        city: Paderborn
-        country: Germany
-        email: vu.linh.nguyen@uni-paderborn.de
-        orcid: https://orcid.org/0000-0003-1642-4468
-      - family-names: Fürnkranz
-        given-names: Johannes
+        city: "Paderborn"
+        country: "Germany"
+        email: "vu.linh.nguyen@uni-paderborn.de"
+        orcid: "https://orcid.org/0000-0003-1642-4468"
+      - family-names: "Fürnkranz"
+        given-names: "Johannes"
         affiliation: "Computational Data Analysis Group, JKU Linz"
-        city: Linz
-        country: Austria
-        email: juffi@faw.jku.at
-        orcid: https://orcid.org/0000-0002-1207-0159
-      - family-names: Hüllermeier
-        given-names: Eyke
+        city: "Linz"
+        country: "Austria"
+        email: "juffi@faw.jku.at"
+        orcid: "https://orcid.org/0000-0002-1207-0159"
+      - family-names: "Hüllermeier"
+        given-names: "Eyke"
         affiliation: "Heinz Nixdorf Institute, Paderborn University"
-        city: Paderborn
-        country: Germany
-        email: eyke@upb.de
-        orcid: https://orcid.org/0000-0002-9944-4108
+        city: "Paderborn"
+        country: "Germany"
+        email: "eyke@upb.de"
+        orcid: "https://orcid.org/0000-0002-9944-4108"
