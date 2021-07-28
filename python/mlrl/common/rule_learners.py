@@ -21,7 +21,7 @@ from mlrl.common.cython.input import LabelVectorSet
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
-from mlrl.common.cython.rule_induction import RuleModelAssemblage
+from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblage
 from mlrl.common.cython.sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory, \
     NoFeatureSamplingFactory
 from mlrl.common.cython.sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory, \
