@@ -3,12 +3,6 @@ from mlrl.common.cython._types cimport uint32, float32
 from libcpp.memory cimport shared_ptr
 
 
-cdef extern from "common/sampling/weight_vector.hpp" nogil:
-
-    cdef cppclass IWeightVector:
-        pass
-
-
 cdef extern from "common/sampling/instance_sampling.hpp" nogil:
 
     cdef cppclass IInstanceSamplingFactory:
