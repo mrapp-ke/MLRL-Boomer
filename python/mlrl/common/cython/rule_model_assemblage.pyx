@@ -8,7 +8,7 @@ from mlrl.common.cython.post_processing cimport PostProcessor
 from mlrl.common.cython.pruning cimport Pruning
 from mlrl.common.cython.partition_sampling cimport PartitionSamplingFactory
 from mlrl.common.cython.rule_induction cimport RuleInduction
-from mlrl.common.cython.sampling cimport LabelSamplingFactory
+from mlrl.common.cython.label_sampling cimport LabelSamplingFactory
 from mlrl.common.cython.statistics cimport StatisticsProviderFactory
 from mlrl.common.cython.stopping cimport StoppingCriterion
 from mlrl.common.cython.thresholds cimport ThresholdsFactory
