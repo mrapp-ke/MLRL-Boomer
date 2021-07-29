@@ -4,15 +4,6 @@
 #pragma once
 
 #include "common/rule_induction/rule_model_assemblage.hpp"
-#include "common/rule_induction/rule_induction.hpp"
-#include "common/sampling/label_sampling.hpp"
-#include "common/sampling/instance_sampling.hpp"
-#include "common/sampling/feature_sampling.hpp"
-#include "common/sampling/partition_sampling.hpp"
-#include "common/statistics/statistics_provider_factory.hpp"
-#include "common/stopping/stopping_criterion.hpp"
-#include "common/thresholds/thresholds_factory.hpp"
-#include <forward_list>
 
 
 /**
