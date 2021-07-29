@@ -22,13 +22,13 @@ from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLab
 from mlrl.common.cython.input import LabelVectorSet
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
+from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
+    RandomBiPartitionSamplingFactory, LabelWiseStratifiedBiPartitionSamplingFactory, \
+    ExampleWiseStratifiedBiPartitionSamplingFactory
 from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblage
 from mlrl.common.cython.sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory, \
     NoLabelSamplingFactory
-from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
-    RandomBiPartitionSamplingFactory, LabelWiseStratifiedBiPartitionSamplingFactory, \
-    ExampleWiseStratifiedBiPartitionSamplingFactory
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
