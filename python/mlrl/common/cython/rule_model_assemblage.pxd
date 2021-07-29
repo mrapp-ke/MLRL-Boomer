@@ -6,7 +6,7 @@ from mlrl.common.cython.input cimport LabelMatrix, ILabelMatrix
 from mlrl.common.cython.instance_sampling cimport IInstanceSamplingFactory
 from mlrl.common.cython.model cimport ModelBuilder, RuleModel, IModelBuilder, RuleModelImpl
 from mlrl.common.cython.rule_induction cimport IRuleInduction
-from mlrl.common.cython.sampling cimport ILabelSamplingFactory
+from mlrl.common.cython.label_sampling cimport ILabelSamplingFactory
 from mlrl.common.cython.statistics cimport IStatisticsProviderFactory
 from mlrl.common.cython.stopping cimport IStoppingCriterion
 from mlrl.common.cython.thresholds cimport IThresholdsFactory
