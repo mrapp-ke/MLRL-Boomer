@@ -31,7 +31,7 @@ cdef class RuleModelAssemblage:
             dereference(nominal_feature_mask.nominal_feature_mask_ptr), dereference(feature_matrix.feature_matrix_ptr),
             dereference(label_matrix.label_matrix_ptr), random_state,
             dereference(model_builder.model_builder_ptr))
-        cdef RuleModel model = RuleModel()
+        cdef RuleModel model = RuleModel.__new__(RuleModel)
         model.model_ptr = move(rule_model_ptr)
         return model
 
