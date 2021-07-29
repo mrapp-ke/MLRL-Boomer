@@ -1,11 +1,12 @@
 from mlrl.common.cython._types cimport uint32
+from mlrl.common.cython.feature_sampling cimport IFeatureSamplingFactory
 from mlrl.common.cython.input cimport NominalFeatureMask, INominalFeatureMask
 from mlrl.common.cython.input cimport FeatureMatrix, IFeatureMatrix
 from mlrl.common.cython.input cimport LabelMatrix, ILabelMatrix
 from mlrl.common.cython.instance_sampling cimport IInstanceSamplingFactory
 from mlrl.common.cython.model cimport ModelBuilder, RuleModel, IModelBuilder, RuleModelImpl
 from mlrl.common.cython.rule_induction cimport IRuleInduction
-from mlrl.common.cython.sampling cimport ILabelSamplingFactory, IFeatureSamplingFactory, IPartitionSamplingFactory
+from mlrl.common.cython.sampling cimport ILabelSamplingFactory,IPartitionSamplingFactory
 from mlrl.common.cython.statistics cimport IStatisticsProviderFactory
 from mlrl.common.cython.stopping cimport IStoppingCriterion
 from mlrl.common.cython.thresholds cimport IThresholdsFactory
