@@ -10,6 +10,7 @@
  * Allows to sequentially induce several rules, starting with a default rule, that will be added to a resulting
  * `RuleModel`.
  */
+// TODO Move to cpp file
 class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
 
     private:
@@ -91,5 +92,26 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
         std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
                                                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
                                                uint32 randomState, IModelBuilder& modelBuilder) override;
+
+};
+
+/**
+ * A factory that allows to create instances of the class `SequentialRuleModelAssemblage`.
+ */
+class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
+
+    public:
+
+        std::unique_ptr<IRuleModelAssemblage> create(
+            std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+            std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
+            std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
+            std::shared_ptr<IHeadRefinementFactory> regularRuleHeadRefinementFactoryPtr,
+            std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
+            std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
+            std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
+            std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
+            std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
+            const std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria) const override;
 
 };
