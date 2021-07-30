@@ -104,3 +104,18 @@ std::unique_ptr<RuleModel> SequentialRuleModelAssemblage::induceRules(const INom
     // Build and return the final model...
     return modelBuilder.build(numUsedRules);
 }
+
+std::unique_ptr<IRuleModelAssemblage> SequentialRuleModelAssemblageFactory::create(
+        std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+        std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
+        std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
+        std::shared_ptr<IHeadRefinementFactory> regularRuleHeadRefinementFactoryPtr,
+        std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
+        std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
+        std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
+        std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
+        std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
+        const std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria) const {
+    // TODO
+    return nullptr;
+}
