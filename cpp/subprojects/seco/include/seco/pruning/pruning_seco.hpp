@@ -36,7 +36,7 @@ namespace seco {
         explicit SecoPruning(std::shared_ptr<seco::ILiftFunction> liftFunctionPtr);
 
         std::unique_ptr<ICoverageState> prune(IThresholdsSubset &thresholdsSubset, IPartition &partition,
-                                              ConditionList &conditions, const AbstractEvaluatedPrediction* bestHead) const override;
+                                              ConditionList &conditions, AbstractEvaluatedPrediction* bestHead) const override;
 
         const AbstractEvaluatedPrediction *processScores(const AbstractEvaluatedPrediction *bestHead,
                                                          const DenseLabelWiseScoreVector<FullIndexVector> &scoreVector) override;

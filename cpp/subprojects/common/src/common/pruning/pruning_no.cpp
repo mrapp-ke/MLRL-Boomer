@@ -2,6 +2,6 @@
 
 
 std::unique_ptr<ICoverageState> NoPruning::prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
-                                                 ConditionList& conditions, const AbstractEvaluatedPrediction* head) const {
+                                                 ConditionList& conditions, AbstractEvaluatedPrediction* head) const {
     return nullptr;
 }

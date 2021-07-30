@@ -126,7 +126,7 @@ namespace seco {
 
     std::unique_ptr<ICoverageState> SecoPruning::prune(IThresholdsSubset &thresholdsSubset, IPartition &partition,
                                                        ConditionList &conditions,
-                                                       const AbstractEvaluatedPrediction *bestHead) const {
+                                                       AbstractEvaluatedPrediction *bestHead) const {
         ConditionList::size_type numConditions = conditions.getNumConditions();
         std::unique_ptr<ICoverageState> bestCoverageStatePtr;
 
@@ -155,6 +155,9 @@ namespace seco {
             auto conditionIterator = conditions.cbegin();
             ConditionList::size_type numPrunedConditions = 0;
 
+            // Variable um sich den besten geprunten Head zu merken
+            const AbstractEvaluatedPrediction* bestPrunedHead = nullptr;
+
             for (std::list<Condition>::size_type n = 1; n < numConditions; n++) {
                 // Filter the thresholds by applying the current condition...
                 const Condition &condition = *conditionIterator;
@@ -175,12 +178,12 @@ namespace seco {
                 // Debugger: print quality scores
                 Debugger::printQualityScores(bestQualityScore, qualityScore);
 
-                // Check if the quality score is better than the best quality score known so far (reaching the same score
-                // with fewer conditions is considered an improvement)...
-                if (qualityScore < bestQualityScore || (numPrunedConditions == 0 && qualityScore == bestQualityScore)) {
-                    bestQualityScore = qualityScore;
-                    bestCoverageStatePtr = coverageState.copy();
-                    numPrunedConditions = (numConditions - n);
+                // Der qualityScore kann sich eventuell noch ändern, falls der Head geprunt wird. Deshalb darf dieser
+                // Vergleich erst später durchgeführt werden.
+                // if (qualityScore < bestQualityScore || (numPrunedConditions == 0 && qualityScore == bestQualityScore)) {
+                    // bestQualityScore = qualityScore;
+                    // bestCoverageStatePtr = coverageState.copy();
+                    // numPrunedConditions = (numConditions - n);
 
                     // if the head has more than one element
                     if (bestHead->isPartial()
@@ -188,11 +191,31 @@ namespace seco {
                         // check if a better bestHead exists with pruned conditions
                         const AbstractEvaluatedPrediction *head = scoreVector.processScores(bestHead,
                                                                                             (IScoreProcessor &) *this);
+
+                        // Die Heads der geprunten Regeln, bzw. deren qualityScore, sollen immer mit dem originalen Head
+                        // verglichen werden, deshalb darf der hier nicht überschrieben werden.
+                        // if (head != nullptr) {
+                        //     bestHead = head;
+                        // }
+
                         if (head != nullptr) {
-                            bestHead = head;
+                            // Geprunter head ist besser als der originale Head
+                            bestPrunedHead = head;
+                            qualityScore = head->overallQualityScore; // qualityScore hat sich wahrscheinlich geändert
                         }
+
                     }
-                }
+
+                    // Erst nachdem der Head eventuell geprunt wurde vergleichen wir die qualityScores
+                    if (qualityScore < bestQualityScore || (numPrunedConditions == 0 && qualityScore == bestQualityScore)) {
+                        bestQualityScore = qualityScore;
+                        bestCoverageStatePtr = coverageState.copy();
+                        numPrunedConditions = (numConditions - n);
+                    } else {
+                        // Wir verwerfen den geprunten Head wieder
+                        bestPrunedHead = nullptr;
+                    }
+                // }
 
                 // Debugger: print number of pruned conditions
                 Debugger::printPrunedConditions(numPrunedConditions);
@@ -204,6 +227,21 @@ namespace seco {
             while (numPrunedConditions > 0) {
                 conditions.removeLast();
                 numPrunedConditions--;
+            }
+
+            if (bestPrunedHead != nullptr) {
+                // Der Head der Regel wurde verändert, d.h. wir müssen die geänderten Vorhersagen in den ursprünglichen
+                // Head übernehmen. "bestPrunedHead" ist lediglich ein Pointer. Das Objekt, auf das durch ihn verwiesen
+                // wird, kann später überschrieben oder gelöscht werden.
+                bestHead->overallQualityScore = bestPrunedHead->overallQualityScore;
+                bestHead->setNumElements(bestPrunedHead->getNumElements(), true);
+                std::copy(bestPrunedHead->scores_cbegin(), bestPrunedHead->scores_cbegin(), bestHead->scores_begin());
+
+                // Das ist natürlich ein Hack, weil einfach angenommen wird, dass die Objekte vom Typ
+                // "PartialPrediction" sind. Aber das müsste eigentlich der Fall sein.
+                PartialPrediction* original = dynamic_cast<PartialPrediction*>(bestHead);
+                const PartialPrediction* pruned = dynamic_cast<const PartialPrediction*>(bestPrunedHead);
+                std::copy(pruned->indices_cbegin(), pruned->indices_cend(), original->indices_begin());
             }
         }
 

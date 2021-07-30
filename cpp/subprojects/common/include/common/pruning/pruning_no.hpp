@@ -14,6 +14,6 @@ class NoPruning final : public IPruning {
     public:
 
         std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
-                                              ConditionList& conditions, const AbstractEvaluatedPrediction* head) const override;
+                                              ConditionList& conditions, AbstractEvaluatedPrediction* head) const override;
 
 };

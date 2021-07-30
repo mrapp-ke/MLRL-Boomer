@@ -40,6 +40,6 @@ class IPruning {
          */
         virtual std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
                                                       ConditionList& conditions,
-                                                      const AbstractEvaluatedPrediction* head) const = 0;
+                                                      AbstractEvaluatedPrediction* head) const = 0;
 
 };
