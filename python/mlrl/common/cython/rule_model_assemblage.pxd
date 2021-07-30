@@ -30,6 +30,10 @@ cdef extern from "common/rule_induction/rule_model_assemblage.hpp" nogil:
                                               uint32 randomState, IModelBuilder& modelBuilder)
 
 
+    cdef cppclass IRuleModelAssemblageFactory:
+        pass
+
+
 cdef extern from "common/rule_induction/rule_model_assemblage_sequential.hpp" nogil:
 
     cdef cppclass SequentialRuleModelAssemblageImpl"SequentialRuleModelAssemblage"(IRuleModelAssemblage):
@@ -60,6 +64,12 @@ cdef class RuleModelAssemblage:
     cpdef RuleModel induce_rules(self, NominalFeatureMask nominal_feature_mask, FeatureMatrix feature_matrix,
                                  LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder)
 
+
+cdef class RuleModelAssemblageFactory:
+
+    # Attributes:
+
+    cdef shared_ptr[IRuleModelAssemblageFactory] rule_model_assemblage_factory_ptr
 
 
 cdef class SequentialRuleModelAssemblage(RuleModelAssemblage):
