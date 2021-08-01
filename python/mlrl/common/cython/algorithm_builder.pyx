@@ -35,7 +35,7 @@ cdef class AlgorithmBuilder:
         :param rule_model_assemblage_factory:   TODO
         """
         self.builder_ptr = make_unique[AlgorithmBuilderImpl](
-            statistics_provider_factory.statistics_provider_factory_ptr,
+            move(statistics_provider_factory.statistics_provider_factory_ptr),
             move(thresholds_factory.thresholds_factory_ptr), move(rule_induction.rule_induction_ptr),
             move(head_refinement_factory.head_refinement_factory_ptr),
             move(rule_model_assemblage_factory.rule_model_assemblage_factory_ptr))

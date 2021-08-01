@@ -48,7 +48,7 @@ class AlgorithmBuilder final {
          * @param headRefinementFactoryPtr      TODO
          * @param ruleModelAssemblageFactoryPtr TODO
          */
-        AlgorithmBuilder(std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+        AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                          std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                          std::unique_ptr<IRuleInduction> ruleInductionPtr,
                          std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,

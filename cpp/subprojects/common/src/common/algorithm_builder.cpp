@@ -7,12 +7,12 @@
 #include "common/sampling/partition_sampling_no.hpp"
 
 
-AlgorithmBuilder::AlgorithmBuilder(std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+AlgorithmBuilder::AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                                    std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                                    std::unique_ptr<IRuleInduction> ruleInductionPtr,
                                    std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                    std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr)
-    : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr),
+    : statisticsProviderFactoryPtr_(std::move(statisticsProviderFactoryPtr)),
       thresholdsFactoryPtr_(std::move(thresholdsFactoryPtr)), ruleInductionPtr_(std::move(ruleInductionPtr)),
       regularRuleHeadRefinementFactoryPtr_(std::move(headRefinementFactoryPtr)),
       ruleModelAssemblageFactoryPtr_(std::move(ruleModelAssemblageFactoryPtr)),
