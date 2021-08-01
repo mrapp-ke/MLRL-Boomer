@@ -7,7 +7,7 @@
 
 
 /**
- * TODO
+ * A builder that allows to configure rule learning algorithms.
  */
 class AlgorithmBuilder final {
 
@@ -42,11 +42,18 @@ class AlgorithmBuilder final {
     public:
 
         /**
-         * @param statisticsProviderFactoryPtr  TODO
-         * @param thresholdsFactoryPtr          TODO
-         * @param ruleInductionPtr              TODO
-         * @param headRefinementFactoryPtr      TODO
-         * @param ruleModelAssemblageFactoryPtr TODO
+         * @param statisticsProviderFactoryPtr  An unique pointer to an object of type `IStatisticsProviderFactory` to
+         *                                      be used by the rule learner to access the statistics that serve as the
+         *                                      basis for learning rules
+         * @param thresholdsFactoryPtr          An unique pointer to an object of type `IThresholdsFactory` to be used
+         *                                      by the rule learner to access the thresholds that may be used by the
+         *                                      conditions of rules
+         * @param ruleInductionPtr              An unique pointer to an object of type `IRuleInduction` to be used by
+         *                                      the rule learner to induce individual rules
+         * @param headRefinementFactoryPtr      An unique pointer to an object of type `IHeadRefinementFactory` to be
+         *                                      used by the rule learner to find the head of individual rules
+         * @param ruleModelAssemblageFactoryPtr An unique pointer to an object of type `IRuleModelAssemblageFactory` to
+         *                                      be used by the rule learner for the assemblage of a rule model
          */
         AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                          std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
@@ -55,76 +62,82 @@ class AlgorithmBuilder final {
                          std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr);
 
         /**
-         * TODO
+         * Sets the `IHeadRefinementFactory` to be used by the rule learner to find the head of the default rule.
          *
-         * @param headRefinementFactoryPTr  TODO
-         * @return                          TODO
+         * @param headRefinementFactoryPTr  An unique pointer to an object of type `IHeadRefinementFactory` to be set
+         * @return                          A reference to the builder itself
          */
         AlgorithmBuilder& setDefaultRuleHeadRefinementFactory(
             std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
         /**
-         * TODO
+         * Sets the `ILabelSamplingFactory` to be used by the rule learner to sample the labels individual rules may
+         * predict for.
          *
-         * @param labelSamplingFactoryPtr   TODO
-         * @return                          TODO
+         * @param labelSamplingFactoryPtr   An unique pointer to an object of type `ILabelSamplingFactory` to be set
+         * @return                          A reference to the builder itself
          */
         AlgorithmBuilder& setLabelSamplingFactory(std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr);
 
         /**
-         * TODO
+         * Sets the `IInstanceSamplingFactory` to be used by the rule learner to sample the instances whenever a new
+         * rule is induced.
          *
-         * @param instanceSamplingFactoryPtr    TODO
-         * @return                              TODO
+         * @param instanceSamplingFactoryPtr    An unique pointer to an object of type `IInstanceSamplingFactory` to be
+         *                                      set
+         * @return                              A reference to the builder itself
          */
         AlgorithmBuilder& setInstanceSamplingFactory(
             std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr);
 
         /**
-         * TODO
+         * Sets the `IFeatureSamplingFactory` to be used by the rule learner to sample the features whenever a rule
+         * should be refined.
          *
-         * @param featureSamplingFactoryPtr TODO
-         * @return                          TODO
+         * @param featureSamplingFactoryPtr An unique pointer to an object of type `IFeatureSamplingFactory` to be set
+         * @return                          A reference to the builder itself
          */
         AlgorithmBuilder& setFeatureSamplingFactory(std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr);
 
         /**
-         * TODO
+         * Sets the `IPartitionSamplingFactory` to be used by the rule learner to create a holdout set.
          *
-         * @param partitionSamplingFactoryPtr   TODO
-         * @return                              TODO
+         * @param partitionSamplingFactoryPtr   An unique pointer to an object of type `IPartitionSamplingFactory` to be
+         *                                      set
+         * @return                              A reference to the builder itself
          */
         AlgorithmBuilder& setPartitionSamplingFactory(
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr);
 
         /**
-         * TODO
+         * Sets the `IPruning` to be used by the rule learner to prune individual rules.
          *
-         * @param pruningPtr    TODO
-         * @return              TODO
+         * @param pruningPtr    An unique pointer to an object of type `IPruning` to be set
+         * @return              A reference to the builder itself
          */
         AlgorithmBuilder& setPruning(std::unique_ptr<IPruning> pruningPtr);
 
         /**
-         * TODO
+         * Sets the `IPostProcessor` to be used by the rule learner to post-process the predictions of individual rules.
          *
-         * @param postProcessorPtr  TODO
-         * @return                  TODO
+         * @param postProcessorPtr  An unique pointer to an object of type `IPostProcessor` to be set
+         * @return                  A reference to the builder itself
          */
         AlgorithmBuilder& setPostProcessor(std::unique_ptr<IPostProcessor> postProcessorPtr);
 
         /**
-         * TODO
+         * Adds a `IStoppingCriterion` that should be used by the rule learner to decide when the induction of
+         * additional rules should be stopped.
          *
-         * @param stoppingCriterionPtr  TODO
-         * @return                      TODO
+         * @param stoppingCriterionPtr  An unique pointer to an object of type `IStoppingCriterion` to be added
+         * @return                      A reference to the builder itself
          */
         AlgorithmBuilder& addStoppingCriterion(std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr);
 
         /**
-         * TODO
+         * Creates and returns a new object of type `IRuleModelAssemblage`.
          *
-         * @return TODO
+         * @return An unique pointer to an object of type `IRuleModelAssemblage` that has been created
          */
         std::unique_ptr<IRuleModelAssemblage> build() const;
 
