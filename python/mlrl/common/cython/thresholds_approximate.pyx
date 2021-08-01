@@ -12,7 +12,7 @@ cdef class ApproximateThresholdsFactory(ThresholdsFactory):
     A wrapper for the C++ class `ApproximateThresholdsFactory`.
     """
 
-    def __cinit__(self, FeatureBinning binning, uint32 num_threads):
+    def __cinit__(self, FeatureBinning binning not None, uint32 num_threads):
         """
         :param binning:     The binning method to be used
         :param num_threads: The number of CPU threads to be used to update statistics in parallel. Must be at least 1

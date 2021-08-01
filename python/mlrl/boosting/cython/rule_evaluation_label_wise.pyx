@@ -31,7 +31,7 @@ cdef class BinnedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     A wrapper for the C++ class `BinnedLabelWiseRuleEvaluationFactory`.
     """
 
-    def __cinit__(self, float64 l2_regularization_weight, LabelBinningFactory label_binning_factory):
+    def __cinit__(self, float64 l2_regularization_weight, LabelBinningFactory label_binning_factory not None):
         """
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             scores to be predicted by rules

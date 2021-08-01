@@ -13,9 +13,10 @@ cdef class DenseExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
     A wrapper for the C++ class `DenseExampleWiseStatisticsProviderFactory`.
     """
 
-    def __cinit__(self, ExampleWiseLoss loss_function, ExampleWiseRuleEvaluationFactory default_rule_evaluation_factory,
-                  ExampleWiseRuleEvaluationFactory regular_rule_evaluation_factory,
-                  ExampleWiseRuleEvaluationFactory pruning_rule_evaluation_factory, uint32 num_threads):
+    def __cinit__(self, ExampleWiseLoss loss_function not None,
+                  ExampleWiseRuleEvaluationFactory default_rule_evaluation_factory not None,
+                  ExampleWiseRuleEvaluationFactory regular_rule_evaluation_factory not None,
+                  ExampleWiseRuleEvaluationFactory pruning_rule_evaluation_factory not None, uint32 num_threads):
         """
         :param loss_function:                   The loss function to be used for calculating gradients and Hessians
         :param default_rule_evaluation_factory: The `ExampleWiseRuleEvaluation` to be used for calculating the

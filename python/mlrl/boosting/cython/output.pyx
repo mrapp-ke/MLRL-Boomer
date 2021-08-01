@@ -27,7 +27,8 @@ cdef class LogisticFunction(LabelWiseTransformationFunction):
 
 cdef class LabelWiseProbabilityPredictor(AbstractNumericalPredictor):
 
-    def __cinit__(self, uint32 num_labels, LabelWiseTransformationFunction transformation_function, uint32 num_threads):
+    def __cinit__(self, uint32 num_labels, LabelWiseTransformationFunction transformation_function not None,
+                  uint32 num_threads):
         self.num_labels = num_labels
         self.transformation_function = transformation_function
         self.num_threads = num_threads
@@ -84,7 +85,7 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
     A wrapper for the C++ class `ExampleWiseClassificationPredictor`.
     """
 
-    def __cinit__(self, uint32 num_labels, SimilarityMeasure measure, uint32 num_threads):
+    def __cinit__(self, uint32 num_labels, SimilarityMeasure measure not None, uint32 num_threads):
         """
         :param num_labels:  The total number of available labels
         :param measure:     The measure to be used

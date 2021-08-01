@@ -13,9 +13,10 @@ cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
     A wrapper for the C++ class `DenseLabelWiseStatisticsProviderFactory`.
     """
 
-    def __cinit__(self, LabelWiseLoss loss_function, LabelWiseRuleEvaluationFactory default_rule_evaluation_factory,
-                  LabelWiseRuleEvaluationFactory regular_rule_evaluation_factory,
-                  LabelWiseRuleEvaluationFactory pruning_rule_evaluation_factory, uint32 num_threads):
+    def __cinit__(self, LabelWiseLoss loss_function not None,
+                  LabelWiseRuleEvaluationFactory default_rule_evaluation_factory not None,
+                  LabelWiseRuleEvaluationFactory regular_rule_evaluation_factory not None,
+                  LabelWiseRuleEvaluationFactory pruning_rule_evaluation_factory not None, uint32 num_threads):
         """
         :param loss_function:                   The loss function to be used for calculating gradients and Hessians
         :param default_rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` that allows to create instances of
