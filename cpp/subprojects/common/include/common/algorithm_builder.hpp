@@ -50,7 +50,7 @@ class AlgorithmBuilder final {
          */
         AlgorithmBuilder(std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                          std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-                         std::shared_ptr<IRuleInduction> ruleInductionPtr,
+                         std::unique_ptr<IRuleInduction> ruleInductionPtr,
                          std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                          std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr);
 

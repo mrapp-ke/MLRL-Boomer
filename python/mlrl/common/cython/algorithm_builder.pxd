@@ -22,7 +22,7 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
 
         AlgorithmBuilderImpl(shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
                              shared_ptr[IThresholdsFactory] thresholdsFactoryPtr,
-                             shared_ptr[IRuleInduction] ruleInductionPtr,
+                             unique_ptr[IRuleInduction] ruleInductionPtr,
                              unique_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
                              unique_ptr[IRuleModelAssemblageFactory] ruleModelAssemblageFactoryPtr)
 

@@ -36,7 +36,7 @@ cdef class AlgorithmBuilder:
         """
         self.builder_ptr = make_unique[AlgorithmBuilderImpl](
             statistics_provider_factory.statistics_provider_factory_ptr, thresholds_factory.thresholds_factory_ptr,
-            rule_induction.rule_induction_ptr, move(head_refinement_factory.head_refinement_factory_ptr),
+            move(rule_induction.rule_induction_ptr), move(head_refinement_factory.head_refinement_factory_ptr),
             move(rule_model_assemblage_factory.rule_model_assemblage_factory_ptr))
 
     def set_default_rule_head_refinement_factory(
