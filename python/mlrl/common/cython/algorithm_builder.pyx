@@ -120,7 +120,7 @@ cdef class AlgorithmBuilder:
         :param stopping_criterion:  TODO
         :return:                    TODO
         """
-        self.builder_ptr.get().addStoppingCriterion(<shared_ptr[IStoppingCriterion]>move(stopping_criterion.stopping_criterion_ptr)) # TODO Remove cast
+        self.builder_ptr.get().addStoppingCriterion(move(stopping_criterion.stopping_criterion_ptr))
         return self
 
     def build(self) -> RuleModelAssemblage:
