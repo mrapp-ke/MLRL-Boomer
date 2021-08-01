@@ -111,7 +111,7 @@ class AlgorithmBuilder final {
          * @param postProcessorPtr  TODO
          * @return                  TODO
          */
-        AlgorithmBuilder& setPostProcessor(std::shared_ptr<IPostProcessor> postProcessorPtr);
+        AlgorithmBuilder& setPostProcessor(std::unique_ptr<IPostProcessor> postProcessorPtr);
 
         /**
          * TODO

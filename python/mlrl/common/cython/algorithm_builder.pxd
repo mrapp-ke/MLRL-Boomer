@@ -43,7 +43,7 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
 
         AlgorithmBuilderImpl& setPruning(shared_ptr[IPruning] pruningPtr)
 
-        AlgorithmBuilderImpl& setPostProcessor(shared_ptr[IPostProcessor] postProcessorPtr)
+        AlgorithmBuilderImpl& setPostProcessor(unique_ptr[IPostProcessor] postProcessorPtr)
 
         AlgorithmBuilderImpl& addStoppingCriterion(shared_ptr[IStoppingCriterion] stoppingCriterionPtr)
 

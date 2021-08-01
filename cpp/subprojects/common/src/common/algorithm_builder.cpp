@@ -58,8 +58,8 @@ AlgorithmBuilder& AlgorithmBuilder::setPruning(std::shared_ptr<IPruning> pruning
     return *this;
 }
 
-AlgorithmBuilder& AlgorithmBuilder::setPostProcessor(std::shared_ptr<IPostProcessor> postProcessorPtr) {
-    postProcessorPtr_ = postProcessorPtr;
+AlgorithmBuilder& AlgorithmBuilder::setPostProcessor(std::unique_ptr<IPostProcessor> postProcessorPtr) {
+    postProcessorPtr_ = std::move(postProcessorPtr);
     return *this;
 }
 

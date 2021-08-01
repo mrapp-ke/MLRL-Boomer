@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport shared_ptr, make_shared
+from libcpp.memory cimport unique_ptr, make_unique
 
 
 cdef class ConstantShrinkage(PostProcessor):
@@ -13,4 +13,4 @@ cdef class ConstantShrinkage(PostProcessor):
         """
         :param shrinkage: The shrinkage parameter. Must be in (0, 1)
         """
-        self.post_processor_ptr = <shared_ptr[IPostProcessor]>make_shared[ConstantShrinkageImpl](shrinkage)
+        self.post_processor_ptr = <unique_ptr[IPostProcessor]>make_unique[ConstantShrinkageImpl](shrinkage)
