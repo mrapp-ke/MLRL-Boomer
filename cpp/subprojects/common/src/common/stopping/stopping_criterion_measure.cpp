@@ -75,6 +75,8 @@ MeasureStoppingCriterion::MeasureStoppingCriterion(std::unique_ptr<IEvaluationMe
       pastBuffer_(RingBuffer<float64>(numPast)), recentBuffer_(RingBuffer<float64>(numCurrent)),
       stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP), bestScore_(std::numeric_limits<float64>::infinity()),
       stopped_(false) {
+    assertNotNull("measurePtr", measurePtr_.get());
+    assertNotNull("aggregationFunctionPtr", aggregationFunctionPtr_.get());
     assertGreaterOrEqual<uint32>("minRules", minRules, 1);
     assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
     assertMultiple<uint32>("stopInterval", stopInterval, updateInterval);
