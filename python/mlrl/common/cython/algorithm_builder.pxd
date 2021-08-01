@@ -24,28 +24,30 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
                              unique_ptr[IThresholdsFactory] thresholdsFactoryPtr,
                              unique_ptr[IRuleInduction] ruleInductionPtr,
                              unique_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
-                             unique_ptr[IRuleModelAssemblageFactory] ruleModelAssemblageFactoryPtr)
+                             unique_ptr[IRuleModelAssemblageFactory] ruleModelAssemblageFactoryPtr) except +
 
         # Functions:
 
         AlgorithmBuilderImpl& setDefaultRuleHeadRefinementFactory(
-            unique_ptr[IHeadRefinementFactory] headRefinementFactoryPtr)
+            unique_ptr[IHeadRefinementFactory] headRefinementFactoryPtr) except +
 
-        AlgorithmBuilderImpl& setLabelSamplingFactory(unique_ptr[ILabelSamplingFactory] labelSamplingFactoryPtr)
+        AlgorithmBuilderImpl& setLabelSamplingFactory(
+            unique_ptr[ILabelSamplingFactory] labelSamplingFactoryPtr) except +
 
         AlgorithmBuilderImpl& setInstanceSamplingFactory(
-            unique_ptr[IInstanceSamplingFactory] instanceSamplingFactoryPtr)
+            unique_ptr[IInstanceSamplingFactory] instanceSamplingFactoryPtr) except +
 
-        AlgorithmBuilderImpl& setFeatureSamplingFactory(unique_ptr[IFeatureSamplingFactory] featureSamplingFactoryPtr)
+        AlgorithmBuilderImpl& setFeatureSamplingFactory(
+            unique_ptr[IFeatureSamplingFactory] featureSamplingFactoryPtr) except +
 
         AlgorithmBuilderImpl& setPartitionSamplingFactory(
-            unique_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr)
+            unique_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr) except +
 
-        AlgorithmBuilderImpl& setPruning(unique_ptr[IPruning] pruningPtr)
+        AlgorithmBuilderImpl& setPruning(unique_ptr[IPruning] pruningPtr) except +
 
-        AlgorithmBuilderImpl& setPostProcessor(unique_ptr[IPostProcessor] postProcessorPtr)
+        AlgorithmBuilderImpl& setPostProcessor(unique_ptr[IPostProcessor] postProcessorPtr) except +
 
-        AlgorithmBuilderImpl& addStoppingCriterion(unique_ptr[IStoppingCriterion] stoppingCriterionPtr)
+        AlgorithmBuilderImpl& addStoppingCriterion(unique_ptr[IStoppingCriterion] stoppingCriterionPtr) except +
 
         unique_ptr[IRuleModelAssemblage] build() const
 
