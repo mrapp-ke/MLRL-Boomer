@@ -4,7 +4,7 @@
 from mlrl.common.cython.measures cimport EvaluationMeasure
 
 from libcpp.utility cimport move
-from libcpp.memory cimport unique_ptr, make_shared
+from libcpp.memory cimport make_unique
 
 
 cdef class StoppingCriterion:
@@ -23,7 +23,7 @@ cdef class SizeStoppingCriterion(StoppingCriterion):
         """
         :param max_rules: The maximum number of rules
         """
-        self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[SizeStoppingCriterionImpl](max_rules)
+        self.stopping_criterion_ptr = <unique_ptr[IStoppingCriterion]>make_unique[SizeStoppingCriterionImpl](max_rules)
 
 
 cdef class TimeStoppingCriterion(StoppingCriterion):
@@ -35,7 +35,7 @@ cdef class TimeStoppingCriterion(StoppingCriterion):
         """
         :param time_limit: The time limit in seconds
         """
-        self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[TimeStoppingCriterionImpl](time_limit)
+        self.stopping_criterion_ptr = <unique_ptr[IStoppingCriterion]>make_unique[TimeStoppingCriterionImpl](time_limit)
 
 
 cdef class AggregationFunction:
@@ -51,7 +51,7 @@ cdef class MinFunction(AggregationFunction):
     """
 
     def __cinit__(self):
-        self.aggregation_function_ptr = <shared_ptr[IAggregationFunction]>make_shared[MinFunctionImpl]()
+        self.aggregation_function_ptr = <unique_ptr[IAggregationFunction]>make_unique[MinFunctionImpl]()
 
 
 cdef class MaxFunction(AggregationFunction):
@@ -60,7 +60,7 @@ cdef class MaxFunction(AggregationFunction):
     """
 
     def __cinit__(self):
-        self.aggregation_function_ptr = <shared_ptr[IAggregationFunction]>make_shared[MaxFunctionImpl]()
+        self.aggregation_function_ptr = <unique_ptr[IAggregationFunction]>make_unique[MaxFunctionImpl]()
 
 
 cdef class ArithmeticMeanFunction(AggregationFunction):
@@ -69,7 +69,7 @@ cdef class ArithmeticMeanFunction(AggregationFunction):
     """
 
     def __cinit__(self):
-        self.aggregation_function_ptr = <shared_ptr[IAggregationFunction]>make_shared[ArithmeticMeanFunctionImpl]()
+        self.aggregation_function_ptr = <unique_ptr[IAggregationFunction]>make_unique[ArithmeticMeanFunctionImpl]()
 
 
 cdef class MeasureStoppingCriterion(StoppingCriterion):
@@ -102,6 +102,6 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
                                         criterion is met, False, if the time of stopping should only be stored
         """
         cdef unique_ptr[IEvaluationMeasure] measure_ptr = measure.get_evaluation_measure_ptr()
-        self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[MeasureStoppingCriterionImpl](
-            move(measure_ptr), aggregation_function.aggregation_function_ptr, min_rules, update_interval, stop_interval,
-            num_past, num_recent, min_improvement, force_stop)
+        self.stopping_criterion_ptr = <unique_ptr[IStoppingCriterion]>make_unique[MeasureStoppingCriterionImpl](
+            move(measure_ptr), move(aggregation_function.aggregation_function_ptr), min_rules, update_interval,
+            stop_interval, num_past, num_recent, min_improvement, force_stop)
