@@ -26,10 +26,8 @@ cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluation
         :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
                                          to be predicted by rules
         """
-        cdef shared_ptr[Blas] blas_ptr = <shared_ptr[Blas]>move(init_blas())
-        cdef shared_ptr[Lapack] lapack_ptr = <shared_ptr[Lapack]>move(init_lapack())
         self.rule_evaluation_factory_ptr = <shared_ptr[IExampleWiseRuleEvaluationFactory]>make_shared[RegularizedExampleWiseRuleEvaluationFactoryImpl](
-            l2_regularization_weight, blas_ptr, lapack_ptr)
+            l2_regularization_weight, move(init_blas()), move(init_lapack()))
 
 
 cdef class BinnedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
@@ -44,7 +42,6 @@ cdef class BinnedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFacto
         :param label_binning_factory:       A `LabelBinningFactory` that allows to create the implementation that should
                                             be used to assign labels to bins
         """
-        cdef shared_ptr[Blas] blas_ptr = <shared_ptr[Blas]>move(init_blas())
-        cdef shared_ptr[Lapack] lapack_ptr = <shared_ptr[Lapack]>move(init_lapack())
         self.rule_evaluation_factory_ptr = <shared_ptr[IExampleWiseRuleEvaluationFactory]>make_shared[BinnedExampleWiseRuleEvaluationFactoryImpl](
-            l2_regularization_weight, label_binning_factory.label_binning_factory_ptr, blas_ptr, lapack_ptr)
+            l2_regularization_weight, label_binning_factory.label_binning_factory_ptr, move(init_blas()),
+            move(init_lapack()))
