@@ -45,7 +45,7 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
 
         AlgorithmBuilderImpl& setPostProcessor(unique_ptr[IPostProcessor] postProcessorPtr)
 
-        AlgorithmBuilderImpl& addStoppingCriterion(shared_ptr[IStoppingCriterion] stoppingCriterionPtr)
+        AlgorithmBuilderImpl& addStoppingCriterion(unique_ptr[IStoppingCriterion] stoppingCriterionPtr)
 
         unique_ptr[IRuleModelAssemblage] build() const
 

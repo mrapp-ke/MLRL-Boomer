@@ -63,8 +63,8 @@ AlgorithmBuilder& AlgorithmBuilder::setPostProcessor(std::unique_ptr<IPostProces
     return *this;
 }
 
-AlgorithmBuilder& AlgorithmBuilder::addStoppingCriterion(std::shared_ptr<IStoppingCriterion> stoppingCriterionPtr) {
-    stoppingCriteria_.push_front(stoppingCriterionPtr);
+AlgorithmBuilder& AlgorithmBuilder::addStoppingCriterion(std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr) {
+    stoppingCriteria_.push_front(std::move(stoppingCriterionPtr));
     return *this;
 }
 

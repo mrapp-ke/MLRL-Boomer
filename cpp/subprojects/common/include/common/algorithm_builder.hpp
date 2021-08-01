@@ -119,7 +119,7 @@ class AlgorithmBuilder final {
          * @param stoppingCriterionPtr  TODO
          * @return                      TODO
          */
-        AlgorithmBuilder& addStoppingCriterion(std::shared_ptr<IStoppingCriterion> stoppingCriterionPtr);
+        AlgorithmBuilder& addStoppingCriterion(std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr);
 
         /**
          * TODO
