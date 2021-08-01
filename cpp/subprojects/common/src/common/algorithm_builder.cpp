@@ -48,8 +48,8 @@ AlgorithmBuilder& AlgorithmBuilder::setFeatureSamplingFactory(
 }
 
 AlgorithmBuilder& AlgorithmBuilder::setPartitionSamplingFactory(
-        std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr) {
-    partitionSamplingFactoryPtr_ = partitionSamplingFactoryPtr;
+        std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr) {
+    partitionSamplingFactoryPtr_ = std::move(partitionSamplingFactoryPtr);
     return *this;
 }
 

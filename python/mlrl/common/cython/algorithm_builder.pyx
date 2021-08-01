@@ -90,7 +90,7 @@ cdef class AlgorithmBuilder:
         :param partition_sampling_factory:  TODO
         :return:                            TODO
         """
-        self.builder_ptr.get().setPartitionSamplingFactory(partition_sampling_factory.partition_sampling_factory_ptr)
+        self.builder_ptr.get().setPartitionSamplingFactory(move(partition_sampling_factory.partition_sampling_factory_ptr))
         return self
 
     def set_pruning(self, Pruning pruning not None ) -> AlgorithmBuilder:
