@@ -6,7 +6,7 @@ from mlrl.boosting.cython.losses_example_wise cimport ExampleWiseLoss
 from mlrl.boosting.cython.rule_evaluation_example_wise cimport ExampleWiseRuleEvaluationFactory
 
 from libcpp.utility cimport move
-from libcpp.memory cimport shared_ptr, make_shared
+from libcpp.memory cimport unique_ptr, make_unique
 
 
 cdef class DenseExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
@@ -33,7 +33,7 @@ cdef class DenseExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):
         :param num_threads:                     The number of CPU threads to be used to calculate the initial statistics
                                                 in parallel. Must be at least 1
         """
-        self.statistics_provider_factory_ptr = <shared_ptr[IStatisticsProviderFactory]>make_shared[DenseExampleWiseStatisticsProviderFactoryImpl](
+        self.statistics_provider_factory_ptr = <unique_ptr[IStatisticsProviderFactory]>make_unique[DenseExampleWiseStatisticsProviderFactoryImpl](
             move(loss_function.loss_function_ptr), move(default_rule_evaluation_factory.rule_evaluation_factory_ptr),
             move(regular_rule_evaluation_factory.rule_evaluation_factory_ptr),
             move(pruning_rule_evaluation_factory.rule_evaluation_factory_ptr), num_threads)

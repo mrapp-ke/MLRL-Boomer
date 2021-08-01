@@ -11,7 +11,7 @@ from mlrl.common.cython.post_processing cimport IPostProcessor
 from mlrl.common.cython.stopping cimport IStoppingCriterion
 from mlrl.common.cython.rule_model_assemblage cimport IRuleModelAssemblage, IRuleModelAssemblageFactory
 
-from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "common/algorithm_builder.hpp" nogil:
@@ -20,7 +20,7 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
 
         # Constructor:
 
-        AlgorithmBuilderImpl(shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
+        AlgorithmBuilderImpl(unique_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
                              unique_ptr[IThresholdsFactory] thresholdsFactoryPtr,
                              unique_ptr[IRuleInduction] ruleInductionPtr,
                              unique_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
