@@ -51,6 +51,11 @@ cdef extern from "common/rule_induction/rule_model_assemblage.hpp" nogil:
 
 cdef extern from "common/rule_induction/rule_model_assemblage_sequential.hpp" nogil:
 
+    cdef cppclass SequentialRuleModelAssemblageFactoryImpl"SequentialRuleModelAssemblageFactory"(
+            IRuleModelAssemblageFactory):
+        pass
+
+
     cdef cppclass SequentialRuleModelAssemblageImpl"SequentialRuleModelAssemblage"(IRuleModelAssemblage):
 
         # Constructors:
