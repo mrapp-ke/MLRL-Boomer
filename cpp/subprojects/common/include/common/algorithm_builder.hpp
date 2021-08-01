@@ -86,7 +86,7 @@ class AlgorithmBuilder final {
          * @param featureSamplingFactoryPtr TODO
          * @return                          TODO
          */
-        AlgorithmBuilder& setFeatureSamplingFactory(std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr);
+        AlgorithmBuilder& setFeatureSamplingFactory(std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr);
 
         /**
          * TODO
