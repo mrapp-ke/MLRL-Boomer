@@ -2,7 +2,7 @@
 @author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport shared_ptr, make_shared
+from libcpp.memory cimport unique_ptr, make_unique
 
 
 cdef class CoverageStoppingCriterion(StoppingCriterion):
@@ -14,5 +14,5 @@ cdef class CoverageStoppingCriterion(StoppingCriterion):
         """
         :param threshold: The threshold
         """
-        self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[CoverageStoppingCriterionImpl](
+        self.stopping_criterion_ptr = <unique_ptr[IStoppingCriterion]>make_unique[CoverageStoppingCriterionImpl](
             threshold)
