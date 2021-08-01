@@ -28,11 +28,16 @@ cdef class AlgorithmBuilder:
                   HeadRefinementFactory head_refinement_factory not None,
                   RuleModelAssemblageFactory rule_model_assemblage_factory not None):
         """
-        :param statistics_provider_factory:     TODO
-        :param thresholds_factory:              TODO
-        :param rule_induction:                  TODO
-        :param head_refinement_factory:         TODO
-        :param rule_model_assemblage_factory:   TODO
+        :param statistics_provider_factory:     The `StatisticsProviderFactory` to be used by the rule learner to access
+                                                the statistics that serve as the basis for learning rules
+        :param thresholds_factory:              The `IThresholdsFactory` to be used by the rule learner to access the
+                                                thresholds that may be used by the conditions of rules
+        :param rule_induction:                  The `IRuleInduction` to be used by the rule learner to induce individual
+                                                rules
+        :param head_refinement_factory:         The `IHeadRefinementFactory` to be used by the rule learner to find the
+                                                heads of individual rules
+        :param rule_model_assemblage_factory:   The `IRuleModelAssemblageFactory` to be used by the rule learner for the
+                                                assemblage of a rule model
         """
         self.builder_ptr = make_unique[AlgorithmBuilderImpl](
             move(statistics_provider_factory.statistics_provider_factory_ptr),
@@ -43,20 +48,21 @@ cdef class AlgorithmBuilder:
     def set_default_rule_head_refinement_factory(
             self, HeadRefinementFactory head_refinement_factory not None) -> AlgorithmBuilder:
         """
-        TODO
+        Sets the `HeadRefinementFactory` to be used by the rule learner to find the head of the default rule.
 
-        :param head_refinement_factory: TODO
-        :return:                        TODO
+        :param head_refinement_factory: The `HeadRefinementFactory` to be set
+        :return:                        The builder itself
         """
         self.builder_ptr.get().setDefaultRuleHeadRefinementFactory(move(head_refinement_factory.head_refinement_factory_ptr))
         return self
 
     def set_label_sampling_factory(self, LabelSamplingFactory label_sampling_factory not None) -> AlgorithmBuilder:
         """
-        TODO
+        Sets the `LabelSamplingFactory` to be used by the rule learner to sample the labels individual rules may predict
+        for.
 
-        :param label_sampling_factory:  TODO
-        :return:                        TODO
+        :param label_sampling_factory:  The `LabelSamplingFactory` to be set
+        :return:                        The builder itself
         """
         self.builder_ptr.get().setLabelSamplingFactory(move(label_sampling_factory.label_sampling_factory_ptr))
         return self
@@ -64,10 +70,11 @@ cdef class AlgorithmBuilder:
     def set_instance_sampling_factory(self,
                                       InstanceSamplingFactory instance_sampling_factory not None) -> AlgorithmBuilder:
         """
-        TODO
+        Sets the `InstanceSamplingFactory` to be used by the rule learner to sample the instances whenever a new rule is
+        induced.
 
-        :param instance_sampling_factory:   TODO
-        :return:                            TODO
+        :param instance_sampling_factory:   The `InstanceSamplingFactory` to be set
+        :return:                            The builder itself
         """
         self.builder_ptr.get().setInstanceSamplingFactory(move(instance_sampling_factory.instance_sampling_factory_ptr))
         return self
@@ -75,10 +82,11 @@ cdef class AlgorithmBuilder:
     def set_feature_sampling_factory(self,
                                      FeatureSamplingFactory feature_sampling_factory not None) -> AlgorithmBuilder:
         """
-        TODO
+        Sets the `FeatureSamplingFactory` to be used by the rule learner to sample the features whenever a rule should
+        be refined.
 
-        :param feature_sampling_factory:    TODO
-        :return:                            TODO
+        :param feature_sampling_factory:    The `FeatureSamplingFactory` to be set
+        :return:                            The builder itself
         """
         self.builder_ptr.get().setFeatureSamplingFactory(move(feature_sampling_factory.feature_sampling_factory_ptr))
         return self
@@ -86,49 +94,50 @@ cdef class AlgorithmBuilder:
     def set_partition_sampling_factory(
             self, PartitionSamplingFactory partition_sampling_factory not None) -> AlgorithmBuilder:
         """
-        TODO
+        Sets the `PartitionSamplingFactory` to be used by the rule learner to create a holdout set.
 
-        :param partition_sampling_factory:  TODO
-        :return:                            TODO
+        :param partition_sampling_factory:  The `PartitionSamplingFactory` to be set
+        :return:                            The builder itself
         """
         self.builder_ptr.get().setPartitionSamplingFactory(move(partition_sampling_factory.partition_sampling_factory_ptr))
         return self
 
     def set_pruning(self, Pruning pruning not None ) -> AlgorithmBuilder:
         """
-        TODO
+        Sets the `Pruning` to be used by the rule learner to prune individual rules.
 
-        :param pruning: TODO
-        :return:        TODO
+        :param pruning: The `Pruning` to be set
+        :return:        The builder itself
         """
         self.builder_ptr.get().setPruning(move(pruning.pruning_ptr))
         return self
 
     def set_post_processor(self, PostProcessor post_processor not None) -> AlgorithmBuilder:
         """
-        TODO
+        Sets the `PostProcessor` to be used by the rule learner to post-process the predictions of individual rules.
 
-        :param post_processor:  TODO
-        :return:                TODO
+        :param post_processor:  The `PostProcessor` to be set
+        :return:                The builder itself
         """
         self.builder_ptr.get().setPostProcessor(move(post_processor.post_processor_ptr))
         return self
 
     def add_stopping_criterion(self, StoppingCriterion stopping_criterion not None) -> AlgorithmBuilder:
         """
-        TODO
+        Adds a `StoppingCriterion` that should be used by the rule learner to decide when the induction of additional
+        rules should be stopped.
 
-        :param stopping_criterion:  TODO
-        :return:                    TODO
+        :param stopping_criterion:  The `StoppingCriterion` to be added
+        :return:                    The builder itself
         """
         self.builder_ptr.get().addStoppingCriterion(move(stopping_criterion.stopping_criterion_ptr))
         return self
 
     def build(self) -> RuleModelAssemblage:
         """
-        TODO
+        Creates and returns a new object of type `RuleModelAssemblage`.
 
-        :return: TODO
+        :return: The object of type `IRuleModelAssemblage` that has been created
         """
         cdef RuleModelAssemblage rule_model_assemblage = RuleModelAssemblage.__new__(RuleModelAssemblage)
         rule_model_assemblage.rule_model_assemblage_ptr = move(self.builder_ptr.get().build())
