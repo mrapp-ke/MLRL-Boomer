@@ -23,11 +23,13 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
         AlgorithmBuilderImpl(shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
                              shared_ptr[IThresholdsFactory] thresholdsFactoryPtr,
                              shared_ptr[IRuleInduction] ruleInductionPtr,
-                             shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
-                             shared_ptr[IHeadRefinementFactory] regularRuleHeadRefinementFactoryPtr,
+                             shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
                              shared_ptr[IRuleModelAssemblageFactory] ruleModelAssemblageFactoryPtr)
 
         # Functions:
+
+        AlgorithmBuilderImpl& setDefaultRuleHeadRefinementFactory(
+            shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr)
 
         AlgorithmBuilderImpl& setLabelSamplingFactory(shared_ptr[ILabelSamplingFactory] labelSamplingFactoryPtr)
 

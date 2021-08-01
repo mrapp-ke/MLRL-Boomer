@@ -24,24 +24,31 @@ cdef class AlgorithmBuilder:
     """
 
     def __cinit__(self, StatisticsProviderFactory statistics_provider_factory not None,
-                  ThresholdsFactory thresholds_factory not None,
-                  RuleInduction rule_induction not None,
-                  HeadRefinementFactory default_rule_head_refinement_factory not None,
-                  HeadRefinementFactory regular_rule_head_refinement_factory not None,
+                  ThresholdsFactory thresholds_factory not None, RuleInduction rule_induction not None,
+                  HeadRefinementFactory head_refinement_factory not None,
                   RuleModelAssemblageFactory rule_model_assemblage_factory not None):
         """
-        :param statistics_provider_factory:             TODO
-        :param thresholds_factory:                      TODO
-        :param rule_induction:                          TODO
-        :param default_rule_head_refinement_factory:    TODO
-        :param regular_rule_head_refinement_factory:    TODO
-        :param rule_model_assemblage_factory:           TODO
+        :param statistics_provider_factory:     TODO
+        :param thresholds_factory:              TODO
+        :param rule_induction:                  TODO
+        :param head_refinement_factory:         TODO
+        :param rule_model_assemblage_factory:   TODO
         """
         self.builder_ptr = make_unique[AlgorithmBuilderImpl](
             statistics_provider_factory.statistics_provider_factory_ptr, thresholds_factory.thresholds_factory_ptr,
-            rule_induction.rule_induction_ptr, default_rule_head_refinement_factory.head_refinement_factory_ptr,
-            regular_rule_head_refinement_factory.head_refinement_factory_ptr,
+            rule_induction.rule_induction_ptr, head_refinement_factory.head_refinement_factory_ptr,
             rule_model_assemblage_factory.rule_model_assemblage_factory_ptr)
+
+    def set_default_rule_head_refinement_factory(
+            self, HeadRefinementFactory head_refinement_factory not None) -> AlgorithmBuilder:
+        """
+        TODO
+
+        :param head_refinement_factory: TODO
+        :return:                        TODO
+        """
+        self.builder_ptr.get().setDefaultRuleHeadRefinementFactory(head_refinement_factory.head_refinement_factory_ptr)
+        return self
 
     def set_label_sampling_factory(self, LabelSamplingFactory label_sampling_factory not None) -> AlgorithmBuilder:
         """

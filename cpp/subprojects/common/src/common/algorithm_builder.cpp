@@ -10,12 +10,10 @@
 AlgorithmBuilder::AlgorithmBuilder(std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                                    std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                                    std::shared_ptr<IRuleInduction> ruleInductionPtr,
-                                   std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
-                                   std::shared_ptr<IHeadRefinementFactory> regularRuleHeadRefinementFactoryPtr,
+                                   std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                    std::shared_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr)
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), thresholdsFactoryPtr_(thresholdsFactoryPtr),
-      ruleInductionPtr_(ruleInductionPtr), defaultRuleHeadRefinementFactoryPtr_(defaultRuleHeadRefinementFactoryPtr),
-      regularRuleHeadRefinementFactoryPtr_(regularRuleHeadRefinementFactoryPtr),
+      ruleInductionPtr_(ruleInductionPtr), regularRuleHeadRefinementFactoryPtr_(headRefinementFactoryPtr),
       ruleModelAssemblageFactoryPtr_(ruleModelAssemblageFactoryPtr),
       labelSamplingFactoryPtr_(std::make_shared<NoLabelSamplingFactory>()),
       instanceSamplingFactoryPtr_(std::make_shared<NoInstanceSamplingFactory>()),
@@ -23,6 +21,12 @@ AlgorithmBuilder::AlgorithmBuilder(std::shared_ptr<IStatisticsProviderFactory> s
       partitionSamplingFactoryPtr_(std::make_shared<NoPartitionSamplingFactory>()),
       pruningPtr_(std::make_shared<NoPruning>()), postProcessorPtr_(std::make_shared<NoPostProcessor>()) {
 
+}
+
+AlgorithmBuilder& AlgorithmBuilder::setDefaultRuleHeadRefinementFactory(
+        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) {
+    defaultRuleHeadRefinementFactoryPtr_ = headRefinementFactoryPtr;
+    return *this;
 }
 
 AlgorithmBuilder& AlgorithmBuilder::setLabelSamplingFactory(

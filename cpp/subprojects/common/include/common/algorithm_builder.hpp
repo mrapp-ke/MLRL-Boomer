@@ -42,19 +42,26 @@ class AlgorithmBuilder final {
     public:
 
         /**
-         * @param statisticsProviderFactoryPtr          TODO
-         * @param thresholdsFactoryPtr                  TODO
-         * @param ruleInductionPtr                      TODO
-         * @param defaultRuleHeadRefinementFactoryPtr   TODO
-         * @param regularRuleHeadRefinementFactoryPtr   TODO
-         * @param ruleModelAssemblageFactoryPtr         TODO
+         * @param statisticsProviderFactoryPtr  TODO
+         * @param thresholdsFactoryPtr          TODO
+         * @param ruleInductionPtr              TODO
+         * @param headRefinementFactoryPtr      TODO
+         * @param ruleModelAssemblageFactoryPtr TODO
          */
         AlgorithmBuilder(std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                          std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                          std::shared_ptr<IRuleInduction> ruleInductionPtr,
-                         std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
-                         std::shared_ptr<IHeadRefinementFactory> regularRuleHeadRefinementFactoryPtr,
+                         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                          std::shared_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr);
+
+        /**
+         * TODO
+         *
+         * @param headRefinementFactoryPTr  TODO
+         * @return                          TODO
+         */
+        AlgorithmBuilder& setDefaultRuleHeadRefinementFactory(
+            std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
         /**
          * TODO
