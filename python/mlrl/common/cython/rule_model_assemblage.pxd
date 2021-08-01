@@ -56,6 +56,7 @@ cdef extern from "common/rule_induction/rule_model_assemblage_sequential.hpp" no
         pass
 
 
+    # TODO Remove
     cdef cppclass SequentialRuleModelAssemblageImpl"SequentialRuleModelAssemblage"(IRuleModelAssemblage):
 
         # Constructors:
@@ -96,5 +97,6 @@ cdef class SequentialRuleModelAssemblageFactory(RuleModelAssemblageFactory):
     pass
 
 
+# TODO Remove
 cdef class SequentialRuleModelAssemblage(RuleModelAssemblage):
     pass
