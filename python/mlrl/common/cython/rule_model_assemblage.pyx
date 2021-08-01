@@ -45,6 +45,7 @@ cdef class SequentialRuleModelAssemblageFactory(RuleModelAssemblageFactory):
         self.rule_model_assemblage_factory_ptr = <shared_ptr[IRuleModelAssemblageFactory]>make_shared[SequentialRuleModelAssemblageFactoryImpl]()
 
 
+# TODO Remove
 cdef class SequentialRuleModelAssemblage(RuleModelAssemblage):
     """
     A wrapper for the C++ class `SequentialRuleModelAssemblage`.
