@@ -43,13 +43,13 @@ SequentialRuleModelAssemblage::SequentialRuleModelAssemblage(
         std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
         std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr, std::shared_ptr<IPruning> pruningPtr,
         std::shared_ptr<IPostProcessor> postProcessorPtr,
-        std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr)
+        std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria)
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), thresholdsFactoryPtr_(thresholdsFactoryPtr),
       ruleInductionPtr_(ruleInductionPtr), defaultRuleHeadRefinementFactoryPtr_(defaultRuleHeadRefinementFactoryPtr),
       headRefinementFactoryPtr_(headRefinementFactoryPtr), labelSamplingFactoryPtr_(labelSamplingFactoryPtr),
       instanceSamplingFactoryPtr_(instanceSamplingFactoryPtr), featureSamplingFactoryPtr_(featureSamplingFactoryPtr),
       partitionSamplingFactoryPtr_(partitionSamplingFactoryPtr), pruningPtr_(pruningPtr),
-      postProcessorPtr_(postProcessorPtr), stoppingCriteriaPtr_(std::move(stoppingCriteriaPtr)) {
+      postProcessorPtr_(postProcessorPtr), stoppingCriteria_(stoppingCriteria) {
 
 }
 
@@ -81,8 +81,8 @@ std::unique_ptr<RuleModel> SequentialRuleModelAssemblage::induceRules(const INom
     std::unique_ptr<ILabelSampling> labelSamplingPtr = labelSamplingFactoryPtr_->create(numLabels);
     IStoppingCriterion::Result stoppingCriterionResult;
 
-    while (stoppingCriterionResult = testStoppingCriteria(*stoppingCriteriaPtr_, partition,
-                                                          statisticsProviderPtr->get(), numRules),
+    while (stoppingCriterionResult = testStoppingCriteria(stoppingCriteria_, partition, statisticsProviderPtr->get(),
+                                                          numRules),
            stoppingCriterionResult.action != IStoppingCriterion::Action::FORCE_STOP) {
         if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
             numUsedRules = stoppingCriterionResult.numRules;
