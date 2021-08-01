@@ -1,6 +1,6 @@
 from mlrl.common.cython._types cimport float64
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "seco/heuristics/heuristic.hpp" namespace "seco" nogil:
@@ -61,7 +61,7 @@ cdef class Heuristic:
 
     # Attributes:
 
-    cdef shared_ptr[IHeuristic] heuristic_ptr
+    cdef unique_ptr[IHeuristic] heuristic_ptr
 
 
 cdef class Accuracy(Heuristic):

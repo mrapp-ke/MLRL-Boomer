@@ -212,10 +212,12 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         return name
 
     def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
-        heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
+        default_rule_heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
+        regular_rule_heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
         pruning_heuristic = self.__create_heuristic(self.pruning_heuristic, 'pruning_heuristic')
-        default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, predictMajority=True)
-        regular_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic)
+        default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(default_rule_heuristic,
+                                                                                  predictMajority=True)
+        regular_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(regular_rule_heuristic)
         pruning_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(pruning_heuristic)
         return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, regular_rule_evaluation_factory,
                                                        pruning_rule_evaluation_factory)
