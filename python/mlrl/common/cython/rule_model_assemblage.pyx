@@ -36,6 +36,15 @@ cdef class RuleModelAssemblage:
         return model
 
 
+cdef class SequentialRuleModelAssemblageFactory(RuleModelAssemblageFactory):
+    """
+    A wrapper for the C++ class `SequentialRuleModelAssemblageFactory`.
+    """
+
+    def __cinit__(self):
+        self.rule_model_assemblage_factory_ptr = <shared_ptr[IRuleModelAssemblageFactory]>make_shared[SequentialRuleModelAssemblageFactoryImpl]()
+
+
 cdef class SequentialRuleModelAssemblage(RuleModelAssemblage):
     """
     A wrapper for the C++ class `SequentialRuleModelAssemblage`.

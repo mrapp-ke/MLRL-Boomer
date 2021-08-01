@@ -92,5 +92,9 @@ cdef class RuleModelAssemblageFactory:
     cdef shared_ptr[IRuleModelAssemblageFactory] rule_model_assemblage_factory_ptr
 
 
+cdef class SequentialRuleModelAssemblageFactory(RuleModelAssemblageFactory):
+    pass
+
+
 cdef class SequentialRuleModelAssemblage(RuleModelAssemblage):
     pass
