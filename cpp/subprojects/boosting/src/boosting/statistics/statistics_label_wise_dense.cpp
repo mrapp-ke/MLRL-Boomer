@@ -52,8 +52,8 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunction          A shared pointer to an object of type `ILabelWiseLoss`, representing the
-             *                              loss function to be used for calculating gradients and Hessians
+             * @param lossFunction          A reference to an object of type `ILabelWiseLoss`, representing the loss
+             *                              function to be used for calculating gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory`, that
              *                              allows to create instances of the class that is used for calculating the
              *                              predictions, as well as corresponding quality scores, of rules
