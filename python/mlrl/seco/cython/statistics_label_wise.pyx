@@ -12,9 +12,9 @@ cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
     A wrapper for the C++ class `LabelWiseStatisticsProviderFactory`.
     """
 
-    def __cinit__(self, LabelWiseRuleEvaluationFactory default_rule_evaluation_factory,
-                  LabelWiseRuleEvaluationFactory regular_rule_evaluation_factory,
-                  LabelWiseRuleEvaluationFactory pruning_rule_evaluation_factory):
+    def __cinit__(self, LabelWiseRuleEvaluationFactory default_rule_evaluation_factory not None,
+                  LabelWiseRuleEvaluationFactory regular_rule_evaluation_factory not None,
+                  LabelWiseRuleEvaluationFactory pruning_rule_evaluation_factory not None):
         """
         :param default_rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` that allows to create instances of
                                                 the class that should be used for calculating the predictions, as well

@@ -19,7 +19,7 @@ cdef class HeuristicLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactor
     A wrapper for the C++ class `HeuristicLabelWiseRuleEvaluationFactory`.
     """
 
-    def __cinit__(self, Heuristic heuristic, bint predictMajority = False):
+    def __cinit__(self, Heuristic heuristic not None, bint predictMajority = False):
         """
         :param heuristic:       The heuristic that should be used
         :param predictMajority: True, if for each label the majority label should be predicted, False, if the minority

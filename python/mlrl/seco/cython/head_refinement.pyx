@@ -34,6 +34,6 @@ cdef class PartialHeadRefinementFactory(HeadRefinementFactory):
     A wrapper for the C++ class `PartialHeadRefinementFactory`.
     """
 
-    def __cinit__(self, LiftFunction lift_function):
+    def __cinit__(self, LiftFunction lift_function not None):
         self.head_refinement_factory_ptr = <shared_ptr[IHeadRefinementFactory]>make_shared[PartialHeadRefinementFactoryImpl](
             lift_function.lift_function_ptr)

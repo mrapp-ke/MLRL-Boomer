@@ -76,8 +76,8 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
     A wrapper for the C++ class `MeasureStoppingCriterion`.
     """
 
-    def __cinit__(self, EvaluationMeasure measure, AggregationFunction aggregation_function, uint32 min_rules,
-                  uint32 update_interval, uint32 stop_interval, uint32 num_past, uint32 num_recent,
+    def __cinit__(self, EvaluationMeasure measure not None, AggregationFunction aggregation_function not None,
+                  uint32 min_rules, uint32 update_interval, uint32 stop_interval, uint32 num_past, uint32 num_recent,
                   float64 min_improvement, bint force_stop):
         """
         :param measure:                 The measure that should be used to assess the quality of a model

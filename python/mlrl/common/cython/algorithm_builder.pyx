@@ -23,10 +23,12 @@ cdef class AlgorithmBuilder:
     A wrapper for the C++ class `AlgorithmBuilder`.
     """
 
-    def __cinit__(self, StatisticsProviderFactory statistics_provider_factory, ThresholdsFactory thresholds_factory,
-                  RuleInduction rule_induction, HeadRefinementFactory default_rule_head_refinement_factory,
-                  HeadRefinementFactory regular_rule_head_refinement_factory,
-                  RuleModelAssemblageFactory rule_model_assemblage_factory):
+    def __cinit__(self, StatisticsProviderFactory statistics_provider_factory not None,
+                  ThresholdsFactory thresholds_factory not None,
+                  RuleInduction rule_induction not None,
+                  HeadRefinementFactory default_rule_head_refinement_factory not None,
+                  HeadRefinementFactory regular_rule_head_refinement_factory not None,
+                  RuleModelAssemblageFactory rule_model_assemblage_factory not None):
         """
         :param statistics_provider_factory:             TODO
         :param thresholds_factory:                      TODO
