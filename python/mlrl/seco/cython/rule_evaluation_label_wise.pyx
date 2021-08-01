@@ -5,7 +5,7 @@
 from mlrl.seco.cython.heuristics cimport Heuristic
 
 from libcpp.utility cimport move
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique
 
 
 cdef class LabelWiseRuleEvaluationFactory:
@@ -26,5 +26,5 @@ cdef class HeuristicLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactor
         :param predictMajority: True, if for each label the majority label should be predicted, False, if the minority
                                 label should be predicted
         """
-        self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[HeuristicLabelWiseRuleEvaluationFactoryImpl](
+        self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[HeuristicLabelWiseRuleEvaluationFactoryImpl](
             move(heuristic.heuristic_ptr), predictMajority)

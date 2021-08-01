@@ -262,16 +262,18 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
         num_threads = get_preferred_num_threads(int(self.num_threads_statistic_update))
         loss_function = self.__create_loss_function()
-        rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
+        default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
+        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
+        pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
 
         if isinstance(loss_function, LabelWiseLoss):
-            return DenseLabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory,
-                                                           rule_evaluation_factory, rule_evaluation_factory,
-                                                           num_threads)
+            return DenseLabelWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
+                                                           regular_rule_evaluation_factory,
+                                                           pruning_rule_evaluation_factory, num_threads)
         else:
-            return DenseExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory,
-                                                             rule_evaluation_factory, rule_evaluation_factory,
-                                                             num_threads)
+            return DenseExampleWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
+                                                             regular_rule_evaluation_factory,
+                                                             pruning_rule_evaluation_factory, num_threads)
 
     def _create_thresholds_factory(self) -> ThresholdsFactory:
         num_threads = get_preferred_num_threads(int(self.num_threads_statistic_update))
