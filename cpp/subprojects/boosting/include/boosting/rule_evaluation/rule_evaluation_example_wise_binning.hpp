@@ -22,9 +22,9 @@ namespace boosting {
 
             std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr_;
 
-            std::shared_ptr<Blas> blasPtr_;
+            std::unique_ptr<Blas> blasPtr_;
 
-            std::shared_ptr<Lapack> lapackPtr_;
+            std::unique_ptr<Lapack> lapackPtr_;
 
         public:
 
@@ -33,14 +33,14 @@ namespace boosting {
              *                                  scores to be predicted by rules
              * @param labelBinningFactoryPtr    A shared pointer to an object of type `ILabelBinningFactory` that allows
                                                 to create the implementation to be used to assign labels to bins
-             * @param blasPtr                   A shared pointer to an object of type `Blas` that allows to execute
+             * @param blasPtr                   An unique pointer to an object of type `Blas` that allows to execute
              *                                  different BLAS routines
-             * @param lapackPtr                 A shared pointer to an object of type `Lapack` that allows to execute
+             * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
             BinnedExampleWiseRuleEvaluationFactory(float64 l2RegularizationWeight,
                                                    std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
-                                                   std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr);
+                                                   std::unique_ptr<Blas> blasPtr, std::unique_ptr<Lapack> lapackPtr);
 
             std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createDense(
                 const CompleteIndexVector& indexVector) const override;

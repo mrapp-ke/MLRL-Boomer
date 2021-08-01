@@ -19,22 +19,22 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            std::shared_ptr<Blas> blasPtr_;
+            std::unique_ptr<Blas> blasPtr_;
 
-            std::shared_ptr<Lapack> lapackPtr_;
+            std::unique_ptr<Lapack> lapackPtr_;
 
         public:
 
             /**
              * @param l2RegularizationWeight The weight of the L2 regularization that is applied for calculating the
              *                               scores to be predicted by rules
-             * @param blasPtr                A shared pointer to an object of type `Blas` that allows to execute
+             * @param blasPtr                An unique pointer to an object of type `Blas` that allows to execute
              *                               different BLAS routines
-             * @param lapackPtr              A shared pointer to an object of type `Lapack` that allows to execute
+             * @param lapackPtr              An unique pointer to an object of type `Lapack` that allows to execute
              *                               different LAPACK routines
              */
-            RegularizedExampleWiseRuleEvaluationFactory(float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr,
-                                                        std::shared_ptr<Lapack> lapackPtr);
+            RegularizedExampleWiseRuleEvaluationFactory(float64 l2RegularizationWeight, std::unique_ptr<Blas> blasPtr,
+                                                        std::unique_ptr<Lapack> lapackPtr);
 
             std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createDense(
                 const CompleteIndexVector& indexVector) const override;
