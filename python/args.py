@@ -358,7 +358,7 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('l2_regularization_weight', 1.0, **kwargs),
                             help='The weight of the L2 regularization. Must be at least 0.')
         parser.add_argument(PARAM_HEAD_TYPE, type=str,
-                            default=ArgumentParserBuilder.__get_or_default('head_type', HEAD_TYPE_SINGLE, **kwargs),
+                            default=ArgumentParserBuilder.__get_or_default('head_type', AUTOMATIC, **kwargs),
                             help='The type of the rule heads that should be used. Must be one of '
                                  + format_string_set(BOOSTING_HEAD_TYPE_VALUES) + '. If set to "' + AUTOMATIC + '", '
                                  + 'the most suitable type is chosen automatically based on the parameter ' + PARAM_LOSS
