@@ -1,7 +1,7 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique
 from mlrl.boosting.cython.binning cimport LabelBinningFactory
 
 from libcpp.utility cimport move
@@ -24,7 +24,7 @@ cdef class RegularizedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFact
         :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
                                          to be predicted by rules
         """
-        self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[RegularizedLabelWiseRuleEvaluationFactoryImpl](
+        self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[RegularizedLabelWiseRuleEvaluationFactoryImpl](
             l2_regularization_weight)
 
 
@@ -40,5 +40,5 @@ cdef class BinnedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
         :param label_binning_factory:       A `LabelBinningFactory` that allows to create the implementation that should
                                             be used to assign labebls to bins
         """
-        self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[BinnedLabelWiseRuleEvaluationFactoryImpl](
+        self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[BinnedLabelWiseRuleEvaluationFactoryImpl](
             l2_regularization_weight, move(label_binning_factory.label_binning_factory_ptr))

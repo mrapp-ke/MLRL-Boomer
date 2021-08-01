@@ -3,7 +3,7 @@ from mlrl.boosting.cython._blas cimport Blas
 from mlrl.boosting.cython._lapack cimport Lapack
 from mlrl.boosting.cython.binning cimport ILabelBinningFactory
 
-from libcpp.memory cimport shared_ptr, unique_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise.hpp" namespace "boosting" nogil:
@@ -39,7 +39,7 @@ cdef class ExampleWiseRuleEvaluationFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IExampleWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
+    cdef unique_ptr[IExampleWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
 
 
 cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
