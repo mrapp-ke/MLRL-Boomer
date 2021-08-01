@@ -370,7 +370,8 @@ class ArgumentParserBuilder:
         self.add_rule_learner_arguments(print_rules=True, pruning=PRUNING_IREP, **kwargs)
         parser = self.parser
         parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('instance_sampling', None, **kwargs),
+                            default=ArgumentParserBuilder.__get_or_default('instance_sampling',
+                                                                           SAMPLING_WITHOUT_REPLACEMENT, **kwargs),
                             help='The name of the strategy to be used for instance sampling. Must be one of'
                                  + format_dict_keys(SECO_INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance '
                                  + 'sampling should be used. For additional options refer to the documentation.')
