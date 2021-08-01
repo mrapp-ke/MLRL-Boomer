@@ -2,7 +2,7 @@
 @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from mlrl.common.cython.binning cimport FeatureBinning
+from mlrl.common.cython.feature_binning cimport FeatureBinning
 
 from libcpp.utility cimport move
 from libcpp.memory cimport unique_ptr, make_unique

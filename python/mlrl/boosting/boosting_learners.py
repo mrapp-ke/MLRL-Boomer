@@ -8,7 +8,7 @@ Provides scikit-learn implementations of boosting algorithms.
 import logging as log
 from typing import Optional, Dict, Set, List
 
-from mlrl.boosting.cython.binning import LabelBinningFactory, EqualWidthLabelBinningFactory
+from mlrl.boosting.cython.label_binning import LabelBinningFactory, EqualWidthLabelBinningFactory
 from mlrl.boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
 from mlrl.boosting.cython.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
     LabelWiseSquaredHingeLoss

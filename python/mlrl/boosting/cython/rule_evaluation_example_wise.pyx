@@ -3,7 +3,7 @@
 """
 from mlrl.boosting.cython._blas cimport init_blas
 from mlrl.boosting.cython._lapack cimport init_lapack
-from mlrl.boosting.cython.binning cimport LabelBinningFactory
+from mlrl.boosting.cython.label_binning cimport LabelBinningFactory
 
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
