@@ -103,7 +103,7 @@ class AlgorithmBuilder final {
          * @param pruningPtr    TODO
          * @return              TODO
          */
-        AlgorithmBuilder& setPruning(std::shared_ptr<IPruning> pruningPtr);
+        AlgorithmBuilder& setPruning(std::unique_ptr<IPruning> pruningPtr);
 
         /**
          * TODO

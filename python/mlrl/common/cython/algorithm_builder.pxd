@@ -41,7 +41,7 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
         AlgorithmBuilderImpl& setPartitionSamplingFactory(
             shared_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr)
 
-        AlgorithmBuilderImpl& setPruning(shared_ptr[IPruning] pruningPtr)
+        AlgorithmBuilderImpl& setPruning(unique_ptr[IPruning] pruningPtr)
 
         AlgorithmBuilderImpl& setPostProcessor(unique_ptr[IPostProcessor] postProcessorPtr)
 

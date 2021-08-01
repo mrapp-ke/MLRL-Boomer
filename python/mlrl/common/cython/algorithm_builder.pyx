@@ -100,7 +100,7 @@ cdef class AlgorithmBuilder:
         :param pruning: TODO
         :return:        TODO
         """
-        self.builder_ptr.get().setPruning(pruning.pruning_ptr)
+        self.builder_ptr.get().setPruning(move(pruning.pruning_ptr))
         return self
 
     def set_post_processor(self, PostProcessor post_processor not None) -> AlgorithmBuilder:

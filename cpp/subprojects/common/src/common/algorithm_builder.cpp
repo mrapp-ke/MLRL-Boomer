@@ -53,8 +53,8 @@ AlgorithmBuilder& AlgorithmBuilder::setPartitionSamplingFactory(
     return *this;
 }
 
-AlgorithmBuilder& AlgorithmBuilder::setPruning(std::shared_ptr<IPruning> pruningPtr) {
-    pruningPtr_ = pruningPtr;
+AlgorithmBuilder& AlgorithmBuilder::setPruning(std::unique_ptr<IPruning> pruningPtr) {
+    pruningPtr_ = std::move(pruningPtr);
     return *this;
 }
 
