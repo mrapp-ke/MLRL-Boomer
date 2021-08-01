@@ -31,7 +31,7 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
         AlgorithmBuilderImpl& setDefaultRuleHeadRefinementFactory(
             shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr)
 
-        AlgorithmBuilderImpl& setLabelSamplingFactory(shared_ptr[ILabelSamplingFactory] labelSamplingFactoryPtr)
+        AlgorithmBuilderImpl& setLabelSamplingFactory(unique_ptr[ILabelSamplingFactory] labelSamplingFactoryPtr)
 
         AlgorithmBuilderImpl& setInstanceSamplingFactory(
             unique_ptr[IInstanceSamplingFactory] instanceSamplingFactoryPtr)

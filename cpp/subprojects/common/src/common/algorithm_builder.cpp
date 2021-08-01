@@ -30,8 +30,8 @@ AlgorithmBuilder& AlgorithmBuilder::setDefaultRuleHeadRefinementFactory(
 }
 
 AlgorithmBuilder& AlgorithmBuilder::setLabelSamplingFactory(
-        std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr) {
-    labelSamplingFactoryPtr_ = labelSamplingFactoryPtr;
+        std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr) {
+    labelSamplingFactoryPtr_ = std::move(labelSamplingFactoryPtr);
     return *this;
 }
 

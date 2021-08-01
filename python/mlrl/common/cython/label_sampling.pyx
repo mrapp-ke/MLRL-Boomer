@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique
 
 
 cdef class LabelSamplingFactory:
@@ -20,7 +20,7 @@ cdef class LabelSamplingWithoutReplacementFactory(LabelSamplingFactory):
         """
         :param num_samples: The number of labels to be included in the sample
         """
-        self.label_sampling_factory_ptr = <shared_ptr[ILabelSamplingFactory]>make_shared[LabelSamplingWithoutReplacementFactoryImpl](
+        self.label_sampling_factory_ptr = <unique_ptr[ILabelSamplingFactory]>make_unique[LabelSamplingWithoutReplacementFactoryImpl](
             num_samples)
 
 
@@ -30,4 +30,4 @@ cdef class NoLabelSamplingFactory(LabelSamplingFactory):
     """
 
     def __cinit__(self):
-        self.label_sampling_factory_ptr = <shared_ptr[ILabelSamplingFactory]>make_shared[NoLabelSamplingFactoryImpl]()
+        self.label_sampling_factory_ptr = <unique_ptr[ILabelSamplingFactory]>make_unique[NoLabelSamplingFactoryImpl]()

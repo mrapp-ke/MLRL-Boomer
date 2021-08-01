@@ -57,7 +57,7 @@ cdef class AlgorithmBuilder:
         :param label_sampling_factory:  TODO
         :return:                        TODO
         """
-        self.builder_ptr.get().setLabelSamplingFactory(label_sampling_factory.label_sampling_factory_ptr)
+        self.builder_ptr.get().setLabelSamplingFactory(move(label_sampling_factory.label_sampling_factory_ptr))
         return self
 
     def set_instance_sampling_factory(self,
