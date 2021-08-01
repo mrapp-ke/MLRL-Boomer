@@ -36,7 +36,7 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
         AlgorithmBuilderImpl& setInstanceSamplingFactory(
             shared_ptr[IInstanceSamplingFactory] instanceSamplingFactoryPtr)
 
-        AlgorithmBuilderImpl& setFeatureSamplingFactory(shared_ptr[IFeatureSamplingFactory] featureSamplingFactoryPtr)
+        AlgorithmBuilderImpl& setFeatureSamplingFactory(unique_ptr[IFeatureSamplingFactory] featureSamplingFactoryPtr)
 
         AlgorithmBuilderImpl& setPartitionSamplingFactory(
             unique_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr)

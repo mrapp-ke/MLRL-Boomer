@@ -79,7 +79,7 @@ cdef class AlgorithmBuilder:
         :param feature_sampling_factory:    TODO
         :return:                            TODO
         """
-        self.builder_ptr.get().setFeatureSamplingFactory(feature_sampling_factory.feature_sampling_factory_ptr)
+        self.builder_ptr.get().setFeatureSamplingFactory(move(feature_sampling_factory.feature_sampling_factory_ptr))
         return self
 
     def set_partition_sampling_factory(

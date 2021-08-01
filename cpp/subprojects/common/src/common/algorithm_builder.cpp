@@ -42,8 +42,8 @@ AlgorithmBuilder& AlgorithmBuilder::setInstanceSamplingFactory(
 }
 
 AlgorithmBuilder& AlgorithmBuilder::setFeatureSamplingFactory(
-        std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr) {
-    featureSamplingFactoryPtr_ = featureSamplingFactoryPtr;
+        std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr) {
+    featureSamplingFactoryPtr_ = std::move(featureSamplingFactoryPtr);
     return *this;
 }
 
