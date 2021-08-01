@@ -1,6 +1,7 @@
 #include "seco/statistics/statistics_label_wise_dense.hpp"
 #include "seco/data/matrix_dense_weights.hpp"
 #include "seco/data/vector_dense_confusion_matrices.hpp"
+#include "common/validation.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_label_wise_provider.hpp"
 
@@ -137,7 +138,9 @@ namespace seco {
         : defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)) {
-
+        assertNotNull("defaultRuleEvaluationFactoryPtr", defaultRuleEvaluationFactoryPtr_.get());
+        assertNotNull("regularRuleEvaluationFactoryPtr", regularRuleEvaluationFactoryPtr_.get());
+        assertNotNull("pruningRuleEvaluationFactoryPtr", pruningRuleEvaluationFactoryPtr_.get());
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(

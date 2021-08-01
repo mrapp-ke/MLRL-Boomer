@@ -115,7 +115,7 @@ namespace boosting {
             const IExampleWiseLoss& lossFunction, const  IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
             uint32 numThreads)
         : lossFunction_(lossFunction), ruleEvaluationFactory_(ruleEvaluationFactory), numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     std::unique_ptr<IExampleWiseStatistics> DenseExampleWiseStatisticsFactory::create(
@@ -138,7 +138,11 @@ namespace boosting {
           defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {
-
+        assertNotNull("lossFunctionPtr", lossFunctionPtr_.get());
+        assertNotNull("defaultRuleEvaluationFactoryPtr", defaultRuleEvaluationFactoryPtr_.get());
+        assertNotNull("regularRuleEvaluationFactoryPtr", regularRuleEvaluationFactoryPtr_.get());
+        assertNotNull("pruningRuleEvaluationFactoryPtr", pruningRuleEvaluationFactoryPtr_.get());
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(

@@ -47,6 +47,7 @@ namespace boosting {
     ExampleWiseClassificationPredictor::ExampleWiseClassificationPredictor(
             std::unique_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads)
         : measurePtr_(std::move(measurePtr)), numThreads_(numThreads) {
+        assertNotNull("measurePtr", measurePtr_.get());
         assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 

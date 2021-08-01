@@ -1,5 +1,6 @@
 #include "seco/rule_evaluation/rule_evaluation_label_wise_heuristic.hpp"
 #include "common/rule_evaluation/score_vector_label_wise_dense.hpp"
+#include "common/validation.hpp"
 #include "../data/confusion_matrices.hpp"
 
 
@@ -110,7 +111,7 @@ namespace seco {
     HeuristicLabelWiseRuleEvaluationFactory::HeuristicLabelWiseRuleEvaluationFactory(
             std::unique_ptr<IHeuristic> heuristicPtr, bool predictMajority)
         : heuristicPtr_(std::move(heuristicPtr)), predictMajority_(predictMajority) {
-
+        assertNotNull("heuristicPtr", heuristicPtr_.get());
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
