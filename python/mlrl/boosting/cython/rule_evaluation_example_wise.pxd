@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint32, float32, float64
 from mlrl.boosting.cython._blas cimport Blas
 from mlrl.boosting.cython._lapack cimport Lapack
-from mlrl.boosting.cython.binning cimport ILabelBinningFactory
+from mlrl.boosting.cython.label_binning cimport ILabelBinningFactory
 
 from libcpp.memory cimport unique_ptr
 

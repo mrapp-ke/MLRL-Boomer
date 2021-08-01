@@ -13,7 +13,7 @@ from typing import List, Dict, Set, Optional
 
 import numpy as np
 from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
-from mlrl.common.cython.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
+from mlrl.common.cython.feature_binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
 from mlrl.common.cython.head_refinement import HeadRefinementFactory
 from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureMask
