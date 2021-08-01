@@ -116,6 +116,10 @@ std::unique_ptr<IRuleModelAssemblage> SequentialRuleModelAssemblageFactory::crea
         std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
         std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
         const std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria) const {
-    // TODO
-    return nullptr;
+    return std::make_unique<SequentialRuleModelAssemblage>(statisticsProviderFactoryPtr, thresholdsFactoryPtr,
+                                                           ruleInductionPtr, defaultRuleHeadRefinementFactoryPtr,
+                                                           regularRuleHeadRefinementFactoryPtr, labelSamplingFactoryPtr,
+                                                           instanceSamplingFactoryPtr, featureSamplingFactoryPtr,
+                                                           partitionSamplingFactoryPtr, pruningPtr, postProcessorPtr,
+                                                           stoppingCriteria);
 }
