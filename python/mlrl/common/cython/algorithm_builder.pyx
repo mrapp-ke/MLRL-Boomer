@@ -110,7 +110,7 @@ cdef class AlgorithmBuilder:
         :param post_processor:  TODO
         :return:                TODO
         """
-        self.builder_ptr.get().setPostProcessor(post_processor.post_processor_ptr)
+        self.builder_ptr.get().setPostProcessor(move(post_processor.post_processor_ptr))
         return self
 
     def add_stopping_criterion(self, StoppingCriterion stopping_criterion not None) -> AlgorithmBuilder:
