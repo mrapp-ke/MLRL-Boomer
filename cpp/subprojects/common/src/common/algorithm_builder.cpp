@@ -36,8 +36,8 @@ AlgorithmBuilder& AlgorithmBuilder::setLabelSamplingFactory(
 }
 
 AlgorithmBuilder& AlgorithmBuilder::setInstanceSamplingFactory(
-        std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr) {
-    instanceSamplingFactoryPtr_ = instanceSamplingFactoryPtr;
+        std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr) {
+    instanceSamplingFactoryPtr_ = std::move(instanceSamplingFactoryPtr);
     return *this;
 }
 

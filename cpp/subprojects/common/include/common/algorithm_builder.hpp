@@ -78,7 +78,7 @@ class AlgorithmBuilder final {
          * @return                              TODO
          */
         AlgorithmBuilder& setInstanceSamplingFactory(
-            std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr);
+            std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr);
 
         /**
          * TODO

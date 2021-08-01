@@ -1,6 +1,6 @@
 from mlrl.common.cython._types cimport float32
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "common/sampling/instance_sampling.hpp" nogil:
@@ -58,7 +58,7 @@ cdef class InstanceSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IInstanceSamplingFactory] instance_sampling_factory_ptr
+    cdef unique_ptr[IInstanceSamplingFactory] instance_sampling_factory_ptr
 
 
 cdef class InstanceSamplingWithReplacementFactory(InstanceSamplingFactory):
