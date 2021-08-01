@@ -17,15 +17,15 @@ namespace seco {
 
         private:
 
-            std::shared_ptr<ILiftFunction> liftFunctionPtr_;
+            std::unique_ptr<ILiftFunction> liftFunctionPtr_;
 
         public:
 
             /**
-             * @param liftFunctionPtr A shared pointer to an object of type `ILiftFunction` that should affect the
+             * @param liftFunctionPtr An unique pointer to an object of type `ILiftFunction` that should affect the
              *                        quality scores of rules, depending on how many labels they predict
              */
-            PartialHeadRefinementFactory(std::shared_ptr<ILiftFunction> liftFunctionPtr);
+            PartialHeadRefinementFactory(std::unique_ptr<ILiftFunction> liftFunctionPtr);
 
             std::unique_ptr<IHeadRefinement> create(const CompleteIndexVector& labelIndices) const override;
 

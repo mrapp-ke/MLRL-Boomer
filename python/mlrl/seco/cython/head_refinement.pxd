@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint32, float64
 from mlrl.common.cython.head_refinement cimport HeadRefinementFactory, IHeadRefinementFactory
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "seco/head_refinement/lift_function.hpp" namespace "seco" nogil:
@@ -25,14 +25,14 @@ cdef extern from "seco/head_refinement/head_refinement_partial.hpp" namespace "s
 
         # Constructors:
 
-        PartialHeadRefinementFactoryImpl(shared_ptr[ILiftFunction] liftFunctionPtr) except +
+        PartialHeadRefinementFactoryImpl(unique_ptr[ILiftFunction] liftFunctionPtr) except +
 
 
 cdef class LiftFunction:
 
     # Attributes:
 
-    cdef shared_ptr[ILiftFunction] lift_function_ptr
+    cdef unique_ptr[ILiftFunction] lift_function_ptr
 
 
 cdef class PeakLiftFunction(LiftFunction):

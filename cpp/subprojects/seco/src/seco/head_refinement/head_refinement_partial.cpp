@@ -186,8 +186,8 @@ namespace seco {
 
     };
 
-    PartialHeadRefinementFactory::PartialHeadRefinementFactory(std::shared_ptr<ILiftFunction> liftFunctionPtr)
-        : liftFunctionPtr_(liftFunctionPtr) {
+    PartialHeadRefinementFactory::PartialHeadRefinementFactory(std::unique_ptr<ILiftFunction> liftFunctionPtr)
+        : liftFunctionPtr_(std::move(liftFunctionPtr)) {
 
     }
 
