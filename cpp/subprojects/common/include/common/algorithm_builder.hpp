@@ -52,7 +52,7 @@ class AlgorithmBuilder final {
                          std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                          std::shared_ptr<IRuleInduction> ruleInductionPtr,
                          std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                         std::shared_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr);
+                         std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr);
 
         /**
          * TODO

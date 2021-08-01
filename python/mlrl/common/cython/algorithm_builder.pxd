@@ -24,7 +24,7 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
                              shared_ptr[IThresholdsFactory] thresholdsFactoryPtr,
                              shared_ptr[IRuleInduction] ruleInductionPtr,
                              unique_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
-                             shared_ptr[IRuleModelAssemblageFactory] ruleModelAssemblageFactoryPtr)
+                             unique_ptr[IRuleModelAssemblageFactory] ruleModelAssemblageFactoryPtr)
 
         # Functions:
 

@@ -2,7 +2,7 @@ from mlrl.common.cython._types cimport uint32
 from mlrl.common.cython.input cimport INominalFeatureMask, IFeatureMatrix, ILabelMatrix
 from mlrl.common.cython.model cimport IModelBuilder, RuleModelImpl
 
-from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "common/rule_induction/rule_model_assemblage.hpp" nogil:
@@ -38,7 +38,7 @@ cdef class RuleModelAssemblageFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IRuleModelAssemblageFactory] rule_model_assemblage_factory_ptr
+    cdef unique_ptr[IRuleModelAssemblageFactory] rule_model_assemblage_factory_ptr
 
 
 cdef class SequentialRuleModelAssemblageFactory(RuleModelAssemblageFactory):
