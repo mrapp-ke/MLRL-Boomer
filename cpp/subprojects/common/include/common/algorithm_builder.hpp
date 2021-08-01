@@ -51,7 +51,7 @@ class AlgorithmBuilder final {
         AlgorithmBuilder(std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                          std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                          std::shared_ptr<IRuleInduction> ruleInductionPtr,
-                         std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
+                         std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                          std::shared_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr);
 
         /**
@@ -61,7 +61,7 @@ class AlgorithmBuilder final {
          * @return                          TODO
          */
         AlgorithmBuilder& setDefaultRuleHeadRefinementFactory(
-            std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
+            std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
 
         /**
          * TODO

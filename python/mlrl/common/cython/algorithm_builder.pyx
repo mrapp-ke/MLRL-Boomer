@@ -36,7 +36,7 @@ cdef class AlgorithmBuilder:
         """
         self.builder_ptr = make_unique[AlgorithmBuilderImpl](
             statistics_provider_factory.statistics_provider_factory_ptr, thresholds_factory.thresholds_factory_ptr,
-            rule_induction.rule_induction_ptr, head_refinement_factory.head_refinement_factory_ptr,
+            rule_induction.rule_induction_ptr, move(head_refinement_factory.head_refinement_factory_ptr),
             rule_model_assemblage_factory.rule_model_assemblage_factory_ptr)
 
     def set_default_rule_head_refinement_factory(
@@ -47,7 +47,7 @@ cdef class AlgorithmBuilder:
         :param head_refinement_factory: TODO
         :return:                        TODO
         """
-        self.builder_ptr.get().setDefaultRuleHeadRefinementFactory(head_refinement_factory.head_refinement_factory_ptr)
+        self.builder_ptr.get().setDefaultRuleHeadRefinementFactory(move(head_refinement_factory.head_refinement_factory_ptr))
         return self
 
     def set_label_sampling_factory(self, LabelSamplingFactory label_sampling_factory not None) -> AlgorithmBuilder:
