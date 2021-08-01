@@ -5,20 +5,25 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
 Provides scikit-learn implementations of separate-and-conquer algorithms.
 """
-from typing import Dict, Set
+from typing import Dict, Set, Optional, List
 
+from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
     CompleteHeadRefinementFactory
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
+from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
-from mlrl.common.cython.post_processing import NoPostProcessor
-from mlrl.common.cython.rule_induction import TopDownRuleInduction
-from mlrl.common.cython.rule_model_assemblage import SequentialRuleModelAssemblage
+from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
+from mlrl.common.cython.pruning import Pruning
+from mlrl.common.cython.rule_induction import RuleInduction, TopDownRuleInduction
+from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory, SequentialRuleModelAssemblageFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
+from mlrl.common.cython.stopping import StoppingCriterion
+from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
 from mlrl.seco.cython.heuristics import Heuristic, Accuracy, Precision, Recall, Laplace, WRA, FMeasure, MEstimate
-from mlrl.seco.cython.instance_sampling import NoInstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
+from mlrl.seco.cython.instance_sampling import InstanceSamplingWithReplacementFactory, \
     InstanceSamplingWithoutReplacementFactory
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
@@ -206,34 +211,71 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_model_builder(self) -> ModelBuilder:
-        return DecisionListBuilder()
-
-    def _create_rule_model_assemblage(self, num_labels: int) -> SequentialRuleModelAssemblage:
-        heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
+    def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
+        default_rule_heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
+        regular_rule_heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
         pruning_heuristic = self.__create_heuristic(self.pruning_heuristic, 'pruning_heuristic')
-        statistics_provider_factory = self.__create_statistics_provider_factory(heuristic, pruning_heuristic)
-        num_threads_statistic_update = get_preferred_num_threads(int(self.num_threads_statistic_update))
-        thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_statistic_update)
-        num_threads_rule_refinement = get_preferred_num_threads(int(self.num_threads_rule_refinement))
-        rule_induction = TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions),
-                                              int(self.max_head_refinements), False, num_threads_rule_refinement)
-        lift_function = self.__create_lift_function(num_labels)
-        default_rule_head_refinement_factory = CompleteHeadRefinementFactory()
-        head_refinement_factory = self.__create_head_refinement_factory(lift_function)
-        label_sampling_factory = create_label_sampling_factory(self.label_sampling)
-        instance_sampling_factory = self.__create_instance_sampling_factory()
-        feature_sampling_factory = create_feature_sampling_factory(self.feature_sampling)
-        partition_sampling_factory = create_partition_sampling_factory(self.holdout)
-        pruning = create_pruning(self.pruning, self.instance_sampling)
-        post_processor = NoPostProcessor()
+        default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(default_rule_heuristic,
+                                                                                  predictMajority=True)
+        regular_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(regular_rule_heuristic)
+        pruning_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(pruning_heuristic)
+        return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, regular_rule_evaluation_factory,
+                                                       pruning_rule_evaluation_factory)
+
+    def _create_thresholds_factory(self) -> ThresholdsFactory:
+        num_threads = get_preferred_num_threads(int(self.num_threads_statistic_update))
+        return create_thresholds_factory(self.feature_binning, num_threads)
+
+    def _create_rule_induction(self) -> RuleInduction:
+        num_threads = get_preferred_num_threads(int(self.num_threads_rule_refinement))
+        return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
+                                    False, num_threads)
+
+    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
+        return CompleteHeadRefinementFactory()
+
+    def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
+        value = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
+
+        if value == HEAD_TYPE_SINGLE:
+            return SingleLabelHeadRefinementFactory()
+        elif value == HEAD_TYPE_PARTIAL:
+            lift_function = self.__create_lift_function(num_labels)
+            return PartialHeadRefinementFactory(lift_function)
+
+    def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
+        return SequentialRuleModelAssemblageFactory()
+
+    def _create_label_sampling_factory(self) -> Optional[LabelSamplingFactory]:
+        return create_label_sampling_factory(self.label_sampling)
+
+    def _create_instance_sampling_factory(self) -> Optional[InstanceSamplingFactory]:
+        instance_sampling = self.instance_sampling
+
+        if instance_sampling is not None:
+            value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
+
+            if value == SAMPLING_WITH_REPLACEMENT:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0)
+                return InstanceSamplingWithReplacementFactory(sample_size)
+            elif value == SAMPLING_WITHOUT_REPLACEMENT:
+                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
+                return InstanceSamplingWithoutReplacementFactory(sample_size)
+        return None
+
+    def _create_feature_sampling_factory(self) -> Optional[FeatureSamplingFactory]:
+        return create_feature_sampling_factory(self.feature_sampling)
+
+    def _create_partition_sampling_factory(self) -> Optional[PartitionSamplingFactory]:
+        return create_partition_sampling_factory(self.holdout)
+
+    def _create_pruning(self) -> Optional[Pruning]:
+        return create_pruning(self.pruning, self.instance_sampling)
+
+    def _create_stopping_criteria(self) -> List[StoppingCriterion]:
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(CoverageStoppingCriterion(0))
-        return SequentialRuleModelAssemblage(statistics_provider_factory, thresholds_factory, rule_induction,
-                                             default_rule_head_refinement_factory, head_refinement_factory,
-                                             label_sampling_factory, instance_sampling_factory,
-                                             feature_sampling_factory, partition_sampling_factory,
-                                             pruning, post_processor, stopping_criteria)
+        return stopping_criteria
 
     @staticmethod
     def __create_heuristic(heuristic: str, parameter_name: str) -> Heuristic:
@@ -256,15 +298,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             m = options.get_float(ARGUMENT_M, 22.466)
             return MEstimate(m)
 
-    @staticmethod
-    def __create_statistics_provider_factory(heuristic: Heuristic,
-                                             pruning_heuristic: Heuristic) -> StatisticsProviderFactory:
-        default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic, predictMajority=True)
-        regular_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(heuristic)
-        pruning_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(pruning_heuristic)
-        return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, regular_rule_evaluation_factory,
-                                                       pruning_rule_evaluation_factory)
-
     def __create_lift_function(self, num_labels: int) -> LiftFunction:
         value, options = parse_param_and_options('lift_function', self.lift_function, LIFT_FUNCTION_VALUES)
 
@@ -274,28 +307,8 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             curvature = options.get_float(ARGUMENT_CURVATURE, 1.0)
             return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
 
-    def __create_head_refinement_factory(self, lift_function: LiftFunction) -> HeadRefinementFactory:
-        value = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
-
-        if value == HEAD_TYPE_SINGLE:
-            return SingleLabelHeadRefinementFactory()
-        elif value == HEAD_TYPE_PARTIAL:
-            return PartialHeadRefinementFactory(lift_function)
-
-    def __create_instance_sampling_factory(self) -> InstanceSamplingFactory:
-        instance_sampling = self.instance_sampling
-
-        if instance_sampling is None:
-            return NoInstanceSamplingFactory()
-        else:
-            value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
-
-            if value == SAMPLING_WITH_REPLACEMENT:
-                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0)
-                return InstanceSamplingWithReplacementFactory(sample_size)
-            elif value == SAMPLING_WITHOUT_REPLACEMENT:
-                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
-                return InstanceSamplingWithoutReplacementFactory(sample_size)
+    def _create_model_builder(self) -> ModelBuilder:
+        return DecisionListBuilder()
 
     def _create_predictor(self, num_labels: int) -> Predictor:
         return self.__create_label_wise_predictor(num_labels)

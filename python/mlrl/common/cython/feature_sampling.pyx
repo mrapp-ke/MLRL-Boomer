@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique
 
 
 cdef class FeatureSamplingFactory:
@@ -22,7 +22,7 @@ cdef class FeatureSamplingWithoutReplacementFactory(FeatureSamplingFactory):
                             60 % of the available features). Must be in (0, 1) or 0, if the default sample size
                             `floor(log2(num_features - 1) + 1)` should be used
         """
-        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSamplingFactory]>make_shared[FeatureSamplingWithoutReplacementFactoryImpl](
+        self.feature_sampling_factory_ptr = <unique_ptr[IFeatureSamplingFactory]>make_unique[FeatureSamplingWithoutReplacementFactoryImpl](
             sample_size)
 
 
@@ -32,4 +32,4 @@ cdef class NoFeatureSamplingFactory(FeatureSamplingFactory):
     """
 
     def __cinit__(self):
-        self.feature_sampling_factory_ptr = <shared_ptr[IFeatureSamplingFactory]>make_shared[NoFeatureSamplingFactoryImpl]()
+        self.feature_sampling_factory_ptr = <unique_ptr[IFeatureSamplingFactory]>make_unique[NoFeatureSamplingFactoryImpl]()

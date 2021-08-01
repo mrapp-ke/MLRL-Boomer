@@ -1,6 +1,6 @@
 from mlrl.common.cython._types cimport uint32
 from libcpp cimport bool
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "common/rule_induction/rule_induction.hpp" nogil:
@@ -23,7 +23,7 @@ cdef class RuleInduction:
 
     # Attributes:
 
-    cdef shared_ptr[IRuleInduction] rule_induction_ptr
+    cdef unique_ptr[IRuleInduction] rule_induction_ptr
 
 
 cdef class TopDownRuleInduction(RuleInduction):

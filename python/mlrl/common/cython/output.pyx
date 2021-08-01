@@ -3,9 +3,11 @@
 """
 from mlrl.common.cython._arrays cimport c_matrix_uint8, c_matrix_float64
 from mlrl.common.cython._data cimport CContiguousView
-from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl
+from mlrl.common.cython.input cimport CContiguousFeatureMatrix, CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, \
+    CsrFeatureMatrix, LabelVectorSet
+from mlrl.common.cython.model cimport RuleModel
 
-from libcpp.memory cimport shared_ptr, make_unique
+from libcpp.memory cimport make_unique
 
 from cython.operator cimport dereference
 
@@ -17,7 +19,8 @@ cdef class Predictor:
     A wrapper for the pure virtual C++ class `IPredictor`.
     """
 
-    cpdef object predict(self, CContiguousFeatureMatrix feature_matrix, RuleModel model, LabelVectorSet label_vectors):
+    def predict(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
+                LabelVectorSet label_vectors) -> object:
         """
         Obtains and returns the predictions for given examples in a feature matrix that uses a C-contiguous array.
 
@@ -30,7 +33,8 @@ cdef class Predictor:
         """
         pass
 
-    cpdef object predict_csr(self, CsrFeatureMatrix feature_matrix, RuleModel model, LabelVectorSet label_vectors):
+    def predict_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
+                    LabelVectorSet label_vectors) -> object:
         """
         Obtains and returns the predictions for given examples in a feature matrix that uses the compressed sparse row
         (CSR) format.
@@ -50,9 +54,10 @@ cdef class AbstractNumericalPredictor(Predictor):
     A base class for all classes that allow to predict numerical scores for given query examples.
     """
 
-    cpdef object predict(self, CContiguousFeatureMatrix feature_matrix, RuleModel model, LabelVectorSet label_vectors):
-        cdef shared_ptr[CContiguousFeatureMatrixImpl] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
-        cdef uint32 num_examples = feature_matrix_ptr.get().getNumRows()
+    def predict(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
+                LabelVectorSet label_vectors):
+        cdef CContiguousFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
+        cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
         cdef float64[:, ::1] prediction_matrix = c_matrix_float64(num_examples, num_labels)
         cdef unique_ptr[CContiguousView[float64]] view_ptr = make_unique[CContiguousView[float64]](
@@ -63,9 +68,10 @@ cdef class AbstractNumericalPredictor(Predictor):
                                          dereference(model.model_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
-    cpdef object predict_csr(self, CsrFeatureMatrix feature_matrix, RuleModel model, LabelVectorSet label_vectors):
-        cdef shared_ptr[CsrFeatureMatrixImpl] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
-        cdef uint32 num_examples = feature_matrix_ptr.get().getNumRows()
+    def predict_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
+                    LabelVectorSet label_vectors):
+        cdef CsrFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
+        cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
         cdef float64[:, ::1] prediction_matrix = c_matrix_float64(num_examples, num_labels)
         cdef unique_ptr[CContiguousView[float64]] view_ptr = make_unique[CContiguousView[float64]](
@@ -82,9 +88,10 @@ cdef class AbstractBinaryPredictor(Predictor):
     A base class for all classes that allow to predict binary values for given query examples.
     """
 
-    cpdef object predict(self, CContiguousFeatureMatrix feature_matrix, RuleModel model, LabelVectorSet label_vectors):
-        cdef shared_ptr[CContiguousFeatureMatrixImpl] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
-        cdef uint32 num_examples = feature_matrix_ptr.get().getNumRows()
+    def predict(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
+                LabelVectorSet label_vectors):
+        cdef CContiguousFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
+        cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
         cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(num_examples, num_labels)
         cdef unique_ptr[CContiguousView[uint8]] view_ptr = make_unique[CContiguousView[uint8]](
@@ -95,9 +102,10 @@ cdef class AbstractBinaryPredictor(Predictor):
                                          dereference(model.model_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
-    cpdef object predict_csr(self, CsrFeatureMatrix feature_matrix, RuleModel model, LabelVectorSet label_vectors):
-        cdef shared_ptr[CsrFeatureMatrixImpl] feature_matrix_ptr = feature_matrix.feature_matrix_ptr
-        cdef uint32 num_examples = feature_matrix_ptr.get().getNumRows()
+    def predict_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
+                    LabelVectorSet label_vectors):
+        cdef CsrFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
+        cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
         cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(num_examples, num_labels)
         cdef unique_ptr[CContiguousView[uint8]] view_ptr = make_unique[CContiguousView[uint8]](

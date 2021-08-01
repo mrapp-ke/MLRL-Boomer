@@ -17,13 +17,13 @@ cdef class RuleModel:
     A wrapper for the C++ class `RuleModel`.
     """
 
-    cpdef int get_num_rules(self):
+    def get_num_rules(self) -> int:
         return self.model_ptr.get().getNumRules()
 
-    cpdef int get_num_used_rules(self):
+    def get_num_used_rules(self) -> int:
         return self.model_ptr.get().getNumUsedRules()
 
-    cpdef object set_num_used_rules(self, uint32 num_used_rules):
+    def set_num_used_rules(self, int num_used_rules):
         self.model_ptr.get().setNumUsedRules(num_used_rules)
 
     def __getstate__(self):
@@ -191,7 +191,7 @@ cdef class RuleModelSerializer:
                       np.asarray(<uint32[:num_elements]>head.indices_cbegin()))
         rule_state[1] = head_state
 
-    cpdef object serialize(self, RuleModel model):
+    def serialize(self, RuleModel model) -> object:
         """
         Creates and returns a state, which may be serialized using Python's pickle mechanism, from the rules that are
         contained by a given `RuleModel`.
@@ -208,7 +208,7 @@ cdef class RuleModelSerializer:
         cdef uint32 num_used_rules = model.model_ptr.get().getNumUsedRules()
         return (SERIALIZATION_VERSION, (self.state, num_used_rules))
 
-    cpdef deserialize(self, RuleModel model, object state):
+    def deserialize(self, RuleModel model, object state):
         """
         Deserializes the rules that are contained by a given state and adds them to a `RuleModel`.
 
@@ -281,8 +281,8 @@ cdef class RuleModelFormatter:
     Allows to create textual representations of the rules that are contained by a `RuleModel`.
     """
 
-    def __cinit__(self, list attributes, list labels, bint print_feature_names, bint print_label_names,
-                  bint print_nominal_values):
+    def __cinit__(self, list attributes not None, list labels not None, bint print_feature_names,
+                  bint print_label_names, bint print_nominal_values):
         """
         :param attributes:              A list that contains the attributes
         :param labels:                  A list that contains the labels
@@ -390,7 +390,7 @@ cdef class RuleModelFormatter:
 
         text.write(')\n')
 
-    cpdef void format(self, RuleModel model):
+    def format(self, RuleModel model):
         """
         Creates a textual representation of a specific model.
 
@@ -402,7 +402,7 @@ cdef class RuleModelFormatter:
             wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
             wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
 
-    cpdef object get_text(self):
+    def get_text(self) -> object:
         """
         Returns the textual representation that has been created via the `format` method.
 

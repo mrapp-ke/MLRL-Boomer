@@ -3,7 +3,7 @@ from mlrl.common.cython._measures cimport ISimilarityMeasure
 from mlrl.common.cython.measures cimport SimilarityMeasure
 from mlrl.common.cython.output cimport AbstractBinaryPredictor, AbstractNumericalPredictor, IPredictor
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "boosting/output/predictor_probability_label_wise.hpp" namespace "boosting" nogil:
@@ -20,7 +20,7 @@ cdef extern from "boosting/output/predictor_probability_label_wise.hpp" namespac
 
         # Constructors:
 
-        LabelWiseProbabilityPredictorImpl(shared_ptr[ILabelWiseTransformationFunction] transformationFunctionPtr,
+        LabelWiseProbabilityPredictorImpl(unique_ptr[ILabelWiseTransformationFunction] transformationFunctionPtr,
                                           uint32 numThreads) except +
 
 
@@ -49,14 +49,14 @@ cdef extern from "boosting/output/predictor_classification_example_wise.hpp" nam
 
         # Constructors:
 
-        ExampleWiseClassificationPredictorImpl(shared_ptr[ISimilarityMeasure] measurePtr, uint32 numThreads) except +
+        ExampleWiseClassificationPredictorImpl(unique_ptr[ISimilarityMeasure] measurePtr, uint32 numThreads) except +
 
 
 cdef class LabelWiseTransformationFunction:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelWiseTransformationFunction] transformation_function_ptr
+    cdef unique_ptr[ILabelWiseTransformationFunction] transformation_function_ptr
 
 
 cdef class LogisticFunction(LabelWiseTransformationFunction):

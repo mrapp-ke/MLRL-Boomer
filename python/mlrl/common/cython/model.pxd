@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint32, float32, float64
 
 from libcpp cimport bool
-from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.memory cimport unique_ptr
 from libcpp.list cimport list as double_linked_list
 
 
@@ -294,20 +294,12 @@ cdef class RuleModel:
 
     cdef unique_ptr[RuleModelImpl] model_ptr
 
-    # Functions:
-
-    cpdef int get_num_rules(self)
-
-    cpdef int get_num_used_rules(self)
-
-    cpdef object set_num_used_rules(self, uint32 num_used_rules)
-
 
 cdef class ModelBuilder:
 
     # Attributes:
 
-    cdef shared_ptr[IModelBuilder] model_builder_ptr
+    cdef unique_ptr[IModelBuilder] model_builder_ptr
 
 
 cdef class RuleModelSerializer:
@@ -325,10 +317,6 @@ cdef class RuleModelSerializer:
     cdef __visit_complete_head(self, const CompleteHeadImpl& head)
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
-
-    cpdef object serialize(self, RuleModel model)
-
-    cpdef deserialize(self, RuleModel model, object state)
 
 
 cdef class RuleModelFormatter:
@@ -356,7 +344,3 @@ cdef class RuleModelFormatter:
     cdef __visit_complete_head(self, const CompleteHeadImpl& head)
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
-
-    cpdef void format(self, RuleModel model)
-
-    cpdef object get_text(self)

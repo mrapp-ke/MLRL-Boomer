@@ -9,12 +9,11 @@ import logging as log
 from argparse import ArgumentParser
 from enum import Enum
 
-from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE, \
-    INSTANCE_SAMPLING_VALUES as BOOSTING_INSTANCE_SAMPLING_VALUES, HEAD_TYPE_VALUES as BOOSTING_HEAD_TYPE_VALUES, \
+from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE, HEAD_TYPE_VALUES as BOOSTING_HEAD_TYPE_VALUES, \
     EARLY_STOPPING_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, PREDICTOR_VALUES
 from mlrl.common.rule_learners import SparsePolicy, HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, \
     PRUNING_IREP, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, \
-    PRUNING_VALUES
+    PRUNING_VALUES, INSTANCE_SAMPLING_VALUES as BOOSTING_INSTANCE_SAMPLING_VALUES
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 from mlrl.seco.seco_learners import HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK, \
     INSTANCE_SAMPLING_VALUES as SECO_INSTANCE_SAMPLING_VALUES, HEAD_TYPE_VALUES as SECO_HEAD_TYPE_VALUES, \
@@ -359,7 +358,7 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('l2_regularization_weight', 1.0, **kwargs),
                             help='The weight of the L2 regularization. Must be at least 0.')
         parser.add_argument(PARAM_HEAD_TYPE, type=str,
-                            default=ArgumentParserBuilder.__get_or_default('head_type', HEAD_TYPE_SINGLE, **kwargs),
+                            default=ArgumentParserBuilder.__get_or_default('head_type', AUTOMATIC, **kwargs),
                             help='The type of the rule heads that should be used. Must be one of '
                                  + format_string_set(BOOSTING_HEAD_TYPE_VALUES) + '. If set to "' + AUTOMATIC + '", '
                                  + 'the most suitable type is chosen automatically based on the parameter ' + PARAM_LOSS
@@ -370,7 +369,8 @@ class ArgumentParserBuilder:
         self.add_rule_learner_arguments(print_rules=True, pruning=PRUNING_IREP, **kwargs)
         parser = self.parser
         parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
-                            default=ArgumentParserBuilder.__get_or_default('instance_sampling', None, **kwargs),
+                            default=ArgumentParserBuilder.__get_or_default('instance_sampling',
+                                                                           SAMPLING_WITHOUT_REPLACEMENT, **kwargs),
                             help='The name of the strategy to be used for instance sampling. Must be one of'
                                  + format_dict_keys(SECO_INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance '
                                  + 'sampling should be used. For additional options refer to the documentation.')

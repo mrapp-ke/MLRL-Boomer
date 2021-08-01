@@ -1,19 +1,12 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique
 
 
 cdef class HeadRefinementFactory:
     """
     A wrapper for the pure virtual C++ class `IHeadRefinementFactory`.
-    """
-    pass
-
-
-cdef class NoHeadRefinementRefinementFactory(HeadRefinementFactory):
-    """
-    A `HeadRefinementFactory` that stores a null pointer.
     """
     pass
 
@@ -24,7 +17,7 @@ cdef class SingleLabelHeadRefinementFactory(HeadRefinementFactory):
     """
 
     def __cinit__(self):
-        self.head_refinement_factory_ptr = <shared_ptr[IHeadRefinementFactory]>make_shared[SingleLabelHeadRefinementFactoryImpl]()
+        self.head_refinement_factory_ptr = <unique_ptr[IHeadRefinementFactory]>make_unique[SingleLabelHeadRefinementFactoryImpl]()
 
 
 cdef class CompleteHeadRefinementFactory(HeadRefinementFactory):
@@ -33,4 +26,4 @@ cdef class CompleteHeadRefinementFactory(HeadRefinementFactory):
     """
 
     def __cinit__(self):
-        self.head_refinement_factory_ptr = <shared_ptr[IHeadRefinementFactory]>make_shared[CompleteHeadRefinementFactoryImpl]()
+        self.head_refinement_factory_ptr = <unique_ptr[IHeadRefinementFactory]>make_unique[CompleteHeadRefinementFactoryImpl]()

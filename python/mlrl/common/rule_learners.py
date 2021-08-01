@@ -9,26 +9,32 @@ import logging as log
 import os
 from abc import abstractmethod
 from enum import Enum
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Optional
 
 import numpy as np
-from mlrl.common.cython.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
-from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory, \
-    NoFeatureSamplingFactory
+from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
+from mlrl.common.cython.feature_binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
+from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
+from mlrl.common.cython.head_refinement import HeadRefinementFactory
 from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureMask
 from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
 from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.input import LabelVectorSet
-from mlrl.common.cython.label_sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory, \
-    NoLabelSamplingFactory
+from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
+    InstanceSamplingWithoutReplacementFactory, \
+    LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
+from mlrl.common.cython.label_sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
-from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
-    RandomBiPartitionSamplingFactory, LabelWiseStratifiedBiPartitionSamplingFactory, \
+from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, RandomBiPartitionSamplingFactory, \
+    LabelWiseStratifiedBiPartitionSamplingFactory, \
     ExampleWiseStratifiedBiPartitionSamplingFactory
-from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
-from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblage
+from mlrl.common.cython.post_processing import PostProcessor
+from mlrl.common.cython.pruning import Pruning, IREP
+from mlrl.common.cython.rule_induction import RuleInduction
+from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblage, RuleModelAssemblageFactory
+from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
@@ -82,6 +88,13 @@ FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {
     SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}
 }
 
+INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    SAMPLING_WITH_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
+    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
+    SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_SAMPLE_SIZE},
+    SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_SAMPLE_SIZE}
+}
+
 PARTITION_SAMPLING_VALUES: Dict[str, Set[str]] = {
     PARTITION_SAMPLING_RANDOM: {ARGUMENT_HOLDOUT_SET_SIZE},
     SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_HOLDOUT_SET_SIZE},
@@ -116,31 +129,46 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
 
 
 def create_label_sampling_factory(label_sampling: str) -> LabelSamplingFactory:
-    if label_sampling is None:
-        return NoLabelSamplingFactory()
-    else:
+    if label_sampling is not None:
         value, options = parse_param_and_options('label_sampling', label_sampling, LABEL_SAMPLING_VALUES)
 
         if value == SAMPLING_WITHOUT_REPLACEMENT:
             num_samples = options.get_int(ARGUMENT_NUM_SAMPLES, 1)
             return LabelSamplingWithoutReplacementFactory(num_samples)
+    return None
 
 
 def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFactory:
-    if feature_sampling is None:
-        return NoFeatureSamplingFactory()
-    else:
+    if feature_sampling is not None:
         value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
 
         if value == SAMPLING_WITHOUT_REPLACEMENT:
             sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0)
             return FeatureSamplingWithoutReplacementFactory(sample_size)
+    return None
+
+
+def create_instance_sampling_factory(instance_sampling: str) -> InstanceSamplingFactory:
+    if instance_sampling is not None:
+        value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
+
+        if value == SAMPLING_WITH_REPLACEMENT:
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0)
+            return InstanceSamplingWithReplacementFactory(sample_size)
+        elif value == SAMPLING_WITHOUT_REPLACEMENT:
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
+            return InstanceSamplingWithoutReplacementFactory(sample_size)
+        elif value == SAMPLING_STRATIFIED_LABEL_WISE:
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
+            return LabelWiseStratifiedSamplingFactory(sample_size)
+        elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
+            return ExampleWiseStratifiedSamplingFactory(sample_size)
+    return None
 
 
 def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
-    if holdout is None:
-        return NoPartitionSamplingFactory()
-    else:
+    if holdout is not None:
         value, options = parse_param_and_options('holdout', holdout, PARTITION_SAMPLING_VALUES)
 
         if value == PARTITION_SAMPLING_RANDOM:
@@ -152,20 +180,20 @@ def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
         if value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
             return ExampleWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
+    return None
 
 
 def create_pruning(pruning: str, instance_sampling: str) -> Pruning:
-    if pruning is None:
-        return NoPruning()
-    else:
+    if pruning is not None:
         value = parse_param('pruning', pruning, PRUNING_VALUES)
 
         if value == PRUNING_IREP:
             if instance_sampling is None:
                 log.warning('Parameter "pruning" does not have any effect, because parameter "instance_sampling" is '
                             + 'set to "None"!')
-                return NoPruning()
+                return None
             return IREP()
+    return None
 
 
 def create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCriterion]:
@@ -352,10 +380,56 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = BitNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        rule_model_assemblage = self._create_rule_model_assemblage(num_labels)
+        rule_model_assemblage = self.__create_rule_model_assemblage(num_labels)
         model_builder = self._create_model_builder()
         return rule_model_assemblage.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
                                                   model_builder)
+
+    def __create_rule_model_assemblage(self, num_labels: int) -> RuleModelAssemblage:
+        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(),
+                                             self._create_thresholds_factory(), self._create_rule_induction(),
+                                             self._create_regular_rule_head_refinement_factory(num_labels),
+                                             self._create_rule_model_assemblage_factory())
+
+        default_rule_head_refinement_factory = self._create_default_rule_head_refinement_factory()
+
+        if default_rule_head_refinement_factory is not None:
+            algorithm_builder.set_default_rule_head_refinement_factory(default_rule_head_refinement_factory)
+
+        label_sampling_factory = self._create_label_sampling_factory()
+
+        if label_sampling_factory is not None:
+            algorithm_builder.set_label_sampling_factory(label_sampling_factory)
+
+        instance_sampling_factory = self._create_instance_sampling_factory()
+
+        if instance_sampling_factory is not None:
+            algorithm_builder.set_instance_sampling_factory(instance_sampling_factory)
+
+        feature_sampling_factory = self._create_feature_sampling_factory()
+
+        if feature_sampling_factory is not None:
+            algorithm_builder.set_feature_sampling_factory(feature_sampling_factory)
+
+        partition_sampling_factory = self._create_partition_sampling_factory()
+
+        if partition_sampling_factory is not None:
+            algorithm_builder.set_partition_sampling_factory(partition_sampling_factory)
+
+        pruning = self._create_pruning()
+
+        if pruning is not None:
+            algorithm_builder.set_pruning(pruning)
+
+        post_processor = self._create_post_processor()
+
+        if post_processor is not None:
+            algorithm_builder.set_post_processor(post_processor)
+
+        for stopping_criterion in self._create_stopping_criteria():
+            algorithm_builder.add_stopping_criterion(stopping_criterion)
+
+        return algorithm_builder.build()
 
     def _predict(self, x):
         predictor = self.predictor_
@@ -394,6 +468,132 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             return predictor.predict(feature_matrix, model, label_vectors)
 
     @abstractmethod
+    def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
+        """
+        Must be implemented by subclasses in order to create the `StatisticsProviderFactory` to be used by the rule
+        learner.
+
+        :return: The `StatisticsProviderFactory` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_thresholds_factory(self) -> ThresholdsFactory:
+        """
+        Must be implemented by subclasses in order to create the `ThresholdsFactory` to be used by the rule learner.
+
+        :return: The `ThresholdFactory` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_rule_induction(self) -> RuleInduction:
+        """
+        Must be implemented by subclasses in order to create the `RuleInduction` to be used by the rule learner.
+
+        :return: The `RuleInduction` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
+        """
+        Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
+        for the induction of all regular rules.
+
+        :param num_labels:  The number of labels in the dataset
+        :return:            The `HeadRefinementFactory` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
+        """
+        Must be implemented by subclasses in order to create the `RuleModelAssemblageFactory` to be used by the rule
+        learner.
+
+        :return: The `RuleModelAssemblage` that has been created
+        """
+        pass
+
+    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
+        """
+        Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
+        for the induction of the default rule.
+
+        :return: The `HeadRefinementFactory` that has been created or None, if no default rule should be induced
+        """
+        return None
+
+    def _create_label_sampling_factory(self) -> Optional[LabelSamplingFactory]:
+        """
+        Must be implemented by subclasses in order to create the `LabelSamplingFactory` to be used by the rule learner.
+
+        :return: The `LabelSamplingFactory` that has been created or None, if no label sampling should be used
+        """
+        return None
+
+    def _create_instance_sampling_factory(self) -> Optional[InstanceSamplingFactory]:
+        """
+        Must be implemented by subclasses in order to create the `InstanceSamplingFactory` to be used by the rule
+        learner.
+
+        :return: The `InstanceSamplingFactory` that has been created or None, if no instance sampling should be used
+        """
+        return None
+
+    def _create_feature_sampling_factory(self) -> Optional[FeatureSamplingFactory]:
+        """
+        Must be implemented by subclasses in order to create the `FeatureSamplingFactory` to be used by the rule
+        learner.
+
+        :return: The `FeatureSamplingFactory` that has been created or None, if no feature sampling should be used
+        """
+        return None
+
+    def _create_partition_sampling_factory(self) -> Optional[PartitionSamplingFactory]:
+        """
+        Must be implemented by subclasses in order to create the `PartitionSamplingFactory` to be used by the rule
+        learner.
+
+        :return: The `PartitionSamplingFactory` that has been created or None, if no holdout set should be created
+        """
+        return None
+
+    def _create_pruning(self) -> Optional[Pruning]:
+        """
+        Must be implemented by subclasses in order to create the `Pruning` to be used by the rule learner.
+
+        :return: The `Pruning` that has been created or None, if no pruning should be used
+        """
+        return None
+
+    def _create_post_processor(self) -> Optional[PostProcessor]:
+        """
+        Must be implemented by subclasses in order to create the `PostProcessor` to be used by the rule learner.
+
+        :return: The `PostProcessor` that has been created or None, if no post-processor should be used
+        """
+        return None
+
+    def _create_stopping_criteria(self) -> List[StoppingCriterion]:
+        """
+        Must be implemented by subclasses in order to create a list of stopping criteria to be used by the rule learner.
+
+        :return: A list of stopping criteria that has been created
+        """
+        return []
+
+    @abstractmethod
+    def _create_model_builder(self) -> ModelBuilder:
+        """
+        Must be implemented by subclasses in order to create the builder that should be used for building the model.
+
+        :return: The builder that has been created
+        """
+        pass
+
+    @abstractmethod
     def _create_predictor(self, num_labels: int) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
@@ -422,23 +622,3 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         :return:                The `LabelVectorSet` that has been created or None, if no such set should be used
         """
         return None
-
-    @abstractmethod
-    def _create_rule_model_assemblage(self, num_labels: int) -> RuleModelAssemblage:
-        """
-        Must be implemented by subclasses in order to create the algorithm that should be used for inducing a rule
-        model.
-
-        :param num_labels:  The number of labels in the training data set
-        :return:            The algorithm for inducting a rule model that has been created
-        """
-        pass
-
-    @abstractmethod
-    def _create_model_builder(self) -> ModelBuilder:
-        """
-        Must be implemented by subclasses in order to create the builder that should be used for building the model.
-
-        :return: The builder that has been created
-        """
-        pass

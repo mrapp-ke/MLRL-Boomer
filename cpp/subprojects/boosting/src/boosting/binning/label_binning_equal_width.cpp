@@ -142,7 +142,7 @@ namespace boosting {
                 : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
                 assertGreater<float32>("binRatio", binRatio, 0.0);
                 assertLess<uint32>("binRatio", binRatio, 1.0);
-                assertGreaterOrEqual<uint32>("minBins", minBins, 2);
+                assertGreaterOrEqual<uint32>("minBins", minBins, 1);
                 if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins); }
             }
 

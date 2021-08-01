@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique
 
 
 cdef class RuleInduction:
@@ -31,5 +31,5 @@ cdef class TopDownRuleInduction(RuleInduction):
         :param num_threads:             The number of CPU threads to be used to search for potential refinements of a
                                         rule in parallel. Must be at least 1
         """
-        self.rule_induction_ptr = <shared_ptr[IRuleInduction]>make_shared[TopDownRuleInductionImpl](
+        self.rule_induction_ptr = <unique_ptr[IRuleInduction]>make_unique[TopDownRuleInductionImpl](
             min_coverage, max_conditions, max_head_refinements, recalculate_predictions, num_threads)
