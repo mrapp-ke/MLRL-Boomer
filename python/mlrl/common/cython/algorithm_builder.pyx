@@ -61,5 +61,5 @@ cdef class AlgorithmBuilder:
 
     cpdef RuleModelAssemblage build(self):
         cdef RuleModelAssemblage rule_model_assemblage = RuleModelAssemblage.__new__(RuleModelAssemblage)
-        rule_model_assemblage.rule_model_assemblage_ptr = <shared_ptr[IRuleModelAssemblage]>move(self.builder_ptr.get().build()) # TODO Remove cast
+        rule_model_assemblage.rule_model_assemblage_ptr = move(self.builder_ptr.get().build())
         return rule_model_assemblage
