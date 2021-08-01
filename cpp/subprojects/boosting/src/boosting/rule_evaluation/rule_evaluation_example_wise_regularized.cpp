@@ -1,6 +1,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_regularized.hpp"
 #include "boosting/math/math.hpp"
 #include "common/rule_evaluation/score_vector_label_wise_dense.hpp"
+#include "common/validation.hpp"
 #include "rule_evaluation_label_wise_regularized_common.hpp"
 #include "rule_evaluation_example_wise_common.hpp"
 
@@ -127,9 +128,12 @@ namespace boosting {
     };
 
     RegularizedExampleWiseRuleEvaluationFactory::RegularizedExampleWiseRuleEvaluationFactory(
-            float64 l2RegularizationWeight, std::shared_ptr<Blas> blasPtr, std::shared_ptr<Lapack> lapackPtr)
-        : l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(blasPtr), lapackPtr_(lapackPtr) {
-
+            float64 l2RegularizationWeight, std::unique_ptr<Blas> blasPtr, std::unique_ptr<Lapack> lapackPtr)
+        : l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(std::move(blasPtr)),
+          lapackPtr_(std::move(lapackPtr)) {
+        assertNotNull("blasPtr", blasPtr_.get());
+        assertNotNull("lapackPtr", lapackPtr_.get());
+        assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> RegularizedExampleWiseRuleEvaluationFactory::createDense(

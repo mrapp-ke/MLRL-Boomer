@@ -3,7 +3,7 @@
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 @author Andreas Seidl Fernandez (aseidlfernandez@gmail.com)
 """
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique
 
 
 cdef class Heuristic:
@@ -19,7 +19,7 @@ cdef class Accuracy(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[AccuracyImpl]()
+        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[AccuracyImpl]()
 
 
 cdef class Precision(Heuristic):
@@ -28,7 +28,7 @@ cdef class Precision(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[PrecisionImpl]()
+        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[PrecisionImpl]()
 
 
 cdef class Recall(Heuristic):
@@ -37,7 +37,7 @@ cdef class Recall(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[RecallImpl]()
+        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[RecallImpl]()
 
 
 cdef class Laplace(Heuristic):
@@ -46,7 +46,7 @@ cdef class Laplace(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[LaplaceImpl]()
+        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[LaplaceImpl]()
 
 
 cdef class WRA(Heuristic):
@@ -55,7 +55,7 @@ cdef class WRA(Heuristic):
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[WRAImpl]()
+        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[WRAImpl]()
 
 
 cdef class FMeasure(Heuristic):
@@ -67,7 +67,7 @@ cdef class FMeasure(Heuristic):
         """
         :param beta: The value of the beta-parameter. Must be at least 0
         """
-        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[FMeasureImpl](beta)
+        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[FMeasureImpl](beta)
 
 
 cdef class MEstimate(Heuristic):
@@ -79,4 +79,4 @@ cdef class MEstimate(Heuristic):
         """
         :param m: The value of the m-parameter. Must be at least 0
         """
-        self.heuristic_ptr = <shared_ptr[IHeuristic]>make_shared[MEstimateImpl](m)
+        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[MEstimateImpl](m)

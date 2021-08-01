@@ -1,9 +1,9 @@
 from mlrl.common.cython._types cimport uint32, float32, float64
 from mlrl.boosting.cython._blas cimport Blas
 from mlrl.boosting.cython._lapack cimport Lapack
-from mlrl.boosting.cython.binning cimport ILabelBinningFactory
+from mlrl.boosting.cython.label_binning cimport ILabelBinningFactory
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise.hpp" namespace "boosting" nogil:
@@ -19,8 +19,8 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_regulari
 
         # Constructors:
 
-        RegularizedExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, shared_ptr[Blas] blasPtr,
-                                                        shared_ptr[Lapack] lapackPtr) except +
+        RegularizedExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, unique_ptr[Blas] blasPtr,
+                                                        unique_ptr[Lapack] lapackPtr) except +
 
 
 cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_binning.hpp" namespace "boosting" nogil:
@@ -31,15 +31,15 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_binning.
         # Constructors:
 
         BinnedExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
-                                                   shared_ptr[ILabelBinningFactory] labelBinningFactoryPtr,
-                                                   shared_ptr[Blas] blasPtr, shared_ptr[Lapack] lapackPtr) except +
+                                                   unique_ptr[ILabelBinningFactory] labelBinningFactoryPtr,
+                                                   unique_ptr[Blas] blasPtr, unique_ptr[Lapack] lapackPtr) except +
 
 
 cdef class ExampleWiseRuleEvaluationFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IExampleWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
+    cdef unique_ptr[IExampleWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
 
 
 cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):

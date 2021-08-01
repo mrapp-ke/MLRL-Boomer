@@ -1,7 +1,7 @@
 from mlrl.seco.cython.heuristics cimport IHeuristic
 
 from libcpp cimport bool
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise.hpp" namespace "seco" nogil:
@@ -24,7 +24,7 @@ cdef class LabelWiseRuleEvaluationFactory:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
+    cdef unique_ptr[ILabelWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
 
 
 cdef class HeuristicLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):

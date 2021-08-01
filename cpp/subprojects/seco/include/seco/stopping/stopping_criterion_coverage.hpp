@@ -22,7 +22,7 @@ namespace seco {
         public:
 
             /**
-             * @param threshold The threshold
+             * @param threshold The threshold. Must be at least 0
              */
             CoverageStoppingCriterion(float64 threshold);
 

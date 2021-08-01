@@ -2,7 +2,7 @@ from mlrl.common.cython.statistics cimport StatisticsProviderFactory, IStatistic
 from mlrl.boosting.cython.losses_example_wise cimport IExampleWiseLoss
 from mlrl.boosting.cython.rule_evaluation_example_wise cimport IExampleWiseRuleEvaluationFactory
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "boosting/statistics/statistics_example_wise_dense.hpp" namespace "boosting" nogil:
@@ -13,10 +13,10 @@ cdef extern from "boosting/statistics/statistics_example_wise_dense.hpp" namespa
         # Constructors:
 
         DenseExampleWiseStatisticsProviderFactoryImpl(
-            shared_ptr[IExampleWiseLoss] lossFunctionPtr,
-            shared_ptr[IExampleWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
-            shared_ptr[IExampleWiseRuleEvaluationFactory] regularRuleEvaluationFactoryPtr,
-            shared_ptr[IExampleWiseRuleEvaluationFactory] pruningRuleEvaluationFactoryPtr) except +
+            unique_ptr[IExampleWiseLoss] lossFunctionPtr,
+            unique_ptr[IExampleWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
+            unique_ptr[IExampleWiseRuleEvaluationFactory] regularRuleEvaluationFactoryPtr,
+            unique_ptr[IExampleWiseRuleEvaluationFactory] pruningRuleEvaluationFactoryPtr) except +
 
 
 cdef class DenseExampleWiseStatisticsProviderFactory(StatisticsProviderFactory):

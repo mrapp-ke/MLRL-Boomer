@@ -1,14 +1,18 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/indices/index_vector_complete.hpp"
+#include "common/validation.hpp"
 #include "omp.h"
 #include <unordered_map>
 
 
-TopDownRuleInduction::TopDownRuleInduction(uint32 minCoverage, intp maxConditions, intp maxHeadRefinements,
+TopDownRuleInduction::TopDownRuleInduction(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
                                            bool recalculatePredictions, uint32 numThreads)
     : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
       recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
-
+    assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
+    if (maxConditions != 0) { assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 1); }
+    if (maxHeadRefinements != 0) { assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1); }
+    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
 }
 
 void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProvider,
@@ -69,7 +73,7 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
 
     // Search for the best refinement until no improvement in terms of the rule's quality score is possible anymore or
     // the maximum number of conditions has been reached...
-    while (foundRefinement && (maxConditions_ == -1 || numConditions < maxConditions_)) {
+    while (foundRefinement && (maxConditions_ == 0 || numConditions < maxConditions_)) {
         foundRefinement = false;
 
         // Sample features...

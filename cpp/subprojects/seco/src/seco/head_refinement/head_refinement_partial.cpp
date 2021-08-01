@@ -2,6 +2,7 @@
 #include "common/data/vector_sparse_array.hpp"
 #include "common/head_refinement/prediction_partial.hpp"
 #include "common/rule_evaluation/score_processor_label_wise.hpp"
+#include "common/validation.hpp"
 #include <algorithm>
 
 
@@ -186,9 +187,9 @@ namespace seco {
 
     };
 
-    PartialHeadRefinementFactory::PartialHeadRefinementFactory(std::shared_ptr<ILiftFunction> liftFunctionPtr)
-        : liftFunctionPtr_(liftFunctionPtr) {
-
+    PartialHeadRefinementFactory::PartialHeadRefinementFactory(std::unique_ptr<ILiftFunction> liftFunctionPtr)
+        : liftFunctionPtr_(std::move(liftFunctionPtr)) {
+        assertNotNull("liftFunctionPtr", liftFunctionPtr_.get());
     }
 
     std::unique_ptr<IHeadRefinement> PartialHeadRefinementFactory::create(

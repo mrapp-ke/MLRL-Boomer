@@ -1,5 +1,6 @@
 #include "boosting/output/predictor_probability_label_wise.hpp"
 #include "boosting/math/math.hpp"
+#include "common/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
@@ -22,9 +23,10 @@ namespace boosting {
     }
 
     LabelWiseProbabilityPredictor::LabelWiseProbabilityPredictor(
-            std::shared_ptr<ILabelWiseTransformationFunction> transformationFunctionPtr, uint32 numThreads)
-        : transformationFunctionPtr_(transformationFunctionPtr), numThreads_(numThreads) {
-
+            std::unique_ptr<ILabelWiseTransformationFunction> transformationFunctionPtr, uint32 numThreads)
+        : transformationFunctionPtr_(std::move(transformationFunctionPtr)), numThreads_(numThreads) {
+        assertNotNull("transformationFunctionPtr", transformationFunctionPtr_.get());
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     void LabelWiseProbabilityPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,

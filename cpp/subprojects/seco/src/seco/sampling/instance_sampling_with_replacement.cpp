@@ -2,6 +2,7 @@
 #include "seco/statistics/statistics.hpp"
 #include "common/data/arrays.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
+#include "common/validation.hpp"
 #include "instance_sampling_common.hpp"
 
 
@@ -92,7 +93,8 @@ namespace seco {
 
     InstanceSamplingWithReplacementFactory::InstanceSamplingWithReplacementFactory(float32 sampleSize)
         : sampleSize_(sampleSize) {
-
+        assertGreater<float32>("sampleSize", sampleSize, 0);
+        assertLessOrEqual<float32>("sampleSize", sampleSize, 1);
     }
 
     std::unique_ptr<IInstanceSampling> InstanceSamplingWithReplacementFactory::create(

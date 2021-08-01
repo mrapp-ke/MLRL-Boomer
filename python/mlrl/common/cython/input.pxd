@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint8, uint32, float32
 
 from libcpp cimport bool
-from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "common/input/label_vector.hpp" nogil:
@@ -78,7 +78,7 @@ cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
 
         # Constructors:
 
-        CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint8* array) except +
+        CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint8* array)
 
 
 cdef extern from "common/input/label_matrix_csr.hpp" nogil:
@@ -87,7 +87,7 @@ cdef extern from "common/input/label_matrix_csr.hpp" nogil:
 
         # Constructors:
 
-        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices) except +
+        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
 
 
 cdef extern from "common/input/feature_matrix.hpp" nogil:
@@ -102,7 +102,7 @@ cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
 
         # Constructors:
 
-        CContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array) except +
+        CContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array)
 
         # Functions:
 
@@ -115,7 +115,7 @@ cdef extern from "common/input/feature_matrix_fortran_contiguous.hpp" nogil:
 
         # Constructors:
 
-        FortranContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array) except +
+        FortranContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array)
 
 
 cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
@@ -125,7 +125,7 @@ cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
         # Constructors:
 
         CscFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices,
-                             uint32* colIndices) except +
+                             uint32* colIndices)
 
 
 cdef extern from "common/input/feature_matrix_csr.hpp" nogil:
@@ -134,8 +134,7 @@ cdef extern from "common/input/feature_matrix_csr.hpp" nogil:
 
         # Constructors:
 
-        CsrFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices,
-                             uint32 colIndices) except +
+        CsrFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32 colIndices)
 
         # Functions:
 
@@ -163,14 +162,14 @@ cdef extern from "common/input/nominal_feature_mask_equal.hpp" nogil:
 
         # Constructors:
 
-        EqualNominalFeatureMaskImpl(bool nominal) except +
+        EqualNominalFeatureMaskImpl(bool nominal)
 
 
 cdef class LabelMatrix:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelMatrix] label_matrix_ptr
+    cdef unique_ptr[ILabelMatrix] label_matrix_ptr
 
 
 cdef class CContiguousLabelMatrix(LabelMatrix):
@@ -189,7 +188,7 @@ cdef class FeatureMatrix:
 
     # Attributes:
 
-    cdef shared_ptr[IFeatureMatrix] feature_matrix_ptr
+    cdef unique_ptr[IFeatureMatrix] feature_matrix_ptr
 
 
 cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
@@ -204,21 +203,21 @@ cdef class CContiguousFeatureMatrix:
 
     # Attributes:
 
-    cdef shared_ptr[CContiguousFeatureMatrixImpl] feature_matrix_ptr
+    cdef unique_ptr[CContiguousFeatureMatrixImpl] feature_matrix_ptr
 
 
 cdef class CsrFeatureMatrix:
 
     # Attributes:
 
-    cdef shared_ptr[CsrFeatureMatrixImpl] feature_matrix_ptr
+    cdef unique_ptr[CsrFeatureMatrixImpl] feature_matrix_ptr
 
 
 cdef class NominalFeatureMask:
 
     # Attributes:
 
-    cdef shared_ptr[INominalFeatureMask] nominal_feature_mask_ptr
+    cdef unique_ptr[INominalFeatureMask] nominal_feature_mask_ptr
 
 
 cdef class BitNominalFeatureMask(NominalFeatureMask):
@@ -233,7 +232,7 @@ cdef class LabelVectorSet:
 
     # Attributes:
 
-    cdef shared_ptr[LabelVectorSetImpl] label_vector_set_ptr
+    cdef unique_ptr[LabelVectorSetImpl] label_vector_set_ptr
 
 
 cdef class LabelVectorSetSerializer:
@@ -245,7 +244,3 @@ cdef class LabelVectorSetSerializer:
     # Functions:
 
     cdef __visit_label_vector(self, const LabelVector& label_vector)
-
-    cpdef object serialize(self, LabelVectorSet label_vector_set)
-
-    cpdef deserialize(self, LabelVectorSet label_vector_set, object state)

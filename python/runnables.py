@@ -10,7 +10,6 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
-from mlrl.common.options import Options
 from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.parameters import ParameterCsvInput
@@ -76,18 +75,12 @@ class RuleLearnerRunnable(Runnable, ABC):
         model_dir = args.model_dir
         persistence = None if model_dir is None else ModelPersistence(model_dir)
         learner = self._create_learner(args)
-        print_options = Options.create(args.print_options)
-        model_printer = RulePrinter(print_options, model_printer_outputs) if len(
+        model_printer = RulePrinter(args.print_options, model_printer_outputs) if len(
             model_printer_outputs) > 0 else None
         train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
         test_evaluation = ClassificationEvaluation(*evaluation_outputs)
-        data_dir = args.data_dir
-        if data_dir is None:
-            raise ValueError('Mandatory parameter \'--data-dir\' has not been specified')
-        dataset = args.dataset
-        if dataset is None:
-            raise ValueError('Mandatory parameter \'--dataset\' has not been specified')
-        data_set = DataSet(data_dir=data_dir, data_set_name=dataset, use_one_hot_encoding=args.one_hot_encoding)
+        data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
+                           use_one_hot_encoding=args.one_hot_encoding)
         experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,
                                 data_set=data_set, num_folds=args.folds, current_fold=args.current_fold,
                                 parameter_input=parameter_input, model_printer=model_printer, persistence=persistence)
