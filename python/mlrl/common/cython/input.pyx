@@ -1,8 +1,8 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_unique, make_shared
 from libcpp.utility cimport move
+from libcpp.memory cimport make_unique
 
 SERIALIZATION_VERSION = 1
 
@@ -26,7 +26,7 @@ cdef class CContiguousLabelMatrix(LabelMatrix):
         """
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_labels = array.shape[1]
-        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[CContiguousLabelMatrixImpl](num_examples,
+        self.label_matrix_ptr = <unique_ptr[ILabelMatrix]>make_unique[CContiguousLabelMatrixImpl](num_examples,
                                                                                                   num_labels,
                                                                                                   &array[0, 0])
 
@@ -46,7 +46,7 @@ cdef class CsrLabelMatrix(LabelMatrix):
         :param col_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
                                 column-indices, the relevant labels correspond to
         """
-        self.label_matrix_ptr = <shared_ptr[ILabelMatrix]>make_shared[CsrLabelMatrixImpl](num_examples, num_labels,
+        self.label_matrix_ptr = <unique_ptr[ILabelMatrix]>make_unique[CsrLabelMatrixImpl](num_examples, num_labels,
                                                                                           &row_indices[0],
                                                                                           &col_indices[0])
 
@@ -70,7 +70,7 @@ cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
         """
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_features = array.shape[1]
-        self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[FortranContiguousFeatureMatrixImpl](
+        self.feature_matrix_ptr = <unique_ptr[IFeatureMatrix]>make_unique[FortranContiguousFeatureMatrixImpl](
             num_examples, num_features, &array[0, 0])
 
 
@@ -92,7 +92,7 @@ cdef class CscFeatureMatrix(FeatureMatrix):
                                 first element in `data` and `row_indices` that corresponds to a certain feature. The
                                 index at the last position is equal to `num_non_zero_values`
         """
-        self.feature_matrix_ptr = <shared_ptr[IFeatureMatrix]>make_shared[CscFeatureMatrixImpl](num_examples,
+        self.feature_matrix_ptr = <unique_ptr[IFeatureMatrix]>make_unique[CscFeatureMatrixImpl](num_examples,
                                                                                                 num_features, &data[0],
                                                                                                 &row_indices[0],
                                                                                                 &col_indices[0])
@@ -110,7 +110,7 @@ cdef class CContiguousFeatureMatrix:
         """
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_features = array.shape[1]
-        self.feature_matrix_ptr = make_shared[CContiguousFeatureMatrixImpl](num_examples, num_features, &array[0, 0])
+        self.feature_matrix_ptr = make_unique[CContiguousFeatureMatrixImpl](num_examples, num_features, &array[0, 0])
 
 
 cdef class CsrFeatureMatrix:
@@ -131,7 +131,7 @@ cdef class CsrFeatureMatrix:
         :param col_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
                                 column-indices, the values in `data` correspond to
         """
-        self.feature_matrix_ptr = make_shared[CsrFeatureMatrixImpl](num_examples, num_features, &data[0],
+        self.feature_matrix_ptr = make_unique[CsrFeatureMatrixImpl](num_examples, num_features, &data[0],
                                                                     &row_indices[0], &col_indices[0])
 
 
@@ -158,7 +158,7 @@ cdef class BitNominalFeatureMask(NominalFeatureMask):
         for i in nominal_feature_indices:
             ptr.get().setNominal(i)
 
-        self.nominal_feature_mask_ptr = <shared_ptr[INominalFeatureMask]>move(ptr)
+        self.nominal_feature_mask_ptr = <unique_ptr[INominalFeatureMask]>move(ptr)
 
 
 cdef class EqualNominalFeatureMask(NominalFeatureMask):
@@ -170,7 +170,7 @@ cdef class EqualNominalFeatureMask(NominalFeatureMask):
         """
         :param nominal: True, if all features are nominal, false, if all features are not nominal
         """
-        self.nominal_feature_mask_ptr = <shared_ptr[INominalFeatureMask]>make_shared[EqualNominalFeatureMaskImpl](
+        self.nominal_feature_mask_ptr = <unique_ptr[INominalFeatureMask]>make_unique[EqualNominalFeatureMaskImpl](
             nominal)
 
 
@@ -180,23 +180,23 @@ cdef class LabelVectorSet:
     """
 
     def __cinit__(self):
-        self.label_vector_set_ptr = make_shared[LabelVectorSetImpl]()
+        self.label_vector_set_ptr = make_unique[LabelVectorSetImpl]()
 
     @classmethod
     def create(cls, LabelMatrix label_matrix):
-        cdef shared_ptr[ILabelMatrix] label_matrix_ptr = label_matrix.label_matrix_ptr
-        cdef uint32 num_rows = label_matrix_ptr.get().getNumRows()
-        cdef uint32 num_cols = label_matrix_ptr.get().getNumCols()
-        cdef shared_ptr[LabelVectorSetImpl] label_vector_set_ptr = make_shared[LabelVectorSetImpl]()
+        cdef ILabelMatrix* label_matrix_ptr = label_matrix.label_matrix_ptr.get()
+        cdef uint32 num_rows = label_matrix_ptr.getNumRows()
+        cdef uint32 num_cols = label_matrix_ptr.getNumCols()
+        cdef unique_ptr[LabelVectorSetImpl] label_vector_set_ptr = make_unique[LabelVectorSetImpl]()
         cdef unique_ptr[LabelVector] label_vector_ptr
         cdef uint32 i
 
         for i in range(num_rows):
-            label_vector_ptr = label_matrix_ptr.get().createLabelVector(i)
+            label_vector_ptr = label_matrix_ptr.createLabelVector(i)
             label_vector_set_ptr.get().addLabelVector(move(label_vector_ptr))
 
         cdef LabelVectorSet label_vector_set = LabelVectorSet.__new__(LabelVectorSet)
-        label_vector_set.label_vector_set_ptr = label_vector_set_ptr
+        label_vector_set.label_vector_set_ptr = move(label_vector_set_ptr)
         return label_vector_set
 
     def __reduce__(self):
