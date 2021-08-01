@@ -85,3 +85,17 @@ static inline constexpr void assertMultiple(const std::string& name, const T val
                                     + std::to_string(other) + ", but is " + std::to_string(value));
     }
 }
+
+/**
+ * Throws an exception if a given pointer is a null pointer.
+ *
+ * @tparam T    The type of the pointer
+ * @param name  The name of the parameter, the pointer corresponds to
+ * @param ptr   The pointer
+ */
+template<typename T>
+static inline constexpr void assertNotNull(const std::string& name, const T* ptr) {
+    if (ptr == nullptr) {
+        throw std::invalid_argument("Invalid value given for parameter \"" + name + "\": Must not be null");
+    }
+}
