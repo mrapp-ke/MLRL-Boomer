@@ -23,8 +23,8 @@ namespace boosting {
     }
 
     LabelWiseProbabilityPredictor::LabelWiseProbabilityPredictor(
-            std::shared_ptr<ILabelWiseTransformationFunction> transformationFunctionPtr, uint32 numThreads)
-        : transformationFunctionPtr_(transformationFunctionPtr), numThreads_(numThreads) {
+            std::unique_ptr<ILabelWiseTransformationFunction> transformationFunctionPtr, uint32 numThreads)
+        : transformationFunctionPtr_(std::move(transformationFunctionPtr)), numThreads_(numThreads) {
         assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 

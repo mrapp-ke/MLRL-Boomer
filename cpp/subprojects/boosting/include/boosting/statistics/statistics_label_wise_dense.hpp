@@ -54,7 +54,7 @@ namespace boosting {
 
         private:
 
-            std::shared_ptr<ILabelWiseLoss> lossFunctionPtr_;
+            std::unique_ptr<ILabelWiseLoss> lossFunctionPtr_;
 
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -67,7 +67,7 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunctionPtr                   A shared pointer to an object of type `ILabelWiseLoss` that
+             * @param lossFunctionPtr                   An unique pointer to an object of type `ILabelWiseLoss` that
              *                                          should be used for calculating gradients and Hessians
              * @param defaultRuleEvaluationFactoryPtr   A shared pointer to an object of type
              *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
@@ -85,7 +85,7 @@ namespace boosting {
              *                                          statistics in parallel. Must be at least 1
              */
             DenseLabelWiseStatisticsProviderFactory(
-                std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
+                std::unique_ptr<ILabelWiseLoss> lossFunctionPtr,
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
                 std::shared_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);

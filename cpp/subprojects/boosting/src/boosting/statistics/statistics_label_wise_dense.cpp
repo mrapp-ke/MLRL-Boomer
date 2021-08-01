@@ -132,11 +132,12 @@ namespace boosting {
     }
 
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
-            std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
+            std::unique_ptr<ILabelWiseLoss> lossFunctionPtr,
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
             std::shared_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
-        : lossFunctionPtr_(lossFunctionPtr), defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
+        : lossFunctionPtr_(std::move(lossFunctionPtr)),
+          defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
           regularRuleEvaluationFactoryPtr_(regularRuleEvaluationFactoryPtr),
           pruningRuleEvaluationFactoryPtr_(pruningRuleEvaluationFactoryPtr), numThreads_(numThreads) {
 

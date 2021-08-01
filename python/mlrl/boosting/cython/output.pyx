@@ -3,7 +3,8 @@
 """
 from mlrl.common.cython._types cimport uint32
 
-from libcpp.memory cimport unique_ptr, make_unique, make_shared
+from libcpp.utility cimport move
+from libcpp.memory cimport unique_ptr, make_unique
 
 
 cdef class LabelWiseTransformationFunction:
@@ -19,7 +20,7 @@ cdef class LogisticFunction(LabelWiseTransformationFunction):
     """
 
     def __cinit__(self):
-        self.transformation_function_ptr = <shared_ptr[ILabelWiseTransformationFunction]>make_shared[LogisticFunctionImpl]()
+        self.transformation_function_ptr = <unique_ptr[ILabelWiseTransformationFunction]>make_unique[LogisticFunctionImpl]()
 
     def __reduce__(self):
         return (LogisticFunction, ())
@@ -33,7 +34,7 @@ cdef class LabelWiseProbabilityPredictor(AbstractNumericalPredictor):
         self.transformation_function = transformation_function
         self.num_threads = num_threads
         self.predictor_ptr = <unique_ptr[IPredictor[float64]]>make_unique[LabelWiseProbabilityPredictorImpl](
-            transformation_function.transformation_function_ptr, num_threads)
+            move(transformation_function.transformation_function_ptr), num_threads)
 
     def __reduce__(self):
         return (LabelWiseProbabilityPredictor, (self.num_labels, self.transformation_function, self.num_threads))
@@ -95,9 +96,9 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
         self.num_labels = num_labels
         self.measure = measure
         self.num_threads = num_threads
-        cdef shared_ptr[ISimilarityMeasure] measure_ptr = measure.get_similarity_measure_ptr()
+        cdef unique_ptr[ISimilarityMeasure] measure_ptr = measure.get_similarity_measure_ptr()
         self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[ExampleWiseClassificationPredictorImpl](
-            measure_ptr, num_threads)
+            move(measure_ptr), num_threads)
 
     def __reduce__(self):
         return (ExampleWiseClassificationPredictor, (self.num_labels, self.measure, self.num_threads))
