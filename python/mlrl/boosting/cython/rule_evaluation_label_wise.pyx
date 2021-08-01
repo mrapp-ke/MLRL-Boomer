@@ -4,6 +4,8 @@
 from libcpp.memory cimport make_shared
 from mlrl.boosting.cython.binning cimport LabelBinningFactory
 
+from libcpp.utility cimport move
+
 
 cdef class LabelWiseRuleEvaluationFactory:
     """
@@ -36,7 +38,7 @@ cdef class BinnedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             scores to be predicted by rules
         :param label_binning_factory:       A `LabelBinningFactory` that allows to create the implementation that should
-                                            be used to assign labels to bins
+                                            be used to assign labebls to bins
         """
         self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[BinnedLabelWiseRuleEvaluationFactoryImpl](
-            l2_regularization_weight, label_binning_factory.label_binning_factory_ptr)
+            l2_regularization_weight, move(label_binning_factory.label_binning_factory_ptr))

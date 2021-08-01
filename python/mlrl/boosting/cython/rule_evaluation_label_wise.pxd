@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint32, float32, float64
 from mlrl.boosting.cython.binning cimport ILabelBinningFactory
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport shared_ptr, unique_ptr
 
 
 cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise.hpp" namespace "boosting" nogil:
@@ -28,7 +28,7 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_binning.hp
         # Constructors:
 
         BinnedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
-                                                 shared_ptr[ILabelBinningFactory] labelBinningFactoryPtr) except +
+                                                 unique_ptr[ILabelBinningFactory] labelBinningFactoryPtr) except +
 
 
 cdef class LabelWiseRuleEvaluationFactory:

@@ -20,7 +20,7 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr_;
+            std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr_;
 
             std::unique_ptr<Blas> blasPtr_;
 
@@ -31,15 +31,15 @@ namespace boosting {
             /**
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param labelBinningFactoryPtr    A shared pointer to an object of type `ILabelBinningFactory` that allows
-                                                to create the implementation to be used to assign labels to bins
+             * @param labelBinningFactoryPtr    An unique pointer to an object of type `ILabelBinningFactory` that
+                                                allows to create the implementation to be used to assign labels to bins
              * @param blasPtr                   An unique pointer to an object of type `Blas` that allows to execute
              *                                  different BLAS routines
              * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
             BinnedExampleWiseRuleEvaluationFactory(float64 l2RegularizationWeight,
-                                                   std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
+                                                   std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
                                                    std::unique_ptr<Blas> blasPtr, std::unique_ptr<Lapack> lapackPtr);
 
             std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createDense(

@@ -1,5 +1,5 @@
 from mlrl.common.cython._types cimport uint32, float32
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique
 
 
 cdef class LabelBinningFactory:
@@ -22,5 +22,5 @@ cdef class EqualWidthLabelBinningFactory(LabelBinningFactory):
         :param max_bins:    The maximum number of bins to be used to assign labels to. Must be at least `minBins` or 0,
                             if the maximum number of bins should not be restricted
         """
-        self.label_binning_factory_ptr = <shared_ptr[ILabelBinningFactory]>make_shared[EqualWidthLabelBinningFactoryImpl](
+        self.label_binning_factory_ptr = <unique_ptr[ILabelBinningFactory]>make_unique[EqualWidthLabelBinningFactoryImpl](
             bin_ratio, min_bins, max_bins)

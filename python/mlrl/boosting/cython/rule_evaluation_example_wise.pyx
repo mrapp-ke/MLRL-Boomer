@@ -43,5 +43,5 @@ cdef class BinnedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFacto
                                             be used to assign labels to bins
         """
         self.rule_evaluation_factory_ptr = <shared_ptr[IExampleWiseRuleEvaluationFactory]>make_shared[BinnedExampleWiseRuleEvaluationFactoryImpl](
-            l2_regularization_weight, label_binning_factory.label_binning_factory_ptr, move(init_blas()),
+            l2_regularization_weight, move(label_binning_factory.label_binning_factory_ptr), move(init_blas()),
             move(init_lapack()))
