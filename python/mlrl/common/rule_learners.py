@@ -388,9 +388,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
     def __create_rule_model_assemblage(self, num_labels: int) -> RuleModelAssemblage:
         algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(),
                                              self._create_thresholds_factory(), self._create_rule_induction(),
-                                             self._create_default_rule_head_refinement_factory(),
                                              self._create_regular_rule_head_refinement_factory(num_labels),
                                              self._create_rule_model_assemblage_factory())
+
+        default_rule_head_refinement_factory = self._create_default_rule_head_refinement_factory()
+
+        if default_rule_head_refinement_factory is not None:
+            algorithm_builder.set_default_rule_head_refinement_factory(default_rule_head_refinement_factory)
 
         label_sampling_factory = self._create_label_sampling_factory()
 
@@ -492,16 +496,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         pass
 
     @abstractmethod
-    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
-        """
-        Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
-        for the induction of the default rule.
-
-        :return: The `HeadRefinementFactory` that has been created
-        """
-        pass
-
-    @abstractmethod
     def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
         """
         Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
@@ -521,6 +515,15 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         :return: The `RuleModelAssemblage` that has been created
         """
         pass
+
+    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
+        """
+        Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
+        for the induction of the default rule.
+
+        :return: The `HeadRefinementFactory` that has been created or None, if no default rule should be induced
+        """
+        return None
 
     def _create_label_sampling_factory(self) -> Optional[LabelSamplingFactory]:
         """

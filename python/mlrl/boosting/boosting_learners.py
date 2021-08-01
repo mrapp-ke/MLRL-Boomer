@@ -23,8 +23,8 @@ from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWise
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
-from mlrl.common.cython.head_refinement import HeadRefinementFactory, NoHeadRefinementFactory, \
-    SingleLabelHeadRefinementFactory, CompleteHeadRefinementFactory
+from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
+    CompleteHeadRefinementFactory
 from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
@@ -285,8 +285,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
         if self.default_rule:
             return CompleteHeadRefinementFactory()
-        else:
-            return NoHeadRefinementFactory()
+        return None
 
     def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
         value = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
