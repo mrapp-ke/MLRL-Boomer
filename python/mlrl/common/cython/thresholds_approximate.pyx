@@ -4,7 +4,8 @@
 """
 from mlrl.common.cython.binning cimport FeatureBinning
 
-from libcpp.memory cimport make_shared
+from libcpp.utility cimport move
+from libcpp.memory cimport shared_ptr, make_shared
 
 
 cdef class ApproximateThresholdsFactory(ThresholdsFactory):
@@ -18,4 +19,4 @@ cdef class ApproximateThresholdsFactory(ThresholdsFactory):
         :param num_threads: The number of CPU threads to be used to update statistics in parallel. Must be at least 1
         """
         self.thresholds_factory_ptr = <shared_ptr[IThresholdsFactory]>make_shared[ApproximateThresholdsFactoryImpl](
-            binning.binning_ptr, num_threads)
+            move(binning.binning_ptr), num_threads)
