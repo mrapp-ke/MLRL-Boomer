@@ -1,6 +1,6 @@
 from mlrl.common.cython._types cimport float32
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "common/sampling/partition_sampling.hpp" nogil:
@@ -48,7 +48,7 @@ cdef class PartitionSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IPartitionSamplingFactory] partition_sampling_factory_ptr
+    cdef unique_ptr[IPartitionSamplingFactory] partition_sampling_factory_ptr
 
 
 cdef class NoPartitionSamplingFactory(PartitionSamplingFactory):

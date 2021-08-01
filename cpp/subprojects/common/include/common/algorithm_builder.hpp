@@ -95,7 +95,7 @@ class AlgorithmBuilder final {
          * @return                              TODO
          */
         AlgorithmBuilder& setPartitionSamplingFactory(
-            std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr);
+            std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr);
 
         /**
          * TODO

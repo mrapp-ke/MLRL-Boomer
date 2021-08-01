@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique
 
 
 cdef class PartitionSamplingFactory:
@@ -17,7 +17,7 @@ cdef class NoPartitionSamplingFactory(PartitionSamplingFactory):
     """
 
     def __cinit__(self):
-        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[NoPartitionSamplingFactoryImpl]()
+        self.partition_sampling_factory_ptr = <unique_ptr[IPartitionSamplingFactory]>make_unique[NoPartitionSamplingFactoryImpl]()
 
 
 cdef class RandomBiPartitionSamplingFactory(PartitionSamplingFactory):
@@ -30,7 +30,7 @@ cdef class RandomBiPartitionSamplingFactory(PartitionSamplingFactory):
         :param holdout_set_size: The fraction of examples to be included in the holdout set (e.g. a value of 0.6
                                  corresponds to 60 % of the available examples). Must be in (0, 1)
         """
-        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[RandomBiPartitionSamplingFactoryImpl](
+        self.partition_sampling_factory_ptr = <unique_ptr[IPartitionSamplingFactory]>make_unique[RandomBiPartitionSamplingFactoryImpl](
             holdout_set_size)
 
 
@@ -44,7 +44,7 @@ cdef class ExampleWiseStratifiedBiPartitionSamplingFactory(PartitionSamplingFact
         :param holdout_set_size: The fraction of examples to be included in the holdout set (e.g. a value of 0.6
                                  corresponds to 60 % of the available examples). Must be in (0, 1)
         """
-        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[ExampleWiseStratifiedBiPartitionSamplingFactoryImpl](
+        self.partition_sampling_factory_ptr = <unique_ptr[IPartitionSamplingFactory]>make_unique[ExampleWiseStratifiedBiPartitionSamplingFactoryImpl](
             holdout_set_size)
 
 
@@ -58,5 +58,5 @@ cdef class LabelWiseStratifiedBiPartitionSamplingFactory(PartitionSamplingFactor
         :param holdout_set_size: The fraction of examples to be included in the holdout set (e.g. a value of 0.6
                                  corresponds to 60 % of the available examples). Must be in (0, 1)
         """
-        self.partition_sampling_factory_ptr = <shared_ptr[IPartitionSamplingFactory]>make_shared[LabelWiseStratifiedBiPartitionSamplingFactoryImpl](
+        self.partition_sampling_factory_ptr = <unique_ptr[IPartitionSamplingFactory]>make_unique[LabelWiseStratifiedBiPartitionSamplingFactoryImpl](
             holdout_set_size)
