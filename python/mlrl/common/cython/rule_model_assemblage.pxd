@@ -70,7 +70,7 @@ cdef extern from "common/rule_induction/rule_model_assemblage_sequential.hpp" no
                 shared_ptr[IFeatureSamplingFactory] featureSamplingFactoryPtr,
                 shared_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr, shared_ptr[IPruning] pruningPtr,
                 shared_ptr[IPostProcessor] postProcessorPtr,
-                unique_ptr[forward_list[shared_ptr[IStoppingCriterion]]] stoppingCriteriaPtr)
+                forward_list[shared_ptr[IStoppingCriterion]] stoppingCriteriaPtr)
 
 
 cdef class RuleModelAssemblage:

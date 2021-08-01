@@ -37,7 +37,7 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
 
         std::shared_ptr<IPostProcessor> postProcessorPtr_;
 
-        std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr_;
+        std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria_;
 
     public:
 
@@ -73,9 +73,8 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
          *                                              used to prune the rules
          * @param postProcessorPtr                      A shared pointer to an object of type `IPostProcessor` that
          *                                              should be used to post-process the predictions of rules
-         * @param stoppingCriteriaPtr                   An unique pointer to a list that contains the stopping criteria,
-         *                                              which should be used to decide whether additional rules should
-         *                                              be induced or not
+         * @param stoppingCriteriaPtr                   A list that contains the stopping criteria, which should be used
+         *                                              to decide whether additional rules should be induced or not
          */
         SequentialRuleModelAssemblage(
             std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
@@ -87,7 +86,7 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
             std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
             std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
-            std::unique_ptr<std::forward_list<std::shared_ptr<IStoppingCriterion>>> stoppingCriteriaPtr);
+            std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria);
 
         std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
                                                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,

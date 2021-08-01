@@ -89,12 +89,13 @@ cdef class SequentialRuleModelAssemblage(RuleModelAssemblage):
 
         cdef unique_ptr[forward_list[shared_ptr[IStoppingCriterion]]] stopping_criteria_ptr = make_unique[forward_list[shared_ptr[IStoppingCriterion]]]()
         cdef uint32 num_stopping_criteria = len(stopping_criteria)
+        cdef forward_list[shared_ptr[IStoppingCriterion]] stopping_criteria_list
         cdef StoppingCriterion stopping_criterion
         cdef uint32 i
 
         for i in range(num_stopping_criteria):
             stopping_criterion = stopping_criteria[i]
-            stopping_criteria_ptr.get().push_front(stopping_criterion.stopping_criterion_ptr)
+            stopping_criteria_list.push_front(stopping_criterion.stopping_criterion_ptr)
 
         self.rule_model_assemblage_ptr = <shared_ptr[IRuleModelAssemblage]>make_shared[SequentialRuleModelAssemblageImpl](
             statistics_provider_factory.statistics_provider_factory_ptr, thresholds_factory.thresholds_factory_ptr,
@@ -103,4 +104,4 @@ cdef class SequentialRuleModelAssemblage(RuleModelAssemblage):
             instance_sampling_factory.instance_sampling_factory_ptr,
             feature_sampling_factory.feature_sampling_factory_ptr,
             partition_sampling_factory.partition_sampling_factory_ptr, pruning.pruning_ptr,
-            post_processor.post_processor_ptr, move(stopping_criteria_ptr))
+            post_processor.post_processor_ptr, stopping_criteria_list)
