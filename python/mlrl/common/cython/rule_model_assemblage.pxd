@@ -31,7 +31,22 @@ cdef extern from "common/rule_induction/rule_model_assemblage.hpp" nogil:
 
 
     cdef cppclass IRuleModelAssemblageFactory:
-        pass
+
+        # Functions:
+
+        # TODO Remove
+        unique_ptr[IRuleModelAssemblage] create(shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
+                                                shared_ptr[IThresholdsFactory] thresholdsFactoryPtr,
+                                                shared_ptr[IRuleInduction] ruleInductionPtr,
+                                                shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
+                                                shared_ptr[IHeadRefinementFactory] regularRuleHeadRefinementFactoryPtr,
+                                                shared_ptr[ILabelSamplingFactory] labelSamplingFactoryPtr,
+                                                shared_ptr[IInstanceSamplingFactory] instanceSamplingFactoryPtr,
+                                                shared_ptr[IFeatureSamplingFactory] featureSamplingFactoryPtr,
+                                                shared_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr,
+                                                shared_ptr[IPruning] pruningPtr,
+                                                shared_ptr[IPostProcessor] postProcessorPtr,
+                                                const forward_list[shared_ptr[IStoppingCriterion]] stoppingCriteria)
 
 
 cdef extern from "common/rule_induction/rule_model_assemblage_sequential.hpp" nogil:
