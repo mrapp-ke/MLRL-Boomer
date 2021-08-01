@@ -15,18 +15,18 @@ class ApproximateThresholdsFactory final : public IThresholdsFactory {
 
     private:
 
-        std::shared_ptr<IFeatureBinning> binningPtr_;
+        std::unique_ptr<IFeatureBinning> binningPtr_;
 
         uint32 numThreads_;
 
     public:
 
         /**
-         * @param binningPtr A shared pointer to an object of type `IFeatureBinning` that implements the binning method
+         * @param binningPtr An unique pointer to an object of type `IFeatureBinning` that implements the binning method
          *                   to be used
          * @param numThreads The number of CPU threads to be used to update statistics in parallel. Must be at least 1
          */
-        ApproximateThresholdsFactory(std::shared_ptr<IFeatureBinning> binningPtr, uint32 numThreads);
+        ApproximateThresholdsFactory(std::unique_ptr<IFeatureBinning> binningPtr, uint32 numThreads);
 
         std::unique_ptr<IThresholds> create(const IFeatureMatrix& featureMatrix,
                                             const INominalFeatureMask& nominalFeatureMask,
