@@ -1,5 +1,5 @@
 from mlrl.common.cython._types cimport uint32, float32
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "boosting/binning/label_binning.hpp" namespace "boosting" nogil:
@@ -21,7 +21,7 @@ cdef class LabelBinningFactory:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelBinningFactory] label_binning_factory_ptr
+    cdef unique_ptr[ILabelBinningFactory] label_binning_factory_ptr
 
 
 cdef class EqualWidthLabelBinningFactory(LabelBinningFactory):

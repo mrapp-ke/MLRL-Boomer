@@ -405,9 +405,10 @@ class ApproximateThresholds final : public AbstractThresholds {
 
 };
 
-ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::shared_ptr<IFeatureBinning> binningPtr,
+ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::unique_ptr<IFeatureBinning> binningPtr,
                                                            uint32 numThreads)
-    : binningPtr_(binningPtr), numThreads_(numThreads) {
+    : binningPtr_(std::move(binningPtr)), numThreads_(numThreads) {
+    assertNotNull("binningPtr", binningPtr_.get());
     assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
 }
 

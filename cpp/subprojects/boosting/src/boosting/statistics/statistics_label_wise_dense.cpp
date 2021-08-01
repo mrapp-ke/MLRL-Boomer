@@ -52,8 +52,8 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunction          A shared pointer to an object of type `ILabelWiseLoss`, representing the
-             *                              loss function to be used for calculating gradients and Hessians
+             * @param lossFunction          A reference to an object of type `ILabelWiseLoss`, representing the loss
+             *                              function to be used for calculating gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory`, that
              *                              allows to create instances of the class that is used for calculating the
              *                              predictions, as well as corresponding quality scores, of rules
@@ -117,7 +117,7 @@ namespace boosting {
             const ILabelWiseLoss& lossFunction, const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
             uint32 numThreads)
         : lossFunction_(lossFunction), ruleEvaluationFactory_(ruleEvaluationFactory), numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     std::unique_ptr<ILabelWiseStatistics> DenseLabelWiseStatisticsFactory::create(
@@ -132,14 +132,19 @@ namespace boosting {
     }
 
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
-            std::shared_ptr<ILabelWiseLoss> lossFunctionPtr,
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-            std::shared_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
-        : lossFunctionPtr_(lossFunctionPtr), defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
-          regularRuleEvaluationFactoryPtr_(regularRuleEvaluationFactoryPtr),
-          pruningRuleEvaluationFactoryPtr_(pruningRuleEvaluationFactoryPtr), numThreads_(numThreads) {
-
+            std::unique_ptr<ILabelWiseLoss> lossFunctionPtr,
+            std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+            std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+            std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
+        : lossFunctionPtr_(std::move(lossFunctionPtr)),
+          defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
+          regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
+          pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {
+        assertNotNull("lossFunctionPtr", lossFunctionPtr_.get());
+        assertNotNull("defaultRuleEvaluationFactoryPtr", defaultRuleEvaluationFactoryPtr_.get());
+        assertNotNull("regularRuleEvaluationFactoryPtr", regularRuleEvaluationFactoryPtr_.get());
+        assertNotNull("pruningRuleEvaluationFactoryPtr", pruningRuleEvaluationFactoryPtr_.get());
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(

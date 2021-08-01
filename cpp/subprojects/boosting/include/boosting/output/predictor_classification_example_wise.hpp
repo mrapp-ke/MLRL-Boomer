@@ -21,19 +21,19 @@ namespace boosting {
 
         private:
 
-            std::shared_ptr<ISimilarityMeasure> measurePtr_;
+            std::unique_ptr<ISimilarityMeasure> measurePtr_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param measurePtr    A shared pointer to an object of type `ISimilarityMeasure` that should be used to
+             * @param measurePtr    An unique pointer to an object of type `ISimilarityMeasure` that should be used to
              *                      quantify the similarity between predictions and known label vectors
              * @param numThreads    The number of CPU threads to be used to make predictions for different query
              *                      examples in parallel. Must be at least 1
              */
-            ExampleWiseClassificationPredictor(std::shared_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads);
+            ExampleWiseClassificationPredictor(std::unique_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads);
 
             /**
              * Obtains predictions for different examples, based on predicted scores, and writes them to a given

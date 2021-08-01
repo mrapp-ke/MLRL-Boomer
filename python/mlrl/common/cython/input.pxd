@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint8, uint32, float32
 
 from libcpp cimport bool
-from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "common/input/label_vector.hpp" nogil:
@@ -169,7 +169,7 @@ cdef class LabelMatrix:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelMatrix] label_matrix_ptr
+    cdef unique_ptr[ILabelMatrix] label_matrix_ptr
 
 
 cdef class CContiguousLabelMatrix(LabelMatrix):
@@ -188,7 +188,7 @@ cdef class FeatureMatrix:
 
     # Attributes:
 
-    cdef shared_ptr[IFeatureMatrix] feature_matrix_ptr
+    cdef unique_ptr[IFeatureMatrix] feature_matrix_ptr
 
 
 cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
@@ -203,21 +203,21 @@ cdef class CContiguousFeatureMatrix:
 
     # Attributes:
 
-    cdef shared_ptr[CContiguousFeatureMatrixImpl] feature_matrix_ptr
+    cdef unique_ptr[CContiguousFeatureMatrixImpl] feature_matrix_ptr
 
 
 cdef class CsrFeatureMatrix:
 
     # Attributes:
 
-    cdef shared_ptr[CsrFeatureMatrixImpl] feature_matrix_ptr
+    cdef unique_ptr[CsrFeatureMatrixImpl] feature_matrix_ptr
 
 
 cdef class NominalFeatureMask:
 
     # Attributes:
 
-    cdef shared_ptr[INominalFeatureMask] nominal_feature_mask_ptr
+    cdef unique_ptr[INominalFeatureMask] nominal_feature_mask_ptr
 
 
 cdef class BitNominalFeatureMask(NominalFeatureMask):
@@ -232,7 +232,7 @@ cdef class LabelVectorSet:
 
     # Attributes:
 
-    cdef shared_ptr[LabelVectorSetImpl] label_vector_set_ptr
+    cdef unique_ptr[LabelVectorSetImpl] label_vector_set_ptr
 
 
 cdef class LabelVectorSetSerializer:
@@ -244,7 +244,3 @@ cdef class LabelVectorSetSerializer:
     # Functions:
 
     cdef __visit_label_vector(self, const LabelVector& label_vector)
-
-    cpdef object serialize(self, LabelVectorSet label_vector_set)
-
-    cpdef deserialize(self, LabelVectorSet label_vector_set, object state)

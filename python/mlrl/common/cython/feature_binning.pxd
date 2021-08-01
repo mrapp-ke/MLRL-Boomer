@@ -1,6 +1,6 @@
 from mlrl.common.cython._types cimport uint32, float32
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "common/binning/feature_binning.hpp" nogil:
@@ -31,7 +31,7 @@ cdef class FeatureBinning:
 
     # Attributes:
 
-    cdef shared_ptr[IFeatureBinning] binning_ptr
+    cdef unique_ptr[IFeatureBinning] binning_ptr
 
 
 cdef class EqualFrequencyFeatureBinning(FeatureBinning):
