@@ -1,8 +1,6 @@
 from mlrl.common.cython._types cimport uint32
-from mlrl.common.cython.input cimport NominalFeatureMask, INominalFeatureMask
-from mlrl.common.cython.input cimport FeatureMatrix, IFeatureMatrix
-from mlrl.common.cython.input cimport LabelMatrix, ILabelMatrix
-from mlrl.common.cython.model cimport ModelBuilder, RuleModel, IModelBuilder, RuleModelImpl
+from mlrl.common.cython.input cimport INominalFeatureMask, IFeatureMatrix, ILabelMatrix
+from mlrl.common.cython.model cimport IModelBuilder, RuleModelImpl
 
 from libcpp.memory cimport unique_ptr, shared_ptr
 
@@ -34,11 +32,6 @@ cdef class RuleModelAssemblage:
     # Attributes:
 
     cdef unique_ptr[IRuleModelAssemblage] rule_model_assemblage_ptr
-
-    # Functions:
-
-    cpdef RuleModel induce_rules(self, NominalFeatureMask nominal_feature_mask, FeatureMatrix feature_matrix,
-                                 LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder)
 
 
 cdef class RuleModelAssemblageFactory:

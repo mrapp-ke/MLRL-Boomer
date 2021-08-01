@@ -244,7 +244,3 @@ cdef class LabelVectorSetSerializer:
     # Functions:
 
     cdef __visit_label_vector(self, const LabelVector& label_vector)
-
-    cpdef object serialize(self, LabelVectorSet label_vector_set)
-
-    cpdef deserialize(self, LabelVectorSet label_vector_set, object state)

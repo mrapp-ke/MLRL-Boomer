@@ -239,7 +239,7 @@ cdef class LabelVectorSetSerializer:
 
         self.state.append(label_vector_state)
 
-    cpdef object serialize(self, LabelVectorSet label_vector_set):
+    def serialize(self, LabelVectorSet label_vector_set not None):
         """
         Creates and returns a state, which may be serialized using Python's pickle mechanism, from the label vectors
         that are stored by a given `LabelVectorSet`.
@@ -253,7 +253,7 @@ cdef class LabelVectorSetSerializer:
                                                           <LabelVectorCythonVisitor>self.__visit_label_vector))
         return (SERIALIZATION_VERSION, self.state)
 
-    cpdef deserialize(self, LabelVectorSet label_vector_set, object state):
+    def deserialize(self, LabelVectorSet label_vector_set not None, object state not None):
         """
         Deserializes the label vectors that are stored by a given state and adds them to a `LabelVectorSet`.
 
