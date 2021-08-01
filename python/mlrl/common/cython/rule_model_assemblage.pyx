@@ -6,8 +6,8 @@ from mlrl.common.cython.model cimport ModelBuilder, RuleModel
 
 from cython.operator cimport dereference
 
-from libcpp.memory cimport make_shared
 from libcpp.utility cimport move
+from libcpp.memory cimport make_unique
 
 
 cdef class RuleModelAssemblage:
@@ -33,4 +33,4 @@ cdef class SequentialRuleModelAssemblageFactory(RuleModelAssemblageFactory):
     """
 
     def __cinit__(self):
-        self.rule_model_assemblage_factory_ptr = <shared_ptr[IRuleModelAssemblageFactory]>make_shared[SequentialRuleModelAssemblageFactoryImpl]()
+        self.rule_model_assemblage_factory_ptr = <unique_ptr[IRuleModelAssemblageFactory]>make_unique[SequentialRuleModelAssemblageFactoryImpl]()

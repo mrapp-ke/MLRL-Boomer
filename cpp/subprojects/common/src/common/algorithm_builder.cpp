@@ -11,10 +11,10 @@ AlgorithmBuilder::AlgorithmBuilder(std::shared_ptr<IStatisticsProviderFactory> s
                                    std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                                    std::shared_ptr<IRuleInduction> ruleInductionPtr,
                                    std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
-                                   std::shared_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr)
+                                   std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr)
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), thresholdsFactoryPtr_(thresholdsFactoryPtr),
       ruleInductionPtr_(ruleInductionPtr), regularRuleHeadRefinementFactoryPtr_(std::move(headRefinementFactoryPtr)),
-      ruleModelAssemblageFactoryPtr_(ruleModelAssemblageFactoryPtr),
+      ruleModelAssemblageFactoryPtr_(std::move(ruleModelAssemblageFactoryPtr)),
       labelSamplingFactoryPtr_(std::make_shared<NoLabelSamplingFactory>()),
       instanceSamplingFactoryPtr_(std::make_shared<NoInstanceSamplingFactory>()),
       featureSamplingFactoryPtr_(std::make_shared<NoFeatureSamplingFactory>()),
