@@ -2,7 +2,8 @@
 @author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_shared
+from libcpp.utility cimport move
+from libcpp.memory cimport shared_ptr, make_shared, make_unique
 
 
 cdef class LiftFunction:
@@ -25,7 +26,7 @@ cdef class PeakLiftFunction(LiftFunction):
         :param curvature:   The curvature of the lift function. A greater value results in a steeper curvature, a
                             smaller value results in a flatter curvature. Must be greater than 0
         """
-        self.lift_function_ptr = <shared_ptr[ILiftFunction]>make_shared[PeakLiftFunctionImpl](num_labels, peak_label,
+        self.lift_function_ptr = <unique_ptr[ILiftFunction]>make_unique[PeakLiftFunctionImpl](num_labels, peak_label,
                                                                                               max_lift, curvature)
 
 
@@ -36,4 +37,4 @@ cdef class PartialHeadRefinementFactory(HeadRefinementFactory):
 
     def __cinit__(self, LiftFunction lift_function not None):
         self.head_refinement_factory_ptr = <shared_ptr[IHeadRefinementFactory]>make_shared[PartialHeadRefinementFactoryImpl](
-            lift_function.lift_function_ptr)
+            move(lift_function.lift_function_ptr))
