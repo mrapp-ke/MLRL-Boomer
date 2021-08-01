@@ -310,9 +310,9 @@ namespace boosting {
     };
 
     BinnedExampleWiseRuleEvaluationFactory::BinnedExampleWiseRuleEvaluationFactory(
-            float64 l2RegularizationWeight, std::shared_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
+            float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
             std::unique_ptr<Blas> blasPtr, std::unique_ptr<Lapack> lapackPtr)
-        : l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(labelBinningFactoryPtr),
+        : l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)),
           blasPtr_(std::move(blasPtr)), lapackPtr_(std::move(lapackPtr)) {
         assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
     }

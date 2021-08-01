@@ -31,7 +31,7 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_binning.
         # Constructors:
 
         BinnedExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
-                                                   shared_ptr[ILabelBinningFactory] labelBinningFactoryPtr,
+                                                   unique_ptr[ILabelBinningFactory] labelBinningFactoryPtr,
                                                    unique_ptr[Blas] blasPtr, unique_ptr[Lapack] lapackPtr) except +
 
 
