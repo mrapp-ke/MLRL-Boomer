@@ -23,10 +23,10 @@ cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
         :param default_rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` that allows to create instances of
                                                 the class that should be used for calculating the predictions, as well
                                                 as corresponding quality scores, of the default rule
-        :param regular_rule_evaluation:         The `LabelWiseRuleEvaluationFactory` that allows to create instances of
+        :param regular_rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` that allows to create instances of
                                                 the class that should be used for calculating the predictions, as well
                                                 as corresponding quality scores, of all remaining rules
-        :param pruning_rule_evaluation:         The `LabelWiseRuleEvaluationFactory` that allows to create instances of
+        :param pruning_rule_evaluation_factory: The `LabelWiseRuleEvaluationFactory` that allows to create instances of
                                                 the class that should be used for calculating the predictions, as well
                                                 as corresponding quality scores, when pruning rules
         :param num_threads:                     The number of CPU threads to be used to calculate the initial statistics
