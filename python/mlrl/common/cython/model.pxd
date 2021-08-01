@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint32, float32, float64
 
 from libcpp cimport bool
-from libcpp.memory cimport unique_ptr, shared_ptr
+from libcpp.memory cimport unique_ptr
 from libcpp.list cimport list as double_linked_list
 
 
@@ -299,7 +299,7 @@ cdef class ModelBuilder:
 
     # Attributes:
 
-    cdef shared_ptr[IModelBuilder] model_builder_ptr
+    cdef unique_ptr[IModelBuilder] model_builder_ptr
 
 
 cdef class RuleModelSerializer:
