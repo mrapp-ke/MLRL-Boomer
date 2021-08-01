@@ -44,37 +44,84 @@ cdef class AlgorithmBuilder:
             rule_model_assemblage_factory.rule_model_assemblage_factory_ptr)
 
     def set_label_sampling_factory(self, LabelSamplingFactory label_sampling_factory not None) -> AlgorithmBuilder:
+        """
+        TODO
+
+        :param label_sampling_factory:  TODO
+        :return:                        TODO
+        """
         self.builder_ptr.get().setLabelSamplingFactory(label_sampling_factory.label_sampling_factory_ptr)
         return self
 
     def set_instance_sampling_factory(self,
                                       InstanceSamplingFactory instance_sampling_factory not None) -> AlgorithmBuilder:
+        """
+        TODO
+
+        :param instance_sampling_factory:   TODO
+        :return:                            TODO
+        """
         self.builder_ptr.get().setInstanceSamplingFactory(instance_sampling_factory.instance_sampling_factory_ptr)
         return self
 
     def set_feature_sampling_factory(self,
                                      FeatureSamplingFactory feature_sampling_factory not None) -> AlgorithmBuilder:
+        """
+        TODO
+
+        :param feature_sampling_factory:    TODO
+        :return:                            TODO
+        """
         self.builder_ptr.get().setFeatureSamplingFactory(feature_sampling_factory.feature_sampling_factory_ptr)
         return self
 
     def set_partition_sampling_factory(
             self, PartitionSamplingFactory partition_sampling_factory not None) -> AlgorithmBuilder:
+        """
+        TODO
+
+        :param partition_sampling_factory:  TODO
+        :return:                            TODO
+        """
         self.builder_ptr.get().setPartitionSamplingFactory(partition_sampling_factory.partition_sampling_factory_ptr)
         return self
 
     def set_pruning(self, Pruning pruning not None ) -> AlgorithmBuilder:
+        """
+        TODO
+
+        :param pruning: TODO
+        :return:        TODO
+        """
         self.builder_ptr.get().setPruning(pruning.pruning_ptr)
         return self
 
     def set_post_processor(self, PostProcessor post_processor not None) -> AlgorithmBuilder:
+        """
+        TODO
+
+        :param post_processor:  TODO
+        :return:                TODO
+        """
         self.builder_ptr.get().setPostProcessor(post_processor.post_processor_ptr)
         return self
 
     def add_stopping_criterion(self, StoppingCriterion stopping_criterion not None) -> AlgorithmBuilder:
+        """
+        TODO
+
+        :param stopping_criterion:  TODO
+        :return:                    TODO
+        """
         self.builder_ptr.get().addStoppingCriterion(stopping_criterion.stopping_criterion_ptr)
         return self
 
     def build(self) -> RuleModelAssemblage:
+        """
+        TODO
+
+        :return: TODO
+        """
         cdef RuleModelAssemblage rule_model_assemblage = RuleModelAssemblage.__new__(RuleModelAssemblage)
         rule_model_assemblage.rule_model_assemblage_ptr = move(self.builder_ptr.get().build())
         return rule_model_assemblage
