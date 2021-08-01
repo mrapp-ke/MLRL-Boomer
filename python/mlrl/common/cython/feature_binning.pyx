@@ -2,7 +2,7 @@
 @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_shared
+from libcpp.memory cimport make_unique
 
 
 cdef class FeatureBinning:
@@ -23,7 +23,7 @@ cdef class EqualFrequencyFeatureBinning(FeatureBinning):
         :param min_bins:    The minimum number of bins to be used
         :param max_bins:    The maximum number of bins to be used
         """
-        self.binning_ptr = <shared_ptr[IFeatureBinning]>make_shared[EqualFrequencyFeatureBinningImpl](bin_ratio,
+        self.binning_ptr = <unique_ptr[IFeatureBinning]>make_unique[EqualFrequencyFeatureBinningImpl](bin_ratio,
                                                                                                       min_bins,
                                                                                                       max_bins)
 
@@ -39,5 +39,5 @@ cdef class EqualWidthFeatureBinning(FeatureBinning):
         :param min_bins:    The minimum number of bins to be used
         :param max_bins:    The maximum number of bins to be used
         """
-        self.binning_ptr = <shared_ptr[IFeatureBinning]>make_shared[EqualWidthFeatureBinningImpl](bin_ratio, min_bins,
+        self.binning_ptr = <unique_ptr[IFeatureBinning]>make_unique[EqualWidthFeatureBinningImpl](bin_ratio, min_bins,
                                                                                                   max_bins)

@@ -5,6 +5,9 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
+from typing import Set
+
+from mlrl.common.strings import format_string_set
 
 
 class Options:
@@ -12,64 +15,79 @@ class Options:
     Stores key-value pairs in a dictionary and provides methods to access and validate them.
     """
 
+    ERROR_MESSAGE_INVALID_SYNTAX = 'Invalid syntax used to specify additional options'
+
+    ERROR_MESSAGE_INVALID_OPTION = 'Expected comma-separated list of key-value pairs'
+
     def __init__(self):
         self.dict = {}
 
     @classmethod
-    def create(cls, string: str):
+    def create(cls, string: str, allowed_keys: Set[str]):
         """
         Parses the options that are provided via a given string that is formatted according to the following syntax:
         "[key1=value1,key2=value2]". If the given string is malformed, a `ValueError` will be raised.
 
-        :param string:  The string to be parsed
-        :return:        An object of type `Options` that stores the key-value pairs that have been parsed from the given
-                        string
+        :param string:          The string to be parsed
+        :param allowed_keys:    A set that contains all valid keys
+        :return:                An object of type `Options` that stores the key-value pairs that have been parsed from
+                                the given string
         """
         options = cls()
 
         if string is not None and len(string) > 0:
-            if not string.startswith('[') or not string.endswith(']'):
-                raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+            if not string.startswith('{'):
+                raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must start with "{", but is "'
+                                 + string + '"')
+            if not string.endswith('}'):
+                raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must end with "}", but is "' + string + '"')
 
             string = string[1:-1]
 
             if len(string) > 0:
-                for argument in string.split(','):
-                    if len(argument) == 0:
-                        raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+                for argument_index, argument in enumerate(string.split(',')):
+                    if len(argument) > 0:
+                        parts = argument.split('=')
 
-                    parts = argument.split('=')
+                        if len(parts) != 2:
+                            raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
+                                             + Options.ERROR_MESSAGE_INVALID_OPTION + ', but got element "' + argument
+                                             + '" at index ' + str(argument_index))
 
-                    if len(parts) != 2:
-                        raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+                        key = parts[0]
 
-                    key = parts[0]
-                    value = parts[1]
+                        if len(key) == 0:
+                            raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
+                                             + Options.ERROR_MESSAGE_INVALID_OPTION
+                                             + ', but key is missing from element "' + argument + '" at index '
+                                             + str(argument_index))
 
-                    if len(key) == 0 or len(value) == 0:
-                        raise ValueError('Invalid syntax used to specify key-value pairs: ' + string)
+                        if key not in allowed_keys:
+                            raise ValueError('Key must be one of ' + format_string_set(allowed_keys) + ', but got key "'
+                                             + key + '" at index ' + str(argument_index))
 
-                    options.dict[key] = value
+                        value = parts[1]
+
+                        if len(value) == 0:
+                            raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
+                                             + Options.ERROR_MESSAGE_INVALID_OPTION
+                                             + ', but value is missing from element "' + argument + '" at index '
+                                             + str(argument_index))
+
+                        options.dict[key] = value
 
         return options
 
-    def get_string(self, key: str, default_value: str, validation=None) -> str:
+    def get_string(self, key: str, default_value: str) -> str:
         """
         Returns a string that corresponds to a specific key.
 
         :param key:             The key
         :param default_value:   The default value to be returned, if no value is associated with the given key
-        :param validation:      A function that validates the value that is associated with the given key or None, if no
-                                validation should be used
         :return:                The value that is associated with the given key or the given default value
         """
         if key in self.dict:
-            value = str(self.dict[key])
-
-            if validation is not None and not validation(value):
-                raise ValueError('Invalid value given for key \'' + key + '\': ' + str(value))
-
-            return value
+            return str(self.dict[key])
 
         return default_value
 
@@ -82,24 +100,23 @@ class Options:
         :return:                The value that is associated with the given key or the given default value
         """
         if key in self.dict:
-            value = str(self.dict[key]).lower()
+            value = str(self.dict[key])
+            lowercase = value.lower()
 
-            if value == 'false':
+            if lowercase == 'false':
                 return False
-            if value == 'true':
+            if lowercase == 'true':
                 return True
-            raise ValueError('Value for key \'' + key + '\' cannot be converted to boolean')
+            raise ValueError('Value for key "' + key + '" is expected to be a boolean, but is "' + value + '"')
 
         return default_value
 
-    def get_int(self, key: str, default_value: int, validation=None) -> int:
+    def get_int(self, key: str, default_value: int) -> int:
         """
         Returns an integer that corresponds to a specific key.
 
         :param key:             The key
         :param default_value:   The default value to be returned, if no value is associated with the given key
-        :param validation:      A function that validates the value that is associated with the given key or None, if no
-                                validation should be used
         :return:                The value that is associated with the given key or the given default value
         """
         if key in self.dict:
@@ -108,23 +125,19 @@ class Options:
             try:
                 value = int(value)
             except ValueError:
-                raise ValueError('Value for key \'' + key + '\' cannot be converted to integer: ' + str(value))
-
-            if validation is not None and not validation(value):
-                raise ValueError('Invalid value given for key \'' + key + '\': ' + str(value))
+                raise ValueError('Value for key "' + key + '" is expected to be an integer, but is "' + str(value)
+                                 + '"')
 
             return value
 
         return default_value
 
-    def get_float(self, key: str, default_value: float, validation=None) -> float:
+    def get_float(self, key: str, default_value: float) -> float:
         """
         Returns a float that corresponds to a specific key.
 
         :param key:             The key
         :param default_value:   The default value to be returned, if no value is associated with the given key
-        :param validation:      A function that validates the value that is associated with the given key or None, if no
-                                validation should be used
         :return:                THe value that is associated with the given key or the given default value
         """
         if key in self.dict:
@@ -133,10 +146,7 @@ class Options:
             try:
                 value = float(value)
             except ValueError:
-                raise ValueError('Value for key \'' + key + '\' cannot be converted to float: ' + str(value))
-
-            if validation is not None and not validation(value):
-                raise ValueError('Invalid value given for key \'' + key + '\': ' + str(value))
+                raise ValueError('Value for key "' + key + '" is expected to be a float, but is "' + str(value) + '"')
 
             return value
 

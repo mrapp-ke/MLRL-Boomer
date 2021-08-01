@@ -1,6 +1,7 @@
 #include "common/thresholds/thresholds_approximate.hpp"
 #include "common/binning/feature_binning_nominal.hpp"
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
+#include "common/validation.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
 
@@ -404,10 +405,11 @@ class ApproximateThresholds final : public AbstractThresholds {
 
 };
 
-ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::shared_ptr<IFeatureBinning> binningPtr,
+ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::unique_ptr<IFeatureBinning> binningPtr,
                                                            uint32 numThreads)
-    : binningPtr_(binningPtr), numThreads_(numThreads) {
-
+    : binningPtr_(std::move(binningPtr)), numThreads_(numThreads) {
+    assertNotNull("binningPtr", binningPtr_.get());
+    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
 }
 
 std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(

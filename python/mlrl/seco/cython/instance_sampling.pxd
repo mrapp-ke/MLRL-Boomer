@@ -1,5 +1,5 @@
 from mlrl.common.cython._types cimport float32
-from mlrl.common.cython.sampling cimport IInstanceSamplingFactory, InstanceSamplingFactory
+from mlrl.common.cython.instance_sampling cimport IInstanceSamplingFactory, InstanceSamplingFactory
 
 
 cdef extern from "seco/sampling/instance_sampling_with_replacement.hpp" namespace "seco" nogil:

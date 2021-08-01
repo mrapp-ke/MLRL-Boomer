@@ -9,26 +9,32 @@ import logging as log
 import os
 from abc import abstractmethod
 from enum import Enum
-from typing import List
+from typing import List, Dict, Set, Optional
 
 import numpy as np
-from mlrl.common.cython.binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
+from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
+from mlrl.common.cython.feature_binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
+from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
+from mlrl.common.cython.head_refinement import HeadRefinementFactory
 from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureMask
 from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
 from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.input import LabelVectorSet
+from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
+    InstanceSamplingWithoutReplacementFactory, \
+    LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
+from mlrl.common.cython.label_sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
-from mlrl.common.cython.pruning import Pruning, NoPruning, IREP
-from mlrl.common.cython.rule_induction import RuleModelAssemblage
-from mlrl.common.cython.sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory, \
-    NoFeatureSamplingFactory
-from mlrl.common.cython.sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory, \
-    NoLabelSamplingFactory
-from mlrl.common.cython.sampling import PartitionSamplingFactory, NoPartitionSamplingFactory, \
-    RandomBiPartitionSamplingFactory, LabelWiseStratifiedBiPartitionSamplingFactory, \
+from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, RandomBiPartitionSamplingFactory, \
+    LabelWiseStratifiedBiPartitionSamplingFactory, \
     ExampleWiseStratifiedBiPartitionSamplingFactory
+from mlrl.common.cython.post_processing import PostProcessor
+from mlrl.common.cython.pruning import Pruning, IREP
+from mlrl.common.cython.rule_induction import RuleInduction
+from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblage, RuleModelAssemblageFactory
+from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
@@ -39,6 +45,7 @@ from sklearn.utils import check_array
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.common.options import Options
+from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
 AUTOMATIC = 'auto'
@@ -73,6 +80,34 @@ ARGUMENT_MAX_BINS = 'max_bins'
 
 PRUNING_IREP = 'irep'
 
+LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}
+}
+
+FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}
+}
+
+INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    SAMPLING_WITH_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
+    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
+    SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_SAMPLE_SIZE},
+    SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_SAMPLE_SIZE}
+}
+
+PARTITION_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    PARTITION_SAMPLING_RANDOM: {ARGUMENT_HOLDOUT_SET_SIZE},
+    SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_HOLDOUT_SET_SIZE},
+    SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_HOLDOUT_SET_SIZE}
+}
+
+FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
+    BINNING_EQUAL_FREQUENCY: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS},
+    BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS}
+}
+
+PRUNING_VALUES: Set[str] = {PRUNING_IREP}
+
 
 class SparsePolicy(Enum):
     AUTO = AUTOMATIC
@@ -85,116 +120,97 @@ class SparseFormat(Enum):
     CSR = 'csr'
 
 
-def create_sparse_policy(policy: str) -> SparsePolicy:
+def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
     try:
         return SparsePolicy(policy)
     except ValueError:
-        raise ValueError('Invalid matrix format given: \'' + str(policy) + '\'. Must be one of ' + str(
-            [x.value for x in SparsePolicy]))
+        raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+                         + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
 
 
-def create_label_sampling_factory(label_sampling: str, num_labels: int) -> LabelSamplingFactory:
-    if label_sampling is None:
-        return NoLabelSamplingFactory()
-    else:
-        prefix, options = parse_prefix_and_options('label_sampling', label_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
+def create_label_sampling_factory(label_sampling: str) -> LabelSamplingFactory:
+    if label_sampling is not None:
+        value, options = parse_param_and_options('label_sampling', label_sampling, LABEL_SAMPLING_VALUES)
 
-        if prefix == SAMPLING_WITHOUT_REPLACEMENT:
-            num_samples = options.get_int(ARGUMENT_NUM_SAMPLES, 1, lambda x: 1 <= x < num_labels)
+        if value == SAMPLING_WITHOUT_REPLACEMENT:
+            num_samples = options.get_int(ARGUMENT_NUM_SAMPLES, 1)
             return LabelSamplingWithoutReplacementFactory(num_samples)
-        raise ValueError('Invalid value given for parameter \'label_sampling\': ' + str(label_sampling))
+    return None
 
 
 def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFactory:
-    if feature_sampling is None:
-        return NoFeatureSamplingFactory()
-    else:
-        prefix, options = parse_prefix_and_options('feature_sampling', feature_sampling, [SAMPLING_WITHOUT_REPLACEMENT])
+    if feature_sampling is not None:
+        value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
 
-        if prefix == SAMPLING_WITHOUT_REPLACEMENT:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.0, lambda x: 0 <= x < 1)
+        if value == SAMPLING_WITHOUT_REPLACEMENT:
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0)
             return FeatureSamplingWithoutReplacementFactory(sample_size)
-        raise ValueError('Invalid value given for parameter \'feature_sampling\': ' + str(feature_sampling))
+    return None
+
+
+def create_instance_sampling_factory(instance_sampling: str) -> InstanceSamplingFactory:
+    if instance_sampling is not None:
+        value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
+
+        if value == SAMPLING_WITH_REPLACEMENT:
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0)
+            return InstanceSamplingWithReplacementFactory(sample_size)
+        elif value == SAMPLING_WITHOUT_REPLACEMENT:
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
+            return InstanceSamplingWithoutReplacementFactory(sample_size)
+        elif value == SAMPLING_STRATIFIED_LABEL_WISE:
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
+            return LabelWiseStratifiedSamplingFactory(sample_size)
+        elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
+            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
+            return ExampleWiseStratifiedSamplingFactory(sample_size)
+    return None
 
 
 def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
-    if holdout is None:
-        return NoPartitionSamplingFactory()
-    else:
-        prefix, options = parse_prefix_and_options('holdout', holdout, [PARTITION_SAMPLING_RANDOM,
-                                                                        SAMPLING_STRATIFIED_LABEL_WISE,
-                                                                        SAMPLING_STRATIFIED_EXAMPLE_WISE])
+    if holdout is not None:
+        value, options = parse_param_and_options('holdout', holdout, PARTITION_SAMPLING_VALUES)
 
-        if prefix == PARTITION_SAMPLING_RANDOM:
-            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+        if value == PARTITION_SAMPLING_RANDOM:
+            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
             return RandomBiPartitionSamplingFactory(holdout_set_size)
-        if prefix == SAMPLING_STRATIFIED_LABEL_WISE:
-            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+        if value == SAMPLING_STRATIFIED_LABEL_WISE:
+            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
             return LabelWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
-        if prefix == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33, lambda x: 0 < x < 1)
+        if value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
+            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
             return ExampleWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
-        raise ValueError('Invalid value given for parameter \'holdout\': ' + str(holdout))
+    return None
 
 
 def create_pruning(pruning: str, instance_sampling: str) -> Pruning:
-    if pruning is None:
-        return NoPruning()
-    else:
-        if pruning == PRUNING_IREP:
+    if pruning is not None:
+        value = parse_param('pruning', pruning, PRUNING_VALUES)
+
+        if value == PRUNING_IREP:
             if instance_sampling is None:
-                log.warning('Parameter \'pruning\' does not have any effect, because parameter '
-                            + '\'instance_sampling\' is set to \'None\'!')
-                return NoPruning()
+                log.warning('Parameter "pruning" does not have any effect, because parameter "instance_sampling" is '
+                            + 'set to "None"!')
+                return None
             return IREP()
-        raise ValueError('Invalid value given for parameter \'pruning\': ' + str(pruning))
+    return None
 
 
 def create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCriterion]:
     stopping_criteria: List[StoppingCriterion] = []
 
-    if max_rules != -1:
-        if max_rules > 0:
-            stopping_criteria.append(SizeStoppingCriterion(max_rules))
-        else:
-            raise ValueError('Invalid value given for parameter \'max_rules\': ' + str(max_rules))
+    if max_rules != 0:
+        stopping_criteria.append(SizeStoppingCriterion(max_rules))
 
-    if time_limit != -1:
-        if time_limit > 0:
-            stopping_criteria.append(TimeStoppingCriterion(time_limit))
-        else:
-            raise ValueError('Invalid value given for parameter \'time_limit\': ' + str(time_limit))
+    if time_limit != 0:
+        stopping_criteria.append(TimeStoppingCriterion(time_limit))
 
     return stopping_criteria
 
 
-def create_min_coverage(min_coverage: int) -> int:
-    if min_coverage < 1:
-        raise ValueError('Invalid value given for parameter \'min_coverage\': ' + str(min_coverage))
-
-    return min_coverage
-
-
-def create_max_conditions(max_conditions: int) -> int:
-    if max_conditions != -1 and max_conditions < 1:
-        raise ValueError('Invalid value given for parameter \'max_conditions\': ' + str(max_conditions))
-
-    return max_conditions
-
-
-def create_max_head_refinements(max_head_refinements: int) -> int:
-    if max_head_refinements != -1 and max_head_refinements < 1:
-        raise ValueError('Invalid value given for parameter \'max_head_refinements\': ' + str(max_head_refinements))
-
-    return max_head_refinements
-
-
 def get_preferred_num_threads(num_threads: int) -> int:
-    if num_threads == -1:
+    if num_threads == 0:
         return os.cpu_count()
-    if num_threads < 1:
-        raise ValueError('Invalid number of threads given: ' + str(num_threads))
-
     return num_threads
 
 
@@ -202,38 +218,46 @@ def create_thresholds_factory(feature_binning: str, num_threads: int) -> Thresho
     if feature_binning is None:
         return ExactThresholdsFactory(num_threads)
     else:
-        prefix, options = parse_prefix_and_options('feature_binning', feature_binning, [BINNING_EQUAL_FREQUENCY,
-                                                                                        BINNING_EQUAL_WIDTH])
+        value, options = parse_param_and_options('feature_binning', feature_binning, FEATURE_BINNING_VALUES)
 
-        if prefix == BINNING_EQUAL_FREQUENCY:
-            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2, lambda x: x >= 2)
-            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+        if value == BINNING_EQUAL_FREQUENCY:
+            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33)
+            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2)
+            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0)
             return ApproximateThresholdsFactory(EqualFrequencyFeatureBinning(bin_ratio, min_bins, max_bins),
                                                 num_threads)
-        elif prefix == BINNING_EQUAL_WIDTH:
-            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33, lambda x: 0 < x < 1)
-            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2, lambda x: x >= 2)
-            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0, lambda x: x == 0 or x >= min_bins)
+        elif value == BINNING_EQUAL_WIDTH:
+            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33)
+            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2)
+            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0)
             return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio, min_bins, max_bins), num_threads)
-        raise ValueError('Invalid value given for parameter \'feature_binning\': ' + str(feature_binning))
 
 
-def parse_prefix_and_options(parameter_name: str, value: str, prefixes: List[str]) -> (str, Options):
-    for prefix in prefixes:
-        if value.startswith(prefix):
-            suffix = value[len(prefix):].strip()
+def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
+    if value in allowed_values:
+        return value
+
+    raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+                     + format_string_set(allowed_values) + ', but is "' + value + '"')
+
+
+def parse_param_and_options(parameter_name: str, value: str,
+                            allowed_values_and_options: Dict[str, Set[str]]) -> (str, Options):
+    for allowed_value, allowed_options in allowed_values_and_options.items():
+        if value.startswith(allowed_value):
+            suffix = value[len(allowed_value):].strip()
 
             if len(suffix) > 0:
                 try:
-                    return prefix, Options.create(suffix)
-                except ValueError:
-                    raise ValueError('Invalid value given for parameter \'' + parameter_name
-                                     + '\'. Invalid syntax used to specify key-value pairs: ' + str(suffix))
+                    return allowed_value, Options.create(suffix, allowed_options)
+                except ValueError as e:
+                    raise ValueError('Invalid options specified for parameter "' + parameter_name + '" with value "'
+                                     + allowed_value + '": ' + str(e))
 
-            return prefix, Options()
+            return allowed_value, Options()
 
-    return None, None
+    raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+                     + format_dict_keys(allowed_values_and_options) + ', but is "' + value + '"')
 
 
 def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, dtype,
@@ -305,7 +329,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
     def _fit(self, x, y):
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = SparseFormat.CSC
-        x_sparse_policy = create_sparse_policy(self.feature_format)
+        x_sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy,
                                                  dtype=DTYPE_FLOAT32)
         x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F', dtype=DTYPE_FLOAT32)),
@@ -325,7 +349,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_format = SparseFormat.CSR
-        y_sparse_policy = create_sparse_policy(self.label_format)
+        y_sparse_policy = create_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y, sparse_format=y_sparse_format, policy=y_sparse_policy,
                                                  dtype=DTYPE_UINT8, sparse_values=False)
         y = check_array((y if y_enforce_sparse else y.toarray(order='C')),
@@ -356,10 +380,56 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = BitNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        rule_model_assemblage = self._create_rule_model_assemblage(num_labels)
+        rule_model_assemblage = self.__create_rule_model_assemblage(num_labels)
         model_builder = self._create_model_builder()
         return rule_model_assemblage.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
                                                   model_builder)
+
+    def __create_rule_model_assemblage(self, num_labels: int) -> RuleModelAssemblage:
+        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(),
+                                             self._create_thresholds_factory(), self._create_rule_induction(),
+                                             self._create_regular_rule_head_refinement_factory(num_labels),
+                                             self._create_rule_model_assemblage_factory())
+
+        default_rule_head_refinement_factory = self._create_default_rule_head_refinement_factory()
+
+        if default_rule_head_refinement_factory is not None:
+            algorithm_builder.set_default_rule_head_refinement_factory(default_rule_head_refinement_factory)
+
+        label_sampling_factory = self._create_label_sampling_factory()
+
+        if label_sampling_factory is not None:
+            algorithm_builder.set_label_sampling_factory(label_sampling_factory)
+
+        instance_sampling_factory = self._create_instance_sampling_factory()
+
+        if instance_sampling_factory is not None:
+            algorithm_builder.set_instance_sampling_factory(instance_sampling_factory)
+
+        feature_sampling_factory = self._create_feature_sampling_factory()
+
+        if feature_sampling_factory is not None:
+            algorithm_builder.set_feature_sampling_factory(feature_sampling_factory)
+
+        partition_sampling_factory = self._create_partition_sampling_factory()
+
+        if partition_sampling_factory is not None:
+            algorithm_builder.set_partition_sampling_factory(partition_sampling_factory)
+
+        pruning = self._create_pruning()
+
+        if pruning is not None:
+            algorithm_builder.set_pruning(pruning)
+
+        post_processor = self._create_post_processor()
+
+        if post_processor is not None:
+            algorithm_builder.set_post_processor(post_processor)
+
+        for stopping_criterion in self._create_stopping_criteria():
+            algorithm_builder.add_stopping_criterion(stopping_criterion)
+
+        return algorithm_builder.build()
 
     def _predict(self, x):
         predictor = self.predictor_
@@ -377,7 +447,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def __predict(self, predictor, label_vectors: LabelVectorSet, x):
         sparse_format = SparseFormat.CSR
-        sparse_policy = create_sparse_policy(self.feature_format)
+        sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
                                                dtype=DTYPE_FLOAT32)
         x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C', dtype=DTYPE_FLOAT32), reset=False,
@@ -396,6 +466,132 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             log.debug('A dense matrix is used to store the feature values of the test examples')
             feature_matrix = CContiguousFeatureMatrix(x)
             return predictor.predict(feature_matrix, model, label_vectors)
+
+    @abstractmethod
+    def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
+        """
+        Must be implemented by subclasses in order to create the `StatisticsProviderFactory` to be used by the rule
+        learner.
+
+        :return: The `StatisticsProviderFactory` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_thresholds_factory(self) -> ThresholdsFactory:
+        """
+        Must be implemented by subclasses in order to create the `ThresholdsFactory` to be used by the rule learner.
+
+        :return: The `ThresholdFactory` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_rule_induction(self) -> RuleInduction:
+        """
+        Must be implemented by subclasses in order to create the `RuleInduction` to be used by the rule learner.
+
+        :return: The `RuleInduction` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
+        """
+        Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
+        for the induction of all regular rules.
+
+        :param num_labels:  The number of labels in the dataset
+        :return:            The `HeadRefinementFactory` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
+        """
+        Must be implemented by subclasses in order to create the `RuleModelAssemblageFactory` to be used by the rule
+        learner.
+
+        :return: The `RuleModelAssemblage` that has been created
+        """
+        pass
+
+    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
+        """
+        Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
+        for the induction of the default rule.
+
+        :return: The `HeadRefinementFactory` that has been created or None, if no default rule should be induced
+        """
+        return None
+
+    def _create_label_sampling_factory(self) -> Optional[LabelSamplingFactory]:
+        """
+        Must be implemented by subclasses in order to create the `LabelSamplingFactory` to be used by the rule learner.
+
+        :return: The `LabelSamplingFactory` that has been created or None, if no label sampling should be used
+        """
+        return None
+
+    def _create_instance_sampling_factory(self) -> Optional[InstanceSamplingFactory]:
+        """
+        Must be implemented by subclasses in order to create the `InstanceSamplingFactory` to be used by the rule
+        learner.
+
+        :return: The `InstanceSamplingFactory` that has been created or None, if no instance sampling should be used
+        """
+        return None
+
+    def _create_feature_sampling_factory(self) -> Optional[FeatureSamplingFactory]:
+        """
+        Must be implemented by subclasses in order to create the `FeatureSamplingFactory` to be used by the rule
+        learner.
+
+        :return: The `FeatureSamplingFactory` that has been created or None, if no feature sampling should be used
+        """
+        return None
+
+    def _create_partition_sampling_factory(self) -> Optional[PartitionSamplingFactory]:
+        """
+        Must be implemented by subclasses in order to create the `PartitionSamplingFactory` to be used by the rule
+        learner.
+
+        :return: The `PartitionSamplingFactory` that has been created or None, if no holdout set should be created
+        """
+        return None
+
+    def _create_pruning(self) -> Optional[Pruning]:
+        """
+        Must be implemented by subclasses in order to create the `Pruning` to be used by the rule learner.
+
+        :return: The `Pruning` that has been created or None, if no pruning should be used
+        """
+        return None
+
+    def _create_post_processor(self) -> Optional[PostProcessor]:
+        """
+        Must be implemented by subclasses in order to create the `PostProcessor` to be used by the rule learner.
+
+        :return: The `PostProcessor` that has been created or None, if no post-processor should be used
+        """
+        return None
+
+    def _create_stopping_criteria(self) -> List[StoppingCriterion]:
+        """
+        Must be implemented by subclasses in order to create a list of stopping criteria to be used by the rule learner.
+
+        :return: A list of stopping criteria that has been created
+        """
+        return []
+
+    @abstractmethod
+    def _create_model_builder(self) -> ModelBuilder:
+        """
+        Must be implemented by subclasses in order to create the builder that should be used for building the model.
+
+        :return: The builder that has been created
+        """
+        pass
 
     @abstractmethod
     def _create_predictor(self, num_labels: int) -> Predictor:
@@ -426,23 +622,3 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         :return:                The `LabelVectorSet` that has been created or None, if no such set should be used
         """
         return None
-
-    @abstractmethod
-    def _create_rule_model_assemblage(self, num_labels: int) -> RuleModelAssemblage:
-        """
-        Must be implemented by subclasses in order to create the algorithm that should be used for inducing a rule
-        model.
-
-        :param num_labels:  The number of labels in the training data set
-        :return:            The algorithm for inducting a rule model that has been created
-        """
-        pass
-
-    @abstractmethod
-    def _create_model_builder(self) -> ModelBuilder:
-        """
-        Must be implemented by subclasses in order to create the builder that should be used for building the model.
-
-        :return: The builder that has been created
-        """
-        pass

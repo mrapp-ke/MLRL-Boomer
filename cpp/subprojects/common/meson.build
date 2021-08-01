@@ -65,6 +65,11 @@ source_files = [
     'src/common/rule_refinement/rule_refinement_exact.cpp',
     'src/common/sampling/feature_sampling_no.cpp',
     'src/common/sampling/feature_sampling_without_replacement.cpp',
+    'src/common/sampling/instance_sampling_no.cpp',
+    'src/common/sampling/instance_sampling_stratified_example_wise.cpp',
+    'src/common/sampling/instance_sampling_stratified_label_wise.cpp',
+    'src/common/sampling/instance_sampling_with_replacement.cpp',
+    'src/common/sampling/instance_sampling_without_replacement.cpp',
     'src/common/sampling/label_sampling_no.cpp',
     'src/common/sampling/label_sampling_without_replacement.cpp',
     'src/common/sampling/partition_bi.cpp',
@@ -83,7 +88,8 @@ source_files = [
     'src/common/thresholds/coverage_mask.cpp',
     'src/common/thresholds/coverage_set.cpp',
     'src/common/thresholds/thresholds_approximate.cpp',
-    'src/common/thresholds/thresholds_exact.cpp'
+    'src/common/thresholds/thresholds_exact.cpp',
+    'src/common/algorithm_builder.cpp'
 ]
 
 # Dependencies

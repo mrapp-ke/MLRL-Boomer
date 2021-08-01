@@ -54,30 +54,30 @@ namespace boosting {
 
         private:
 
-            std::shared_ptr<IExampleWiseLoss> lossFunctionPtr_;
+            std::unique_ptr<IExampleWiseLoss> lossFunctionPtr_;
 
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
+            std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
+            std::unique_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
-            std::shared_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+            std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param lossFunctionPtr                   A shared pointer to an object of type `IExampleWiseLoss` that
+             * @param lossFunctionPtr                   An unique pointer to an object of type `IExampleWiseLoss` that
              *                                          should be used for calculating gradients and Hessians
-             * @param defaultRuleEvaluationFactoryPtr   A shared pointer to an object of type
+             * @param defaultRuleEvaluationFactoryPtr   An unique pointer to an object of type
              *                                          `IExampleWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, of the default rule
-             * @param regularRuleEvaluationFactoryPtr   A shared pointer to an object of type
+             * @param regularRuleEvaluationFactoryPtr   An unique pointer to an object of type
              *                                          `IExampleWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, of all remaining rules
-             * @param pruningRuleEvaluationFactoryPtr   A shared pointer to an object of type
+             * @param pruningRuleEvaluationFactoryPtr   An unique pointer to an object of type
              *                                          `IExampleWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, when pruning rules
@@ -85,10 +85,10 @@ namespace boosting {
              *                                          statistics in parallel. Must be at least 1
              */
             DenseExampleWiseStatisticsProviderFactory(
-                std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
-                std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-                std::shared_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-                std::shared_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
+                std::unique_ptr<IExampleWiseLoss> lossFunctionPtr,
+                std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+                std::unique_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+                std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
 
             std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const override;
 

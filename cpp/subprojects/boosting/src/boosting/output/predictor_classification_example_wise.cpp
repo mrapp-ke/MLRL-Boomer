@@ -1,4 +1,5 @@
 #include "boosting/output/predictor_classification_example_wise.hpp"
+#include "common/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
@@ -44,9 +45,10 @@ namespace boosting {
     }
 
     ExampleWiseClassificationPredictor::ExampleWiseClassificationPredictor(
-            std::shared_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads)
-        : measurePtr_(measurePtr), numThreads_(numThreads) {
-
+            std::unique_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads)
+        : measurePtr_(std::move(measurePtr)), numThreads_(numThreads) {
+        assertNotNull("measurePtr", measurePtr_.get());
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     void ExampleWiseClassificationPredictor::transform(const CContiguousConstView<float64>& scoreMatrix,
