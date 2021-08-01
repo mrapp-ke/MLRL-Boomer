@@ -3,7 +3,8 @@
 """
 from mlrl.common.cython.measures cimport EvaluationMeasure
 
-from libcpp.memory cimport make_shared
+from libcpp.utility cimport move
+from libcpp.memory cimport unique_ptr, make_shared
 
 
 cdef class StoppingCriterion:
@@ -100,7 +101,7 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
         :param force_stop:              True, if the induction of rules should be forced to be stopped, if the stopping
                                         criterion is met, False, if the time of stopping should only be stored
         """
-        cdef shared_ptr[IEvaluationMeasure] measure_ptr = measure.get_evaluation_measure_ptr()
+        cdef unique_ptr[IEvaluationMeasure] measure_ptr = measure.get_evaluation_measure_ptr()
         self.stopping_criterion_ptr = <shared_ptr[IStoppingCriterion]>make_shared[MeasureStoppingCriterionImpl](
-            measure_ptr, aggregation_function.aggregation_function_ptr, min_rules, update_interval, stop_interval,
+            move(measure_ptr), aggregation_function.aggregation_function_ptr, min_rules, update_interval, stop_interval,
             num_past, num_recent, min_improvement, force_stop)

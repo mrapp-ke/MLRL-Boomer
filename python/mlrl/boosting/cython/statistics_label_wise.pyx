@@ -5,6 +5,7 @@ from mlrl.common.cython._types cimport uint32
 from mlrl.boosting.cython.losses_label_wise cimport LabelWiseLoss
 from mlrl.boosting.cython.rule_evaluation_label_wise cimport LabelWiseRuleEvaluationFactory
 
+from libcpp.utility cimport move
 from libcpp.memory cimport make_shared
 
 
@@ -32,6 +33,6 @@ cdef class DenseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
                                                 in parallel. Must be at least 1
         """
         self.statistics_provider_factory_ptr = <shared_ptr[IStatisticsProviderFactory]>make_shared[DenseLabelWiseStatisticsProviderFactoryImpl](
-            loss_function.loss_function_ptr, default_rule_evaluation_factory.rule_evaluation_factory_ptr,
+            move(loss_function.loss_function_ptr), default_rule_evaluation_factory.rule_evaluation_factory_ptr,
             regular_rule_evaluation_factory.rule_evaluation_factory_ptr,
             pruning_rule_evaluation_factory.rule_evaluation_factory_ptr, num_threads)

@@ -130,11 +130,12 @@ namespace boosting {
     }
 
     DenseExampleWiseStatisticsProviderFactory::DenseExampleWiseStatisticsProviderFactory(
-            std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
+            std::unique_ptr<IExampleWiseLoss> lossFunctionPtr,
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
-        : lossFunctionPtr_(lossFunctionPtr), defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
+        : lossFunctionPtr_(std::move(lossFunctionPtr)),
+          defaultRuleEvaluationFactoryPtr_(defaultRuleEvaluationFactoryPtr),
           regularRuleEvaluationFactoryPtr_(regularRuleEvaluationFactoryPtr),
           pruningRuleEvaluationFactoryPtr_(pruningRuleEvaluationFactoryPtr), numThreads_(numThreads) {
 

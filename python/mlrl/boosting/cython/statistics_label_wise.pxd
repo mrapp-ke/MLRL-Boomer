@@ -2,7 +2,7 @@ from mlrl.common.cython.statistics cimport StatisticsProviderFactory, IStatistic
 from mlrl.boosting.cython.losses_label_wise cimport ILabelWiseLoss
 from mlrl.boosting.cython.rule_evaluation_label_wise cimport ILabelWiseRuleEvaluationFactory
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr, shared_ptr
 
 
 cdef extern from "boosting/statistics/statistics_label_wise_dense.hpp" namespace "boosting" nogil:
@@ -13,7 +13,7 @@ cdef extern from "boosting/statistics/statistics_label_wise_dense.hpp" namespace
         # Constructors:
 
         DenseLabelWiseStatisticsProviderFactoryImpl(
-            shared_ptr[ILabelWiseLoss] lossFunctionPtr,
+            unique_ptr[ILabelWiseLoss] lossFunctionPtr,
             shared_ptr[ILabelWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
             shared_ptr[ILabelWiseRuleEvaluationFactory] regularRuleEvaluationFactoryPtr,
             shared_ptr[ILabelWiseRuleEvaluationFactory] pruningRuleEvaluationFactoryPtr) except +

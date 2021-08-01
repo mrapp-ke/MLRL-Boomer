@@ -54,7 +54,7 @@ namespace boosting {
 
         private:
 
-            std::shared_ptr<IExampleWiseLoss> lossFunctionPtr_;
+            std::unique_ptr<IExampleWiseLoss> lossFunctionPtr_;
 
             std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -67,7 +67,7 @@ namespace boosting {
         public:
 
             /**
-             * @param lossFunctionPtr                   A shared pointer to an object of type `IExampleWiseLoss` that
+             * @param lossFunctionPtr                   An unique pointer to an object of type `IExampleWiseLoss` that
              *                                          should be used for calculating gradients and Hessians
              * @param defaultRuleEvaluationFactoryPtr   A shared pointer to an object of type
              *                                          `IExampleWiseRuleEvaluationFactory` that should be used for
@@ -85,7 +85,7 @@ namespace boosting {
              *                                          statistics in parallel. Must be at least 1
              */
             DenseExampleWiseStatisticsProviderFactory(
-                std::shared_ptr<IExampleWiseLoss> lossFunctionPtr,
+                std::unique_ptr<IExampleWiseLoss> lossFunctionPtr,
                 std::shared_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
                 std::shared_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
                 std::shared_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
