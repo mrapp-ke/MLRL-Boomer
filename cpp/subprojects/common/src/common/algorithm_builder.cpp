@@ -10,10 +10,10 @@
 AlgorithmBuilder::AlgorithmBuilder(std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                                    std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                                    std::shared_ptr<IRuleInduction> ruleInductionPtr,
-                                   std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
+                                   std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                    std::shared_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr)
     : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), thresholdsFactoryPtr_(thresholdsFactoryPtr),
-      ruleInductionPtr_(ruleInductionPtr), regularRuleHeadRefinementFactoryPtr_(headRefinementFactoryPtr),
+      ruleInductionPtr_(ruleInductionPtr), regularRuleHeadRefinementFactoryPtr_(std::move(headRefinementFactoryPtr)),
       ruleModelAssemblageFactoryPtr_(ruleModelAssemblageFactoryPtr),
       labelSamplingFactoryPtr_(std::make_shared<NoLabelSamplingFactory>()),
       instanceSamplingFactoryPtr_(std::make_shared<NoInstanceSamplingFactory>()),
@@ -24,8 +24,8 @@ AlgorithmBuilder::AlgorithmBuilder(std::shared_ptr<IStatisticsProviderFactory> s
 }
 
 AlgorithmBuilder& AlgorithmBuilder::setDefaultRuleHeadRefinementFactory(
-        std::shared_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) {
-    defaultRuleHeadRefinementFactoryPtr_ = headRefinementFactoryPtr;
+        std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) {
+    defaultRuleHeadRefinementFactoryPtr_ = std::move(headRefinementFactoryPtr);
     return *this;
 }
 

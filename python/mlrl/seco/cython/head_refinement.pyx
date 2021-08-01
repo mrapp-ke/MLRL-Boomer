@@ -3,7 +3,7 @@
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
 from libcpp.utility cimport move
-from libcpp.memory cimport shared_ptr, make_shared, make_unique
+from libcpp.memory cimport unique_ptr, make_unique
 
 
 cdef class LiftFunction:
@@ -36,5 +36,5 @@ cdef class PartialHeadRefinementFactory(HeadRefinementFactory):
     """
 
     def __cinit__(self, LiftFunction lift_function not None):
-        self.head_refinement_factory_ptr = <shared_ptr[IHeadRefinementFactory]>make_shared[PartialHeadRefinementFactoryImpl](
+        self.head_refinement_factory_ptr = <unique_ptr[IHeadRefinementFactory]>make_unique[PartialHeadRefinementFactoryImpl](
             move(lift_function.lift_function_ptr))

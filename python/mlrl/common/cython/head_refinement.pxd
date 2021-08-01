@@ -1,4 +1,4 @@
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "common/head_refinement/head_refinement_factory.hpp" nogil:
@@ -23,7 +23,7 @@ cdef class HeadRefinementFactory:
 
     # Attributes:
 
-    cdef shared_ptr[IHeadRefinementFactory] head_refinement_factory_ptr
+    cdef unique_ptr[IHeadRefinementFactory] head_refinement_factory_ptr
 
 
 cdef class SingleLabelHeadRefinementFactory(HeadRefinementFactory):
