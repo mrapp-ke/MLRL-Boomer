@@ -1,8 +1,18 @@
-from mlrl.common.cython.statistics cimport StatisticsProviderFactory
-from mlrl.common.cython.thresholds cimport ThresholdsFactory
-from mlrl.common.cython.rule_induction cimport RuleInduction
+"""
+@author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+"""
+from mlrl.common.cython.feature_sampling cimport FeatureSamplingFactory
 from mlrl.common.cython.head_refinement cimport HeadRefinementFactory
-from mlrl.common.cython.rule_model_assemblage cimport RuleModelAssemblageFactory
+from mlrl.common.cython.instance_sampling cimport InstanceSamplingFactory
+from mlrl.common.cython.label_sampling cimport LabelSamplingFactory
+from mlrl.common.cython.partition_sampling cimport PartitionSamplingFactory
+from mlrl.common.cython.pruning cimport Pruning
+from mlrl.common.cython.post_processing cimport PostProcessor
+from mlrl.common.cython.rule_induction cimport RuleInduction
+from mlrl.common.cython.rule_model_assemblage cimport RuleModelAssemblage, RuleModelAssemblageFactory
+from mlrl.common.cython.statistics cimport StatisticsProviderFactory
+from mlrl.common.cython.stopping cimport StoppingCriterion
+from mlrl.common.cython.thresholds cimport ThresholdsFactory
 
 from libcpp.utility cimport move
 from libcpp.memory cimport make_unique
@@ -31,35 +41,38 @@ cdef class AlgorithmBuilder:
             regular_rule_head_refinement_factory.head_refinement_factory_ptr,
             rule_model_assemblage_factory.rule_model_assemblage_factory_ptr)
 
-    cpdef AlgorithmBuilder set_label_sampling_factory(self, LabelSamplingFactory label_sampling_factory):
+    def set_label_sampling_factory(self, LabelSamplingFactory label_sampling_factory not None) -> AlgorithmBuilder:
         self.builder_ptr.get().setLabelSamplingFactory(label_sampling_factory.label_sampling_factory_ptr)
         return self
 
-    cpdef AlgorithmBuilder set_instance_sampling_factory(self, InstanceSamplingFactory instance_sampling_factory):
+    def set_instance_sampling_factory(self,
+                                      InstanceSamplingFactory instance_sampling_factory not None) -> AlgorithmBuilder:
         self.builder_ptr.get().setInstanceSamplingFactory(instance_sampling_factory.instance_sampling_factory_ptr)
         return self
 
-    cpdef AlgorithmBuilder set_feature_sampling_factory(self, FeatureSamplingFactory feature_sampling_factory):
+    def set_feature_sampling_factory(self,
+                                     FeatureSamplingFactory feature_sampling_factory not None) -> AlgorithmBuilder:
         self.builder_ptr.get().setFeatureSamplingFactory(feature_sampling_factory.feature_sampling_factory_ptr)
         return self
 
-    cpdef AlgorithmBuilder set_partition_sampling_factory(self, PartitionSamplingFactory partition_sampling_factory):
+    def set_partition_sampling_factory(
+            self, PartitionSamplingFactory partition_sampling_factory not None) -> AlgorithmBuilder:
         self.builder_ptr.get().setPartitionSamplingFactory(partition_sampling_factory.partition_sampling_factory_ptr)
         return self
 
-    cpdef AlgorithmBuilder set_pruning(self, Pruning pruning):
+    def set_pruning(self, Pruning pruning not None ) -> AlgorithmBuilder:
         self.builder_ptr.get().setPruning(pruning.pruning_ptr)
         return self
 
-    cpdef AlgorithmBuilder set_post_processor(self, PostProcessor post_processor):
+    def set_post_processor(self, PostProcessor post_processor not None) -> AlgorithmBuilder:
         self.builder_ptr.get().setPostProcessor(post_processor.post_processor_ptr)
         return self
 
-    cpdef AlgorithmBuilder add_stopping_criterion(self, StoppingCriterion stopping_criterion):
+    def add_stopping_criterion(self, StoppingCriterion stopping_criterion not None) -> AlgorithmBuilder:
         self.builder_ptr.get().addStoppingCriterion(stopping_criterion.stopping_criterion_ptr)
         return self
 
-    cpdef RuleModelAssemblage build(self):
+    def build(self) -> RuleModelAssemblage:
         cdef RuleModelAssemblage rule_model_assemblage = RuleModelAssemblage.__new__(RuleModelAssemblage)
         rule_model_assemblage.rule_model_assemblage_ptr = move(self.builder_ptr.get().build())
         return rule_model_assemblage

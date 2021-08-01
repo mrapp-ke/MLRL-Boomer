@@ -294,14 +294,6 @@ cdef class RuleModel:
 
     cdef unique_ptr[RuleModelImpl] model_ptr
 
-    # Functions:
-
-    cpdef int get_num_rules(self)
-
-    cpdef int get_num_used_rules(self)
-
-    cpdef object set_num_used_rules(self, uint32 num_used_rules)
-
 
 cdef class ModelBuilder:
 
@@ -325,10 +317,6 @@ cdef class RuleModelSerializer:
     cdef __visit_complete_head(self, const CompleteHeadImpl& head)
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
-
-    cpdef object serialize(self, RuleModel model)
-
-    cpdef deserialize(self, RuleModel model, object state)
 
 
 cdef class RuleModelFormatter:
@@ -356,7 +344,3 @@ cdef class RuleModelFormatter:
     cdef __visit_complete_head(self, const CompleteHeadImpl& head)
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
-
-    cpdef void format(self, RuleModel model)
-
-    cpdef object get_text(self)

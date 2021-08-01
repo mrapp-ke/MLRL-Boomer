@@ -1,6 +1,9 @@
 """
 @author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
+from mlrl.common.cython.input cimport NominalFeatureMask, FeatureMatrix, LabelMatrix
+from mlrl.common.cython.model cimport ModelBuilder, RuleModel
+
 from cython.operator cimport dereference
 
 from libcpp.memory cimport make_shared
@@ -12,8 +15,9 @@ cdef class RuleModelAssemblage:
     A wrapper for the pure virtual C++ class `IRuleModelAssemblage`.
     """
 
-    cpdef RuleModel induce_rules(self, NominalFeatureMask nominal_feature_mask, FeatureMatrix feature_matrix,
-                                 LabelMatrix label_matrix, uint32 random_state, ModelBuilder model_builder):
+    def induce_rules(self, NominalFeatureMask nominal_feature_mask not None, FeatureMatrix feature_matrix not None,
+                     LabelMatrix label_matrix not None, int random_state,
+                     ModelBuilder model_builder not None) -> RuleModel:
         cdef unique_ptr[RuleModelImpl] rule_model_ptr = self.rule_model_assemblage_ptr.get().induceRules(
             dereference(nominal_feature_mask.nominal_feature_mask_ptr), dereference(feature_matrix.feature_matrix_ptr),
             dereference(label_matrix.label_matrix_ptr), random_state,
