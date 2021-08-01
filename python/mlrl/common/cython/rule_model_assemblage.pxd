@@ -1,22 +1,10 @@
 from mlrl.common.cython._types cimport uint32
-from mlrl.common.cython.feature_sampling cimport IFeatureSamplingFactory
 from mlrl.common.cython.input cimport NominalFeatureMask, INominalFeatureMask
 from mlrl.common.cython.input cimport FeatureMatrix, IFeatureMatrix
 from mlrl.common.cython.input cimport LabelMatrix, ILabelMatrix
-from mlrl.common.cython.instance_sampling cimport IInstanceSamplingFactory
 from mlrl.common.cython.model cimport ModelBuilder, RuleModel, IModelBuilder, RuleModelImpl
-from mlrl.common.cython.rule_induction cimport IRuleInduction
-from mlrl.common.cython.label_sampling cimport ILabelSamplingFactory
-from mlrl.common.cython.statistics cimport IStatisticsProviderFactory
-from mlrl.common.cython.stopping cimport IStoppingCriterion
-from mlrl.common.cython.thresholds cimport IThresholdsFactory
-from mlrl.common.cython.partition_sampling cimport IPartitionSamplingFactory
-from mlrl.common.cython.pruning cimport IPruning
-from mlrl.common.cython.post_processing cimport IPostProcessor
-from mlrl.common.cython.head_refinement cimport IHeadRefinementFactory
 
 from libcpp.memory cimport unique_ptr, shared_ptr
-from libcpp.forward_list cimport forward_list
 
 
 cdef extern from "common/rule_induction/rule_model_assemblage.hpp" nogil:
@@ -31,22 +19,7 @@ cdef extern from "common/rule_induction/rule_model_assemblage.hpp" nogil:
 
 
     cdef cppclass IRuleModelAssemblageFactory:
-
-        # Functions:
-
-        # TODO Remove
-        unique_ptr[IRuleModelAssemblage] create(shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
-                                                shared_ptr[IThresholdsFactory] thresholdsFactoryPtr,
-                                                shared_ptr[IRuleInduction] ruleInductionPtr,
-                                                shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
-                                                shared_ptr[IHeadRefinementFactory] regularRuleHeadRefinementFactoryPtr,
-                                                shared_ptr[ILabelSamplingFactory] labelSamplingFactoryPtr,
-                                                shared_ptr[IInstanceSamplingFactory] instanceSamplingFactoryPtr,
-                                                shared_ptr[IFeatureSamplingFactory] featureSamplingFactoryPtr,
-                                                shared_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr,
-                                                shared_ptr[IPruning] pruningPtr,
-                                                shared_ptr[IPostProcessor] postProcessorPtr,
-                                                const forward_list[shared_ptr[IStoppingCriterion]] stoppingCriteria)
+        pass
 
 
 cdef extern from "common/rule_induction/rule_model_assemblage_sequential.hpp" nogil:
@@ -56,29 +29,11 @@ cdef extern from "common/rule_induction/rule_model_assemblage_sequential.hpp" no
         pass
 
 
-    # TODO Remove
-    cdef cppclass SequentialRuleModelAssemblageImpl"SequentialRuleModelAssemblage"(IRuleModelAssemblage):
-
-        # Constructors:
-
-        SequentialRuleModelAssemblageImpl(
-                shared_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
-                shared_ptr[IThresholdsFactory] thresholdsFactoryPtr, shared_ptr[IRuleInduction] ruleInductionPtr,
-                shared_ptr[IHeadRefinementFactory] defaultRuleHeadRefinementFactoryPtr,
-                shared_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
-                shared_ptr[ILabelSamplingFactory] labelSamplingFactoryPtr,
-                shared_ptr[IInstanceSamplingFactory] instanceSamplingFactoryPtr,
-                shared_ptr[IFeatureSamplingFactory] featureSamplingFactoryPtr,
-                shared_ptr[IPartitionSamplingFactory] partitionSamplingFactoryPtr, shared_ptr[IPruning] pruningPtr,
-                shared_ptr[IPostProcessor] postProcessorPtr,
-                forward_list[shared_ptr[IStoppingCriterion]] stoppingCriteriaPtr)
-
-
 cdef class RuleModelAssemblage:
 
     # Attributes:
 
-    cdef shared_ptr[IRuleModelAssemblage] rule_model_assemblage_ptr
+    cdef unique_ptr[IRuleModelAssemblage] rule_model_assemblage_ptr
 
     # Functions:
 
@@ -94,9 +49,4 @@ cdef class RuleModelAssemblageFactory:
 
 
 cdef class SequentialRuleModelAssemblageFactory(RuleModelAssemblageFactory):
-    pass
-
-
-# TODO Remove
-cdef class SequentialRuleModelAssemblage(RuleModelAssemblage):
     pass
