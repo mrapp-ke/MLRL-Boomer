@@ -108,8 +108,8 @@ namespace seco {
     };
 
     HeuristicLabelWiseRuleEvaluationFactory::HeuristicLabelWiseRuleEvaluationFactory(
-            std::shared_ptr<IHeuristic> heuristicPtr, bool predictMajority)
-        : heuristicPtr_(heuristicPtr), predictMajority_(predictMajority) {
+            std::unique_ptr<IHeuristic> heuristicPtr, bool predictMajority)
+        : heuristicPtr_(std::move(heuristicPtr)), predictMajority_(predictMajority) {
 
     }
 

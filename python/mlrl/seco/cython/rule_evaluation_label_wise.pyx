@@ -4,6 +4,7 @@
 """
 from mlrl.seco.cython.heuristics cimport Heuristic
 
+from libcpp.utility cimport move
 from libcpp.memory cimport make_shared
 
 
@@ -26,4 +27,4 @@ cdef class HeuristicLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactor
                                 label should be predicted
         """
         self.rule_evaluation_factory_ptr = <shared_ptr[ILabelWiseRuleEvaluationFactory]>make_shared[HeuristicLabelWiseRuleEvaluationFactoryImpl](
-            heuristic.heuristic_ptr, predictMajority)
+            move(heuristic.heuristic_ptr), predictMajority)
