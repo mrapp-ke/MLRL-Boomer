@@ -69,7 +69,7 @@ class AlgorithmBuilder final {
          * @param labelSamplingFactoryPtr   TODO
          * @return                          TODO
          */
-        AlgorithmBuilder& setLabelSamplingFactory(std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr);
+        AlgorithmBuilder& setLabelSamplingFactory(std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr);
 
         /**
          * TODO

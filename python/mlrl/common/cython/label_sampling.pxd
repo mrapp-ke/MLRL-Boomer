@@ -1,6 +1,6 @@
 from mlrl.common.cython._types cimport uint32
 
-from libcpp.memory cimport shared_ptr
+from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "common/sampling/label_sampling.hpp" nogil:
@@ -29,7 +29,7 @@ cdef class LabelSamplingFactory:
 
     # Attributes:
 
-    cdef shared_ptr[ILabelSamplingFactory] label_sampling_factory_ptr
+    cdef unique_ptr[ILabelSamplingFactory] label_sampling_factory_ptr
 
 
 cdef class LabelSamplingWithoutReplacementFactory(LabelSamplingFactory):
