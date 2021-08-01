@@ -6,7 +6,7 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 Provides scikit-learn implementations of boosting algorithms.
 """
 import logging as log
-from typing import Optional, Dict, Set
+from typing import Optional, Dict, Set, List
 
 from mlrl.boosting.cython.binning import LabelBinningFactory, EqualWidthLabelBinningFactory
 from mlrl.boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
@@ -22,29 +22,31 @@ from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWise
     BinnedLabelWiseRuleEvaluationFactory
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
+from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
 from mlrl.common.cython.head_refinement import HeadRefinementFactory, NoHeadRefinementFactory, \
     SingleLabelHeadRefinementFactory, CompleteHeadRefinementFactory
 from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
-from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, NoInstanceSamplingFactory, \
-    InstanceSamplingWithReplacementFactory, InstanceSamplingWithoutReplacementFactory, \
-    LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
+from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
+from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
+from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
 from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
-from mlrl.common.cython.rule_induction import TopDownRuleInduction
-from mlrl.common.cython.rule_model_assemblage import SequentialRuleModelAssemblage
+from mlrl.common.cython.pruning import Pruning
+from mlrl.common.cython.rule_induction import RuleInduction, TopDownRuleInduction
+from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory, SequentialRuleModelAssemblageFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
-from mlrl.common.cython.stopping import MeasureStoppingCriterion, AggregationFunction, MinFunction, MaxFunction, \
-    ArithmeticMeanFunction
+from mlrl.common.cython.stopping import StoppingCriterion, MeasureStoppingCriterion, AggregationFunction, MinFunction, \
+    MaxFunction, ArithmeticMeanFunction
+from mlrl.common.cython.thresholds import ThresholdsFactory
 from sklearn.base import ClassifierMixin
 
-from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITH_REPLACEMENT, SAMPLING_WITHOUT_REPLACEMENT, \
-    SAMPLING_STRATIFIED_LABEL_WISE, SAMPLING_STRATIFIED_EXAMPLE_WISE, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
-    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_SAMPLE_SIZE
+from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
+    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, create_label_sampling_factory, \
-    create_partition_sampling_factory, create_stopping_criteria, get_preferred_num_threads, create_thresholds_factory, \
-    parse_param, parse_param_and_options
+    create_instance_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
+    get_preferred_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
 
 EARLY_STOPPING_LOSS = 'loss'
 
@@ -87,13 +89,6 @@ PREDICTOR_LABEL_WISE = 'label-wise'
 PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
 LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
-
-INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
-    SAMPLING_WITH_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
-    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
-    SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_SAMPLE_SIZE},
-    SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_SAMPLE_SIZE}
-}
 
 HEAD_TYPE_VALUES: Set[str] = {HEAD_TYPE_SINGLE, HEAD_TYPE_COMPLETE, AUTOMATIC}
 
@@ -264,6 +259,181 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
+    def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
+        num_threads = get_preferred_num_threads(int(self.num_threads_statistic_update))
+        loss_function = self.__create_loss_function()
+        rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
+
+        if isinstance(loss_function, LabelWiseLoss):
+            return DenseLabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory,
+                                                           rule_evaluation_factory, rule_evaluation_factory,
+                                                           num_threads)
+        else:
+            return DenseExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory,
+                                                             rule_evaluation_factory, rule_evaluation_factory,
+                                                             num_threads)
+
+    def _create_thresholds_factory(self) -> ThresholdsFactory:
+        num_threads = get_preferred_num_threads(int(self.num_threads_statistic_update))
+        return create_thresholds_factory(self.feature_binning, num_threads)
+
+    def _create_rule_induction(self) -> RuleInduction:
+        num_threads = get_preferred_num_threads(int(self.num_threads_rule_refinement))
+        return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
+                                    self.recalculate_predictions, num_threads)
+
+    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
+        if self.default_rule:
+            return CompleteHeadRefinementFactory()
+        else:
+            return NoHeadRefinementFactory()
+
+    def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
+        value = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
+
+        if value == HEAD_TYPE_SINGLE:
+            return SingleLabelHeadRefinementFactory()
+        elif value == HEAD_TYPE_COMPLETE:
+            return CompleteHeadRefinementFactory()
+
+    def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
+        return SequentialRuleModelAssemblageFactory()
+
+    def _create_label_sampling_factory(self) -> Optional[LabelSamplingFactory]:
+        return create_label_sampling_factory(self.label_sampling)
+
+    def _create_instance_sampling_factory(self) -> Optional[InstanceSamplingFactory]:
+        return create_instance_sampling_factory(self.instance_sampling)
+
+    def _create_feature_sampling_factory(self) -> Optional[FeatureSamplingFactory]:
+        return create_feature_sampling_factory(self.feature_sampling)
+
+    def _create_partition_sampling_factory(self) -> Optional[PartitionSamplingFactory]:
+        return create_partition_sampling_factory(self.holdout)
+
+    def _create_pruning(self) -> Optional[Pruning]:
+        return create_pruning(self.pruning, self.instance_sampling)
+
+    def _create_post_processor(self) -> Optional[PostProcessor]:
+        shrinkage = float(self.shrinkage)
+
+        if shrinkage == 1.0:
+            return NoPostProcessor()
+        else:
+            return ConstantShrinkage(shrinkage)
+
+    def _create_stopping_criteria(self) -> List[StoppingCriterion]:
+        stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
+        early_stopping_criterion = self.__create_early_stopping()
+
+        if early_stopping_criterion is not None:
+            stopping_criteria.append(early_stopping_criterion)
+
+        return stopping_criteria
+
+    def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
+        early_stopping = self.early_stopping
+
+        if early_stopping is not None:
+            value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
+
+            if value == EARLY_STOPPING_LOSS:
+                if self.holdout is None:
+                    log.warning('Parameter "early_stopping" does not have any effect, because parameter "holdout" is '
+                                + 'set to "None"!')
+                    return None
+                else:
+                    loss = self.__create_loss_function()
+                    aggregation_function = self.__create_aggregation_function(
+                        options.get_string(ARGUMENT_AGGREGATION_FUNCTION, 'avg'))
+                    min_rules = options.get_int(ARGUMENT_MIN_RULES, 100)
+                    update_interval = options.get_int(ARGUMENT_UPDATE_INTERVAL, 1)
+                    stop_interval = options.get_int(ARGUMENT_STOP_INTERVAL, 1)
+                    num_past = options.get_int(ARGUMENT_NUM_PAST, 50)
+                    num_recent = options.get_int(ARGUMENT_NUM_RECENT, 50)
+                    min_improvement = options.get_float(ARGUMENT_MIN_IMPROVEMENT, 0.005)
+                    force_stop = options.get_bool(ARGUMENT_FORCE_STOP, True)
+                    return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
+                                                    update_interval=update_interval, stop_interval=stop_interval,
+                                                    num_past=num_past, num_recent=num_recent,
+                                                    min_improvement=min_improvement, force_stop=force_stop)
+        return None
+
+    @staticmethod
+    def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:
+        value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function, {AGGREGATION_FUNCTION_MIN,
+                                                                                  AGGREGATION_FUNCTION_MAX,
+                                                                                  AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
+        if value == AGGREGATION_FUNCTION_MIN:
+            return MinFunction()
+        elif value == AGGREGATION_FUNCTION_MAX:
+            return MaxFunction()
+        elif value == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
+            return ArithmeticMeanFunction()
+
+    def __create_loss_function(self):
+        value = parse_param("loss", self.loss, LOSS_VALUES)
+
+        if value == LOSS_SQUARED_ERROR_LABEL_WISE:
+            return LabelWiseSquaredErrorLoss()
+        elif value == LOSS_SQUARED_HINGE_LABEL_WISE:
+            return LabelWiseSquaredHingeLoss()
+        elif value == LOSS_LOGISTIC_LABEL_WISE:
+            return LabelWiseLogisticLoss()
+        elif value == LOSS_LOGISTIC_EXAMPLE_WISE:
+            return ExampleWiseLogisticLoss()
+
+    def __create_rule_evaluation_factory(self, loss_function):
+        l2_regularization_weight = float(self.l2_regularization_weight)
+        label_binning_factory = self.__create_label_binning_factory()
+
+        if isinstance(loss_function, LabelWiseLoss):
+            if label_binning_factory is None:
+                return RegularizedLabelWiseRuleEvaluationFactory(l2_regularization_weight)
+            else:
+                return BinnedLabelWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
+        else:
+            if label_binning_factory is None:
+                return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
+            else:
+                return BinnedExampleWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
+
+    def __create_label_binning_factory(self) -> LabelBinningFactory:
+        label_binning = self.__get_preferred_label_binning()
+
+        if label_binning is not None:
+            value, options = parse_param_and_options('label_binning', label_binning, LABEL_BINNING_VALUES)
+
+            if value == LABEL_BINNING_EQUAL_WIDTH:
+                bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.04)
+                min_bins = options.get_int(ARGUMENT_MIN_BINS, 1)
+                max_bins = options.get_int(ARGUMENT_MAX_BINS, 0)
+                return EqualWidthLabelBinningFactory(bin_ratio, min_bins, max_bins)
+        return None
+
+    def __get_preferred_label_binning(self) -> Optional[str]:
+        label_binning = self.label_binning
+
+        if label_binning == AUTOMATIC:
+            if self.loss in NON_DECOMPOSABLE_LOSSES and self.__get_preferred_head_type() == HEAD_TYPE_COMPLETE:
+                return LABEL_BINNING_EQUAL_WIDTH
+            else:
+                return None
+        return label_binning
+
+    def __get_preferred_head_type(self) -> str:
+        head_type = self.head_type
+
+        if head_type == AUTOMATIC:
+            if self.loss in NON_DECOMPOSABLE_LOSSES:
+                return HEAD_TYPE_COMPLETE
+            else:
+                return HEAD_TYPE_SINGLE
+        return head_type
+
+    def _create_model_builder(self) -> ModelBuilder:
+        return RuleListBuilder()
+
     def _create_predictor(self, num_labels: int) -> Predictor:
         predictor = self.__get_preferred_predictor()
         value = parse_param('predictor', predictor, PREDICTOR_VALUES)
@@ -315,188 +485,3 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         num_threads = get_preferred_num_threads(int(self.num_threads_prediction))
         return LabelWiseProbabilityPredictor(num_labels=num_labels, transformation_function=transformation_function,
                                              num_threads=num_threads)
-
-    def _create_model_builder(self) -> ModelBuilder:
-        return RuleListBuilder()
-
-    def _create_rule_model_assemblage(self, num_labels: int) -> SequentialRuleModelAssemblage:
-        stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
-        early_stopping_criterion = self.__create_early_stopping()
-        if early_stopping_criterion is not None:
-            stopping_criteria.append(early_stopping_criterion)
-        label_sampling_factory = create_label_sampling_factory(self.label_sampling)
-        instance_sampling_factory = self.__create_instance_sampling_factory()
-        feature_sampling_factory = create_feature_sampling_factory(self.feature_sampling)
-        partition_sampling_factory = create_partition_sampling_factory(self.holdout)
-        pruning = create_pruning(self.pruning, self.instance_sampling)
-        shrinkage = self.__create_post_processor()
-        loss_function = self.__create_loss_function()
-        default_rule_head_refinement_factory = CompleteHeadRefinementFactory() if self.default_rule \
-            else NoHeadRefinementFactory()
-        head_refinement_factory = self.__create_head_refinement_factory()
-        l2_regularization_weight = float(self.l2_regularization_weight)
-        rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, l2_regularization_weight)
-        num_threads_statistic_update = get_preferred_num_threads(int(self.num_threads_statistic_update))
-        statistics_provider_factory = self.__create_statistics_provider_factory(loss_function, rule_evaluation_factory,
-                                                                                num_threads_statistic_update)
-        thresholds_factory = create_thresholds_factory(self.feature_binning, num_threads_statistic_update)
-        num_threads_rule_refinement = get_preferred_num_threads(int(self.num_threads_rule_refinement))
-        rule_induction = TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions),
-                                              int(self.max_head_refinements), self.recalculate_predictions,
-                                              num_threads_rule_refinement)
-        return SequentialRuleModelAssemblage(statistics_provider_factory, thresholds_factory, rule_induction,
-                                             default_rule_head_refinement_factory, head_refinement_factory,
-                                             label_sampling_factory, instance_sampling_factory,
-                                             feature_sampling_factory, partition_sampling_factory, pruning, shrinkage,
-                                             stopping_criteria)
-
-    def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
-        early_stopping = self.early_stopping
-
-        if early_stopping is None:
-            return None
-        else:
-            value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
-
-            if value == EARLY_STOPPING_LOSS:
-                if self.holdout is None:
-                    log.warning('Parameter "early_stopping" does not have any effect, because parameter "holdout" is '
-                                + 'set to "None"!')
-                    return None
-                else:
-                    loss = self.__create_loss_function()
-                    aggregation_function = self.__create_aggregation_function(
-                        options.get_string(ARGUMENT_AGGREGATION_FUNCTION, 'avg'))
-                    min_rules = options.get_int(ARGUMENT_MIN_RULES, 100)
-                    update_interval = options.get_int(ARGUMENT_UPDATE_INTERVAL, 1)
-                    stop_interval = options.get_int(ARGUMENT_STOP_INTERVAL, 1)
-                    num_past = options.get_int(ARGUMENT_NUM_PAST, 50)
-                    num_recent = options.get_int(ARGUMENT_NUM_RECENT, 50)
-                    min_improvement = options.get_float(ARGUMENT_MIN_IMPROVEMENT, 0.005)
-                    force_stop = options.get_bool(ARGUMENT_FORCE_STOP, True)
-                    return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
-                                                    update_interval=update_interval, stop_interval=stop_interval,
-                                                    num_past=num_past, num_recent=num_recent,
-                                                    min_improvement=min_improvement, force_stop=force_stop)
-
-    @staticmethod
-    def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:
-        value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function, {AGGREGATION_FUNCTION_MIN,
-                                                                                  AGGREGATION_FUNCTION_MAX,
-                                                                                  AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
-        if value == AGGREGATION_FUNCTION_MIN:
-            return MinFunction()
-        elif value == AGGREGATION_FUNCTION_MAX:
-            return MaxFunction()
-        elif value == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
-            return ArithmeticMeanFunction()
-
-    def __create_loss_function(self):
-        value = parse_param("loss", self.loss, LOSS_VALUES)
-
-        if value == LOSS_SQUARED_ERROR_LABEL_WISE:
-            return LabelWiseSquaredErrorLoss()
-        elif value == LOSS_SQUARED_HINGE_LABEL_WISE:
-            return LabelWiseSquaredHingeLoss()
-        elif value == LOSS_LOGISTIC_LABEL_WISE:
-            return LabelWiseLogisticLoss()
-        elif value == LOSS_LOGISTIC_EXAMPLE_WISE:
-            return ExampleWiseLogisticLoss()
-
-    def __create_rule_evaluation_factory(self, loss_function, l2_regularization_weight: float):
-        label_binning_factory = self.__create_label_binning_factory()
-
-        if isinstance(loss_function, LabelWiseLoss):
-            if label_binning_factory is None:
-                return RegularizedLabelWiseRuleEvaluationFactory(l2_regularization_weight)
-            else:
-                return BinnedLabelWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
-        else:
-            if label_binning_factory is None:
-                return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
-            else:
-                return BinnedExampleWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
-
-    def __create_label_binning_factory(self) -> LabelBinningFactory:
-        label_binning = self.__get_preferred_label_binning()
-
-        if label_binning is None:
-            return None
-        else:
-            value, options = parse_param_and_options('label_binning', label_binning, LABEL_BINNING_VALUES)
-
-            if value == LABEL_BINNING_EQUAL_WIDTH:
-                bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.04)
-                min_bins = options.get_int(ARGUMENT_MIN_BINS, 1)
-                max_bins = options.get_int(ARGUMENT_MAX_BINS, 0)
-                return EqualWidthLabelBinningFactory(bin_ratio, min_bins, max_bins)
-
-    def __get_preferred_label_binning(self):
-        label_binning = self.label_binning
-
-        if label_binning == AUTOMATIC:
-            if self.loss in NON_DECOMPOSABLE_LOSSES and self.__get_preferred_head_type() == HEAD_TYPE_COMPLETE:
-                return LABEL_BINNING_EQUAL_WIDTH
-            else:
-                return None
-        return label_binning
-
-    @staticmethod
-    def __create_statistics_provider_factory(loss_function, rule_evaluation_factory,
-                                             num_threads: int) -> StatisticsProviderFactory:
-        if isinstance(loss_function, LabelWiseLoss):
-            return DenseLabelWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory,
-                                                           rule_evaluation_factory, rule_evaluation_factory,
-                                                           num_threads)
-        else:
-            return DenseExampleWiseStatisticsProviderFactory(loss_function, rule_evaluation_factory,
-                                                             rule_evaluation_factory, rule_evaluation_factory,
-                                                             num_threads)
-
-    def __create_head_refinement_factory(self) -> HeadRefinementFactory:
-        head_type = self.__get_preferred_head_type()
-        value = parse_param("head_type", head_type, HEAD_TYPE_VALUES)
-
-        if value == HEAD_TYPE_SINGLE:
-            return SingleLabelHeadRefinementFactory()
-        elif value == HEAD_TYPE_COMPLETE:
-            return CompleteHeadRefinementFactory()
-
-    def __get_preferred_head_type(self) -> str:
-        head_type = self.head_type
-
-        if head_type == AUTOMATIC:
-            if self.loss in NON_DECOMPOSABLE_LOSSES:
-                return HEAD_TYPE_COMPLETE
-            else:
-                return HEAD_TYPE_SINGLE
-        return head_type
-
-    def __create_post_processor(self) -> PostProcessor:
-        shrinkage = float(self.shrinkage)
-
-        if shrinkage == 1.0:
-            return NoPostProcessor()
-        else:
-            return ConstantShrinkage(shrinkage)
-
-    def __create_instance_sampling_factory(self) -> InstanceSamplingFactory:
-        instance_sampling = self.instance_sampling
-
-        if instance_sampling is None:
-            return NoInstanceSamplingFactory()
-        else:
-            value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
-
-            if value == SAMPLING_WITH_REPLACEMENT:
-                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0)
-                return InstanceSamplingWithReplacementFactory(sample_size)
-            elif value == SAMPLING_WITHOUT_REPLACEMENT:
-                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
-                return InstanceSamplingWithoutReplacementFactory(sample_size)
-            elif value == SAMPLING_STRATIFIED_LABEL_WISE:
-                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
-                return LabelWiseStratifiedSamplingFactory(sample_size)
-            elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
-                return ExampleWiseStratifiedSamplingFactory(sample_size)
