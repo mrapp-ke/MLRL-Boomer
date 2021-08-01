@@ -51,7 +51,7 @@ class AlgorithmBuilder final {
          * @param ruleInductionPtr              An unique pointer to an object of type `IRuleInduction` to be used by
          *                                      the rule learner to induce individual rules
          * @param headRefinementFactoryPtr      An unique pointer to an object of type `IHeadRefinementFactory` to be
-         *                                      used by the rule learner to find the head of individual rules
+         *                                      used by the rule learner to find the heads of individual rules
          * @param ruleModelAssemblageFactoryPtr An unique pointer to an object of type `IRuleModelAssemblageFactory` to
          *                                      be used by the rule learner for the assemblage of a rule model
          */
