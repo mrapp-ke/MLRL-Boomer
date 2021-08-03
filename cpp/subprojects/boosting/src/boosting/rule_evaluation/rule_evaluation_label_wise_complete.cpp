@@ -1,5 +1,6 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_complete.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
+#include "common/validation.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
 
@@ -57,7 +58,7 @@ namespace boosting {
 
     LabelWiseCompleteRuleEvaluationFactory::LabelWiseCompleteRuleEvaluationFactory(float64 l2RegularizationWeight)
         : l2RegularizationWeight_(l2RegularizationWeight) {
-
+        assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::createDense(
