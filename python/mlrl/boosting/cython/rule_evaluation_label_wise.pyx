@@ -14,6 +14,34 @@ cdef class LabelWiseRuleEvaluationFactory:
     pass
 
 
+cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+    """
+    A wrapper for the C++ class `LabelWiseSingleLabelRuleEvaluationFactory`.
+    """
+
+    def __cinit__(self, float64 l2_regularization_weight):
+        """
+        :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
+                                         to be predicted by rules
+        """
+        self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWiseSingleLabelRuleEvaluationFactoryImpl](
+            l2_regularization_weight)
+
+
+cdef class LabelWiseCompleteRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+    """
+    A wrapper for the C++ class `LabelWiseCompleteRuleEvaluationFactory`.
+    """
+
+    def __cinit__(self, float64 l2_regularization_weight):
+        """
+        :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
+                                         to be predicted by rules
+        """
+        self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWiseCompleteRuleEvaluationFactoryImpl](
+            l2_regularization_weight)
+
+
 cdef class RegularizedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     """
     A wrapper for the C++ class `RegularizedLabelWiseRuleEvaluationFactory`.
