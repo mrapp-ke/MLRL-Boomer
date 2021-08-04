@@ -35,7 +35,7 @@ namespace boosting {
      * @return                          The overall quality score that has been calculated
      */
     template<typename ScoreIterator>
-    static inline constexpr float64 calculateLabelWiseQualityScore(
+    static inline constexpr float64 calculateLabelWiseOverallQualityScore(
             ScoreIterator scoreIterator, DenseLabelWiseStatisticVector::const_iterator statisticIterator,
             uint32 numElements, float64 l2RegularizationWeight) {
         float64 overallQualityScore = 0;
