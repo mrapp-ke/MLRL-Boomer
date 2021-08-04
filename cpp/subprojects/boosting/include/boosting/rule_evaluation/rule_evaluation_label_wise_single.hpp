@@ -5,8 +5,8 @@
 
 #include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 
-namespace boosting {
 
+namespace boosting {
 
     /**
      * Allows to create instances of the class `LabelWiseSingleLabelRuleEvaluationFactory`.
