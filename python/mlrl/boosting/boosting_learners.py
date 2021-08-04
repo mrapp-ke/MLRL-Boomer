@@ -19,7 +19,8 @@ from mlrl.boosting.cython.post_processing import ConstantShrinkage
 from mlrl.boosting.cython.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory, \
     BinnedExampleWiseRuleEvaluationFactory
 from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory, \
-    BinnedLabelWiseRuleEvaluationFactory
+    BinnedLabelWiseRuleEvaluationFactory, LabelWiseSingleLabelRuleEvaluationFactory, \
+    LabelWiseCompleteRuleEvaluationFactory
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
@@ -263,7 +264,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         num_threads = get_preferred_num_threads(int(self.num_threads_statistic_update))
         loss_function = self.__create_loss_function()
         default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
-        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
+        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory_new(loss_function)
         pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
 
         if isinstance(loss_function, LabelWiseLoss):
@@ -398,6 +399,21 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
             else:
                 return BinnedExampleWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
+
+    def __create_rule_evaluation_factory_new(self, loss_function):
+        l2_regularization_weight = float(self.l2_regularization_weight)
+        head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
+        label_binning_factory = self.__create_label_binning_factory()
+
+        if isinstance(loss_function, LabelWiseLoss):
+            if label_binning_factory is None:
+                if head_type == HEAD_TYPE_SINGLE:
+                    return LabelWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
+                elif head_type == HEAD_TYPE_COMPLETE:
+                    return LabelWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
+
+        raise ValueError('configuration currently not supported :-(')
+
 
     def __create_label_binning_factory(self) -> LabelBinningFactory:
         label_binning = self.__get_preferred_label_binning()
