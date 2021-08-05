@@ -45,15 +45,14 @@ cdef class AlgorithmBuilder:
             move(head_refinement_factory.head_refinement_factory_ptr),
             move(rule_model_assemblage_factory.rule_model_assemblage_factory_ptr))
 
-    def set_default_rule_head_refinement_factory(
-            self, HeadRefinementFactory head_refinement_factory not None) -> AlgorithmBuilder:
+    def set_use_default_rule(self, bint use_default_rule) -> AlgorithmBuilder:
         """
-        Sets the `HeadRefinementFactory` to be used by the rule learner to find the head of the default rule.
+        Sets whether a default rule be used by the rule learner or not.
 
-        :param head_refinement_factory: The `HeadRefinementFactory` to be set
-        :return:                        The builder itself
+        :param default_rule:    True, if a default rule should be used, False otherwise
+        :return                 The builder itself
         """
-        self.builder_ptr.get().setDefaultRuleHeadRefinementFactory(move(head_refinement_factory.head_refinement_factory_ptr))
+        self.builder_ptr.get().setUseDefaultRule(use_default_rule);
         return self
 
     def set_label_sampling_factory(self, LabelSamplingFactory label_sampling_factory not None) -> AlgorithmBuilder:

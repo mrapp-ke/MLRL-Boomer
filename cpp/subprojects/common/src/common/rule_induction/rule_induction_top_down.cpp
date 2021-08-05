@@ -1,6 +1,7 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/validation.hpp"
+#include "../rule_refinement/rule_refinement_common.hpp"
 #include "omp.h"
 #include <unordered_map>
 
@@ -15,34 +16,26 @@ TopDownRuleInduction::TopDownRuleInduction(uint32 minCoverage, uint32 maxConditi
     assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
 }
 
-void TopDownRuleInduction::induceDefaultRule(IStatisticsProvider& statisticsProvider,
-                                             const IHeadRefinementFactory* headRefinementFactory,
-                                             IModelBuilder& modelBuilder) const {
-    if (headRefinementFactory != nullptr) {
-        IStatistics& statistics = statisticsProvider.get();
-        uint32 numStatistics = statistics.getNumStatistics();
-        uint32 numLabels = statistics.getNumLabels();
-        statistics.resetSampledStatistics();
+void TopDownRuleInduction::induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const {
+    uint32 numStatistics = statistics.getNumStatistics();
+    uint32 numLabels = statistics.getNumLabels();
+    statistics.resetSampledStatistics();
 
-        for (uint32 i = 0; i < numStatistics; i++) {
-            statistics.addSampledStatistic(i, 1);
-        }
-
-        CompleteIndexVector labelIndices(numLabels);
-        std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices.createSubset(statistics);
-        std::unique_ptr<IHeadRefinement> headRefinementPtr = headRefinementFactory->create(labelIndices);
-        headRefinementPtr->findHead(nullptr, *statisticsSubsetPtr, true, false);
-        std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr = headRefinementPtr->pollHead();
-        statisticsProvider.switchToRegularRuleEvaluation();
-
-        for (uint32 i = 0; i < numStatistics; i++) {
-            defaultPredictionPtr->apply(statistics, i);
-        }
-
-        modelBuilder.setDefaultRule(*defaultPredictionPtr);
-    } else {
-        statisticsProvider.switchToRegularRuleEvaluation();
+    for (uint32 i = 0; i < numStatistics; i++) {
+        statistics.addSampledStatistic(i, 1);
     }
+
+    CompleteIndexVector labelIndices(numLabels);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices.createSubset(statistics);
+    ScoreProcessor scoreProcessor;
+    scoreProcessor.findHead(nullptr, *statisticsSubsetPtr, true, false);
+    std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr = scoreProcessor.pollHead();
+
+    for (uint32 i = 0; i < numStatistics; i++) {
+        defaultPredictionPtr->apply(statistics, i);
+    }
+
+    modelBuilder.setDefaultRule(*defaultPredictionPtr);
 }
 
 bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,

@@ -11,6 +11,7 @@ from mlrl.common.cython.post_processing cimport IPostProcessor
 from mlrl.common.cython.stopping cimport IStoppingCriterion
 from mlrl.common.cython.rule_model_assemblage cimport IRuleModelAssemblage, IRuleModelAssemblageFactory
 
+from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 
@@ -28,8 +29,7 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
 
         # Functions:
 
-        AlgorithmBuilderImpl& setDefaultRuleHeadRefinementFactory(
-            unique_ptr[IHeadRefinementFactory] headRefinementFactoryPtr) except +
+        AlgorithmBuilderImpl& setUseDefaultRule(bool useDefaultRule) except +
 
         AlgorithmBuilderImpl& setLabelSamplingFactory(
             unique_ptr[ILabelSamplingFactory] labelSamplingFactoryPtr) except +

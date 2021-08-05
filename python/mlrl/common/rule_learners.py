@@ -390,12 +390,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
                                              self._create_thresholds_factory(), self._create_rule_induction(),
                                              self._create_regular_rule_head_refinement_factory(num_labels),
                                              self._create_rule_model_assemblage_factory())
-
-        default_rule_head_refinement_factory = self._create_default_rule_head_refinement_factory()
-
-        if default_rule_head_refinement_factory is not None:
-            algorithm_builder.set_default_rule_head_refinement_factory(default_rule_head_refinement_factory)
-
         label_sampling_factory = self._create_label_sampling_factory()
 
         if label_sampling_factory is not None:
@@ -429,6 +423,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         for stopping_criterion in self._create_stopping_criteria():
             algorithm_builder.add_stopping_criterion(stopping_criterion)
 
+        algorithm_builder.set_use_default_rule(self._use_default_rule())
         return algorithm_builder.build()
 
     def _predict(self, x):
@@ -516,15 +511,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         pass
 
-    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
-        """
-        Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
-        for the induction of the default rule.
-
-        :return: The `HeadRefinementFactory` that has been created or None, if no default rule should be induced
-        """
-        return None
-
     def _create_label_sampling_factory(self) -> Optional[LabelSamplingFactory]:
         """
         Must be implemented by subclasses in order to create the `LabelSamplingFactory` to be used by the rule learner.
@@ -583,6 +569,15 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         :return: A list of stopping criteria that has been created
         """
         return []
+
+    def _use_default_rule(self) -> bool:
+        """
+        Must be implemented by subclasses in order to specify whether the first rule induced by the rule learner should
+        be a default rule or not.
+
+        :return: True, if the first rule should be a default rule, False otherwise
+        """
+        return True
 
     @abstractmethod
     def _create_model_builder(self) -> ModelBuilder:

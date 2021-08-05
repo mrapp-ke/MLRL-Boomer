@@ -129,7 +129,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
-        :param default_rule:                        True, if the first rule should be a default rule, False otherwise
+        :param default_rule:                    True, if a default rule should be used, False otherwise
         :param time_limit:                          The duration in seconds after which the induction of rules should be
                                                     canceled
         :param early_stopping:                      The strategy that is used for early stopping. Must be `measure` or
@@ -263,7 +263,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
         num_threads = get_preferred_num_threads(int(self.num_threads_statistic_update))
         loss_function = self.__create_loss_function()
-        default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
+        default_rule_evaluation_factory = self.__create_rule_evaluation_factory_new(loss_function, default_rule=True)
         regular_rule_evaluation_factory = self.__create_rule_evaluation_factory_new(loss_function)
         pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
 
@@ -284,11 +284,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         num_threads = get_preferred_num_threads(int(self.num_threads_rule_refinement))
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     self.recalculate_predictions, num_threads)
-
-    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
-        if self.default_rule:
-            return CompleteHeadRefinementFactory()
-        return None
 
     def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
         value = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
@@ -332,6 +327,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             stopping_criteria.append(early_stopping_criterion)
 
         return stopping_criteria
+
+    def _use_default_rule(self) -> bool:
+        return self.default_rule
 
     def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
         early_stopping = self.early_stopping
@@ -400,9 +398,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             else:
                 return BinnedExampleWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
 
-    def __create_rule_evaluation_factory_new(self, loss_function):
+    def __create_rule_evaluation_factory_new(self, loss_function, default_rule: bool = False):
         l2_regularization_weight = float(self.l2_regularization_weight)
-        head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
+        head_type = HEAD_TYPE_COMPLETE if default_rule else parse_param("head_type", self.__get_preferred_head_type(),
+                                                                        HEAD_TYPE_VALUES)
         label_binning_factory = self.__create_label_binning_factory()
 
         if isinstance(loss_function, LabelWiseLoss):
@@ -413,7 +412,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                     return LabelWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
 
         raise ValueError('configuration currently not supported :-(')
-
 
     def __create_label_binning_factory(self) -> LabelBinningFactory:
         label_binning = self.__get_preferred_label_binning()
