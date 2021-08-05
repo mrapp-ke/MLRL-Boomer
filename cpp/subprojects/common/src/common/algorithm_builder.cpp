@@ -21,7 +21,8 @@ AlgorithmBuilder::AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> s
       instanceSamplingFactoryPtr_(std::make_shared<NoInstanceSamplingFactory>()),
       featureSamplingFactoryPtr_(std::make_shared<NoFeatureSamplingFactory>()),
       partitionSamplingFactoryPtr_(std::make_shared<NoPartitionSamplingFactory>()),
-      pruningPtr_(std::make_shared<NoPruning>()), postProcessorPtr_(std::make_shared<NoPostProcessor>()) {
+      pruningPtr_(std::make_shared<NoPruning>()), postProcessorPtr_(std::make_shared<NoPostProcessor>()),
+      useDefaultRule_(true) {
     assertNotNull("statisticsProviderFactoryPtr", statisticsProviderFactoryPtr_.get());
     assertNotNull("thresholdsFactoryPtr", thresholdsFactoryPtr_.get());
     assertNotNull("ruleInductionPtr", ruleInductionPtr_.get());
@@ -29,10 +30,8 @@ AlgorithmBuilder::AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> s
     assertNotNull("ruleModelAssemblageFactoryPtr", ruleModelAssemblageFactoryPtr_.get());
 }
 
-AlgorithmBuilder& AlgorithmBuilder::setDefaultRuleHeadRefinementFactory(
-        std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr) {
-    assertNotNull("headRefinementFactoryPtr", headRefinementFactoryPtr.get());
-    defaultRuleHeadRefinementFactoryPtr_ = std::move(headRefinementFactoryPtr);
+AlgorithmBuilder& AlgorithmBuilder::setUseDefaultRule(bool useDefaultRule) {
+    useDefaultRule_ = useDefaultRule;
     return *this;
 }
 
@@ -84,9 +83,8 @@ AlgorithmBuilder& AlgorithmBuilder::addStoppingCriterion(std::unique_ptr<IStoppi
 
 std::unique_ptr<IRuleModelAssemblage> AlgorithmBuilder::build() const {
     return ruleModelAssemblageFactoryPtr_->create(statisticsProviderFactoryPtr_, thresholdsFactoryPtr_,
-                                                  ruleInductionPtr_, defaultRuleHeadRefinementFactoryPtr_,
-                                                  regularRuleHeadRefinementFactoryPtr_, labelSamplingFactoryPtr_,
-                                                  instanceSamplingFactoryPtr_, featureSamplingFactoryPtr_,
-                                                  partitionSamplingFactoryPtr_, pruningPtr_, postProcessorPtr_,
-                                                  stoppingCriteria_);
+                                                  ruleInductionPtr_, regularRuleHeadRefinementFactoryPtr_,
+                                                  labelSamplingFactoryPtr_, instanceSamplingFactoryPtr_,
+                                                  featureSamplingFactoryPtr_, partitionSamplingFactoryPtr_, pruningPtr_,
+                                                  postProcessorPtr_, stoppingCriteria_, useDefaultRule_);
 }

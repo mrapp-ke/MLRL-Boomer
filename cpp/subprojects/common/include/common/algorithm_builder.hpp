@@ -19,8 +19,6 @@ class AlgorithmBuilder final {
 
         std::shared_ptr<IRuleInduction> ruleInductionPtr_;
 
-        std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr_;
-
         std::shared_ptr<IHeadRefinementFactory> regularRuleHeadRefinementFactoryPtr_;
 
         std::shared_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr_;
@@ -38,6 +36,8 @@ class AlgorithmBuilder final {
         std::shared_ptr<IPostProcessor> postProcessorPtr_;
 
         std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria_;
+
+        bool useDefaultRule_;
 
     public:
 
@@ -62,13 +62,12 @@ class AlgorithmBuilder final {
                          std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr);
 
         /**
-         * Sets the `IHeadRefinementFactory` to be used by the rule learner to find the head of the default rule.
+         * Sets whether a default rule should be used or not.
          *
-         * @param headRefinementFactoryPTr  An unique pointer to an object of type `IHeadRefinementFactory` to be set
-         * @return                          A reference to the builder itself
+         * @param defaultRule   True, if a default rule should be used, false otherwise.
+         * @return              A reference to the builder itself
          */
-        AlgorithmBuilder& setDefaultRuleHeadRefinementFactory(
-            std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
+        AlgorithmBuilder& setUseDefaultRule(bool useDefaultRule);
 
         /**
          * Sets the `ILabelSamplingFactory` to be used by the rule learner to sample the labels individual rules may

@@ -8,8 +8,7 @@ Provides scikit-learn implementations of separate-and-conquer algorithms.
 from typing import Dict, Set, Optional, List
 
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
-from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
-    CompleteHeadRefinementFactory
+from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
@@ -230,9 +229,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         num_threads = get_preferred_num_threads(int(self.num_threads_rule_refinement))
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     False, num_threads)
-
-    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
-        return CompleteHeadRefinementFactory()
 
     def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
         value = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
