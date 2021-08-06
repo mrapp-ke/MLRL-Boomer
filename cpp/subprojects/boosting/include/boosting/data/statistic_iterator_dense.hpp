@@ -12,6 +12,7 @@ namespace boosting {
     /**
      * An iterator that provides read-only access to the gradients that are stored in a C-contiguous array.
      */
+    // TODO Remove this iterator if possible, because it is not very efficient
     class DenseGradientConstIterator {
 
         private:
@@ -122,6 +123,7 @@ namespace boosting {
     /**
      * An iterator that provides read-only access to the Hessians that are stored in a C-contiguous array.
      */
+    // TODO Remove this iterator if possible, because it is not very efficient
     class DenseHessianConstIterator {
 
         private:
