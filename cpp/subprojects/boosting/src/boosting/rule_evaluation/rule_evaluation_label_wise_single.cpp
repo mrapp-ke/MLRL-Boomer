@@ -69,9 +69,10 @@ namespace boosting {
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 scoreIterator[0] = bestScore;
                 indexVector_.begin()[0] = labelIndices_.cbegin()[bestIndex];
-                scoreVector_.overallQualityScore = calculateLabelWiseOverallQualityScore(scoreIterator,
-                                                                                         &statisticIterator[bestIndex],
-                                                                                         1, l2RegularizationWeight_);
+                scoreVector_.overallQualityScore = calculateLabelWiseQualityScore(bestScore,
+                                                                                  statisticIterator[bestIndex].first,
+                                                                                  statisticIterator[bestIndex].second,
+                                                                                  l2RegularizationWeight_);
                 return scoreVector_;
             }
 
