@@ -48,11 +48,11 @@ namespace boosting {
             const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                uint32 bestIndex = 0;
-                const Tuple<float64>& firstTuple = statisticIterator[bestIndex];
+                const Tuple<float64>& firstTuple = statisticIterator[0];
                 float64 bestScore = calculateLabelWiseScore(firstTuple.first, firstTuple.second,
                                                             l2RegularizationWeight_);
                 float64 bestAbsScore = std::abs(bestScore);
+                uint32 bestIndex = 0;
 
                 for (uint32 i = 1; i < numElements; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
