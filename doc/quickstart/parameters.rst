@@ -231,7 +231,7 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * The maximum number of conditions to be included in a rule's body. Must be at least 1 or 0, if the number of conditions should not be restricted.
 
-* ``--max-head-refinements`` (Default value = 0)
+* ``--max-head-refinements`` (Default value = 1)
 
   * The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, if the number of refinements should not be restricted.
 
