@@ -292,7 +292,7 @@ class ArgumentParserBuilder:
                             help='The maximum number of conditions to be included in a rule\'s body. Must be at least '
                                  + '1 or 0, if the number of conditions should not be restricted.')
         parser.add_argument(PARAM_MAX_HEAD_REFINEMENTS, type=int,
-                            default=ArgumentParserBuilder.__get_or_default('max_head_refinements', 0, **kwargs),
+                            default=ArgumentParserBuilder.__get_or_default('max_head_refinements', 1, **kwargs),
                             help='The maximum number of times the head of a rule may be refined. Must be at least 1 or '
                                  + '0, if the number of refinements should not be restricted.')
         parser.add_argument(PARAM_NUM_THREADS_RULE_REFINEMENT, type=int,
