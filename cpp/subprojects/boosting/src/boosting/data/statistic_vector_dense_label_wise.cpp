@@ -28,6 +28,14 @@ namespace boosting {
         free(statistics_);
     }
 
+    DenseLabelWiseStatisticVector::iterator DenseLabelWiseStatisticVector::begin() {
+        return statistics_;
+    }
+
+    DenseLabelWiseStatisticVector::iterator DenseLabelWiseStatisticVector::end() {
+        return &statistics_[numElements_];
+    }
+
     DenseLabelWiseStatisticVector::const_iterator DenseLabelWiseStatisticVector::cbegin() const {
         return statistics_;
     }
