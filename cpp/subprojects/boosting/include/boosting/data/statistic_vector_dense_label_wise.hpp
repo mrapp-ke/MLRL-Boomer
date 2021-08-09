@@ -52,6 +52,11 @@ namespace boosting {
             ~DenseLabelWiseStatisticVector();
 
             /**
+             * An iterator that provides access to the elements in the vector and allows to modify them.
+             */
+            typedef Tuple<float64>* iterator;
+
+            /**
              * An iterator that provides read-only access to the elements in the vector.
              */
             typedef const Tuple<float64>* const_iterator;
@@ -65,6 +70,20 @@ namespace boosting {
              * An iterator that provides read-only access to the Hessians in the vector.
              */
             typedef DenseHessianConstIterator hessian_const_iterator;
+
+            /**
+             * Returns an `iterator` to the beginning of the vector.
+             *
+             * @return An `iterator` to the beginning
+             */
+            iterator begin();
+
+            /**
+             * Returns an `iterator` to the end of the vector.
+             *
+             * @return An `iterator` to the end
+             */
+            iterator end();
 
             /**
              * Returns a `const_iterator` to the beginning of the vector.
