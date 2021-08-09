@@ -384,6 +384,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         elif value == LOSS_LOGISTIC_EXAMPLE_WISE:
             return ExampleWiseLogisticLoss()
 
+    # TODO Remove
     def __create_rule_evaluation_factory(self, loss_function):
         l2_regularization_weight = float(self.l2_regularization_weight)
         label_binning_factory = self.__create_label_binning_factory()
