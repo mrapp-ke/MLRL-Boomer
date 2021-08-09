@@ -28,6 +28,7 @@ source_files = [
     'src/boosting/rule_evaluation/rule_evaluation_example_wise_single.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_binning.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_complete.cpp',
+    'src/boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_regularized.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_single.cpp',
     'src/boosting/statistics/statistics_example_wise_dense.cpp',
