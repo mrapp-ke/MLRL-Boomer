@@ -184,6 +184,23 @@ namespace boosting {
                                     ZeroCallback zeroCallback) const = 0;
 
             /**
+             * Assigns the labels to bins, based on the corresponding statistics in a `DenseLabelWiseStatisticVector`.
+             *
+             * @param labelInfo                 A struct of type `LabelInfo` that stores information about the
+             *                                  statistics in the given vector
+             * @param statisticVector           A reference to an object of type `DenseLabelWiseStatisticVector` that
+             *                                  provides access to the statistics
+             * @param l2RegularizationWeight    The weight to be used for L2 regularization
+             * @param callback                  A callback that is invoked when a label is assigned to a bin
+             * @param zeroCallback              A callback that is invoked when a label with zero statistics is
+             *                                  encountered
+             */
+            // TODO Remove
+            virtual void createBins(LabelInfo labelInfo, const DenseLabelWiseStatisticVector& statisticVector,
+                                    float64 l2RegularizationWeight, Callback callback,
+                                    ZeroCallback zeroCallback) const = 0;
+
+            /**
              * Assigns the labels to bins, based on the corresponding statistics in a `DenseExampleWiseStatisticVector`.
              *
              * @param labelInfo                 A struct of type `LabelInfo` that stores information about the
