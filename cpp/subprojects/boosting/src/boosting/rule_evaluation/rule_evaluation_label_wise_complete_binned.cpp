@@ -76,6 +76,19 @@ namespace boosting {
                 setArrayToZeros(tmpHessians_, numBins);
                 setArrayToZeros(numElementsPerBin_, numBins);
 
+                // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
+                auto callback = [this, &statisticVector](uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian) {
+                    const Tuple<float64>& tuple = statisticVector.cbegin()[labelIndex];
+                    tmpGradients_[binIndex] += tuple.first;
+                    tmpHessians_[binIndex] += tuple.second;
+                    numElementsPerBin_[binIndex] += 1;
+                    scoreVector_.indices_binned_begin()[labelIndex] = binIndex;
+                };
+                auto zeroCallback = [this](uint32 labelIndex) {
+                    scoreVector_.indices_binned_begin()[labelIndex] = maxBins_;
+                };
+                binningPtr_->createBins(labelInfo, statisticVector, l2RegularizationWeight_, callback, zeroCallback);
+
                 // TODO Implement
             }
 
