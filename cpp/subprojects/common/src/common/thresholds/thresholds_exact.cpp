@@ -27,6 +27,21 @@ struct FilteredCacheEntry {
 
 };
 
+static inline uint32 adjustSplit(FeatureVector::const_iterator iterator, uint32 start, uint32 end, float32 threshold) {
+    while (start <= end) {
+        uint32 pivot = start + ((end - start) / 2);
+        float32 featureValue = iterator[pivot].value;
+
+        if (featureValue <= threshold) {
+            start = pivot + 1;
+        } else {
+            end = pivot - 1;
+        }
+    }
+
+    return start;
+}
+
 /**
  * Adjusts the position that separates the examples that are covered by a condition from the ones that are not covered,
  * with respect to those examples that are not contained in the current sub-sample. This requires to look back a certain
@@ -46,33 +61,12 @@ struct FilteredCacheEntry {
 static inline intp adjustSplit(FeatureVector& featureVector, intp conditionEnd, intp conditionPrevious,
                                float32 threshold) {
     FeatureVector::const_iterator iterator = featureVector.cbegin();
-    intp adjustedPosition = conditionEnd;
-    bool ascending = conditionEnd < conditionPrevious;
-    intp direction = ascending ? 1 : -1;
-    intp start = conditionEnd + direction;
-    uint32 numSteps = std::abs(start - conditionPrevious);
 
-    // Traverse the examples in ascending (or descending) order until we encounter an example that is contained in the
-    // current sub-sample...
-    for (uint32 i = 0; i < numSteps; i++) {
-        // Check if the current position should be adjusted, or not. This is the case, if the feature value of the
-        // current example is smaller than or equal to the given `threshold` (or greater than the `threshold`, if we
-        // traverse in descending direction)
-        uint32 r = start + (i * direction);
-        float32 featureValue = iterator[r].value;
-        bool adjust = ascending ? featureValue <= threshold : featureValue > threshold;
-
-        if (adjust) {
-            // Update the adjusted position and continue...
-            adjustedPosition = r;
-        } else {
-            // If we have found the first example that is separated from the example at the position we started at, we
-            // are done...
-            break;
-        }
+    if (conditionEnd < conditionPrevious) {
+        return adjustSplit(iterator, conditionEnd + 1, conditionPrevious - 1, threshold) - 1;
+    } else {
+        return adjustSplit(iterator, conditionPrevious + 1, conditionEnd - 1, threshold);
     }
-
-    return adjustedPosition;
 }
 
 /**
