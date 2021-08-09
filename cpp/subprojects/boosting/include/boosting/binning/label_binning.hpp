@@ -66,6 +66,7 @@ namespace boosting {
              * A callback function that is invoked when a label is assigned to a bin. It takes the index of the bin, the
              * index of the label, as well as the corresponding gradient and Hessians, as arguments.
              */
+            // TODO Remove arguments "gradient" and "hessian"
             typedef std::function<void(uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian)> Callback;
 
             /**
