@@ -17,7 +17,7 @@ namespace boosting {
 
         private:
 
-            T labelIndices_;
+            const T labelIndices_;
 
             PartialIndexVector indexVector_;
 
