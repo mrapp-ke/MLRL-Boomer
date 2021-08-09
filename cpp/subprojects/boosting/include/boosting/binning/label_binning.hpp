@@ -103,6 +103,7 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight to be used for L2 regularization
              * @return                          A struct of `type `LabelInfo` that stores the information
              */
+            // TODO Remove
             virtual LabelInfo getLabelInfo(DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
                                            DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
                                            DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
@@ -129,6 +130,7 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight to be used for L2 regularization
              * @return                          A struct of `type `LabelInfo` that stores the information
              */
+            // TODO Replace iterators with reference to object
             virtual LabelInfo getLabelInfo(
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
@@ -154,6 +156,7 @@ namespace boosting {
              * @param zeroCallback              A callback that is invoked when a label with zero statistics is
              *                                  encountered
              */
+            // TODO Remove
             virtual void createBins(LabelInfo labelInfo,
                                     DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
                                     DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
@@ -180,6 +183,7 @@ namespace boosting {
              * @param zeroCallback              A callback that is invoked when a label with zero statistics is
              *                                  encountered
              */
+            // TODO Replace iterators with reference to object
             virtual void createBins(LabelInfo labelInfo,
                                     DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
                                     DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
