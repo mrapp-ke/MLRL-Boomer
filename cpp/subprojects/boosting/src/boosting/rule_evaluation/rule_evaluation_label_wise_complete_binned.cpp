@@ -48,8 +48,8 @@ namespace boosting {
                   tmpGradients_(new float64[maxBins_]), tmpHessians_(new float64[maxBins_]),
                   numElementsPerBin_(new uint32[maxBins_]), l2RegularizationWeight_(l2RegularizationWeight),
                   binningPtr_(std::move(binningPtr)) {
-                // The last bin is used for labels with zero statistics. For this particular bin, the prediction is
-                // always zero.
+                // The last bin is used for labels for which the corresponding criterion is zero. For this particular
+                // bin, the prediction is always zero.
                 scoreVector_.scores_binned_begin()[maxBins_] = 0;
             }
 
