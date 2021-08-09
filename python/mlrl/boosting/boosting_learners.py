@@ -18,10 +18,10 @@ from mlrl.boosting.cython.output import LabelWiseClassificationPredictor, Exampl
 from mlrl.boosting.cython.post_processing import ConstantShrinkage
 from mlrl.boosting.cython.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory, \
     BinnedExampleWiseRuleEvaluationFactory, ExampleWiseSingleLabelRuleEvaluationFactory, \
-    ExampleWiseCompleteRuleEvaluationFactory
+    ExampleWiseCompleteRuleEvaluationFactory, ExampleWiseCompleteBinnedRuleEvaluationFactory
 from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory, \
     BinnedLabelWiseRuleEvaluationFactory, LabelWiseSingleLabelRuleEvaluationFactory, \
-    LabelWiseCompleteRuleEvaluationFactory
+    LabelWiseCompleteRuleEvaluationFactory, LabelWiseCompleteBinnedRuleEvaluationFactory
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
@@ -406,18 +406,27 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                         HEAD_TYPE_VALUES)
         label_binning_factory = self.__create_label_binning_factory()
 
-        if isinstance(loss_function, LabelWiseLoss):
-            if label_binning_factory is None:
-                if head_type == HEAD_TYPE_SINGLE:
-                    return LabelWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
-                elif head_type == HEAD_TYPE_COMPLETE:
+        if head_type == HEAD_TYPE_SINGLE:
+            if label_binning_factory is not None:
+                log.warning('Parameter "label_binning" does not have any effect when learning single-label rules!')
+
+            if isinstance(loss_function, LabelWiseLoss):
+                return LabelWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
+            else:
+                return ExampleWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
+        elif head_type == HEAD_TYPE_COMPLETE:
+
+            if isinstance(loss_function, LabelWiseLoss):
+                if label_binning_factory is None:
                     return LabelWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
-        else:
-            if label_binning_factory is None:
-                if head_type == HEAD_TYPE_SINGLE:
-                    return ExampleWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
-                elif head_type == HEAD_TYPE_COMPLETE:
+                else:
+                    return LabelWiseCompleteBinnedRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
+            else:
+                if label_binning_factory is None:
                     return ExampleWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
+                else:
+                    return ExampleWiseCompleteBinnedRuleEvaluationFactory(l2_regularization_weight,
+                                                                          label_binning_factory)
 
         raise ValueError('configuration currently not supported :-(')
 
