@@ -1,5 +1,6 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.hpp"
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
+#include "common/data/arrays.hpp"
 #include "common/validation.hpp"
 
 
@@ -69,6 +70,11 @@ namespace boosting {
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector, l2RegularizationWeight_);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
                 scoreVector_.setNumBins(numBins, false);
+
+                // Reset arrays to zero...
+                setArrayToZeros(tmpGradients_, numBins);
+                setArrayToZeros(tmpHessians_, numBins);
+                setArrayToZeros(numElementsPerBin_, numBins);
 
                 // TODO Implement
             }
