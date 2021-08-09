@@ -17,7 +17,8 @@ from mlrl.boosting.cython.output import LabelWiseClassificationPredictor, Exampl
     LabelWiseProbabilityPredictor, LabelWiseTransformationFunction, LogisticFunction
 from mlrl.boosting.cython.post_processing import ConstantShrinkage
 from mlrl.boosting.cython.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory, \
-    BinnedExampleWiseRuleEvaluationFactory
+    BinnedExampleWiseRuleEvaluationFactory, ExampleWiseSingleLabelRuleEvaluationFactory, \
+    ExampleWiseCompleteRuleEvaluationFactory
 from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory, \
     BinnedLabelWiseRuleEvaluationFactory, LabelWiseSingleLabelRuleEvaluationFactory, \
     LabelWiseCompleteRuleEvaluationFactory
@@ -410,6 +411,12 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                     return LabelWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
                 elif head_type == HEAD_TYPE_COMPLETE:
                     return LabelWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
+        else:
+            if label_binning_factory is None:
+                if head_type == HEAD_TYPE_SINGLE:
+                    return ExampleWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
+                elif head_type == HEAD_TYPE_COMPLETE:
+                    return ExampleWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
 
         raise ValueError('configuration currently not supported :-(')
 
