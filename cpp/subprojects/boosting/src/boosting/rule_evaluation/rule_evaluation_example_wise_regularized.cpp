@@ -3,7 +3,7 @@
 #include "common/rule_evaluation/score_vector_label_wise_dense.hpp"
 #include "common/validation.hpp"
 #include "rule_evaluation_label_wise_regularized_common.hpp"
-#include "rule_evaluation_example_wise_common.hpp"
+#include "rule_evaluation_example_wise_common_old.hpp"
 
 
 namespace boosting {
