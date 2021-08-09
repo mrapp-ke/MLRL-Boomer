@@ -22,9 +22,7 @@ namespace boosting {
 
             DenseBinnedScoreVector<T> scoreVector_;
 
-            float64* tmpGradients_;
-
-            float64* tmpHessians_;
+            DenseLabelWiseStatisticVector aggregatedStatisticVector_;
 
             uint32* numElementsPerBin_;
 
@@ -46,7 +44,7 @@ namespace boosting {
                                                   std::unique_ptr<ILabelBinning> binningPtr)
                 : maxBins_(binningPtr->getMaxBins(labelIndices.getNumElements())),
                   scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins_ + 1)),
-                  tmpGradients_(new float64[maxBins_]), tmpHessians_(new float64[maxBins_]),
+                  aggregatedStatisticVector_(DenseLabelWiseStatisticVector(maxBins_)),
                   numElementsPerBin_(new uint32[maxBins_]), l2RegularizationWeight_(l2RegularizationWeight),
                   binningPtr_(std::move(binningPtr)) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
@@ -55,8 +53,6 @@ namespace boosting {
             }
 
             ~LabelWiseCompleteBinnedRuleEvaluation() {
-                delete[] tmpGradients_;
-                delete[] tmpHessians_;
                 delete[] numElementsPerBin_;
             }
 
@@ -72,15 +68,12 @@ namespace boosting {
                 scoreVector_.setNumBins(numBins, false);
 
                 // Reset arrays to zero...
-                setArrayToZeros(tmpGradients_, numBins);
-                setArrayToZeros(tmpHessians_, numBins);
+                aggregatedStatisticVector_.clear();
                 setArrayToZeros(numElementsPerBin_, numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 auto callback = [this, &statisticVector](uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian) {
-                    const Tuple<float64>& tuple = statisticVector.cbegin()[labelIndex];
-                    tmpGradients_[binIndex] += tuple.first;
-                    tmpHessians_[binIndex] += tuple.second;
+                    aggregatedStatisticVector_.begin()[binIndex] += statisticVector.cbegin()[labelIndex];
                     numElementsPerBin_[binIndex] += 1;
                     scoreVector_.indices_binned_begin()[labelIndex] = binIndex;
                 };
