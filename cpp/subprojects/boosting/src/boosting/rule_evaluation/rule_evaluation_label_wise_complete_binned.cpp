@@ -65,6 +65,11 @@ namespace boosting {
             }
 
             const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
+                // Obtain information about the bins to be used...
+                LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector, l2RegularizationWeight_);
+                uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
+                scoreVector_.setNumBins(numBins, false);
+
                 // TODO Implement
             }
 
