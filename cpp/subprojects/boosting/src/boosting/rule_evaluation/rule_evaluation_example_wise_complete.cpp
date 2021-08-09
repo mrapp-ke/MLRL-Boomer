@@ -40,7 +40,7 @@ namespace boosting {
 
             }
 
-            const IScoreVector& calculatePrediction(const DenseExampleWiseStatisticVector& statisticVector) override {
+            const IScoreVector& calculatePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
                 // TODO Implement
             }
 

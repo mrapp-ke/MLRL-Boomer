@@ -120,7 +120,7 @@ namespace boosting {
             /**
              * @see `IExampleWiseRuleEvaluation::calculatePrediction`
              */
-            const IScoreVector& calculatePrediction(const DenseExampleWiseStatisticVector& statisticVector) override {
+            const IScoreVector& calculatePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
                 // TODO Implement
                 return *scoreVector_;
             }
