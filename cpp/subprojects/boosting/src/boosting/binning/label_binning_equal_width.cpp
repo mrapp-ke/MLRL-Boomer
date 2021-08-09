@@ -210,6 +210,12 @@ namespace boosting {
                                      l2RegularizationWeight, callback, zeroCallback);
             }
 
+            void createBins(LabelInfo labelInfo, const DenseLabelWiseStatisticVector& statisticVector,
+                            float64 l2RegularizationWeight, Callback callback,
+                            ZeroCallback zeroCallback) const override {
+                // TODO Implement
+            }
+
             void createBins(LabelInfo labelInfo,
                             DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
                             DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
