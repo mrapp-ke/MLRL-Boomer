@@ -168,6 +168,27 @@ namespace boosting {
                 return labelInfo;
             }
 
+            LabelInfo getLabelInfo(const DenseLabelWiseStatisticVector& statisticVector,
+                                   float64 l2RegularizationWeight) const override {
+                LabelInfo labelInfo;
+                uint32 numElements = statisticVector.getNumElements();
+
+                if (numElements > 0) {
+                    resetLabelInfo(labelInfo);
+                    DenseLabelWiseStatisticVector::const_iterator iterator = statisticVector.cbegin();
+
+                    for (uint32 i = 0; i < numElements; i++) {
+                        const Tuple<float64>& tuple = iterator[i];
+                        float64 criterion = calculateCriterion(tuple.first, tuple.second, l2RegularizationWeight);
+                        updateLabelInfo(labelInfo, criterion);
+                    }
+
+                    adjustNumBins(labelInfo, binRatio_, minBins_, maxBins_);
+                }
+
+                return labelInfo;
+            }
+
             LabelInfo getLabelInfo(DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
                                    DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
                                    DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansBegin,
