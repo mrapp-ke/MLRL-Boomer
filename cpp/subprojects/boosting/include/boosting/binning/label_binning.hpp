@@ -19,6 +19,8 @@ namespace boosting {
      */
     struct LabelInfo {
 
+        LabelInfo() : numPositiveBins(0), numNegativeBins(0) { };
+
         /**
          * The number of positive bins.
          */

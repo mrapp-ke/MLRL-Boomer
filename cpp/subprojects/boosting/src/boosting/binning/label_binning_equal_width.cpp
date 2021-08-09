@@ -16,8 +16,6 @@ namespace boosting {
     }
 
     static inline void resetLabelInfo(LabelInfo& labelInfo) {
-        labelInfo.numPositiveBins = 0;
-        labelInfo.numNegativeBins = 0;
         labelInfo.minPositive = std::numeric_limits<float64>::infinity();
         labelInfo.maxPositive = 0;
         labelInfo.minNegative = 0;
@@ -72,9 +70,6 @@ namespace boosting {
             }
 
             adjustNumBins(labelInfo, binRatio, minBins, maxBins);
-        } else {
-            labelInfo.numPositiveBins = 0;
-            labelInfo.numNegativeBins = 0;
         }
     }
 
