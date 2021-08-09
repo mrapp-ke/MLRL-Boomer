@@ -12,7 +12,7 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `LabelWiseSingleLabelRuleEvaluationFactory`.
+     * Allows to create instances of the class `ExampleWiseCompleteRuleEvaluationFactory`.
      */
     class ExampleWiseCompleteRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
 
