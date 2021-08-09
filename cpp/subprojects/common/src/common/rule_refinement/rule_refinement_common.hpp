@@ -25,10 +25,10 @@ class ScoreProcessor : public IScoreProcessor {
 
             // The quality score must be better than that of `bestHead`...
             if (bestHead == nullptr || overallQualityScore < bestHead->overallQualityScore) {
+                uint32 numPredictions = scoreVector.getNumElements();
+
                 if (headPtr_.get() == nullptr) {
                     // Create a new head, if necessary...
-                    uint32 numPredictions = scoreVector.getNumElements();
-
                     if (scoreVector.isPartial()) {
                         std::unique_ptr<PartialPrediction> headPtr =
                             std::make_unique<PartialPrediction>(numPredictions);
@@ -37,9 +37,9 @@ class ScoreProcessor : public IScoreProcessor {
                     } else {
                         headPtr_ = std::make_unique<CompletePrediction>(numPredictions);
                     }
-                } else {
+                } else if (headPtr_->getNumElements() != numPredictions) {
                     // Adjust the size of the existing head, if necessary...
-                    // TODO
+                    headPtr_->setNumElements(numPredictions, false);
                 }
 
                 std::copy(scoreVector.scores_cbegin(), scoreVector.scores_cend(), headPtr_->scores_begin());
