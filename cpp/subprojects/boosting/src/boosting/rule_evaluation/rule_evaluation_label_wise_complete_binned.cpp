@@ -1,4 +1,5 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.hpp"
+#include "common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "common/validation.hpp"
 
 
@@ -16,6 +17,16 @@ namespace boosting {
 
         private:
 
+            uint32 maxBins_;
+
+            DenseBinnedScoreVector<T> scoreVector_;
+
+            float64* tmpGradients_;
+
+            float64* tmpHessians_;
+
+            uint32* numElementsPerBin_;
+
             float64 l2RegularizationWeight_;
 
             std::unique_ptr<ILabelBinning> binningPtr_;
@@ -32,8 +43,20 @@ namespace boosting {
              */
             LabelWiseCompleteBinnedRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight,
                                                   std::unique_ptr<ILabelBinning> binningPtr)
-                : l2RegularizationWeight_(l2RegularizationWeight), binningPtr_(std::move(binningPtr)) {
+                : maxBins_(binningPtr->getMaxBins(labelIndices.getNumElements())),
+                  scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins_ + 1)),
+                  tmpGradients_(new float64[maxBins_]), tmpHessians_(new float64[maxBins_]),
+                  numElementsPerBin_(new uint32[maxBins_]), l2RegularizationWeight_(l2RegularizationWeight),
+                  binningPtr_(std::move(binningPtr)) {
+                // The last bin is used for labels with zero statistics. For this particular bin, the prediction is
+                // always zero.
+                scoreVector_.scores_binned_begin()[maxBins_] = 0;
+            }
 
+            ~LabelWiseCompleteBinnedRuleEvaluation() {
+                delete[] tmpGradients_;
+                delete[] tmpHessians_;
+                delete[] numElementsPerBin_;
             }
 
             const ILabelWiseScoreVector& calculateLabelWisePrediction(
