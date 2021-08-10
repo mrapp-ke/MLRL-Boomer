@@ -110,13 +110,15 @@ namespace boosting {
                 setArrayToZeros(numElementsPerBin_, numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
+                typename DenseBinnedScoreVector<T>::index_binned_iterator binIndexIterator =
+                    scoreVector_.indices_binned_begin();
                 auto callback = [=](uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian) {
                     aggregatedStatisticIterator[binIndex] += statisticIterator[labelIndex];
                     numElementsPerBin_[binIndex] += 1;
-                    scoreVector_.indices_binned_begin()[labelIndex] = binIndex;
+                    binIndexIterator[labelIndex] = binIndex;
                 };
-                auto zeroCallback = [this](uint32 labelIndex) {
-                    scoreVector_.indices_binned_begin()[labelIndex] = maxBins_;
+                auto zeroCallback = [=](uint32 labelIndex) {
+                    binIndexIterator[labelIndex] = maxBins_;
                 };
                 binningPtr_->createBins(labelInfo, criteria_, numLabels, callback, zeroCallback);
 
