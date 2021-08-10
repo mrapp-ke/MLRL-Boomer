@@ -1,7 +1,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_complete.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/validation.hpp"
-#include "rule_evaluation_label_wise_common.hpp"
+#include "rule_evaluation_label_wise_complete_common.hpp"
 
 
 namespace boosting {
@@ -58,13 +58,8 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
-
-                for (uint32 i = 0; i < numElements; i++) {
-                    const Tuple<float64>& tuple = statisticIterator[i];
-                    scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, l2RegularizationWeight_);
-                }
-
-                scoreVector_.overallQualityScore = calculateOverallQualityScore(scoreIterator, statisticIterator,
+                calculateLabelWiseScores(statisticIterator, scoreIterator, numElements, l2RegularizationWeight_);
+                scoreVector_.overallQualityScore = calculateOverallQualityScore(statisticIterator, scoreIterator,
                                                                                 numElements, l2RegularizationWeight_);
                 return scoreVector_;
             }
