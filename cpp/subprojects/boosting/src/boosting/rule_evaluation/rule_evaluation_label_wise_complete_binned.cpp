@@ -90,7 +90,14 @@ namespace boosting {
                 };
                 binningPtr_->createBins(labelInfo, statisticVector, l2RegularizationWeight_, callback, zeroCallback);
 
-                // TODO Implement
+                DenseLabelWiseStatisticVector::const_iterator statisticIterator = aggregatedStatisticVector_.cbegin();
+                calculateLabelWiseScores(statisticIterator, scoreVector_.scores_binned_begin(), numBins,
+                                         l2RegularizationWeight_);
+                // TODO Take the number of elements per bin into account
+                scoreVector_.overallQualityScore = calculateOverallQualityScore(statisticIterator,
+                                                                                scoreVector_.scores_binned_cbegin(),
+                                                                                numBins, l2RegularizationWeight_);
+                return scoreVector_;
             }
 
     };
