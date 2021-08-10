@@ -9,48 +9,9 @@
 
 namespace boosting {
 
-    // TODO Use function "calculateLabelWiseScore" from "rule_evaluation_label_wise_common.hpp"
-    static inline constexpr float64 calculateCriterion(float64 gradient, float64 hessian,
+    static inline constexpr float64 calculateStatistic(float64 gradient, float64 hessian,
                                                        float64 l2RegularizationWeight) {
         return divideOrZero<float64>(gradient, hessian + l2RegularizationWeight);
-    }
-
-    static inline void resetLabelInfo(LabelInfo& labelInfo) {
-        labelInfo.minPositive = std::numeric_limits<float64>::infinity();
-        labelInfo.maxPositive = 0;
-        labelInfo.minNegative = 0;
-        labelInfo.maxNegative = -std::numeric_limits<float64>::infinity();
-    }
-
-    static inline void updateLabelInfo(LabelInfo& labelInfo, float32 criterion) {
-        if (criterion < 0) {
-            labelInfo.numNegativeBins++;
-
-            if (criterion < labelInfo.minNegative) {
-                labelInfo.minNegative = criterion;
-            }
-
-            if (criterion > labelInfo.maxNegative) {
-                labelInfo.maxNegative = criterion;
-            }
-        } else if (criterion > 0) {
-            labelInfo.numPositiveBins++;
-
-            if (criterion < labelInfo.minPositive) {
-                labelInfo.minPositive = criterion;
-            }
-
-            if (criterion > labelInfo.maxPositive) {
-                labelInfo.maxPositive = criterion;
-            }
-        }
-    }
-
-    static inline void adjustNumBins(LabelInfo& labelInfo, float32 binRatio, uint32 minBins, uint32 maxBins) {
-        labelInfo.numNegativeBins =
-            labelInfo.numPositiveBins > 0 ? calculateNumBins(labelInfo.numPositiveBins, binRatio, minBins, maxBins) : 0;
-        labelInfo.numPositiveBins =
-            labelInfo.numNegativeBins > 0 ? calculateNumBins(labelInfo.numNegativeBins, binRatio, minBins, maxBins) : 0;
     }
 
     template<typename GradientIterator, typename HessianIterator>
@@ -62,14 +23,46 @@ namespace boosting {
 
         if (numStatistics > 0) {
             // Find minimum and maximum among the positive gradients and negative gradients, respectively...
-            resetLabelInfo(labelInfo);
+            uint32 numPositive = 0;
+            uint32 numNegative = 0;
+            labelInfo.minPositive = std::numeric_limits<float64>::infinity();
+            labelInfo.maxPositive = 0;
+            labelInfo.minNegative = 0;
+            labelInfo.maxNegative = -std::numeric_limits<float64>::infinity();
 
             for (uint32 i = 0; i < numStatistics; i++) {
-                float64 criterion = calculateCriterion(gradientsBegin[i], hessiansBegin[i], l2RegularizationWeight);
-                updateLabelInfo(labelInfo, criterion);
+                float64 statistic = calculateStatistic(gradientsBegin[i], hessiansBegin[i], l2RegularizationWeight);
+
+                if (statistic < 0) {
+                    numNegative++;
+
+                    if (statistic < labelInfo.minNegative) {
+                        labelInfo.minNegative = statistic;
+                    }
+
+                    if (statistic > labelInfo.maxNegative) {
+                        labelInfo.maxNegative = statistic;
+                    }
+                } else if (statistic > 0) {
+                    numPositive++;
+
+                    if (statistic < labelInfo.minPositive) {
+                        labelInfo.minPositive = statistic;
+                    }
+
+                    if (statistic > labelInfo.maxPositive) {
+                        labelInfo.maxPositive = statistic;
+                    }
+                }
             }
 
-            adjustNumBins(labelInfo, binRatio, minBins, maxBins);
+            labelInfo.numNegativeBins =
+                numPositive > 0 ? calculateNumBins(numPositive, binRatio, minBins, maxBins) : 0;
+            labelInfo.numPositiveBins =
+                numNegative > 0 ? calculateNumBins(numNegative, binRatio, minBins, maxBins) : 0;
+        } else {
+            labelInfo.numPositiveBins = 0;
+            labelInfo.numNegativeBins = 0;
         }
     }
 
@@ -95,20 +88,20 @@ namespace boosting {
         for (uint32 i = 0; i < numStatistics; i++) {
             float64 gradient = gradientsBegin[i];
             float64 hessian = hessiansBegin[i];
-            float64 criterion = calculateCriterion(gradient, hessian, l2RegularizationWeight);
+            float64 statistic = calculateStatistic(gradient, hessian, l2RegularizationWeight);
 
-            if (criterion > 0) {
+            if (statistic > 0) {
                 // Gradient is positive, i.e., label belongs to a negative bin...
-                uint32 binIndex = std::floor((criterion - minPositive) / spanPerNegativeBin);
+                uint32 binIndex = std::floor((statistic - minPositive) / spanPerNegativeBin);
 
                 if (binIndex >= numNegativeBins) {
                     binIndex = numNegativeBins - 1;
                 }
 
                 callback(binIndex, i, gradient, hessian);
-            } else if (criterion < 0) {
+            } else if (statistic < 0) {
                 // Gradient is negative, i.e., label belongs to a positive bin...
-                uint32 binIndex = std::floor((criterion - minNegative) / spanPerPositiveBin);
+                uint32 binIndex = std::floor((statistic - minNegative) / spanPerPositiveBin);
 
                 if (binIndex >= numPositiveBins) {
                     binIndex = numPositiveBins - 1;
@@ -157,6 +150,11 @@ namespace boosting {
                 return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
             }
 
+            LabelInfo getLabelInfo(const float64* criteria, uint32 numElements,
+                                   float64 l2RegularizationWeight) const override {
+                // TODO Implement
+            }
+
             LabelInfo getLabelInfo(DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
                                    DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
                                    DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
@@ -165,27 +163,6 @@ namespace boosting {
                 LabelInfo labelInfo;
                 fetchLabelInfo(gradientsBegin, gradientsEnd, hessiansBegin, hessiansEnd, l2RegularizationWeight,
                                labelInfo, binRatio_, minBins_, maxBins_);
-                return labelInfo;
-            }
-
-            LabelInfo getLabelInfo(const DenseLabelWiseStatisticVector& statisticVector,
-                                   float64 l2RegularizationWeight) const override {
-                LabelInfo labelInfo;
-                uint32 numElements = statisticVector.getNumElements();
-
-                if (numElements > 0) {
-                    resetLabelInfo(labelInfo);
-                    DenseLabelWiseStatisticVector::const_iterator iterator = statisticVector.cbegin();
-
-                    for (uint32 i = 0; i < numElements; i++) {
-                        const Tuple<float64>& tuple = iterator[i];
-                        float64 criterion = calculateCriterion(tuple.first, tuple.second, l2RegularizationWeight);
-                        updateLabelInfo(labelInfo, criterion);
-                    }
-
-                    adjustNumBins(labelInfo, binRatio_, minBins_, maxBins_);
-                }
-
                 return labelInfo;
             }
 
@@ -200,6 +177,12 @@ namespace boosting {
                 return labelInfo;
             }
 
+            void createBins(LabelInfo labelInfo, const float64* criteria, uint32 numElements,
+                            float64 l2RegularizationWeight, Callback callback,
+                            ZeroCallback zeroCallback) const override {
+                // TODO Implement
+            }
+
             void createBins(LabelInfo labelInfo, DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
                             DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
                             DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
@@ -208,12 +191,6 @@ namespace boosting {
                             ZeroCallback zeroCallback) const override {
                 createBinsInternally(labelInfo, gradientsBegin, gradientsEnd, hessiansBegin, hessiansEnd,
                                      l2RegularizationWeight, callback, zeroCallback);
-            }
-
-            void createBins(LabelInfo labelInfo, const DenseLabelWiseStatisticVector& statisticVector,
-                            float64 l2RegularizationWeight, Callback callback,
-                            ZeroCallback zeroCallback) const override {
-                // TODO Implement
             }
 
             void createBins(LabelInfo labelInfo,

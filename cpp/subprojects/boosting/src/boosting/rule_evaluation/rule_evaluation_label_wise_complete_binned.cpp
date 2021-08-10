@@ -94,12 +94,12 @@ namespace boosting {
 
             const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
                 // Calculate label-wise criteria...
+                uint32 numLabels = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                calculateLabelWiseScores(statisticIterator, criteria_, statisticVector.getNumElements(),
-                                         l2RegularizationWeight_);
+                calculateLabelWiseScores(statisticIterator, criteria_, numLabels, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
-                LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector, l2RegularizationWeight_);
+                LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numLabels, l2RegularizationWeight_);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
                 scoreVector_.setNumBins(numBins, false);
 
@@ -118,7 +118,8 @@ namespace boosting {
                 auto zeroCallback = [this](uint32 labelIndex) {
                     scoreVector_.indices_binned_begin()[labelIndex] = maxBins_;
                 };
-                binningPtr_->createBins(labelInfo, statisticVector, l2RegularizationWeight_, callback, zeroCallback);
+                binningPtr_->createBins(labelInfo, criteria_, numLabels, l2RegularizationWeight_, callback,
+                                        zeroCallback);
 
                 // Compute predictions, as well as an overall quality score...
                 typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
