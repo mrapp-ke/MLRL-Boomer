@@ -13,7 +13,8 @@ namespace boosting {
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class ExampleWiseSingleLabelRuleEvaluation final : public IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector> {
+    class ExampleWiseSingleLabelRuleEvaluation final :
+            public IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector> {
 
         private:
 
