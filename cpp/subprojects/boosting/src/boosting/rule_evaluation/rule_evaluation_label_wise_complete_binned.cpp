@@ -91,11 +91,11 @@ namespace boosting {
                 binningPtr_->createBins(labelInfo, statisticVector, l2RegularizationWeight_, callback, zeroCallback);
 
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = aggregatedStatisticVector_.cbegin();
-                calculateLabelWiseScores(statisticIterator, scoreVector_.scores_binned_begin(), numBins,
-                                         l2RegularizationWeight_);
+                typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
+                    scoreVector_.scores_binned_begin();
+                calculateLabelWiseScores(statisticIterator, scoreIterator, numBins, l2RegularizationWeight_);
                 // TODO Take the number of elements per bin into account
-                scoreVector_.overallQualityScore = calculateOverallQualityScore(statisticIterator,
-                                                                                scoreVector_.scores_binned_cbegin(),
+                scoreVector_.overallQualityScore = calculateOverallQualityScore(statisticIterator, scoreIterator,
                                                                                 numBins, l2RegularizationWeight_);
                 return scoreVector_;
             }
