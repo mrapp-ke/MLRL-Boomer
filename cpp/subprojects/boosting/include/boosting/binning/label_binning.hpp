@@ -4,8 +4,6 @@
 #pragma once
 
 #include "common/data/types.hpp"
-#include "boosting/data/statistic_vector_dense_example_wise.hpp"
-#include "boosting/data/statistic_vector_dense_label_wise.hpp"
 #include <functional>
 #include <memory>
 
@@ -98,61 +96,6 @@ namespace boosting {
             virtual LabelInfo getLabelInfo(const float64* criteria, uint32 numElements) const = 0;
 
             /**
-             * Retrieves and returns information about the statistics for individual labels in a given
-             * `DenseLabelWiseStatisticVector` that is required to apply the binning method.
-             *
-             * This function must be called prior to the function `createBins` to obtain information, e.g. the number of
-             * bins to be used, that is required to apply the binning method. This function may also be used to prepare,
-             * e.g. sort, the given vector. The `LabelInfo` returned by this function must be passed to the function
-             * `createBins` later on.
-             *
-             * @param gradientsBegin            A `DenseLabelWiseStatisticVector::gradient_const_iterator` to the
-             *                                  beginning of the gradients
-             * @param gradientsEnd              A `DenseLabelWiseStatisticVector::gradient_const_iterator` to the end of
-             *                                  the gradients
-             * @param hessiansBegin             A `DenseLabelWiseStatisticVector::hessian_const_iterator` to the
-             *                                  beginning of the Hessians
-             * @param hessiansEnd               A `DenseLabelWiseStatisticVector::hessian_const_iterator` to the end of
-             *                                  the Hessians
-             * @param l2RegularizationWeight    The weight to be used for L2 regularization
-             * @return                          A struct of `type `LabelInfo` that stores the information
-             */
-            // TODO Remove
-            virtual LabelInfo getLabelInfo(DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
-                                           DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
-                                           DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
-                                           DenseLabelWiseStatisticVector::hessian_const_iterator hessiansEnd,
-                                           float64 l2RegularizationWeight) const = 0;
-
-            /**
-             * Retrieves and returns information about the statistics for individual labels in a given
-             * `DenseExampleWiseStatisticVector` that is required to apply the binning method.
-             *
-             * This function must be called prior to the function `createBins` to obtain information, e.g. the number of
-             * bins to be used, that is required to apply the binning method. This function may also be used to prepare,
-             * e.g. sort, the given vector. The `LabelInfo` returned by this function must be passed to the function
-             * `createBins` later on.
-             *
-             * @param gradientsBegin            A `DenseExampleWiseStatisticVector::gradient_const_iterator` to the
-             *                                  beginning of the gradients
-             * @param gradientsEnd              A `DenseExampleWiseStatisticVector::gradient_const_iterator` to the end
-             *                                  of the gradients
-             * @param hessiansBegin             A `DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator` to
-             *                                  the beginning of the Hessians
-             * @param hessiansEnd               A `DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator` to
-             *                                  the end of the Hessians
-             * @param l2RegularizationWeight    The weight to be used for L2 regularization
-             * @return                          A struct of `type `LabelInfo` that stores the information
-             */
-            // TODO Remove
-            virtual LabelInfo getLabelInfo(
-                DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
-                DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
-                DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansBegin,
-                DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansEnd,
-                float64 l2RegularizationWeight) const = 0;
-
-            /**
              * Assigns the labels to bins based on label-wise criteria.
              *
              * @param labelInfo                 A struct of type `LabelInfo` that stores information that is required to
@@ -165,60 +108,6 @@ namespace boosting {
              *                                  is encountered
              */
             virtual void createBins(LabelInfo labelInfo, const float64* criteria, uint32 numElements, Callback callback,
-                                    ZeroCallback zeroCallback) const = 0;
-
-            /**
-             * Assigns the labels to bins, based on the corresponding statistics in a `DenseLabelWiseStatisticVector`.
-             *
-             * @param labelInfo                 A struct of type `LabelInfo` that stores information about the
-             *                                  statistics in the given vector
-             * @param gradientsBegin            A `DenseLabelWiseStatisticVector::gradient_const_iterator` to the
-             *                                  beginning of the gradients
-             * @param gradientsEnd              A `DenseLabelWiseStatisticVector::gradient_const_iterator` to the end of
-             *                                  the gradients
-             * @param hessiansBegin             A `DenseLabelWiseStatisticVector::hessian_const_iterator` to the
-             *                                  beginning of the Hessians
-             * @param hessiansEnd               A `DenseLabelWiseStatisticVector::hessian_const_iterator` to the end of
-             *                                  the Hessians
-             * @param l2RegularizationWeight    The weight to be used for L2 regularization
-             * @param callback                  A callback that is invoked when a label is assigned to a bin
-             * @param zeroCallback              A callback that is invoked when a label with zero statistics is
-             *                                  encountered
-             */
-            // TODO Remove
-            virtual void createBins(LabelInfo labelInfo,
-                                    DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
-                                    DenseLabelWiseStatisticVector::gradient_const_iterator gradientsEnd,
-                                    DenseLabelWiseStatisticVector::hessian_const_iterator hessiansBegin,
-                                    DenseLabelWiseStatisticVector::hessian_const_iterator hessiansEnd,
-                                    float64 l2RegularizationWeight, Callback callback,
-                                    ZeroCallback zeroCallback) const = 0;
-
-            /**
-             * Assigns the labels to bins, based on the corresponding statistics in a `DenseExampleWiseStatisticVector`.
-             *
-             * @param labelInfo                 A struct of type `LabelInfo` that stores information about the
-             *                                  statistics in the given vector
-             * @param gradientsBegin            A `DenseExampleWiseStatisticVector::gradient_const_iterator` to the
-             *                                  beginning of the gradients
-             * @param gradientsEnd              A `DenseExampleWiseStatisticVector::gradient_const_iterator` to the end
-             *                                  of the gradients
-             * @param hessiansBegin             A `DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator` to
-             *                                  the beginning of the Hessians
-             * @param hessiansEnd               A `DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator` to
-             *                                  the end of the Hessians
-             * @param l2RegularizationWeight    The weight to be used for L2 regularization
-             * @param callback                  A callback that is invoked when a label is assigned to a bin
-             * @param zeroCallback              A callback that is invoked when a label with zero statistics is
-             *                                  encountered
-             */
-            // TODO Remove
-            virtual void createBins(LabelInfo labelInfo,
-                                    DenseExampleWiseStatisticVector::gradient_const_iterator gradientsBegin,
-                                    DenseExampleWiseStatisticVector::gradient_const_iterator gradientsEnd,
-                                    DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansBegin,
-                                    DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessiansEnd,
-                                    float64 l2RegularizationWeight, Callback callback,
                                     ZeroCallback zeroCallback) const = 0;
 
     };
