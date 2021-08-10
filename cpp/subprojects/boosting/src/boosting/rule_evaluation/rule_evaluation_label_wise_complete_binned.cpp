@@ -7,6 +7,33 @@
 
 namespace boosting {
 
+    template<typename ScoreIterator>
+    static inline void calculateLabelWiseScores(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
+                                                ScoreIterator scoreIterator, const uint32* weights, uint32 numElements,
+                                                float64 l2RegularizationWeight) {
+        for (uint32 i = 0; i < numElements; i++) {
+            uint32 weight = weights[i];
+            const Tuple<float64>& tuple = statisticIterator[i];
+            scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, weight * l2RegularizationWeight);
+        }
+    }
+
+    template<typename ScoreIterator>
+    static inline constexpr float64 calculateOverallQualityScore(
+            DenseLabelWiseStatisticVector::const_iterator statisticIterator, ScoreIterator scoreIterator,
+            const uint32* weights, uint32 numElements, float64 l2RegularizationWeight) {
+        float64 overallQualityScore = 0;
+
+        for (uint32 i = 0; i < numElements; i++) {
+            uint32 weight = weights[i];
+            const Tuple<float64>& tuple = statisticIterator[i];
+            overallQualityScore += calculateLabelWiseQualityScore(scoreIterator[i], tuple.first, tuple.second,
+                                                                  weight * l2RegularizationWeight);
+        }
+
+        return overallQualityScore;
+    }
+
     /**
      * Allows to calculate the predictions of complete rules, as well as an overall quality score, based on the
      * gradients and Hessians that are stored by a `DenseLabelWiseStatisticVector` using L2 regularization. The labels
@@ -95,10 +122,11 @@ namespace boosting {
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = aggregatedStatisticVector_.cbegin();
                 typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                     scoreVector_.scores_binned_begin();
-                calculateLabelWiseScores(statisticIterator, scoreIterator, numBins, l2RegularizationWeight_);
-                // TODO Take the number of elements per bin into account
+                calculateLabelWiseScores(statisticIterator, scoreIterator, numElementsPerBin_, numBins,
+                                         l2RegularizationWeight_);
                 scoreVector_.overallQualityScore = calculateOverallQualityScore(statisticIterator, scoreIterator,
-                                                                                numBins, l2RegularizationWeight_);
+                                                                                numElementsPerBin_, numBins,
+                                                                                l2RegularizationWeight_);
                 return scoreVector_;
             }
 
