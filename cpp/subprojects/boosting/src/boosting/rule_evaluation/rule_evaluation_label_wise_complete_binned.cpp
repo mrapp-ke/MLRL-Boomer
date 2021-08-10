@@ -118,7 +118,7 @@ namespace boosting {
                 };
                 binningPtr_->createBins(labelInfo, statisticVector, l2RegularizationWeight_, callback, zeroCallback);
 
-                // Compute predictions as well as an overall quality score...
+                // Compute predictions, as well as an overall quality score...
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = aggregatedStatisticVector_.cbegin();
                 typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                     scoreVector_.scores_binned_begin();
