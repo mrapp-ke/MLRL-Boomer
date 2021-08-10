@@ -9,6 +9,65 @@
 
 namespace boosting {
 
+
+    /**
+     * Copies Hessians from an iterator to a matrix of coefficients that may be passed to LAPACK's DSYSV routine.
+     *
+     * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
+     * @param hessianIterator   An iterator that provides random access to the Hessians
+     * @param coefficients      An array of type `float64`, shape `(n * n)`, the Hessians should be copied to
+     * @param n                 The dimensionality of the matrix of coefficients
+     */
+    template<typename HessianIterator>
+    static inline void copyCoefficients(HessianIterator hessianIterator, float64* coefficients, uint32 n) {
+        for (uint32 c = 0; c < n; c++) {
+            uint32 offset = c * n;
+
+            for (uint32 r = 0; r <= c; r++) {
+                coefficients[offset + r] = *hessianIterator;
+                hessianIterator++;
+            }
+        }
+    }
+
+    /**
+     * Copies gradients from an iterator to a vector of ordinates that may be passed to LAPACK's DSYSV routine.
+     *
+     * @tparam GradientIterator The type of the iterator that provides access to the gradients
+     * @param gradientIterator  An iterator that provides random access to the gradients
+     * @param ordinates         An array of type `float64`, shape `(n)`, the gradients should be copied to
+     * @param n                 The number of gradients
+     */
+    template<typename GradientIterator>
+    static inline void copyOrdinates(GradientIterator gradientIterator, float64* ordinates, uint32 n) {
+        for (uint32 i = 0; i < n; i++) {
+            ordinates[i] = -gradientIterator[i];
+        }
+    }
+
+    /**
+     * Calculates and returns an overall quality score that assesses the quality of predictions for several labels.
+     *
+     * @tparam ScoreIterator    The type of the iterator that provides access to the predicted scores
+     * @tparam GradientIterator The type of the iterator that provides access to the gradients
+     * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
+     * @param scores            An iterator that provides random access to the predicted scores
+     * @param gradients         An iterator that provides random access to the gradients
+     * @param hessians          An iterator that provides random access to the Hessians
+     * @param tmpArray          A pointer to an array of type `float64`, shape `(numPredictions)`, that should be used
+     *                          by BLAS' DSPMV routine to store temporary values
+     * @param numPredictions    The number of predictions
+     * @param blas              A reference to an object of type `Blas` that allows to execute different BLAS routines
+     * @return                  The quality score that has been calculated
+     */
+    template<typename ScoreIterator, typename GradientIterator, typename HessianIterator>
+    static inline float64 calculateOverallQualityScore(ScoreIterator scores, GradientIterator gradients,
+                                                       HessianIterator hessians, float64* tmpArray,
+                                                       uint32 numPredictions, const Blas& blas) {
+        blas.dspmv(hessians, scores, tmpArray, numPredictions);
+        return blas.ddot(scores, gradients, numPredictions) + (0.5 * blas.ddot(scores, tmpArray, numPredictions));
+    }
+
     /**
      * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
      * quality scores, based on the gradients and Hessians that have been calculated according to a loss function that

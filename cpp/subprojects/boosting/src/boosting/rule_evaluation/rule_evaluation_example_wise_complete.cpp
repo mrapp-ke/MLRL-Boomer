@@ -7,36 +7,11 @@
 
 namespace boosting {
 
-    static inline void copyCoefficients(DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator,
-                                        float64* coefficients, uint32 numPredictions) {
-        for (uint32 c = 0; c < numPredictions; c++) {
-            uint32 offset = c * numPredictions;
-
-            for (uint32 r = 0; r <= c; r++) {
-                coefficients[offset + r] = *hessianIterator;
-                hessianIterator++;
-            }
-        }
-    }
-
     static inline void addRegularizationWeight(float64* coefficients, uint32 numPredictions,
                                                float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numPredictions; i++) {
             coefficients[(i * numPredictions) + i] += l2RegularizationWeight;
         }
-    }
-
-    static inline void copyOrdinates(DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
-                                     float64* ordinates, uint32 numPredictions) {
-        for (uint32 i = 0; i < numPredictions; i++) {
-            ordinates[i] = -gradientIterator[i];
-        }
-    }
-
-    static inline float64 calculateOverallQualityScore(float64* scores, float64* gradients, float64* hessians,
-                                                       float64* tmpArray, uint32 numPredictions, const Blas& blas) {
-        blas.dspmv(hessians, scores, tmpArray, numPredictions);
-        return blas.ddot(scores, gradients, numPredictions) + (0.5 * blas.ddot(scores, tmpArray, numPredictions));
     }
 
     /**
