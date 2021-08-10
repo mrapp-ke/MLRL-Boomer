@@ -103,7 +103,9 @@ namespace boosting {
                 scoreVector_.setNumBins(numBins, false);
 
                 // Reset arrays to zero...
-                aggregatedStatisticVector_.clear(); // TODO Do only reset the first "numBins" elements
+                DenseLabelWiseStatisticVector::iterator aggregatedStatisticIterator =
+                    aggregatedStatisticVector_.begin();
+                setArrayToZeros(aggregatedStatisticIterator, numBins);
                 setArrayToZeros(numElementsPerBin_, numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
@@ -122,11 +124,11 @@ namespace boosting {
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = aggregatedStatisticVector_.cbegin();
                 typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                     scoreVector_.scores_binned_begin();
-                calculateLabelWiseScores(statisticIterator, scoreIterator, numElementsPerBin_, numBins,
+                calculateLabelWiseScores(aggregatedStatisticIterator, scoreIterator, numElementsPerBin_, numBins,
                                          l2RegularizationWeight_);
-                scoreVector_.overallQualityScore = calculateOverallQualityScore(statisticIterator, scoreIterator,
-                                                                                numElementsPerBin_, numBins,
-                                                                                l2RegularizationWeight_);
+                scoreVector_.overallQualityScore = calculateOverallQualityScore(aggregatedStatisticIterator,
+                                                                                scoreIterator, numElementsPerBin_,
+                                                                                numBins, l2RegularizationWeight_);
                 return scoreVector_;
             }
 
