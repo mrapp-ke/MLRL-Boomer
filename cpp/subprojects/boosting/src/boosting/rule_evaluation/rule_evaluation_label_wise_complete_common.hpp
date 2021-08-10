@@ -41,6 +41,7 @@ namespace boosting {
      * @param l2RegularizationWeight    The weight of the L2 regularization
      * @return                          The overall quality score that has been calculated
      */
+    // TODO Move to "rule_evaluation_label_wise_complete.cpp"
     template<typename ScoreIterator>
     static inline constexpr float64 calculateOverallQualityScore(
             DenseLabelWiseStatisticVector::const_iterator statisticIterator, ScoreIterator scoreIterator,
