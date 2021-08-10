@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/math/math.hpp"
-#include "boosting/data/statistic_vector_dense_label_wise.hpp"
 
 
 namespace boosting {
