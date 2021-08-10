@@ -267,7 +267,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
         if label_binning_factory is not None and head_type == HEAD_TYPE_SINGLE:
             log.warning('Parameter "label_binning" does not have any effect, because parameter "head_type" is set to "'
-                        + head_type + '"!')
+                        + self.head_type + '"!')
 
         default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, HEAD_TYPE_COMPLETE,
                                                                                 label_binning_factory)
