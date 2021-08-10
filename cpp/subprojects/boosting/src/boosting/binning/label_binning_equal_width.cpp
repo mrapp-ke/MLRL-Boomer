@@ -150,9 +150,55 @@ namespace boosting {
                 return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
             }
 
-            LabelInfo getLabelInfo(const float64* criteria, uint32 numElements,
-                                   float64 l2RegularizationWeight) const override {
-                // TODO Implement
+            LabelInfo getLabelInfo(const float64* criteria, uint32 numElements) const override {
+                LabelInfo labelInfo;
+                labelInfo.numNegativeBins = 0;
+                labelInfo.numPositiveBins = 0;
+
+                if (numElements > 0) {
+                    labelInfo.minNegative = 0;
+                    labelInfo.maxNegative = -std::numeric_limits<float64>::infinity();
+                    labelInfo.minPositive = std::numeric_limits<float64>::infinity();
+                    labelInfo.maxPositive = 0;
+
+                    for (uint32 i = 0; i < numElements; i++) {
+                        float64 criterion = criteria[i];
+
+                        if (criterion < 0) {
+                            labelInfo.numNegativeBins++;
+
+                            if (criterion < labelInfo.minNegative) {
+                                labelInfo.minNegative = criterion;
+                            }
+
+                            if (criterion > labelInfo.maxNegative) {
+                                labelInfo.maxNegative = criterion;
+                            }
+                        } else if (criterion > 0) {
+                            labelInfo.numPositiveBins++;
+
+                            if (criterion < labelInfo.minPositive) {
+                                labelInfo.minPositive = criterion;
+                            }
+
+                            if (criterion > labelInfo.maxPositive) {
+                                labelInfo.maxPositive = criterion;
+                            }
+                        }
+                    }
+
+                    if (labelInfo.numNegativeBins > 0) {
+                        labelInfo.numNegativeBins = calculateNumBins(labelInfo.numNegativeBins, binRatio_, minBins_,
+                                                                     maxBins_);
+                    }
+
+                    if (labelInfo.numPositiveBins > 0) {
+                        labelInfo.numPositiveBins = calculateNumBins(labelInfo.numPositiveBins, binRatio_, minBins_,
+                                                                     maxBins_);
+                    }
+                }
+
+                return labelInfo;
             }
 
             LabelInfo getLabelInfo(DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,
@@ -177,10 +223,41 @@ namespace boosting {
                 return labelInfo;
             }
 
-            void createBins(LabelInfo labelInfo, const float64* criteria, uint32 numElements,
-                            float64 l2RegularizationWeight, Callback callback,
+            void createBins(LabelInfo labelInfo, const float64* criteria, uint32 numElements, Callback callback,
                             ZeroCallback zeroCallback) const override {
-                // TODO Implement
+                uint32 numNegativeBins = labelInfo.numNegativeBins;
+                float64 minNegative = labelInfo.minNegative;
+                float64 maxNegative = labelInfo.maxNegative;
+                uint32 numPositiveBins = labelInfo.numPositiveBins;
+                float64 minPositive = labelInfo.minPositive;
+                float64 maxPositive = labelInfo.maxPositive;
+
+                float64 spanPerNegativeBin = minNegative < 0 ? (maxNegative - minNegative) / numNegativeBins : 0;
+                float64 spanPerPositiveBin = maxPositive > 0 ? (maxPositive - minPositive) / numPositiveBins : 0;
+
+                for (uint32 i = 0; i < numElements; i++) {
+                    float64 criterion = criteria[i];
+
+                    if (criterion < 0) {
+                        uint32 binIndex = std::floor((criterion - minNegative) / spanPerNegativeBin);
+
+                        if (binIndex >= numNegativeBins) {
+                            binIndex = numNegativeBins - 1;
+                        }
+
+                        callback(binIndex, i, 0.0, 0.0);
+                    } else if (criterion > 0) {
+                        uint32 binIndex = std::floor((criterion - minPositive) / spanPerPositiveBin);
+
+                        if (binIndex >= numPositiveBins) {
+                            binIndex = numPositiveBins - 1;
+                        }
+
+                        callback(numNegativeBins + binIndex, i, 0.0, 0.0);
+                    } else {
+                        zeroCallback(i);
+                    }
+                }
             }
 
             void createBins(LabelInfo labelInfo, DenseLabelWiseStatisticVector::gradient_const_iterator gradientsBegin,

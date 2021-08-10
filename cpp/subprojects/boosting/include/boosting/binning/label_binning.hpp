@@ -93,11 +93,9 @@ namespace boosting {
              * @param criteria                  An array of type `float64` that stores the label-wise criteria that
              *                                  should be used to assign individual labels to bins
              * @param numElements               The number of elements in the array `criteria`
-             * @param l2RegularizationWeight    The weight to be used for L2 regularization
              * @return                          A struct of `type `LabelInfo` that stores the information
              */
-            virtual LabelInfo getLabelInfo(const float64* criteria, uint32 numElements,
-                                           float64 l2RegularizationWeight) const = 0;
+            virtual LabelInfo getLabelInfo(const float64* criteria, uint32 numElements) const = 0;
 
             /**
              * Retrieves and returns information about the statistics for individual labels in a given
@@ -162,13 +160,11 @@ namespace boosting {
              * @param criteria                  An array of type `float64` that stores the label-wise criteria that
              *                                  should be used to assign individual labels to bins
              * @param numElements               The number of elements in the array `criteria`
-             * @param l2RegularizationWeight    The weight to be used for L2 regularization
              * @param callback                  A callback that is invoked when a label is assigned to a bin
              * @param zeroCallback              A callback that is invoked when a label for which the criterion is zero
              *                                  is encountered
              */
-            virtual void createBins(LabelInfo labelInfo, const float64* criteria, uint32 numElements,
-                                    float64 l2RegularizationWeight, Callback callback,
+            virtual void createBins(LabelInfo labelInfo, const float64* criteria, uint32 numElements, Callback callback,
                                     ZeroCallback zeroCallback) const = 0;
 
             /**
