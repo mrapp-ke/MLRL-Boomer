@@ -51,13 +51,11 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
-             *                      the labels for which the rules may predict
-             * @param lapack        A reference to an object of type `Lapack` that allows to execute different LAPACK
-             *                      routines
+             * @param numPredictions    The number of labels for which the rules may predict
+             * @param lapack            A reference to an object of type `Lapack` that allows to execute different
+             *                          LAPACK routines
              */
-            AbstractExampleWiseRuleEvaluation(const T& labelIndices, const Lapack& lapack) {
-                uint32 numPredictions = labelIndices.getNumElements();
+            AbstractExampleWiseRuleEvaluation(uint32 numPredictions, const Lapack& lapack) {
                 dsysvTmpArray1_ = new float64[numPredictions * numPredictions];
                 dsysvTmpArray2_ = new int[numPredictions];
                 dspmvTmpArray_ = new float64[numPredictions];
