@@ -73,7 +73,8 @@ namespace boosting {
              */
             ExampleWiseCompleteRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight, const Blas& blas,
                                               const Lapack& lapack)
-                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices, lapack),
+                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices.getNumElements(),
+                                                                                        lapack),
                   scoreVector_(DenseScoreVector<T>(labelIndices)), l2RegularizationWeight_(l2RegularizationWeight),
                   blas_(blas), lapack_(lapack) {
 

@@ -31,6 +31,7 @@ namespace boosting {
             /**
              * @param labelIndices              A reference to an object of template type `T` that provides access to
              *                                  the indices of the labels for which the rules may predict
+             * @param maxBins                   The maximum number of bins
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
@@ -40,10 +41,11 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
-            ExampleWiseCompleteBinnedRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight,
+            ExampleWiseCompleteBinnedRuleEvaluation(const T& labelIndices, uint32 maxBins,
+                                                    float64 l2RegularizationWeight,
                                                     std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                     const Lapack& lapack)
-                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices, lapack),
+                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(maxBins, lapack),
                   l2RegularizationWeight_(l2RegularizationWeight), binningPtr_(std::move(binningPtr)), blas_(blas),
                   lapack_(lapack) {
 
@@ -79,15 +81,17 @@ namespace boosting {
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteBinnedRuleEvaluationFactory::createDense(
             const CompleteIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
+        uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<ExampleWiseCompleteBinnedRuleEvaluation<CompleteIndexVector>>(
-            indexVector, l2RegularizationWeight_, std::move(labelBinningPtr), *blasPtr_, *lapackPtr_);
+            indexVector, maxBins, l2RegularizationWeight_, std::move(labelBinningPtr), *blasPtr_, *lapackPtr_);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteBinnedRuleEvaluationFactory::createDense(
             const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
+        uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<ExampleWiseCompleteBinnedRuleEvaluation<PartialIndexVector>>(
-            indexVector, l2RegularizationWeight_, std::move(labelBinningPtr), *blasPtr_, *lapackPtr_);
+            indexVector, maxBins, l2RegularizationWeight_, std::move(labelBinningPtr), *blasPtr_, *lapackPtr_);
     }
 
 }
