@@ -76,11 +76,12 @@ namespace boosting {
                 scoreVector_.setNumBins(numBins, false);
 
                 // Reset arrays to zero...
-                aggregatedStatisticVector_.clear();
+                aggregatedStatisticVector_.clear(); // TODO Do only reset the first "numBins" elements
                 setArrayToZeros(numElementsPerBin_, numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 auto callback = [this, &statisticVector](uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian) {
+                    // TODO Capture iterators
                     aggregatedStatisticVector_.begin()[binIndex] += statisticVector.cbegin()[labelIndex];
                     numElementsPerBin_[binIndex] += 1;
                     scoreVector_.indices_binned_begin()[labelIndex] = binIndex;
