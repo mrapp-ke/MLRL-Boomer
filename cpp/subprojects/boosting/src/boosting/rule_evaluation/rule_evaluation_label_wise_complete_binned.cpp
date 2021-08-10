@@ -2,6 +2,7 @@
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "common/data/arrays.hpp"
 #include "common/validation.hpp"
+#include "rule_evaluation_label_wise_complete_common.hpp"
 
 
 namespace boosting {
@@ -26,6 +27,8 @@ namespace boosting {
 
             uint32* numElementsPerBin_;
 
+            float64* criteria_;
+
             float64 l2RegularizationWeight_;
 
             std::unique_ptr<ILabelBinning> binningPtr_;
@@ -45,8 +48,8 @@ namespace boosting {
                 : maxBins_(binningPtr->getMaxBins(labelIndices.getNumElements())),
                   scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins_ + 1)),
                   aggregatedStatisticVector_(DenseLabelWiseStatisticVector(maxBins_)),
-                  numElementsPerBin_(new uint32[maxBins_]), l2RegularizationWeight_(l2RegularizationWeight),
-                  binningPtr_(std::move(binningPtr)) {
+                  numElementsPerBin_(new uint32[maxBins_]), criteria_(new float64[labelIndices.getNumElements()]),
+                  l2RegularizationWeight_(l2RegularizationWeight), binningPtr_(std::move(binningPtr)) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
                 // bin, the prediction is always zero.
                 scoreVector_.scores_binned_begin()[maxBins_] = 0;
@@ -54,6 +57,7 @@ namespace boosting {
 
             ~LabelWiseCompleteBinnedRuleEvaluation() {
                 delete[] numElementsPerBin_;
+                delete[] criteria_;
             }
 
             const ILabelWiseScoreVector& calculateLabelWisePrediction(
@@ -62,6 +66,10 @@ namespace boosting {
             }
 
             const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
+                // Calculate label-wise criteria...
+                calculateLabelWiseScores(statisticVector.cbegin(), criteria_, statisticVector.getNumElements(),
+                                         l2RegularizationWeight_);
+
                 // Obtain information about the bins to be used...
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(statisticVector, l2RegularizationWeight_);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
