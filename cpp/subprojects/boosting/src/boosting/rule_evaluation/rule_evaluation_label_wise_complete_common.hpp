@@ -30,31 +30,4 @@ namespace boosting {
         }
     }
 
-    /**
-     * Calculates and returns an overall quality score that assesses the quality of the scores that are predicted for
-     * several labels.
-     *
-     * @tparam ScoreIterator            The type of the iterator that provides access to the predicted scores
-     * @param statisticIterator         An iterator that provides random access to the gradients and Hessians
-     * @param scoreIterator             An iterator that provides random access to the predicted scores
-     * @param numElements               The number of predicted scores
-     * @param l2RegularizationWeight    The weight of the L2 regularization
-     * @return                          The overall quality score that has been calculated
-     */
-    // TODO Move to "rule_evaluation_label_wise_complete.cpp"
-    template<typename ScoreIterator>
-    static inline constexpr float64 calculateOverallQualityScore(
-            DenseLabelWiseStatisticVector::const_iterator statisticIterator, ScoreIterator scoreIterator,
-            uint32 numElements, float64 l2RegularizationWeight) {
-        float64 overallQualityScore = 0;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            const Tuple<float64>& tuple = statisticIterator[i];
-            overallQualityScore += calculateLabelWiseQualityScore(scoreIterator[i], tuple.first, tuple.second,
-                                                                  l2RegularizationWeight);
-        }
-
-        return overallQualityScore;
-    }
-
 }
