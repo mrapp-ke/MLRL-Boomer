@@ -94,7 +94,8 @@ namespace boosting {
 
             const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
                 // Calculate label-wise criteria...
-                calculateLabelWiseScores(statisticVector.cbegin(), criteria_, statisticVector.getNumElements(),
+                DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                calculateLabelWiseScores(statisticIterator, criteria_, statisticVector.getNumElements(),
                                          l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
@@ -109,9 +110,8 @@ namespace boosting {
                 setArrayToZeros(numElementsPerBin_, numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-                auto callback = [this, &statisticVector](uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian) {
-                    // TODO Capture iterators
-                    aggregatedStatisticVector_.begin()[binIndex] += statisticVector.cbegin()[labelIndex];
+                auto callback = [=, this](uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian) {
+                    aggregatedStatisticIterator[binIndex] += statisticIterator[labelIndex];
                     numElementsPerBin_[binIndex] += 1;
                     scoreVector_.indices_binned_begin()[labelIndex] = binIndex;
                 };
@@ -121,7 +121,6 @@ namespace boosting {
                 binningPtr_->createBins(labelInfo, statisticVector, l2RegularizationWeight_, callback, zeroCallback);
 
                 // Compute predictions, as well as an overall quality score...
-                DenseLabelWiseStatisticVector::const_iterator statisticIterator = aggregatedStatisticVector_.cbegin();
                 typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                     scoreVector_.scores_binned_begin();
                 calculateLabelWiseScores(aggregatedStatisticIterator, scoreIterator, numElementsPerBin_, numBins,
