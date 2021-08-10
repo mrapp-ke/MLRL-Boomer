@@ -34,7 +34,7 @@ namespace boosting {
     static inline constexpr float64 calculateLabelWiseQualityScore(float64 score, float64 gradient, float64 hessian,
                                                                    float64 l2RegularizationWeight) {
         float64 scorePow = score * score;
-        return (gradient * score) + (0.5 * scorePow * hessian) + (0.5 * l2RegularizationWeight * scorePow);
+        return (gradient * score) + (0.5 * hessian * scorePow) + (0.5 * l2RegularizationWeight * scorePow);
     }
 
 
