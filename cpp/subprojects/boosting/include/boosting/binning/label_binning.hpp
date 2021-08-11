@@ -59,11 +59,10 @@ namespace boosting {
             virtual ~ILabelBinning() { };
 
             /**
-             * A callback function that is invoked when a label is assigned to a bin. It takes the index of the bin, the
-             * index of the label, as well as the corresponding gradient and Hessians, as arguments.
+             * A callback function that is invoked when a label is assigned to a bin. It takes the index of the bin and
+             * the index of the label as arguments.
              */
-            // TODO Remove arguments "gradient" and "hessian"
-            typedef std::function<void(uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian)> Callback;
+            typedef std::function<void(uint32 binIndex, uint32 labelIndex)> Callback;
 
             /**
              * A callback function that is invoked when a label with zero statistics is encountered. It takes the index
