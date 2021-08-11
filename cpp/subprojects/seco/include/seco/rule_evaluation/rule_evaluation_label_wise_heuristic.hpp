@@ -31,9 +31,9 @@ namespace seco {
              */
             HeuristicLabelWiseRuleEvaluationFactory(std::unique_ptr<IHeuristic> heuristicPtr, bool predictMajority);
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const CompleteIndexVector& indexVector) const override;
+            std::unique_ptr<IRuleEvaluation> create(const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluation> create(const PartialIndexVector& indexVector) const override;
+            std::unique_ptr<IRuleEvaluation> create(const PartialIndexVector& indexVector) const override;
 
     };
 

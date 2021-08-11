@@ -13,7 +13,7 @@ namespace seco {
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class HeuristicLabelWiseRuleEvaluation final : public ILabelWiseRuleEvaluation {
+    class HeuristicLabelWiseRuleEvaluation final : public IRuleEvaluation {
 
         private:
 
@@ -123,13 +123,13 @@ namespace seco {
         assertNotNull("heuristicPtr", heuristicPtr_.get());
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
+    std::unique_ptr<IRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
             const CompleteIndexVector& indexVector) const {
         return std::make_unique<HeuristicLabelWiseRuleEvaluation<CompleteIndexVector>>(indexVector, *heuristicPtr_,
                                                                                        predictMajority_);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
+    std::unique_ptr<IRuleEvaluation> HeuristicLabelWiseRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
         return std::make_unique<HeuristicLabelWiseRuleEvaluation<PartialIndexVector>>(indexVector, *heuristicPtr_,
                                                                                       predictMajority_);
