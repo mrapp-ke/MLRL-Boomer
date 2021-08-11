@@ -29,32 +29,6 @@ namespace boosting {
             virtual ~IExampleWiseRuleEvaluation() { };
 
             /**
-             * Calculates the scores to be predicted by a rule, as well as corresponding quality scores, based on the
-             * label-wise sums of gradients and Hessians that are covered by the rule.
-             *
-             * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the
-             *                          gradients and Hessians
-             * @return                  A reference to an object of type `ILabelWiseScoreVector` that stores the
-             *                          predicted scores and quality scores
-             */
-            // TODO Remove
-            virtual const ILabelWiseScoreVector& calculateLabelWisePrediction(
-                const StatisticVector& statisticVector) = 0;
-
-            /**
-             * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
-             * of gradients and Hessians that are covered by the rule.
-             *
-             * @param statisticVector   A reference to an object of template type `StatisticVector` that stores the
-             *                          gradients and Hessians
-             * @return                  A reference to an object of type `IScoreVector` that stores the predicted scores
-             *                          and quality score
-             */
-            // TODO Remove
-            virtual const IScoreVector& calculateExampleWisePrediction(
-                StatisticVector& statisticVector) = 0;
-
-            /**
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on the sums
              * of gradients and Hessians that are covered by the rule.
              *

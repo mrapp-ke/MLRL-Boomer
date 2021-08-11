@@ -55,16 +55,6 @@ namespace boosting {
 
             }
 
-            const ILabelWiseScoreVector& calculateLabelWisePrediction(
-                    const DenseExampleWiseStatisticVector& statisticVector) override {
-
-            }
-
-            const IScoreVector& calculateExampleWisePrediction(
-                DenseExampleWiseStatisticVector& statisticVector) override {
-
-            }
-
             const IScoreVector& calculatePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
                 uint32 numPredictions = scoreVector_.getNumElements();
 

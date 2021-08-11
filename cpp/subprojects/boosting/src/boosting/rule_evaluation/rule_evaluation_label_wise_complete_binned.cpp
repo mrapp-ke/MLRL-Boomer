@@ -87,11 +87,6 @@ namespace boosting {
                 delete[] criteria_;
             }
 
-            const ILabelWiseScoreVector& calculateLabelWisePrediction(
-                    const DenseLabelWiseStatisticVector& statisticVector) override {
-
-            }
-
             const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
                 // Calculate label-wise criteria...
                 uint32 numLabels = statisticVector.getNumElements();
