@@ -4,11 +4,10 @@
 
 template<typename T>
 ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
-        std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex, bool nominal,
-        const IWeightVector& weights,
+        const T& labelIndices, uint32 featureIndex, bool nominal, const IWeightVector& weights,
         std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr)
-    : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices), featureIndex_(featureIndex),
-    nominal_(nominal), weights_(weights), callbackPtr_(std::move(callbackPtr)) {
+    : labelIndices_(labelIndices), featureIndex_(featureIndex), nominal_(nominal), weights_(weights),
+      callbackPtr_(std::move(callbackPtr)) {
 
 }
 

@@ -7,7 +7,6 @@
 #include "common/rule_refinement/rule_refinement_callback.hpp"
 #include "common/input/feature_vector.hpp"
 #include "common/sampling/weight_vector.hpp"
-#include "common/head_refinement/head_refinement.hpp"
 
 
 /**
@@ -22,8 +21,6 @@ template<typename T>
 class ExactRuleRefinement final : public IRuleRefinement {
 
     private:
-
-        std::unique_ptr<IHeadRefinement> headRefinementPtr_;
 
         const T& labelIndices_;
 
@@ -40,8 +37,6 @@ class ExactRuleRefinement final : public IRuleRefinement {
     public:
 
         /**
-         * @param headRefinementPtr An unique pointer to an object of type `IHeadRefinement` that should be used to find
-         *                          the head of refined rules
          * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
          *                          the labels for which the refined rule is allowed to predict
          * @param numExamples       The total number of training examples with non-zero weights that are covered by the
@@ -51,8 +46,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback` that allows to
          *                          retrieve a feature vector for the given feature
          */
-        ExactRuleRefinement(std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices,
-                            uint32 numExamples, uint32 featureIndex, bool nominal,
+        ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal,
                             std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;

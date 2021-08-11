@@ -30,7 +30,6 @@ class ApproximateThresholdsFactory final : public IThresholdsFactory {
 
         std::unique_ptr<IThresholds> create(const IFeatureMatrix& featureMatrix,
                                             const INominalFeatureMask& nominalFeatureMask,
-                                            IStatisticsProvider& statisticsProvider,
-                                            const IHeadRefinementFactory& headRefinementFactory) const override;
+                                            IStatisticsProvider& statisticsProvider) const override;
 
 };

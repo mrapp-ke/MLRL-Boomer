@@ -137,8 +137,7 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
             // Induce the remaining rules...
             std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrix,
                                                                                        nominalFeatureMask,
-                                                                                       *statisticsProviderPtr,
-                                                                                       *headRefinementFactoryPtr_);
+                                                                                       *statisticsProviderPtr);
             uint32 numFeatures = thresholdsPtr->getNumFeatures();
             uint32 numLabels = thresholdsPtr->getNumLabels();
             std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrix.createPartitionSampling(
