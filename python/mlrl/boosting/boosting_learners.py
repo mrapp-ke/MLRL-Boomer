@@ -23,8 +23,6 @@ from mlrl.boosting.cython.rule_evaluation_label_wise import LabelWiseSingleLabel
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
-from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
-    CompleteHeadRefinementFactory
 from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
@@ -293,14 +291,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         num_threads = get_preferred_num_threads(int(self.num_threads_rule_refinement))
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     self.recalculate_predictions, num_threads)
-
-    def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
-        value = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
-
-        if value == HEAD_TYPE_SINGLE:
-            return SingleLabelHeadRefinementFactory()
-        elif value == HEAD_TYPE_COMPLETE:
-            return CompleteHeadRefinementFactory()
 
     def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
         return SequentialRuleModelAssemblageFactory()

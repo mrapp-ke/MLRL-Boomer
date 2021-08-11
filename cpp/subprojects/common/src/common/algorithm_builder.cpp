@@ -5,18 +5,15 @@
 #include "common/sampling/instance_sampling_no.hpp"
 #include "common/sampling/label_sampling_no.hpp"
 #include "common/sampling/partition_sampling_no.hpp"
-#include "common/head_refinement/head_refinement_factory.hpp"
 #include "common/validation.hpp"
 
 
 AlgorithmBuilder::AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                                    std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                                    std::unique_ptr<IRuleInduction> ruleInductionPtr,
-                                   std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                                    std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr)
     : statisticsProviderFactoryPtr_(std::move(statisticsProviderFactoryPtr)),
       thresholdsFactoryPtr_(std::move(thresholdsFactoryPtr)), ruleInductionPtr_(std::move(ruleInductionPtr)),
-      regularRuleHeadRefinementFactoryPtr_(std::move(headRefinementFactoryPtr)),
       ruleModelAssemblageFactoryPtr_(std::move(ruleModelAssemblageFactoryPtr)),
       labelSamplingFactoryPtr_(std::make_shared<NoLabelSamplingFactory>()),
       instanceSamplingFactoryPtr_(std::make_shared<NoInstanceSamplingFactory>()),
@@ -27,7 +24,6 @@ AlgorithmBuilder::AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> s
     assertNotNull("statisticsProviderFactoryPtr", statisticsProviderFactoryPtr_.get());
     assertNotNull("thresholdsFactoryPtr", thresholdsFactoryPtr_.get());
     assertNotNull("ruleInductionPtr", ruleInductionPtr_.get());
-    assertNotNull("headRefinementFactoryPtr", regularRuleHeadRefinementFactoryPtr_.get());
     assertNotNull("ruleModelAssemblageFactoryPtr", ruleModelAssemblageFactoryPtr_.get());
 }
 
@@ -84,8 +80,8 @@ AlgorithmBuilder& AlgorithmBuilder::addStoppingCriterion(std::unique_ptr<IStoppi
 
 std::unique_ptr<IRuleModelAssemblage> AlgorithmBuilder::build() const {
     return ruleModelAssemblageFactoryPtr_->create(statisticsProviderFactoryPtr_, thresholdsFactoryPtr_,
-                                                  ruleInductionPtr_, regularRuleHeadRefinementFactoryPtr_,
-                                                  labelSamplingFactoryPtr_, instanceSamplingFactoryPtr_,
-                                                  featureSamplingFactoryPtr_, partitionSamplingFactoryPtr_, pruningPtr_,
-                                                  postProcessorPtr_, stoppingCriteria_, useDefaultRule_);
+                                                  ruleInductionPtr_, labelSamplingFactoryPtr_,
+                                                  instanceSamplingFactoryPtr_, featureSamplingFactoryPtr_,
+                                                  partitionSamplingFactoryPtr_, pruningPtr_, postProcessorPtr_,
+                                                  stoppingCriteria_, useDefaultRule_);
 }

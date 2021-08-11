@@ -70,9 +70,6 @@ class IRuleModelAssemblageFactory {
          *                                          may be used by the conditions of rules
          * @param ruleInduction                     A shared pointer to an object of type `IRuleInduction` that should
          *                                          be used to induce individual rules
-         * @param regularRuleHeadRefinementFactory  A shared pointer to an object of type `IHeadRefinement` that allows
-         *                                          to create instances of the class that should be used to find the
-         *                                          head of all remaining rules
          * @param labelSamplingFactory              A shared pointer to an object of type `ILabelSamplingFactory` that
          *                                          allows to create the implementation to be used for sampling the
          *                                          labels whenever a new rule is induced
@@ -96,7 +93,6 @@ class IRuleModelAssemblageFactory {
         virtual std::unique_ptr<IRuleModelAssemblage> create(
             std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
             std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
-            std::shared_ptr<IHeadRefinementFactory> regularRuleHeadRefinementFactoryPtr,
             std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
             std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
             std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,

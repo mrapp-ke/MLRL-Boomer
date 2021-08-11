@@ -15,7 +15,6 @@ import numpy as np
 from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
 from mlrl.common.cython.feature_binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
-from mlrl.common.cython.head_refinement import HeadRefinementFactory
 from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureMask
 from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
@@ -380,15 +379,14 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = BitNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        rule_model_assemblage = self.__create_rule_model_assemblage(num_labels)
+        rule_model_assemblage = self.__create_rule_model_assemblage()
         model_builder = self._create_model_builder()
         return rule_model_assemblage.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
                                                   model_builder)
 
-    def __create_rule_model_assemblage(self, num_labels: int) -> RuleModelAssemblage:
+    def __create_rule_model_assemblage(self) -> RuleModelAssemblage:
         algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(),
                                              self._create_thresholds_factory(), self._create_rule_induction(),
-                                             self._create_regular_rule_head_refinement_factory(num_labels),
                                              self._create_rule_model_assemblage_factory())
         label_sampling_factory = self._create_label_sampling_factory()
 
@@ -487,17 +485,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         Must be implemented by subclasses in order to create the `RuleInduction` to be used by the rule learner.
 
         :return: The `RuleInduction` that has been created
-        """
-        pass
-
-    @abstractmethod
-    def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
-        """
-        Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
-        for the induction of all regular rules.
-
-        :param num_labels:  The number of labels in the dataset
-        :return:            The `HeadRefinementFactory` that has been created
         """
         pass
 
