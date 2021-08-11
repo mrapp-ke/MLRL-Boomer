@@ -41,16 +41,6 @@ namespace boosting {
 
             }
 
-            const ILabelWiseScoreVector& calculateLabelWisePrediction(
-                    const DenseExampleWiseStatisticVector& statisticVector) override {
-
-            }
-
-            const IScoreVector& calculateExampleWisePrediction(
-                DenseExampleWiseStatisticVector& statisticVector) override {
-
-            }
-
             const IScoreVector& calculatePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
