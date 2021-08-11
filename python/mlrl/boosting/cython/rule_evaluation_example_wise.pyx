@@ -9,9 +9,9 @@ from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
 
-cdef class ExampleWiseRuleEvaluation:
+cdef class ExampleWiseRuleEvaluationFactory:
     """
-    A wrapper for the pure virtual C++ class `IExampleWiseRuleEvaluation`.
+    A wrapper for the pure virtual C++ class `IExampleWiseRuleEvaluationFactory`.
     """
     pass
 

@@ -13,8 +13,7 @@ namespace boosting {
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class ExampleWiseSingleLabelRuleEvaluation final :
-            public IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector> {
+    class ExampleWiseSingleLabelRuleEvaluation final : public IRuleEvaluation<DenseExampleWiseStatisticVector> {
 
         private:
 
@@ -82,13 +81,13 @@ namespace boosting {
         assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseSingleLabelRuleEvaluationFactory::createDense(
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseSingleLabelRuleEvaluationFactory::createDense(
             const CompleteIndexVector& indexVector) const {
         return std::make_unique<ExampleWiseSingleLabelRuleEvaluation<CompleteIndexVector>>(indexVector,
                                                                                            l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseSingleLabelRuleEvaluationFactory::createDense(
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseSingleLabelRuleEvaluationFactory::createDense(
             const PartialIndexVector& indexVector) const {
         return std::make_unique<ExampleWiseSingleLabelRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                           l2RegularizationWeight_);

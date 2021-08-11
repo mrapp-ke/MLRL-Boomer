@@ -46,7 +46,7 @@ namespace boosting {
 
                     const StatisticVector* totalSumVector_;
 
-                    std::unique_ptr<IExampleWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
+                    std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
 
                     const T& labelIndices_;
 
@@ -66,15 +66,15 @@ namespace boosting {
                      *                          Hessians
                      * @param totalSumVector    A pointer to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
-                     * @param ruleEvaluationPtr An unique pointer to an object of type `IExampleWiseRuleEvaluation` that
-                     *                          should be used to calculate the predictions, as well as corresponding
-                     *                          quality scores, of rules
+                     * @param ruleEvaluationPtr An unique pointer to an object of type `IRuleEvaluation` that should be
+                     *                          used to calculate the predictions, as well as corresponding quality
+                     *                          scores, of rules
                      * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
                     StatisticsSubset(const AbstractExampleWiseImmutableStatistics& statistics,
                                      const StatisticVector* totalSumVector,
-                                     std::unique_ptr<IExampleWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
+                                     std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
                                      const T& labelIndices)
                         : statistics_(statistics), totalSumVector_(totalSumVector),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
@@ -264,7 +264,7 @@ namespace boosting {
 
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
-                std::unique_ptr<IExampleWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
+                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVector_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
                 return std::make_unique<typename ExampleWiseHistogram::CompleteSubset>(*this, totalSumVector_,
                                                                                        std::move(ruleEvaluationPtr),
@@ -273,7 +273,7 @@ namespace boosting {
 
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
-                std::unique_ptr<IExampleWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
+                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVector_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
                 return std::make_unique<typename ExampleWiseHistogram::PartialSubset>(*this, totalSumVector_,
                                                                                       std::move(ruleEvaluationPtr),
@@ -418,7 +418,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
-                std::unique_ptr<IExampleWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
+                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVectorPtr_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
                 return std::make_unique<typename AbstractExampleWiseStatistics::CompleteSubset>(
                     *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
@@ -429,7 +429,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
-                std::unique_ptr<IExampleWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
+                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVectorPtr_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
                 return std::make_unique<typename AbstractExampleWiseStatistics::PartialSubset>(
                     *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);

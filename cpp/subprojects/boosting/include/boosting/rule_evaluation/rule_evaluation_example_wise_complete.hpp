@@ -37,10 +37,10 @@ namespace boosting {
             ExampleWiseCompleteRuleEvaluationFactory(float64 l2RegularizationWeight, std::unique_ptr<Blas> blasPtr,
                                                      std::unique_ptr<Lapack> lapackPtr);
 
-            std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createDense(
+            std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> createDense(
                 const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> createDense(
+            std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> createDense(
                 const PartialIndexVector& indexVector) const override;
 
     };
