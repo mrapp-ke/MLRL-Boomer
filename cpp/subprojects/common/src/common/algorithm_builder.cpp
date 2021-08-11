@@ -5,6 +5,7 @@
 #include "common/sampling/instance_sampling_no.hpp"
 #include "common/sampling/label_sampling_no.hpp"
 #include "common/sampling/partition_sampling_no.hpp"
+#include "common/head_refinement/head_refinement_factory.hpp"
 #include "common/validation.hpp"
 
 

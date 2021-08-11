@@ -6,7 +6,6 @@
 #include "common/thresholds/thresholds.hpp"
 #include "common/input/feature_matrix.hpp"
 #include "common/input/nominal_feature_mask.hpp"
-#include "common/head_refinement/head_refinement_factory.hpp"
 #include "common/statistics/statistics_provider.hpp"
 
 
@@ -28,13 +27,10 @@ class IThresholdsFactory {
          *                              the information whether individual features are nominal or not
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              statistics about the labels of the training examples
-         * @param headRefinementFactory A reference to an object of type `IHeadRefinementFactory` that allows to create
-         *                              instances of the class that should be used to find the heads of rules
          * @return                      An unique pointer to an object of type `IThresholds` that has been created
          */
         virtual std::unique_ptr<IThresholds> create(const IFeatureMatrix& featureMatrix,
                                                     const INominalFeatureMask& nominalFeatureMask,
-                                                    IStatisticsProvider& statisticsProvider,
-                                                    const IHeadRefinementFactory& headRefinementFactory) const = 0;
+                                                    IStatisticsProvider& statisticsProvider) const = 0;
 
 };

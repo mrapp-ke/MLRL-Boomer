@@ -5,11 +5,10 @@
 
 template<typename T>
 ExactRuleRefinement<T>::ExactRuleRefinement(
-        std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 numExamples,
-        uint32 featureIndex, bool nominal,
+        const T& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal,
         std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr)
-    : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices), numExamples_(numExamples),
-      featureIndex_(featureIndex), nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {
+    : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
+      callbackPtr_(std::move(callbackPtr)) {
 
 }
 
