@@ -19,10 +19,10 @@ from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory,
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import StoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
-from mlrl.seco.cython.head_refinement import LiftFunction, PeakLiftFunction
 from mlrl.seco.cython.heuristics import Heuristic, Accuracy, Precision, Recall, Laplace, WRA, FMeasure, MEstimate
 from mlrl.seco.cython.instance_sampling import InstanceSamplingWithReplacementFactory, \
     InstanceSamplingWithoutReplacementFactory
+from mlrl.seco.cython.lift_functions import LiftFunction, PeakLiftFunction
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
 from mlrl.seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
