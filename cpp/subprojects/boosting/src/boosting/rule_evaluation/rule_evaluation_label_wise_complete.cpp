@@ -28,7 +28,7 @@ namespace boosting {
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class LabelWiseCompleteRuleEvaluation final : public ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector> {
+    class LabelWiseCompleteRuleEvaluation final : public IRuleEvaluation<DenseLabelWiseStatisticVector> {
 
         private:
 
@@ -49,7 +49,7 @@ namespace boosting {
 
             }
 
-            const IScoreVector& calculatePrediction(const DenseLabelWiseStatisticVector& statisticVector) override {
+            const IScoreVector& calculatePrediction(DenseLabelWiseStatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
@@ -66,13 +66,13 @@ namespace boosting {
         assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::createDense(
+    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::createDense(
             const CompleteIndexVector& indexVector) const {
         return std::make_unique<LabelWiseCompleteRuleEvaluation<CompleteIndexVector>>(indexVector,
                                                                                       l2RegularizationWeight_);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::createDense(
+    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::createDense(
             const PartialIndexVector& indexVector) const {
         return std::make_unique<LabelWiseCompleteRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                      l2RegularizationWeight_);

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
+#include "boosting/rule_evaluation/rule_evaluation.hpp"
 #include "boosting/math/lapack.hpp"
 
 
@@ -78,7 +78,7 @@ namespace boosting {
      *                          be calculated
      */
     template<typename StatisticVector, typename T>
-    class AbstractExampleWiseRuleEvaluation : public IExampleWiseRuleEvaluation<StatisticVector> {
+    class AbstractExampleWiseRuleEvaluation : public IRuleEvaluation<StatisticVector> {
 
         protected:
 

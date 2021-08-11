@@ -84,12 +84,12 @@ namespace boosting {
         setArrayToDifference(statistics_, firstBegin, secondBegin, indexIterator, numElements_);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
+    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
             const ILabelWiseRuleEvaluationFactory& factory, const CompleteIndexVector& labelIndices) const {
         return factory.createDense(labelIndices);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
+    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
             const ILabelWiseRuleEvaluationFactory& factory, const PartialIndexVector& labelIndices) const {
         return factory.createDense(labelIndices);
     }

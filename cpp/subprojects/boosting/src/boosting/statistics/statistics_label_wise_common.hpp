@@ -48,7 +48,7 @@ namespace boosting {
 
                     const StatisticVector* totalSumVector_;
 
-                    std::unique_ptr<ILabelWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
+                    std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
 
                     const T& labelIndices_;
 
@@ -67,15 +67,15 @@ namespace boosting {
                      *                          that stores the gradients and Hessians
                      * @param totalSumVector    A pointer to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
-                     * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
-                     *                          should be used to calculate the predictions, as well as corresponding
-                     *                          quality scores, of rules
+                     * @param ruleEvaluationPtr An unique pointer to an object of type `IRuleEvaluation` that should be
+                     *                          used to calculate the predictions, as well as corresponding quality
+                     *                          scores, of rules
                      * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
                     StatisticsSubset(const AbstractLabelWiseImmutableStatistics& statistics,
                                      const StatisticVector* totalSumVector,
-                                     std::unique_ptr<ILabelWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
+                                     std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
                                      const T& labelIndices)
                         : statistics_(statistics), totalSumVector_(totalSumVector),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
@@ -128,7 +128,7 @@ namespace boosting {
                     }
 
                     const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
-                        const StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
+                        StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                         if (uncovered) {
                             tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
@@ -249,7 +249,7 @@ namespace boosting {
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices) const override {
-                std::unique_ptr<ILabelWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
+                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVector_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
                 return std::make_unique<typename LabelWiseHistogram::CompleteSubset>(*this, totalSumVector_,
                                                                                      std::move(ruleEvaluationPtr),
@@ -257,7 +257,7 @@ namespace boosting {
             }
 
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override {
-                std::unique_ptr<ILabelWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
+                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVector_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
                 return std::make_unique<typename LabelWiseHistogram::PartialSubset>(*this, totalSumVector_,
                                                                                     std::move(ruleEvaluationPtr),
@@ -399,7 +399,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
-                std::unique_ptr<ILabelWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
+                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVectorPtr_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
                 return std::make_unique<typename AbstractLabelWiseStatistics::CompleteSubset>(
                     *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);
@@ -410,7 +410,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
-                std::unique_ptr<ILabelWiseRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
+                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     totalSumVectorPtr_->createRuleEvaluation(*this->ruleEvaluationFactoryPtr_, labelIndices);
                 return std::make_unique<typename AbstractLabelWiseStatistics::PartialSubset>(
                     *this, totalSumVectorPtr_.get(), std::move(ruleEvaluationPtr), labelIndices);

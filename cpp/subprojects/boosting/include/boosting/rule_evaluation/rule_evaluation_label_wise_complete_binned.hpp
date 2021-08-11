@@ -32,10 +32,10 @@ namespace boosting {
             LabelWiseCompleteBinnedRuleEvaluationFactory(float64 l2RegularizationWeight,
                                                          std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
 
-            std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
+            std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
                 const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
+            std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
                 const PartialIndexVector& indexVector) const override;
 
     };
