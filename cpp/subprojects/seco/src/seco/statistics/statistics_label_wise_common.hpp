@@ -43,7 +43,7 @@ namespace seco {
 
                     const ConfusionMatrixVector* totalSumVector_;
 
-                    std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr_;
+                    std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr_;
 
                     const T& labelIndices_;
 
@@ -58,14 +58,14 @@ namespace seco {
                     /**
                      * @param statistics        A reference to an object of type `AbstractLabelWiseStatistics` that
                      *                          stores the confusion matrices
-                     * @param ruleEvaluationPtr An unique pointer to an object of type `ILabelWiseRuleEvaluation` that
-                     *                          should be used to calculate the predictions, as well as corresponding
-                     *                          quality scores, of rules
+                     * @param ruleEvaluationPtr An unique pointer to an object of type `IRuleEvaluation` that should be
+                     *                          used to calculate the predictions, as well as corresponding quality
+                     *                          scores, of rules
                      * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
                     StatisticsSubset(const AbstractLabelWiseStatistics& statistics,
-                                     std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
+                                     std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
                         : statistics_(statistics), totalSumVector_(&statistics_.subsetSumVector_),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
                           sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)),
@@ -242,8 +242,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
-                std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
-                    ruleEvaluationFactoryPtr_->create(labelIndices);
+                std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
                 return std::make_unique<StatisticsSubset<CompleteIndexVector>>(*this, std::move(ruleEvaluationPtr),
                                                                                labelIndices);
             }
@@ -253,8 +252,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
-                std::unique_ptr<ILabelWiseRuleEvaluation> ruleEvaluationPtr =
-                    ruleEvaluationFactoryPtr_->create(labelIndices);
+                std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactoryPtr_->create(labelIndices);
                 return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr),
                                                                               labelIndices);
             }
