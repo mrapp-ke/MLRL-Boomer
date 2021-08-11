@@ -8,7 +8,6 @@ Provides scikit-learn implementations of separate-and-conquer algorithms.
 from typing import Dict, Set, Optional, List
 
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
-from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
@@ -20,7 +19,7 @@ from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory,
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import StoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
-from mlrl.seco.cython.head_refinement import PartialHeadRefinementFactory, LiftFunction, PeakLiftFunction
+from mlrl.seco.cython.head_refinement import LiftFunction, PeakLiftFunction
 from mlrl.seco.cython.heuristics import Heuristic, Accuracy, Precision, Recall, Laplace, WRA, FMeasure, MEstimate
 from mlrl.seco.cython.instance_sampling import InstanceSamplingWithReplacementFactory, \
     InstanceSamplingWithoutReplacementFactory
@@ -36,7 +35,7 @@ from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_W
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_label_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
-    get_preferred_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
+    get_preferred_num_threads, create_thresholds_factory, parse_param_and_options
 
 HEAD_TYPE_PARTIAL = 'partial'
 
@@ -229,15 +228,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         num_threads = get_preferred_num_threads(int(self.num_threads_rule_refinement))
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     False, num_threads)
-
-    def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
-        value = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
-
-        if value == HEAD_TYPE_SINGLE:
-            return SingleLabelHeadRefinementFactory()
-        elif value == HEAD_TYPE_PARTIAL:
-            lift_function = self.__create_lift_function(num_labels)
-            return PartialHeadRefinementFactory(lift_function)
 
     def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
         return SequentialRuleModelAssemblageFactory()

@@ -19,8 +19,6 @@ class AlgorithmBuilder final {
 
         std::shared_ptr<IRuleInduction> ruleInductionPtr_;
 
-        std::shared_ptr<IHeadRefinementFactory> regularRuleHeadRefinementFactoryPtr_;
-
         std::shared_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr_;
 
         std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr_;
@@ -50,15 +48,12 @@ class AlgorithmBuilder final {
          *                                      conditions of rules
          * @param ruleInductionPtr              An unique pointer to an object of type `IRuleInduction` to be used by
          *                                      the rule learner to induce individual rules
-         * @param headRefinementFactoryPtr      An unique pointer to an object of type `IHeadRefinementFactory` to be
-         *                                      used by the rule learner to find the heads of individual rules
          * @param ruleModelAssemblageFactoryPtr An unique pointer to an object of type `IRuleModelAssemblageFactory` to
          *                                      be used by the rule learner for the assemblage of a rule model
          */
         AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                          std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                          std::unique_ptr<IRuleInduction> ruleInductionPtr,
-                         std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                          std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr);
 
         /**
