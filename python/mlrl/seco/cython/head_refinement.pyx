@@ -2,8 +2,7 @@
 @author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.utility cimport move
-from libcpp.memory cimport unique_ptr, make_unique
+from libcpp.memory cimport make_unique
 
 
 cdef class LiftFunction:
@@ -28,13 +27,3 @@ cdef class PeakLiftFunction(LiftFunction):
         """
         self.lift_function_ptr = <unique_ptr[ILiftFunction]>make_unique[PeakLiftFunctionImpl](num_labels, peak_label,
                                                                                               max_lift, curvature)
-
-
-cdef class PartialHeadRefinementFactory(HeadRefinementFactory):
-    """
-    A wrapper for the C++ class `PartialHeadRefinementFactory`.
-    """
-
-    def __cinit__(self, LiftFunction lift_function not None):
-        self.head_refinement_factory_ptr = <unique_ptr[IHeadRefinementFactory]>make_unique[PartialHeadRefinementFactoryImpl](
-            move(lift_function.lift_function_ptr))
