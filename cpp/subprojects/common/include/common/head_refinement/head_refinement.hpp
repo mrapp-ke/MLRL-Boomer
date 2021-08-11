@@ -10,6 +10,7 @@
 /**
  * Defines an interface for all classes that allow to find the best head for a rule.
  */
+// TODO Remove
 class IHeadRefinement {
 
     public:
