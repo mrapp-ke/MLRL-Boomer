@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "common/data/tuple.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "boosting/data/statistic_iterator_dense.hpp"
 #include <memory>
 
 
@@ -62,16 +62,6 @@ namespace boosting {
             typedef const Tuple<float64>* const_iterator;
 
             /**
-             * An iterator that provides read-only access to the gradients in the vector.
-             */
-            typedef DenseGradientConstIterator gradient_const_iterator;
-
-            /**
-             * An iterator that provides read-only access to the Hessians in the vector.
-             */
-            typedef DenseHessianConstIterator hessian_const_iterator;
-
-            /**
              * Returns an `iterator` to the beginning of the vector.
              *
              * @return An `iterator` to the beginning
@@ -98,34 +88,6 @@ namespace boosting {
              * @return A `const_iterator` to the end
              */
             const_iterator cend() const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the beginning of the gradients.
-             *
-             * @return A `gradient_const_iterator` to the beginning
-             */
-            gradient_const_iterator gradients_cbegin() const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the end of the gradients.
-             *
-             * @return A `gradient_const_iterator` to the end
-             */
-            gradient_const_iterator gradients_cend() const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
-             *
-             * @return A `hessian_const_iterator` to the beginning
-             */
-            hessian_const_iterator hessians_cbegin() const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the end of the Hessians.
-             *
-             * @return A `hessian_const_iterator` to the end
-             */
-            hessian_const_iterator hessians_cend() const;
 
             /**
              * Returns the number of gradients and Hessians in the vector.
