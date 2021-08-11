@@ -44,22 +44,6 @@ namespace boosting {
         return &statistics_[numElements_];
     }
 
-    DenseLabelWiseStatisticVector::gradient_const_iterator DenseLabelWiseStatisticVector::gradients_cbegin() const {
-        return DenseGradientConstIterator(statistics_);
-    }
-
-    DenseLabelWiseStatisticVector::gradient_const_iterator DenseLabelWiseStatisticVector::gradients_cend() const {
-        return DenseGradientConstIterator(&statistics_[numElements_]);
-    }
-
-    DenseLabelWiseStatisticVector::hessian_const_iterator DenseLabelWiseStatisticVector::hessians_cbegin() const {
-        return DenseHessianConstIterator(statistics_);
-    }
-
-    DenseLabelWiseStatisticVector::hessian_const_iterator DenseLabelWiseStatisticVector::hessians_cend() const {
-        return DenseHessianConstIterator(&statistics_[numElements_]);
-    }
-
     uint32 DenseLabelWiseStatisticVector::getNumElements() const {
         return numElements_;
     }
