@@ -112,7 +112,7 @@ namespace boosting {
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 typename DenseBinnedScoreVector<T>::index_binned_iterator binIndexIterator =
                     scoreVector_.indices_binned_begin();
-                auto callback = [=](uint32 binIndex, uint32 labelIndex, float64 gradient, float64 hessian) {
+                auto callback = [=](uint32 binIndex, uint32 labelIndex) {
                     aggregatedStatisticIterator[binIndex] += statisticIterator[labelIndex];
                     numElementsPerBin_[binIndex] += 1;
                     binIndexIterator[labelIndex] = binIndex;

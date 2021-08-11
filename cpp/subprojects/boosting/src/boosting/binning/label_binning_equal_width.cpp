@@ -115,7 +115,7 @@ namespace boosting {
                             binIndex = numNegativeBins - 1;
                         }
 
-                        callback(binIndex, i, 0.0, 0.0);
+                        callback(binIndex, i);
                     } else if (criterion > 0) {
                         uint32 binIndex = std::floor((criterion - minPositive) / spanPerPositiveBin);
 
@@ -123,7 +123,7 @@ namespace boosting {
                             binIndex = numPositiveBins - 1;
                         }
 
-                        callback(numNegativeBins + binIndex, i, 0.0, 0.0);
+                        callback(numNegativeBins + binIndex, i);
                     } else {
                         zeroCallback(i);
                     }
