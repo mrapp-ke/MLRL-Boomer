@@ -18,13 +18,13 @@ namespace seco {
         }
     }
 
-    template<typename IndexIterator, typename ScoreIterator>
+    template<typename IndexIterator>
     static inline float64 calculateOverallQualityScore(IndexIterator indexIterator,
                                                        const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                        const DenseConfusionMatrixVector& confusionMatricesSubset,
                                                        const DenseConfusionMatrixVector& confusionMatricesCovered,
                                                        bool uncovered, const IHeuristic& heuristic,
-                                                       ScoreIterator scoreIterator, uint32 numElements) {
+                                                       uint32 numElements) {
         float64 sumOfQualityScores = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -118,7 +118,7 @@ namespace seco {
                 scoreVector_.overallQualityScore = calculateOverallQualityScore(indexIterator, confusionMatricesTotal,
                                                                                 confusionMatricesSubset,
                                                                                 confusionMatricesCovered, uncovered,
-                                                                                heuristic_, scoreIterator, numElements);
+                                                                                heuristic_, numElements);
 
                 return scoreVector_;
             }
