@@ -88,11 +88,10 @@ namespace seco {
                     }
                 }
 
-                typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 auto labelIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                                  majorityLabelVector.indices_cend());
                 std::advance(labelIterator, bestIndex);
-                scoreIterator[0] = (float64) !(*labelIterator);
+                scoreVector_.scores_begin()[0] = (float64) !(*labelIterator);
                 indexVector_.begin()[0] = bestIndex;
                 scoreVector_.overallQualityScore = bestQualityScore;
                 return scoreVector_;
