@@ -79,15 +79,14 @@ namespace seco {
                     if (uncovered) {
                         DenseConfusionMatrixVector::const_iterator subsetIterator =
                             confusionMatricesSubset.confusion_matrix_cbegin(index);
-                        uin = cin + totalIterator[IN] - subsetIterator[IN];
-                        uip = cip + totalIterator[IP] - subsetIterator[IP];
-                        urn = crn + totalIterator[RN] - subsetIterator[RN];
-                        urp = crp + totalIterator[RP] - subsetIterator[RP];
-                        subsetIterator = confusionMatricesSubset.confusion_matrix_cbegin(i);
                         cin = subsetIterator[IN] - cin;
                         cip = subsetIterator[IP] - cip;
                         crn = subsetIterator[RN] - crn;
                         crp = subsetIterator[RP] - crp;
+                        uin = totalIterator[IN] - cin;
+                        uip = totalIterator[IP] - cip;
+                        urn = totalIterator[RN] - crn;
+                        urp = totalIterator[RP] - crp;
                     } else {
                         uin = totalIterator[IN] - cin;
                         uip = totalIterator[IP] - cip;
