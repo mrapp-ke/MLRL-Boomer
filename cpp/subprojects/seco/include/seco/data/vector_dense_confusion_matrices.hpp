@@ -5,6 +5,7 @@
 
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
+#include "seco/data/confusion_matrix.hpp"
 #include "seco/data/matrix_dense_weights.hpp"
 
 
@@ -17,7 +18,7 @@ namespace seco {
 
         private:
 
-            float64* array_;
+            ConfusionMatrix* array_;
 
             uint32 numElements_;
 
@@ -44,12 +45,12 @@ namespace seco {
             /**
              * An iterator that provides access to the elements in a confusion matrix and allows to modify them.
              */
-            typedef float64* iterator;
+            typedef ConfusionMatrix* iterator;
 
             /**
              * An iterator that provides read-only access to the elements in a confusion matrix.
              */
-            typedef const float64* const_iterator;
+            typedef const ConfusionMatrix* const_iterator;
 
             /**
              * Returns an `iterator` to the beginning of the vector.
@@ -85,6 +86,7 @@ namespace seco {
              * @param pos   The position
              * @return      An `iterator` to the beginning
              */
+            // TODO Remove
             iterator confusion_matrix_begin(uint32 pos);
 
             /**
@@ -93,6 +95,7 @@ namespace seco {
              * @param pos   The position
              * @return      An `iterator` to the end
              */
+            // TODO Remove
             iterator confusion_matrix_end(uint32 pos);
 
             /**
@@ -101,6 +104,7 @@ namespace seco {
              * @param pos   The position
              * @return      A `const_iterator` to the beginning
              */
+            // TODO Remove
             const_iterator confusion_matrix_cbegin(uint32 pos) const;
 
             /**
@@ -109,6 +113,7 @@ namespace seco {
              * @param pos   The position
              * @return      A `const_iterator` to the end
              */
+            // TODO Remove
             const_iterator confusion_matrix_cend(uint32 pos) const;
 
             /**
