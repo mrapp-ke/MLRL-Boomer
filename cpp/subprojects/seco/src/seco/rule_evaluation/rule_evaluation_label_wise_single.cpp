@@ -91,7 +91,7 @@ namespace seco {
                 auto labelIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                                  majorityLabelVector.indices_cend());
                 std::advance(labelIterator, bestIndex);
-                scoreIterator[0] = -((float64) *labelIterator);
+                scoreIterator[0] = (float64) !(*labelIterator);
                 indexVector_.begin()[0] = bestIndex;
                 scoreVector_.overallQualityScore = bestQualityScore;
                 return scoreVector_;
