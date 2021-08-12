@@ -18,53 +18,6 @@ namespace seco {
         }
     }
 
-    template<typename IndexIterator>
-    static inline float64 calculateOverallQualityScore(IndexIterator indexIterator,
-                                                       const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                                       const DenseConfusionMatrixVector& confusionMatricesSubset,
-                                                       const DenseConfusionMatrixVector& confusionMatricesCovered,
-                                                       bool uncovered, const IHeuristic& heuristic,
-                                                       uint32 numElements) {
-        float64 sumOfQualityScores = 0;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            uint32 index = indexIterator[i];
-            DenseConfusionMatrixVector::const_iterator coveredIterator =
-                confusionMatricesCovered.confusion_matrix_cbegin(i);
-            DenseConfusionMatrixVector::const_iterator totalIterator =
-                confusionMatricesTotal.confusion_matrix_cbegin(index);
-
-            uint32 cin = coveredIterator[IN];
-            uint32 cip = coveredIterator[IP];
-            uint32 crn = coveredIterator[RN];
-            uint32 crp = coveredIterator[RP];
-            uint32 uin, uip, urn, urp;
-
-            if (uncovered) {
-                DenseConfusionMatrixVector::const_iterator subsetIterator =
-                    confusionMatricesSubset.confusion_matrix_cbegin(index);
-                uin = cin + totalIterator[IN] - subsetIterator[IN];
-                uip = cip + totalIterator[IP] - subsetIterator[IP];
-                urn = crn + totalIterator[RN] - subsetIterator[RN];
-                urp = crp + totalIterator[RP] - subsetIterator[RP];
-                subsetIterator = confusionMatricesSubset.confusion_matrix_cbegin(i);
-                cin = subsetIterator[IN] - cin;
-                cip = subsetIterator[IP] - cip;
-                crn = subsetIterator[RN] - crn;
-                crp = subsetIterator[RP] - crp;
-            } else {
-                uin = totalIterator[IN] - cin;
-                uip = totalIterator[IP] - cip;
-                urn = totalIterator[RN] - crn;
-                urp = totalIterator[RP] - crp;
-            }
-
-            sumOfQualityScores += heuristic.evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
-        }
-
-        return sumOfQualityScores / numElements;
-    }
-
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they predict
      * each label as relevant or irrelevant, depending on whether it is associated with the majority of the training
@@ -89,7 +42,7 @@ namespace seco {
              */
             LabelWiseMajorityRuleEvaluation(const T& labelIndices, const IHeuristic& heuristic)
                 : scoreVector_(DenseScoreVector<T>(labelIndices)), heuristic_(heuristic) {
-
+                scoreVector_.overallQualityScore = 0;
             }
 
             const ILabelWiseScoreVector& calculateLabelWisePrediction(
@@ -110,16 +63,7 @@ namespace seco {
                 auto labelIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                                  majorityLabelVector.indices_cend());
                 uint32 numElements = scoreVector_.getNumElements();
-
-                // Calculate the prediction for each label...
                 calculateLabelWiseScores(indexIterator, labelIterator, scoreIterator, numElements);
-
-                // Calculate an overall quality score...
-                scoreVector_.overallQualityScore = calculateOverallQualityScore(indexIterator, confusionMatricesTotal,
-                                                                                confusionMatricesSubset,
-                                                                                confusionMatricesCovered, uncovered,
-                                                                                heuristic_, numElements);
-
                 return scoreVector_;
             }
 
