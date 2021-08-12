@@ -25,7 +25,8 @@ from mlrl.seco.cython.instance_sampling import InstanceSamplingWithReplacementFa
 from mlrl.seco.cython.lift_functions import LiftFunction, PeakLiftFunction
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
-from mlrl.seco.cython.rule_evaluation_label_wise import HeuristicLabelWiseRuleEvaluationFactory
+from mlrl.seco.cython.rule_evaluation_label_wise import LabelWiseMajorityRuleEvaluationFactory, \
+    LabelWiseSingleLabelRuleEvaluationFactory
 from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
@@ -35,7 +36,7 @@ from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_W
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_label_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
-    get_preferred_num_threads, create_thresholds_factory, parse_param_and_options
+    get_preferred_num_threads, create_thresholds_factory, parse_param_and_options, parse_param
 
 HEAD_TYPE_PARTIAL = 'partial'
 
@@ -210,13 +211,12 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         return name
 
     def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
-        default_rule_heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
-        regular_rule_heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
+        heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
         pruning_heuristic = self.__create_heuristic(self.pruning_heuristic, 'pruning_heuristic')
-        default_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(default_rule_heuristic,
-                                                                                  predictMajority=True)
-        regular_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(regular_rule_heuristic)
-        pruning_rule_evaluation_factory = HeuristicLabelWiseRuleEvaluationFactory(pruning_heuristic)
+        head_type = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
+        default_rule_evaluation_factory = LabelWiseMajorityRuleEvaluationFactory()
+        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(head_type, heuristic)
+        pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(head_type, pruning_heuristic)
         return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, regular_rule_evaluation_factory,
                                                        pruning_rule_evaluation_factory)
 
@@ -292,6 +292,13 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.5)
             curvature = options.get_float(ARGUMENT_CURVATURE, 1.0)
             return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
+
+    def __create_rule_evaluation_factory(self, head_type: str, heuristic: Heuristic):
+        if head_type == HEAD_TYPE_SINGLE:
+            return LabelWiseSingleLabelRuleEvaluationFactory(heuristic)
+        else:
+            # TODO Implement
+            raise NotImplementedError('Partial heads not supported yet')
 
     def _create_model_builder(self) -> ModelBuilder:
         return DecisionListBuilder()
