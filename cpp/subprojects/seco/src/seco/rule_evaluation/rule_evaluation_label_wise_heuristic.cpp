@@ -1,7 +1,6 @@
 #include "seco/rule_evaluation/rule_evaluation_label_wise_heuristic.hpp"
 #include "common/rule_evaluation/score_vector_label_wise_dense.hpp"
 #include "common/validation.hpp"
-#include "../data/confusion_matrices.hpp"
 
 
 namespace seco {
@@ -65,33 +64,33 @@ namespace seco {
                     scoreIterator[i] = score;
 
                     // Calculate the quality score for the current label...
-                    DenseConfusionMatrixVector::const_iterator coveredIterator =
-                        confusionMatricesCovered.confusion_matrix_cbegin(i);
-                    DenseConfusionMatrixVector::const_iterator totalIterator =
-                        confusionMatricesTotal.confusion_matrix_cbegin(index);
+                    DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
+                    const ConfusionMatrix& coveredConfusionMatrix = coveredIterator[i];
+                    DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
+                    const ConfusionMatrix& totalConfusionMatrix = totalIterator[index];
 
-                    uint32 cin = coveredIterator[IN];
-                    uint32 cip = coveredIterator[IP];
-                    uint32 crn = coveredIterator[RN];
-                    uint32 crp = coveredIterator[RP];
+                    uint32 cin = coveredConfusionMatrix.in;
+                    uint32 cip = coveredConfusionMatrix.ip;
+                    uint32 crn = coveredConfusionMatrix.rn;
+                    uint32 crp = coveredConfusionMatrix.rp;
                     uint32 uin, uip, urn, urp;
 
                     if (uncovered) {
-                        DenseConfusionMatrixVector::const_iterator subsetIterator =
-                            confusionMatricesSubset.confusion_matrix_cbegin(index);
-                        cin = subsetIterator[IN] - cin;
-                        cip = subsetIterator[IP] - cip;
-                        crn = subsetIterator[RN] - crn;
-                        crp = subsetIterator[RP] - crp;
-                        uin = totalIterator[IN] - cin;
-                        uip = totalIterator[IP] - cip;
-                        urn = totalIterator[RN] - crn;
-                        urp = totalIterator[RP] - crp;
+                        DenseConfusionMatrixVector::const_iterator subsetIterator = confusionMatricesSubset.cbegin();
+                        const ConfusionMatrix& subsetConfusionMatrix = subsetIterator[index];
+                        cin = subsetConfusionMatrix.in - cin;
+                        cip = subsetConfusionMatrix.ip - cip;
+                        crn = subsetConfusionMatrix.rn - crn;
+                        crp = subsetConfusionMatrix.rp - crp;
+                        uin = totalConfusionMatrix.in - cin;
+                        uip = totalConfusionMatrix.ip - cip;
+                        urn = totalConfusionMatrix.rn - crn;
+                        urp = totalConfusionMatrix.rp - crp;
                     } else {
-                        uin = totalIterator[IN] - cin;
-                        uip = totalIterator[IP] - cip;
-                        urn = totalIterator[RN] - crn;
-                        urp = totalIterator[RP] - crp;
+                        uin = totalConfusionMatrix.in - cin;
+                        uip = totalConfusionMatrix.ip - cip;
+                        urn = totalConfusionMatrix.rn - crn;
+                        urp = totalConfusionMatrix.rp - crp;
                     }
 
                     score = heuristic_.evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);

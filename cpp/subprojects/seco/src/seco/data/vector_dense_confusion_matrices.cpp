@@ -1,22 +1,18 @@
 #include "seco/data/vector_dense_confusion_matrices.hpp"
 #include "common/data/arrays.hpp"
-#include "confusion_matrices.hpp"
 #include <cstdlib>
-
-#define NUM_CONFUSION_MATRIX_ELEMENTS 4
 
 
 namespace seco {
 
     template<typename LabelMatrix>
-    static inline void addInternally(DenseConfusionMatrixVector& confusionMatrixVector, uint32 exampleIndex,
+    static inline void addInternally(ConfusionMatrix* confusionMatrices, uint32 numElements, uint32 exampleIndex,
                                      const LabelMatrix& labelMatrix, const BinarySparseArrayVector& majorityLabelVector,
                                      const DenseWeightMatrix& weightMatrix, float64 weight) {
         auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                             majorityLabelVector.indices_cend());
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
-        uint32 numElements = confusionMatrixVector.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
             float64 labelWeight = weightIterator[i];
@@ -24,9 +20,9 @@ namespace seco {
             if (labelWeight > 0) {
                 bool trueLabel = *labelIterator;
                 bool majorityLabel = *majorityIterator;
-                DenseConfusionMatrixVector::iterator iterator = confusionMatrixVector.confusion_matrix_begin(i);
-                uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
-                iterator[element] += (labelWeight * weight);
+                ConfusionMatrix& confusionMatrix = confusionMatrices[i];
+                float64& element = confusionMatrix.getElement(trueLabel, majorityLabel);
+                element += (labelWeight * weight);
             }
 
             labelIterator++;
@@ -35,15 +31,14 @@ namespace seco {
     }
 
     template<typename LabelMatrix>
-    static inline void addToSubsetInternally(DenseConfusionMatrixVector& confusionMatrixVector, uint32 exampleIndex,
-                                             const LabelMatrix& labelMatrix,
+    static inline void addToSubsetInternally(ConfusionMatrix* confusionMatrices, uint32 numElements,
+                                             uint32 exampleIndex, const LabelMatrix& labelMatrix,
                                              const BinarySparseArrayVector& majorityLabelVector,
                                              const DenseWeightMatrix& weightMatrix, float64 weight) {
         auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                             majorityLabelVector.indices_cend());
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
-        uint32 numElements = confusionMatrixVector.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
             float64 labelWeight = weightIterator[i];
@@ -51,9 +46,9 @@ namespace seco {
             if (labelWeight > 0) {
                 bool trueLabel = *labelIterator;
                 bool majorityLabel = *majorityIterator;
-                DenseConfusionMatrixVector::iterator iterator = confusionMatrixVector.confusion_matrix_begin(i);
-                uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
-                iterator[element] += (labelWeight * weight);
+                ConfusionMatrix& confusionMatrix = confusionMatrices[i];
+                float64& element = confusionMatrix.getElement(trueLabel, majorityLabel);
+                element += (labelWeight * weight);
             }
 
             labelIterator++;
@@ -67,15 +62,15 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements, bool init)
-        : array_(init ? (float64*) calloc(numElements * NUM_CONFUSION_MATRIX_ELEMENTS, sizeof(float64))
-                      : (float64*) malloc(numElements * NUM_CONFUSION_MATRIX_ELEMENTS * sizeof(float64))),
+        : array_(init ? (ConfusionMatrix*) calloc(numElements, sizeof(ConfusionMatrix))
+                      : (ConfusionMatrix*) malloc(numElements * sizeof(ConfusionMatrix))),
           numElements_(numElements) {
 
     }
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.numElements_) {
-        copyArray(other.array_, array_, numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS);
+        copyArray(other.array_, array_, numElements_);
     }
 
     DenseConfusionMatrixVector::~DenseConfusionMatrixVector() {
@@ -87,7 +82,7 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::end() {
-        return &array_[numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS];
+        return &array_[numElements_];
     }
 
     DenseConfusionMatrixVector::const_iterator DenseConfusionMatrixVector::cbegin() const {
@@ -95,23 +90,23 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::const_iterator DenseConfusionMatrixVector::cend() const {
-        return &array_[numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS];
+        return &array_[numElements_];
     }
 
     DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::confusion_matrix_begin(uint32 pos) {
-        return &array_[pos * NUM_CONFUSION_MATRIX_ELEMENTS];
+        return &array_[pos];
     }
 
     DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::confusion_matrix_end(uint32 pos) {
-        return &array_[(pos + 1) * NUM_CONFUSION_MATRIX_ELEMENTS];
+        return &array_[(pos + 1)];
     }
 
     DenseConfusionMatrixVector::const_iterator DenseConfusionMatrixVector::confusion_matrix_cbegin(uint32 pos) const {
-        return &array_[pos * NUM_CONFUSION_MATRIX_ELEMENTS];
+        return &array_[pos];
     }
 
     DenseConfusionMatrixVector::const_iterator DenseConfusionMatrixVector::confusion_matrix_cend(uint32 pos) const {
-        return &array_[(pos + 1) * NUM_CONFUSION_MATRIX_ELEMENTS];
+        return &array_[(pos + 1)];
     }
 
     uint32 DenseConfusionMatrixVector::getNumElements() const {
@@ -119,13 +114,11 @@ namespace seco {
     }
 
     void DenseConfusionMatrixVector::clear() {
-        setArrayToZeros(array_, numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS);
+        setArrayToZeros(array_, numElements_);
     }
 
     void DenseConfusionMatrixVector::add(const_iterator begin, const_iterator end) {
-        uint32 numElements = numElements_ * NUM_CONFUSION_MATRIX_ELEMENTS;
-
-        for (uint32 i = 0; i < numElements; i++) {
+        for (uint32 i = 0; i < numElements_; i++) {
             array_[i] += begin[i];
         }
     }
@@ -133,30 +126,31 @@ namespace seco {
     void DenseConfusionMatrixVector::add(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                          const BinarySparseArrayVector& majorityLabelVector,
                                          const DenseWeightMatrix& weightMatrix, float64 weight) {
-        addInternally<CContiguousLabelMatrix>(*this, exampleIndex, labelMatrix, majorityLabelVector, weightMatrix,
-                                              weight);
+        addInternally<CContiguousLabelMatrix>(array_, numElements_, exampleIndex, labelMatrix, majorityLabelVector,
+                                              weightMatrix, weight);
     }
 
     void DenseConfusionMatrixVector::add(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                          const BinarySparseArrayVector& majorityLabelVector,
                                          const DenseWeightMatrix& weightMatrix, float64 weight) {
-        addInternally<CsrLabelMatrix>(*this, exampleIndex, labelMatrix, majorityLabelVector, weightMatrix, weight);
+        addInternally<CsrLabelMatrix>(array_, numElements_, exampleIndex, labelMatrix, majorityLabelVector,
+                                      weightMatrix, weight);
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
                                                  const DenseWeightMatrix& weightMatrix,
                                                  const CompleteIndexVector& indices, float64 weight) {
-        addToSubsetInternally<CContiguousLabelMatrix>(*this, exampleIndex, labelMatrix, majorityLabelVector,
-                                                      weightMatrix, weight);
+        addToSubsetInternally<CContiguousLabelMatrix>(array_, numElements_, exampleIndex, labelMatrix,
+                                                      majorityLabelVector, weightMatrix, weight);
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                                  const BinarySparseArrayVector& majorityLabelVector,
                                                  const DenseWeightMatrix& weightMatrix,
                                                  const CompleteIndexVector& indices, float64 weight) {
-        addToSubsetInternally<CsrLabelMatrix>(*this, exampleIndex, labelMatrix, majorityLabelVector, weightMatrix,
-                                              weight);
+        addToSubsetInternally<CsrLabelMatrix>(array_, numElements_, exampleIndex, labelMatrix, majorityLabelVector,
+                                              weightMatrix, weight);
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
@@ -179,9 +173,9 @@ namespace seco {
                 bool trueLabel = labelIterator[index];
                 std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
-                iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
-                uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
-                confusionMatrixIterator[element] += (labelWeight * weight);
+                ConfusionMatrix& confusionMatrix = array_[i];
+                float64& element = confusionMatrix.getElement(trueLabel, majorityLabel);
+                element += (labelWeight * weight);
                 previousIndex = index;
             }
         }
@@ -208,9 +202,9 @@ namespace seco {
                 bool trueLabel = *labelIterator;
                 std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
-                iterator confusionMatrixIterator = this->confusion_matrix_begin(i);
-                uint32 element = getConfusionMatrixElement(trueLabel, majorityLabel);
-                confusionMatrixIterator[element] += (labelWeight * weight);
+                ConfusionMatrix& confusionMatrix = array_[i];
+                float64& element = confusionMatrix.getElement(trueLabel, majorityLabel);
+                element += (labelWeight * weight);
                 previousIndex = index;
             }
         }
