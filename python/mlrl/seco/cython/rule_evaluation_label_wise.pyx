@@ -15,6 +15,28 @@ cdef class LabelWiseRuleEvaluationFactory:
     pass
 
 
+cdef class LabelWiseMajorityRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+    """
+    A wrapper for the C++ class `LabelWiseMajorityRuleEvaluationFactory`.
+    """
+
+    def __cinit__(self):
+        self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWiseMajorityRuleEvaluationFactoryImpl]()
+
+
+cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+    """
+    A wrapper for the C++ class `LabelWiseSingleLabelRuleEvaluationFactory`.
+    """
+
+    def __cinit__(self, Heuristic heuristic not None):
+        """
+        :param heuristic:
+        """
+        self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWiseSingleLabelRuleEvaluationFactoryImpl](
+            move(heuristic.heuristic_ptr))
+
+
 cdef class HeuristicLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     """
     A wrapper for the C++ class `HeuristicLabelWiseRuleEvaluationFactory`.
