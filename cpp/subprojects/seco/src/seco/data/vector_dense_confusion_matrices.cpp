@@ -93,22 +93,6 @@ namespace seco {
         return &array_[numElements_];
     }
 
-    DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::confusion_matrix_begin(uint32 pos) {
-        return &array_[pos];
-    }
-
-    DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::confusion_matrix_end(uint32 pos) {
-        return &array_[(pos + 1)];
-    }
-
-    DenseConfusionMatrixVector::const_iterator DenseConfusionMatrixVector::confusion_matrix_cbegin(uint32 pos) const {
-        return &array_[pos];
-    }
-
-    DenseConfusionMatrixVector::const_iterator DenseConfusionMatrixVector::confusion_matrix_cend(uint32 pos) const {
-        return &array_[(pos + 1)];
-    }
-
     uint32 DenseConfusionMatrixVector::getNumElements() const {
         return numElements_;
     }

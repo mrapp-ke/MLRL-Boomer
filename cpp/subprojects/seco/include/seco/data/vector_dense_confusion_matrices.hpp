@@ -81,42 +81,6 @@ namespace seco {
             const_iterator cend() const;
 
             /**
-             * Returns an `iterator` to the beginning of the confusion matrix at a specific position.
-             *
-             * @param pos   The position
-             * @return      An `iterator` to the beginning
-             */
-            // TODO Remove
-            iterator confusion_matrix_begin(uint32 pos);
-
-            /**
-             * Returns an `iterator` to the end of the confusion matrix at a specific position.
-             *
-             * @param pos   The position
-             * @return      An `iterator` to the end
-             */
-            // TODO Remove
-            iterator confusion_matrix_end(uint32 pos);
-
-            /**
-             * Returns a `const_iterator` to the beginning of the confusion matrix at a specific position.
-             *
-             * @param pos   The position
-             * @return      A `const_iterator` to the beginning
-             */
-            // TODO Remove
-            const_iterator confusion_matrix_cbegin(uint32 pos) const;
-
-            /**
-             * Returns a `const_iterator` to the end of the confusion matrix at a specific position.
-             *
-             * @param pos   The position
-             * @return      A `const_iterator` to the end
-             */
-            // TODO Remove
-            const_iterator confusion_matrix_cend(uint32 pos) const;
-
-            /**
              * Returns the number of elements in the vector.
              *
              * @return The number of elements
