@@ -17,6 +17,7 @@ source_files = [
     'src/seco/output/predictor_classification_label_wise.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_heuristic.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_majority.cpp',
+    'src/seco/rule_evaluation/rule_evaluation_label_wise_single.cpp',
     'src/seco/sampling/instance_sampling_no.cpp',
     'src/seco/sampling/instance_sampling_with_replacement.cpp',
     'src/seco/sampling/instance_sampling_without_replacement.cpp',
