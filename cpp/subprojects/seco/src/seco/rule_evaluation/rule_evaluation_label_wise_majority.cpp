@@ -1,6 +1,5 @@
 #include "seco/rule_evaluation/rule_evaluation_label_wise_majority.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
-#include "../data/confusion_matrices.hpp"
 
 
 namespace seco {
@@ -32,16 +31,14 @@ namespace seco {
 
             DenseScoreVector<T> scoreVector_;
 
-            const IHeuristic& heuristic_;
-
         public:
 
             /**
              * @param labelIndices A reference to an object of template type `T` that provides access to the indices of
              *                     the labels for which the rules may predict
              */
-            LabelWiseMajorityRuleEvaluation(const T& labelIndices, const IHeuristic& heuristic)
-                : scoreVector_(DenseScoreVector<T>(labelIndices)), heuristic_(heuristic) {
+            LabelWiseMajorityRuleEvaluation(const T& labelIndices)
+                : scoreVector_(DenseScoreVector<T>(labelIndices)) {
                 scoreVector_.overallQualityScore = 0;
             }
 
@@ -69,20 +66,14 @@ namespace seco {
 
     };
 
-    LabelWiseMajorityRuleEvaluationFactory::LabelWiseMajorityRuleEvaluationFactory(
-            std::unique_ptr<IHeuristic> heuristicPtr)
-        : heuristicPtr_(std::move(heuristicPtr)) {
-
-    }
-
     std::unique_ptr<IRuleEvaluation> LabelWiseMajorityRuleEvaluationFactory::create(
             const CompleteIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseMajorityRuleEvaluation<CompleteIndexVector>>(indexVector, *heuristicPtr_);
+        return std::make_unique<LabelWiseMajorityRuleEvaluation<CompleteIndexVector>>(indexVector);
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWiseMajorityRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseMajorityRuleEvaluation<PartialIndexVector>>(indexVector, *heuristicPtr_);
+        return std::make_unique<LabelWiseMajorityRuleEvaluation<PartialIndexVector>>(indexVector);
     }
 
 }
