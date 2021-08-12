@@ -65,35 +65,23 @@ namespace seco {
 
                     // Calculate the quality score for the current label...
                     DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                    const ConfusionMatrix& coveredConfusionMatrix = coveredIterator[i];
                     DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                     const ConfusionMatrix& totalConfusionMatrix = totalIterator[index];
-
-                    uint32 cin = coveredConfusionMatrix.in;
-                    uint32 cip = coveredConfusionMatrix.ip;
-                    uint32 crn = coveredConfusionMatrix.rn;
-                    uint32 crp = coveredConfusionMatrix.rp;
-                    uint32 uin, uip, urn, urp;
+                    ConfusionMatrix coveredConfusionMatrix = coveredIterator[i];
+                    ConfusionMatrix uncoveredConfusionMatrix;
 
                     if (uncovered) {
                         DenseConfusionMatrixVector::const_iterator subsetIterator = confusionMatricesSubset.cbegin();
                         const ConfusionMatrix& subsetConfusionMatrix = subsetIterator[index];
-                        cin = subsetConfusionMatrix.in - cin;
-                        cip = subsetConfusionMatrix.ip - cip;
-                        crn = subsetConfusionMatrix.rn - crn;
-                        crp = subsetConfusionMatrix.rp - crp;
-                        uin = totalConfusionMatrix.in - cin;
-                        uip = totalConfusionMatrix.ip - cip;
-                        urn = totalConfusionMatrix.rn - crn;
-                        urp = totalConfusionMatrix.rp - crp;
-                    } else {
-                        uin = totalConfusionMatrix.in - cin;
-                        uip = totalConfusionMatrix.ip - cip;
-                        urn = totalConfusionMatrix.rn - crn;
-                        urp = totalConfusionMatrix.rp - crp;
+                        coveredConfusionMatrix = subsetConfusionMatrix - coveredConfusionMatrix;
                     }
 
-                    score = heuristic_.evaluateConfusionMatrix(cin, cip, crn, crp, uin, uip, urn, urp);
+                    uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
+
+                    score = heuristic_.evaluateConfusionMatrix(
+                        coveredConfusionMatrix.in, coveredConfusionMatrix.ip, coveredConfusionMatrix.rn,
+                        coveredConfusionMatrix.rp, uncoveredConfusionMatrix.in, uncoveredConfusionMatrix.ip,
+                        uncoveredConfusionMatrix.rn, uncoveredConfusionMatrix.rp);
                     qualityScoreIterator[i] = score;
                     overallQualityScore += score;
                     previousIndex = index;
