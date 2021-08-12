@@ -32,7 +32,6 @@ class ScoreProcessor : public IScoreProcessor {
                     if (scoreVector.isPartial()) {
                         std::unique_ptr<PartialPrediction> headPtr =
                             std::make_unique<PartialPrediction>(numPredictions);
-                        std::copy(scoreVector.indices_cbegin(), scoreVector.indices_cend(), headPtr->indices_begin());
                         headPtr_ = std::move(headPtr);
                     } else {
                         headPtr_ = std::make_unique<CompletePrediction>(numPredictions);
@@ -40,6 +39,12 @@ class ScoreProcessor : public IScoreProcessor {
                 } else if (headPtr_->getNumElements() != numPredictions) {
                     // Adjust the size of the existing head, if necessary...
                     headPtr_->setNumElements(numPredictions, false);
+                }
+
+                // TODO This is a hack
+                PartialPrediction* partialHead = dynamic_cast<PartialPrediction*>(headPtr_.get());
+                if (partialHead != nullptr) {
+                    std::copy(scoreVector.indices_cbegin(), scoreVector.indices_cend(), partialHead->indices_begin());
                 }
 
                 std::copy(scoreVector.scores_cbegin(), scoreVector.scores_cend(), headPtr_->scores_begin());
