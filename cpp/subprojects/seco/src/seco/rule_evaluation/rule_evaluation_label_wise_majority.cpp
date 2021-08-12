@@ -4,19 +4,6 @@
 
 namespace seco {
 
-    template<typename IndexIterator, typename LabelIterator, typename ScoreIterator>
-    static inline void calculateLabelWiseScores(IndexIterator indexIterator, LabelIterator labelIterator,
-                                                ScoreIterator scoreIterator, uint32 numElements) {
-        uint32 previousIndex = 0;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            uint32 index = indexIterator[i];
-            std::advance(labelIterator, index - previousIndex);
-            scoreIterator[i] = (float64) *labelIterator;
-            previousIndex = index;
-        }
-    }
-
     /**
      * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they predict
      * each label as relevant or irrelevant, depending on whether it is associated with the majority of the training
@@ -60,7 +47,15 @@ namespace seco {
                 auto labelIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                                  majorityLabelVector.indices_cend());
                 uint32 numElements = scoreVector_.getNumElements();
-                calculateLabelWiseScores(indexIterator, labelIterator, scoreIterator, numElements);
+                uint32 previousIndex = 0;
+
+                for (uint32 i = 0; i < numElements; i++) {
+                    uint32 index = indexIterator[i];
+                    std::advance(labelIterator, index - previousIndex);
+                    scoreIterator[i] = (float64) *labelIterator;
+                    previousIndex = index;
+                }
+
                 return scoreVector_;
             }
 
