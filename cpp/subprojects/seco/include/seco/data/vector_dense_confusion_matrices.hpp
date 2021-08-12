@@ -5,6 +5,7 @@
 
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
+#include "seco/data/confusion_matrix.hpp"
 #include "seco/data/matrix_dense_weights.hpp"
 
 
@@ -17,7 +18,7 @@ namespace seco {
 
         private:
 
-            float64* array_;
+            ConfusionMatrix* array_;
 
             uint32 numElements_;
 
@@ -44,12 +45,12 @@ namespace seco {
             /**
              * An iterator that provides access to the elements in a confusion matrix and allows to modify them.
              */
-            typedef float64* iterator;
+            typedef ConfusionMatrix* iterator;
 
             /**
              * An iterator that provides read-only access to the elements in a confusion matrix.
              */
-            typedef const float64* const_iterator;
+            typedef const ConfusionMatrix* const_iterator;
 
             /**
              * Returns an `iterator` to the beginning of the vector.
@@ -78,38 +79,6 @@ namespace seco {
              * @return A `const_iterator` to the end
              */
             const_iterator cend() const;
-
-            /**
-             * Returns an `iterator` to the beginning of the confusion matrix at a specific position.
-             *
-             * @param pos   The position
-             * @return      An `iterator` to the beginning
-             */
-            iterator confusion_matrix_begin(uint32 pos);
-
-            /**
-             * Returns an `iterator` to the end of the confusion matrix at a specific position.
-             *
-             * @param pos   The position
-             * @return      An `iterator` to the end
-             */
-            iterator confusion_matrix_end(uint32 pos);
-
-            /**
-             * Returns a `const_iterator` to the beginning of the confusion matrix at a specific position.
-             *
-             * @param pos   The position
-             * @return      A `const_iterator` to the beginning
-             */
-            const_iterator confusion_matrix_cbegin(uint32 pos) const;
-
-            /**
-             * Returns a `const_iterator` to the end of the confusion matrix at a specific position.
-             *
-             * @param pos   The position
-             * @return      A `const_iterator` to the end
-             */
-            const_iterator confusion_matrix_cend(uint32 pos) const;
 
             /**
              * Returns the number of elements in the vector.
