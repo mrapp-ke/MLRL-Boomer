@@ -1,6 +1,7 @@
 #include "seco/rule_evaluation/rule_evaluation_label_wise_single.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
+#include "common/validation.hpp"
 
 
 namespace seco {
@@ -102,7 +103,7 @@ namespace seco {
     LabelWiseSingleLabelRuleEvaluationFactory::LabelWiseSingleLabelRuleEvaluationFactory(
             std::unique_ptr<IHeuristic> heuristicPtr)
         : heuristicPtr_(std::move(heuristicPtr)) {
-
+        assertNotNull("heuristicPtr", heuristicPtr_.get());
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWiseSingleLabelRuleEvaluationFactory::create(
