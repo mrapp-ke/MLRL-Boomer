@@ -67,7 +67,7 @@ namespace seco {
                                                     const DenseConfusionMatrixVector& confusionMatricesSubset,
                                                     const DenseConfusionMatrixVector& confusionMatricesCovered,
                                                     bool uncovered) override {
-                uint32 numElements = scoreVector_.getNumElements();
+                uint32 numElements = labelIndices_.getNumElements();
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
