@@ -5,6 +5,21 @@
 
 namespace seco {
 
+    static inline float64 calculateLabelWiseQualityScore(const ConfusionMatrix& totalConfusionMatrix,
+                                                         const ConfusionMatrix& subsetConfusionMatrix,
+                                                         ConfusionMatrix coveredConfusionMatrix, bool uncovered,
+                                                         const IHeuristic& heuristic) {
+        if (uncovered) {
+            coveredConfusionMatrix = subsetConfusionMatrix - coveredConfusionMatrix;
+        }
+
+        ConfusionMatrix uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
+        return heuristic.evaluateConfusionMatrix(
+            coveredConfusionMatrix.in, coveredConfusionMatrix.ip,coveredConfusionMatrix.rn, coveredConfusionMatrix.rp,
+            uncoveredConfusionMatrix.in, uncoveredConfusionMatrix.ip, uncoveredConfusionMatrix.rn,
+            uncoveredConfusionMatrix.rp);
+    }
+
     /**
      * Allows to calculate the predictions of single-label rules, as well as corresponding quality scores, such that
      * they optimize a heuristic that is applied using label-wise averaging.
@@ -15,6 +30,8 @@ namespace seco {
     class LabelWiseSingleLabelRuleEvaluation final : public IRuleEvaluation {
 
         private:
+
+            const T& labelIndices_;
 
             PartialIndexVector indexVector_;
 
@@ -31,8 +48,8 @@ namespace seco {
              *                      optimized
              */
             LabelWiseSingleLabelRuleEvaluation(const T& labelIndices, const IHeuristic& heuristic)
-                : indexVector_(PartialIndexVector(1)), scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)),
-                  heuristic_(heuristic) {
+                : labelIndices_(labelIndices), indexVector_(PartialIndexVector(1)),
+                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)), heuristic_(heuristic) {
 
             }
 
@@ -49,7 +66,34 @@ namespace seco {
                                                     const DenseConfusionMatrixVector& confusionMatricesSubset,
                                                     const DenseConfusionMatrixVector& confusionMatricesCovered,
                                                     bool uncovered) override {
-                // TODO Implement
+                uint32 numElements = scoreVector_.getNumElements();
+                typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
+                DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
+                DenseConfusionMatrixVector::const_iterator subsetIterator = confusionMatricesSubset.cbegin();
+                uint32 bestIndex = indexIterator[0];
+                float64 bestQualityScore = calculateLabelWiseQualityScore(totalIterator[bestIndex],
+                                                                          subsetIterator[bestIndex], coveredIterator[0],
+                                                                          uncovered, heuristic_);
+
+                for (uint32 i = 1; i < numElements; i++) {
+                    uint32 index = indexIterator[i];
+                    float64 qualityScore = calculateLabelWiseQualityScore(totalIterator[index], subsetIterator[index],
+                                                                          coveredIterator[i], uncovered, heuristic_);
+
+                    if (qualityScore < bestQualityScore) {
+                        bestIndex = index;
+                        bestQualityScore = qualityScore;
+                    }
+                }
+
+                typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                auto labelIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                                 majorityLabelVector.indices_cend());
+                std::advance(labelIterator, bestIndex);
+                scoreIterator[0] = -((float64) *labelIterator);
+                indexVector_.begin()[0] = bestIndex;
+                scoreVector_.overallQualityScore = bestQualityScore;
                 return scoreVector_;
             }
 
