@@ -5,9 +5,8 @@
 namespace seco {
 
     /**
-     * Allows to calculate the predictions of rules, as well as corresponding quality scores, such that they predict
-     * each label as relevant or irrelevant, depending on whether it is associated with the majority of the training
-     * examples or not.
+     * Allows to calculate the predictions of rules, such that they predict each label as relevant or irrelevant,
+     * depending on whether it is associated with the majority of the training examples or not.
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
