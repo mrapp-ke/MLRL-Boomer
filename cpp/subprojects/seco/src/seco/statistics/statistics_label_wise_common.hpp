@@ -1,5 +1,4 @@
 #include "seco/statistics/statistics_label_wise.hpp"
-#include "common/statistics/statistics_subset_decomposable.hpp"
 
 
 namespace seco {
@@ -35,7 +34,7 @@ namespace seco {
              *           the subset
              */
             template<typename T>
-            class StatisticsSubset final : public AbstractDecomposableStatisticsSubset {
+            class StatisticsSubset final : public IStatisticsSubset {
 
                 private:
 
@@ -109,11 +108,6 @@ namespace seco {
                         // confusion matrix...
                         accumulatedSumVector_->add(sumVector_.cbegin(), sumVector_.cend());
                         sumVector_.clear();
-                    }
-
-                    const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
-                                                                              bool accumulated) override {
-
                     }
 
                     const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {

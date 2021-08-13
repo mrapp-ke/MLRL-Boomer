@@ -127,15 +127,6 @@ namespace boosting {
                         sumVector_.clear();
                     }
 
-                    const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
-                                                                              bool accumulated) override {
-
-                    }
-
-                    const IScoreVector& calculateExampleWisePrediction(bool uncovered, bool accumulated) override {
-
-                    }
-
                     const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
                         StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 

@@ -1,5 +1,4 @@
 #include "boosting/statistics/statistics_label_wise.hpp"
-#include "common/statistics/statistics_subset_decomposable.hpp"
 
 
 namespace boosting {
@@ -40,7 +39,7 @@ namespace boosting {
              *           the subset
              */
             template<typename T>
-            class StatisticsSubset final : public AbstractDecomposableStatisticsSubset {
+            class StatisticsSubset final : public IStatisticsSubset {
 
                 private:
 
@@ -120,11 +119,6 @@ namespace boosting {
                         // gradients and Hessians...
                         accumulatedSumVector_->add(sumVector_.cbegin(), sumVector_.cend());
                         sumVector_.clear();
-                    }
-
-                    const ILabelWiseScoreVector& calculateLabelWisePrediction(bool uncovered,
-                                                                              bool accumulated) override {
-
                     }
 
                     const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
