@@ -1,6 +1,5 @@
 from mlrl.seco.cython.heuristics cimport IHeuristic
 
-from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 
@@ -27,16 +26,6 @@ cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise_single.hpp" na
         LabelWiseSingleLabelRuleEvaluationFactoryImpl(unique_ptr[IHeuristic] heuristicPtr) except +
 
 
-cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise_heuristic.hpp" namespace "seco" nogil:
-
-    cdef cppclass HeuristicLabelWiseRuleEvaluationFactoryImpl"seco::HeuristicLabelWiseRuleEvaluationFactory"(
-            ILabelWiseRuleEvaluationFactory):
-
-        # Constructors:
-
-        HeuristicLabelWiseRuleEvaluationFactoryImpl(IHeuristic* heuristic, bool predictMajority) except +
-
-
 cdef class LabelWiseRuleEvaluationFactory:
 
     # Attributes:
@@ -49,8 +38,4 @@ cdef class LabelWiseMajorityRuleEvaluationFactory(LabelWiseRuleEvaluationFactory
 
 
 cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
-    pass
-
-
-cdef class HeuristicLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     pass

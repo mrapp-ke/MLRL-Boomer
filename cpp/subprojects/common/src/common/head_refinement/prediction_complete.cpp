@@ -1,5 +1,4 @@
 #include "common/head_refinement/prediction_complete.hpp"
-#include "common/head_refinement/head_refinement.hpp"
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/statistics/statistics.hpp"
 #include "common/model/head_complete.hpp"
@@ -38,10 +37,6 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createSubset(const IImmut
 std::unique_ptr<IRuleRefinement> CompletePrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                                           uint32 featureIndex) const {
     return indexVector_.createRuleRefinement(thresholdsSubset, featureIndex);
-}
-
-std::unique_ptr<IHeadRefinement> CompletePrediction::createHeadRefinement(const IHeadRefinementFactory& factory) const {
-    return indexVector_.createHeadRefinement(factory);
 }
 
 void CompletePrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
