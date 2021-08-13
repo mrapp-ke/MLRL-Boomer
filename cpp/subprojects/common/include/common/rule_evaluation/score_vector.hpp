@@ -22,7 +22,7 @@ class IScoreVector {
         virtual ~IScoreVector() { };
 
         /**
-         * A score that assesses the overall quality of the predicted score.
+         * A score that assesses the overall quality of the predicted scores.
          */
         float64 overallQualityScore;
 
