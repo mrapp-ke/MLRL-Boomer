@@ -52,6 +52,7 @@ source_files = [
     'src/common/post_processing/post_processor_no.cpp',
     'src/common/pruning/pruning_irep.cpp',
     'src/common/pruning/pruning_no.cpp',
+    'src/common/rule_evaluation/score_processor.cpp',
     'src/common/rule_evaluation/score_vector_binned_dense.cpp',
     'src/common/rule_evaluation/score_vector_dense.cpp',
     'src/common/rule_induction/rule_induction_top_down.cpp',

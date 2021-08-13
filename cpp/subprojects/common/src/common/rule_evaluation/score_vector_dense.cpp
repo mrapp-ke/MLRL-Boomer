@@ -58,7 +58,7 @@ void DenseScoreVector<T>::updatePrediction(AbstractPrediction& prediction) const
 
 template<typename T>
 const AbstractEvaluatedPrediction* DenseScoreVector<T>::processScores(const AbstractEvaluatedPrediction* bestHead,
-                                                                      IScoreProcessor& scoreProcessor) const {
+                                                                      ScoreProcessor& scoreProcessor) const {
     return scoreProcessor.processScores(bestHead, *this);
 }
 
