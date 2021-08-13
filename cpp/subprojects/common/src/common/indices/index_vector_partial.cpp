@@ -1,6 +1,4 @@
 #include "common/indices/index_vector_partial.hpp"
-#include "common/head_refinement/head_refinement.hpp"
-#include "common/head_refinement/head_refinement_factory.hpp"
 #include "common/statistics/statistics_immutable.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
@@ -54,8 +52,4 @@ std::unique_ptr<IStatisticsSubset> PartialIndexVector::createSubset(const IImmut
 std::unique_ptr<IRuleRefinement> PartialIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                                           uint32 featureIndex) const {
     return thresholdsSubset.createRuleRefinement(*this, featureIndex);
-}
-
-std::unique_ptr<IHeadRefinement> PartialIndexVector::createHeadRefinement(const IHeadRefinementFactory& factory) const {
-    return factory.create(*this);
 }

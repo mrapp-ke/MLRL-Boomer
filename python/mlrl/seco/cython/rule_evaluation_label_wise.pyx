@@ -35,18 +35,3 @@ cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFact
         """
         self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWiseSingleLabelRuleEvaluationFactoryImpl](
             move(heuristic.heuristic_ptr))
-
-
-cdef class HeuristicLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
-    """
-    A wrapper for the C++ class `HeuristicLabelWiseRuleEvaluationFactory`.
-    """
-
-    def __cinit__(self, Heuristic heuristic not None, bint predictMajority = False):
-        """
-        :param heuristic:       The heuristic that should be used
-        :param predictMajority: True, if for each label the majority label should be predicted, False, if the minority
-                                label should be predicted
-        """
-        self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[HeuristicLabelWiseRuleEvaluationFactoryImpl](
-            move(heuristic.heuristic_ptr), predictMajority)
