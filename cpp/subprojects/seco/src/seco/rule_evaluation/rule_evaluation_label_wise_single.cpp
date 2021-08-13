@@ -54,14 +54,6 @@ namespace seco {
 
             }
 
-            const ILabelWiseScoreVector& calculateLabelWisePrediction(
-                    const BinarySparseArrayVector& majorityLabelVector,
-                    const DenseConfusionMatrixVector& confusionMatricesTotal,
-                    const DenseConfusionMatrixVector& confusionMatricesSubset,
-                    const DenseConfusionMatrixVector& confusionMatricesCovered, bool uncovered) override {
-
-            }
-
             const IScoreVector& calculatePrediction(const BinarySparseArrayVector& majorityLabelVector,
                                                     const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                     const DenseConfusionMatrixVector& confusionMatricesSubset,
