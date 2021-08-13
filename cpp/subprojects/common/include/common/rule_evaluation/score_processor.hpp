@@ -7,20 +7,21 @@
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-
-// Forward declarations
-class AbstractEvaluatedPrediction;
+#include "common/head_refinement/prediction_evaluated.hpp"
+#include "common/statistics/statistics_subset.hpp"
 
 
 /**
- * Defines an interface for all classes that process the scores that are stored by an `IScoreVector` in order to convert
- * them into the head of a rule, represented by an `AbstractEvaluatedPrediction`.
+ * Allows to process the scores that are stored by an `IScoreVector` in order to convert them into the head of a rule,
+ * represented by an `AbstractEvaluatedPrediction`.
  */
-class IScoreProcessor {
+class ScoreProcessor {
+
+    private:
+
+        std::unique_ptr<AbstractEvaluatedPrediction> headPtr_;
 
     public:
-
-        virtual ~IScoreProcessor() { };
 
         /**
          * Processes the scores that are stored by a `DenseScoreVector<CompleteIndexVector>` in order to convert them
@@ -33,8 +34,8 @@ class IScoreProcessor {
          * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
          *                      null pointer if no object has been created
          */
-        virtual const AbstractEvaluatedPrediction* processScores(
-            const AbstractEvaluatedPrediction* bestHead, const DenseScoreVector<CompleteIndexVector>& scoreVector) = 0;
+        const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
+                                                         const DenseScoreVector<CompleteIndexVector>& scoreVector);
 
         /**
          * Processes the scores that are stored by a `DenseScoreVector<PartialIndexVector>` in order to convert them
@@ -47,8 +48,8 @@ class IScoreProcessor {
          * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
          *                      null pointer if no object has been created
          */
-        virtual const AbstractEvaluatedPrediction* processScores(
-            const AbstractEvaluatedPrediction* bestHead, const DenseScoreVector<PartialIndexVector>& scoreVector) = 0;
+        const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
+                                                         const DenseScoreVector<PartialIndexVector>& scoreVector);
 
         /**
          * Processes the scores that are stored by a `DenseBinnedScoreVector<CompleteIndexVector>` in order to convert
@@ -61,9 +62,9 @@ class IScoreProcessor {
          * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
          *                      null pointer if no object has been created
          */
-        virtual const AbstractEvaluatedPrediction* processScores(
+        const AbstractEvaluatedPrediction* processScores(
             const AbstractEvaluatedPrediction* bestHead,
-            const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) = 0;
+            const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector);
 
         /**
          * Processes the scores that are stored by a `DenseBinnedScoreVector<PartialIndexVector>` in order to convert
@@ -76,8 +77,27 @@ class IScoreProcessor {
          * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
          *                      null pointer if no object has been created
          */
-        virtual const AbstractEvaluatedPrediction* processScores(
-            const AbstractEvaluatedPrediction* bestHead,
-            const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) = 0;
+        const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
+                                                         const DenseBinnedScoreVector<PartialIndexVector>& scoreVector);
+
+        /**
+         * TODO
+         *
+         * @param bestHead          TODO
+         * @param statisticsSubset  TODO
+         * @param uncovered         TODO
+         * @param accumulated       TODO
+         * @return                  TODO
+         */
+        const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
+                                                    IStatisticsSubset& statisticsSubset, bool uncovered,
+                                                    bool accumulated);
+
+        /**
+         * TODO
+         *
+         * @return TODO
+         */
+        std::unique_ptr<AbstractEvaluatedPrediction> pollHead();
 
 };
