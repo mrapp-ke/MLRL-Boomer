@@ -270,9 +270,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, HEAD_TYPE_COMPLETE,
                                                                                 label_binning_factory)
         regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, head_type,
-                                                                                label_binning_factory)
+                                                                                self.__create_label_binning_factory())
         pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, head_type,
-                                                                                label_binning_factory)
+                                                                                self.__create_label_binning_factory())
 
         if isinstance(loss_function, LabelWiseLoss):
             return DenseLabelWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
