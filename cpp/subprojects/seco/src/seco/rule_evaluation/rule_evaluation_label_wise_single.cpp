@@ -2,19 +2,10 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/validation.hpp"
+#include "rule_evaluation_label_wise_common.hpp"
 
 
 namespace seco {
-
-    static inline float64 calculateLabelWiseQualityScore(const ConfusionMatrix& totalConfusionMatrix,
-                                                         ConfusionMatrix coveredConfusionMatrix,
-                                                         const IHeuristic& heuristic) {
-        const ConfusionMatrix uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
-        return heuristic.evaluateConfusionMatrix(
-            coveredConfusionMatrix.in, coveredConfusionMatrix.ip, coveredConfusionMatrix.rn, coveredConfusionMatrix.rp,
-            uncoveredConfusionMatrix.in, uncoveredConfusionMatrix.ip, uncoveredConfusionMatrix.rn,
-            uncoveredConfusionMatrix.rp);
-    }
 
     /**
      * Allows to calculate the predictions of single-label rules, as well as corresponding quality scores, such that
