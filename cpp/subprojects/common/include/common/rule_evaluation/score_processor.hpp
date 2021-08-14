@@ -81,22 +81,36 @@ class ScoreProcessor {
                                                          const DenseBinnedScoreVector<PartialIndexVector>& scoreVector);
 
         /**
-         * TODO
+         * Finds the best head for a rule, given the predictions that are provided by a `IStatisticsSubset`.
          *
-         * @param bestHead          TODO
-         * @param statisticsSubset  TODO
-         * @param uncovered         TODO
-         * @param accumulated       TODO
-         * @return                  TODO
+         * The given object of type `IStatisticsSubset` must have been prepared properly via calls to the function
+         * `IStatisticsSubset#addToSubset`.
+         *
+         * @param bestHead          A pointer to an object of type `AbstractEvaluatedPrediction` that corresponds to the
+         *                          best rule known so far (as found in the previous or current refinement iteration) or
+         *                          a null pointer, if no such rule is available yet. The new head must be better than
+         *                          this one, otherwise it is discarded
+         * @param statisticsSubset  A reference to an object of type `IStatisticsSubset` to be used for calculating
+         *                          predictions and corresponding quality scores
+         * @param uncovered         False, if the rule for which the head should be found covers all statistics that
+         *                          have been added to the `IStatisticsSubset` so far, True, if the rule covers all
+         *                          statistics that have not been added yet
+         * @param accumulated       False, if the rule covers all statistics that have been added since the
+         *                          `IStatisticsSubset` has been reset for the last time, True, if the rule covers all
+         *                          statistics that have been added so far
+         * @return                  A pointer to an object of type `AbstractEvaluatedPrediction`, representing the head
+         *                          that has been found or a null pointer if the head that has been found is not better
+         *                          than `bestHead`
          */
         const AbstractEvaluatedPrediction* findHead(const AbstractEvaluatedPrediction* bestHead,
                                                     IStatisticsSubset& statisticsSubset, bool uncovered,
                                                     bool accumulated);
 
         /**
-         * TODO
+         * Returns the best head that has been found by the function `findHead.
          *
-         * @return TODO
+         * @return An unique pointer to an object of type `AbstractEvaluatedPrediction`, representing the best head that
+         *         has been found
          */
         std::unique_ptr<AbstractEvaluatedPrediction> pollHead();
 
