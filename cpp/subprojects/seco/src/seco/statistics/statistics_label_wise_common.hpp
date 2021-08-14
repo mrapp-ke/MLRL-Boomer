@@ -1,3 +1,6 @@
+/*
+ * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ */
 #include "seco/statistics/statistics_label_wise.hpp"
 
 
