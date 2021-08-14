@@ -210,7 +210,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
         heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
         pruning_heuristic = self.__create_heuristic(self.pruning_heuristic, 'pruning_heuristic')
         head_type = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
