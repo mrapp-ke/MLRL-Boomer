@@ -30,6 +30,7 @@ namespace boosting {
      * @param gradient                  The gradient
      * @param hessian                   The Hessian
      * @param l2RegularizationWeight    The weight of the L2 regularization
+     * @return                          The quality score that has been calculated
      */
     static inline constexpr float64 calculateLabelWiseQualityScore(float64 score, float64 gradient, float64 hessian,
                                                                    float64 l2RegularizationWeight) {
