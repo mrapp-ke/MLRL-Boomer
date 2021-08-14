@@ -32,6 +32,17 @@ cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise_majority.hpp" 
         pass
 
 
+cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise_partial.hpp" namespace "seco" nogil:
+
+    cdef cppclass LabelWisePartialRuleEvaluationFactoryImpl"seco::LabelWisePartialRuleEvaluationFactory"(
+            ILabelWiseRuleEvaluationFactory):
+
+        # Constructors:
+
+        LabelWisePartialRuleEvaluationFactoryImpl(unique_ptr[IHeuristic] heuristicPtr,
+                                                  unique_ptr[ILiftFunction] liftFunctionPtr) except +
+
+
 cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise_single.hpp" namespace "seco" nogil:
 
     cdef cppclass LabelWiseSingleLabelRuleEvaluationFactoryImpl"seco::LabelWiseSingleLabelRuleEvaluationFactory"(
@@ -61,6 +72,10 @@ cdef class LabelWiseRuleEvaluationFactory:
 
 
 cdef class LabelWiseMajorityRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+    pass
+
+
+cdef class LabelWisePartialRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     pass
 
 
