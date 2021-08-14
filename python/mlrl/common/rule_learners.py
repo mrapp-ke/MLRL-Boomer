@@ -379,13 +379,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = BitNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        rule_model_assemblage = self.__create_rule_model_assemblage()
+        rule_model_assemblage = self.__create_rule_model_assemblage(num_labels)
         model_builder = self._create_model_builder()
         return rule_model_assemblage.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
                                                   model_builder)
 
-    def __create_rule_model_assemblage(self) -> RuleModelAssemblage:
-        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(),
+    def __create_rule_model_assemblage(self, num_labels: int) -> RuleModelAssemblage:
+        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(num_labels),
                                              self._create_thresholds_factory(), self._create_rule_induction(),
                                              self._create_rule_model_assemblage_factory())
         label_sampling_factory = self._create_label_sampling_factory()
@@ -461,12 +461,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             return predictor.predict(feature_matrix, model, label_vectors)
 
     @abstractmethod
-    def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
         """
         Must be implemented by subclasses in order to create the `StatisticsProviderFactory` to be used by the rule
         learner.
 
-        :return: The `StatisticsProviderFactory` that has been created
+        :param num_labels:  The number of available labels
+        :return:            The `StatisticsProviderFactory` that has been created
         """
         pass
 
