@@ -48,6 +48,20 @@ cdef class LabelWiseMajorityRuleEvaluationFactory(LabelWiseRuleEvaluationFactory
         self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWiseMajorityRuleEvaluationFactoryImpl]()
 
 
+cdef class LabelWisePartialRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+    """
+    A wrapper for the C++ class `LabelWisePartialRuleEvaluationFactory`.
+    """
+
+    def __cinit__(self, Heuristic heuristic not None, LiftFunction lift_function not None):
+        """
+        :param heuristic:       The heuristic that should be used
+        :param liftFunction:    The lift function that should be used
+        """
+        self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWisePartialRuleEvaluationFactoryImpl](
+            move(heuristic.heuristic_ptr), move(lift_function.lift_function_ptr))
+
+
 cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     """
     A wrapper for the C++ class `LabelWiseSingleLabelRuleEvaluationFactory`.
@@ -55,7 +69,7 @@ cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFact
 
     def __cinit__(self, Heuristic heuristic not None):
         """
-        :param heuristic:
+        :param heuristic: The heuristic that should be used
         """
         self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWiseSingleLabelRuleEvaluationFactoryImpl](
             move(heuristic.heuristic_ptr))
