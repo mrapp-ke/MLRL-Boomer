@@ -29,8 +29,8 @@ namespace seco {
              * @param confusionMatricesTotal    A reference to an object of type `DenseConfusionMatrixVector` that
              *                                  stores confusion matrices that take into account all examples
              * @param confusionMatricesCovered  A reference to an object of type `DenseConfusionMatrixVector` that
-             *                                  stores a confusion matrices that take into account all examples, which
-             *                                  are covered by the rule
+             *                                  stores confusion matrices that take into account all examples, which are
+             *                                  covered by the rule
              * @return                          A reference to an object of type `IScoreVector` that stores the
              *                                  predicted scores, as well as an overall quality score
              */
