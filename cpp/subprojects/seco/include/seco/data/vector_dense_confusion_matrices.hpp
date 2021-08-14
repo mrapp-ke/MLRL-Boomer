@@ -210,6 +210,36 @@ namespace seco {
                              const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                              const PartialIndexVector& indices, float64 weight);
 
+            /**
+             * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements
+             * in two other vectors, considering only the elements in the first vector that correspond to the positions
+             * provided by a `CompleteIndexVector`.
+             *
+             * @param firstBegin    A `const_iterator` to the beginning of the first vector
+             * @param firstEnd      A `const_iterator` to the end of the first vector
+             * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
+             *                      indices
+             * @param secondBegin  A `const_iterator` to the beginning of the second vector
+             * @param secondEnd    A `const_iterator` to the end of the second vector
+             */
+            void difference(const_iterator firstBegin, const_iterator firstEnd, const CompleteIndexVector& firstIndices,
+                            const_iterator secondBegin, const_iterator secondEnd);
+
+            /**
+             * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements
+             * in two other vectors, considering only the elements in the first vector that correspond to the positions
+             * provided by a `PartialIndexVector`.
+             *
+             * @param firstBegin    A `const_iterator` to the beginning of the first vector
+             * @param firstEnd      A `const_iterator` to the end of the first vector
+             * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+             *                      indices
+             * @param secondBegin   A `const_iterator` to the beginning of the second vector
+             * @param secondEnd     A `const_iterator` to the end of the second vector
+             */
+            void difference(const_iterator firstBegin, const_iterator firstEnd, const PartialIndexVector& firstIndices,
+                            const_iterator secondBegin, const_iterator secondEnd);
+
     };
 
 }

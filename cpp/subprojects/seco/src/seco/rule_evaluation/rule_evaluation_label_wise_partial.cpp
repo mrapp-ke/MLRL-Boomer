@@ -35,11 +35,10 @@ namespace seco {
 
             }
 
-            const IScoreVector& calculatePrediction(const BinarySparseArrayVector& majorityLabelVector,
-                                                    const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                                    const DenseConfusionMatrixVector& confusionMatricesSubset,
-                                                    const DenseConfusionMatrixVector& confusionMatricesCovered,
-                                                    bool uncovered) override {
+            const IScoreVector& calculatePrediction(
+                    const BinarySparseArrayVector& majorityLabelVector,
+                    const DenseConfusionMatrixVector& confusionMatricesTotal,
+                    const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 // TODO Implement
             }
 

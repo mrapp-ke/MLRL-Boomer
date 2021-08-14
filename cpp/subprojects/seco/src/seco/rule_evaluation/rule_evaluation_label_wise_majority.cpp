@@ -28,11 +28,10 @@ namespace seco {
                 scoreVector_.overallQualityScore = 0;
             }
 
-            const IScoreVector& calculatePrediction(const BinarySparseArrayVector& majorityLabelVector,
-                                                    const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                                    const DenseConfusionMatrixVector& confusionMatricesSubset,
-                                                    const DenseConfusionMatrixVector& confusionMatricesCovered,
-                                                    bool uncovered) override {
+            const IScoreVector& calculatePrediction(
+                    const BinarySparseArrayVector& majorityLabelVector,
+                    const DenseConfusionMatrixVector& confusionMatricesTotal,
+                    const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 typename DenseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
                 auto labelIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),

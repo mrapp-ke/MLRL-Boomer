@@ -2,21 +2,17 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/validation.hpp"
+#include <iostream>
 
 
 namespace seco {
 
     static inline float64 calculateLabelWiseQualityScore(const ConfusionMatrix& totalConfusionMatrix,
-                                                         const ConfusionMatrix& subsetConfusionMatrix,
-                                                         ConfusionMatrix coveredConfusionMatrix, bool uncovered,
+                                                         ConfusionMatrix coveredConfusionMatrix,
                                                          const IHeuristic& heuristic) {
-        if (uncovered) {
-            coveredConfusionMatrix = subsetConfusionMatrix - coveredConfusionMatrix;
-        }
-
-        ConfusionMatrix uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
+        const ConfusionMatrix uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
         return heuristic.evaluateConfusionMatrix(
-            coveredConfusionMatrix.in, coveredConfusionMatrix.ip,coveredConfusionMatrix.rn, coveredConfusionMatrix.rp,
+            coveredConfusionMatrix.in, coveredConfusionMatrix.ip, coveredConfusionMatrix.rn, coveredConfusionMatrix.rp,
             uncoveredConfusionMatrix.in, uncoveredConfusionMatrix.ip, uncoveredConfusionMatrix.rn,
             uncoveredConfusionMatrix.rp);
     }
@@ -54,25 +50,22 @@ namespace seco {
 
             }
 
-            const IScoreVector& calculatePrediction(const BinarySparseArrayVector& majorityLabelVector,
-                                                    const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                                    const DenseConfusionMatrixVector& confusionMatricesSubset,
-                                                    const DenseConfusionMatrixVector& confusionMatricesCovered,
-                                                    bool uncovered) override {
+            const IScoreVector& calculatePrediction(
+                    const BinarySparseArrayVector& majorityLabelVector,
+                    const DenseConfusionMatrixVector& confusionMatricesTotal,
+                    const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();
-                DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
-                DenseConfusionMatrixVector::const_iterator subsetIterator = confusionMatricesSubset.cbegin();
+                DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 uint32 bestIndex = indexIterator[0];
-                float64 bestQualityScore = calculateLabelWiseQualityScore(totalIterator[bestIndex],
-                                                                          subsetIterator[bestIndex], coveredIterator[0],
-                                                                          uncovered, heuristic_);
+                float64 bestQualityScore = calculateLabelWiseQualityScore(totalIterator[bestIndex], coveredIterator[0],
+                                                                          heuristic_);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 index = indexIterator[i];
-                    float64 qualityScore = calculateLabelWiseQualityScore(totalIterator[index], subsetIterator[index],
-                                                                          coveredIterator[i], uncovered, heuristic_);
+                    float64 qualityScore = calculateLabelWiseQualityScore(totalIterator[index], coveredIterator[i],
+                                                                          heuristic_);
 
                     if (qualityScore < bestQualityScore) {
                         bestIndex = index;

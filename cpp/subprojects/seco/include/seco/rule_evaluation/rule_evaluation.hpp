@@ -28,23 +28,16 @@ namespace seco {
              *                                  predictions of the default rule
              * @param confusionMatricesTotal    A reference to an object of type `DenseConfusionMatrixVector` that
              *                                  stores confusion matrices that take into account all examples
-             * @param confusionMatricesSubset   A reference to an object of type `DenseConfusionMatrixVector` that
-             *                                  stores confusion matrices that take into account all all examples, which
-             *                                  are covered by the previous refinement of the rule
              * @param confusionMatricesCovered  A reference to an object of type `DenseConfusionMatrixVector` that
              *                                  stores a confusion matrices that take into account all examples, which
              *                                  are covered by the rule
-             * @param uncovered                 False, if the confusion matrices in `confusion_matrices_covered`
-             *                                  correspond to the examples that are covered by rule, true, if they
-             *                                  correspond to the examples that are not covered by the rule
              * @return                          A reference to an object of type `IScoreVector` that stores the
              *                                  predicted scores, as well as an overall quality score
              */
-            virtual const IScoreVector& calculatePrediction(const BinarySparseArrayVector& majorityLabelVector,
-                                                            const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                                            const DenseConfusionMatrixVector& confusionMatricesSubset,
-                                                            const DenseConfusionMatrixVector& confusionMatricesCovered,
-                                                            bool uncovered) = 0;
+            virtual const IScoreVector& calculatePrediction(
+                const BinarySparseArrayVector& majorityLabelVector,
+                const DenseConfusionMatrixVector& confusionMatricesTotal,
+                const DenseConfusionMatrixVector& confusionMatricesCovered) = 0;
 
     };
 
