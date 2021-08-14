@@ -1,5 +1,5 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
-#include "common/rule_evaluation/score_processor.hpp"
+#include "common/rule_refinement/score_processor.hpp"
 
 
 template<typename T>

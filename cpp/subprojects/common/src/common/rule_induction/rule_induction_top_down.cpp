@@ -1,5 +1,5 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
-#include "common/rule_evaluation/score_processor.hpp"
+#include "common/rule_refinement/score_processor.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/validation.hpp"
 #include "omp.h"

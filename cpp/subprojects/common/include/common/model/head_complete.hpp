@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/model/head.hpp"
-#include "common/head_refinement/prediction_complete.hpp"
+#include "common/rule_refinement/prediction_complete.hpp"
 
 
 /**

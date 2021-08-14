@@ -2,7 +2,7 @@
 #include "common/sampling/instance_sampling.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 #include "common/rule_refinement/refinement.hpp"
-#include "common/head_refinement/prediction.hpp"
+#include "common/rule_refinement/prediction.hpp"
 
 
 static inline BitVector* createBitVector(BiPartition::const_iterator iterator, uint32 numElements) {

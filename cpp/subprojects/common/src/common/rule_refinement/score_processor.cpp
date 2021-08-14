@@ -1,6 +1,6 @@
-#include "common/rule_evaluation/score_processor.hpp"
-#include "common/head_refinement/prediction_complete.hpp"
-#include "common/head_refinement/prediction_partial.hpp"
+#include "common/rule_refinement/score_processor.hpp"
+#include "common/rule_refinement/prediction_complete.hpp"
+#include "common/rule_refinement/prediction_partial.hpp"
 #include <algorithm>
 
 

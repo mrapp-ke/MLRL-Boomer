@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/head_refinement/prediction_evaluated.hpp"
+#include "common/rule_refinement/prediction_evaluated.hpp"
 #include "common/indices/index_vector_complete.hpp"
 
 // Forward declarations
