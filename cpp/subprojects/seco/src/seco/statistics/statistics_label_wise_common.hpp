@@ -52,6 +52,8 @@ namespace seco {
 
                     ConfusionMatrixVector* totalCoverableSumVector_;
 
+                    ConfusionMatrixVector tmpVector_;
+
                 public:
 
                     /**
@@ -68,7 +70,8 @@ namespace seco {
                         : statistics_(statistics), totalSumVector_(&statistics_.subsetSumVector_),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
                           sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)),
-                          accumulatedSumVector_(nullptr), totalCoverableSumVector_(nullptr) {
+                          accumulatedSumVector_(nullptr), totalCoverableSumVector_(nullptr),
+                          tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())) {
 
                     }
 
@@ -113,9 +116,17 @@ namespace seco {
                     const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
                         const ConfusionMatrixVector& sumsOfConfusionMatrices =
                             accumulated ? *accumulatedSumVector_ : sumVector_;
+
+                        if (uncovered) {
+                            tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
+                                                  sumsOfConfusionMatrices.cbegin(), sumsOfConfusionMatrices.cend());
+                            return ruleEvaluationPtr_->calculatePrediction(*statistics_.majorityLabelVectorPtr_,
+                                                                           statistics_.totalSumVector_, tmpVector_);
+                        }
+
                         return ruleEvaluationPtr_->calculatePrediction(*statistics_.majorityLabelVectorPtr_,
-                                                                       statistics_.totalSumVector_, *totalSumVector_,
-                                                                       sumsOfConfusionMatrices, uncovered);
+                                                                       statistics_.totalSumVector_,
+                                                                       sumsOfConfusionMatrices);
                     }
 
             };
