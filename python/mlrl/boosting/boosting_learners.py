@@ -257,7 +257,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
         num_threads = get_preferred_num_threads(int(self.num_threads_statistic_update))
         loss_function = self.__create_loss_function()
         head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
