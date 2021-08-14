@@ -5,9 +5,9 @@
 
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
+#include "common/rule_refinement/prediction_evaluated.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "common/head_refinement/prediction_evaluated.hpp"
 #include "common/statistics/statistics_subset.hpp"
 
 
