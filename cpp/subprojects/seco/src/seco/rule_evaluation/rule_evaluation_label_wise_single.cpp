@@ -2,7 +2,6 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/validation.hpp"
-#include <iostream>
 
 
 namespace seco {
