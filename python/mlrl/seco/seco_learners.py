@@ -22,11 +22,10 @@ from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.seco.cython.heuristics import Heuristic, Accuracy, Precision, Recall, Laplace, WRA, FMeasure, MEstimate
 from mlrl.seco.cython.instance_sampling import InstanceSamplingWithReplacementFactory, \
     InstanceSamplingWithoutReplacementFactory
-from mlrl.seco.cython.lift_functions import LiftFunction, PeakLiftFunction
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
-from mlrl.seco.cython.rule_evaluation_label_wise import LabelWiseMajorityRuleEvaluationFactory, \
-    LabelWiseSingleLabelRuleEvaluationFactory
+from mlrl.seco.cython.rule_evaluation_label_wise import LiftFunction, PeakLiftFunction, \
+    LabelWiseMajorityRuleEvaluationFactory, LabelWiseSingleLabelRuleEvaluationFactory
 from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin

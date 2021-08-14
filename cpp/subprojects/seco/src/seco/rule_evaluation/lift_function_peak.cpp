@@ -1,4 +1,4 @@
-#include "seco/head_refinement/lift_function_peak.hpp"
+#include "seco/rule_evaluation/lift_function_peak.hpp"
 #include "common/validation.hpp"
 #include <cmath>
 

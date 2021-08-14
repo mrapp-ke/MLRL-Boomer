@@ -4,7 +4,6 @@ project('seco', 'cpp', version : '0.6.0')
 source_files = [
     'src/seco/data/matrix_dense_weights.cpp',
     'src/seco/data/vector_dense_confusion_matrices.cpp',
-    'src/seco/head_refinement/lift_function_peak.cpp',
     'src/seco/heuristics/heuristic_accuracy.cpp',
     'src/seco/heuristics/heuristic_f_measure.cpp',
     'src/seco/heuristics/heuristic_laplace.cpp',
@@ -14,6 +13,7 @@ source_files = [
     'src/seco/heuristics/heuristic_wra.cpp',
     'src/seco/model/decision_list.cpp',
     'src/seco/output/predictor_classification_label_wise.cpp',
+    'src/seco/rule_evaluation/lift_function_peak.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_majority.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_single.cpp',
     'src/seco/sampling/instance_sampling_no.cpp',

@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "seco/head_refinement/lift_function.hpp"
+#include "seco/rule_evaluation/lift_function.hpp"
 
 
 namespace seco {
