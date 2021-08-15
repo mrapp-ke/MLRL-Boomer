@@ -207,12 +207,12 @@ namespace boosting {
         }
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> DenseExampleWiseStatisticVector::createRuleEvaluation(
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> DenseExampleWiseStatisticVector::createRuleEvaluation(
             const IExampleWiseRuleEvaluationFactory& factory, const CompleteIndexVector& labelIndices) const {
         return factory.createDense(labelIndices);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector>> DenseExampleWiseStatisticVector::createRuleEvaluation(
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> DenseExampleWiseStatisticVector::createRuleEvaluation(
             const IExampleWiseRuleEvaluationFactory& factory, const PartialIndexVector& labelIndices) const {
         return factory.createDense(labelIndices);
     }

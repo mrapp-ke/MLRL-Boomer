@@ -1,7 +1,6 @@
 from mlrl.common.cython.statistics cimport IStatisticsProviderFactory
 from mlrl.common.cython.thresholds cimport IThresholdsFactory
 from mlrl.common.cython.rule_induction cimport IRuleInduction
-from mlrl.common.cython.head_refinement cimport IHeadRefinementFactory
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingFactory
 from mlrl.common.cython.instance_sampling cimport IInstanceSamplingFactory
 from mlrl.common.cython.label_sampling cimport ILabelSamplingFactory
@@ -11,6 +10,7 @@ from mlrl.common.cython.post_processing cimport IPostProcessor
 from mlrl.common.cython.stopping cimport IStoppingCriterion
 from mlrl.common.cython.rule_model_assemblage cimport IRuleModelAssemblage, IRuleModelAssemblageFactory
 
+from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 
@@ -23,13 +23,11 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
         AlgorithmBuilderImpl(unique_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
                              unique_ptr[IThresholdsFactory] thresholdsFactoryPtr,
                              unique_ptr[IRuleInduction] ruleInductionPtr,
-                             unique_ptr[IHeadRefinementFactory] headRefinementFactoryPtr,
                              unique_ptr[IRuleModelAssemblageFactory] ruleModelAssemblageFactoryPtr) except +
 
         # Functions:
 
-        AlgorithmBuilderImpl& setDefaultRuleHeadRefinementFactory(
-            unique_ptr[IHeadRefinementFactory] headRefinementFactoryPtr) except +
+        AlgorithmBuilderImpl& setUseDefaultRule(bool useDefaultRule) except +
 
         AlgorithmBuilderImpl& setLabelSamplingFactory(
             unique_ptr[ILabelSamplingFactory] labelSamplingFactoryPtr) except +

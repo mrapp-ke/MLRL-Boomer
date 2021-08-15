@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "common/data/tuple.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "boosting/data/statistic_iterator_dense.hpp"
 #include <memory>
 
 
@@ -15,7 +15,7 @@ namespace boosting {
     // Forward declarations
     class ILabelWiseRuleEvaluationFactory;
     template<typename StatisticVector>
-    class ILabelWiseRuleEvaluation;
+    class IRuleEvaluation;
 
     /**
      * An one-dimensional vector that stores gradients and Hessians that have been calculated using a label-wise
@@ -52,19 +52,28 @@ namespace boosting {
             ~DenseLabelWiseStatisticVector();
 
             /**
+             * An iterator that provides access to the elements in the vector and allows to modify them.
+             */
+            typedef Tuple<float64>* iterator;
+
+            /**
              * An iterator that provides read-only access to the elements in the vector.
              */
             typedef const Tuple<float64>* const_iterator;
 
             /**
-             * An iterator that provides read-only access to the gradients in the vector.
+             * Returns an `iterator` to the beginning of the vector.
+             *
+             * @return An `iterator` to the beginning
              */
-            typedef DenseGradientConstIterator gradient_const_iterator;
+            iterator begin();
 
             /**
-             * An iterator that provides read-only access to the Hessians in the vector.
+             * Returns an `iterator` to the end of the vector.
+             *
+             * @return An `iterator` to the end
              */
-            typedef DenseHessianConstIterator hessian_const_iterator;
+            iterator end();
 
             /**
              * Returns a `const_iterator` to the beginning of the vector.
@@ -79,34 +88,6 @@ namespace boosting {
              * @return A `const_iterator` to the end
              */
             const_iterator cend() const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the beginning of the gradients.
-             *
-             * @return A `gradient_const_iterator` to the beginning
-             */
-            gradient_const_iterator gradients_cbegin() const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the end of the gradients.
-             *
-             * @return A `gradient_const_iterator` to the end
-             */
-            gradient_const_iterator gradients_cend() const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the beginning of the Hessians.
-             *
-             * @return A `hessian_const_iterator` to the beginning
-             */
-            hessian_const_iterator hessians_cbegin() const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the end of the Hessians.
-             *
-             * @return A `hessian_const_iterator` to the end
-             */
-            hessian_const_iterator hessians_cend() const;
 
             /**
              * Returns the number of gradients and Hessians in the vector.
@@ -195,33 +176,29 @@ namespace boosting {
                             const_iterator secondBegin, const_iterator secondEnd);
 
             /**
-             * Creates and returns a new object of type `ILabelWiseRuleEvaluation` that allows to calculate the
-             * predictions of rules, based on the gradients and Hessians that are stored in a
-             * `DenseLabelWiseStatisticVector`.
+             * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
+             * rules, based on the gradients and Hessians that are stored in a `DenseLabelWiseStatisticVector`.
              *
              * @param factory       A reference to an object of type `ILabelWiseRuleEvaluationFactory` that should be
              *                      used to create the object
              * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices of the labels for which the rules may predict
-             * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
-             *                      created
+             * @return              An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
-            std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createRuleEvaluation(
+            std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> createRuleEvaluation(
                 const ILabelWiseRuleEvaluationFactory& factory, const CompleteIndexVector& labelIndices) const;
 
             /**
-             * Creates and returns a new object of type `ILabelWiseRuleEvaluation` that allows to calculate the
-             * predictions of rules, based on the gradients and Hessians that are stored in a
-             * `DenseLabelWiseStatisticVector`.
+             * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
+             * rules, based on the gradients and Hessians that are stored in a `DenseLabelWiseStatisticVector`.
              *
              * @param factory       A reference to an object of type `ILabelWiseRuleEvaluationFactory` that should be
              *                      used to create the object
              * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices of the labels for which the rules may predict
-             * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluation` that has been
-             *                      created
+             * @return              An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
-            std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> createRuleEvaluation(
+            std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> createRuleEvaluation(
                 const ILabelWiseRuleEvaluationFactory& factory, const PartialIndexVector& labelIndices) const;
 
     };

@@ -1,13 +1,13 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
+#include "common/rule_refinement/score_processor.hpp"
 
 
 template<typename T>
 ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
-        std::unique_ptr<IHeadRefinement> headRefinementPtr, const T& labelIndices, uint32 featureIndex, bool nominal,
-        const IWeightVector& weights,
+        const T& labelIndices, uint32 featureIndex, bool nominal, const IWeightVector& weights,
         std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr)
-    : headRefinementPtr_(std::move(headRefinementPtr)), labelIndices_(labelIndices), featureIndex_(featureIndex),
-    nominal_(nominal), weights_(weights), callbackPtr_(std::move(callbackPtr)) {
+    : labelIndices_(labelIndices), featureIndex_(featureIndex), nominal_(nominal), weights_(weights),
+      callbackPtr_(std::move(callbackPtr)) {
 
 }
 
@@ -16,6 +16,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
     const AbstractEvaluatedPrediction* bestHead = currentHead;
+    ScoreProcessor scoreProcessor;
 
     // Invoke the callback...
     std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>::Result> callbackResultPtr =
@@ -59,8 +60,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             if (weights[r]) {
                 // Find and evaluate the best head for the current refinement, if a condition that uses the <= operator
                 // (or the == operator in case of a nominal feature) is used...
-                const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
-                                                                                       false, false);
+                const AbstractEvaluatedPrediction* head = scoreProcessor.findHead(bestHead, *statisticsSubsetPtr, false,
+                                                                                  false);
 
                 // If the refinement is better than the current rule...
                 if (head != nullptr) {
@@ -74,7 +75,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
                 // Find and evaluate the best head for the current refinement, if a condition that uses the > operator
                 // (or the != operator in case of a nominal feature) is used...
-                head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
+                head = scoreProcessor.findHead(bestHead, *statisticsSubsetPtr, true, false);
 
                 // If the refinement is better than the current rule...
                 if (head != nullptr) {
@@ -103,8 +104,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         if (subsetModified && sparse) {
             // Find and evaluate the best head for the current refinement, if a condition that uses the <= operator (or
             // the == operator in case of nominal feature) is used...
-            const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
-                                                                                   false, false);
+            const AbstractEvaluatedPrediction* head = scoreProcessor.findHead(bestHead, *statisticsSubsetPtr, false,
+                                                                              false);
 
             // If the refinement is better than the current rule...
             if (head != nullptr) {
@@ -118,7 +119,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
             // Find and evaluate the best head for the current refinement, if a condition that uses the > operator (or
             // the != operator in case of a nominal feature) is used...
-            head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
+            head = scoreProcessor.findHead(bestHead, *statisticsSubsetPtr, true, false);
 
             // If the refinement is better than the current rule...
             if (head != nullptr) {
@@ -158,8 +159,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             if (weights[r]) {
                 // Find and evaluate the best head for the current refinement, if a condition that uses the > operator
                 // (or the == operator in case of a nominal feature) is used..
-                const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
-                                                                                       false, false);
+                const AbstractEvaluatedPrediction* head = scoreProcessor.findHead(bestHead, *statisticsSubsetPtr, false,
+                                                                                  false);
 
                 // If the refinement is better than the current rule...
                 if (head != nullptr) {
@@ -179,7 +180,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
                 // Find and evaluate the best head for the current refinement, if a condition that uses the <= operator
                 // (or the != operator in case of a nominal feature) is used...
-                head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
+                head = scoreProcessor.findHead(bestHead, *statisticsSubsetPtr, true, false);
 
                 // If the refinement is better than the current rule...
                 if (head != nullptr) {
@@ -214,8 +215,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         // (sparseBinIndex, numBins) from the remaining ones...
         if (sparse) {
             // Find and evaluate the best head for the current refinement, if
-            const AbstractEvaluatedPrediction* head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr,
-                                                                                   false, false);
+            const AbstractEvaluatedPrediction* head = scoreProcessor.findHead(bestHead, *statisticsSubsetPtr, false,
+                                                                              false);
 
             // If the refinement is better than the current rule...
             if (head != nullptr) {
@@ -234,7 +235,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             }
 
             // Find and evaluate the best head for the current refinement, if
-            head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, false);
+            head = scoreProcessor.findHead(bestHead, *statisticsSubsetPtr, true, false);
 
             // If the refinement is better than the current rule...
             if (head != nullptr) {
@@ -261,7 +262,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
                 // Find and evaluate the best head for the current refinement, if the condition
                 // `f != thresholdIterator[sparseBinIndex]` is used...
-                head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, false, true);
+                head = scoreProcessor.findHead(bestHead, *statisticsSubsetPtr, false, true);
 
                 // If the refinement is better than the current rule...
                 if (head != nullptr) {
@@ -275,7 +276,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
                 // Find and evaluate the best head for the current refinement, if the condition
                 // `f == thresholdIterator[sparseBinIndex]` is used...
-                head = headRefinementPtr_->findHead(bestHead, *statisticsSubsetPtr, true, true);
+                head = scoreProcessor.findHead(bestHead, *statisticsSubsetPtr, true, true);
 
                 if (head != nullptr) {
                     bestHead = head;
@@ -289,7 +290,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         }
     }
 
-    refinementPtr->headPtr = headRefinementPtr_->pollHead();
+    refinementPtr->headPtr = scoreProcessor.pollHead();
     refinementPtr_ = std::move(refinementPtr);
 }
 

@@ -1,6 +1,6 @@
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
-#include "common/rule_evaluation/score_processor.hpp"
-#include "common/head_refinement/prediction.hpp"
+#include "common/rule_refinement/prediction.hpp"
+#include "common/rule_refinement/score_processor.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
@@ -28,7 +28,7 @@ typename DenseBinnedScoreVector<T>::score_const_iterator DenseBinnedScoreVector<
 
 template<typename T>
 typename DenseBinnedScoreVector<T>::score_const_iterator DenseBinnedScoreVector<T>::scores_cend() const {
-    return binnedVector_.cend();
+    return DenseBinnedVector<float64>::ValueConstIterator(this->indices_binned_cend(), binnedVector_.binned_cbegin());
 }
 
 template<typename T>
@@ -38,7 +38,7 @@ typename DenseBinnedScoreVector<T>::index_binned_iterator DenseBinnedScoreVector
 
 template<typename T>
 typename DenseBinnedScoreVector<T>::index_binned_iterator DenseBinnedScoreVector<T>::indices_binned_end() {
-    return binnedVector_.indices_binned_end();
+    return &binnedVector_.indices_binned_begin()[labelIndices_.getNumElements()];
 }
 
 template<typename T>
@@ -48,7 +48,7 @@ typename DenseBinnedScoreVector<T>::index_binned_const_iterator DenseBinnedScore
 
 template<typename T>
 typename DenseBinnedScoreVector<T>::index_binned_const_iterator DenseBinnedScoreVector<T>::indices_binned_cend() const {
-    return binnedVector_.indices_binned_cend();
+    return &binnedVector_.indices_binned_cbegin()[labelIndices_.getNumElements()];
 }
 
 template<typename T>
@@ -73,7 +73,7 @@ typename DenseBinnedScoreVector<T>::score_binned_const_iterator DenseBinnedScore
 
 template<typename T>
 uint32 DenseBinnedScoreVector<T>::getNumElements() const {
-    return binnedVector_.getNumElements();
+    return labelIndices_.getNumElements();
 }
 
 template<typename T>
@@ -93,12 +93,12 @@ bool DenseBinnedScoreVector<T>::isPartial() const {
 
 template<typename T>
 void DenseBinnedScoreVector<T>::updatePrediction(AbstractPrediction& prediction) const {
-    prediction.set(binnedVector_.cbegin(), binnedVector_.cend());
+    prediction.set(this->scores_cbegin(), this->scores_cend());
 }
 
 template<typename T>
 const AbstractEvaluatedPrediction* DenseBinnedScoreVector<T>::processScores(const AbstractEvaluatedPrediction* bestHead,
-                                                                            IScoreProcessor& scoreProcessor) const {
+                                                                            ScoreProcessor& scoreProcessor) const {
     return scoreProcessor.processScores(bestHead, *this);
 }
 
