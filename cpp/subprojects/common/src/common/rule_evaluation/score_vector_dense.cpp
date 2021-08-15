@@ -28,7 +28,7 @@ typename DenseScoreVector<T>::score_iterator DenseScoreVector<T>::scores_begin()
 
 template<typename T>
 typename DenseScoreVector<T>::score_iterator DenseScoreVector<T>::scores_end() {
-    return predictedScoreVector_.end();
+    return &predictedScoreVector_.begin()[labelIndices_.getNumElements()];
 }
 
 template<typename T>
@@ -38,12 +38,12 @@ typename DenseScoreVector<T>::score_const_iterator DenseScoreVector<T>::scores_c
 
 template<typename T>
 typename DenseScoreVector<T>::score_const_iterator DenseScoreVector<T>::scores_cend() const {
-    return predictedScoreVector_.cend();
+    return &predictedScoreVector_.cbegin()[labelIndices_.getNumElements()];
 }
 
 template<typename T>
 uint32 DenseScoreVector<T>::getNumElements() const {
-    return predictedScoreVector_.getNumElements();
+    return labelIndices_.getNumElements();
 }
 
 template<typename T>
@@ -53,7 +53,7 @@ bool DenseScoreVector<T>::isPartial() const {
 
 template<typename T>
 void DenseScoreVector<T>::updatePrediction(AbstractPrediction& prediction) const {
-    prediction.set(predictedScoreVector_.cbegin(), predictedScoreVector_.cend());
+    prediction.set(this->scores_cbegin(), this->scores_cend());
 }
 
 template<typename T>
