@@ -9,6 +9,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * The parameter `--instance-sampling` does now allow to use stratified sampling (`stratified-label-wise` and `stratified-example-wise`).
 * The parameter `--holdout` does now allow to use stratified sampling (`stratified-label-wise` and `stratified-example-wise`).
 * The parameter `--recalculate-predictions` does now allow to specify whether the predictions of rules should be recalculated on the entire training data, if instance sampling is used.
+* The code for the construction of rule heads has been reworked, resulting in minor performance improvements.
 * A programmatic C++ API for configuring algorithms, including the validation of parameters, is now provided. 
 
 ### Version 0.5.0 (Jun 27, 2021)
