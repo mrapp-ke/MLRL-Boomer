@@ -16,7 +16,8 @@ namespace seco {
 
     /**
      * Allows to calculate the predictions of complete rules, as well as corresponding quality scores, such that they
-     * optimize a heuristic that is applied using label-wise averaging.
+     * optimize a heuristic that is applied using label-wise averaging and taking a specific lift function, which
+     * affects the quality score of rules, depending on how many labels they predict, into account.
      */
     class LabelWiseCompleteRuleEvaluation final : public IRuleEvaluation {
 
@@ -78,7 +79,8 @@ namespace seco {
 
     /**
      * Allows to calculate the predictions of partial rules, as well as corresponding quality scores, such that they
-     * optimize a heuristic that is applied using label-wise averaging.
+     * optimize a heuristic that is applied using label-wise averaging and taking a specific lift function, which
+     * affects the quality score of rules, depending on how many labels they predict, into account.
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
