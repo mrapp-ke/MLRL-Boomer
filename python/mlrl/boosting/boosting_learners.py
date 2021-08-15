@@ -16,15 +16,13 @@ from mlrl.boosting.cython.model import RuleListBuilder
 from mlrl.boosting.cython.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor, \
     LabelWiseProbabilityPredictor, LabelWiseTransformationFunction, LogisticFunction
 from mlrl.boosting.cython.post_processing import ConstantShrinkage
-from mlrl.boosting.cython.rule_evaluation_example_wise import RegularizedExampleWiseRuleEvaluationFactory, \
-    BinnedExampleWiseRuleEvaluationFactory
-from mlrl.boosting.cython.rule_evaluation_label_wise import RegularizedLabelWiseRuleEvaluationFactory, \
-    BinnedLabelWiseRuleEvaluationFactory
+from mlrl.boosting.cython.rule_evaluation_example_wise import ExampleWiseSingleLabelRuleEvaluationFactory, \
+    ExampleWiseCompleteRuleEvaluationFactory, ExampleWiseCompleteBinnedRuleEvaluationFactory
+from mlrl.boosting.cython.rule_evaluation_label_wise import LabelWiseSingleLabelRuleEvaluationFactory, \
+    LabelWiseCompleteRuleEvaluationFactory, LabelWiseCompleteBinnedRuleEvaluationFactory
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
-from mlrl.common.cython.head_refinement import HeadRefinementFactory, SingleLabelHeadRefinementFactory, \
-    CompleteHeadRefinementFactory
 from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
@@ -128,7 +126,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
-        :param default_rule:                        True, if the first rule should be a default rule, False otherwise
+        :param default_rule:                    True, if a default rule should be used, False otherwise
         :param time_limit:                          The duration in seconds after which the induction of rules should be
                                                     canceled
         :param early_stopping:                      The strategy that is used for early stopping. Must be `measure` or
@@ -259,12 +257,22 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
         num_threads = get_preferred_num_threads(int(self.num_threads_statistic_update))
         loss_function = self.__create_loss_function()
-        default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
-        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
-        pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function)
+        head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
+        label_binning_factory = self.__create_label_binning_factory()
+
+        if label_binning_factory is not None and head_type == HEAD_TYPE_SINGLE:
+            log.warning('Parameter "label_binning" does not have any effect, because parameter "head_type" is set to "'
+                        + self.head_type + '"!')
+
+        default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, HEAD_TYPE_COMPLETE,
+                                                                                label_binning_factory)
+        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, head_type,
+                                                                                self.__create_label_binning_factory())
+        pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, head_type,
+                                                                                self.__create_label_binning_factory())
 
         if isinstance(loss_function, LabelWiseLoss):
             return DenseLabelWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
@@ -283,19 +291,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         num_threads = get_preferred_num_threads(int(self.num_threads_rule_refinement))
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     self.recalculate_predictions, num_threads)
-
-    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
-        if self.default_rule:
-            return CompleteHeadRefinementFactory()
-        return None
-
-    def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
-        value = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
-
-        if value == HEAD_TYPE_SINGLE:
-            return SingleLabelHeadRefinementFactory()
-        elif value == HEAD_TYPE_COMPLETE:
-            return CompleteHeadRefinementFactory()
 
     def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
         return SequentialRuleModelAssemblageFactory()
@@ -331,6 +326,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             stopping_criteria.append(early_stopping_criterion)
 
         return stopping_criteria
+
+    def _use_default_rule(self) -> bool:
+        return self.default_rule
 
     def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
         early_stopping = self.early_stopping
@@ -384,20 +382,30 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         elif value == LOSS_LOGISTIC_EXAMPLE_WISE:
             return ExampleWiseLogisticLoss()
 
-    def __create_rule_evaluation_factory(self, loss_function):
+    def __create_rule_evaluation_factory(self, loss_function, head_type: str,
+                                         label_binning_factory: LabelBinningFactory):
         l2_regularization_weight = float(self.l2_regularization_weight)
-        label_binning_factory = self.__create_label_binning_factory()
 
-        if isinstance(loss_function, LabelWiseLoss):
-            if label_binning_factory is None:
-                return RegularizedLabelWiseRuleEvaluationFactory(l2_regularization_weight)
+        if head_type == HEAD_TYPE_SINGLE:
+            if isinstance(loss_function, LabelWiseLoss):
+                return LabelWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
             else:
-                return BinnedLabelWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
-        else:
-            if label_binning_factory is None:
-                return RegularizedExampleWiseRuleEvaluationFactory(l2_regularization_weight)
+                return ExampleWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
+        elif head_type == HEAD_TYPE_COMPLETE:
+
+            if isinstance(loss_function, LabelWiseLoss):
+                if label_binning_factory is None:
+                    return LabelWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
+                else:
+                    return LabelWiseCompleteBinnedRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
             else:
-                return BinnedExampleWiseRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
+                if label_binning_factory is None:
+                    return ExampleWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
+                else:
+                    return ExampleWiseCompleteBinnedRuleEvaluationFactory(l2_regularization_weight,
+                                                                          label_binning_factory)
+
+        raise ValueError('configuration currently not supported :-(')
 
     def __create_label_binning_factory(self) -> LabelBinningFactory:
         label_binning = self.__get_preferred_label_binning()

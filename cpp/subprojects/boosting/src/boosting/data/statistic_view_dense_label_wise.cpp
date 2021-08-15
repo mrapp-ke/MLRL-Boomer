@@ -19,26 +19,6 @@ namespace boosting {
         return &statistics_[(row + 1) * numCols_];
     }
 
-    DenseLabelWiseStatisticConstView::gradient_const_iterator DenseLabelWiseStatisticConstView::gradients_row_cbegin(
-            uint32 row) const {
-        return DenseGradientConstIterator(&statistics_[row * numCols_]);
-    }
-
-    DenseLabelWiseStatisticConstView::gradient_const_iterator DenseLabelWiseStatisticConstView::gradients_row_cend(
-            uint32 row) const {
-        return DenseGradientConstIterator(&statistics_[(row + 1) * numCols_]);
-    }
-
-    DenseLabelWiseStatisticConstView::hessian_const_iterator DenseLabelWiseStatisticConstView::hessians_row_cbegin(
-            uint32 row) const {
-        return DenseHessianConstIterator(&statistics_[row * numCols_]);
-    }
-
-    DenseLabelWiseStatisticConstView::hessian_const_iterator DenseLabelWiseStatisticConstView::hessians_row_cend(
-            uint32 row) const {
-        return DenseHessianConstIterator(&statistics_[(row + 1) * numCols_]);
-    }
-
     uint32 DenseLabelWiseStatisticConstView::getNumRows() const {
         return numRows_;
     }

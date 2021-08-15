@@ -194,4 +194,17 @@ namespace seco {
         }
     }
 
+    void DenseConfusionMatrixVector::difference(const_iterator firstBegin, const_iterator firstEnd,
+                                                const CompleteIndexVector& firstIndices, const_iterator secondBegin,
+                                                const_iterator secondEnd) {
+        setArrayToDifference(array_, firstBegin, secondBegin, numElements_);
+    }
+
+    void DenseConfusionMatrixVector::difference(const_iterator firstBegin, const_iterator firstEnd,
+                                                const PartialIndexVector& firstIndices, const_iterator secondBegin,
+                                                const_iterator secondEnd) {
+        PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
+        setArrayToDifference(array_, firstBegin, secondBegin, indexIterator, numElements_);
+    }
+
 }

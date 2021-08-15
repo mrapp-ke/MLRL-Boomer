@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/data/statistic_iterator_dense.hpp"
+#include "common/data/tuple.hpp"
 
 
 namespace boosting {
@@ -47,16 +47,6 @@ namespace boosting {
             typedef const Tuple<float64>* const_iterator;
 
             /**
-             * An iterator that provides read-only access to the gradients.
-             */
-            typedef DenseGradientConstIterator gradient_const_iterator;
-
-            /**
-             * An iterator that provides read-only access to the Hessians.
-             */
-            typedef DenseHessianConstIterator hessian_const_iterator;
-
-            /**
              * Returns a `const_iterator` to the beginning of a specific row.
              *
              * @param row   The row
@@ -71,38 +61,6 @@ namespace boosting {
              * @return      A `const_iterator` to the end
              */
             const_iterator row_cend(uint32 row) const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the beginning of the gradients at a specific row.
-             *
-             * @param row   The row
-             * @return      A `gradient_const_iterator` to the beginning of the given row
-             */
-            gradient_const_iterator gradients_row_cbegin(uint32 row) const;
-
-            /**
-             * Returns a `gradient_const_iterator` to the end of the gradients at a specific row.
-             *
-             * @param row   The row
-             * @return      A `gradient_const_iterator` to the end of the given row
-             */
-            gradient_const_iterator gradients_row_cend(uint32 row) const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the beginning of the Hessians at a specific row.
-             *
-             * @param row   The row
-             * @return      A `hessian_const_iterator` to the beginning of the given row
-             */
-            hessian_const_iterator hessians_row_cbegin(uint32 row) const;
-
-            /**
-             * Returns a `hessian_const_iterator` to the end of the Hessians at a specific row.
-             *
-             * @param row   The row
-             * @return      A `hessian_const_iterator` to the end of the given row
-             */
-            hessian_const_iterator hessians_row_cend(uint32 row) const;
 
             /**
              * Returns the number of rows in the view.

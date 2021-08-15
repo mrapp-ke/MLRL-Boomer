@@ -10,25 +10,35 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise.hpp" names
         pass
 
 
-cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_regularized.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp" namespace "boosting" nogil:
 
-    cdef cppclass RegularizedLabelWiseRuleEvaluationFactoryImpl"boosting::RegularizedLabelWiseRuleEvaluationFactory"(
+    cdef cppclass LabelWiseSingleLabelRuleEvaluationFactoryImpl"boosting::LabelWiseSingleLabelRuleEvaluationFactory"(
             ILabelWiseRuleEvaluationFactory):
 
         # Constructors:
 
-        RegularizedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight) except +
+        LabelWiseSingleLabelRuleEvaluationFactoryImpl(float64 l2RegularizationWeight) except +
 
 
-cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_binning.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_complete.hpp" namespace "boosting" nogil:
 
-    cdef cppclass BinnedLabelWiseRuleEvaluationFactoryImpl"boosting::BinnedLabelWiseRuleEvaluationFactory"(
+    cdef cppclass LabelWiseCompleteRuleEvaluationFactoryImpl"boosting::LabelWiseCompleteRuleEvaluationFactory"(
             ILabelWiseRuleEvaluationFactory):
 
         # Constructors:
 
-        BinnedLabelWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
-                                                 unique_ptr[ILabelBinningFactory] labelBinningFactoryPtr) except +
+        LabelWiseCompleteRuleEvaluationFactoryImpl(float64 l2RegularizationWeight) except +
+
+
+cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.hpp" namespace "boosting" nogil:
+
+    cdef cppclass LabelWiseCompleteBinnedRuleEvaluationFactoryImpl"boosting::LabelWiseCompleteBinnedRuleEvaluationFactory"(
+            ILabelWiseRuleEvaluationFactory):
+
+        # Constructors:
+
+        LabelWiseCompleteBinnedRuleEvaluationFactoryImpl(
+            float64 l2RegularizationWeight, unique_ptr[ILabelBinningFactory] labelBinningFactoryPtr) except +
 
 
 cdef class LabelWiseRuleEvaluationFactory:
@@ -38,9 +48,13 @@ cdef class LabelWiseRuleEvaluationFactory:
     cdef unique_ptr[ILabelWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
 
 
-cdef class RegularizedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     pass
 
 
-cdef class BinnedLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+cdef class LabelWiseCompleteRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+    pass
+
+
+cdef class LabelWiseCompleteBinnedRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
     pass

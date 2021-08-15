@@ -2,7 +2,6 @@
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
 from mlrl.common.cython.feature_sampling cimport FeatureSamplingFactory
-from mlrl.common.cython.head_refinement cimport HeadRefinementFactory
 from mlrl.common.cython.instance_sampling cimport InstanceSamplingFactory
 from mlrl.common.cython.label_sampling cimport LabelSamplingFactory
 from mlrl.common.cython.partition_sampling cimport PartitionSamplingFactory
@@ -25,7 +24,6 @@ cdef class AlgorithmBuilder:
 
     def __cinit__(self, StatisticsProviderFactory statistics_provider_factory not None,
                   ThresholdsFactory thresholds_factory not None, RuleInduction rule_induction not None,
-                  HeadRefinementFactory head_refinement_factory not None,
                   RuleModelAssemblageFactory rule_model_assemblage_factory not None):
         """
         :param statistics_provider_factory:     The `StatisticsProviderFactory` to be used by the rule learner to access
@@ -34,26 +32,22 @@ cdef class AlgorithmBuilder:
                                                 thresholds that may be used by the conditions of rules
         :param rule_induction:                  The `IRuleInduction` to be used by the rule learner to induce individual
                                                 rules
-        :param head_refinement_factory:         The `IHeadRefinementFactory` to be used by the rule learner to find the
-                                                heads of individual rules
         :param rule_model_assemblage_factory:   The `IRuleModelAssemblageFactory` to be used by the rule learner for the
                                                 assemblage of a rule model
         """
         self.builder_ptr = make_unique[AlgorithmBuilderImpl](
             move(statistics_provider_factory.statistics_provider_factory_ptr),
             move(thresholds_factory.thresholds_factory_ptr), move(rule_induction.rule_induction_ptr),
-            move(head_refinement_factory.head_refinement_factory_ptr),
             move(rule_model_assemblage_factory.rule_model_assemblage_factory_ptr))
 
-    def set_default_rule_head_refinement_factory(
-            self, HeadRefinementFactory head_refinement_factory not None) -> AlgorithmBuilder:
+    def set_use_default_rule(self, bint use_default_rule) -> AlgorithmBuilder:
         """
-        Sets the `HeadRefinementFactory` to be used by the rule learner to find the head of the default rule.
+        Sets whether a default rule be used by the rule learner or not.
 
-        :param head_refinement_factory: The `HeadRefinementFactory` to be set
-        :return:                        The builder itself
+        :param default_rule:    True, if a default rule should be used, False otherwise
+        :return                 The builder itself
         """
-        self.builder_ptr.get().setDefaultRuleHeadRefinementFactory(move(head_refinement_factory.head_refinement_factory_ptr))
+        self.builder_ptr.get().setUseDefaultRule(use_default_rule);
         return self
 
     def set_label_sampling_factory(self, LabelSamplingFactory label_sampling_factory not None) -> AlgorithmBuilder:

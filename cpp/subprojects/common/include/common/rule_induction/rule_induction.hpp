@@ -3,14 +3,13 @@
  */
 #pragma once
 
-#include "common/head_refinement/head_refinement_factory.hpp"
 #include "common/model/model_builder.hpp"
 #include "common/post_processing/post_processor.hpp"
 #include "common/pruning/pruning.hpp"
 #include "common/sampling/feature_sampling.hpp"
 #include "common/sampling/weight_vector.hpp"
 #include "common/sampling/partition.hpp"
-#include "common/statistics/statistics_provider.hpp"
+#include "common/statistics/statistics.hpp"
 #include "common/thresholds/thresholds.hpp"
 
 
@@ -27,17 +26,11 @@ class IRuleInduction {
         /**
          * Induces the default rule.
          *
-         * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
-         *                              the statistics which should serve as the basis for inducing the default rule
-         * @param headRefinementFactory A pointer to an object of type `IHeadRefinementFactory` that allows to create
-         *                              instances of the class that should be used to find the head of the default rule
-         *                              or a null pointer, if no default rule should be induced
-         * @param modelBuilder          A reference to an object of type `IModelBuilder`, the default rule should be
-         *                              added to
+         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
+         *                      which should serve as the basis for inducing the default rule
+         * @param modelBuilder  A reference to an object of type `IModelBuilder`, the default rule should be added to
          */
-        virtual void induceDefaultRule(IStatisticsProvider& statisticsProvider,
-                                       const IHeadRefinementFactory* headRefinementFactory,
-                                       IModelBuilder& modelBuilder) const = 0;
+        virtual void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const = 0;
 
         /**
          * Induces a new rule.

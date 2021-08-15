@@ -237,10 +237,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     thresholds_.cache_.emplace(featureIndex, CacheEntry());
                     bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
-                    std::unique_ptr<IHeadRefinement> headRefinementPtr =
-                        thresholds_.headRefinementFactory_.create(labelIndices);
-                    return std::make_unique<ApproximateRuleRefinement<T>>(std::move(headRefinementPtr), labelIndices,
-                                                                          featureIndex, nominal, weights_,
+                    return std::make_unique<ApproximateRuleRefinement<T>>(labelIndices, featureIndex, nominal, weights_,
                                                                           std::move(callbackPtr));
                 }
 
@@ -300,53 +297,51 @@ class ApproximateThresholds final : public AbstractThresholds {
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
                         partition.cbegin(), partition.getNumElements(), weights_, coverageState,
-                        thresholds_.statisticsProvider_.get(), thresholds_.headRefinementFactory_, head);
+                        thresholds_.statisticsProvider_.get(), head);
                 }
 
                 float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), weights_, coverageState,
-                        thresholds_.statisticsProvider_.get(), thresholds_.headRefinementFactory_, head);
+                        thresholds_.statisticsProvider_.get(), head);
                 }
 
                 float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally(weights_, coverageState, thresholds_.statisticsProvider_.get(),
-                                                         thresholds_.headRefinementFactory_, head);
+                                                         head);
                 }
 
                 float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally(weights_, coverageState, partition,
-                                                         thresholds_.statisticsProvider_.get(),
-                                                         thresholds_.headRefinementFactory_, head);
+                                                         thresholds_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
                         partition.cbegin(), partition.getNumElements(), coverageState,
-                        thresholds_.statisticsProvider_.get(), thresholds_.headRefinementFactory_, refinement);
+                        thresholds_.statisticsProvider_.get(), refinement);
                 }
 
                 void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), coverageState,
-                        thresholds_.statisticsProvider_.get(), thresholds_.headRefinementFactory_, refinement);
+                        thresholds_.statisticsProvider_.get(), refinement);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
-                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProvider_.get(),
-                                                    thresholds_.headRefinementFactory_, refinement);
+                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProvider_.get(), refinement);
                 }
 
                 void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally(coverageState, partition, thresholds_.statisticsProvider_.get(),
-                                                    thresholds_.headRefinementFactory_, refinement);
+                                                    refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
@@ -383,17 +378,14 @@ class ApproximateThresholds final : public AbstractThresholds {
          *                              the information whether individual features are nominal or not
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              statistics about the labels of the training examples
-         * @param headRefinementFactory A reference to an object of type `IHeadRefinementFactory` that allows to create
-         *                              instances of the class that should be used to find the heads of rules
          * @param binning               A reference to an object of type `IFeatureBinning` that implements the binning
          *                              method to be used
          * @param numThreads            The number of CPU threads to be used to update statistics in parallel
          */
         ApproximateThresholds(const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-                              IStatisticsProvider& statisticsProvider,
-                              const IHeadRefinementFactory& headRefinementFactory, const IFeatureBinning& binning,
+                              IStatisticsProvider& statisticsProvider, const IFeatureBinning& binning,
                               uint32 numThreads)
-            : AbstractThresholds(featureMatrix, nominalFeatureMask, statisticsProvider, headRefinementFactory),
+            : AbstractThresholds(featureMatrix, nominalFeatureMask, statisticsProvider),
               binning_(binning), numThreads_(numThreads) {
 
         }
@@ -414,7 +406,7 @@ ApproximateThresholdsFactory::ApproximateThresholdsFactory(std::unique_ptr<IFeat
 
 std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(
         const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-        IStatisticsProvider& statisticsProvider, const IHeadRefinementFactory& headRefinementFactory) const {
-    return std::make_unique<ApproximateThresholds>(featureMatrix, nominalFeatureMask, statisticsProvider,
-                                                   headRefinementFactory, *binningPtr_, numThreads_);
+        IStatisticsProvider& statisticsProvider) const {
+    return std::make_unique<ApproximateThresholds>(featureMatrix, nominalFeatureMask, statisticsProvider, *binningPtr_,
+                                                   numThreads_);
 }

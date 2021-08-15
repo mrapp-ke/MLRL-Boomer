@@ -43,9 +43,7 @@ class TopDownRuleInduction : public IRuleInduction {
         TopDownRuleInduction(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
                              bool recalculatePredictions, uint32 numThreads);
 
-        void induceDefaultRule(IStatisticsProvider& statisticsProvider,
-                               const IHeadRefinementFactory* headRefinementFactory,
-                               IModelBuilder& modelBuilder) const override;
+        void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override;
 
         bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
                         IPartition& partition, IFeatureSampling& featureSampling, const IPruning& pruning,

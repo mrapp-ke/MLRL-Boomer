@@ -15,7 +15,6 @@ import numpy as np
 from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
 from mlrl.common.cython.feature_binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
-from mlrl.common.cython.head_refinement import HeadRefinementFactory
 from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureMask
 from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
@@ -386,16 +385,9 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
                                                   model_builder)
 
     def __create_rule_model_assemblage(self, num_labels: int) -> RuleModelAssemblage:
-        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(),
+        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(num_labels),
                                              self._create_thresholds_factory(), self._create_rule_induction(),
-                                             self._create_regular_rule_head_refinement_factory(num_labels),
                                              self._create_rule_model_assemblage_factory())
-
-        default_rule_head_refinement_factory = self._create_default_rule_head_refinement_factory()
-
-        if default_rule_head_refinement_factory is not None:
-            algorithm_builder.set_default_rule_head_refinement_factory(default_rule_head_refinement_factory)
-
         label_sampling_factory = self._create_label_sampling_factory()
 
         if label_sampling_factory is not None:
@@ -429,6 +421,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         for stopping_criterion in self._create_stopping_criteria():
             algorithm_builder.add_stopping_criterion(stopping_criterion)
 
+        algorithm_builder.set_use_default_rule(self._use_default_rule())
         return algorithm_builder.build()
 
     def _predict(self, x):
@@ -468,12 +461,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             return predictor.predict(feature_matrix, model, label_vectors)
 
     @abstractmethod
-    def _create_statistics_provider_factory(self) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
         """
         Must be implemented by subclasses in order to create the `StatisticsProviderFactory` to be used by the rule
         learner.
 
-        :return: The `StatisticsProviderFactory` that has been created
+        :param num_labels:  The number of available labels
+        :return:            The `StatisticsProviderFactory` that has been created
         """
         pass
 
@@ -496,17 +490,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         pass
 
     @abstractmethod
-    def _create_regular_rule_head_refinement_factory(self, num_labels: int) -> HeadRefinementFactory:
-        """
-        Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
-        for the induction of all regular rules.
-
-        :param num_labels:  The number of labels in the dataset
-        :return:            The `HeadRefinementFactory` that has been created
-        """
-        pass
-
-    @abstractmethod
     def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
         """
         Must be implemented by subclasses in order to create the `RuleModelAssemblageFactory` to be used by the rule
@@ -515,15 +498,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         :return: The `RuleModelAssemblage` that has been created
         """
         pass
-
-    def _create_default_rule_head_refinement_factory(self) -> HeadRefinementFactory:
-        """
-        Must be implemented by subclasses in order to create the `HeadRefinementFactory` to be used by the rule learner
-        for the induction of the default rule.
-
-        :return: The `HeadRefinementFactory` that has been created or None, if no default rule should be induced
-        """
-        return None
 
     def _create_label_sampling_factory(self) -> Optional[LabelSamplingFactory]:
         """
@@ -583,6 +557,15 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         :return: A list of stopping criteria that has been created
         """
         return []
+
+    def _use_default_rule(self) -> bool:
+        """
+        Must be implemented by subclasses in order to specify whether the first rule induced by the rule learner should
+        be a default rule or not.
+
+        :return: True, if the first rule should be a default rule, False otherwise
+        """
+        return True
 
     @abstractmethod
     def _create_model_builder(self) -> ModelBuilder:

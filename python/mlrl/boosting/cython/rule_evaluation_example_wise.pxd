@@ -12,27 +12,38 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise.hpp" nam
         pass
 
 
-cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_regularized.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_single.hpp" namespace "boosting" nogil:
 
-    cdef cppclass RegularizedExampleWiseRuleEvaluationFactoryImpl"boosting::RegularizedExampleWiseRuleEvaluationFactory"(
+    cdef cppclass ExampleWiseSingleLabelRuleEvaluationFactoryImpl"boosting::ExampleWiseSingleLabelRuleEvaluationFactory"(
             IExampleWiseRuleEvaluationFactory):
 
         # Constructors:
 
-        RegularizedExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, unique_ptr[Blas] blasPtr,
-                                                        unique_ptr[Lapack] lapackPtr) except +
+        ExampleWiseSingleLabelRuleEvaluationFactoryImpl(float64 l2RegularizationWeight) except +
 
 
-cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_binning.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_complete.hpp" namespace "boosting" nogil:
 
-    cdef cppclass BinnedExampleWiseRuleEvaluationFactoryImpl"boosting::BinnedExampleWiseRuleEvaluationFactory"(
+    cdef cppclass ExampleWiseCompleteRuleEvaluationFactoryImpl"boosting::ExampleWiseCompleteRuleEvaluationFactory"(
             IExampleWiseRuleEvaluationFactory):
 
         # Constructors:
 
-        BinnedExampleWiseRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
-                                                   unique_ptr[ILabelBinningFactory] labelBinningFactoryPtr,
-                                                   unique_ptr[Blas] blasPtr, unique_ptr[Lapack] lapackPtr) except +
+        ExampleWiseCompleteRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, unique_ptr[Blas] blasPtr,
+                                                     unique_ptr[Lapack] lapackPtr) except +
+
+
+cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_complete_binned.hpp" namespace "boosting" nogil:
+
+    cdef cppclass ExampleWiseCompleteBinnedRuleEvaluationFactoryImpl"boosting::ExampleWiseCompleteBinnedRuleEvaluationFactory"(
+            IExampleWiseRuleEvaluationFactory):
+
+        # Constructors:
+
+        ExampleWiseCompleteBinnedRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
+                                                           unique_ptr[ILabelBinningFactory] labelBinningFactoryPtr,
+                                                           unique_ptr[Blas] blasPtr,
+                                                           unique_ptr[Lapack] lapackPtr) except +
 
 
 cdef class ExampleWiseRuleEvaluationFactory:
@@ -42,9 +53,13 @@ cdef class ExampleWiseRuleEvaluationFactory:
     cdef unique_ptr[IExampleWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
 
 
-cdef class RegularizedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
+cdef class ExampleWiseSingleLabelRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
     pass
 
 
-cdef class BinnedExampleWiseRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
+cdef class ExampleWiseCompleteRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
+    pass
+
+
+cdef class ExampleWiseCompleteBinnedRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
     pass

@@ -28,28 +28,20 @@ namespace boosting {
         free(statistics_);
     }
 
+    DenseLabelWiseStatisticVector::iterator DenseLabelWiseStatisticVector::begin() {
+        return statistics_;
+    }
+
+    DenseLabelWiseStatisticVector::iterator DenseLabelWiseStatisticVector::end() {
+        return &statistics_[numElements_];
+    }
+
     DenseLabelWiseStatisticVector::const_iterator DenseLabelWiseStatisticVector::cbegin() const {
         return statistics_;
     }
 
     DenseLabelWiseStatisticVector::const_iterator DenseLabelWiseStatisticVector::cend() const {
         return &statistics_[numElements_];
-    }
-
-    DenseLabelWiseStatisticVector::gradient_const_iterator DenseLabelWiseStatisticVector::gradients_cbegin() const {
-        return DenseGradientConstIterator(statistics_);
-    }
-
-    DenseLabelWiseStatisticVector::gradient_const_iterator DenseLabelWiseStatisticVector::gradients_cend() const {
-        return DenseGradientConstIterator(&statistics_[numElements_]);
-    }
-
-    DenseLabelWiseStatisticVector::hessian_const_iterator DenseLabelWiseStatisticVector::hessians_cbegin() const {
-        return DenseHessianConstIterator(statistics_);
-    }
-
-    DenseLabelWiseStatisticVector::hessian_const_iterator DenseLabelWiseStatisticVector::hessians_cend() const {
-        return DenseHessianConstIterator(&statistics_[numElements_]);
     }
 
     uint32 DenseLabelWiseStatisticVector::getNumElements() const {
@@ -92,12 +84,12 @@ namespace boosting {
         setArrayToDifference(statistics_, firstBegin, secondBegin, indexIterator, numElements_);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
+    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
             const ILabelWiseRuleEvaluationFactory& factory, const CompleteIndexVector& labelIndices) const {
         return factory.createDense(labelIndices);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
+    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> DenseLabelWiseStatisticVector::createRuleEvaluation(
             const ILabelWiseRuleEvaluationFactory& factory, const PartialIndexVector& labelIndices) const {
         return factory.createDense(labelIndices);
     }

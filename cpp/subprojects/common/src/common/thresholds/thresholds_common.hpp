@@ -6,7 +6,6 @@
 #include "common/thresholds/thresholds.hpp"
 #include "common/input/feature_matrix.hpp"
 #include "common/input/nominal_feature_mask.hpp"
-#include "common/head_refinement/head_refinement_factory.hpp"
 #include "omp.h"
 
 
@@ -23,7 +22,6 @@ static inline void updateSampledStatisticsInternally(IStatistics& statistics, co
 template<typename T>
 static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
                                                     const CoverageMask& coverageMask, const IStatistics& statistics,
-                                                    const IHeadRefinementFactory& headRefinementFactory,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
 
@@ -35,14 +33,12 @@ static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExampl
         }
     }
 
-    std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
-    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
     return scoreVector.overallQualityScore;
 }
 
 static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
                                                     const IStatistics& statistics,
-                                                    const IHeadRefinementFactory& headRefinementFactory,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
     uint32 numCovered = coverageSet.getNumCovered();
@@ -56,14 +52,12 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
         }
     }
 
-    std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
-    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
     return scoreVector.overallQualityScore;
 }
 
 static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
                                                     BiPartition& partition, const IStatistics& statistics,
-                                                    const IHeadRefinementFactory& headRefinementFactory,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
     const BitVector& holdoutSet = partition.getSecondSet();
@@ -78,16 +72,13 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
         }
     }
 
-    std::unique_ptr<IHeadRefinement> headRefinementPtr = prediction.createHeadRefinement(headRefinementFactory);
-    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
     return scoreVector.overallQualityScore;
 }
 
 template<typename T>
 static inline void recalculatePredictionInternally(T iterator, uint32 numExamples, const CoverageMask& coverageMask,
-                                                   const IStatistics& statistics,
-                                                   const IHeadRefinementFactory& headRefinementFactory,
-                                                   Refinement& refinement) {
+                                                   const IStatistics& statistics, Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
 
@@ -99,13 +90,11 @@ static inline void recalculatePredictionInternally(T iterator, uint32 numExample
         }
     }
 
-    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
-    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
     scoreVector.updatePrediction(head);
 }
 
 static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, const IStatistics& statistics,
-                                                   const IHeadRefinementFactory& headRefinementFactory,
                                                    Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
@@ -117,15 +106,12 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
         statisticsSubsetPtr->addToSubset(exampleIndex, 1);
     }
 
-    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
-    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
     scoreVector.updatePrediction(head);
 }
 
 static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, BiPartition& partition,
-                                                   const IStatistics& statistics,
-                                                   const IHeadRefinementFactory& headRefinementFactory,
-                                                   Refinement& refinement) {
+                                                   const IStatistics& statistics, Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
     const BitVector& holdoutSet = partition.getSecondSet();
@@ -140,8 +126,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
         }
     }
 
-    std::unique_ptr<IHeadRefinement> headRefinementPtr = head.createHeadRefinement(headRefinementFactory);
-    const IScoreVector& scoreVector = headRefinementPtr->calculatePrediction(*statisticsSubsetPtr, false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
     scoreVector.updatePrediction(head);
 }
 
@@ -171,12 +156,6 @@ class AbstractThresholds : public IThresholds {
          */
         IStatisticsProvider& statisticsProvider_;
 
-        /**
-         * A reference to an object of type `IHeadRefinementFactory` that allows to create instances of the class that
-         * should be used to find the heads of rules.
-         */
-        const IHeadRefinementFactory& headRefinementFactory_;
-
     public:
 
         /**
@@ -186,13 +165,11 @@ class AbstractThresholds : public IThresholds {
          *                              the information whether individual features are nominal or not
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              statistics about the labels of the training examples
-         * @param headRefinementFactory A reference to an object of type `IHeadRefinementFactory` that allows to create
-         *                              instances of the class that should be used to find the heads of rules
          */
         AbstractThresholds(const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-                           IStatisticsProvider& statisticsProvider, const IHeadRefinementFactory& headRefinementFactory)
+                           IStatisticsProvider& statisticsProvider)
             : featureMatrix_(featureMatrix), nominalFeatureMask_(nominalFeatureMask),
-              statisticsProvider_(statisticsProvider), headRefinementFactory_(headRefinementFactory) {
+              statisticsProvider_(statisticsProvider) {
 
         }
 

@@ -19,10 +19,6 @@ class AlgorithmBuilder final {
 
         std::shared_ptr<IRuleInduction> ruleInductionPtr_;
 
-        std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr_;
-
-        std::shared_ptr<IHeadRefinementFactory> regularRuleHeadRefinementFactoryPtr_;
-
         std::shared_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr_;
 
         std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr_;
@@ -39,6 +35,8 @@ class AlgorithmBuilder final {
 
         std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria_;
 
+        bool useDefaultRule_;
+
     public:
 
         /**
@@ -50,25 +48,21 @@ class AlgorithmBuilder final {
          *                                      conditions of rules
          * @param ruleInductionPtr              An unique pointer to an object of type `IRuleInduction` to be used by
          *                                      the rule learner to induce individual rules
-         * @param headRefinementFactoryPtr      An unique pointer to an object of type `IHeadRefinementFactory` to be
-         *                                      used by the rule learner to find the heads of individual rules
          * @param ruleModelAssemblageFactoryPtr An unique pointer to an object of type `IRuleModelAssemblageFactory` to
          *                                      be used by the rule learner for the assemblage of a rule model
          */
         AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                          std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
                          std::unique_ptr<IRuleInduction> ruleInductionPtr,
-                         std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr,
                          std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr);
 
         /**
-         * Sets the `IHeadRefinementFactory` to be used by the rule learner to find the head of the default rule.
+         * Sets whether a default rule should be used or not.
          *
-         * @param headRefinementFactoryPTr  An unique pointer to an object of type `IHeadRefinementFactory` to be set
-         * @return                          A reference to the builder itself
+         * @param defaultRule   True, if a default rule should be used, false otherwise.
+         * @return              A reference to the builder itself
          */
-        AlgorithmBuilder& setDefaultRuleHeadRefinementFactory(
-            std::unique_ptr<IHeadRefinementFactory> headRefinementFactoryPtr);
+        AlgorithmBuilder& setUseDefaultRule(bool useDefaultRule);
 
         /**
          * Sets the `ILabelSamplingFactory` to be used by the rule learner to sample the labels individual rules may

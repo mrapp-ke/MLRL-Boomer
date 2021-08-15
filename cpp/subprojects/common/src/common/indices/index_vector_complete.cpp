@@ -1,6 +1,4 @@
 #include "common/indices/index_vector_complete.hpp"
-#include "common/head_refinement/head_refinement.hpp"
-#include "common/head_refinement/head_refinement_factory.hpp"
 #include "common/statistics/statistics_immutable.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
@@ -40,9 +38,4 @@ std::unique_ptr<IStatisticsSubset> CompleteIndexVector::createSubset(const IImmu
 std::unique_ptr<IRuleRefinement> CompleteIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                                            uint32 featureIndex) const {
     return thresholdsSubset.createRuleRefinement(*this, featureIndex);
-}
-
-std::unique_ptr<IHeadRefinement> CompleteIndexVector::createHeadRefinement(
-        const IHeadRefinementFactory& factory) const {
-    return factory.create(*this);
 }

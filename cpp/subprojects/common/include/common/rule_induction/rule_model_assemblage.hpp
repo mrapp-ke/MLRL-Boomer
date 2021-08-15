@@ -70,12 +70,6 @@ class IRuleModelAssemblageFactory {
          *                                          may be used by the conditions of rules
          * @param ruleInduction                     A shared pointer to an object of type `IRuleInduction` that should
          *                                          be used to induce individual rules
-         * @param defaultRuleHeadRefinementFactory  A shared pointer to an object of type `IHeadRefinement` that allows
-         *                                          to create instances of the class that should be used to find the
-         *                                          head of the default rule
-         * @param regularRuleHeadRefinementFactory  A shared pointer to an object of type `IHeadRefinement` that allows
-         *                                          to create instances of the class that should be used to find the
-         *                                          head of all remaining rules
          * @param labelSamplingFactory              A shared pointer to an object of type `ILabelSamplingFactory` that
          *                                          allows to create the implementation to be used for sampling the
          *                                          labels whenever a new rule is induced
@@ -94,17 +88,17 @@ class IRuleModelAssemblageFactory {
          *                                          be used to post-process the predictions of rules
          * @param stoppingCriteria                  A list that stores the stopping criteria, which should be used to
          *                                          decide whether additional rules should be induced or not
+         * @param useDefaultRule                    True, if a default rule should be used, false otherwise
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
             std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
             std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
-            std::shared_ptr<IHeadRefinementFactory> defaultRuleHeadRefinementFactoryPtr,
-            std::shared_ptr<IHeadRefinementFactory> regularRuleHeadRefinementFactoryPtr,
             std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
             std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
             std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
             std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
-            const std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria) const = 0;
+            const std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria,
+            bool useDefaultRule) const = 0;
 
 };

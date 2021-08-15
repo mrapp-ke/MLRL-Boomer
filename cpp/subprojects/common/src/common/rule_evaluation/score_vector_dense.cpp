@@ -1,6 +1,6 @@
 #include "common/rule_evaluation/score_vector_dense.hpp"
-#include "common/rule_evaluation/score_processor.hpp"
-#include "common/head_refinement/prediction.hpp"
+#include "common/rule_refinement/prediction.hpp"
+#include "common/rule_refinement/score_processor.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
@@ -28,7 +28,7 @@ typename DenseScoreVector<T>::score_iterator DenseScoreVector<T>::scores_begin()
 
 template<typename T>
 typename DenseScoreVector<T>::score_iterator DenseScoreVector<T>::scores_end() {
-    return predictedScoreVector_.end();
+    return &predictedScoreVector_.begin()[labelIndices_.getNumElements()];
 }
 
 template<typename T>
@@ -38,12 +38,12 @@ typename DenseScoreVector<T>::score_const_iterator DenseScoreVector<T>::scores_c
 
 template<typename T>
 typename DenseScoreVector<T>::score_const_iterator DenseScoreVector<T>::scores_cend() const {
-    return predictedScoreVector_.cend();
+    return &predictedScoreVector_.cbegin()[labelIndices_.getNumElements()];
 }
 
 template<typename T>
 uint32 DenseScoreVector<T>::getNumElements() const {
-    return predictedScoreVector_.getNumElements();
+    return labelIndices_.getNumElements();
 }
 
 template<typename T>
@@ -53,12 +53,12 @@ bool DenseScoreVector<T>::isPartial() const {
 
 template<typename T>
 void DenseScoreVector<T>::updatePrediction(AbstractPrediction& prediction) const {
-    prediction.set(predictedScoreVector_.cbegin(), predictedScoreVector_.cend());
+    prediction.set(this->scores_cbegin(), this->scores_cend());
 }
 
 template<typename T>
 const AbstractEvaluatedPrediction* DenseScoreVector<T>::processScores(const AbstractEvaluatedPrediction* bestHead,
-                                                                      IScoreProcessor& scoreProcessor) const {
+                                                                      ScoreProcessor& scoreProcessor) const {
     return scoreProcessor.processScores(bestHead, *this);
 }
 
