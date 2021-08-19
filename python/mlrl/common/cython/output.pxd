@@ -6,9 +6,9 @@ from mlrl.common.cython.model cimport RuleModelImpl
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "common/output/predictor.hpp" nogil:
+cdef extern from "common/output/predictor_dense.hpp" nogil:
 
-    cdef cppclass IPredictor[T]:
+    cdef cppclass IDensePredictor[T]:
 
         # Functions:
 
@@ -19,23 +19,23 @@ cdef extern from "common/output/predictor.hpp" nogil:
                      const RuleModelImpl& model, const LabelVectorSetImpl* labelVectors)
 
 
-cdef class Predictor:
+cdef class DensePredictor:
     pass
 
 
-cdef class AbstractNumericalPredictor(Predictor):
+cdef class AbstractNumericalPredictor(DensePredictor):
 
     # Attributes:
 
     cdef uint32 num_labels
 
-    cdef unique_ptr[IPredictor[float64]] predictor_ptr
+    cdef unique_ptr[IDensePredictor[float64]] predictor_ptr
 
 
-cdef class AbstractBinaryPredictor(Predictor):
+cdef class AbstractBinaryPredictor(DensePredictor):
 
     # Attributes:
 
     cdef uint32 num_labels
 
-    cdef unique_ptr[IPredictor[uint8]] predictor_ptr
+    cdef unique_ptr[IDensePredictor[uint8]] predictor_ptr
