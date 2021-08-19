@@ -9,6 +9,7 @@ source_files = [
     'src/common/binning/feature_binning_nominal.cpp',
     'src/common/binning/threshold_vector.cpp',
     'src/common/data/matrix_dense.cpp',
+    'src/common/data/matrix_lil.cpp',
     'src/common/data/ring_buffer.cpp',
     'src/common/data/vector_binned_dense.cpp',
     'src/common/data/vector_bit.cpp',
