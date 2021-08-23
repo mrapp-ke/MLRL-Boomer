@@ -32,3 +32,8 @@ template<typename T>
 uint32 SparsePredictionMatrix<T>::getNumNonZeroElements() const {
     return numNonZeroElements_;
 }
+
+template class SparsePredictionMatrix<uint8>;
+template class SparsePredictionMatrix<uint32>;
+template class SparsePredictionMatrix<float32>;
+template class SparsePredictionMatrix<float64>;
