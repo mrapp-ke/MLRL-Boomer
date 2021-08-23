@@ -25,17 +25,14 @@ class LilMatrix final {
 
         uint32 numRows_;
 
-        uint32 numCols_;
-
         Row* array_;
 
     public:
 
         /**
-         * @param numRows   The number of rows in the matrix
-         * @param numCols   The number of columns in the matrix
+         * @param numRows The number of rows in the matrix
          */
-        LilMatrix(uint32 numRows, uint32 numCols);
+        LilMatrix(uint32 numRows);
 
         virtual ~LilMatrix();
 
@@ -103,13 +100,6 @@ class LilMatrix final {
          * @return The number of rows
          */
         uint32 getNumRows() const;
-
-        /**
-         * Returns the number of columns in the matrix.
-         *
-         * @return The number of columns
-         */
-        uint32 getNumCols() const;
 
         /**
          * Sets the values of all elements to zero.
