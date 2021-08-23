@@ -3,8 +3,8 @@
 
 
 template<typename T>
-LilMatrix<T>::LilMatrix(uint32 numRows, uint32 numCols)
-    : numRows_(numRows), numCols_(numCols), array_(new Row[numRows] {}) {
+LilMatrix<T>::LilMatrix(uint32 numRows)
+    : numRows_(numRows), array_(new Row[numRows] {}) {
 
 }
 
@@ -50,11 +50,6 @@ const typename LilMatrix<T>::Row& LilMatrix<T>::getRow(uint32 row) const {
 template<typename T>
 uint32 LilMatrix<T>::getNumRows() const {
     return numRows_;
-}
-
-template<typename T>
-uint32 LilMatrix<T>::getNumCols() const {
-    return numCols_;
 }
 
 template<typename T>
