@@ -8,6 +8,6 @@ cdef extern from "common/data/view_c_contiguous.hpp" nogil:
 
     cdef cppclass CContiguousView[T]:
 
-        # Constructors
+        # Constructors:
 
         CContiguousView(uint32 numRows, uint32 numCols, T* array)
