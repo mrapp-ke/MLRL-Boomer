@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/predictor.hpp"
+#include "common/output/predictor_dense.hpp"
 
 
 namespace boosting {
@@ -48,7 +48,7 @@ namespace boosting {
      * then transformed into probabilities in [0, 1] according to a certain transformation function that is applied to
      * the labels individually.
      */
-    class LabelWiseProbabilityPredictor : public IPredictor<float64> {
+    class LabelWiseProbabilityPredictor : public IDensePredictor<float64> {
 
         private:
 
