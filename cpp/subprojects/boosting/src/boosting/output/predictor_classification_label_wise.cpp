@@ -77,14 +77,15 @@ namespace boosting {
     }
 
     std::unique_ptr<SparsePredictionMatrix<uint8>> LabelWiseClassificationPredictor::predict(
-            const CContiguousFeatureMatrix& featureMatrix, const RuleModel& model,
+            const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
             const LabelVectorSet* labelVectors) const {
         // TODO
         return nullptr;
     }
 
     std::unique_ptr<SparsePredictionMatrix<uint8>> LabelWiseClassificationPredictor::predict(
-            const CsrFeatureMatrix& featureMatrix, const RuleModel& model, const LabelVectorSet* labelVectors) const {
+            const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+            const LabelVectorSet* labelVectors) const {
         // TODO
         return nullptr;
     }
