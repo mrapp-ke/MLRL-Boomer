@@ -29,6 +29,7 @@ class ISparsePredictor {
          *
          * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the feature
          *                          values of the examples
+         * @param numLabels         The number of labels to predict for
          * @param model             A reference to an object of type `RuleModel` that should be used to obtain the
          *                          predictions
          * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label vectors
@@ -37,7 +38,7 @@ class ISparsePredictor {
          *                          predictions
          */
         virtual std::unique_ptr<SparsePredictionMatrix<T>> predict(const CContiguousFeatureMatrix& featureMatrix,
-                                                                   const RuleModel& model,
+                                                                   uint32 numLabels, const RuleModel& model,
                                                                    const LabelVectorSet* labelVectors) const = 0;
 
         /**
@@ -46,6 +47,7 @@ class ISparsePredictor {
          *
          * @param featureMatrix     A reference to an object of type `CsrFeatureMatrix` that stores the feature values
          *                          of the examples
+         * @param numLabels         The number of labels to predict for
          * @param model             A reference to an object of type `RuleModel` that should be used to obtain the
          *                          predictions
          * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label vectors
@@ -54,7 +56,7 @@ class ISparsePredictor {
          *                          predictions
          */
         virtual std::unique_ptr<SparsePredictionMatrix<T>> predict(const CsrFeatureMatrix& featureMatrix,
-                                                                   const RuleModel& model,
+                                                                   uint32 numLabels, const RuleModel& model,
                                                                    const LabelVectorSet* labelVectors) const = 0;
 
 };
