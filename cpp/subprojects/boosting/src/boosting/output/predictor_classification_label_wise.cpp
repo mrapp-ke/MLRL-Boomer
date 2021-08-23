@@ -99,7 +99,7 @@ namespace boosting {
         predictInternally(featureMatrix, predictionMatrix, model, threshold_, numThreads_);
     }
 
-    std::unique_ptr<LilMatrix<uint8>> LabelWiseClassificationPredictor::predict(
+    std::unique_ptr<SparsePredictionMatrix<uint8>> LabelWiseClassificationPredictor::predict(
             const CContiguousFeatureMatrix& featureMatrix, const RuleModel& model,
             const LabelVectorSet* labelVectors) const {
         // TODO
@@ -112,7 +112,7 @@ namespace boosting {
         predictInternally(featureMatrix, predictionMatrix, model, threshold_, numThreads_);
     }
 
-    std::unique_ptr<LilMatrix<uint8>> LabelWiseClassificationPredictor::predict(
+    std::unique_ptr<SparsePredictionMatrix<uint8>> LabelWiseClassificationPredictor::predict(
             const CsrFeatureMatrix& featureMatrix, const RuleModel& model, const LabelVectorSet* labelVectors) const {
         // TODO
         return nullptr;
