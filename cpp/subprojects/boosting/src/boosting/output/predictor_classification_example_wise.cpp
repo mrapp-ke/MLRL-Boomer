@@ -83,12 +83,7 @@ namespace boosting {
         firstprivate(labelVectors) schedule(dynamic) num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
             float64 scoreVector[numLabels] = {};
-
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const Rule& rule = *it;
-                applyRule(rule, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i), &scoreVector[0]);
-            }
-
+            applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i), &scoreVector[0]);
             predictClosestLabelVector(i, &scoreVector[0], &scoreVector[numLabels], *predictionMatrixPtr, *measurePtr,
                                       labelVectors);
         }
@@ -98,7 +93,6 @@ namespace boosting {
                                                      CContiguousView<uint8>& predictionMatrix,
                                                      const RuleModel& model, const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
-        uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
         const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
@@ -110,18 +104,9 @@ namespace boosting {
         firstprivate(labelVectors) schedule(dynamic) num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
             float64 scoreVector[numLabels] = {};
-            float32 tmpArray1[numFeatures];
-            uint32 tmpArray2[numFeatures] = {};
-            uint32 n = 1;
-
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const Rule& rule = *it;
-                applyRuleCsr(rule, featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
-                             featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                             &scoreVector[0], &tmpArray1[0], &tmpArray2[0], n);
-                n++;
-            }
-
+            applyRulesCsr(*modelPtr, featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
+                          featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
+                          &scoreVector[0]);
             predictClosestLabelVector(i, &scoreVector[0], &scoreVector[numLabels], *predictionMatrixPtr, *measurePtr,
                                       labelVectors);
         }
