@@ -31,11 +31,13 @@ cdef extern from "common/output/predictor_sparse.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[SparsePredictionMatrix] predict(const CContiguousFeatureMatrixImpl& featureMatrix, uint32 numLabels,
-                                                   const RuleModelImpl& model, const LabelVectorSetImpl* labelVectors)
+        unique_ptr[SparsePredictionMatrix[T]] predict(const CContiguousFeatureMatrixImpl& featureMatrix,
+                                                      uint32 numLabels, const RuleModelImpl& model,
+                                                      const LabelVectorSetImpl* labelVectors)
 
-        unique_ptr[SparsePredictionMatrix] predict(const CsrFeatureMatrixImpl& featureMatrix, uint32 numLabels,
-                                                   const RuleModelImpl& model, const LabelVectorSetImpl* labelVectors)
+        unique_ptr[SparsePredictionMatrix[T]] predict(const CsrFeatureMatrixImpl& featureMatrix, uint32 numLabels,
+                                                      const RuleModelImpl& model,
+                                                      const LabelVectorSetImpl* labelVectors)
 
 
 cdef class DensePredictor:
