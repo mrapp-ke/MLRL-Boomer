@@ -46,6 +46,15 @@ namespace boosting {
         }
     }
 
+    static inline void applyRules(const RuleModel& model, CContiguousFeatureMatrix::const_iterator featureValuesBegin,
+                                  CContiguousFeatureMatrix::const_iterator featureValuesEnd,
+                                  CContiguousView<float64>::iterator scoreIterator) {
+        for (auto it = model.used_cbegin(); it != model.used_cend(); it++) {
+            const Rule& rule = *it;
+            applyRule(rule, featureValuesBegin, featureValuesEnd, scoreIterator);
+        }
+    }
+
     static inline void applyRuleCsr(const Rule& rule, CsrFeatureMatrix::index_const_iterator featureIndicesBegin,
                                     CsrFeatureMatrix::index_const_iterator featureIndicesEnd,
                                     CsrFeatureMatrix::value_const_iterator featureValuesBegin,
@@ -58,6 +67,24 @@ namespace boosting {
                         tmpArray2, n)) {
             const IHead& head = rule.getHead();
             applyHead(head, scoreIterator);
+        }
+    }
+
+    static inline void applyRulesCsr(const RuleModel& model, CsrFeatureMatrix::index_const_iterator featureIndicesBegin,
+                                     CsrFeatureMatrix::index_const_iterator featureIndicesEnd,
+                                     CsrFeatureMatrix::value_const_iterator featureValuesBegin,
+                                     CsrFeatureMatrix::value_const_iterator featureValuesEnd,
+                                     CContiguousView<float64>::iterator scoreIterator) {
+        uint32 numFeatures = featureIndicesEnd - featureIndicesBegin;
+        float32 tmpArray1[numFeatures];
+        uint32 tmpArray2[numFeatures] = {};
+        uint32 n = 1;
+
+        for (auto it = model.used_cbegin(); it != model.used_cend(); it++) {
+            const Rule& rule = *it;
+            applyRuleCsr(rule, featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd,
+                         scoreIterator, &tmpArray1[0], &tmpArray2[0], n);
+            n++;
         }
     }
 
