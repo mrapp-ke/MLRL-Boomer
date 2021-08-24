@@ -6,6 +6,12 @@ from mlrl.common.cython.model cimport RuleModelImpl
 from libcpp.memory cimport unique_ptr
 
 
+cdef extern from "common/output/prediction_matrix_sparse.hpp" nogil:
+
+    cdef cppclass SparsePredictionMatrix[T]:
+        pass
+
+
 cdef extern from "common/output/predictor_dense.hpp" nogil:
 
     cdef cppclass IDensePredictor[T]:
@@ -17,6 +23,19 @@ cdef extern from "common/output/predictor_dense.hpp" nogil:
 
         void predict(const CsrFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix,
                      const RuleModelImpl& model, const LabelVectorSetImpl* labelVectors)
+
+
+cdef extern from "common/output/predictor_sparse.hpp" nogil:
+
+    cdef cppclass ISparsePredictor[T]:
+
+        # Functions:
+
+        unique_ptr[SparsePredictionMatrix] predict(const CContiguousFeatureMatrixImpl& featureMatrix, uint32 numLabels,
+                                                   const RuleModelImpl& model, const LabelVectorSetImpl* labelVectors)
+
+        unique_ptr[SparsePredictionMatrix] predict(const CsrFeatureMatrixImpl& featureMatrix, uint32 numLabels,
+                                                   const RuleModelImpl& model, const LabelVectorSetImpl* labelVectors)
 
 
 cdef class DensePredictor:
