@@ -314,16 +314,21 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
     """
 
-    def __init__(self, random_state: int, feature_format: str, label_format: str):
+    def __init__(self, random_state: int, feature_format: str, label_format: str, prediction_format: str):
         """
-        :param random_state:    The seed to be used by RNGs. Must be at least 1
-        :param feature_format:  The format to be used for the feature matrix. Must be 'sparse', 'dense' or 'auto'
-        :param label_format:    The format to be used for the label matrix. Must be 'sparse', 'dense' or 'auto'
+        :param random_state:        The seed to be used by RNGs. Must be at least 1
+        :param feature_format:      The format to be used for the representation of the feature matrix. Must be
+                                    `sparse`, `dense` or `auto`
+        :param label_format:        The format to be used for the representation of the label matrix. Must be `sparse`,
+                                    `dense` or 'auto'
+        :param prediction_format:   The format to be used for representation of predicted labels. Must be `sparse`,
+                                    `dense` or `auto`
         """
         super().__init__()
         self.random_state = random_state
         self.feature_format = feature_format
         self.label_format = label_format
+        self.prediction_format = prediction_format
 
     def _fit(self, x, y):
         # Validate feature matrix and convert it to the preferred format...
