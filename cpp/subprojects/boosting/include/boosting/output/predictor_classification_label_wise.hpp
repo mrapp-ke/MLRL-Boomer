@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "common/output/predictor_dense.hpp"
 #include "common/output/predictor_sparse.hpp"
 
 
@@ -17,7 +16,7 @@ namespace boosting {
      * then transformed into binary values according to a certain threshold that is applied to the labels individually
      * (1 if a score exceeds the threshold, i.e., the label is relevant, 0 otherwise).
      */
-    class LabelWiseClassificationPredictor : public IDensePredictor<uint8>, public ISparsePredictor<uint8> {
+    class LabelWiseClassificationPredictor : public ISparsePredictor<uint8> {
 
         private:
 
