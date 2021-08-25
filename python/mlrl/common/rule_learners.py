@@ -499,10 +499,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             feature_matrix = CContiguousFeatureMatrix(x)
 
             if predict_sparse:
-                log.debug('A sparse matrix is used to store the predictions')
                 return predictor.predict_sparse(feature_matrix, model, label_vectors)
             else:
-                log.debug('A dense matrix is used to store the predictions')
                 return predictor.predict_dense(feature_matrix, model, label_vectors)
 
     @abstractmethod
