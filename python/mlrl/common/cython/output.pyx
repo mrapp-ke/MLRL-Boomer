@@ -22,7 +22,7 @@ cdef class DensePredictor:
     def predict(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
                 LabelVectorSet label_vectors) -> object:
         """
-        Obtains and returns the predictions for given examples in a feature matrix that uses a C-contiguous array.
+        Obtains and returns dense predictions for given examples in a feature matrix that uses a C-contiguous array.
 
         :param feature_matrix:  A `CContiguousFeatureMatrix` that stores the examples to predict for
         :param model:           The `RuleModel` to be used for making predictions
@@ -36,7 +36,7 @@ cdef class DensePredictor:
     def predict_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
                     LabelVectorSet label_vectors) -> object:
         """
-        Obtains and returns the predictions for given examples in a feature matrix that uses the compressed sparse row
+        Obtains and returns dense predictions for given examples in a feature matrix that uses the compressed sparse row
         (CSR) format.
 
         :param feature_matrix:  A `CsrFeatureMatrix` that stores the examples to predict for
