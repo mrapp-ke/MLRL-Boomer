@@ -19,8 +19,8 @@ cdef class DensePredictor:
     A wrapper for the pure virtual C++ class `IDensePredictor`.
     """
 
-    def predict(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
-                LabelVectorSet label_vectors) -> object:
+    def predict_dense(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
+                LabelVectorSet label_vectors) -> np.ndarray:
         """
         Obtains and returns dense predictions for given examples in a feature matrix that uses a C-contiguous array.
 
@@ -28,13 +28,13 @@ cdef class DensePredictor:
         :param model:           The `RuleModel` to be used for making predictions
         :param label_vectors    A `LabelVectorSet` that stores all known label vectors or None, if no such set is
                                 available
-        :return:                A `np.ndarray` or a `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the predictions for individual examples and labels
+        :return:                A `np.ndarray`, shape `(num_examples, num_labels)`, that stores the predictions for
+                                individual examples and labels
         """
         pass
 
-    def predict_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
-                    LabelVectorSet label_vectors) -> object:
+    def predict_dense_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
+                          LabelVectorSet label_vectors) -> np.ndarray:
         """
         Obtains and returns dense predictions for given examples in a feature matrix that uses the compressed sparse row
         (CSR) format.
@@ -43,8 +43,8 @@ cdef class DensePredictor:
         :param model:           The `RuleModel` to be used for making predictions
         :param label_vectors    A `LabelVectorSet` that stores all known label vectors or None, if no such set is
                                 available
-        :return:                A `np.ndarray` or a `scipy.sparse`, shape `(num_examples, num_labels)`, that stores the
-                                predictions for individual examples and labels
+        :return:                A `np.ndarray`, shape `(num_examples, num_labels)`, that stores the predictions for
+                                individual examples and labels
         """
         pass
 
