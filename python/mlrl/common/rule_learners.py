@@ -317,7 +317,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
     elif isspmatrix_lil(m) or isspmatrix_coo(m) or isspmatrix_dok(m):
         # Given matrix is in a format that might be converted into the specified sparse format
         if policy == SparsePolicy.AUTO:
-            return is_sparse(m, sparse_format, sparse_values)
+            return is_sparse(m, sparse_format=sparse_format, dtype=dtype, sparse_values=sparse_values)
         else:
             return policy == SparsePolicy.FORCE_SPARSE
 
