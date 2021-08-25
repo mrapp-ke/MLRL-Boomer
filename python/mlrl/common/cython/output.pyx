@@ -20,7 +20,7 @@ cdef class DensePredictor:
     A wrapper for the pure virtual C++ class `IDensePredictor`.
     """
 
-    def predict(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
+    def predict_dense(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
                 LabelVectorSet label_vectors) -> np.ndarray:
         """
         Obtains and returns dense predictions for given examples in a feature matrix that uses a C-contiguous array.
@@ -34,8 +34,8 @@ cdef class DensePredictor:
         """
         pass
 
-    def predict_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
-                    LabelVectorSet label_vectors) -> np.ndarray:
+    def predict_dense_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
+                          LabelVectorSet label_vectors) -> np.ndarray:
         """
         Obtains and returns dense predictions for given examples in a feature matrix that uses the compressed sparse row
         (CSR) format.
