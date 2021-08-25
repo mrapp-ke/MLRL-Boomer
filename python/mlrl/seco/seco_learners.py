@@ -95,13 +95,13 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     """
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
-                 label_format: str = SparsePolicy.AUTO.value, max_rules: int = 500, time_limit: int = -1,
-                 head_type: str = HEAD_TYPE_SINGLE, lift_function: str = LIFT_FUNCTION_PEAK,
-                 heuristic: str = HEURISTIC_F_MEASURE, pruning_heuristic: str = HEURISTIC_ACCURACY,
-                 label_sampling: str = None, instance_sampling: str = SAMPLING_WITHOUT_REPLACEMENT,
-                 feature_sampling: str = None, holdout: str = None, feature_binning: str = None,
-                 pruning: str = PRUNING_IREP, min_coverage: int = 1, max_conditions: int = -1,
-                 max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
+                 label_format: str = SparsePolicy.AUTO.value, prediction_format: str = SparsePolicy.AUTO.value,
+                 max_rules: int = 500, time_limit: int = -1, head_type: str = HEAD_TYPE_SINGLE,
+                 lift_function: str = LIFT_FUNCTION_PEAK, heuristic: str = HEURISTIC_F_MEASURE,
+                 pruning_heuristic: str = HEURISTIC_ACCURACY, label_sampling: str = None,
+                 instance_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, feature_sampling: str = None,
+                 holdout: str = None, feature_binning: str = None, pruning: str = PRUNING_IREP, min_coverage: int = 1,
+                 max_conditions: int = -1, max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
                  num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
@@ -162,7 +162,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         :param num_threads_prediction:              The number of threads to be used to make predictions or -1, if the
                                                     number of cores that are available on the machine should be used
         """
-        super().__init__(random_state, feature_format, label_format)
+        super().__init__(random_state, feature_format, label_format, prediction_format)
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_type = head_type

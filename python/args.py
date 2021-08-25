@@ -53,6 +53,8 @@ PARAM_FEATURE_FORMAT = '--feature-format'
 
 PARAM_LABEL_FORMAT = '--label-format'
 
+PARAM_PREDICTION_FORMAT = '--prediction-format'
+
 PARAM_MAX_RULES = '--max-rules'
 
 PARAM_TIME_LIMIT = '--time-limit'
@@ -249,6 +251,9 @@ class ArgumentParserBuilder:
         parser.add_argument(PARAM_LABEL_FORMAT, type=optional_string, default=SparsePolicy.AUTO.value,
                             help='The format to be used for the representation of the label matrix. Must be one of '
                                  + format_enum_values(SparsePolicy) + '.')
+        parser.add_argument(PARAM_PREDICTION_FORMAT, type=optional_string, default=SparsePolicy.AUTO.value,
+                            help='The format to be used for the representation of predicted labels. Must be one of '
+                                + format_enum_values(SparsePolicy) + '.')
         parser.add_argument(PARAM_MAX_RULES, type=int,
                             default=ArgumentParserBuilder.__get_or_default('max_rules', 500, **kwargs),
                             help='The maximum number of rules to be induced. Must be at least 1 or 0, if the number of '

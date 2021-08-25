@@ -12,8 +12,9 @@ class SeCoRunnable(RuleLearnerRunnable):
 
     def _create_learner(self, args):
         return SeCoRuleLearner(random_state=args.random_state, feature_format=args.feature_format,
-                               label_format=args.label_format, max_rules=args.max_rules, time_limit=args.time_limit,
-                               heuristic=args.heuristic, pruning_heuristic=args.pruning_heuristic, pruning=args.pruning,
+                               label_format=args.label_format, prediction_format=args.prediction_format,
+                               max_rules=args.max_rules, time_limit=args.time_limit, heuristic=args.heuristic,
+                               pruning_heuristic=args.pruning_heuristic, pruning=args.pruning,
                                label_sampling=args.label_sampling, instance_sampling=args.instance_sampling,
                                feature_sampling=args.feature_sampling, holdout=args.holdout,
                                feature_binning=args.feature_binning, head_type=args.head_type,
