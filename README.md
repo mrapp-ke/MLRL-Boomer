@@ -32,6 +32,7 @@ In addition, the following features that may speed up training or reduce the mem
 * Gradient-based label binning (GBLB) can be used to assign the available labels to a limited number of bins. The use of label binning may speed up training significantly when using rules that predict for multiple labels to minimize a non-decomposable loss function.
 * Dense or sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed up training significantly on some data sets.
 * Dense or sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets.
+* Dense or sparse matrices can be used to store predictions. The use of sparse matrices may reduce the memory footprint in case of large data sets.
 * Multi-threading can be used to parallelize the evaluation of a rule's potential refinements across multiple CPU cores. 
 
 ## Project structure
