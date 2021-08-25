@@ -454,11 +454,11 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
             feature_matrix = CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
-            return predictor.predict_csr(feature_matrix, model, label_vectors)
+            return predictor.predict_dense_csr(feature_matrix, model, label_vectors)
         else:
             log.debug('A dense matrix is used to store the feature values of the test examples')
             feature_matrix = CContiguousFeatureMatrix(x)
-            return predictor.predict(feature_matrix, model, label_vectors)
+            return predictor.predict_dense(feature_matrix, model, label_vectors)
 
     @abstractmethod
     def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
