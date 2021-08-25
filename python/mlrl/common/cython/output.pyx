@@ -51,6 +51,9 @@ cdef class DensePredictor:
 
 
 cdef class SparsePredictor(DensePredictor):
+    """
+    A wrapper for the pure virtual C++ class `ISparsePredictor`.
+    """
 
     def predict_sparse(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
                        LabelVectorSet label_vectors) -> csr_matrix:
