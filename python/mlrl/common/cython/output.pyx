@@ -11,6 +11,7 @@ from libcpp.memory cimport make_unique
 
 from cython.operator cimport dereference
 
+from scipy.sparse import csr_matrix
 import numpy as np
 
 
@@ -20,7 +21,7 @@ cdef class DensePredictor:
     """
 
     def predict(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
-                LabelVectorSet label_vectors) -> object:
+                LabelVectorSet label_vectors) -> np.ndarray:
         """
         Obtains and returns dense predictions for given examples in a feature matrix that uses a C-contiguous array.
 
@@ -28,13 +29,13 @@ cdef class DensePredictor:
         :param model:           The `RuleModel` to be used for making predictions
         :param label_vectors    A `LabelVectorSet` that stores all known label vectors or None, if no such set is
                                 available
-        :return:                A `np.ndarray` or a `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the predictions for individual examples and labels
+        :return:                A `np.ndarray`, shape `(num_examples, num_labels)`, that stores the predictions for
+                                individual examples and labels
         """
         pass
 
     def predict_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
-                    LabelVectorSet label_vectors) -> object:
+                    LabelVectorSet label_vectors) -> np.ndarray:
         """
         Obtains and returns dense predictions for given examples in a feature matrix that uses the compressed sparse row
         (CSR) format.
@@ -43,7 +44,39 @@ cdef class DensePredictor:
         :param model:           The `RuleModel` to be used for making predictions
         :param label_vectors    A `LabelVectorSet` that stores all known label vectors or None, if no such set is
                                 available
-        :return:                A `np.ndarray` or a `scipy.sparse`, shape `(num_examples, num_labels)`, that stores the
+        :return:                A `np.ndarray`, shape `(num_examples, num_labels)`, that stores the predictions for
+                                individual examples and labels
+        """
+        pass
+
+
+cdef class SparsePredictor(DensePredictor):
+
+    def predict_sparse(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
+                       LabelVectorSet label_vectors) -> csr_matrix:
+        """
+        Obtains and returns sparse predictions for given examples in a feature matrix that uses a C-contiguous array.
+
+        :param feature_matrix:  A `CContiguousFeatureMatrix` that stores the examples to predict for
+        :param model:           The `RuleModel` to be used for making predictions
+        :param label_vectors    A `LabelVectorSet` that stores all known label vectors or None, if no such set is
+                                available
+        :return:                A `scipy.sparse.csr_matrix`, shape `(num_examples, num_labels)`, that stores the
+                                predictions for individual examples and labels
+        """
+        pass
+
+    def predict_sparse_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
+                           LabelVectorSet label_vectors) -> csr_matrix:
+        """
+        Obtains and returns dense predictions for given examples in a feature matrix that uses the compressed sparse row
+        (CSR) format.
+
+        :param feature_matrix:  A `CsrFeatureMatrix` that stores the examples to predict for
+        :param model:           The `RuleModel` to be used for making predictions
+        :param label_vectors    A `LabelVectorSet` that stores all known label vectors or None, if no such set is
+                                available
+        :return:                A `scipy.sparse.csr_matrix`, shape `(num_examples, num_labels)`, that stores the
                                 predictions for individual examples and labels
         """
         pass
@@ -83,7 +116,7 @@ cdef class AbstractNumericalPredictor(DensePredictor):
         return np.asarray(prediction_matrix)
 
 
-cdef class AbstractBinaryPredictor(DensePredictor):
+cdef class AbstractBinaryPredictor(SparsePredictor):
     """
     A base class for all classes that allow to predict binary values for given query examples.
     """
@@ -115,3 +148,13 @@ cdef class AbstractBinaryPredictor(DensePredictor):
         self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr),
                                          dereference(model.model_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
+
+    def predict_sparse(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
+                       LabelVectorSet label_vectors) -> csr_matrix:
+        # TODO Implement
+        return None
+
+    def predict_sparse_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
+                           LabelVectorSet label_vectors) -> csr_matrix:
+        # TODO Implement
+        return None

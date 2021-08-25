@@ -44,6 +44,10 @@ cdef class DensePredictor:
     pass
 
 
+cdef class SparsePredictor(DensePredictor):
+    pass
+
+
 cdef class AbstractNumericalPredictor(DensePredictor):
 
     # Attributes:
@@ -53,7 +57,7 @@ cdef class AbstractNumericalPredictor(DensePredictor):
     cdef unique_ptr[IDensePredictor[float64]] predictor_ptr
 
 
-cdef class AbstractBinaryPredictor(DensePredictor):
+cdef class AbstractBinaryPredictor(SparsePredictor):
 
     # Attributes:
 
