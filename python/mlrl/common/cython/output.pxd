@@ -1,15 +1,29 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
-from mlrl.common.cython._data cimport CContiguousView
+from mlrl.common.cython._data cimport IndexedValue, CContiguousView
 from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVectorSetImpl
 from mlrl.common.cython.model cimport RuleModelImpl
 
 from libcpp.memory cimport unique_ptr
+from libcpp.forward_list cimport forward_list
 
 
 cdef extern from "common/output/prediction_matrix_sparse.hpp" nogil:
 
     cdef cppclass SparsePredictionMatrix[T]:
-        pass
+
+        ctypedef forward_list[IndexedValue[T]].const_iterator const_iterator
+
+        # Functions:
+
+        const_iterator row_cbegin(uint32 row)
+
+        const_iterator row_cend(uint32 row)
+
+        uint32 getNumRows()
+
+        uint32 getNumCols()
+
+        uint32 getNumNonZeroElements()
 
 
 cdef extern from "common/output/predictor_dense.hpp" nogil:
