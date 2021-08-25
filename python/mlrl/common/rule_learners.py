@@ -475,13 +475,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
                                 accept_sparse=(sparse_format.value if enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
         model = self.model_
-
-        if isinstance(predictor, SparsePredictor) and self.sparse_predictions_:
-            log.debug('A sparse matrix is used to store the predictions')
-            predict_sparse = True
-        else:
-            log.debug('A dense matrix is used to store the predictions')
-            predict_sparse = False
+        predict_sparse = isinstance(predictor, SparsePredictor) and self.sparse_predictions_
+        log.debug('A ' + ('sparse' if predict_sparse else 'dense') + ' matrix is used to store the predictions')
 
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the test examples')
