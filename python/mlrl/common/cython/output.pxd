@@ -27,7 +27,7 @@ cdef extern from "common/output/predictor_dense.hpp" nogil:
 
 cdef extern from "common/output/predictor_sparse.hpp" nogil:
 
-    cdef cppclass ISparsePredictor[T]:
+    cdef cppclass ISparsePredictor[T](IDensePredictor[T]):
 
         # Functions:
 
@@ -63,4 +63,4 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
 
     cdef uint32 num_labels
 
-    cdef unique_ptr[IDensePredictor[uint8]] predictor_ptr
+    cdef unique_ptr[ISparsePredictor[uint8]] predictor_ptr

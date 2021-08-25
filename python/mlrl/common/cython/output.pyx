@@ -134,8 +134,9 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
-        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr),
-                                         dereference(model.model_ptr), label_vectors_ptr)
+        cdef IDensePredictor[uint8]* predictor = self.predictor_ptr.get()
+        predictor.predict(dereference(feature_matrix_ptr), dereference(view_ptr), dereference(model.model_ptr),
+                                      label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
     def predict_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
@@ -148,8 +149,9 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
-        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr),
-                                         dereference(model.model_ptr), label_vectors_ptr)
+        cdef IDensePredictor[uint8]* predictor = self.predictor_ptr.get()
+        predictor.predict(dereference(feature_matrix_ptr), dereference(view_ptr), dereference(model.model_ptr),
+                                      label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
     def predict_sparse(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
