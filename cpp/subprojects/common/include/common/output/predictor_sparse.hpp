@@ -3,11 +3,8 @@
  */
 #pragma once
 
-#include "common/input/feature_matrix_c_contiguous.hpp"
-#include "common/input/feature_matrix_csr.hpp"
-#include "common/input/label_vector_set.hpp"
-#include "common/model/rule_model.hpp"
 #include "common/output/prediction_matrix_sparse.hpp"
+#include "common/output/predictor_dense.hpp"
 
 
 /**
@@ -17,7 +14,7 @@
  * @tparam T The type of the values that are stored by the prediction matrix
  */
 template<typename T>
-class ISparsePredictor {
+class ISparsePredictor : public IDensePredictor<T> {
 
     public:
 
