@@ -88,8 +88,8 @@ cdef class AbstractBinaryPredictor(DensePredictor):
     A base class for all classes that allow to predict binary values for given query examples.
     """
 
-    def predict(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
-                LabelVectorSet label_vectors):
+    def predict_dense(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
+                      LabelVectorSet label_vectors):
         cdef CContiguousFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
@@ -102,8 +102,8 @@ cdef class AbstractBinaryPredictor(DensePredictor):
                                          dereference(model.model_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
-    def predict_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
-                    LabelVectorSet label_vectors):
+    def predict_dense_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
+                          LabelVectorSet label_vectors):
         cdef CsrFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
