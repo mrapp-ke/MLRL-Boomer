@@ -11,7 +11,7 @@ from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import Predictor
+from mlrl.common.cython.output import DensePredictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
 from mlrl.common.cython.pruning import Pruning
 from mlrl.common.cython.rule_induction import RuleInduction, TopDownRuleInduction
@@ -304,7 +304,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     def _create_model_builder(self) -> ModelBuilder:
         return DecisionListBuilder()
 
-    def _create_predictor(self, num_labels: int) -> Predictor:
+    def _create_predictor(self, num_labels: int) -> DensePredictor:
         return self.__create_label_wise_predictor(num_labels)
 
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:

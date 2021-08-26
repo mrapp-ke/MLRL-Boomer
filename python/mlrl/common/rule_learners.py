@@ -25,7 +25,7 @@ from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, Instan
     LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory
 from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import Predictor
+from mlrl.common.cython.output import DensePredictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, RandomBiPartitionSamplingFactory, \
     LabelWiseStratifiedBiPartitionSamplingFactory, \
     ExampleWiseStratifiedBiPartitionSamplingFactory
@@ -577,23 +577,23 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         pass
 
     @abstractmethod
-    def _create_predictor(self, num_labels: int) -> Predictor:
+    def _create_predictor(self, num_labels: int) -> DensePredictor:
         """
-        Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
+        Must be implemented by subclasses in order to create the `DensePredictor` to be used for making predictions.
 
         :param num_labels:  The number of labels in the training data set
-        :return:            The `Predictor` that has been created
+        :return:            The `DensePredictor` that has been created
         """
         pass
 
-    def _create_probability_predictor(self, num_labels: int) -> Predictor:
+    def _create_probability_predictor(self, num_labels: int) -> DensePredictor:
         """
-        Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
+        Must be implemented by subclasses in order to create the `DensePredictor` to be used for predicting probability
         estimates.
 
         :param num_labels:  The number of labels in the training data set
-        :return:            The `Predictor` that has been created or None, if the prediction of probabilities is not
-                            supported
+        :return:            The `DensePredictor` that has been created or None, if the prediction of probabilities is
+                            not supported
         """
         return None
 
