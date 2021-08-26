@@ -124,8 +124,8 @@ cdef inline object __create_csr_matrix(SparsePredictionMatrix[uint8]* prediction
     cdef uint32 num_cols = prediction_matrix.getNumCols()
     cdef uint32 num_non_zero_elements = prediction_matrix.getNumNonZeroElements()
     cdef uint8[::1] data = array_uint8(num_non_zero_elements)
-    cdef uint32[::1] row_indices = array_uint32(num_non_zero_elements)
-    cdef uint32[::1] col_indices = array_uint32(num_rows + 1)
+    cdef uint32[::1] col_indices = array_uint32(num_non_zero_elements)
+    cdef uint32[::1] row_indices = array_uint32(num_rows + 1)
     cdef SparsePredictionMatrix[uint8].const_iterator it
     cdef SparsePredictionMatrix[uint8].const_iterator end
     cdef uint32 row_index
@@ -142,7 +142,7 @@ cdef inline object __create_csr_matrix(SparsePredictionMatrix[uint8]* prediction
             i += 1
             postincrement(it)
 
-    col_indices[num_rows] = i
+    row_indices[num_rows] = i
     return csr_matrix((np.asarray(data), np.asarray(col_indices), np.asarray(row_indices)), shape=(num_rows, num_cols))
 
 
