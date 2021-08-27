@@ -26,9 +26,9 @@ cdef extern from "common/output/prediction_matrix_sparse.hpp" nogil:
         uint32 getNumNonZeroElements()
 
 
-cdef extern from "common/output/predictor_dense.hpp" nogil:
+cdef extern from "common/output/predictor.hpp" nogil:
 
-    cdef cppclass IDensePredictor[T]:
+    cdef cppclass IPredictor[T]:
 
         # Functions:
 
@@ -41,7 +41,7 @@ cdef extern from "common/output/predictor_dense.hpp" nogil:
 
 cdef extern from "common/output/predictor_sparse.hpp" nogil:
 
-    cdef cppclass ISparsePredictor[T](IDensePredictor[T]):
+    cdef cppclass ISparsePredictor[T](IPredictor[T]):
 
         # Functions:
 
@@ -54,21 +54,21 @@ cdef extern from "common/output/predictor_sparse.hpp" nogil:
                                                       const LabelVectorSetImpl* labelVectors)
 
 
-cdef class DensePredictor:
+cdef class Predictor:
     pass
 
 
-cdef class SparsePredictor(DensePredictor):
+cdef class SparsePredictor(Predictor):
     pass
 
 
-cdef class AbstractNumericalPredictor(DensePredictor):
+cdef class AbstractNumericalPredictor(Predictor):
 
     # Attributes:
 
     cdef uint32 num_labels
 
-    cdef unique_ptr[IDensePredictor[float64]] predictor_ptr
+    cdef unique_ptr[IPredictor[float64]] predictor_ptr
 
 
 cdef class AbstractBinaryPredictor(SparsePredictor):

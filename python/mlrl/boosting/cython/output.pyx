@@ -33,7 +33,7 @@ cdef class LabelWiseProbabilityPredictor(AbstractNumericalPredictor):
         self.num_labels = num_labels
         self.transformation_function = transformation_function
         self.num_threads = num_threads
-        self.predictor_ptr = <unique_ptr[IDensePredictor[float64]]>make_unique[LabelWiseProbabilityPredictorImpl](
+        self.predictor_ptr = <unique_ptr[IPredictor[float64]]>make_unique[LabelWiseProbabilityPredictorImpl](
             move(transformation_function.transformation_function_ptr), num_threads)
 
     def __reduce__(self):
@@ -53,8 +53,7 @@ cdef class LabelWiseRegressionPredictor(AbstractNumericalPredictor):
         """
         self.num_labels = num_labels
         self.num_threads = num_threads
-        self.predictor_ptr = <unique_ptr[IDensePredictor[float64]]>make_unique[LabelWiseRegressionPredictorImpl](
-            num_threads)
+        self.predictor_ptr = <unique_ptr[IPredictor[float64]]>make_unique[LabelWiseRegressionPredictorImpl](num_threads)
 
     def __reduce__(self):
         return (LabelWiseRegressionPredictor, (self.num_labels, self.num_threads))

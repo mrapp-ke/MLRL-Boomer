@@ -15,9 +15,9 @@ from scipy.sparse import csr_matrix
 import numpy as np
 
 
-cdef class DensePredictor:
+cdef class Predictor:
     """
-    A wrapper for the pure virtual C++ class `IDensePredictor`.
+    A wrapper for the pure virtual C++ class `IPredictor`.
     """
 
     def predict_dense(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
@@ -50,7 +50,7 @@ cdef class DensePredictor:
         pass
 
 
-cdef class SparsePredictor(DensePredictor):
+cdef class SparsePredictor(Predictor):
     """
     A wrapper for the pure virtual C++ class `ISparsePredictor`.
     """
@@ -85,7 +85,7 @@ cdef class SparsePredictor(DensePredictor):
         pass
 
 
-cdef class AbstractNumericalPredictor(DensePredictor):
+cdef class AbstractNumericalPredictor(Predictor):
     """
     A base class for all classes that allow to predict numerical scores for given query examples.
     """
@@ -161,7 +161,7 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
-        cdef IDensePredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
+        cdef IPredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
         predictor_ptr.predict(dereference(feature_matrix_ptr), dereference(view_ptr), dereference(model.model_ptr),
                               label_vectors_ptr)
         return np.asarray(prediction_matrix)
@@ -176,7 +176,7 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
-        cdef IDensePredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
+        cdef IPredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
         predictor_ptr.predict(dereference(feature_matrix_ptr), dereference(view_ptr), dereference(model.model_ptr),
                               label_vectors_ptr)
         return np.asarray(prediction_matrix)
