@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/output/prediction_matrix_sparse.hpp"
-#include "common/output/predictor_dense.hpp"
+#include "common/output/predictor.hpp"
 
 
 /**
@@ -14,7 +14,7 @@
  * @tparam T The type of the values that are stored by the prediction matrix
  */
 template<typename T>
-class ISparsePredictor : public IDensePredictor<T> {
+class ISparsePredictor : public IPredictor<T> {
 
     public:
 
