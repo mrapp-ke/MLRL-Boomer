@@ -1,5 +1,6 @@
 #include "boosting/output/predictor_classification_example_wise.hpp"
 #include "common/validation.hpp"
+#include "common/data/arrays.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
@@ -7,14 +8,12 @@
 
 namespace boosting {
 
-    static inline void predictClosestLabelVector(uint32 exampleIndex, const float64* scoresBegin,
-                                                 const float64* scoresEnd, CContiguousView<uint8>& predictionMatrix,
-                                                 const ISimilarityMeasure& measure,
-                                                 const LabelVectorSet* labelVectorSet) {
-        std::fill(predictionMatrix.row_begin(exampleIndex), predictionMatrix.row_end(exampleIndex), 0);
+    static inline const LabelVector* findClosestLabelVector(const float64* scoresBegin, const float64* scoresEnd,
+                                                            const ISimilarityMeasure& measure,
+                                                            const LabelVectorSet* labelVectorSet) {
+        const LabelVector* closestLabelVector = nullptr;
 
         if (labelVectorSet != nullptr) {
-            const LabelVector* closestLabelVector = nullptr;
             float64 bestScore = 0;
             uint32 bestCount = 0;
 
@@ -30,16 +29,22 @@ namespace boosting {
                     bestCount = count;
                 }
             }
+        }
 
-            if (closestLabelVector != nullptr) {
-                uint32 numElements = closestLabelVector->getNumElements();
-                LabelVector::index_const_iterator indexIterator = closestLabelVector->indices_cbegin();
-                CContiguousView<uint8>::iterator predictionIterator = predictionMatrix.row_begin(exampleIndex);
+        return closestLabelVector;
+    }
 
-                for (uint32 i = 0; i < numElements; i++) {
-                    uint32 labelIndex = indexIterator[i];
-                    predictionIterator[labelIndex] = 1;
-                }
+    static inline void predictLabelVector(CContiguousView<uint8>::iterator predictionIterator, uint32 numElements,
+                                          const LabelVector* labelVector) {
+        setArrayToZeros(predictionIterator, numElements);
+
+        if (labelVector != nullptr) {
+            uint32 numIndices = labelVector->getNumElements();
+            LabelVector::index_const_iterator indexIterator = labelVector->indices_cbegin();
+
+            for (uint32 i = 0; i < numIndices; i++) {
+                uint32 labelIndex = indexIterator[i];
+                predictionIterator[labelIndex] = 1;
             }
         }
     }
@@ -55,16 +60,19 @@ namespace boosting {
                                                        CContiguousView<uint8>& predictionMatrix,
                                                        const LabelVectorSet* labelVectors) const {
         uint32 numExamples = scoreMatrix.getNumRows();
+        uint32 numLabels = predictionMatrix.getNumCols();
         const CContiguousConstView<float64>* scoreMatrixPtr = &scoreMatrix;
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
         const ISimilarityMeasure* measurePtr = measurePtr_.get();
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(scoreMatrixPtr) \
+        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(scoreMatrixPtr) \
         firstprivate(predictionMatrixPtr) firstprivate(measurePtr) firstprivate(labelVectors) schedule(dynamic) \
         num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
-            predictClosestLabelVector(i, scoreMatrixPtr->row_cbegin(i), scoreMatrixPtr->row_cend(i),
-                                      *predictionMatrixPtr, *measurePtr, labelVectors);
+            const LabelVector* closestLabelVector = findClosestLabelVector(scoreMatrixPtr->row_cbegin(i),
+                                                                           scoreMatrixPtr->row_cend(i), *measurePtr,
+                                                                           labelVectors);
+            predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
         }
     }
 
@@ -84,8 +92,9 @@ namespace boosting {
         for (uint32 i = 0; i < numExamples; i++) {
             float64 scoreVector[numLabels] = {};
             applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i), &scoreVector[0]);
-            predictClosestLabelVector(i, &scoreVector[0], &scoreVector[numLabels], *predictionMatrixPtr, *measurePtr,
-                                      labelVectors);
+            const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
+                                                                           *measurePtr, labelVectors);
+            predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
         }
     }
 
@@ -107,8 +116,9 @@ namespace boosting {
             applyRulesCsr(*modelPtr, featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
                           featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                           &scoreVector[0]);
-            predictClosestLabelVector(i, &scoreVector[0], &scoreVector[numLabels], *predictionMatrixPtr, *measurePtr,
-                                      labelVectors);
+            const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
+                                                                           *measurePtr, labelVectors);
+            predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
         }
     }
 
