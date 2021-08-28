@@ -40,11 +40,6 @@ class IndexForwardIterator final {
         }
 
         /**
-         * The type that is used to represent the difference between two iterators.
-         */
-        typedef int difference_type;
-
-        /**
          * The type of the elements, the iterator provides access to.
          */
         typedef bool value_type;
