@@ -15,11 +15,11 @@ BinaryCsrConstView::index_const_iterator BinaryCsrConstView::row_indices_cend(ui
 }
 
 BinaryCsrConstView::value_const_iterator BinaryCsrConstView::row_values_cbegin(uint32 row) const {
-    return make_index_forward_iterator(this->row_indices_cbegin(row), this->row_indices_cend(row));
+    return make_binary_forward_iterator(this->row_indices_cbegin(row), this->row_indices_cend(row));
 }
 
 BinaryCsrConstView::value_const_iterator BinaryCsrConstView::row_values_cend(uint32 row) const {
-    return make_index_forward_iterator(this->row_indices_cbegin(row), this->row_indices_cend(row), numCols_);
+    return make_binary_forward_iterator(this->row_indices_cbegin(row), this->row_indices_cend(row), numCols_);
 }
 
 uint32 BinaryCsrConstView::getNumRows() const {
