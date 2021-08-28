@@ -15,11 +15,11 @@ BinaryCscConstView::index_const_iterator BinaryCscConstView::column_indices_cend
 }
 
 BinaryCscConstView::value_const_iterator BinaryCscConstView::column_values_cbegin(uint32 col) const {
-    return make_index_forward_iterator(this->column_indices_cbegin(col), this->column_indices_cend(col));
+    return make_binary_forward_iterator(this->column_indices_cbegin(col), this->column_indices_cend(col));
 }
 
 BinaryCscConstView::value_const_iterator BinaryCscConstView::column_values_cend(uint32 col) const {
-    return make_index_forward_iterator(this->column_indices_cbegin(col), this->column_indices_cend(col), numRows_);
+    return make_binary_forward_iterator(this->column_indices_cbegin(col), this->column_indices_cend(col), numRows_);
 }
 
 uint32 BinaryCscConstView::getNumRows() const {
