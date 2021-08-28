@@ -1,4 +1,4 @@
-#include "common/indices/index_iterator.hpp"
+#include "common/iterator/index_iterator.hpp"
 
 
 IndexIterator::IndexIterator()

@@ -77,11 +77,6 @@ namespace boosting {
 
             }
 
-            void visit(IBoostingStatistics::DenseLabelWiseStatisticViewVisitor denseLabelWiseStatisticViewVisitor,
-                       IBoostingStatistics::DenseExampleWiseStatisticViewVisitor denseExampleWiseStatisticViewVisitor) override {
-                denseLabelWiseStatisticViewVisitor(this->statisticViewPtr_);
-            }
-
     };
 
     template<typename LabelMatrix>
