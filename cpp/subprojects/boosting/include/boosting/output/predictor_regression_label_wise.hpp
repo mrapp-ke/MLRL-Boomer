@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/predictor_dense.hpp"
+#include "common/output/predictor.hpp"
 
 
 namespace boosting {
@@ -14,7 +14,7 @@ namespace boosting {
      *
      * For prediction, the scores that are provided by the individual rules, are summed up for each label individually.
      */
-    class LabelWiseRegressionPredictor : public IDensePredictor<float64> {
+    class LabelWiseRegressionPredictor : public IPredictor<float64> {
 
         private:
 

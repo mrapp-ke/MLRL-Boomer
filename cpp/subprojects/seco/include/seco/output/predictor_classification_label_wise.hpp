@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/predictor_dense.hpp"
+#include "common/output/predictor.hpp"
 
 
 namespace seco {
@@ -16,7 +16,7 @@ namespace seco {
      * prediction (1 if the label is relevant, 0 otherwise) is applied to the labels individually, if none of the
      * previous rules has already predicted for that particular example and label.
      */
-    class LabelWiseClassificationPredictor : public IDensePredictor<uint8> {
+    class LabelWiseClassificationPredictor : public IPredictor<uint8> {
 
         private:
 

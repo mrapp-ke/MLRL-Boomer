@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/predictor_dense.hpp"
+#include "common/output/predictor.hpp"
 #include "common/measures/measure_similarity.hpp"
 
 
@@ -17,7 +17,7 @@ namespace boosting {
      * aggregated score vector is then compared to known label vectors in order to obtain a distance measure. The label
      * vector that is closest to the aggregated score vector is finally predicted.
      */
-    class ExampleWiseClassificationPredictor : public IDensePredictor<uint8> {
+    class ExampleWiseClassificationPredictor : public IPredictor<uint8> {
 
         private:
 
