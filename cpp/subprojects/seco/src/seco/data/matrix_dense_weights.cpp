@@ -1,6 +1,6 @@
 #include "seco/data/matrix_dense_weights.hpp"
 #include "common/data/arrays.hpp"
-#include "common/indices/index_forward_iterator.hpp"
+#include "common/iterator/index_forward_iterator.hpp"
 
 
 namespace seco {

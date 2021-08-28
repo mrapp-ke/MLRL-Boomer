@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/indices/index_vector.hpp"
-#include "common/indices/index_iterator.hpp"
+#include "common/iterator/index_iterator.hpp"
 
 
 /**

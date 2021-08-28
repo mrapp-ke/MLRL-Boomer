@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/indices/index_forward_iterator.hpp"
+#include "common/iterator/index_forward_iterator.hpp"
 
 
 /**
