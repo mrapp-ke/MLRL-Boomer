@@ -148,6 +148,6 @@ class NonZeroIndexForwardIterator {
  * @param end   An iterator to the end of the values
  */
 template<typename T>
-static inline NonZeroIndexForwardIterator<T> make_binary_forward_iterator(T begin, T end) {
+static inline NonZeroIndexForwardIterator<T> make_non_zero_index_forward_iterator(T begin, T end) {
     return NonZeroIndexForwardIterator<T>(begin, end);
 }
