@@ -17,7 +17,7 @@ cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
         """
         self.num_labels = num_labels
         self.num_threads = num_threads
-        self.predictor_ptr = <unique_ptr[IDensePredictor[uint8]]>make_unique[LabelWiseClassificationPredictorImpl](
+        self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[LabelWiseClassificationPredictorImpl](
             num_threads)
 
     def __reduce__(self):

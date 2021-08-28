@@ -27,7 +27,7 @@ from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import DensePredictor
+from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
 from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
 from mlrl.common.cython.pruning import Pruning
@@ -443,7 +443,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
 
-    def _create_predictor(self, num_labels: int) -> DensePredictor:
+    def _create_predictor(self, num_labels: int) -> Predictor:
         predictor = self.__get_preferred_predictor()
         value = parse_param('predictor', predictor, PREDICTOR_VALUES)
 
@@ -452,7 +452,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         elif value == PREDICTOR_EXAMPLE_WISE:
             return self.__create_example_wise_predictor(num_labels)
 
-    def _create_probability_predictor(self, num_labels: int) -> DensePredictor:
+    def _create_probability_predictor(self, num_labels: int) -> Predictor:
         predictor = self.__get_preferred_predictor()
 
         if self.loss == LOSS_LOGISTIC_LABEL_WISE or self.loss == LOSS_LOGISTIC_EXAMPLE_WISE:

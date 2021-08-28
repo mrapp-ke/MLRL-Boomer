@@ -14,9 +14,9 @@ from cython.operator cimport dereference
 import numpy as np
 
 
-cdef class DensePredictor:
+cdef class Predictor:
     """
-    A wrapper for the pure virtual C++ class `IDensePredictor`.
+    A wrapper for the pure virtual C++ class `IPredictor`.
     """
 
     def predict_dense(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
@@ -49,7 +49,7 @@ cdef class DensePredictor:
         pass
 
 
-cdef class AbstractNumericalPredictor(DensePredictor):
+cdef class AbstractNumericalPredictor(Predictor):
     """
     A base class for all classes that allow to predict numerical scores for given query examples.
     """
@@ -83,7 +83,7 @@ cdef class AbstractNumericalPredictor(DensePredictor):
         return np.asarray(prediction_matrix)
 
 
-cdef class AbstractBinaryPredictor(DensePredictor):
+cdef class AbstractBinaryPredictor(Predictor):
     """
     A base class for all classes that allow to predict binary values for given query examples.
     """
