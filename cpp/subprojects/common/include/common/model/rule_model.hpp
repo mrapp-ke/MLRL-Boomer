@@ -35,11 +35,6 @@ class RuleModel final {
                 RuleConstIterator(const std::forward_list<Rule>& list, uint32 index);
 
                 /**
-                 * The type that is used to represent the difference between two iterators.
-                 */
-                typedef int difference_type;
-
-                /**
                  * The type of the elements, the iterator provides access to.
                  */
                 typedef const Rule value_type;
