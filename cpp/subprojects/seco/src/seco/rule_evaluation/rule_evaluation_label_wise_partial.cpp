@@ -55,8 +55,8 @@ namespace seco {
                     scoreVector_.indices_cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                                 majorityLabelVector.indices_cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                                  majorityLabelVector.indices_cend());
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 float64 sumOfQualityScores = 0;
                 uint32 previousIndex = 0;
@@ -128,8 +128,8 @@ namespace seco {
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                                 majorityLabelVector.indices_cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                                  majorityLabelVector.indices_cend());
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 PartialIndexVector::iterator predictedIndexIterator = indexVector_.begin();
                 SparseArrayVector<float64>::iterator sortedIterator = sortedVector_.begin();
