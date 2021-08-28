@@ -9,8 +9,8 @@ namespace seco {
     static inline void addInternally(ConfusionMatrix* confusionMatrices, uint32 numElements, uint32 exampleIndex,
                                      const LabelMatrix& labelMatrix, const BinarySparseArrayVector& majorityLabelVector,
                                      const DenseWeightMatrix& weightMatrix, float64 weight) {
-        auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                            majorityLabelVector.indices_cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                             majorityLabelVector.indices_cend());
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
 
@@ -35,8 +35,8 @@ namespace seco {
                                              uint32 exampleIndex, const LabelMatrix& labelMatrix,
                                              const BinarySparseArrayVector& majorityLabelVector,
                                              const DenseWeightMatrix& weightMatrix, float64 weight) {
-        auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                            majorityLabelVector.indices_cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                             majorityLabelVector.indices_cend());
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
 
@@ -141,8 +141,8 @@ namespace seco {
                                                  const BinarySparseArrayVector& majorityLabelVector,
                                                  const DenseWeightMatrix& weightMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
-        auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                            majorityLabelVector.indices_cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                             majorityLabelVector.indices_cend());
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
@@ -169,8 +169,8 @@ namespace seco {
                                                  const BinarySparseArrayVector& majorityLabelVector,
                                                  const DenseWeightMatrix& weightMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
-        auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                            majorityLabelVector.indices_cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                             majorityLabelVector.indices_cend());
         typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
         CsrLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();

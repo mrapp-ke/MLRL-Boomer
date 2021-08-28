@@ -1,6 +1,6 @@
 #include "seco/data/matrix_dense_weights.hpp"
 #include "common/data/arrays.hpp"
-#include "common/iterator/index_forward_iterator.hpp"
+#include "common/iterator/binary_forward_iterator.hpp"
 
 
 namespace seco {
@@ -25,8 +25,8 @@ namespace seco {
                                       CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
         iterator weightIterator = this->row_begin(row);
-        auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                            majorityLabelVector.indices_cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                             majorityLabelVector.indices_cend());
 
         for (uint32 i = 0; i < numCols; i++) {
             bool predictedLabel = predictionBegin[i];
@@ -52,8 +52,8 @@ namespace seco {
                                       PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
         iterator weightIterator = this->row_begin(row);
-        auto majorityIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                            majorityLabelVector.indices_cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                             majorityLabelVector.indices_cend());
         uint32 previousIndex = 0;
 
         for (uint32 i = 0; i < numPredictions; i++) {

@@ -34,8 +34,8 @@ namespace seco {
                     const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 typename DenseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
-                auto labelIterator = make_index_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                                 majorityLabelVector.indices_cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
+                                                                  majorityLabelVector.indices_cend());
                 uint32 numElements = scoreVector_.getNumElements();
                 uint32 previousIndex = 0;
 

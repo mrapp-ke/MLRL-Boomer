@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/iterator/index_forward_iterator.hpp"
+#include "common/iterator/binary_forward_iterator.hpp"
 
 
 /**
@@ -56,7 +56,7 @@ class BinaryCsrConstView {
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        typedef IndexForwardIterator<index_const_iterator> value_const_iterator;
+        typedef BinaryForwardIterator<index_const_iterator> value_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific row.

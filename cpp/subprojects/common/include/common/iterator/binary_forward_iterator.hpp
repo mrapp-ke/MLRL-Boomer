@@ -15,7 +15,7 @@
  * @tparam T The type of the iterator to be adapted
  */
 template<typename T>
-class IndexForwardIterator final {
+class BinaryForwardIterator final {
 
     private:
 
@@ -34,7 +34,7 @@ class IndexForwardIterator final {
          * @param end   An iterator to the end of the indices
          * @param index The index to start at
          */
-        IndexForwardIterator(T begin, T end, uint32 index)
+        BinaryForwardIterator(T begin, T end, uint32 index)
             : iterator_(begin), end_(end), index_(index), iteratorIndex_(iterator_ != end_ ? *iterator_ : 0) {
 
         }
@@ -78,7 +78,7 @@ class IndexForwardIterator final {
          *
          * @return A reference to an iterator that refers to the next element
          */
-        IndexForwardIterator<T>& operator++() {
+        BinaryForwardIterator<T>& operator++() {
             ++index_;
 
             if (iterator_ != end_ && iteratorIndex_ < index_) {
@@ -94,7 +94,7 @@ class IndexForwardIterator final {
          *
          * @return A reference to an iterator that refers to the next element
          */
-        IndexForwardIterator<T>& operator++(int n) {
+        BinaryForwardIterator<T>& operator++(int n) {
             index_++;
 
             if (iterator_ != end_ && iteratorIndex_ < index_) {
@@ -111,7 +111,7 @@ class IndexForwardIterator final {
          * @param rhs   A reference to another iterator
          * @return      True, if the iterators do not refer to the same element, false otherwise
          */
-        bool operator!=(const IndexForwardIterator<T>& rhs) const {
+        bool operator!=(const BinaryForwardIterator<T>& rhs) const {
             return index_ != rhs.index_;
         }
 
@@ -121,20 +121,20 @@ class IndexForwardIterator final {
          * @param rhs   A reference to another iterator
          * @return      True, if the iterators refer to the same element, false otherwise
          */
-        bool operator==(const IndexForwardIterator<T>& rhs) const {
+        bool operator==(const BinaryForwardIterator<T>& rhs) const {
             return index_ == rhs.index_;
         }
 
 };
 
 /**
- * Creates and returns a new `IndexForwardIterator`.
+ * Creates and returns a new `BinaryForwardIterator`.
  *
  * @param begin An iterator to the beginning of the indices
  * @param end   An iterator to the end of the indices
  * @param index The index to start at
  */
 template<typename T>
-static inline IndexForwardIterator<T> make_index_forward_iterator(T begin, T end, uint32 index = 0) {
-    return IndexForwardIterator<T>(begin, end, index);
+static inline BinaryForwardIterator<T> make_binary_forward_iterator(T begin, T end, uint32 index = 0) {
+    return BinaryForwardIterator<T>(begin, end, index);
 }

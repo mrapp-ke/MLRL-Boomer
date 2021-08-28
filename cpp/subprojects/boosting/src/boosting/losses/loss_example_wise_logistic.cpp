@@ -181,7 +181,7 @@ namespace boosting {
         // `max = max(x_1, x_2, ...)`, to increase numerical stability (see, e.g., section "Log-sum-exp for computing
         // the log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
         uint32 numLabels = scoresEnd - scoresBegin;
-        auto labelIterator = make_index_forward_iterator(labelVector.indices_cbegin(), labelVector.indices_cend());
+        auto labelIterator = make_binary_forward_iterator(labelVector.indices_cbegin(), labelVector.indices_cend());
         float64 max = 0;
 
         // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value (that must
@@ -200,7 +200,7 @@ namespace boosting {
 
         // Calculate the example-wise loss as `max + log(exp(0 - max) + exp(x_1 - max) + ...)`...
         float64 sumExp = std::exp(0 - max);
-        labelIterator = make_index_forward_iterator(labelVector.indices_cbegin(), labelVector.indices_cend());
+        labelIterator = make_binary_forward_iterator(labelVector.indices_cbegin(), labelVector.indices_cend());
 
         for (uint32 i = 0; i < numLabels; i++) {
             float64 predictedScore = scoresBegin[i];
