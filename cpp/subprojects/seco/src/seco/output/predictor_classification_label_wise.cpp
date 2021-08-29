@@ -71,9 +71,9 @@ namespace seco {
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const Rule& rule = *it;
                 const IBody& body = rule.getBody();
-                const IHead& head = rule.getHead();
 
                 if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
+                    const IHead& head = rule.getHead();
                     applyHead(head, *predictionMatrixPtr, &mask[0], i);
                 }
             }
@@ -102,11 +102,11 @@ namespace seco {
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const Rule& rule = *it;
                 const IBody& body = rule.getBody();
-                const IHead& head = rule.getHead();
 
                 if (body.covers(featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
                                 featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                 &tmpArray1[0], &tmpArray2[0], n)) {
+                    const IHead& head = rule.getHead();
                     applyHead(head, *predictionMatrixPtr, &mask[0], i);
                 }
 
