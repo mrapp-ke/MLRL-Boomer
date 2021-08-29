@@ -133,6 +133,7 @@ class BinaryForwardIterator final {
  * @param begin An iterator to the beginning of the indices
  * @param end   An iterator to the end of the indices
  * @param index The index to start at
+ * @return      A `BinaryForwardIterator` that has been created
  */
 template<typename T>
 static inline BinaryForwardIterator<T> make_binary_forward_iterator(T begin, T end, uint32 index = 0) {
