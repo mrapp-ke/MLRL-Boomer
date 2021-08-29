@@ -33,7 +33,7 @@ class NonZeroIndexForwardIterator {
         NonZeroIndexForwardIterator(T begin, T end)
             : iterator_(begin), end_(end), index_(0) {
             for (; iterator_ != end_; iterator_++) {
-                T value = *iterator;
+                T value = *iterator_;
 
                 if (value != 0) {
                     break;
@@ -86,7 +86,7 @@ class NonZeroIndexForwardIterator {
             iterator_++;
 
             for (; iterator_ != end_; iterator_++) {
-                T value = *iterator;
+                T value = *iterator_;
 
                 if (value != 0) {
                     break;
@@ -107,7 +107,7 @@ class NonZeroIndexForwardIterator {
             iterator_++;
 
             for (; iterator_ != end_; iterator_++) {
-                T value = *iterator;
+                T value = *iterator_;
 
                 if (value != 0) {
                     break;
