@@ -1,4 +1,5 @@
 #include "seco/output/predictor_classification_label_wise.hpp"
+#include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
 #include "common/validation.hpp"
@@ -49,47 +50,25 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    // TODO Replace with iterator adaptor
-    template<typename IndexIterator, typename ScoreIterator>
-    static inline void advance(IndexIterator& indexIterator, ScoreIterator& scoreIterator, ScoreIterator scoresEnd) {
-        for (; scoreIterator != scoresEnd; scoreIterator++) {
-            float64 score = *scoreIterator;
-
-            if (score > 0) {
-                return;
-            }
-
-            indexIterator++;
-        }
-    }
-
-    template<typename IndexIterator, typename ScoreIterator>
-    static inline uint32 addFirst(IndexIterator& indexIterator, ScoreIterator& scoreIterator, ScoreIterator scoresEnd,
+    template<typename ScoreIterator, typename IndexIterator>
+    static inline uint32 addFirst(ScoreIterator& scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
                                   LilMatrix<uint8>::Row& row) {
-        advance(indexIterator, scoreIterator, scoresEnd);
-
-        if (scoreIterator != scoresEnd) {
-            uint32 labelIndex = *indexIterator;
+        if (scoresBegin != scoresEnd) {
+            uint32 index = indexIterator[*scoresBegin];
 
             if (row.empty()) {
-                row.emplace_front(labelIndex, 1);
-                scoreIterator++;
-                indexIterator++;
-                advance(indexIterator, scoreIterator, scoresEnd);
+                row.emplace_front(index, 1);
+                scoresBegin++;
                 return 1;
             } else {
                 LilMatrix<uint8>::Row::iterator it = row.begin();
                 uint32 firstIndex = (*it).index;
 
-                if (labelIndex == firstIndex) {
-                    scoreIterator++;
-                    indexIterator++;
-                    advance(indexIterator, scoreIterator, scoresEnd);
-                } else if (labelIndex < firstIndex) {
-                    row.emplace_front(labelIndex, 1);
-                    scoreIterator++;
-                    indexIterator++;
-                    advance(indexIterator, scoreIterator, scoresEnd);
+                if (index == firstIndex) {
+                    scoresBegin++;
+                } else if (index < firstIndex) {
+                    row.emplace_front(index, 1);
+                    scoresBegin++;
                     return 1;
                 }
             }
@@ -98,24 +77,24 @@ namespace seco {
         return 0;
     }
 
-    template<typename IndexIterator, typename ValueIterator>
-    static inline uint32 applyHead(IndexIterator indexIterator, ValueIterator scoreIterator, ValueIterator scoresEnd,
+    template<typename ScoreIterator, typename IndexIterator>
+    static inline uint32 applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
                                    LilMatrix<uint8>::Row& row) {
-        uint32 numNonZeroElements = addFirst(indexIterator, scoreIterator, scoresEnd, row);
+        uint32 numNonZeroElements = addFirst(scoresBegin, scoresEnd, indexIterator, row);
         LilMatrix<uint8>::Row::iterator prevIt = row.begin();
         LilMatrix<uint8>::Row::iterator it = prevIt;
         it++;
 
-        while (scoreIterator != scoresEnd && it != row.end()) {
-            uint32 labelIndex = *indexIterator;
+        for (; scoresBegin != scoresEnd && it != row.end(); scoresBegin++) {
+            uint32 index = indexIterator[*scoresBegin];
             uint32 currentIndex = (*it).index;
             LilMatrix<uint8>::Row::iterator nextIt = it;
             nextIt++;
 
-            while (labelIndex > currentIndex && nextIt != row.end()) {
+            while (index > currentIndex && nextIt != row.end()) {
                 uint32 nextIndex = (*nextIt).index;
 
-                if (labelIndex >= nextIndex) {
+                if (index >= nextIndex) {
                     currentIndex = nextIndex;
                     prevIt = it;
                     it = nextIt;
@@ -125,31 +104,25 @@ namespace seco {
                 }
             }
 
-            if (labelIndex > currentIndex) {
-                prevIt = row.emplace_after(it, labelIndex, 1);
+            if (index > currentIndex) {
+                prevIt = row.emplace_after(it, index, 1);
                 numNonZeroElements++;
                 it = prevIt;
-            } else if (labelIndex < currentIndex) {
-                prevIt = row.emplace_after(prevIt, labelIndex, 1);
+            } else if (index < currentIndex) {
+                prevIt = row.emplace_after(prevIt, index, 1);
                 numNonZeroElements++;
                 it = prevIt;
             } else {
                 prevIt = it;
             }
 
-            scoreIterator++;
-            indexIterator++;
-            advance(indexIterator, scoreIterator, scoresEnd);
             it++;
         }
 
-        while (scoreIterator != scoresEnd) {
-            uint32 labelIndex = *indexIterator;
-            prevIt = row.emplace_after(prevIt, labelIndex, 1);
+        for (; scoresBegin != scoresEnd; scoresBegin++) {
+            uint32 index = indexIterator[*scoresBegin];
+            prevIt = row.emplace_after(prevIt, index, 1);
             numNonZeroElements++;
-            scoreIterator++;
-            indexIterator++;
-            advance(indexIterator, scoreIterator, scoresEnd);
         }
 
         return numNonZeroElements;
@@ -158,10 +131,15 @@ namespace seco {
     static inline uint32 applyHead(const IHead& head, LilMatrix<uint8>::Row& row) {
         uint32 numNonZeroElements;
         auto completeHeadVisitor = [&](const CompleteHead& head) mutable {
-            numNonZeroElements = applyHead(IndexIterator(0), head.scores_cbegin(), head.scores_cend(), row);
+            numNonZeroElements = applyHead(
+                make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0), row);
         };
         auto partialHeadVisitor = [&](const PartialHead& head) mutable {
-            numNonZeroElements = applyHead(head.indices_cbegin(), head.scores_cbegin(), head.scores_cend(), row);
+            numNonZeroElements = applyHead(
+                make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), head.indices_cbegin(),
+                row);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
         return numNonZeroElements;
