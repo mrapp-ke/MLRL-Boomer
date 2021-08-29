@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/predictor.hpp"
+#include "common/output/predictor_sparse.hpp"
 #include "common/measures/measure_similarity.hpp"
 
 
@@ -17,7 +17,7 @@ namespace boosting {
      * aggregated score vector is then compared to known label vectors in order to obtain a distance measure. The label
      * vector that is closest to the aggregated score vector is finally predicted.
      */
-    class ExampleWiseClassificationPredictor : public IPredictor<uint8> {
+    class ExampleWiseClassificationPredictor : public ISparsePredictor<uint8> {
 
         private:
 
@@ -54,6 +54,14 @@ namespace boosting {
 
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const RuleModel& model, const LabelVectorSet* labelVectors) const override;
+
+            std::unique_ptr<SparsePredictionMatrix<uint8>> predict(const CContiguousFeatureMatrix& featureMatrix,
+                                                                   uint32 numLabels, const RuleModel& model,
+                                                                   const LabelVectorSet* labelVectors) const override;
+
+            std::unique_ptr<SparsePredictionMatrix<uint8>> predict(const CsrFeatureMatrix& featureMatrix,
+                                                                   uint32 numLabels, const RuleModel& model,
+                                                                   const LabelVectorSet* labelVectors) const override;
 
     };
 

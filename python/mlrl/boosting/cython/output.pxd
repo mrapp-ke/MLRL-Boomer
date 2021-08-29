@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
 from mlrl.common.cython._measures cimport ISimilarityMeasure
 from mlrl.common.cython.measures cimport SimilarityMeasure
-from mlrl.common.cython.output cimport AbstractBinaryPredictor, AbstractNumericalPredictor, IPredictor
+from mlrl.common.cython.output cimport AbstractBinaryPredictor, AbstractNumericalPredictor, IPredictor, ISparsePredictor
 
 from libcpp.memory cimport unique_ptr
 
@@ -35,7 +35,8 @@ cdef extern from "boosting/output/predictor_regression_label_wise.hpp" namespace
 
 cdef extern from "boosting/output/predictor_classification_label_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass LabelWiseClassificationPredictorImpl"boosting::LabelWiseClassificationPredictor"(IPredictor[uint8]):
+    cdef cppclass LabelWiseClassificationPredictorImpl"boosting::LabelWiseClassificationPredictor"(
+            ISparsePredictor[uint8]):
 
         # Constructors:
 
@@ -45,7 +46,7 @@ cdef extern from "boosting/output/predictor_classification_label_wise.hpp" names
 cdef extern from "boosting/output/predictor_classification_example_wise.hpp" namespace "boosting" nogil:
 
     cdef cppclass ExampleWiseClassificationPredictorImpl"boosting::ExampleWiseClassificationPredictor"(
-            IPredictor[uint8]):
+            ISparsePredictor[uint8]):
 
         # Constructors:
 
