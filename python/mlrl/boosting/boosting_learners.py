@@ -114,10 +114,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     """
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
-                 label_format: str = SparsePolicy.AUTO.value, max_rules: int = 1000, default_rule: bool = True,
-                 time_limit: int = -1, early_stopping: str = None, head_type: str = AUTOMATIC,
-                 loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = AUTOMATIC, label_sampling: str = None,
-                 instance_sampling: str = None, recalculate_predictions: bool = True,
+                 label_format: str = SparsePolicy.AUTO.value, prediction_format: str = SparsePolicy.AUTO.value,
+                 max_rules: int = 1000, default_rule: bool = True, time_limit: int = -1, early_stopping: str = None,
+                 head_type: str = AUTOMATIC, loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = AUTOMATIC,
+                 label_sampling: str = None, instance_sampling: str = None, recalculate_predictions: bool = True,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = AUTOMATIC, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
@@ -195,7 +195,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param num_threads_prediction:              The number of threads to be used to make predictions or -1, if the
                                                     number of cores that are available on the machine should be used
         """
-        super().__init__(random_state, feature_format, label_format)
+        super().__init__(random_state, feature_format, label_format, prediction_format)
         self.max_rules = max_rules
         self.default_rule = default_rule
         self.time_limit = time_limit

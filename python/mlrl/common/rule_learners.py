@@ -25,7 +25,7 @@ from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, Instan
     LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory
 from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import Predictor
+from mlrl.common.cython.output import Predictor, SparsePredictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, RandomBiPartitionSamplingFactory, \
     LabelWiseStratifiedBiPartitionSamplingFactory, \
     ExampleWiseStratifiedBiPartitionSamplingFactory
@@ -259,6 +259,28 @@ def parse_param_and_options(parameter_name: str, value: str,
                      + format_dict_keys(allowed_values_and_options) + ', but is "' + value + '"')
 
 
+def is_sparse(m, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
+    """
+    Returns whether a given matrix is considered sparse or not. A matrix is considered sparse if it is given in a sparse
+    format and is expected to occupy less memory than a dense matrix.
+
+    :param m:               A `np.ndarray` or `scipy.sparse.matrix` to be checked
+    :param sparse_format:   The `SparseFormat` to be used
+    :param dtype:           The type of the values that should be stored in the matrix
+    :param sparse_values:   True, if the values must explicitly be stored when using a sparse format, False otherwise
+    :return:                True, if the given matrix is considered sparse, False otherwise
+    """
+    if issparse(m):
+        num_pointers = m.shape[1 if sparse_format == SparseFormat.CSC else 0]
+        size_int = np.dtype(DTYPE_UINT32).itemsize
+        size_data = np.dtype(dtype).itemsize if sparse_values else 0
+        num_non_zero = m.nnz
+        size_sparse = (num_non_zero * size_data) + (num_non_zero * size_int) + (num_pointers * size_int)
+        size_dense = np.prod(m.shape) * size_data
+        return size_sparse < size_dense
+    return False
+
+
 def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, dtype,
                           sparse_values: bool = True) -> bool:
     """
@@ -295,13 +317,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
     elif isspmatrix_lil(m) or isspmatrix_coo(m) or isspmatrix_dok(m):
         # Given matrix is in a format that might be converted into the specified sparse format
         if policy == SparsePolicy.AUTO:
-            num_pointers = m.shape[1 if sparse_format == SparseFormat.CSC else 0]
-            size_int = np.dtype(DTYPE_UINT32).itemsize
-            size_data = np.dtype(dtype).itemsize if sparse_values else 0
-            num_non_zero = m.nnz
-            size_sparse = (num_non_zero * size_data) + (num_non_zero * size_int) + (num_pointers * size_int)
-            size_dense = np.prod(m.shape) * size_data
-            return size_sparse < size_dense
+            return is_sparse(m, sparse_format=sparse_format, dtype=dtype, sparse_values=sparse_values)
         else:
             return policy == SparsePolicy.FORCE_SPARSE
 
@@ -314,16 +330,21 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
     A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
     """
 
-    def __init__(self, random_state: int, feature_format: str, label_format: str):
+    def __init__(self, random_state: int, feature_format: str, label_format: str, prediction_format: str):
         """
-        :param random_state:    The seed to be used by RNGs. Must be at least 1
-        :param feature_format:  The format to be used for the feature matrix. Must be 'sparse', 'dense' or 'auto'
-        :param label_format:    The format to be used for the label matrix. Must be 'sparse', 'dense' or 'auto'
+        :param random_state:        The seed to be used by RNGs. Must be at least 1
+        :param feature_format:      The format to be used for the representation of the feature matrix. Must be
+                                    `sparse`, `dense` or `auto`
+        :param label_format:        The format to be used for the representation of the label matrix. Must be `sparse`,
+                                    `dense` or 'auto'
+        :param prediction_format:   The format to be used for representation of predicted labels. Must be `sparse`,
+                                    `dense` or `auto`
         """
         super().__init__()
         self.random_state = random_state
         self.feature_format = feature_format
         self.label_format = label_format
+        self.prediction_format = prediction_format
 
     def _fit(self, x, y):
         # Validate feature matrix and convert it to the preferred format...
@@ -348,6 +369,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_format = SparseFormat.CSR
+
+        # Check if predictions should be sparse...
+        prediction_sparse_policy = create_sparse_policy('prediction_format', self.prediction_format)
+        self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
+                prediction_sparse_policy == SparsePolicy.FORCE_SPARSE or
+                is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=True))
+
         y_sparse_policy = create_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y, sparse_format=y_sparse_format, policy=y_sparse_policy,
                                                  dtype=DTYPE_UINT8, sparse_values=False)
@@ -447,6 +475,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
                                 accept_sparse=(sparse_format.value if enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
         model = self.model_
+        predict_sparse = isinstance(predictor, SparsePredictor) and self.sparse_predictions_
+        log.debug('A ' + ('sparse' if predict_sparse else 'dense') + ' matrix is used to store the predictions')
 
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the test examples')
@@ -454,11 +484,19 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
             feature_matrix = CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
-            return predictor.predict_dense_csr(feature_matrix, model, label_vectors)
+
+            if predict_sparse:
+                return predictor.predict_sparse_csr(feature_matrix, model, label_vectors)
+            else:
+                return predictor.predict_dense_csr(feature_matrix, model, label_vectors)
         else:
             log.debug('A dense matrix is used to store the feature values of the test examples')
             feature_matrix = CContiguousFeatureMatrix(x)
-            return predictor.predict_dense(feature_matrix, model, label_vectors)
+
+            if predict_sparse:
+                return predictor.predict_sparse(feature_matrix, model, label_vectors)
+            else:
+                return predictor.predict_dense(feature_matrix, model, label_vectors)
 
     @abstractmethod
     def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:

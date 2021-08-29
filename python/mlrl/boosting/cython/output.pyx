@@ -74,7 +74,7 @@ cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
         self.num_labels = num_labels
         self.threshold = threshold
         self.num_threads = num_threads
-        self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[LabelWiseClassificationPredictorImpl](
+        self.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>make_unique[LabelWiseClassificationPredictorImpl](
             threshold, num_threads)
 
     def __reduce__(self):
@@ -97,7 +97,7 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
         self.measure = measure
         self.num_threads = num_threads
         cdef unique_ptr[ISimilarityMeasure] measure_ptr = measure.get_similarity_measure_ptr()
-        self.predictor_ptr = <unique_ptr[IPredictor[uint8]]>make_unique[ExampleWiseClassificationPredictorImpl](
+        self.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>make_unique[ExampleWiseClassificationPredictorImpl](
             move(measure_ptr), num_threads)
 
     def __reduce__(self):

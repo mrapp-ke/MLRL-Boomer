@@ -1,5 +1,6 @@
 #include "boosting/output/predictor_classification_example_wise.hpp"
 #include "common/validation.hpp"
+#include "common/data/arrays.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
@@ -7,14 +8,12 @@
 
 namespace boosting {
 
-    static inline void predictClosestLabelVector(uint32 exampleIndex, const float64* scoresBegin,
-                                                 const float64* scoresEnd, CContiguousView<uint8>& predictionMatrix,
-                                                 const ISimilarityMeasure& measure,
-                                                 const LabelVectorSet* labelVectorSet) {
-        std::fill(predictionMatrix.row_begin(exampleIndex), predictionMatrix.row_end(exampleIndex), 0);
+    static inline const LabelVector* findClosestLabelVector(const float64* scoresBegin, const float64* scoresEnd,
+                                                            const ISimilarityMeasure& measure,
+                                                            const LabelVectorSet* labelVectorSet) {
+        const LabelVector* closestLabelVector = nullptr;
 
         if (labelVectorSet != nullptr) {
-            const LabelVector* closestLabelVector = nullptr;
             float64 bestScore = 0;
             uint32 bestCount = 0;
 
@@ -30,18 +29,48 @@ namespace boosting {
                     bestCount = count;
                 }
             }
+        }
 
-            if (closestLabelVector != nullptr) {
-                uint32 numElements = closestLabelVector->getNumElements();
-                LabelVector::index_const_iterator indexIterator = closestLabelVector->indices_cbegin();
-                CContiguousView<uint8>::iterator predictionIterator = predictionMatrix.row_begin(exampleIndex);
+        return closestLabelVector;
+    }
 
-                for (uint32 i = 0; i < numElements; i++) {
-                    uint32 labelIndex = indexIterator[i];
-                    predictionIterator[labelIndex] = 1;
+    static inline void predictLabelVector(CContiguousView<uint8>::iterator predictionIterator, uint32 numElements,
+                                          const LabelVector* labelVector) {
+        setArrayToZeros(predictionIterator, numElements);
+
+        if (labelVector != nullptr) {
+            uint32 numIndices = labelVector->getNumElements();
+            LabelVector::index_const_iterator indexIterator = labelVector->indices_cbegin();
+
+            for (uint32 i = 0; i < numIndices; i++) {
+                uint32 labelIndex = indexIterator[i];
+                predictionIterator[labelIndex] = 1;
+            }
+        }
+    }
+
+    static inline uint32 predictLabelVector(LilMatrix<uint8>::Row& row, const LabelVector* labelVector) {
+        uint32 numNonZeroElements = 0;
+
+        if (labelVector != nullptr) {
+            uint32 numIndices = labelVector->getNumElements();
+            LabelVector::index_const_iterator indexIterator = labelVector->indices_cbegin();
+
+            if (numIndices > 0) {
+                uint32 labelIndex = indexIterator[0];
+                row.emplace_front(labelIndex, 1);
+                numNonZeroElements++;
+                LilMatrix<uint8>::Row::iterator it = row.begin();
+
+                for (uint32 i = 1; i < numIndices; i++) {
+                    labelIndex = indexIterator[i];
+                    it = row.emplace_after(it, labelIndex, 1);
+                    numNonZeroElements++;
                 }
             }
         }
+
+        return numNonZeroElements;
     }
 
     ExampleWiseClassificationPredictor::ExampleWiseClassificationPredictor(
@@ -55,16 +84,19 @@ namespace boosting {
                                                        CContiguousView<uint8>& predictionMatrix,
                                                        const LabelVectorSet* labelVectors) const {
         uint32 numExamples = scoreMatrix.getNumRows();
+        uint32 numLabels = predictionMatrix.getNumCols();
         const CContiguousConstView<float64>* scoreMatrixPtr = &scoreMatrix;
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
         const ISimilarityMeasure* measurePtr = measurePtr_.get();
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(scoreMatrixPtr) \
+        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(scoreMatrixPtr) \
         firstprivate(predictionMatrixPtr) firstprivate(measurePtr) firstprivate(labelVectors) schedule(dynamic) \
         num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
-            predictClosestLabelVector(i, scoreMatrixPtr->row_cbegin(i), scoreMatrixPtr->row_cend(i),
-                                      *predictionMatrixPtr, *measurePtr, labelVectors);
+            const LabelVector* closestLabelVector = findClosestLabelVector(scoreMatrixPtr->row_cbegin(i),
+                                                                           scoreMatrixPtr->row_cend(i), *measurePtr,
+                                                                           labelVectors);
+            predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
         }
     }
 
@@ -84,8 +116,9 @@ namespace boosting {
         for (uint32 i = 0; i < numExamples; i++) {
             float64 scoreVector[numLabels] = {};
             applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i), &scoreVector[0]);
-            predictClosestLabelVector(i, &scoreVector[0], &scoreVector[numLabels], *predictionMatrixPtr, *measurePtr,
-                                      labelVectors);
+            const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
+                                                                           *measurePtr, labelVectors);
+            predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
         }
     }
 
@@ -107,9 +140,62 @@ namespace boosting {
             applyRulesCsr(*modelPtr, featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
                           featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                           &scoreVector[0]);
-            predictClosestLabelVector(i, &scoreVector[0], &scoreVector[numLabels], *predictionMatrixPtr, *measurePtr,
-                                      labelVectors);
+            const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
+                                                                           *measurePtr, labelVectors);
+            predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
         }
+    }
+
+    std::unique_ptr<SparsePredictionMatrix<uint8>> ExampleWiseClassificationPredictor::predict(
+            const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+            const LabelVectorSet* labelVectors) const {
+        uint32 numExamples = featureMatrix.getNumRows();
+        std::unique_ptr<LilMatrix<uint8>> lilMatrixPtr = std::make_unique<LilMatrix<uint8>>(numExamples);
+        const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+        LilMatrix<uint8>* predictionMatrixPtr = lilMatrixPtr.get();
+        const RuleModel* modelPtr = &model;
+        const ISimilarityMeasure* measurePtr = measurePtr_.get();
+        uint32 numNonZeroElements = 0;
+
+        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
+        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+        firstprivate(measurePtr) firstprivate(labelVectors) schedule(dynamic) num_threads(numThreads_)
+        for (uint32 i = 0; i < numExamples; i++) {
+            float64 scoreVector[numLabels] = {};
+            applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i), &scoreVector[0]);
+            const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
+                                                                           *measurePtr, labelVectors);
+            numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
+        }
+
+        return std::make_unique<SparsePredictionMatrix<uint8>>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
+    }
+
+    std::unique_ptr<SparsePredictionMatrix<uint8>> ExampleWiseClassificationPredictor::predict(
+            const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+            const LabelVectorSet* labelVectors) const {
+        uint32 numExamples = featureMatrix.getNumRows();
+        std::unique_ptr<LilMatrix<uint8>> lilMatrixPtr = std::make_unique<LilMatrix<uint8>>(numExamples);
+        const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+        LilMatrix<uint8>* predictionMatrixPtr = lilMatrixPtr.get();
+        const RuleModel* modelPtr = &model;
+        const ISimilarityMeasure* measurePtr = measurePtr_.get();
+        uint32 numNonZeroElements = 0;
+
+        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
+        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+        firstprivate(measurePtr) firstprivate(labelVectors) schedule(dynamic) num_threads(numThreads_)
+        for (uint32 i = 0; i < numExamples; i++) {
+            float64 scoreVector[numLabels] = {};
+            applyRulesCsr(*modelPtr, featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
+                          featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
+                          &scoreVector[0]);
+            const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
+                                                                           *measurePtr, labelVectors);
+            numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
+        }
+
+        return std::make_unique<SparsePredictionMatrix<uint8>>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
     }
 
 }
