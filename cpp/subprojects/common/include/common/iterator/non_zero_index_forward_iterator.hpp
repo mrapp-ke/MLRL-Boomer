@@ -5,6 +5,7 @@
 
 #include "common/data/types.hpp"
 #include <iterator>
+#include <type_traits>
 
 
 /**
@@ -33,7 +34,7 @@ class NonZeroIndexForwardIterator {
         NonZeroIndexForwardIterator(T begin, T end)
             : iterator_(begin), end_(end), index_(0) {
             for (; iterator_ != end_; iterator_++) {
-                T value = *iterator_;
+                auto value = *iterator_;
 
                 if (value != 0) {
                     break;
@@ -86,7 +87,7 @@ class NonZeroIndexForwardIterator {
             iterator_++;
 
             for (; iterator_ != end_; iterator_++) {
-                T value = *iterator_;
+                auto value = *iterator_;
 
                 if (value != 0) {
                     break;
@@ -107,7 +108,7 @@ class NonZeroIndexForwardIterator {
             iterator_++;
 
             for (; iterator_ != end_; iterator_++) {
-                T value = *iterator_;
+                auto value = *iterator_;
 
                 if (value != 0) {
                     break;
