@@ -146,6 +146,7 @@ class NonZeroIndexForwardIterator {
  *
  * @param begin An iterator to the beginning of the values
  * @param end   An iterator to the end of the values
+ * @return      A `NonZeroIndexForwardIterator` that has been created
  */
 template<typename T>
 static inline NonZeroIndexForwardIterator<T> make_non_zero_index_forward_iterator(T begin, T end) {
