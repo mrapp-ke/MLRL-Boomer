@@ -38,17 +38,19 @@ The following parameters are always needed to specify the data set that should b
 
   * The cross validation fold to be performed. Must be in [1, --folds] or 0, if all folds should be performed. This parameter is ignored if --folds is set to 1.
 
-* ``--evaluate-training-data`` (Default value = False)
+* ``--evaluate-training-data`` (Default value = false)
 
-  * True, if the models should not only be evaluated on the test data, but also on the training data, False otherwise.
+  * ``true`` The models are not only evaluated on the test data, but also on the training data.
+  * ``false`` The models are only evaluated on the test data.
 
 **Data Format**
 
 The following parameters allow to specify how the training data should be organized:
 
-* ``--one-hot-encoding`` (Default value = False)
+* ``--one-hot-encoding`` (Default value = false)
 
-  * True, if one-hot-encoding should be used to encode nominal attributes, False otherwise. One-hot-encoding is not required to be able to handle nominal attributes, as the algorithm can handle this kind of attributes natively.
+  * ``true`` One-hot-encoding is used to encode nominal attributes.
+  * ``false`` The algorithm's ability to natively handle nominal attributes is used.
 
 * ``--feature-format`` (Default value = auto)
 
@@ -88,25 +90,28 @@ The following parameters allow to customize the console output and output files 
 
   * The path of the directory where experimental results should be saved.
 
-* ``--store-predictions`` (Default value = False)
+* ``--store-predictions`` (Default value = false)
 
-  * True, if the predictions for individual examples and labels should be written into output files, False otherwise. Does only have an effect if the parameter --output-dir is specified.
+  * ``true`` The predictions for individual examples and labels are written into output files. Does only have an effect if the parameter --output-dir is specified.
+  * ``false`` Predictions are not written into output files.
 
-* ``--print-rules`` (Default value = False)
+* ``--print-rules`` (Default value = false)
 
-  * True, if the induced rules should be printed to the console, False otherwise.
+  * ``true`` The induced rules are printed on the console.
+  * ``false`` The induced rules are not printed on the console.
 
-* ``--store-rules`` (Default value = False)
+* ``--store-rules`` (Default value = false)
 
-  * True, if the induced rules should be written into a text file, False otherwise. Does only have an effect if the parameter --output-dir is specified.
+  * ``true`` The induced rules are written into a text file. Does only have an effect if the parameter --output-dir is specified.
+  * ``false`` The induced rules are not written into a text file.
 
 * ``--print-options`` (Default value = None)
 
-  * Additional options to be taken into account when writing rules to the console or an output file. Does only have an effect, if the parameter --print-rules or --store-rules is set to True. The options must be given using the bracket notation. The following options are available:
+  * Additional options to be taken into account when writing rules on the console or into an output file. Does only have an effect, if the parameter --print-rules or --store-rules is set to ``true``. The options must be given using the bracket notation. The following options are available:
   
-    * ``print_feature_names`` (Default value = True) True, if the names of features should be printed instead of their indices, False otherwise.
-    * ``print_label_names`` (Default value = True) True, if the names of labels should be printed instead of their indices, False otherwise.
-    * ``print_nominal_values`` (Default value = True) True, if the names of nominal values should be printed instead of their numerical representation, False otherwise.
+    * ``print_feature_names`` (Default value = true) ``true``, if the names of features should be printed instead of their indices, ``false`` otherwise.
+    * ``print_label_names`` (Default value = true) ``true``, if the names of labels should be printed instead of their indices, ``false`` otherwise.
+    * ``print_nominal_values`` (Default value = true) ``true``, if the names of nominal values should be printed instead of their numerical representation, ``false`` otherwise.
 
 * ``--log-level`` (Default value = info)
 
@@ -125,9 +130,10 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * The maximum number of rules to be induced. Must be at least 1 or 0, if the number of rules should not be restricted.
 
-* ``--default-rule`` (Default value = True)
+* ``--default-rule`` (Default value = true)
 
-  * True, if the first rule should be a default rule, False otherwise.
+  * ``true`` The first rule is a default rule.
+  * ``false`` No default rule is used.
 
 * ``--time-limit`` (Default value = 0)
 
@@ -166,9 +172,10 @@ The following parameters allow to adjust the behavior of the algorithm:
   
     * ``sample_size`` (Default value = 0.66) The percentage of examples to be included in a sample, e.g., a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
 
-* ``--recalculate-predictions`` (Default value = True)
+* ``--recalculate-predictions`` (Default value = true)
 
-  * True, if the predictions of rules should be recalculated on the entire training data, if the parameter --instance-sampling is not set to None, False otherwise.
+  * ``true`` The predictions of rules are recalculated on the entire training data, if the parameter --instance-sampling is not set to None.
+  * ``false`` The predictions of rules are not recalculated.
 
 * ``--holdout`` (Default value = None)
 
@@ -197,7 +204,7 @@ The following parameters allow to adjust the behavior of the algorithm:
     * ``num_recent`` (Default value = 50) The number of quality scores of the most recent iterations to be stored in a buffer. Must be at least 1.
     * ``aggregation`` (Default value = min) The name of the aggregation function that should be used to aggregate the scores in both buffers. Must be min, max or avg.
     * ``min_improvement`` (Default value = 0.005) The minimum improvement in percent that must be reached when comparing the aggregated scores in both buffers for the rule induction to be continued. Must be in [0, 1].
-    * ``force_stop`` (Default value = True) True, if the induction of rules should be forced to be stopped, if the stopping criterion is met, False, if the time of stopping should only be stored.
+    * ``force_stop`` (Default value = ``true``) ``true``, if the induction of rules should be forced to be stopped, if the stopping criterion is met, ``false``, if the time of stopping should only be stored.
 
 * ``--feature-binning`` (Default value = None)
 

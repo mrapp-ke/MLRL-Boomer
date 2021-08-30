@@ -5,9 +5,27 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
+from enum import Enum
 from typing import Set
 
-from mlrl.common.strings import format_string_set
+from mlrl.common.strings import format_string_set, format_enum_values
+
+
+class BooleanOption(Enum):
+    TRUE = 'true'
+    FALSE = 'false'
+
+    @staticmethod
+    def parse(s):
+        lower = str(s).lower()
+
+        if lower == BooleanOption.TRUE.value:
+            return True
+        elif lower == BooleanOption.FALSE.value:
+            return False
+        raise ValueError(
+            'Invalid boolean value given. Must be one of ' + format_enum_values(BooleanOption) + ', but is "' + str(
+                s) + '".')
 
 
 class Options:
@@ -101,13 +119,7 @@ class Options:
         """
         if key in self.dict:
             value = str(self.dict[key])
-            lowercase = value.lower()
-
-            if lowercase == 'false':
-                return False
-            if lowercase == 'true':
-                return True
-            raise ValueError('Value for key "' + key + '" is expected to be a boolean, but is "' + value + '"')
+            return BooleanOption.parse(value)
 
         return default_value
 
