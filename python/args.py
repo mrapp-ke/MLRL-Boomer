@@ -180,7 +180,7 @@ class ArgumentParserBuilder:
         parser = ArgumentParser(description=description)
         parser.add_argument(PARAM_LOG_LEVEL, type=log_level,
                             default=ArgumentParserBuilder.__get_or_default('log_level', 'info', **kwargs),
-                            help='The log level to be used. Must be ony of ' + format_enum_values(LogLevel) + '.')
+                            help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
         self.parser = parser
 
     def add_random_state_argument(self, **kwargs) -> 'ArgumentParserBuilder':
