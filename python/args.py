@@ -133,14 +133,16 @@ def log_level(s):
         return log.CRITICAL
     elif s == LogLevel.NOTSET.value:
         return log.NOTSET
-    raise ValueError('Invalid argument given for parameter "' + PARAM_LOG_LEVEL + '": ' + str(s))
+    raise ValueError('Invalid value given for parameter "' + PARAM_LOG_LEVEL + '". Must be one of ' +
+                     format_enum_values(LogLevel) + ', but is "' + str(s) + '".')
 
 
 def current_fold_string(s):
     n = int(s)
     if n >= 0:
         return n - 1
-    raise ValueError('Invalid argument given for parameter "' + PARAM_CURRENT_FOLD + '": ' + str(n))
+    raise ValueError(
+        'Invalid value given for parameter "' + PARAM_CURRENT_FOLD + '". Must be at least 0, but is "' + str(n) + '".')
 
 
 def boolean_string(s):
@@ -253,7 +255,7 @@ class ArgumentParserBuilder:
                                  + format_enum_values(SparsePolicy) + '.')
         parser.add_argument(PARAM_PREDICTION_FORMAT, type=optional_string, default=SparsePolicy.AUTO.value,
                             help='The format to be used for the representation of predicted labels. Must be one of '
-                                + format_enum_values(SparsePolicy) + '.')
+                                 + format_enum_values(SparsePolicy) + '.')
         parser.add_argument(PARAM_MAX_RULES, type=int,
                             default=ArgumentParserBuilder.__get_or_default('max_rules', 500, **kwargs),
                             help='The maximum number of rules to be induced. Must be at least 1 or 0, if the number of '
