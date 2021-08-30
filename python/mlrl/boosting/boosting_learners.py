@@ -186,17 +186,17 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param min_coverage:                        The minimum number of training examples that must be covered by a
                                                     rule. Must be at least 1
         :param max_conditions:                      The maximum number of conditions to be included in a rule's body.
-                                                    Must be at least 1 or -1, if the number of conditions should not be
+                                                    Must be at least 1 or 0, if the number of conditions should not be
                                                     restricted
         :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
                                                     a new condition has been added to its body. Must be at least 1 or
-                                                    -1, if the number of refinements should not be restricted
+                                                    0, if the number of refinements should not be restricted
         :param num_threads_rule_refinement:         The number of threads to be used to search for potential refinements
-                                                    of rules or -1, if the number of cores that are available on the
+                                                    of rules or 0, if the number of cores that are available on the
                                                     machine should be used
-        :param num_threads_statistic_update:        The number of threads to be used to update statistics or -1, if the
+        :param num_threads_statistic_update:        The number of threads to be used to update statistics or 0, if the
                                                     number of cores that are available on the machine should be used
-        :param num_threads_prediction:              The number of threads to be used to make predictions or -1, if the
+        :param num_threads_prediction:              The number of threads to be used to make predictions or 0, if the
                                                     number of cores that are available on the machine should be used
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
