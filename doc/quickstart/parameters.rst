@@ -279,14 +279,25 @@ The following parameters allow to adjust the behavior of the algorithm:
 
 The following parameters allow to enable multi-threading for different aspects of the algorithm:
 
-* ``--num-threads-rule-refinement`` (Default value = 1)
+* ``--parallel-rule-refinement`` (Default value = auto)
 
-  * The number of threads to be used to search for potential refinements of rules in parallel. Must be at least 1 or 0, if the number of cores that are available on the machine should be used.
+  * ``auto`` The number of threads to be used to search for potential refinements of rules in parallel is chosen automatically, depending on the loss function.
+  * ``false```No multi-threading is used to search for potential refinements of rules.
+  * ``true`` Multi-threading is used to search for potential refinements of rules in parallel. The following options may be provided using the bracket notation:
 
-* ``--num-threads-statistic-update`` (Default value = 1)
+    * ``num_threads`` (Default value = 0) The number of threads to be used. Must be at least 1 or 0, if the number of cores available on the machine should be used.
 
-  * The number of threads to be used for calculating the gradients and Hessians for different examples in parallel. Must be at least 1 or 0, if the number of cores that are available on the machine should be used.
+* ``--parallel-statistic-update`` (Default value = auto)
 
-* ``--num-threads-prediction`` (Default value = 1)
+  * ``auto`` The number of threads to be used to calculate the gradients and Hessians for different examples in parallel is chosen automatically, depending on the loss function.
+  * ``false`` No multi-threading is used to calculate the gradients and Hessians of different examples.
+  * ``true`` Multi-threading is used to calculate the gradients and Hessians of different examples in parallel. The following options may be provided using the bracket notation:
 
-  * The number of threads to be used for making predictions for different examples in parallel. Must be at least 1 or 0, if the number of cores that are available on the machine should be used.
+    * ``num_threads`` (Default value = 0) The number of threads to be used. Must be at least 1 or 0, if the number of cores available on the machine should be used.
+
+* ``--parallel-prediction`` (Default value = true)
+
+  * ``false`` No multi-threading is used to obtain predictions for different examples.
+  * ``true`` Multi-threading is used to obtain predictions for different examples in parallel. The following options may be provided using the bracket notation:
+
+    * ``num_threads`` (Default value = 0) The number of threads to be used. Must be at least 1 or 0, if the number of cores available on the machine should be used.
