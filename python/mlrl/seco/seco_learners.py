@@ -31,12 +31,13 @@ from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProvi
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
 
+from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_WITH_REPLACEMENT, \
     SAMPLING_WITHOUT_REPLACEMENT, ARGUMENT_SAMPLE_SIZE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
     create_label_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
-    get_preferred_num_threads, create_thresholds_factory, parse_param_and_options, parse_param
+    create_num_threads, create_thresholds_factory, parse_param_and_options, parse_param
 
 HEAD_TYPE_PARTIAL = 'partial'
 
@@ -101,8 +102,10 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                  pruning_heuristic: str = HEURISTIC_ACCURACY, label_sampling: str = None,
                  instance_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, feature_sampling: str = None,
                  holdout: str = None, feature_binning: str = None, pruning: str = PRUNING_IREP, min_coverage: int = 1,
-                 max_conditions: int = 0, max_head_refinements: int = 1, parallel_rule_refinement: int = 1,
-                 parallel_statistic_update: int = 1, parallel_prediction: int = 1):
+                 max_conditions: int = 0, max_head_refinements: int = 1,
+                 parallel_rule_refinement: str = BooleanOption.TRUE.value,
+                 parallel_statistic_update: str = BooleanOption.FALSE.value,
+                 parallel_prediction: str = BooleanOption.TRUE.value):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -154,13 +157,16 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     0, if the number of refinements should not be restricted
-        :param parallel_rule_refinement:            The number of threads to be used to search for potential refinements
-                                                    of rules or 0, if the number of cores that are available on the
-                                                    machine should be used
-        :param parallel_statistic_update:           The number of threads to be used to update statistics or 0, if the
-                                                    number of cores that are available on the machine should be used
-        :param parallel_prediction:                 The number of threads to be used to make predictions or 0, if the
-                                                    number of cores that are available on the machine should be used
+        :param parallel_rule_refinement:            Whether potential refinements of rules should be searched for in
+                                                    parallel or not. Must be `true` or `false`. Additional options may
+                                                    be provided using the bracket notation `true{num_threads=8}`
+        :param parallel_statistic_update:           Whether the confusion matrices for different examples should be
+                                                    calculated in parallel or not. Must be `true` or `false`. Additional
+                                                    options may be provided using the bracket notation
+                                                    `true{num_threads=8}`
+        :param parallel_prediction:                 Whether predictions for different examples should be obtained in
+                                                    parallel or not. Must be `true` or `false`. Additional options may
+                                                    be provided using the bracket notation `true{num_threads=8}`
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
         self.max_rules = max_rules
@@ -223,11 +229,11 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                                        pruning_rule_evaluation_factory)
 
     def _create_thresholds_factory(self) -> ThresholdsFactory:
-        num_threads = get_preferred_num_threads(int(self.parallel_statistic_update))
+        num_threads = create_num_threads(self.parallel_statistic_update, 'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
     def _create_rule_induction(self) -> RuleInduction:
-        num_threads = get_preferred_num_threads(int(self.parallel_rule_refinement))
+        num_threads = create_num_threads(self.parallel_rule_refinement, 'parallel_rule_refinement')
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     False, num_threads)
 
@@ -308,5 +314,5 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         return self.__create_label_wise_predictor(num_labels)
 
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
-        num_threads = get_preferred_num_threads(self.parallel_prediction)
+        num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
         return LabelWiseClassificationPredictor(num_labels, num_threads)

@@ -21,9 +21,9 @@ class BoomerRunnable(RuleLearnerRunnable):
                       feature_binning=args.feature_binning, label_binning=args.label_binning, head_type=args.head_type,
                       l2_regularization_weight=args.l2_regularization_weight, min_coverage=args.min_coverage,
                       max_conditions=args.max_conditions, max_head_refinements=args.max_head_refinements,
-                      parallel_rule_refinement=args.num_threads_rule_refinement,
-                      parallel_statistic_update=args.num_threads_statistic_update,
-                      parallel_prediction=args.num_threads_prediction)
+                      parallel_rule_refinement=args.parallel_rule_refinement,
+                      parallel_statistic_update=args.parallel_statistic_update,
+                      parallel_prediction=args.parallel_prediction)
 
 
 if __name__ == '__main__':
