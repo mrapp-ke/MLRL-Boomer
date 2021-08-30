@@ -319,12 +319,14 @@ class ArgumentParserBuilder:
     def add_boosting_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
         self.add_rule_learner_arguments(max_rules=1000, feature_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
         parser = self.parser
-        parser.add_argument(PARAM_DEFAULT_RULE, type=boolean_string,
-                            default=ArgumentParserBuilder.__get_or_default('default_rule', True, **kwargs),
+        parser.add_argument(PARAM_DEFAULT_RULE, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('default_rule', BooleanOption.TRUE.value,
+                                                                           **kwargs),
                             help='Whether the first rule should be a default rule or not. Must be one of '
                                  + format_enum_values(BooleanOption))
-        parser.add_argument(PARAM_RECALCULATE_PREDICTIONS, type=boolean_string,
-                            default=ArgumentParserBuilder.__get_or_default('recalculate_predictions', True, **kwargs),
+        parser.add_argument(PARAM_RECALCULATE_PREDICTIONS, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('recalculate_predictions',
+                                                                           BooleanOption.TRUE.value, **kwargs),
                             help='Whether the predictions of rules should be recalculated on the entire training data, '
                                  + 'if the parameter ' + PARAM_INSTANCE_SAMPLING + ' is not set to None, or not. Must '
                                  + 'be one of ' + format_enum_values(BooleanOption) + '.')
