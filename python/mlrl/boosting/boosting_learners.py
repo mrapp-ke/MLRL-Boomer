@@ -39,6 +39,7 @@ from mlrl.common.cython.stopping import StoppingCriterion, MeasureStoppingCriter
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from sklearn.base import ClassifierMixin
 
+from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
@@ -115,9 +116,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, prediction_format: str = SparsePolicy.AUTO.value,
-                 max_rules: int = 1000, default_rule: bool = True, time_limit: int = -1, early_stopping: str = None,
-                 head_type: str = AUTOMATIC, loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = AUTOMATIC,
-                 label_sampling: str = None, instance_sampling: str = None, recalculate_predictions: bool = True,
+                 max_rules: int = 1000, default_rule: str = BooleanOption.TRUE.value, time_limit: int = -1,
+                 early_stopping: str = None, head_type: str = AUTOMATIC, loss: str = LOSS_LOGISTIC_LABEL_WISE,
+                 predictor: str = AUTOMATIC, label_sampling: str = None, instance_sampling: str = None,
+                 recalculate_predictions: str = BooleanOption.TRUE.value,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = AUTOMATIC, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
@@ -126,7 +128,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
-        :param default_rule:                    True, if a default rule should be used, False otherwise
+        :param default_rule:                        Whether a default rule should be used, or not. Must be `true` or
+                                                    `false`
         :param time_limit:                          The duration in seconds after which the induction of rules should be
                                                     canceled
         :param early_stopping:                      The strategy that is used for early stopping. Must be `measure` or
@@ -151,8 +154,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     `with-replacement`, `without-replacement` or None, if no sampling
                                                     should be used. Additional options may be provided using the bracket
                                                     notation `with-replacement{sample_size=0.5}`
-        :param recalculate_predictions:             True, if the predictions of rules should be recalculated on the
-                                                    entire training data, if instance sampling is used, False otherwise
+        :param recalculate_predictions:             Whether the predictions of rules should be recalculated on the
+                                                    entire training data, if instance sampling is used, or not. Must be
+                                                    `true` or `false`
         :param feature_sampling:                    The strategy that is used for sampling the features each time a
                                                     classification rule is refined. Must be `without-replacement` or
                                                     None, if no sampling should be used. Additional options may be
@@ -290,7 +294,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_rule_induction(self) -> RuleInduction:
         num_threads = get_preferred_num_threads(int(self.num_threads_rule_refinement))
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
-                                    self.recalculate_predictions, num_threads)
+                                    BooleanOption.parse(self.recalculate_predictions), num_threads)
 
     def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
         return SequentialRuleModelAssemblageFactory()
@@ -328,7 +332,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return stopping_criteria
 
     def _use_default_rule(self) -> bool:
-        return self.default_rule
+        return BooleanOption.parse(self.default_rule)
 
     def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
         early_stopping = self.early_stopping
