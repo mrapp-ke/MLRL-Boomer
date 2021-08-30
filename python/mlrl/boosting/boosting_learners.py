@@ -41,11 +41,11 @@ from sklearn.base import ClassifierMixin
 
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
-    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS
+    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, create_label_sampling_factory, \
     create_instance_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
-    get_preferred_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
+    create_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
 
 EARLY_STOPPING_LOSS = 'loss'
 
@@ -107,6 +107,12 @@ LOSS_VALUES: Set[str] = {LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL
 
 PREDICTOR_VALUES: Set[str] = {PREDICTOR_LABEL_WISE, PREDICTOR_EXAMPLE_WISE, AUTOMATIC}
 
+PARALLEL_VALUES: Dict[str, Set[str]] = {
+    str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
+    str(BooleanOption.FALSE.value): {},
+    AUTOMATIC: {}
+}
+
 
 class Boomer(MLRuleLearner, ClassifierMixin):
     """
@@ -123,8 +129,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = AUTOMATIC, pruning: str = None, shrinkage: float = 0.3,
                  l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = 0,
-                 max_head_refinements: int = 1, parallel_rule_refinement: int = 1, parallel_statistic_update: int = 1,
-                 parallel_prediction: int = 1):
+                 max_head_refinements: int = 1, parallel_rule_refinement: str = AUTOMATIC,
+                 parallel_statistic_update: str = AUTOMATIC, parallel_prediction: str = BooleanOption.TRUE.value):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -191,13 +197,19 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     0, if the number of refinements should not be restricted
-        :param parallel_rule_refinement:            The number of threads to be used to search for potential refinements
-                                                    of rules or 0, if the number of cores that are available on the
-                                                    machine should be used
-        :param parallel_statistic_update:           The number of threads to be used to update statistics or 0, if the
-                                                    number of cores that are available on the machine should be used
-        :param parallel_prediction:                 The number of threads to be used to make predictions or 0, if the
-                                                    number of cores that are available on the machine should be used
+        :param parallel_rule_refinement:            Whether potential refinements of rules should be searched for in
+                                                    parallel or not. Must be `true`, `false` or `auto`, if the most
+                                                    suitable strategy should be chosen automatically depending on the
+                                                    loss function. Additional options may be provided using the bracket
+                                                    notation `true{num_threads=8}`
+        :param parallel_statistic_update:           Whether the gradients and Hessians for different examples should be
+                                                    calculated in parallel or not. Must be `true`, `false` or `auto`, if
+                                                    the most suitable strategy should be chosen automatically depending
+                                                    on the loss function. Additional options may be provided using the
+                                                    bracket notation `true{num_threads=8}`
+        :param parallel_prediction:                 Whether predictions for different examples should be obtained in
+                                                    parallel or not. Must be `true` or `false`. Additional options may
+                                                    be provided using the bracket notation `true{num_threads=8}`
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
         self.max_rules = max_rules
@@ -262,7 +274,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return name
 
     def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
-        num_threads = get_preferred_num_threads(int(self.parallel_statistic_update))
+        parallel = self.__get_preferred_parallel_statistic_update()
+        num_threads = create_num_threads(parallel, 'parallel_statistic_update')
         loss_function = self.__create_loss_function()
         head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
         label_binning_factory = self.__create_label_binning_factory()
@@ -288,11 +301,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                              pruning_rule_evaluation_factory, num_threads)
 
     def _create_thresholds_factory(self) -> ThresholdsFactory:
-        num_threads = get_preferred_num_threads(int(self.parallel_statistic_update))
+        parallel = self.__get_preferred_parallel_statistic_update()
+        num_threads = create_num_threads(parallel, 'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
     def _create_rule_induction(self) -> RuleInduction:
-        num_threads = get_preferred_num_threads(int(self.parallel_rule_refinement))
+        parallel = self.__get_preferred_parallel_rule_refinement()
+        num_threads = create_num_threads(parallel, 'parallel_rule_refinement')
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     BooleanOption.parse(self.recalculate_predictions), num_threads)
 
@@ -444,6 +459,26 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return HEAD_TYPE_SINGLE
         return head_type
 
+    def __get_preferred_parallel_rule_refinement(self) -> str:
+        parallel_rule_refinement = self.parallel_rule_refinement
+
+        if parallel_rule_refinement == AUTOMATIC:
+            if self.loss in NON_DECOMPOSABLE_LOSSES:
+                return BooleanOption.FALSE.value
+            else:
+                return BooleanOption.TRUE.value
+        return parallel_rule_refinement
+
+    def __get_preferred_parallel_statistic_update(self) -> str:
+        parallel_statistic_update = self.parallel_statistic_update
+
+        if parallel_statistic_update == AUTOMATIC:
+            if self.loss in NON_DECOMPOSABLE_LOSSES:
+                return BooleanOption.TRUE.value
+            else:
+                return BooleanOption.FALSE.value
+        return parallel_statistic_update
+
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
 
@@ -483,18 +518,18 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return predictor
 
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
-        num_threads = get_preferred_num_threads(int(self.parallel_prediction))
+        num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
         threshold = 0.5 if self.loss == LOSS_SQUARED_HINGE_LABEL_WISE else 0.0
         return LabelWiseClassificationPredictor(num_labels=num_labels, threshold=threshold, num_threads=num_threads)
 
     def __create_example_wise_predictor(self, num_labels: int) -> ExampleWiseClassificationPredictor:
         loss = self.__create_loss_function()
-        num_threads = get_preferred_num_threads(int(self.parallel_prediction))
+        num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
         return ExampleWiseClassificationPredictor(num_labels=num_labels, measure=loss, num_threads=num_threads)
 
     def __create_label_wise_probability_predictor(
             self, num_labels: int,
             transformation_function: LabelWiseTransformationFunction) -> LabelWiseProbabilityPredictor:
-        num_threads = get_preferred_num_threads(int(self.parallel_prediction))
+        num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
         return LabelWiseProbabilityPredictor(num_labels=num_labels, transformation_function=transformation_function,
                                              num_threads=num_threads)

@@ -43,6 +43,7 @@ from sklearn.utils import check_array
 
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.learners import Learner, NominalAttributeLearner
+from mlrl.common.options import BooleanOption
 from mlrl.common.options import Options
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
@@ -79,6 +80,8 @@ ARGUMENT_MAX_BINS = 'max_bins'
 
 PRUNING_IREP = 'irep'
 
+ARGUMENT_NUM_THREADS = 'num_threads'
+
 LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
     SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}
 }
@@ -106,6 +109,11 @@ FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
 }
 
 PRUNING_VALUES: Set[str] = {PRUNING_IREP}
+
+PARALLEL_VALUES: Dict[str, Set[str]] = {
+    str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
+    str(BooleanOption.FALSE.value): {}
+}
 
 
 class SparsePolicy(Enum):
@@ -207,10 +215,18 @@ def create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCr
     return stopping_criteria
 
 
-def get_preferred_num_threads(num_threads: int) -> int:
-    if num_threads == 0:
-        return os.cpu_count()
-    return num_threads
+def create_num_threads(parallel: str, parameter_name: str) -> int:
+    value, options = parse_param_and_options(parameter_name, parallel, PARALLEL_VALUES)
+
+    if value == BooleanOption.TRUE.value:
+        num_threads = options.get_int(ARGUMENT_NUM_THREADS, 0)
+
+        if num_threads == 0:
+            return os.cpu_count()
+
+        return num_threads
+    elif value == BooleanOption.FALSE.value:
+        return 1
 
 
 def create_thresholds_factory(feature_binning: str, num_threads: int) -> ThresholdsFactory:
