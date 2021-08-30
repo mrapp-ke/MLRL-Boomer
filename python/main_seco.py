@@ -20,9 +20,9 @@ class SeCoRunnable(RuleLearnerRunnable):
                                feature_binning=args.feature_binning, head_type=args.head_type,
                                min_coverage=args.min_coverage, max_conditions=args.max_conditions,
                                lift_function=args.lift_function, max_head_refinements=args.max_head_refinements,
-                               num_threads_rule_refinement=args.num_threads_rule_refinement,
-                               num_threads_statistic_update=args.num_threads_statistic_update,
-                               num_threads_prediction=args.num_threads_prediction)
+                               parallel_rule_refinement=args.parallel_rule_refinement,
+                               parallel_statistic_update=args.parallel_statistic_update,
+                               parallel_prediction=args.parallel_prediction)
 
 
 if __name__ == '__main__':

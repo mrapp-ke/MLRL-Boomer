@@ -10,11 +10,12 @@ from argparse import ArgumentParser
 from enum import Enum
 
 from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE, HEAD_TYPE_VALUES as BOOSTING_HEAD_TYPE_VALUES, \
-    EARLY_STOPPING_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, PREDICTOR_VALUES
+    EARLY_STOPPING_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, PREDICTOR_VALUES, \
+    PARALLEL_VALUES as BOOSTING_PARALLEL_VALUES
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy, HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, \
     PRUNING_IREP, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, \
-    PRUNING_VALUES, INSTANCE_SAMPLING_VALUES as BOOSTING_INSTANCE_SAMPLING_VALUES
+    PRUNING_VALUES, INSTANCE_SAMPLING_VALUES as BOOSTING_INSTANCE_SAMPLING_VALUES, PARALLEL_VALUES
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 from mlrl.seco.seco_learners import HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK, \
     INSTANCE_SAMPLING_VALUES as SECO_INSTANCE_SAMPLING_VALUES, HEAD_TYPE_VALUES as SECO_HEAD_TYPE_VALUES, \
@@ -76,11 +77,11 @@ PARAM_MAX_CONDITIONS = '--max-conditions'
 
 PARAM_MAX_HEAD_REFINEMENTS = '--max-head-refinements'
 
-PARAM_NUM_THREADS_RULE_REFINEMENT = '--num-threads-rule-refinement'
+PARAM_PARALLEL_RULE_REFINEMENT = '--parallel-rule-refinement'
 
-PARAM_NUM_THREADS_STATISTIC_UPDATE = '--num-threads-statistic-update'
+PARAM_PARALLEL_STATISTIC_UPDATE = '--parallel-statistic-update'
 
-PARAM_NUM_THREADS_PREDICTION = '--num-threads-prediction'
+PARAM_PARALLEL_PREDICTION = '--parallel-prediction'
 
 PARAM_DEFAULT_RULE = '--default-rule'
 
@@ -299,21 +300,12 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('max_head_refinements', 1, **kwargs),
                             help='The maximum number of times the head of a rule may be refined. Must be at least 1 or '
                                  + '0, if the number of refinements should not be restricted.')
-        parser.add_argument(PARAM_NUM_THREADS_RULE_REFINEMENT, type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_rule_refinement', 1, **kwargs),
-                            help='The number of threads to be used to search for potential refinements of rules in '
-                                 + 'parallel. Must be at least 1 or 0, if the number of cores that are available on '
-                                 + 'the machine should be used.')
-        parser.add_argument(PARAM_NUM_THREADS_STATISTIC_UPDATE, type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_statistic_update', 1, **kwargs),
-                            help='The number of threads to be used to calculate gradients and Hessians for different '
-                                 + 'examples in parallel. Must be at least 1 or 0, if the number of cores that are '
-                                 + 'available on the machine should be used.')
-        parser.add_argument(PARAM_NUM_THREADS_PREDICTION, type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
-                            help='The number of threads to be used to make predictions for different examples in '
-                                 + 'parallel. Must be at least 1 or 0, if the number of cores that are available on '
-                                 + 'the machine should be used.')
+        parser.add_argument(PARAM_PARALLEL_PREDICTION, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('parallel_prediction',
+                                                                           BooleanOption.TRUE.value, **kwargs),
+                            help='Whether predictions for different examples should be obtained in parallel or not. '
+                                 + 'Must be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options '
+                                 + 'refer to the documentation.')
         return self
 
     def add_boosting_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
@@ -370,6 +362,21 @@ class ArgumentParserBuilder:
                                  + format_string_set(BOOSTING_HEAD_TYPE_VALUES) + '. If set to "' + AUTOMATIC + '", '
                                  + 'the most suitable type is chosen automatically based on the parameter ' + PARAM_LOSS
                                  + '.')
+        parser.add_argument(PARAM_PARALLEL_RULE_REFINEMENT, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('parallel_rule_refinement', AUTOMATIC,
+                                                                           **kwargs),
+                            help='Whether potential refinements of rules should be searched for in parallel or not. '
+                                 + 'Must be one of ' + format_dict_keys(BOOSTING_PARALLEL_VALUES) + '. If set to "'
+                                 + AUTOMATIC + '", the most suitable strategy is chosen automatically based on the '
+                                 + 'parameter ' + PARAM_LOSS + '. For additional options refer to the documentation.')
+        parser.add_argument(PARAM_PARALLEL_STATISTIC_UPDATE, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('parallel_statistic_update', AUTOMATIC,
+                                                                           **kwargs),
+                            help='Whether the gradients and Hessians for different examples should be calculated in '
+                                 + 'parallel or not. Must be one of ' + format_dict_keys(BOOSTING_PARALLEL_VALUES)
+                                 + '. If set to "' + AUTOMATIC + '", the most suitable strategy is chosen '
+                                 + 'automatically based on the parameter ' + PARAM_LOSS + '. For additional options '
+                                 + 'refer to the documentation.')
         return self
 
     def add_seco_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
@@ -402,6 +409,18 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('head_type', HEAD_TYPE_SINGLE, **kwargs),
                             help='The type of the rule heads that should be used. Must be one of '
                                  + format_string_set(SECO_HEAD_TYPE_VALUES) + '.')
+        parser.add_argument(PARAM_PARALLEL_RULE_REFINEMENT, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('parallel_rule_refinement',
+                                                                           BooleanOption.TRUE.value, **kwargs),
+                            help='Whether potential refinements of rules should be searched for in parallel or not. '
+                                 + 'Must be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options '
+                                 + 'refer to the documentation.')
+        parser.add_argument(PARAM_PARALLEL_STATISTIC_UPDATE, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('parallel_statistic_update',
+                                                                           BooleanOption.FALSE.value, **kwargs),
+                            help='Whether the confusion matrices for different examples should be calculated in '
+                                 + 'parallel or not. Must be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For '
+                                 + 'additional options refer to the documentation')
         return self
 
     def build(self) -> ArgumentParser:
