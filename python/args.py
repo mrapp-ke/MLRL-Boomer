@@ -76,11 +76,11 @@ PARAM_MAX_CONDITIONS = '--max-conditions'
 
 PARAM_MAX_HEAD_REFINEMENTS = '--max-head-refinements'
 
-PARAM_NUM_THREADS_RULE_REFINEMENT = '--num-threads-rule-refinement'
+PARAM_PARALLEL_RULE_REFINEMENT = '--parallel-rule-refinement'
 
-PARAM_NUM_THREADS_STATISTIC_UPDATE = '--num-threads-statistic-update'
+PARAM_PARALLEL_STATISTIC_UPDATE = '--parallel-statistic-update'
 
-PARAM_NUM_THREADS_PREDICTION = '--num-threads-prediction'
+PARAM_PARALLEL_PREDICTION = '--parallel-prediction'
 
 PARAM_DEFAULT_RULE = '--default-rule'
 
@@ -299,18 +299,18 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('max_head_refinements', 1, **kwargs),
                             help='The maximum number of times the head of a rule may be refined. Must be at least 1 or '
                                  + '0, if the number of refinements should not be restricted.')
-        parser.add_argument(PARAM_NUM_THREADS_RULE_REFINEMENT, type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_rule_refinement', 1, **kwargs),
+        parser.add_argument(PARAM_PARALLEL_RULE_REFINEMENT, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('parallel_rule_refinement', 1, **kwargs),
                             help='The number of threads to be used to search for potential refinements of rules in '
                                  + 'parallel. Must be at least 1 or 0, if the number of cores that are available on '
                                  + 'the machine should be used.')
-        parser.add_argument(PARAM_NUM_THREADS_STATISTIC_UPDATE, type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_statistic_update', 1, **kwargs),
+        parser.add_argument(PARAM_PARALLEL_STATISTIC_UPDATE, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('parallel_statistic_update', 1, **kwargs),
                             help='The number of threads to be used to calculate gradients and Hessians for different '
                                  + 'examples in parallel. Must be at least 1 or 0, if the number of cores that are '
                                  + 'available on the machine should be used.')
-        parser.add_argument(PARAM_NUM_THREADS_PREDICTION, type=int,
-                            default=ArgumentParserBuilder.__get_or_default('num_threads_prediction', 1, **kwargs),
+        parser.add_argument(PARAM_PARALLEL_PREDICTION, type=int,
+                            default=ArgumentParserBuilder.__get_or_default('parallel_prediction', 1, **kwargs),
                             help='The number of threads to be used to make predictions for different examples in '
                                  + 'parallel. Must be at least 1 or 0, if the number of cores that are available on '
                                  + 'the machine should be used.')

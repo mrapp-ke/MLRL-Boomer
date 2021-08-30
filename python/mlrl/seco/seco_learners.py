@@ -101,8 +101,8 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                  pruning_heuristic: str = HEURISTIC_ACCURACY, label_sampling: str = None,
                  instance_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, feature_sampling: str = None,
                  holdout: str = None, feature_binning: str = None, pruning: str = PRUNING_IREP, min_coverage: int = 1,
-                 max_conditions: int = 0, max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
-                 num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
+                 max_conditions: int = 0, max_head_refinements: int = 1, parallel_rule_refinement: int = 1,
+                 parallel_statistic_update: int = 1, parallel_prediction: int = 1):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
@@ -154,12 +154,12 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
                                                     a new condition has been added to its body. Must be at least 1 or
                                                     0, if the number of refinements should not be restricted
-        :param num_threads_rule_refinement:         The number of threads to be used to search for potential refinements
+        :param parallel_rule_refinement:            The number of threads to be used to search for potential refinements
                                                     of rules or 0, if the number of cores that are available on the
                                                     machine should be used
-        :param num_threads_statistic_update:        The number of threads to be used to update statistics or 0, if the
+        :param parallel_statistic_update:           The number of threads to be used to update statistics or 0, if the
                                                     number of cores that are available on the machine should be used
-        :param num_threads_prediction:              The number of threads to be used to make predictions or 0, if the
+        :param parallel_prediction:                 The number of threads to be used to make predictions or 0, if the
                                                     number of cores that are available on the machine should be used
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
@@ -178,9 +178,9 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
         self.max_head_refinements = max_head_refinements
-        self.num_threads_rule_refinement = num_threads_rule_refinement
-        self.num_threads_statistic_update = num_threads_statistic_update
-        self.num_threads_prediction = num_threads_prediction
+        self.parallel_rule_refinement = parallel_rule_refinement
+        self.parallel_statistic_update = parallel_statistic_update
+        self.parallel_prediction = parallel_prediction
 
     def get_name(self) -> str:
         name = 'max-rules=' + str(self.max_rules)
@@ -223,11 +223,11 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                                        pruning_rule_evaluation_factory)
 
     def _create_thresholds_factory(self) -> ThresholdsFactory:
-        num_threads = get_preferred_num_threads(int(self.num_threads_statistic_update))
+        num_threads = get_preferred_num_threads(int(self.parallel_statistic_update))
         return create_thresholds_factory(self.feature_binning, num_threads)
 
     def _create_rule_induction(self) -> RuleInduction:
-        num_threads = get_preferred_num_threads(int(self.num_threads_rule_refinement))
+        num_threads = get_preferred_num_threads(int(self.parallel_rule_refinement))
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     False, num_threads)
 
@@ -308,5 +308,5 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         return self.__create_label_wise_predictor(num_labels)
 
     def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
-        num_threads = get_preferred_num_threads(self.num_threads_prediction)
+        num_threads = get_preferred_num_threads(self.parallel_prediction)
         return LabelWiseClassificationPredictor(num_labels, num_threads)
