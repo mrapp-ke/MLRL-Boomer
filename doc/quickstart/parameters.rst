@@ -279,14 +279,14 @@ The following parameters allow to adjust the behavior of the algorithm:
 
 The following parameters allow to enable multi-threading for different aspects of the algorithm:
 
-* ``--num-threads-rule-refinement`` (Default value = 1)
+* ``--parallel-rule-refinement`` (Default value = 1)
 
   * The number of threads to be used to search for potential refinements of rules in parallel. Must be at least 1 or 0, if the number of cores that are available on the machine should be used.
 
-* ``--num-threads-statistic-update`` (Default value = 1)
+* ``--parallel-statistic-update`` (Default value = 1)
 
   * The number of threads to be used for calculating the gradients and Hessians for different examples in parallel. Must be at least 1 or 0, if the number of cores that are available on the machine should be used.
 
-* ``--num-threads-prediction`` (Default value = 1)
+* ``--parallel-prediction`` (Default value = 1)
 
   * The number of threads to be used for making predictions for different examples in parallel. Must be at least 1 or 0, if the number of cores that are available on the machine should be used.
