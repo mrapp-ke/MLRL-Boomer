@@ -116,13 +116,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, prediction_format: str = SparsePolicy.AUTO.value,
-                 max_rules: int = 1000, default_rule: str = BooleanOption.TRUE.value, time_limit: int = -1,
+                 max_rules: int = 1000, default_rule: str = BooleanOption.TRUE.value, time_limit: int = 0,
                  early_stopping: str = None, head_type: str = AUTOMATIC, loss: str = LOSS_LOGISTIC_LABEL_WISE,
                  predictor: str = AUTOMATIC, label_sampling: str = None, instance_sampling: str = None,
                  recalculate_predictions: str = BooleanOption.TRUE.value,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = AUTOMATIC, pruning: str = None, shrinkage: float = 0.3,
-                 l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = -1,
+                 l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = 0,
                  max_head_refinements: int = 1, num_threads_rule_refinement: int = 1,
                  num_threads_statistic_update: int = 1, num_threads_prediction: int = 1):
         """
