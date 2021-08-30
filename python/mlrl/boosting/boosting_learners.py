@@ -274,8 +274,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return name
 
     def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
-        parallel = self.__get_preferred_parallel_statistic_update()
-        num_threads = create_num_threads(parallel, 'parallel_statistic_update')
+        num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(), 'parallel_statistic_update')
         loss_function = self.__create_loss_function()
         head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
         label_binning_factory = self.__create_label_binning_factory()
@@ -301,13 +300,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                              pruning_rule_evaluation_factory, num_threads)
 
     def _create_thresholds_factory(self) -> ThresholdsFactory:
-        parallel = self.__get_preferred_parallel_statistic_update()
-        num_threads = create_num_threads(parallel, 'parallel_statistic_update')
+        num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(), 'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
     def _create_rule_induction(self) -> RuleInduction:
-        parallel = self.__get_preferred_parallel_rule_refinement()
-        num_threads = create_num_threads(parallel, 'parallel_rule_refinement')
+        num_threads = create_num_threads(self.__get_preferred_parallel_rule_refinement(), 'parallel_rule_refinement')
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     BooleanOption.parse(self.recalculate_predictions), num_threads)
 
