@@ -11,6 +11,7 @@ from enum import Enum
 
 from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE, HEAD_TYPE_VALUES as BOOSTING_HEAD_TYPE_VALUES, \
     EARLY_STOPPING_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, PREDICTOR_VALUES
+from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy, HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, \
     PRUNING_IREP, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, \
     PRUNING_VALUES, INSTANCE_SAMPLING_VALUES as BOOSTING_INSTANCE_SAMPLING_VALUES
@@ -147,13 +148,7 @@ def current_fold_string(s):
 
 
 def boolean_string(s):
-    s = s.lower()
-
-    if s == 'false':
-        return False
-    if s == 'true':
-        return True
-    raise ValueError('Invalid boolean argument given: ' + str(s))
+    return BooleanOption.parse(s)
 
 
 def optional_string(s):
@@ -208,12 +203,12 @@ class ArgumentParserBuilder:
                                  + ' is set to 1.')
         parser.add_argument(PARAM_EVALUATE_TRAINING_DATA, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('evaluate_training_data', False, **kwargs),
-                            help='True, if the models should not only be evaluated on the test data, but also on the '
-                                 + 'training data, False otherwise.')
+                            help='Whether the models should not only be evaluated on the test data, but also on the '
+                                 + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')
         parser.add_argument(PARAM_ONE_HOT_ENCODING, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('one_hot_encoding', False, **kwargs),
-                            help='True, if one-hot-encoding should be used to encode nominal attributes, False '
-                                 + 'otherwise.')
+                            help='Whether one-hot-encoding should be used to encode nominal attributes or not. Must be '
+                                 + 'one of ' + format_enum_values(BooleanOption) + '.')
         parser.add_argument(PARAM_MODEL_DIR, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('model_dir', None, **kwargs),
                             help='The path of the directory where models should be stored.')
@@ -226,9 +221,9 @@ class ArgumentParserBuilder:
                             help='The path of the directory where experimental results should be saved.')
         parser.add_argument(PARAM_STORE_PREDICTIONS, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_predictions', False, **kwargs),
-                            help='True, if the predictions for individual examples and labels should be written into '
-                                 + 'output files, False otherwise. Does only have an effect, if the parameter '
-                                 + PARAM_OUTPUT_DIR + ' is specified.')
+                            help='Whether the predictions for individual examples and labels should be written into '
+                                 + 'output files or not. Must be one of ' + format_enum_values(BooleanOption) + '. '
+                                 + 'Does only have an effect, if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
         return self
 
     def add_rule_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
@@ -237,11 +232,12 @@ class ArgumentParserBuilder:
         parser = self.parser
         parser.add_argument(PARAM_PRINT_RULES, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('print_rules', False, **kwargs),
-                            help='True, if the induced rules should be printed to the console, False otherwise.')
+                            help='Whether the induced rules should be printed on the console or not')
         parser.add_argument(PARAM_STORE_RULES, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_rules', False, **kwargs),
-                            help='True, if the induced rules should be written into a text file, False otherwise. Does '
-                                 + 'only have an effect if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
+                            help='Whether the induced rules should be written into a text file or not. Must be one of '
+                                 + format_enum_values(BooleanOption) + '. Does only have an effect if the parameter '
+                                 + PARAM_OUTPUT_DIR + ' is specified.')
         parser.add_argument(PARAM_PRINT_OPTIONS, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('print_options', None, **kwargs),
                             help='Additional options to be taken into account when writing rules to the console or an '
@@ -325,12 +321,13 @@ class ArgumentParserBuilder:
         parser = self.parser
         parser.add_argument(PARAM_DEFAULT_RULE, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('default_rule', True, **kwargs),
-                            help='True, if the first rule should be a default rule, False otherwise.')
+                            help='Whether the first rule should be a default rule or not. Must be one of '
+                                 + format_enum_values(BooleanOption))
         parser.add_argument(PARAM_RECALCULATE_PREDICTIONS, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('recalculate_predictions', True, **kwargs),
-                            help='True, if the predictions of rules should be recalculated on the entire training '
-                                 + 'data, if the parameter ' + PARAM_INSTANCE_SAMPLING + ' is not set to None, False '
-                                 + 'otherwise.')
+                            help='Whether the predictions of rules should be recalculated on the entire training data, '
+                                 + 'if the parameter ' + PARAM_INSTANCE_SAMPLING + ' is not set to None, or not. Must '
+                                 + 'be one of ' + format_enum_values(BooleanOption) + '.')
         parser.add_argument(PARAM_EARLY_STOPPING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('early_stopping', None, **kwargs),
                             help='The name of the strategy to be used for early stopping. Must be one of '
