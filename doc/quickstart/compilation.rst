@@ -7,6 +7,9 @@ Unlike pure Python programs, the code written in C++ and Cython must be compiled
 
 As a prerequisite, Python 3.7 (or a more recent version) must be available on the host system. All remaining compile- or build-time dependencies will automatically installed when following the instructions below.
 
+.. note::
+    We only support x86_64 Linux platforms out-of-the-box, although compilation should be possible on Windows and MacOS systems as well. Unfortunately, we currently do not have the resources to provide support for these platforms. For future releases we plan to distribute prebuilt packages for all major platforms.
+
 **Step 1: Create a virtual environment**
 
 At first, a virtual Python environment can be created via the following command:
