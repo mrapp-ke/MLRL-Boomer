@@ -282,7 +282,7 @@ The following parameters allow to enable multi-threading for different aspects o
 * ``--parallel-rule-refinement`` (Default value = auto)
 
   * ``auto`` The number of threads to be used to search for potential refinements of rules in parallel is chosen automatically, depending on the loss function.
-  * ``false```No multi-threading is used to search for potential refinements of rules.
+  * ``false`` No multi-threading is used to search for potential refinements of rules.
   * ``true`` Multi-threading is used to search for potential refinements of rules in parallel. The following options may be provided using the bracket notation:
 
     * ``num_threads`` (Default value = 0) The number of threads to be used. Must be at least 1 or 0, if the number of cores available on the machine should be used.
