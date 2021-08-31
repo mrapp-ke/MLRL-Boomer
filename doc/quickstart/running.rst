@@ -5,7 +5,7 @@ The Python script ``python/main_boomer.py`` allows to run experiments on a speci
 
 In the following, an example of how the script can be executed is shown:
 
-.. code-block::
+.. code-block:: text
 
    venv/bin/python3 python/main_boomer.py --data-dir /path/to/data --output-dir /path/to/results/emotions --model-dir /path/to/models/emotions --dataset emotions --folds 10 --max-rules 1000 --instance-sampling with-replacement --feature-sampling without-replacement --loss logistic-label-wise --shrinkage 0.3 --pruning None --head-type single-label
 
