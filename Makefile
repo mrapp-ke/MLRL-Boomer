@@ -64,6 +64,6 @@ doc: install
 	@echo "Generating C++ API documentation via Doxygen..."
 	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile
 	@echo "Generating Python API documentation via sphinx-apidoc..."
-	venv/bin/sphinx-apidoc --tocfile index -f -o doc/api/python python/mlrl **/cython
+	venv/bin/sphinx-apidoc --tocfile index -f -o doc/api/python python/mlrl **/seco **/cython
 	@echo "Generating Sphinx documentation..."
 	cd doc/ && PATH=$$PATH:../venv/bin/ make html
