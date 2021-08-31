@@ -14,7 +14,7 @@ As a prerequisite, Python 3.7 (or a more recent version) must be available on th
 
 At first, a virtual Python environment can be created via the following command:
 
-.. code-block::
+.. code-block:: text
 
    make venv
 
@@ -24,7 +24,7 @@ All compile-time dependencies (`numpy`, `scipy`, `Cython`, `meson` and `ninja`) 
 
 Afterwards, the compilation can be started by executing the following command:
 
-.. code-block::
+.. code-block:: text
 
    make compile
 
@@ -36,7 +36,7 @@ Whenever any C++ or Cython source files have been modified, they must be recompi
 
 Once the compilation has completed, the library can be installed into the virtual environment. For this purpose, the project's Makefile provides the following command:
 
-.. code-block::
+.. code-block:: text
 
    make install
 
@@ -46,7 +46,7 @@ The above command does also install all runtime dependencies, such as `scikit-le
 
 In order to generate the documentation (this document), `Doxygen <https://sourceforge.net/projects/doxygen/>`_ must be installed on the system beforehand. It is used to automatically generate an API documentation from the source code. By running the following command, the documentation's HTML documents are generated:
 
-.. code-block::
+.. code-block:: text
 
    make doc 
 
@@ -56,7 +56,7 @@ Afterwards, the generated files can be found in the directory `doc/build_/html`.
 
 To get rid of any compilation files, the generated documentation files, as well as of the virtual environment, the following command can be used:
 
-.. code-block::
+.. code-block:: text
 
    make clean
  
