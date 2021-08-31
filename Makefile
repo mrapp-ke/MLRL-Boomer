@@ -66,4 +66,5 @@ doc: install
 	@echo "Generating Python API documentation via sphinx-apidoc..."
 	venv/bin/sphinx-apidoc --tocfile index -f -o doc/api/python python/mlrl **/seco **/cython
 	@echo "Generating Sphinx documentation..."
-	cd doc/ && PATH=$$PATH:../venv/bin/ make html
+	cd doc/ && PATH=$$PATH:../venv/bin/ LD_PRELOAD="../cpp/build/subprojects/common/libmlrlcommon.so \
+	    ../cpp/build/subprojects/boosting/libmlrlboosting.so" make html
