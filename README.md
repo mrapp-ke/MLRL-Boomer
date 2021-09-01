@@ -1,4 +1,4 @@
-# README
+# Gradient Boosted Multi-label Classification Rules
 
 [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
