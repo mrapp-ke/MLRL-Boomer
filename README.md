@@ -37,7 +37,7 @@ In addition, the following features that may speed up training or reduce the mem
 
 ## Documentation
 
-A user guide, including an API documentation for developers, is available at [https://mlrl-boomer.readthedocs.io](https://mlrl-boomer.readthedocs.io). If you are new to the project, you probably want to read about the following topics:
+An extensive user guide, as well as an API documentation for developers, is available at [https://mlrl-boomer.readthedocs.io](https://mlrl-boomer.readthedocs.io). If you are new to the project, you probably want to read about the following topics:
 
 * Instructions on [building the project](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#building-the-project).
 * [Examples](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#running-the-algorithm) of how the algorithm can be run.
