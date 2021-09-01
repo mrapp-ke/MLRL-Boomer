@@ -29,7 +29,7 @@ The algorithm that is provided by this project currently supports the following 
 In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:
 
 * Approximate methods for evaluating potential conditions of rules, based on unsupervised binning methods, can be used.
-* Gradient-based label binning (GBLB) can be used to assign the available labels to a limited number of bins. The use of label binning may speed up training significantly when using rules that predict for multiple labels to minimize a non-decomposable loss function.
+* [Gradient-based label binning (GBLB)](https://arxiv.org/pdf/2106.11690.pdf) can be used to assign the available labels to a limited number of bins. The use of label binning may speed up training significantly when using rules that predict for multiple labels to minimize a non-decomposable loss function.
 * Dense or sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed up training significantly on some data sets.
 * Dense or sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets.
 * Dense or sparse matrices can be used to store predictions. The use of sparse matrices may reduce the memory footprint in case of large data sets.
