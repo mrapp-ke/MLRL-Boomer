@@ -43,7 +43,11 @@ A user guide, including an API documentation for developers, is available at [ht
 * [Examples](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#running-the-algorithm) of how the algorithm can be run.
 * An overview of available [parameters](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#parameters).
 
-For an overview of changes and additions that have been included in past releases, please refer to the [changelog](CHANGELOG.md).
+For an overview of changes and new features that have been included in past releases, please refer to the [changelog](CHANGELOG.md).
+
+## License
+
+This project is open source software licensed under the terms of the [MIT license](LICENSE.txt). We welcome contributions to the project. A frequently updated list of contributors is available here[](CONTRIBUTORS.md). 
 
 ## Project structure
 
