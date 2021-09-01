@@ -4,11 +4,13 @@
 
 This project provides a scikit-learn implementation of "BOOMER" - an algorithm for learning gradient boosted multi-label classification rules.
 
+## References
+
 The algorithm was first published in the following [paper](https://link.springer.com/chapter/10.1007/978-3-030-67664-3_8). A preprint version is publicly available [here](https://arxiv.org/pdf/2006.13346.pdf).
 
 *Michael Rapp, Eneldo Loza Mencía, Johannes Fürnkranz and Eyke Hüllermeier. Gradient-based Label Binning in Multi-label Classification. In: Proceedings of the European Conference on Machine Learning and Knowledge Discovery in Databases (ECML-PKDD), 2021, Springer.*
 
-If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper. An overview of publications that are concerned with the BOOMER algorithm can be found [here](https://mlrl-boomer.readthedocs.io/en/latest/references/index.html). 
+If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper. An overview of publications that are concerned with the BOOMER algorithm, together with information on how to cite them, can be found [here](https://mlrl-boomer.readthedocs.io/en/latest/references/index.html). 
 
 ## Features
 
@@ -32,6 +34,16 @@ In addition, the following features that may speed up training or reduce the mem
 * Dense or sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets.
 * Dense or sparse matrices can be used to store predictions. The use of sparse matrices may reduce the memory footprint in case of large data sets.
 * Multi-threading can be used to parallelize the evaluation of a rule's potential refinements across multiple CPU cores. 
+
+## Documentation
+
+A user guide, including an API documentation for developers, is available at [https://mlrl-boomer.readthedocs.io](https://mlrl-boomer.readthedocs.io). If you are new to the project, you probably want to read about the following topics:
+
+* Instructions on [building the project](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#building-the-project).
+* [Examples](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#running-the-algorithm) of how the algorithm can be run.
+* An overview of available [parameters](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#parameters).
+
+For an overview of changes and additions that have been included in past releases, please refer to the [changelog](CHANGELOG.md).
 
 ## Project structure
 
