@@ -11,9 +11,10 @@ cpp/build/
 __pycache__/
 
 # Documentation files
-doc/_build/
+doc/build_/
 doc/doxygen/
-doc/api/python
+doc/python_apidoc/
+doc/python/*.rst
 
 # Virtual Environment
 venv/
