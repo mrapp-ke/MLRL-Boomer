@@ -4,13 +4,9 @@ This project provides a scikit-learn implementation of "BOOMER" - an algorithm f
 
 The algorithm was first published in the following [paper](https://link.springer.com/chapter/10.1007/978-3-030-67664-3_8). A preprint version is publicly available [here](https://arxiv.org/pdf/2006.13346.pdf).
 
-*Rapp M., Loza Mencía E., Fürnkranz J., Nguyen VL., Hüllermeier E. (2020) Learning Gradient Boosted Multi-label Classification Rules. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2020. Lecture Notes in Computer Science, pp. 124-140, vol 12459. Springer, Cham*
+*Michael Rapp, Eneldo Loza Mencía, Johannes Fürnkranz and Eyke Hüllermeier. Gradient-based Label Binning in Multi-label Classification. In: Proceedings of the European Conference on Machine Learning and Knowledge Discovery in Databases (ECML-PKDD), 2021, Springer.*
 
-Gradient-based label binning (GBLB), which is an extension to the original algorithm, was proposed in the following paper. A preprint version is available [here](https://arxiv.org/pdf/2106.11690.pdf).
-
-*Rapp M., Loza Mencía E., Fürnkranz J., Hüllermeier E. (2021) Gradient-based Label Binning in Multi-label Classification. In: Machine Learning and Knowledge Discovery in Databases. ECML PKDD 2021. Lecture Notes in Computer Science, vol 12977. Springer, Cham*
-
-If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned papers.
+If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper.
 
 ## Features
 
