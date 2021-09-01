@@ -8,7 +8,7 @@ The algorithm was first published in the following [paper](https://link.springer
 
 *Michael Rapp, Eneldo Loza Mencía, Johannes Fürnkranz and Eyke Hüllermeier. Gradient-based Label Binning in Multi-label Classification. In: Proceedings of the European Conference on Machine Learning and Knowledge Discovery in Databases (ECML-PKDD), 2021, Springer.*
 
-If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper.
+If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper. An overview of publications that are concerned with the BOOMER algorithm can be found [here](https://mlrl-boomer.readthedocs.io/en/latest/references/index.html). 
 
 ## Features
 
