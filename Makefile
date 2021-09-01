@@ -25,7 +25,8 @@ clean_doc:
 	@echo "Removing documentation..."
 	rm -rf doc/_build/
 	rm -rf doc/doxygen/
-	rm -rf doc/api/python/
+	rm -rf doc/python_apidoc/
+	rm -f doc/python/*.rst
 
 clean: clean_doc clean_compile clean_venv
 
@@ -64,7 +65,8 @@ doc: install
 	@echo "Generating C++ API documentation via Doxygen..."
 	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile
 	@echo "Generating Python API documentation via sphinx-apidoc..."
-	venv/bin/sphinx-apidoc --tocfile index -f -o doc/api/python python/mlrl **/seco **/cython
+	venv/bin/sphinx-apidoc --tocfile index -f -o doc/python python/mlrl **/seco **/cython
+	cd doc/python/ && PATH=$$PATH:../../venv/bin/ LD_PRELOAD="../../cpp/build/subprojects/common/libmlrlcommon.so \
+	    ../../cpp/build/subprojects/boosting/libmlrlboosting.so" sphinx-build -M html . ../python_apidoc/api/python
 	@echo "Generating Sphinx documentation..."
-	cd doc/ && PATH=$$PATH:../venv/bin/ LD_PRELOAD="../cpp/build/subprojects/common/libmlrlcommon.so \
-	    ../cpp/build/subprojects/boosting/libmlrlboosting.so" make html
+	cd doc/ && PATH=$$PATH:../venv/bin/ sphinx-build -M html . build_
