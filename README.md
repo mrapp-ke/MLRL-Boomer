@@ -47,7 +47,7 @@ For an overview of changes and new features that have been included in past rele
 
 ## License
 
-This project is open source software licensed under the terms of the [MIT license](LICENSE.txt). We welcome contributions to the project. A frequently updated list of contributors is available here[](CONTRIBUTORS.md). 
+This project is open source software licensed under the terms of the [MIT license](LICENSE.txt). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](CONTRIBUTORS.md). 
 
 ## Project structure
 
