@@ -1,4 +1,4 @@
-#include "boosting/statistics/statistics_example_wise_dense.hpp"
+#include "boosting/statistics/statistics_provider_factory_example_wise_dense.hpp"
 #include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/statistic_vector_dense_example_wise.hpp"
 #include "boosting/data/statistic_view_dense_example_wise.hpp"
