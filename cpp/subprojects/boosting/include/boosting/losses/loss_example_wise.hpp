@@ -3,8 +3,7 @@
  */
 #pragma once
 
-#include "common/measures/measure_evaluation.hpp"
-#include "common/measures/measure_similarity.hpp"
+#include "boosting/losses/loss_label_wise.hpp"
 #include "boosting/data/statistic_view_dense_example_wise.hpp"
 
 
@@ -13,7 +12,7 @@ namespace boosting {
     /**
      * Defines an interface for all (non-decomposable) loss functions that are applied example-wise.
      */
-    class IExampleWiseLoss : public IEvaluationMeasure, public ISimilarityMeasure {
+    class IExampleWiseLoss : public ILabelWiseLoss {
 
         public:
 

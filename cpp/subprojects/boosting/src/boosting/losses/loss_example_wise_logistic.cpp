@@ -147,6 +147,40 @@ namespace boosting {
         return max + std::log(sumExp);
     }
 
+    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex,
+                                                            const CContiguousLabelMatrix& labelMatrix,
+                                                            const CContiguousConstView<float64>& scoreMatrix,
+                                                            CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                            CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                            DenseLabelWiseStatisticView& statisticView) const {
+        // TODO Implement
+    }
+
+    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex,
+                                                            const CContiguousLabelMatrix& labelMatrix,
+                                                            const CContiguousConstView<float64>& scoreMatrix,
+                                                            PartialIndexVector::const_iterator labelIndicesBegin,
+                                                            PartialIndexVector::const_iterator labelIndicesEnd,
+                                                            DenseLabelWiseStatisticView& statisticView) const {
+        // TODO Implement
+    }
+
+    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                            const CContiguousConstView<float64>& scoreMatrix,
+                                                            CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                            CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                            DenseLabelWiseStatisticView& statisticView) const {
+        // TODO Implement
+    }
+
+    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                            const CContiguousConstView<float64> scoreMatrix,
+                                                            PartialIndexVector::const_iterator labelIndicesBegin,
+                                                            PartialIndexVector::const_iterator labelIndicesEnd,
+                                                            DenseLabelWiseStatisticView& statisticView) const {
+        // TODO Implement
+    }
+
     void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
                                                               const CContiguousLabelMatrix& labelMatrix,
                                                               const CContiguousConstView<float64>& scoreMatrix,
