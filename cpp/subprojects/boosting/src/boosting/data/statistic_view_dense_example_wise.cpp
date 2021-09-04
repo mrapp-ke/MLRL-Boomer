@@ -33,6 +33,16 @@ namespace boosting {
         return &hessians_[(row + 1) * numHessians_];
     }
 
+    DenseExampleWiseStatisticConstView::hessian_diagonal_const_iterator DenseExampleWiseStatisticConstView::hessians_diagonal_row_cbegin(
+            uint32 row) const {
+        return DiagonalConstIterator<float64>(&hessians_[row * numHessians_], 0);
+    }
+
+    DenseExampleWiseStatisticConstView::hessian_diagonal_const_iterator DenseExampleWiseStatisticConstView::hessians_diagonal_row_cend(
+            uint32 row) const {
+        return DiagonalConstIterator<float64>(&hessians_[row * numHessians_], numGradients_);
+    }
+
     uint32 DenseExampleWiseStatisticConstView::getNumRows() const {
         return numRows_;
     }

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "boosting/iterator/diagonal_iterator.hpp"
 
 
 namespace boosting {
@@ -66,6 +66,11 @@ namespace boosting {
             typedef const float64* hessian_const_iterator;
 
             /**
+             * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the matrix.
+             */
+            typedef DiagonalConstIterator<float64> hessian_diagonal_const_iterator;
+
+            /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients at a specific row.
              *
              * @param row   The row
@@ -96,6 +101,24 @@ namespace boosting {
              * @return      A `hessian_const_iterator` to the end of the given row
              */
             hessian_const_iterator hessians_row_cend(uint32 row) const;
+
+            /**
+             * Returns a `hessian_diagonal_const_iterator` to the beginning of the Hessians that correspond to the
+             * diagonal of the Hessian matrix at a specific row.
+             *
+             * @param row   The row
+             * @return      A `hessian_diagonal_const_iterator` to the beginning
+             */
+            hessian_diagonal_const_iterator hessians_diagonal_row_cbegin(uint32 row) const;
+
+            /**
+             * Returns a `hessian_diagonal_const_iterator` to the end of the Hessians that correspond to the diagonal of
+             * the Hessian matrix at a specific row.
+             *
+             * @param row   The row
+             * @return      A `hessian_diagonal_const_iterator` to the end
+             */
+            hessian_diagonal_const_iterator hessians_diagonal_row_cend(uint32 row) const;
 
             /**
              * Returns the number of rows in the view.
