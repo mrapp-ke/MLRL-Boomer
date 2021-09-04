@@ -105,22 +105,24 @@ namespace boosting {
                 IExampleWiseStatistics* exampleWiseStatistics = exampleWiseStatisticsPtr_.get();
 
                 if (exampleWiseStatistics != nullptr) {
-                    labelWiseStatisticsPtr_ = exampleWiseStatistics->toLabelWiseStatistics();
+                    labelWiseStatisticsPtr_ = exampleWiseStatistics->toLabelWiseStatistics(
+                        regularRuleEvaluationFactory_);
                     exampleWiseStatisticsPtr_.reset();
+                } else {
+                    labelWiseStatisticsPtr_->setRuleEvaluationFactory(regularRuleEvaluationFactory_);
                 }
-
-                labelWiseStatisticsPtr_->setRuleEvaluationFactory(regularRuleEvaluationFactory_);
             }
 
             void switchToPruningRuleEvaluation() override {
                 IExampleWiseStatistics* exampleWiseStatistics = exampleWiseStatisticsPtr_.get();
 
                 if (exampleWiseStatistics != nullptr) {
-                    labelWiseStatisticsPtr_ = exampleWiseStatistics->toLabelWiseStatistics();
+                    labelWiseStatisticsPtr_ = exampleWiseStatistics->toLabelWiseStatistics(
+                        pruningRuleEvaluationFactory_);
                     exampleWiseStatisticsPtr_.reset();
+                } else {
+                    labelWiseStatisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
                 }
-
-                labelWiseStatisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
             }
 
     };

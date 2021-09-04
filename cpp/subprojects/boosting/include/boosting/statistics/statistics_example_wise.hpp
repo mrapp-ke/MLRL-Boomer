@@ -32,9 +32,14 @@ namespace boosting {
              * Creates and returns an instance of type `ILabelWiseStatistics` from the gradients and Hessians that are
              * stored by this object.
              *
-             * @return An unique pointer to an object of type `ILabelWiseStatistics` that has been created
+             * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
+             *                              allows to create instances of the class that is used for calculating the
+             *                              predictions, as well as corresponding quality scores of rules
+             * @return                      An unique pointer to an object of type `ILabelWiseStatistics` that has been
+             *                              created
              */
-            virtual std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics() = 0;
+            virtual std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics(
+                const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) = 0;
 
     };
 

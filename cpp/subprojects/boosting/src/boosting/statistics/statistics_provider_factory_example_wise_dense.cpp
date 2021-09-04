@@ -79,7 +79,8 @@ namespace boosting {
             /**
              * @see `IExampleWiseStatistics::toLabelWiseStatistics`
              */
-            std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics() override final {
+            std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics(
+                    const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
                 // TODO Implement
                 return nullptr;
             }
