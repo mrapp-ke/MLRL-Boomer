@@ -103,7 +103,6 @@ class DenseScoreVector : virtual public IScoreVector {
 
         void updatePrediction(AbstractPrediction& prediction) const override final;
 
-        const AbstractEvaluatedPrediction* processScores(const AbstractEvaluatedPrediction* bestHead,
-                                                         ScoreProcessor& scoreProcessor) const override final;
+        const AbstractEvaluatedPrediction* processScores(ScoreProcessor& scoreProcessor) const override final;
 
 };
