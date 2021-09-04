@@ -27,8 +27,9 @@ void TopDownRuleInduction::induceDefaultRule(IStatistics& statistics, IModelBuil
 
     CompleteIndexVector labelIndices(numLabels);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices.createSubset(statistics);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(true, false);
     ScoreProcessor scoreProcessor;
-    scoreProcessor.findHead(nullptr, *statisticsSubsetPtr, true, false);
+    scoreProcessor.processScores(scoreVector);
     std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr = scoreProcessor.pollHead();
 
     for (uint32 i = 0; i < numStatistics; i++) {
