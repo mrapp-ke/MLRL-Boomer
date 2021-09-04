@@ -12,41 +12,6 @@
 namespace boosting {
 
     /**
-     * A factory that allows to create new instances of the class `ILabelWiseStatistics` that use dense data structures
-     * to store the statistics.
-     */
-    class DenseLabelWiseStatisticsFactory final : public ILabelWiseStatisticsFactory {
-
-        private:
-
-            const ILabelWiseLoss& lossFunction_;
-
-            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory_;
-
-            uint32 numThreads_;
-
-        public:
-
-            /**
-             * @param lossFunction          A reference to an object of type `ILabelWiseLoss`, representing the loss
-             *                              function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
-             *                              allows to create instances of the class that is used to calculate the
-             *                              predictions, as well as corresponding quality scores, of rules
-             * @param numThreads            The number of CPU threads to be used to calculate the initial statistics in
-             *                              parallel. Must be at least 1
-             */
-            DenseLabelWiseStatisticsFactory(const ILabelWiseLoss& lossFunction,
-                                            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
-                                            uint32 numThreads);
-
-            std::unique_ptr<ILabelWiseStatistics> create(const CContiguousLabelMatrix& labelMatrix) const override;
-
-            std::unique_ptr<ILabelWiseStatistics> create(const CsrLabelMatrix& labelMatrix) const override;
-
-    };
-
-    /**
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
      * `ILabelWiseStatistics`, which uses dense data structures to store the statistics.
      */
