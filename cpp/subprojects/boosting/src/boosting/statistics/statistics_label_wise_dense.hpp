@@ -5,6 +5,8 @@
 
 #include "boosting/data/statistic_vector_dense_label_wise.hpp"
 #include "boosting/data/statistic_view_dense_label_wise.hpp"
+#include "boosting/losses/loss_label_wise.hpp"
+#include "statistics_label_wise_common.hpp"
 #include <cstdlib>
 
 
