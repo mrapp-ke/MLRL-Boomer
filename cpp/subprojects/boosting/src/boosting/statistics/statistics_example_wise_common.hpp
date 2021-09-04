@@ -1,3 +1,8 @@
+/*
+ * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ */
+#pragma once
+
 #include "boosting/statistics/statistics_example_wise.hpp"
 
 
