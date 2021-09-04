@@ -20,7 +20,7 @@ source_files = [
     'src/seco/sampling/instance_sampling_no.cpp',
     'src/seco/sampling/instance_sampling_with_replacement.cpp',
     'src/seco/sampling/instance_sampling_without_replacement.cpp',
-    'src/seco/statistics/statistics_label_wise_dense.cpp',
+    'src/seco/statistics/statistics_provider_factory_label_wise_dense.cpp',
     'src/seco/stopping/stopping_criterion_coverage.cpp'
 ]
 

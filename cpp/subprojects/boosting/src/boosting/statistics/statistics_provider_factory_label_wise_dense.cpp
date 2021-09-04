@@ -1,4 +1,4 @@
-#include "boosting/statistics/statistics_label_wise_dense.hpp"
+#include "boosting/statistics/statistics_provider_factory_label_wise_dense.hpp"
 #include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/statistic_vector_dense_label_wise.hpp"
 #include "boosting/data/statistic_view_dense_label_wise.hpp"
