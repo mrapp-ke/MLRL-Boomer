@@ -76,6 +76,14 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IExampleWiseStatistics::toLabelWiseStatistics`
+             */
+            std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics() override final {
+                // TODO Implement
+                return nullptr;
+            }
+
     };
 
     template<typename LabelMatrix>
