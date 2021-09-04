@@ -5,7 +5,7 @@
 #include "boosting/math/math.hpp"
 #include "common/validation.hpp"
 #include "statistics_example_wise_common.hpp"
-#include "statistics_example_wise_provider.hpp"
+#include "statistics_provider_example_wise.hpp"
 #include "omp.h"
 #include <cstdlib>
 

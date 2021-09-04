@@ -3,7 +3,7 @@
 #include "seco/data/vector_dense_confusion_matrices.hpp"
 #include "common/validation.hpp"
 #include "statistics_label_wise_common.hpp"
-#include "statistics_label_wise_provider.hpp"
+#include "statistics_provider_label_wise.hpp"
 
 
 namespace seco {
