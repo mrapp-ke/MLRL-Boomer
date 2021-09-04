@@ -54,7 +54,7 @@ namespace boosting {
     };
 
     /**
-     * Provides access to an object of type `IExampleWiseStatistics` that can be converted in to an object of type
+     * Provides access to an object of type `IExampleWiseStatistics` that can be converted into an object of type
      * `ILabelWiseStatistics`.
      */
     class ConvertibleExampleWiseStatisticsProvider : public IStatisticsProvider {
