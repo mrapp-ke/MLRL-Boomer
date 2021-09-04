@@ -336,6 +336,14 @@ namespace boosting {
             }
 
             /**
+             * @see `IExampleWiseStatistics::toLabelWiseStatistics`
+             */
+            std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics() override final {
+                // TODO Implement
+                return nullptr;
+            }
+
+            /**
              * @see `IStatistics::resetSampledStatistics`
              */
             void resetSampledStatistics() override final {
