@@ -5,6 +5,7 @@
 #include "boosting/math/math.hpp"
 #include "common/validation.hpp"
 #include "statistics_example_wise_common.hpp"
+#include "statistics_label_wise_dense.hpp"
 #include "statistics_provider_example_wise.hpp"
 #include "omp.h"
 #include <cstdlib>
@@ -81,6 +82,26 @@ namespace boosting {
              */
             std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics(
                     const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
+                const DenseExampleWiseStatisticView& exampleWiseStatisticView = *this->statisticViewPtr_;
+                uint32 numRows = exampleWiseStatisticView.getNumRows();
+                uint32 numCols = exampleWiseStatisticView.getNumCols();
+                std::unique_ptr<DenseLabelWiseStatisticMatrix> labelWiseStatisticMatrixPtr =
+                    std::make_unique<DenseLabelWiseStatisticMatrix>(numRows, numCols);
+
+                for (uint32 i = 0; i < numRows; i++) {
+                    DenseLabelWiseStatisticMatrix::iterator iterator = labelWiseStatisticMatrixPtr->row_begin(i);
+                    DenseExampleWiseStatisticView::gradient_const_iterator gradientIterator =
+                        exampleWiseStatisticView.gradients_row_cbegin(i);
+                    DenseExampleWiseStatisticView::hessian_diagonal_const_iterator hessianIterator =
+                        exampleWiseStatisticView.hessians_diagonal_row_cbegin(i);
+
+                    for (uint32 j = 0; j < numCols; j++) {
+                        Tuple<float64>& tuple = iterator[j];
+                        tuple.first = gradientIterator[j];
+                        tuple.second = hessianIterator[j];
+                    }
+                }
+
                 // TODO Implement
                 return nullptr;
             }
