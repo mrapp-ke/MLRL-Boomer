@@ -67,8 +67,8 @@ namespace boosting {
             uint8 trueLabel = *labelIterator;
             float64 invertedExpectedScore = trueLabel ? -1 : 1;
             float64 x = predictedScore * invertedExpectedScore;
-            updateGradientAndHessian(invertedExpectedScore, x, max, sumExp, statisticIterator[c].first,
-                                     statisticIterator[c].second);
+            Tuple<float64>& tuple = statisticIterator[c];
+            updateGradientAndHessian(invertedExpectedScore, x, max, sumExp, tuple.first, tuple.second);
             labelIterator++;
         }
     }
