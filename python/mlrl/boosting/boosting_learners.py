@@ -16,8 +16,8 @@ from mlrl.boosting.cython.model import RuleListBuilder
 from mlrl.boosting.cython.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor, \
     LabelWiseProbabilityPredictor, LabelWiseTransformationFunction, LogisticFunction
 from mlrl.boosting.cython.post_processing import ConstantShrinkage
-from mlrl.boosting.cython.rule_evaluation_example_wise import ExampleWiseSingleLabelRuleEvaluationFactory, \
-    ExampleWiseCompleteRuleEvaluationFactory, ExampleWiseCompleteBinnedRuleEvaluationFactory
+from mlrl.boosting.cython.rule_evaluation_example_wise import ExampleWiseCompleteRuleEvaluationFactory, \
+    ExampleWiseCompleteBinnedRuleEvaluationFactory
 from mlrl.boosting.cython.rule_evaluation_label_wise import LabelWiseSingleLabelRuleEvaluationFactory, \
     LabelWiseCompleteRuleEvaluationFactory, LabelWiseCompleteBinnedRuleEvaluationFactory
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory, \
@@ -411,12 +411,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         l2_regularization_weight = float(self.l2_regularization_weight)
 
         if head_type == HEAD_TYPE_SINGLE:
-            if isinstance(loss_function, LabelWiseLoss):
-                return LabelWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
-            else:
-                return ExampleWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
+            return LabelWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
         elif head_type == HEAD_TYPE_COMPLETE:
-
             if isinstance(loss_function, LabelWiseLoss):
                 if label_binning_factory is None:
                     return LabelWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
