@@ -464,7 +464,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         parallel_rule_refinement = self.parallel_rule_refinement
 
         if parallel_rule_refinement == AUTOMATIC:
-            if self.loss in NON_DECOMPOSABLE_LOSSES:
+            head_type = self.__get_preferred_head_type()
+
+            if head_type != HEAD_TYPE_SINGLE and self.loss in NON_DECOMPOSABLE_LOSSES:
                 return BooleanOption.FALSE.value
             else:
                 return BooleanOption.TRUE.value
