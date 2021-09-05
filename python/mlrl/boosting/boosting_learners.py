@@ -275,17 +275,19 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return name
 
     def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
-        num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(head_type=HEAD_TYPE_COMPLETE),
-                                         'parallel_statistic_update')
-        loss_function = self.__create_loss_function()
         head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
+        default_rule_head_type = HEAD_TYPE_COMPLETE if self.default_rule else head_type
+        num_threads = create_num_threads(
+            self.__get_preferred_parallel_statistic_update(head_type=default_rule_head_type),
+            'parallel_statistic_update')
+        loss_function = self.__create_loss_function()
         label_binning_factory = self.__create_label_binning_factory()
 
         if label_binning_factory is not None and head_type == HEAD_TYPE_SINGLE:
             log.warning('Parameter "label_binning" does not have any effect, because parameter "head_type" is set to "'
                         + self.head_type + '"!')
 
-        default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, HEAD_TYPE_COMPLETE,
+        default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, default_rule_head_type,
                                                                                 label_binning_factory)
         regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, head_type,
                                                                                 self.__create_label_binning_factory())
