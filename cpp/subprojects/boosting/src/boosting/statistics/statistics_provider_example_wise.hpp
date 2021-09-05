@@ -69,6 +69,8 @@ namespace boosting {
 
             std::unique_ptr<ILabelWiseStatistics> labelWiseStatisticsPtr_;
 
+            uint32 numThreads_;
+
         public:
 
             /**
@@ -80,14 +82,16 @@ namespace boosting {
              *                                      `switchToPruningRuleEvaluation`
              * @param statisticsPtr                 An unique pointer to an object of type `IExampleWiseStatistics` to
              *                                      provide access to
+             * @param numThreads                    The number of threads that should be used to convert the statistics
+             *                                      for individual examples in parallel
              */
             ConvertibleExampleWiseStatisticsProvider(
                     const ILabelWiseRuleEvaluationFactory& regularRuleEvaluationFactory,
                     const ILabelWiseRuleEvaluationFactory& pruningRuleEvaluationFactory,
-                    std::unique_ptr<IExampleWiseStatistics> statisticsPtr)
+                    std::unique_ptr<IExampleWiseStatistics> statisticsPtr, uint32 numThreads)
                 : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
                   pruningRuleEvaluationFactory_(pruningRuleEvaluationFactory),
-                  exampleWiseStatisticsPtr_(std::move(statisticsPtr)) {
+                  exampleWiseStatisticsPtr_(std::move(statisticsPtr)), numThreads_(numThreads) {
 
             }
 
@@ -106,7 +110,7 @@ namespace boosting {
 
                 if (exampleWiseStatistics != nullptr) {
                     labelWiseStatisticsPtr_ = exampleWiseStatistics->toLabelWiseStatistics(
-                        regularRuleEvaluationFactory_);
+                        regularRuleEvaluationFactory_, numThreads_);
                     exampleWiseStatisticsPtr_.reset();
                 } else {
                     labelWiseStatisticsPtr_->setRuleEvaluationFactory(regularRuleEvaluationFactory_);
@@ -118,7 +122,7 @@ namespace boosting {
 
                 if (exampleWiseStatistics != nullptr) {
                     labelWiseStatisticsPtr_ = exampleWiseStatistics->toLabelWiseStatistics(
-                        pruningRuleEvaluationFactory_);
+                        pruningRuleEvaluationFactory_, numThreads_);
                     exampleWiseStatisticsPtr_.reset();
                 } else {
                     labelWiseStatisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
