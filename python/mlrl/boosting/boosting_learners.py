@@ -275,7 +275,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return name
 
     def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
-        num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(), 'parallel_statistic_update')
+        num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(head_type=HEAD_TYPE_COMPLETE),
+                                         'parallel_statistic_update')
         loss_function = self.__create_loss_function()
         head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
         label_binning_factory = self.__create_label_binning_factory()
@@ -308,7 +309,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                  pruning_rule_evaluation_factory, num_threads)
 
     def _create_thresholds_factory(self) -> ThresholdsFactory:
-        num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(), 'parallel_statistic_update')
+        num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(
+            head_type=self.__get_preferred_head_type()), 'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
     def _create_rule_induction(self) -> RuleInduction:
@@ -472,11 +474,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return BooleanOption.TRUE.value
         return parallel_rule_refinement
 
-    def __get_preferred_parallel_statistic_update(self) -> str:
+    def __get_preferred_parallel_statistic_update(self, head_type: str) -> str:
         parallel_statistic_update = self.parallel_statistic_update
 
         if parallel_statistic_update == AUTOMATIC:
-            if self.loss in NON_DECOMPOSABLE_LOSSES:
+            if head_type != HEAD_TYPE_SINGLE or self.loss in NON_DECOMPOSABLE_LOSSES:
                 return BooleanOption.TRUE.value
             else:
                 return BooleanOption.FALSE.value
