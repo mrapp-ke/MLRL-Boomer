@@ -35,11 +35,13 @@ namespace boosting {
              * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
              *                              allows to create instances of the class that is used for calculating the
              *                              predictions, as well as corresponding quality scores of rules
+             * @param numThreads            The number of threads that should be used to convert the statistics for
+             *                              individual examples in parallel
              * @return                      An unique pointer to an object of type `ILabelWiseStatistics` that has been
              *                              created
              */
             virtual std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics(
-                const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) = 0;
+                const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) = 0;
 
     };
 

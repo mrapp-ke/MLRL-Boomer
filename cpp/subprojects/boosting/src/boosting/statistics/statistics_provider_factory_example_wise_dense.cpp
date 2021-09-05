@@ -81,19 +81,23 @@ namespace boosting {
              * @see `IExampleWiseStatistics::toLabelWiseStatistics`
              */
             std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics(
-                    const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
-                const DenseExampleWiseStatisticView& exampleWiseStatisticView = *this->statisticViewPtr_;
-                uint32 numRows = exampleWiseStatisticView.getNumRows();
-                uint32 numCols = exampleWiseStatisticView.getNumCols();
+                    const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) override final {
+                uint32 numRows = this->statisticViewPtr_->getNumRows();
+                uint32 numCols = this->statisticViewPtr_->getNumCols();
                 std::unique_ptr<DenseLabelWiseStatisticView> labelWiseStatisticMatrixPtr =
                     std::make_unique<DenseLabelWiseStatisticMatrix>(numRows, numCols);
+                DenseLabelWiseStatisticView* labelWiseStatisticMatrixRawPtr = labelWiseStatisticMatrixPtr.get();
+                DenseExampleWiseStatisticView* exampleWiseStatisticViewRawPtr = this->statisticViewPtr_.get();
 
+                #pragma omp parallel for firstprivate(numRows) firstprivate(numCols) \
+                firstprivate(labelWiseStatisticMatrixRawPtr) firstprivate(exampleWiseStatisticViewRawPtr) \
+                schedule(dynamic) num_threads(numThreads)
                 for (uint32 i = 0; i < numRows; i++) {
-                    DenseLabelWiseStatisticView::iterator iterator = labelWiseStatisticMatrixPtr->row_begin(i);
+                    DenseLabelWiseStatisticView::iterator iterator = labelWiseStatisticMatrixRawPtr->row_begin(i);
                     DenseExampleWiseStatisticView::gradient_const_iterator gradientIterator =
-                        exampleWiseStatisticView.gradients_row_cbegin(i);
+                        exampleWiseStatisticViewRawPtr->gradients_row_cbegin(i);
                     DenseExampleWiseStatisticView::hessian_diagonal_const_iterator hessianIterator =
-                        exampleWiseStatisticView.hessians_diagonal_row_cbegin(i);
+                        exampleWiseStatisticViewRawPtr->hessians_diagonal_row_cbegin(i);
 
                     for (uint32 j = 0; j < numCols; j++) {
                         Tuple<float64>& tuple = iterator[j];
@@ -239,7 +243,8 @@ namespace boosting {
                                                             numThreads_);
         return std::make_unique<ConvertibleExampleWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
                                                                           *pruningRuleEvaluationFactoryPtr_,
-                                                                          statisticsFactory.create(labelMatrix));
+                                                                          statisticsFactory.create(labelMatrix),
+                                                                          numThreads_);
     }
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(
@@ -248,7 +253,8 @@ namespace boosting {
                                                             numThreads_);
         return std::make_unique<ConvertibleExampleWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
                                                                           *pruningRuleEvaluationFactoryPtr_,
-                                                                          statisticsFactory.create(labelMatrix));
+                                                                          statisticsFactory.create(labelMatrix),
+                                                                          numThreads_);
     }
 
 }
