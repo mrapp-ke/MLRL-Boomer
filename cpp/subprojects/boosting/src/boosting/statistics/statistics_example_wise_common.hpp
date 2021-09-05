@@ -299,6 +299,8 @@ namespace boosting {
 
             std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
+        protected:
+
             const LossFunction& lossFunction_;
 
             const LabelMatrix& labelMatrix_;

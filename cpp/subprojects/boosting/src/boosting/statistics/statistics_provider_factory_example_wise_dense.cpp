@@ -85,11 +85,11 @@ namespace boosting {
                 const DenseExampleWiseStatisticView& exampleWiseStatisticView = *this->statisticViewPtr_;
                 uint32 numRows = exampleWiseStatisticView.getNumRows();
                 uint32 numCols = exampleWiseStatisticView.getNumCols();
-                std::unique_ptr<DenseLabelWiseStatisticMatrix> labelWiseStatisticMatrixPtr =
+                std::unique_ptr<DenseLabelWiseStatisticView> labelWiseStatisticMatrixPtr =
                     std::make_unique<DenseLabelWiseStatisticMatrix>(numRows, numCols);
 
                 for (uint32 i = 0; i < numRows; i++) {
-                    DenseLabelWiseStatisticMatrix::iterator iterator = labelWiseStatisticMatrixPtr->row_begin(i);
+                    DenseLabelWiseStatisticView::iterator iterator = labelWiseStatisticMatrixPtr->row_begin(i);
                     DenseExampleWiseStatisticView::gradient_const_iterator gradientIterator =
                         exampleWiseStatisticView.gradients_row_cbegin(i);
                     DenseExampleWiseStatisticView::hessian_diagonal_const_iterator hessianIterator =
@@ -102,8 +102,11 @@ namespace boosting {
                     }
                 }
 
-                // TODO Implement
-                return nullptr;
+                return std::make_unique<DenseLabelWiseStatistics<LabelMatrix>>(this->lossFunction_,
+                                                                               ruleEvaluationFactory,
+                                                                               this->labelMatrix_,
+                                                                               std::move(labelWiseStatisticMatrixPtr),
+                                                                               std::move(this->scoreMatrixPtr_));
             }
 
     };
