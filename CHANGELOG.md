@@ -11,6 +11,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * The parameter `--recalculate-predictions` does now allow to specify whether the predictions of rules should be recalculated on the entire training data, if instance sampling is used.
 * An additional parameter (`--prediction-format`) that allows to specify whether predictions should be stored using dense or sparse matrices has been added. 
 * The code for the construction of rule heads has been reworked, resulting in minor performance improvements.
+* The unnecessary calculation of Hessians is now avoided when used single-label rules for the minimization of a non-decomposable loss function, resulting in a significant performance improvement.
 * A programmatic C++ API for configuring algorithms, including the validation of parameters, is now provided.
 * A documentation is now available [online](https://mlrl-boomer.readthedocs.io).
 
