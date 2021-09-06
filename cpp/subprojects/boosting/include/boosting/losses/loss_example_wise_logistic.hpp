@@ -15,6 +15,30 @@ namespace boosting {
 
         public:
 
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+                                                   const CContiguousConstView<float64>& scoreMatrix,
+                                                   CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                   CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticView& statisticView) const override;
+
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+                                                   const CContiguousConstView<float64>& scoreMatrix,
+                                                   PartialIndexVector::const_iterator labelIndicesBegin,
+                                                   PartialIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticView& statisticView) const override;
+
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                   const CContiguousConstView<float64>& scoreMatrix,
+                                                   CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                   CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticView& statisticView) const override;
+
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                   const CContiguousConstView<float64> scoreMatrix,
+                                                   PartialIndexVector::const_iterator labelIndicesBegin,
+                                                   PartialIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticView& statisticView) const override;
+
             void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                              const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override;

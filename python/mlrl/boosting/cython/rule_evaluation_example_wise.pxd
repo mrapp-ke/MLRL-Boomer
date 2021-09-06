@@ -12,16 +12,6 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise.hpp" nam
         pass
 
 
-cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_single.hpp" namespace "boosting" nogil:
-
-    cdef cppclass ExampleWiseSingleLabelRuleEvaluationFactoryImpl"boosting::ExampleWiseSingleLabelRuleEvaluationFactory"(
-            IExampleWiseRuleEvaluationFactory):
-
-        # Constructors:
-
-        ExampleWiseSingleLabelRuleEvaluationFactoryImpl(float64 l2RegularizationWeight) except +
-
-
 cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_complete.hpp" namespace "boosting" nogil:
 
     cdef cppclass ExampleWiseCompleteRuleEvaluationFactoryImpl"boosting::ExampleWiseCompleteRuleEvaluationFactory"(
@@ -51,10 +41,6 @@ cdef class ExampleWiseRuleEvaluationFactory:
     # Attributes:
 
     cdef unique_ptr[IExampleWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
-
-
-cdef class ExampleWiseSingleLabelRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
-    pass
 
 
 cdef class ExampleWiseCompleteRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):

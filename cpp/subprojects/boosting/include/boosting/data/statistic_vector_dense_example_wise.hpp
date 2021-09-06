@@ -5,6 +5,7 @@
 
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
+#include "boosting/iterator/diagonal_iterator.hpp"
 #include <memory>
 
 
@@ -24,119 +25,6 @@ namespace boosting {
     class DenseExampleWiseStatisticVector final {
 
         private:
-
-            /**
-             * An iterator that provides read-only access to the Hessians on the diagonal.
-             */
-            class HessianDiagonalConstIterator final {
-
-                private:
-
-                    const float64* ptr_;
-
-                    uint32 index_;
-
-                public:
-
-                    /**
-                     * @param ptr   A pointer to an array of type `float64` that stores the Hessians
-                     * @param index The index to start at
-                     */
-                    HessianDiagonalConstIterator(const float64* ptr, uint32 index);
-
-                    /**
-                     * The type that is used to represent the difference between two iterators.
-                     */
-                    typedef int difference_type;
-
-                    /**
-                     * The type of the elements, the iterator provides access to.
-                     */
-                    typedef float64 value_type;
-
-                    /**
-                     * The type of a pointer to an element, the iterator provides access to.
-                     */
-                    typedef const float64* pointer;
-
-                    /**
-                     * The type of a reference to an element, the iterator provides access to.
-                     */
-                    typedef const float64& reference;
-
-                    /**
-                     * The tag that specifies the capabilities of the iterator.
-                     */
-                    typedef std::random_access_iterator_tag iterator_category;
-
-                    /**
-                     * Returns the element at a specific index.
-                     *
-                     * @param index The index of the element to be returned
-                     * @return      The element at the given index
-                     */
-                    reference operator[](uint32 index) const;
-
-                    /**
-                     * Returns the element, the iterator currently refers to.
-                     *
-                     * @return The element, the iterator currently refers to
-                     */
-                    reference operator*() const;
-
-                    /**
-                     * Returns an iterator to the next element.
-                     *
-                     * @return A reference to an iterator to the next element
-                     */
-                    HessianDiagonalConstIterator& operator++();
-
-                    /**
-                     * Returns an iterator to the next element.
-                     *
-                     * @return A reference to an iterator to the next element
-                     */
-                    HessianDiagonalConstIterator& operator++(int n);
-
-                    /**
-                     * Returns an iterator to the previous element.
-                     *
-                     * @return A reference to an iterator to the previous element
-                     */
-                    HessianDiagonalConstIterator& operator--();
-
-                    /**
-                     * Returns an iterator to the previous element.
-                     *
-                     * @return A reference to an iterator to the previous element
-                     */
-                    HessianDiagonalConstIterator& operator--(int n);
-
-                    /**
-                     * Returns whether this iterator and another one refer to the same element.
-                     *
-                     * @param rhs   A reference to another iterator
-                     * @return      True, if the iterators do not refer to the same element, false otherwise
-                     */
-                    bool operator!=(const HessianDiagonalConstIterator& rhs) const;
-
-                    /**
-                     * Returns whether this iterator and another one refer to the same element.
-                     *
-                     * @param rhs   A reference to another iterator
-                     * @return      True, if the iterators refer to the same element, false otherwise
-                     */
-                    bool operator==(const HessianDiagonalConstIterator& rhs) const;
-
-                    /**
-                     * Returns the difference between this iterator and another one.
-                     *
-                     * @param rhs   A reference to another iterator
-                     * @return      The difference between the iterators
-                     */
-                    difference_type operator-(const HessianDiagonalConstIterator& rhs) const;
-
-            };
 
             uint32 numGradients_;
 
@@ -191,7 +79,7 @@ namespace boosting {
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
              * matrix.
              */
-            typedef HessianDiagonalConstIterator hessian_diagonal_const_iterator;
+            typedef DiagonalConstIterator<float64> hessian_diagonal_const_iterator;
 
             /**
              * Returns a `gradient_iterator` to the beginning of the gradients.
