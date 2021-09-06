@@ -16,20 +16,6 @@ cdef class ExampleWiseRuleEvaluationFactory:
     pass
 
 
-cdef class ExampleWiseSingleLabelRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
-    """
-    A wrapper for the C++ class `ExampleWiseSingleLabelRuleEvaluationFactory`.
-    """
-
-    def __cinit__(self, float64 l2_regularization_weight):
-        """
-        :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
-                                         to be predicted by rules
-        """
-        self.rule_evaluation_factory_ptr = <unique_ptr[IExampleWiseRuleEvaluationFactory]>make_unique[ExampleWiseSingleLabelRuleEvaluationFactoryImpl](
-            l2_regularization_weight)
-
-
 cdef class ExampleWiseCompleteRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
     """
     A wrapper for the C++ class `ExampleWiseCompleteRuleEvaluationFactory`.

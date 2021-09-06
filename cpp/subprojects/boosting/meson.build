@@ -8,6 +8,7 @@ source_files = [
     'src/boosting/data/statistic_vector_dense_label_wise.cpp',
     'src/boosting/data/statistic_view_dense_example_wise.cpp',
     'src/boosting/data/statistic_view_dense_label_wise.cpp',
+    'src/boosting/iterator/diagonal_iterator.cpp',
     'src/boosting/losses/loss_example_wise_logistic.cpp',
     'src/boosting/losses/loss_label_wise.cpp',
     'src/boosting/losses/loss_label_wise_logistic.cpp',
@@ -23,12 +24,11 @@ source_files = [
     'src/boosting/post_processing/shrinkage_constant.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_example_wise_complete.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_example_wise_complete_binned.cpp',
-    'src/boosting/rule_evaluation/rule_evaluation_example_wise_single.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_complete.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_single.cpp',
-    'src/boosting/statistics/statistics_example_wise_dense.cpp',
-    'src/boosting/statistics/statistics_label_wise_dense.cpp'
+    'src/boosting/statistics/statistics_provider_factory_example_wise_dense.cpp',
+    'src/boosting/statistics/statistics_provider_factory_label_wise_dense.cpp'
 ]
 
 # Dependencies

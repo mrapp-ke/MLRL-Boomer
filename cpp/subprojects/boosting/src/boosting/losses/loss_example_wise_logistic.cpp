@@ -4,6 +4,75 @@
 
 namespace boosting {
 
+    static inline void updateGradientAndHessian(float64 invertedExpectedScore, float64 x, float64 max, float64 sumExp,
+                                                float64& gradient, float64& hessian) {
+        // Calculate the gradient that corresponds to the current label. The gradient calculates as
+        // `-expectedScore_c * exp(x_c) / (1 + exp(x_1) + exp(x_2) + ...)`, which can be rewritten as
+        // `-expectedScore_c * (exp(x_c - max) / sumExp)`
+        float64 xExp = std::exp(x - max);
+        float64 tmp = divideOrZero<float64>(xExp, sumExp);
+        gradient = invertedExpectedScore * tmp;
+
+        // Calculate the Hessian on the diagonal of the Hessian matrix that corresponds to the current label. Such
+        // Hessian calculates as `exp(x_c) * (1 + exp(x_1) + exp(x_2) + ...) / (1 + exp(x_1) + exp(x_2) + ...)^2`,
+        // or as `(exp(x_c - max) / sumExp) * (1 - exp(x_c - max) / sumExp)`
+        hessian = tmp * (1 - tmp);
+    }
+
+    template<typename LabelMatrix>
+    static inline void updateLabelWiseStatisticsInternally(uint32 exampleIndex, const LabelMatrix& labelMatrix,
+                                                           const CContiguousConstView<float64>& scoreMatrix,
+                                                           DenseLabelWiseStatisticView& statisticView) {
+        // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
+        // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
+        // of the form `exp(x_1) / (exp(x_1) + exp(x_2) + ...)` as
+        // `exp(x_1 - max) / (exp(x_1 - max) + exp(x_2 - max) + ...)`, where `max = max(x_1, x_2, ...)`. To be able to
+        // exploit this equivalence for the calculation of gradients and Hessians, they are calculated as products of
+        // fractions of the above form.
+        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
+        DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
+        uint32 numLabels = labelMatrix.getNumCols();
+
+        // For each label `c`, calculate `x = -expectedScore_c * predictedScore_c` and find the largest and second
+        // largest values (that must be greater than 0, because `exp(1) = 0`) among all of them...
+        float64 max = 0;  // The largest value
+
+        for (uint32 c = 0; c < numLabels; c++) {
+            float64 predictedScore = scoreIterator[c];
+            uint32 trueLabel = *labelIterator;
+            float64 x = trueLabel ? -predictedScore : predictedScore;
+            statisticIterator[c].first = x;  // Temporarily store `x` in the array of statistics
+
+            if (x > max) {
+                max = x;
+            }
+
+            labelIterator++;
+        }
+
+        // Calculate `sumExp = exp(0 - max) + exp(x_1 - max) + exp(x_2 - max) + ...`
+        float64 sumExp = std::exp(0.0 - max);
+
+        for (uint32 c = 0; c < numLabels; c++) {
+            float64 x = statisticIterator[c].first;
+            sumExp += std::exp(x - max);
+        }
+
+        // Calculate the gradients and Hessians...
+        labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
+
+        for (uint32 c = 0; c < numLabels; c++) {
+            float64 predictedScore = scoreIterator[c];
+            uint8 trueLabel = *labelIterator;
+            float64 invertedExpectedScore = trueLabel ? -1 : 1;
+            float64 x = predictedScore * invertedExpectedScore;
+            Tuple<float64>& tuple = statisticIterator[c];
+            updateGradientAndHessian(invertedExpectedScore, x, max, sumExp, tuple.first, tuple.second);
+            labelIterator++;
+        }
+    }
+
     template<typename LabelMatrix>
     static inline void updateExampleWiseStatisticsInternally(uint32 exampleIndex, const LabelMatrix& labelMatrix,
                                                              const CContiguousConstView<float64>& scoreMatrix,
@@ -71,13 +140,6 @@ namespace boosting {
             float64 invertedExpectedScore = trueLabel ? -1 : 1;
             float64 x = predictedScore * invertedExpectedScore;
 
-            // Calculate the gradient that corresponds to the current label. The gradient calculates as
-            // `-expectedScore_c * exp(x_c) / (1 + exp(x_1) + exp(x_2) + ...)`, which can be rewritten as
-            // `-expectedScore_c * (exp(x_c - max) / sumExp)`
-            float64 xExp = std::exp(x - max);
-            float64 tmp = divideOrZero<float64>(xExp, sumExp);
-            gradientIterator[c] = invertedExpectedScore * tmp;
-
             // Calculate the Hessians that belong to the part of the Hessian matrix' upper triangle that corresponds to
             // the current label. Such Hessian calculates as
             // `-expectedScore_c * expectedScore_r * exp(x_c + x_r) / (1 + exp(x_1) + exp(x_2) + ...)^2`, or as
@@ -95,10 +157,7 @@ namespace boosting {
                 labelIterator2++;
             }
 
-            // Calculate the Hessian on the diagonal of the Hessian matrix that corresponds to the current label. Such
-            // Hessian calculates as `exp(x_c) * (1 + exp(x_1) + exp(x_2) + ...) / (1 + exp(x_1) + exp(x_2) + ...)^2`,
-            // or as `(exp(x_c - max) / sumExp) * (1 - exp(x_c - max) / sumExp)`
-            *hessianIterator = tmp * (1 - tmp);
+            updateGradientAndHessian(invertedExpectedScore, x, max, sumExp, gradientIterator[c], *hessianIterator);
             hessianIterator++;
             labelIterator++;
         }
@@ -145,6 +204,42 @@ namespace boosting {
         }
 
         return max + std::log(sumExp);
+    }
+
+    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex,
+                                                            const CContiguousLabelMatrix& labelMatrix,
+                                                            const CContiguousConstView<float64>& scoreMatrix,
+                                                            CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                            CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                            DenseLabelWiseStatisticView& statisticView) const {
+        updateLabelWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                    statisticView);
+    }
+
+    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex,
+                                                            const CContiguousLabelMatrix& labelMatrix,
+                                                            const CContiguousConstView<float64>& scoreMatrix,
+                                                            PartialIndexVector::const_iterator labelIndicesBegin,
+                                                            PartialIndexVector::const_iterator labelIndicesEnd,
+                                                            DenseLabelWiseStatisticView& statisticView) const {
+        updateLabelWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                    statisticView);
+    }
+
+    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                            const CContiguousConstView<float64>& scoreMatrix,
+                                                            CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                            CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                            DenseLabelWiseStatisticView& statisticView) const {
+        updateLabelWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix, statisticView);
+    }
+
+    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                            const CContiguousConstView<float64> scoreMatrix,
+                                                            PartialIndexVector::const_iterator labelIndicesBegin,
+                                                            PartialIndexVector::const_iterator labelIndicesEnd,
+                                                            DenseLabelWiseStatisticView& statisticView) const {
+        updateLabelWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix, statisticView);
     }
 
     void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,

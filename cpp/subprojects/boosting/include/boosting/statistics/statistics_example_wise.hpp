@@ -3,9 +3,7 @@
  */
 #pragma once
 
-#include "common/input/label_matrix_c_contiguous.hpp"
-#include "common/input/label_matrix_csr.hpp"
-#include "common/statistics/statistics.hpp"
+#include "boosting/statistics/statistics_label_wise.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 
 
@@ -29,6 +27,21 @@ namespace boosting {
              *                              set
              */
             virtual void setRuleEvaluationFactory(const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory) = 0;
+
+            /**
+             * Creates and returns an instance of type `ILabelWiseStatistics` from the gradients and Hessians that are
+             * stored by this object.
+             *
+             * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
+             *                              allows to create instances of the class that is used for calculating the
+             *                              predictions, as well as corresponding quality scores of rules
+             * @param numThreads            The number of threads that should be used to convert the statistics for
+             *                              individual examples in parallel
+             * @return                      An unique pointer to an object of type `ILabelWiseStatistics` that has been
+             *                              created
+             */
+            virtual std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics(
+                const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) = 0;
 
     };
 
