@@ -63,15 +63,15 @@ static inline void setArrayToDifference(T* a, const T* b, const T* c, uint32 num
 
 /**
  * Sets all elements in an array `a` to the difference between the elements in two other array `b` and `c`, such that
- * `a = b - c`. The indices of elements in the arrays `b` and `c` that correspond to the elements in array `a` are given
+ * `a = b - c`. The indices of elements in the array `b` that correspond to the elements in arrays `a` and `c` are given
  * as an additional array.
  *
  * @tparam T            The type of the arrays `a`, `b` and `c`
  * @param a             A pointer to an array of template type `T` to be updated
  * @param b             A pointer to an array of template type `T`
  * @param c             A pointer to an array of template type `T`
- * @param indices       A pointer to an array of type `uint32` that stores the indices of the elements in the arrays
- *                      `a` and `b` that correspond to the elements in array `a`
+ * @param indices       A pointer to an array of type `uint32` that stores the indices of the elements in the array `b`
+ *                      that correspond to the elements in arrays `a` and `c`
  * @param numElements   The number of elements in the array `a`
  */
 template<typename T>
