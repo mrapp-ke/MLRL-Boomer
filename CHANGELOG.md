@@ -1,6 +1,6 @@
 # Changelog
 
-### Version 0.6.0 (to be released)
+### Version 0.6.0 (Sep 6, 2021)
 
 ***This release comes with changes to the command line API. For brevity and consistency, some parameters and/or their values have been renamed. Moreover, some parameters have been updated to use more reasonable default values. For an updated overview of the available parameters, please refer to the documentation.***
 
