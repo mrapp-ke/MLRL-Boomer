@@ -7,9 +7,9 @@
 namespace seco {
 
     template<typename Prediction, typename WeightMatrix>
-    static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                 WeightMatrix& weightMatrix,
-                                                 const BinarySparseArrayVector& majorityLabelVector) {
+    static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                          WeightMatrix& weightMatrix,
+                                                          const BinarySparseArrayVector& majorityLabelVector) {
         weightMatrix.updateRow(statisticIndex, majorityLabelVector, prediction.scores_cbegin(),
                                prediction.scores_cend(), prediction.indices_cbegin(), prediction.indices_cend());
     }
@@ -264,17 +264,18 @@ namespace seco {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyPredictionInternally<CompletePrediction, WeightMatrix>(statisticIndex, prediction,
-                                                                            *weightMatrixPtr_,
-                                                                            *majorityLabelVectorPtr_);
+                applyLabelWisePredictionInternally<CompletePrediction, WeightMatrix>(statisticIndex, prediction,
+                                                                                     *weightMatrixPtr_,
+                                                                                     *majorityLabelVectorPtr_);
             }
 
             /**
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyPredictionInternally<PartialPrediction, WeightMatrix>(statisticIndex, prediction,
-                                                                           *weightMatrixPtr_, *majorityLabelVectorPtr_);
+                applyLabelWisePredictionInternally<PartialPrediction, WeightMatrix>(statisticIndex, prediction,
+                                                                                    *weightMatrixPtr_,
+                                                                                    *majorityLabelVectorPtr_);
             }
 
             /**
