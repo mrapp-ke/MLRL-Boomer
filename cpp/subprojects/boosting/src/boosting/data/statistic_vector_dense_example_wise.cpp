@@ -117,8 +117,8 @@ namespace boosting {
 
         for (uint32 i = 0; i < numGradients_; i++) {
             uint32 index = indexIterator[i];
-            uint32 offset = triangularNumber(index);
-            addToArray(&hessians_[triangularNumber(i)], &hessiansBegin[offset], indexIterator, i + 1, weight);
+            addToArray(&hessians_[triangularNumber(i)], &hessiansBegin[triangularNumber(index)], indexIterator, i + 1,
+                       weight);
         }
     }
 
@@ -148,9 +148,9 @@ namespace boosting {
         setArrayToDifference(gradients_, firstGradientsBegin, secondGradientsBegin, indexIterator, numGradients_);
 
         for (uint32 i = 0; i < numGradients_; i++) {
+            uint32 offset = triangularNumber(i);
             uint32 index = indexIterator[i];
-            uint32 offset = triangularNumber(index);
-            setArrayToDifference(&hessians_[triangularNumber(i)], &firstHessiansBegin[offset],
+            setArrayToDifference(&hessians_[offset], &firstHessiansBegin[triangularNumber(index)],
                                  &secondHessiansBegin[offset], indexIterator, i + 1);
         }
     }
