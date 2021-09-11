@@ -115,5 +115,4 @@ namespace boosting {
                                                              statisticsFactory.create(labelMatrix));
     }
 
-
 }
