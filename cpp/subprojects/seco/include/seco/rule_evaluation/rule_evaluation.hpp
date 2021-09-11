@@ -5,7 +5,7 @@
 #pragma once
 
 #include "common/rule_evaluation/score_vector.hpp"
-#include "seco/data/vector_dense_confusion_matrices.hpp"
+#include "seco/data/vector_confusion_matrix_dense.hpp"
 
 
 namespace seco {

@@ -1,4 +1,4 @@
-#include "seco/data/matrix_dense_weights.hpp"
+#include "seco/data/matrix_weight_dense.hpp"
 #include "common/data/arrays.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
 

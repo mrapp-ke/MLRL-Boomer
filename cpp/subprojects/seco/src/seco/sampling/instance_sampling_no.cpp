@@ -1,6 +1,6 @@
 #include "seco/sampling/instance_sampling_no.hpp"
 #include "seco/statistics/statistics.hpp"
-#include "seco/data/matrix_dense_weights.hpp"
+#include "seco/data/matrix_weight_dense.hpp"
 #include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
