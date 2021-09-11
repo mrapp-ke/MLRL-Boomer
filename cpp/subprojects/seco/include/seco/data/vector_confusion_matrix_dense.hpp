@@ -6,7 +6,7 @@
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
 #include "seco/data/confusion_matrix.hpp"
-#include "seco/data/matrix_dense_weights.hpp"
+#include "seco/data/matrix_weight_dense.hpp"
 
 
 namespace seco {

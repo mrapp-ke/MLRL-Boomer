@@ -6,7 +6,7 @@
 #include "common/sampling/instance_sampling.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
-#include "seco/data/matrix_dense_weights.hpp"
+#include "seco/data/matrix_weight_dense.hpp"
 
 
 namespace seco {

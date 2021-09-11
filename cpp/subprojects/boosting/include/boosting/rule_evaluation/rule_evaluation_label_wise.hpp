@@ -5,7 +5,7 @@
 
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "boosting/data/statistic_vector_dense_label_wise.hpp"
+#include "boosting/data/statistic_vector_label_wise_dense.hpp"
 #include "boosting/rule_evaluation/rule_evaluation.hpp"
 #include <memory>
 

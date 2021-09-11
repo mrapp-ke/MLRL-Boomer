@@ -1,4 +1,4 @@
-#include "boosting/data/statistic_view_dense_label_wise.hpp"
+#include "boosting/data/statistic_view_label_wise_dense.hpp"
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
 
