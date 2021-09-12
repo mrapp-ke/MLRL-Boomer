@@ -9,4 +9,38 @@ namespace boosting {
 
     }
 
+    void AbstractSparseLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
+                                                                const CContiguousLabelMatrix& labelMatrix,
+                                                                const LilMatrix<float64>& scoreMatrix,
+                                                                CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                                CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                                SparseLabelWiseStatisticView& statisticView) const {
+        // TODO Implement
+    }
+
+    void AbstractSparseLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex,
+                                                                const CContiguousLabelMatrix& labelMatrix,
+                                                                const LilMatrix<float64>& scoreMatrix,
+                                                                PartialIndexVector::const_iterator labelIndicesBegin,
+                                                                PartialIndexVector::const_iterator labelIndicesEnd,
+                                                                SparseLabelWiseStatisticView& statisticView) const {
+        // TODO Implement
+    }
+
+    void AbstractSparseLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                                const LilMatrix<float64>& scoreMatrix,
+                                                                CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                                CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                                SparseLabelWiseStatisticView& statisticView) const {
+        // TODO Implement
+    }
+
+    void AbstractSparseLabelWiseLoss::updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                                const LilMatrix<float64>& scoreMatrix,
+                                                                PartialIndexVector::const_iterator labelIndicesBegin,
+                                                                PartialIndexVector::const_iterator labelIndicesEnd,
+                                                                SparseLabelWiseStatisticView& statisticView) const {
+        // TODO Implement
+    }
+
 }
