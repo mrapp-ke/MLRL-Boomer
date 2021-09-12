@@ -23,9 +23,12 @@ namespace seco {
      * @tparam WeightMatrix             The type of the matrix that is used to store the weights of individual examples
      *                                  and labels
      * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
+     * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
+     *                                  well as corresponding quality scores, of rules
      */
-    template<typename LabelMatrix, typename WeightMatrix, typename ConfusionMatrixVector>
-    class AbstractLabelWiseStatistics : public ILabelWiseStatistics {
+    template<typename LabelMatrix, typename WeightMatrix, typename ConfusionMatrixVector,
+             typename RuleEvaluationFactory>
+    class AbstractLabelWiseStatistics : public ILabelWiseStatistics<RuleEvaluationFactory> {
 
         private:
 
@@ -138,7 +141,7 @@ namespace seco {
 
             uint32 numLabels_;
 
-            const ILabelWiseRuleEvaluationFactory* ruleEvaluationFactoryPtr_;
+            const RuleEvaluationFactory* ruleEvaluationFactoryPtr_;
 
             const LabelMatrix& labelMatrix_;
 
@@ -159,7 +162,7 @@ namespace seco {
         public:
 
             /**
-             * @param ruleEvaluationFactory     A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
+             * @param ruleEvaluationFactory     A reference to an object of template type `RuleEvaluationFactory` that
              *                                  allows to create instances of the class that is used for calculating the
              *                                  predictions, as well as corresponding quality scores, of rules
              * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
@@ -169,7 +172,7 @@ namespace seco {
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
              */
-            AbstractLabelWiseStatistics(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
+            AbstractLabelWiseStatistics(const RuleEvaluationFactory& ruleEvaluationFactory,
                                         const LabelMatrix& labelMatrix, std::unique_ptr<WeightMatrix> weightMatrixPtr,
                                         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
                 : numStatistics_(labelMatrix.getNumRows()), numLabels_(labelMatrix.getNumCols()),
@@ -204,7 +207,7 @@ namespace seco {
             /**
              * @see `ILabelWiseStatistics::setRuleEvaluationFactory`
              */
-            void setRuleEvaluationFactory(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
+            void setRuleEvaluationFactory(const RuleEvaluationFactory& ruleEvaluationFactory) override final {
                 ruleEvaluationFactoryPtr_ = &ruleEvaluationFactory;
             }
 

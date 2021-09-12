@@ -256,7 +256,7 @@ namespace boosting {
         assertNotNull("lapackPtr", lapackPtr_.get());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteBinnedRuleEvaluationFactory::createDense(
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteBinnedRuleEvaluationFactory::create(
             const CompleteIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
@@ -264,7 +264,7 @@ namespace boosting {
             indexVector, maxBins, l2RegularizationWeight_, std::move(labelBinningPtr), *blasPtr_, *lapackPtr_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteBinnedRuleEvaluationFactory::createDense(
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteBinnedRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());

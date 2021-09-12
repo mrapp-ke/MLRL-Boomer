@@ -49,7 +49,8 @@ namespace boosting {
                                                                               DenseLabelWiseStatisticView,
                                                                               DenseLabelWiseStatisticMatrix,
                                                                               NumericDenseMatrix<float64>,
-                                                                              ILabelWiseLoss> {
+                                                                              ILabelWiseLoss,
+                                                                              ILabelWiseRuleEvaluationFactory> {
 
         public:
 
@@ -73,7 +74,7 @@ namespace boosting {
                                      std::unique_ptr<NumericDenseMatrix<float64>> scoreMatrixPtr)
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticView,
                                               DenseLabelWiseStatisticMatrix, NumericDenseMatrix<float64>,
-                                              ILabelWiseLoss>(
+                                              ILabelWiseLoss, ILabelWiseRuleEvaluationFactory>(
                       lossFunction, ruleEvaluationFactory, labelMatrix, std::move(statisticViewPtr),
                       std::move(scoreMatrixPtr)) {
 

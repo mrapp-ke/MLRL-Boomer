@@ -66,28 +66,16 @@ namespace boosting {
         assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::createDense(
+    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::create(
             const CompleteIndexVector& indexVector) const {
         return std::make_unique<LabelWiseCompleteRuleEvaluation<CompleteIndexVector>>(indexVector,
                                                                                       l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::createSparse(
-            const CompleteIndexVector& indexVector) const {
-        // TODO Implement
-        return nullptr;
-    }
-
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::createDense(
+    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
         return std::make_unique<LabelWiseCompleteRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                      l2RegularizationWeight_);
-    }
-
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::createSparse(
-            const PartialIndexVector& indexVector) const {
-        // TODO Implement
-        return nullptr;
     }
 
 }

@@ -33,7 +33,7 @@ namespace boosting {
              *                      the indices of the labels for which the rules may predict
              * @return              An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
-            virtual std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
+            virtual std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
                 const CompleteIndexVector& indexVector) const = 0;
 
             /**
@@ -57,7 +57,7 @@ namespace boosting {
              *                      the indices of the labels for which the rules may predict
              * @return              An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
-            virtual std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
+            virtual std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
                 const PartialIndexVector& indexVector) const = 0;
 
             /**

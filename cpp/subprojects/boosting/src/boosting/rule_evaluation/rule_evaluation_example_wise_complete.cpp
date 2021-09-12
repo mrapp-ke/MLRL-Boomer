@@ -93,14 +93,14 @@ namespace boosting {
         assertNotNull("lapackPtr", lapackPtr_.get());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteRuleEvaluationFactory::createDense(
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteRuleEvaluationFactory::create(
             const CompleteIndexVector& indexVector) const {
         return std::make_unique<ExampleWiseCompleteRuleEvaluation<CompleteIndexVector>>(indexVector,
                                                                                         l2RegularizationWeight_,
                                                                                         *blasPtr_, *lapackPtr_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteRuleEvaluationFactory::createDense(
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
         return std::make_unique<ExampleWiseCompleteRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                        l2RegularizationWeight_,
