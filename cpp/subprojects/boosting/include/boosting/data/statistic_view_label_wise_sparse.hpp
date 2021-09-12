@@ -3,6 +3,9 @@
  */
 #pragma once
 
+#include "common/data/tuple.hpp"
+#include "common/data/matrix_lil.hpp"
+
 
 namespace boosting {
 
@@ -12,6 +15,26 @@ namespace boosting {
      */
     class SparseLabelWiseStatisticConstView {
 
+        protected:
+
+            /**
+             * A pointer to an object of type `LilMatrix` that stores the gradients and Hessians.
+             */
+            LilMatrix<Tuple<float64>>* statistics_;
+
+            /**
+             * The number of columns in the view.
+             */
+            uint32 numCols_;
+
+        public:
+
+            /**
+             * @param statistics    A pointer to an object of type `LilMatrix` that stores the gradients and Hessians
+             * @param numCols       The number of columns in the view
+             */
+            SparseLabelWiseStatisticConstView(LilMatrix<Tuple<float64>>* statistics, uint32 numCols);
+
     };
 
     /**
@@ -19,6 +42,14 @@ namespace boosting {
      * label-wise decomposable loss function and are stored in a pre-allocated matrix in the list of lists (LIL) format.
      */
     class SparseLabelWiseStatisticView : public SparseLabelWiseStatisticConstView {
+
+        public:
+
+            /**
+             * @param statistics    A pointer to an object of type `LilMatrix` that stores the gradients and Hessians
+             * @param numCols       The number of columns in the view
+             */
+            SparseLabelWiseStatisticView(LilMatrix<Tuple<float64>>* statistics, uint32 numCols);
 
     };
 
