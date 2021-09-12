@@ -4,11 +4,8 @@
  */
 #pragma once
 
-#include "common/input/label_matrix_c_contiguous.hpp"
-#include "common/input/label_matrix_csr.hpp"
 #include "seco/statistics/statistics.hpp"
 #include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
-#include <memory>
 
 
 namespace seco {
@@ -30,37 +27,6 @@ namespace seco {
              * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory` to be set
              */
             virtual void setRuleEvaluationFactory(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) = 0;
-
-    };
-
-    /**
-     * Defines an interface for all classes that allow to create new instances of the class ILabelWiseStatistics`.
-     */
-    class ILabelWiseStatisticsFactory {
-
-        public:
-
-            virtual ~ILabelWiseStatisticsFactory() { };
-
-            /**
-             * Creates a new instance of the class `ILabelWiseStatistics`, based on a matrix that provides random access
-             * to the labels of the training examples.
-             *
-             * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides random
-             *                      access to the labels of the training examples
-             * @return              An unique pointer to an object of type `ILabelWiseStatistics` that has been created
-             */
-            virtual std::unique_ptr<ILabelWiseStatistics> create(const CContiguousLabelMatrix& labelMatrix) const = 0;
-
-            /**
-             * Creates a new instance of the class `ILabelWiseStatistics`, based on a matrix that provides row-wise
-             * access to the labels of the training examples.
-             *
-             * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides row-wise
-             *                      access to the labels of the training examples
-             * @return              An unique pointer to an object of type `ILabelWiseStatistics` that has been created
-             */
-            virtual std::unique_ptr<ILabelWiseStatistics> create(const CsrLabelMatrix& labelMatrix) const = 0;
 
     };
 
