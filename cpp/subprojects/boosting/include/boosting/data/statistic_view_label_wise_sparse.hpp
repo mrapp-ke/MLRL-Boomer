@@ -35,6 +35,20 @@ namespace boosting {
              */
             SparseLabelWiseStatisticConstView(LilMatrix<Tuple<float64>>* statistics, uint32 numCols);
 
+            /**
+             * Returns the number of rows in the view.
+             *
+             * @return The number of rows
+             */
+            uint32 getNumRows() const;
+
+            /**
+             * Returns the number of columns in the view.
+             *
+             * @return The number of columns
+             */
+            uint32 getNumCols() const;
+
     };
 
     /**
