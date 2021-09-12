@@ -45,37 +45,4 @@ namespace boosting {
 
     };
 
-    /**
-     * Defines an interface for all classes that allow to create new instances of the class `IExampleWiseStatistics`.
-     */
-    class IExampleWiseStatisticsFactory {
-
-        public:
-
-            virtual ~IExampleWiseStatisticsFactory() { };
-
-            /**
-             * Creates a new instance of the type `IExampleWiseStatistics`, based on a matrix that provides random
-             * access to the labels of the training examples.
-             *
-             * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides random
-             *                      access to the labels of the training examples
-             * @return              An unique pointer to an object of type `IExampleWiseStatistics` that has been
-             *                      created
-             */
-            virtual std::unique_ptr<IExampleWiseStatistics> create(const CContiguousLabelMatrix& labelMatrix) const = 0;
-
-            /**
-             * Creates a new instance of the type `IExampleWiseStatistics`, based on a matrix that provides row-wise
-             * access to the labels of the training examples.
-             *
-             * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` that provides row-wise access to
-             *                      the labels of the training examples
-             * @return              An unique pointer to an object of type `IExampleWiseStatistics` that has been
-             *                      created
-             */
-            virtual std::unique_ptr<IExampleWiseStatistics> create(const CsrLabelMatrix& labelMatrix) const = 0;
-
-    };
-
 }
