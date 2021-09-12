@@ -1,6 +1,5 @@
 #include "boosting/statistics/statistics_provider_factory_label_wise_sparse.hpp"
 #include "common/validation.hpp"
-#include "statistics_provider_label_wise.hpp"
 
 
 namespace boosting {
@@ -23,18 +22,14 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> SparseLabelWiseStatisticsProviderFactory::create(
             const CContiguousLabelMatrix& labelMatrix) const {
-        std::unique_ptr<ILabelWiseStatistics> statisticsPtr; // TODO Initialize
-        return std::make_unique<LabelWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
-                                                             *pruningRuleEvaluationFactoryPtr_,
-                                                             std::move(statisticsPtr));
+        // TODO Implement
+        return nullptr;
     }
 
     std::unique_ptr<IStatisticsProvider> SparseLabelWiseStatisticsProviderFactory::create(
             const CsrLabelMatrix& labelMatrix) const {
-        std::unique_ptr<ILabelWiseStatistics> statisticsPtr; // TODO Initialize
-        return std::make_unique<LabelWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
-                                                             *pruningRuleEvaluationFactoryPtr_,
-                                                             std::move(statisticsPtr));
+        // TODO Implement
+        return nullptr;
     }
 
 }
