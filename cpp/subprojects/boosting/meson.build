@@ -6,6 +6,7 @@ source_files = [
     'src/boosting/data/matrix_dense_numeric.cpp',
     'src/boosting/data/statistic_vector_example_wise_dense.cpp',
     'src/boosting/data/statistic_vector_label_wise_dense.cpp',
+    'src/boosting/data/statistic_vector_label_wise_sparse.cpp',
     'src/boosting/data/statistic_view_example_wise_dense.cpp',
     'src/boosting/data/statistic_view_label_wise_dense.cpp',
     'src/boosting/iterator/diagonal_iterator.cpp',
