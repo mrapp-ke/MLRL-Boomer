@@ -47,7 +47,9 @@ namespace boosting {
                                                                                   DenseExampleWiseStatisticView,
                                                                                   DenseExampleWiseStatisticMatrix,
                                                                                   NumericDenseMatrix<float64>,
-                                                                                  IExampleWiseLoss> {
+                                                                                  IExampleWiseLoss,
+                                                                                  IExampleWiseRuleEvaluationFactory,
+                                                                                  ILabelWiseRuleEvaluationFactory> {
 
         public:
 
@@ -71,7 +73,8 @@ namespace boosting {
                                        std::unique_ptr<NumericDenseMatrix<float64>> scoreMatrixPtr)
                 : AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
                                                 DenseExampleWiseStatisticView, DenseExampleWiseStatisticMatrix,
-                                                NumericDenseMatrix<float64>, IExampleWiseLoss>(
+                                                NumericDenseMatrix<float64>, IExampleWiseLoss,
+                                                IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>(
                       lossFunction, ruleEvaluationFactory, labelMatrix, std::move(statisticViewPtr),
                       std::move(scoreMatrixPtr)) {
 
@@ -80,7 +83,7 @@ namespace boosting {
             /**
              * @see `IExampleWiseStatistics::toLabelWiseStatistics`
              */
-            std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics(
+            std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> toLabelWiseStatistics(
                     const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) override final {
                 uint32 numRows = this->statisticViewPtr_->getNumRows();
                 uint32 numCols = this->statisticViewPtr_->getNumCols();
@@ -116,7 +119,7 @@ namespace boosting {
     };
 
     template<typename LabelMatrix>
-    static inline std::unique_ptr<IExampleWiseStatistics> createStatistics(
+    static inline std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>> createStatistics(
             const IExampleWiseLoss& lossFunction, const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
             uint32 numThreads, const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
@@ -161,22 +164,18 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
             const CContiguousLabelMatrix& labelMatrix) const {
-        std::unique_ptr<IExampleWiseStatistics> statisticsPtr = createStatistics(*lossFunctionPtr_,
-                                                                                 *defaultRuleEvaluationFactoryPtr_,
-                                                                                 numThreads_, labelMatrix);
-        return std::make_unique<ExampleWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
-                                                               *pruningRuleEvaluationFactoryPtr_,
-                                                               std::move(statisticsPtr));
+        std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>> statisticsPtr =
+            createStatistics(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
+        return std::make_unique<ExampleWiseStatisticsProvider<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>(
+            *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
     std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
             const CsrLabelMatrix& labelMatrix) const {
-        std::unique_ptr<IExampleWiseStatistics> statisticsPtr = createStatistics(*lossFunctionPtr_,
-                                                                                 *defaultRuleEvaluationFactoryPtr_,
-                                                                                 numThreads_, labelMatrix);
-        return std::make_unique<ExampleWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
-                                                               *pruningRuleEvaluationFactoryPtr_,
-                                                               std::move(statisticsPtr));
+        std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>> statisticsPtr =
+            createStatistics(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
+        return std::make_unique<ExampleWiseStatisticsProvider<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>(
+            *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
     DenseConvertibleExampleWiseStatisticsProviderFactory::DenseConvertibleExampleWiseStatisticsProviderFactory(
@@ -197,22 +196,20 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(
             const CContiguousLabelMatrix& labelMatrix) const {
-        std::unique_ptr<IExampleWiseStatistics> statisticsPtr = createStatistics(*lossFunctionPtr_,
-                                                                                 *defaultRuleEvaluationFactoryPtr_,
-                                                                                 numThreads_, labelMatrix);
-        return std::make_unique<ConvertibleExampleWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
-                                                                          *pruningRuleEvaluationFactoryPtr_,
-                                                                          std::move(statisticsPtr), numThreads_);
+        std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>> statisticsPtr =
+            createStatistics(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
+        return std::make_unique<ConvertibleExampleWiseStatisticsProvider<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>(
+            *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr),
+            numThreads_);
     }
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(
             const CsrLabelMatrix& labelMatrix) const {
-        std::unique_ptr<IExampleWiseStatistics> statisticsPtr = createStatistics(*lossFunctionPtr_,
-                                                                                 *defaultRuleEvaluationFactoryPtr_,
-                                                                                 numThreads_, labelMatrix);
-        return std::make_unique<ConvertibleExampleWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
-                                                                          *pruningRuleEvaluationFactoryPtr_,
-                                                                          std::move(statisticsPtr), numThreads_);
+        std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>> statisticsPtr =
+            createStatistics(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
+        return std::make_unique<ConvertibleExampleWiseStatisticsProvider<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>(
+            *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr),
+            numThreads_);
     }
 
 }
