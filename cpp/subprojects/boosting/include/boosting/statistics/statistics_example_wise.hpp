@@ -40,7 +40,7 @@ namespace boosting {
              * @return                      An unique pointer to an object of type `ILabelWiseStatistics` that has been
              *                              created
              */
-            virtual std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics(
+            virtual std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> toLabelWiseStatistics(
                 const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) = 0;
 
     };

@@ -12,7 +12,11 @@ namespace boosting {
     /**
      * Defines an interface for all classes that store gradients and Hessians that have been calculated according to a
      * differentiable loss function that is applied label-wise.
+     *
+     * @tparam RuleEvaluationFactory The type of the classes that may be used for calculating the predictions, as well
+     *                               as corresponding quality scores, of rules
      */
+    template<typename RuleEvaluationFactory>
     class ILabelWiseStatistics : virtual public IStatistics {
 
         public:
@@ -23,9 +27,9 @@ namespace boosting {
              * Sets the factory that allows to create instances of the class that is used for calculating the
              * predictions, as well as corresponding quality scores, of rules.
              *
-             * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory` to be set
+             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` to be set
              */
-            virtual void setRuleEvaluationFactory(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory) = 0;
+            virtual void setRuleEvaluationFactory(const RuleEvaluationFactory& ruleEvaluationFactory) = 0;
 
     };
 

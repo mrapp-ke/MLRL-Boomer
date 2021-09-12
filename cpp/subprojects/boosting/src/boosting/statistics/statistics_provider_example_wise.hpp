@@ -72,7 +72,7 @@ namespace boosting {
 
             std::unique_ptr<IExampleWiseStatistics> exampleWiseStatisticsPtr_;
 
-            std::unique_ptr<ILabelWiseStatistics> labelWiseStatisticsPtr_;
+            std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> labelWiseStatisticsPtr_;
 
             uint32 numThreads_;
 
