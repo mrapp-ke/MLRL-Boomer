@@ -32,7 +32,8 @@ source_files = [
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_single.cpp',
     'src/boosting/statistics/statistics_provider_factory_example_wise_dense.cpp',
-    'src/boosting/statistics/statistics_provider_factory_label_wise_dense.cpp'
+    'src/boosting/statistics/statistics_provider_factory_label_wise_dense.cpp',
+    'src/boosting/statistics/statistics_provider_factory_label_wise_sparse.cpp'
 ]
 
 # Dependencies
