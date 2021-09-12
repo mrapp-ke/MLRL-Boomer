@@ -16,6 +16,9 @@ cdef extern from "boosting/losses/loss_label_wise_sparse.hpp" namespace "boostin
         pass
 
 
+ctypedef ISparseLabelWiseLoss* ISparseLabelWiseLossPtr
+
+
 cdef extern from "boosting/losses/loss_label_wise_logistic.hpp" namespace "boosting" nogil:
 
     cdef cppclass LabelWiseLogisticLossImpl"boosting::LabelWiseLogisticLoss"(ILabelWiseLoss):
@@ -42,7 +45,8 @@ cdef class LabelWiseLoss(EvaluationMeasure):
 
 
 cdef class SparseLabelWiseLoss(LabelWiseLoss):
-    pass
+
+    cdef unique_ptr[ISparseLabelWiseLoss] get_sparse_label_wise_loss_ptr(self)
 
 
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):

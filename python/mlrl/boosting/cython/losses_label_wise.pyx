@@ -1,6 +1,7 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
+from libcpp.cast cimport dynamic_cast
 from libcpp.utility cimport move
 from libcpp.memory cimport make_unique
 
@@ -21,7 +22,9 @@ cdef class SparseLabelWiseLoss(LabelWiseLoss):
     """
     A wrapper for the pure virtual C++ class `ISparseLabelWiseLoss`.
     """
-    pass
+
+    cdef unique_ptr[ISparseLabelWiseLoss] get_sparse_label_wise_loss_ptr(self):
+        return unique_ptr[ISparseLabelWiseLoss](dynamic_cast[ISparseLabelWiseLossPtr](self.loss_function_ptr.release()))
 
 
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
