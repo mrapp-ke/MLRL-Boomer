@@ -12,11 +12,6 @@
 
 namespace boosting {
 
-    // Forward declarations
-    class ILabelWiseRuleEvaluationFactory;
-    template<typename StatisticVector>
-    class IRuleEvaluation;
-
     /**
      * An one-dimensional vector that stores gradients and Hessians that have been calculated using a label-wise
      * decomposable loss function in C-contiguous arrays. For each element in the vector a single gradient and Hessian
@@ -174,32 +169,6 @@ namespace boosting {
              */
             void difference(const_iterator firstBegin, const_iterator firstEnd, const PartialIndexVector& firstIndices,
                             const_iterator secondBegin, const_iterator secondEnd);
-
-            /**
-             * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
-             * rules, based on the gradients and Hessians that are stored in a `DenseLabelWiseStatisticVector`.
-             *
-             * @param factory       A reference to an object of type `ILabelWiseRuleEvaluationFactory` that should be
-             *                      used to create the object
-             * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
-             *                      indices of the labels for which the rules may predict
-             * @return              An unique pointer to an object of type `IRuleEvaluation` that has been created
-             */
-            std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> createRuleEvaluation(
-                const ILabelWiseRuleEvaluationFactory& factory, const CompleteIndexVector& labelIndices) const;
-
-            /**
-             * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
-             * rules, based on the gradients and Hessians that are stored in a `DenseLabelWiseStatisticVector`.
-             *
-             * @param factory       A reference to an object of type `ILabelWiseRuleEvaluationFactory` that should be
-             *                      used to create the object
-             * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-             *                      indices of the labels for which the rules may predict
-             * @return              An unique pointer to an object of type `IRuleEvaluation` that has been created
-             */
-            std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> createRuleEvaluation(
-                const ILabelWiseRuleEvaluationFactory& factory, const PartialIndexVector& labelIndices) const;
 
     };
 
