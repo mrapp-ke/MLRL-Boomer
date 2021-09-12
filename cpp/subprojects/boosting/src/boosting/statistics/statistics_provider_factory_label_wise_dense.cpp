@@ -9,7 +9,7 @@
 namespace boosting {
 
     template<typename LabelMatrix>
-    static inline std::unique_ptr<ILabelWiseStatistics> createInternally(
+    static inline std::unique_ptr<ILabelWiseStatistics> createStatistics(
             const ILabelWiseLoss& lossFunction, const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
             uint32 numThreads, const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
@@ -37,50 +37,6 @@ namespace boosting {
                                                                        std::move(scoreMatrixPtr));
     }
 
-    /**
-     * A factory that allows to create new instances of the class `ILabelWiseStatistics` that use dense data structures
-     * to store the statistics.
-     */
-    class DenseLabelWiseStatisticsFactory final : public ILabelWiseStatisticsFactory {
-
-        private:
-
-            const ILabelWiseLoss& lossFunction_;
-
-            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory_;
-
-            uint32 numThreads_;
-
-        public:
-
-            /**
-             * @param lossFunction          A reference to an object of type `ILabelWiseLoss`, representing the loss
-             *                              function to be used for calculating gradients and Hessians
-             * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
-             *                              allows to create instances of the class that is used to calculate the
-             *                              predictions, as well as corresponding quality scores, of rules
-             * @param numThreads            The number of CPU threads to be used to calculate the initial statistics in
-             *                              parallel. Must be at least 1
-             */
-            DenseLabelWiseStatisticsFactory(const ILabelWiseLoss& lossFunction,
-                                            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
-                                            uint32 numThreads)
-                : lossFunction_(lossFunction), ruleEvaluationFactory_(ruleEvaluationFactory), numThreads_(numThreads) {
-
-            }
-
-            std::unique_ptr<ILabelWiseStatistics> create(const CContiguousLabelMatrix& labelMatrix) const override {
-                return createInternally<CContiguousLabelMatrix>(lossFunction_, ruleEvaluationFactory_, numThreads_,
-                                                                labelMatrix);
-            }
-
-            std::unique_ptr<ILabelWiseStatistics> create(const CsrLabelMatrix& labelMatrix) const override {
-                return createInternally<CsrLabelMatrix>(lossFunction_, ruleEvaluationFactory_, numThreads_,
-                                                        labelMatrix);
-            }
-
-    };
-
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
             std::unique_ptr<ILabelWiseLoss> lossFunctionPtr,
             std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
@@ -99,20 +55,22 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
             const CContiguousLabelMatrix& labelMatrix) const {
-        DenseLabelWiseStatisticsFactory statisticsFactory(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_,
-                                                          numThreads_);
+        std::unique_ptr<ILabelWiseStatistics> statisticsPtr = createStatistics(*lossFunctionPtr_,
+                                                                               *defaultRuleEvaluationFactoryPtr_,
+                                                                               numThreads_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
                                                              *pruningRuleEvaluationFactoryPtr_,
-                                                             statisticsFactory.create(labelMatrix));
+                                                             std::move(statisticsPtr));
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
             const CsrLabelMatrix& labelMatrix) const {
-        DenseLabelWiseStatisticsFactory statisticsFactory(*lossFunctionPtr_, *defaultRuleEvaluationFactoryPtr_,
-                                                          numThreads_);
+        std::unique_ptr<ILabelWiseStatistics> statisticsPtr = createStatistics(*lossFunctionPtr_,
+                                                                               *defaultRuleEvaluationFactoryPtr_,
+                                                                               numThreads_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider>(*regularRuleEvaluationFactoryPtr_,
                                                              *pruningRuleEvaluationFactoryPtr_,
-                                                             statisticsFactory.create(labelMatrix));
+                                                             std::move(statisticsPtr));
     }
 
 }
