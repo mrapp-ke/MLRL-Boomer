@@ -80,7 +80,7 @@ namespace boosting {
             /**
              * @see `IExampleWiseStatistics::toLabelWiseStatistics`
              */
-            std::unique_ptr<ILabelWiseStatistics> toLabelWiseStatistics(
+            std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> toLabelWiseStatistics(
                     const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) override final {
                 uint32 numRows = this->statisticViewPtr_->getNumRows();
                 uint32 numCols = this->statisticViewPtr_->getNumCols();
