@@ -84,10 +84,22 @@ namespace boosting {
                                                                                          l2RegularizationWeight_);
     }
 
+    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseSingleLabelRuleEvaluationFactory::createSparse(
+            const CompleteIndexVector& indexVector) const {
+        // TODO Implement
+        return nullptr;
+    }
+
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseSingleLabelRuleEvaluationFactory::createDense(
             const PartialIndexVector& indexVector) const {
         return std::make_unique<LabelWiseSingleLabelRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                         l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseSingleLabelRuleEvaluationFactory::createSparse(
+            const PartialIndexVector& indexVector) const {
+        // TODO Implement
+        return nullptr;
     }
 
 }

@@ -35,7 +35,13 @@ namespace boosting {
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
                 const CompleteIndexVector& indexVector) const override;
 
+            std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> createSparse(
+                const CompleteIndexVector& indexVector) const override;
+
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> createDense(
+                const PartialIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> createSparse(
                 const PartialIndexVector& indexVector) const override;
 
     };
