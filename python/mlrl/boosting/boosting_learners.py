@@ -5,13 +5,14 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 
 Provides scikit-learn implementations of boosting algorithms.
 """
+import functools
 import logging as log
 from typing import Optional, Dict, Set, List
 
 from mlrl.boosting.cython.label_binning import LabelBinningFactory, EqualWidthLabelBinningFactory
 from mlrl.boosting.cython.losses_example_wise import ExampleWiseLoss, ExampleWiseLogisticLoss
-from mlrl.boosting.cython.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
-    LabelWiseSquaredHingeLoss
+from mlrl.boosting.cython.losses_label_wise import LabelWiseLoss, SparseLabelWiseLoss, LabelWiseLogisticLoss, \
+    LabelWiseSquaredErrorLoss, LabelWiseSquaredHingeLoss
 from mlrl.boosting.cython.model import RuleListBuilder
 from mlrl.boosting.cython.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor, \
     LabelWiseProbabilityPredictor, LabelWiseTransformationFunction, LogisticFunction
@@ -22,7 +23,8 @@ from mlrl.boosting.cython.rule_evaluation_label_wise import LabelWiseSingleLabel
     LabelWiseCompleteRuleEvaluationFactory, LabelWiseCompleteBinnedRuleEvaluationFactory
 from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatisticsProviderFactory, \
     DenseConvertibleExampleWiseStatisticsProviderFactory
-from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
+from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory, \
+    SparseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
 from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
@@ -304,13 +306,33 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                           regular_rule_evaluation_factory,
                                                                           pruning_rule_evaluation_factory, num_threads)
 
-    @staticmethod
-    def __create_label_wise_statistics_provider_factory(loss_function: LabelWiseLoss, default_rule_evaluation_factory,
+    def __create_label_wise_statistics_provider_factory(self, loss_function: LabelWiseLoss,
+                                                        default_rule_evaluation_factory,
                                                         regular_rule_evaluation_factory,
                                                         pruning_rule_evaluation_factory, num_threads: int):
-        return DenseLabelWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
-                                                       regular_rule_evaluation_factory, pruning_rule_evaluation_factory,
-                                                       num_threads)
+        reasons_for_dense = []
+
+        if not isinstance(loss_function, SparseLabelWiseLoss):
+            reasons_for_dense.append('the loss function "' + str(self.loss) + '"')
+
+        if self.default_rule:
+            reasons_for_dense.append('a default rule')
+
+        if not isinstance(regular_rule_evaluation_factory, LabelWiseSingleLabelRuleEvaluationFactory):
+            reasons_for_dense.append('rules that predict for all available labels')
+
+        if len(reasons_for_dense) > 0:
+            reason = functools.reduce(lambda a, b: a + (' and ' + str(b) if len(a) > 0 else str(b)), reasons_for_dense)
+            log.debug('Dense data structures are used to store statistics in the label space, because sparsity is not '
+                      + 'supported when using ' + reason)
+            return DenseLabelWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
+                                                           regular_rule_evaluation_factory,
+                                                           pruning_rule_evaluation_factory, num_threads)
+        else:
+            log.debug('Sparse data structures are used to store statistics in the label space')
+            return SparseLabelWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
+                                                            regular_rule_evaluation_factory,
+                                                            pruning_rule_evaluation_factory, num_threads)
 
     @staticmethod
     def __create_example_wise_statistics_provider_factory(loss_function: ExampleWiseLoss,
