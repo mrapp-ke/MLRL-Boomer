@@ -4,6 +4,7 @@ project('boosting', 'cpp', version : '0.7.0')
 source_files = [
     'src/boosting/binning/label_binning_equal_width.cpp',
     'src/boosting/data/matrix_dense_numeric.cpp',
+    'src/boosting/data/matrix_lil_numeric.cpp',
     'src/boosting/data/statistic_vector_example_wise_dense.cpp',
     'src/boosting/data/statistic_vector_label_wise_dense.cpp',
     'src/boosting/data/statistic_vector_label_wise_sparse.cpp',

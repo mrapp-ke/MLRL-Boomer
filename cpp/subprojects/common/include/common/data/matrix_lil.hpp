@@ -12,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class LilMatrix final {
+class LilMatrix {
 
     public:
 
