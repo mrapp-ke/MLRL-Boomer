@@ -10,6 +10,12 @@ cdef extern from "boosting/losses/loss_label_wise.hpp" namespace "boosting" nogi
         pass
 
 
+cdef extern from "boosting/losses/loss_label_wise_sparse.hpp" namespace "boosting" nogil:
+
+    cdef cppclass ISparseLabelWiseLoss(ILabelWiseLoss):
+        pass
+
+
 cdef extern from "boosting/losses/loss_label_wise_logistic.hpp" namespace "boosting" nogil:
 
     cdef cppclass LabelWiseLogisticLossImpl"boosting::LabelWiseLogisticLoss"(ILabelWiseLoss):
@@ -24,7 +30,7 @@ cdef extern from "boosting/losses/loss_label_wise_squared_error.hpp" namespace "
 
 cdef extern from "boosting/losses/loss_label_wise_squared_hinge.hpp" namespace "boosting" nogil:
 
-    cdef cppclass LabelWiseSquaredHingeLossImpl"boosting::LabelWiseSquaredHingeLoss"(ILabelWiseLoss):
+    cdef cppclass LabelWiseSquaredHingeLossImpl"boosting::LabelWiseSquaredHingeLoss"(ISparseLabelWiseLoss):
         pass
 
 
@@ -35,6 +41,10 @@ cdef class LabelWiseLoss(EvaluationMeasure):
     cdef unique_ptr[ILabelWiseLoss] loss_function_ptr
 
 
+cdef class SparseLabelWiseLoss(LabelWiseLoss):
+    pass
+
+
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     pass
 
@@ -43,5 +53,5 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
     pass
 
 
-cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
+cdef class LabelWiseSquaredHingeLoss(SparseLabelWiseLoss):
     pass

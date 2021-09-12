@@ -17,6 +17,13 @@ cdef class LabelWiseLoss(EvaluationMeasure):
         return <unique_ptr[ISimilarityMeasure]>move(self.loss_function_ptr)
 
 
+cdef class SparseLabelWiseLoss(LabelWiseLoss):
+    """
+    A wrapper for the pure virtual C++ class `ISparseLabelWiseLoss`.
+    """
+    pass
+
+
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
     """
     A wrapper for the C++ class `LabelWiseLogisticLoss`.
@@ -41,7 +48,7 @@ cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
         return (LabelWiseSquaredErrorLoss, ())
 
 
-cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
+cdef class LabelWiseSquaredHingeLoss(SparseLabelWiseLoss):
     """
     A wrapper for the C++ class `LabelWiseSquaredHingeLoss`.
     """
