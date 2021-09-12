@@ -9,7 +9,7 @@ import logging as log
 from typing import Optional, Dict, Set, List
 
 from mlrl.boosting.cython.label_binning import LabelBinningFactory, EqualWidthLabelBinningFactory
-from mlrl.boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
+from mlrl.boosting.cython.losses_example_wise import ExampleWiseLoss, ExampleWiseLogisticLoss
 from mlrl.boosting.cython.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
     LabelWiseSquaredHingeLoss
 from mlrl.boosting.cython.model import RuleListBuilder
@@ -295,20 +295,38 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                                 self.__create_label_binning_factory())
 
         if isinstance(loss_function, LabelWiseLoss):
-            return DenseLabelWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
-                                                           regular_rule_evaluation_factory,
-                                                           pruning_rule_evaluation_factory, num_threads)
+            return self.__create_label_wise_statistics_provider_factory(loss_function, default_rule_evaluation_factory,
+                                                                        regular_rule_evaluation_factory,
+                                                                        pruning_rule_evaluation_factory, num_threads)
         else:
-            if head_type == HEAD_TYPE_SINGLE:
-                return DenseConvertibleExampleWiseStatisticsProviderFactory(loss_function,
-                                                                            default_rule_evaluation_factory,
-                                                                            regular_rule_evaluation_factory,
-                                                                            pruning_rule_evaluation_factory,
-                                                                            num_threads)
-            else:
-                return DenseExampleWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
-                                                                 regular_rule_evaluation_factory,
-                                                                 pruning_rule_evaluation_factory, num_threads)
+            return self.__create_example_wise_statistics_provider_factory(loss_function,
+                                                                          default_rule_evaluation_factory,
+                                                                          regular_rule_evaluation_factory,
+                                                                          pruning_rule_evaluation_factory, num_threads)
+
+    @staticmethod
+    def __create_label_wise_statistics_provider_factory(loss_function: LabelWiseLoss, default_rule_evaluation_factory,
+                                                        regular_rule_evaluation_factory,
+                                                        pruning_rule_evaluation_factory, num_threads: int):
+        return DenseLabelWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
+                                                       regular_rule_evaluation_factory, pruning_rule_evaluation_factory,
+                                                       num_threads)
+
+    @staticmethod
+    def __create_example_wise_statistics_provider_factory(loss_function: ExampleWiseLoss,
+                                                          default_rule_evaluation_factory,
+                                                          regular_rule_evaluation_factory,
+                                                          pruning_rule_evaluation_factory, num_threads: int):
+        if isinstance(regular_rule_evaluation_factory, LabelWiseSingleLabelRuleEvaluationFactory):
+            return DenseConvertibleExampleWiseStatisticsProviderFactory(loss_function,
+                                                                        default_rule_evaluation_factory,
+                                                                        regular_rule_evaluation_factory,
+                                                                        pruning_rule_evaluation_factory,
+                                                                        num_threads)
+        else:
+            return DenseExampleWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
+                                                             regular_rule_evaluation_factory,
+                                                             pruning_rule_evaluation_factory, num_threads)
 
     def _create_thresholds_factory(self) -> ThresholdsFactory:
         num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(
