@@ -3,4 +3,12 @@
 
 namespace boosting {
 
+    SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements) {
+
+    }
+
+    SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements, bool init) {
+
+    }
+
 }
