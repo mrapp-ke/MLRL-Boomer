@@ -64,3 +64,7 @@ template class LilMatrix<uint8>;
 template class LilMatrix<uint32>;
 template class LilMatrix<float32>;
 template class LilMatrix<float64>;
+template class LilMatrix<Tuple<uint8>>;
+template class LilMatrix<Tuple<uint32>>;
+template class LilMatrix<Tuple<float32>>;
+template class LilMatrix<Tuple<float64>>;
