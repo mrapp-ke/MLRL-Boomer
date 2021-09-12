@@ -36,6 +36,27 @@ namespace boosting {
             SparseLabelWiseStatisticConstView(LilMatrix<Tuple<float64>>* statistics, uint32 numCols);
 
             /**
+             * An iterator that provides read-only access to the elements in the view.
+             */
+            typedef LilMatrix<Tuple<float64>>::Row::const_iterator const_iterator;
+
+            /**
+             * Returns a `const_iterator` to the beginning of a specific row.
+             *
+             * @param row   The row
+             * @return      A `const_iterator` to the beginning of the given row
+             */
+            const_iterator row_cbegin(uint32 row) const;
+
+            /**
+             * Returns a `const_iterator` to the end of a specific row.
+             *
+             * @param row   The row
+             * @return      A `const_iterator` to the end of the given row
+             */
+            const_iterator row_cend(uint32 row) const;
+
+            /**
              * Returns the number of rows in the view.
              *
              * @return The number of rows
@@ -64,6 +85,22 @@ namespace boosting {
              * @param numCols       The number of columns in the view
              */
             SparseLabelWiseStatisticView(LilMatrix<Tuple<float64>>* statistics, uint32 numCols);
+
+            /**
+             * Sets all gradients and Hessians in the matrix to zero.
+             */
+            void clear();
+
+            /**
+             * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
+             * to be added are multiplied by a specific weight.
+             *
+             * @param row       The row
+             * @param begin     A `const_iterator` to the beginning of the vector
+             * @param end       A `const_iterator` to the end of the vector
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
+             */
+            void addToRow(uint32 row, const_iterator begin, const_iterator end, float64 weight);
 
     };
 
