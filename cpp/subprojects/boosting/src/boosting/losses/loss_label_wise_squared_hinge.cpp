@@ -41,7 +41,7 @@ namespace boosting {
     }
 
     LabelWiseSquaredHingeLoss::LabelWiseSquaredHingeLoss()
-        : AbstractLabelWiseLoss(&updateGradientAndHessian, &evaluatePrediction) {
+        : AbstractSparseLabelWiseLoss(&updateGradientAndHessian, &evaluatePrediction) {
 
     }
 
