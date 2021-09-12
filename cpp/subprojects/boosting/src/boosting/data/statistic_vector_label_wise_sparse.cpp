@@ -1,5 +1,4 @@
 #include "boosting/data/statistic_vector_label_wise_sparse.hpp"
-#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 
 
 namespace boosting {
@@ -52,16 +51,6 @@ namespace boosting {
                                                     const PartialIndexVector& firstIndices, const_iterator secondBegin,
                                                     const_iterator secondEnd) {
         // TODO Implement
-    }
-
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> SparseLabelWiseStatisticVector::createRuleEvaluation(
-            const ILabelWiseRuleEvaluationFactory& factory, const CompleteIndexVector& labelIndices) const {
-        return factory.createSparse(labelIndices);
-    }
-
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> SparseLabelWiseStatisticVector::createRuleEvaluation(
-            const ILabelWiseRuleEvaluationFactory& factory, const PartialIndexVector& labelIndices) const {
-        return factory.createSparse(labelIndices);
     }
 
 }
