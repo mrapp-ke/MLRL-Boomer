@@ -102,9 +102,9 @@ namespace boosting {
     /**
      * An abstract base class for all (decomposable) loss functions that are applied label-wise.
      */
-    class AbstractLabelWiseLoss : public ILabelWiseLoss {
+    class AbstractLabelWiseLoss : virtual public ILabelWiseLoss {
 
-        private:
+        protected:
 
             /**
              * A function that allows to update the gradient and Hessian for a single example and label. The function
@@ -120,11 +120,15 @@ namespace boosting {
              */
             typedef float64 (*EvaluateFunction)(bool trueLabel, float64 predictedScore);
 
+            /**
+             * The function that is used for updating gradients and Hessians.
+             */
             UpdateFunction updateFunction_;
 
+            /**
+             * The function that is used for evaluating predictions.
+             */
             EvaluateFunction evaluateFunction_;
-
-        protected:
 
             /**
              * @param updateFunction    The function to be used for updating gradients and Hessians
