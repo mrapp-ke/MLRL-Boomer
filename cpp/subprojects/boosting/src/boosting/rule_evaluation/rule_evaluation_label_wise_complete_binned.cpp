@@ -138,7 +138,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteBinnedRuleEvaluationFactory::create(
-            const CompleteIndexVector& indexVector) const {
+            const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         return std::make_unique<LabelWiseCompleteBinnedRuleEvaluation<CompleteIndexVector>>(indexVector,
                                                                                             l2RegularizationWeight_,
@@ -146,7 +146,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteBinnedRuleEvaluationFactory::create(
-            const PartialIndexVector& indexVector) const {
+            const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         return std::make_unique<LabelWiseCompleteBinnedRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                            l2RegularizationWeight_,
