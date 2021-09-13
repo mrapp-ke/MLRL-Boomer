@@ -4,7 +4,6 @@
 #pragma once
 
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
-#include "boosting/data/statistic_vector_example_wise_dense.hpp"
 #include "boosting/binning/label_binning.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
