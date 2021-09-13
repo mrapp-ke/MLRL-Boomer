@@ -32,9 +32,11 @@ namespace boosting {
                                                          std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
+                const DenseLabelWiseStatisticVector& statisticVector,
                 const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
+                const DenseLabelWiseStatisticVector& statisticVector,
                 const PartialIndexVector& indexVector) const override;
 
     };
