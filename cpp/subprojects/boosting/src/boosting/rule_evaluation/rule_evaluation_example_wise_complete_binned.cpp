@@ -257,7 +257,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteBinnedRuleEvaluationFactory::create(
-            const CompleteIndexVector& indexVector) const {
+            const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<ExampleWiseCompleteBinnedRuleEvaluation<CompleteIndexVector>>(
@@ -265,7 +265,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteBinnedRuleEvaluationFactory::create(
-            const PartialIndexVector& indexVector) const {
+            const DenseExampleWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<ExampleWiseCompleteBinnedRuleEvaluation<PartialIndexVector>>(
