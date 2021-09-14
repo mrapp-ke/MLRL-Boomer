@@ -6,6 +6,7 @@
 #include "boosting/data/statistic_vector_label_wise_dense.hpp"
 #include "boosting/data/statistic_view_label_wise_dense.hpp"
 #include "boosting/losses/loss_label_wise.hpp"
+#include "common/measures/measure_evaluation.hpp"
 #include "statistics_label_wise_common.hpp"
 #include <cstdlib>
 
@@ -49,7 +50,7 @@ namespace boosting {
                                                                               DenseLabelWiseStatisticView,
                                                                               DenseLabelWiseStatisticMatrix,
                                                                               NumericDenseMatrix<float64>,
-                                                                              ILabelWiseLoss,
+                                                                              ILabelWiseLoss, IEvaluationMeasure,
                                                                               ILabelWiseRuleEvaluationFactory> {
 
         public:
@@ -57,6 +58,9 @@ namespace boosting {
             /**
              * @param lossFunction          A reference to an object of type `ILabelWiseLoss`, representing the loss
              *                              function to be used for calculating gradients and Hessians
+             * @param evaluationMeasure     A reference to an object of type `IEvaluationMeasure` that implements the
+             *                              evaluation measure that should be used to assess the quality of predictions
+             *                              for a specific statistic
              * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory`, that
              *                              allows to create instances of the class that is used for calculating the
              *                              predictions, as well as corresponding quality scores, of rules
@@ -67,15 +71,15 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericDenseMatrix` that stores the
              *                              currently predicted scores
              */
-            DenseLabelWiseStatistics(const ILabelWiseLoss& lossFunction,
+            DenseLabelWiseStatistics(const ILabelWiseLoss& lossFunction, const IEvaluationMeasure& evaluationMeasure,
                                      const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                      const LabelMatrix& labelMatrix,
                                      std::unique_ptr<DenseLabelWiseStatisticView> statisticViewPtr,
                                      std::unique_ptr<NumericDenseMatrix<float64>> scoreMatrixPtr)
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticView,
                                               DenseLabelWiseStatisticMatrix, NumericDenseMatrix<float64>,
-                                              ILabelWiseLoss, ILabelWiseRuleEvaluationFactory>(
-                      lossFunction, ruleEvaluationFactory, labelMatrix, std::move(statisticViewPtr),
+                                              ILabelWiseLoss, IEvaluationMeasure, ILabelWiseRuleEvaluationFactory>(
+                      lossFunction, evaluationMeasure, ruleEvaluationFactory, labelMatrix, std::move(statisticViewPtr),
                       std::move(scoreMatrixPtr)) {
 
             }
