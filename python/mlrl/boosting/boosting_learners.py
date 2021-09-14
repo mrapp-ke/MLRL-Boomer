@@ -29,6 +29,7 @@ from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
 from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
+from mlrl.common.cython.measures import EvaluationMeasure
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
@@ -283,6 +284,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             self.__get_preferred_parallel_statistic_update(head_type=default_rule_head_type),
             'parallel_statistic_update')
         loss_function = self.__create_loss_function()
+        evaluation_measure = self.__create_loss_function()
         label_binning_factory = self.__create_label_binning_factory()
 
         if label_binning_factory is not None and head_type == HEAD_TYPE_SINGLE:
@@ -297,16 +299,18 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                                 self.__create_label_binning_factory())
 
         if isinstance(loss_function, LabelWiseLoss):
-            return self.__create_label_wise_statistics_provider_factory(loss_function, default_rule_evaluation_factory,
+            return self.__create_label_wise_statistics_provider_factory(loss_function, evaluation_measure,
+                                                                        default_rule_evaluation_factory,
                                                                         regular_rule_evaluation_factory,
                                                                         pruning_rule_evaluation_factory, num_threads)
         else:
-            return self.__create_example_wise_statistics_provider_factory(loss_function,
+            return self.__create_example_wise_statistics_provider_factory(loss_function, evaluation_measure,
                                                                           default_rule_evaluation_factory,
                                                                           regular_rule_evaluation_factory,
                                                                           pruning_rule_evaluation_factory, num_threads)
 
     def __create_label_wise_statistics_provider_factory(self, loss_function: LabelWiseLoss,
+                                                        evaluationMeasure: EvaluationMeasure,
                                                         default_rule_evaluation_factory,
                                                         regular_rule_evaluation_factory,
                                                         pruning_rule_evaluation_factory, num_threads: int):
@@ -325,28 +329,32 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             reason = functools.reduce(lambda a, b: a + (' and ' + str(b) if len(a) > 0 else str(b)), reasons_for_dense)
             log.debug('Dense data structures are used to store statistics in the label space, because sparsity is not '
                       + 'supported when using ' + reason)
-            return DenseLabelWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
+            return DenseLabelWiseStatisticsProviderFactory(loss_function, evaluationMeasure,
+                                                           default_rule_evaluation_factory,
                                                            regular_rule_evaluation_factory,
                                                            pruning_rule_evaluation_factory, num_threads)
         else:
             log.debug('Sparse data structures are used to store statistics in the label space')
-            return SparseLabelWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
+            return SparseLabelWiseStatisticsProviderFactory(loss_function, evaluationMeasure,
+                                                            default_rule_evaluation_factory,
                                                             regular_rule_evaluation_factory,
                                                             pruning_rule_evaluation_factory, num_threads)
 
     @staticmethod
     def __create_example_wise_statistics_provider_factory(loss_function: ExampleWiseLoss,
+                                                          evaluation_measure: EvaluationMeasure,
                                                           default_rule_evaluation_factory,
                                                           regular_rule_evaluation_factory,
                                                           pruning_rule_evaluation_factory, num_threads: int):
         if isinstance(regular_rule_evaluation_factory, LabelWiseSingleLabelRuleEvaluationFactory):
-            return DenseConvertibleExampleWiseStatisticsProviderFactory(loss_function,
+            return DenseConvertibleExampleWiseStatisticsProviderFactory(loss_function, evaluation_measure,
                                                                         default_rule_evaluation_factory,
                                                                         regular_rule_evaluation_factory,
                                                                         pruning_rule_evaluation_factory,
                                                                         num_threads)
         else:
-            return DenseExampleWiseStatisticsProviderFactory(loss_function, default_rule_evaluation_factory,
+            return DenseExampleWiseStatisticsProviderFactory(loss_function, evaluation_measure,
+                                                             default_rule_evaluation_factory,
                                                              regular_rule_evaluation_factory,
                                                              pruning_rule_evaluation_factory, num_threads)
 
@@ -410,7 +418,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                 + 'set to "None"!')
                     return None
                 else:
-                    loss = self.__create_loss_function()
                     aggregation_function = self.__create_aggregation_function(
                         options.get_string(ARGUMENT_AGGREGATION_FUNCTION, 'avg'))
                     min_rules = options.get_int(ARGUMENT_MIN_RULES, 100)
@@ -420,7 +427,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                     num_recent = options.get_int(ARGUMENT_NUM_RECENT, 50)
                     min_improvement = options.get_float(ARGUMENT_MIN_IMPROVEMENT, 0.005)
                     force_stop = options.get_bool(ARGUMENT_FORCE_STOP, True)
-                    return MeasureStoppingCriterion(loss, aggregation_function, min_rules=min_rules,
+                    return MeasureStoppingCriterion(aggregation_function, min_rules=min_rules,
                                                     update_interval=update_interval, stop_interval=stop_interval,
                                                     num_past=num_past, num_recent=num_recent,
                                                     min_improvement=min_improvement, force_stop=force_stop)
