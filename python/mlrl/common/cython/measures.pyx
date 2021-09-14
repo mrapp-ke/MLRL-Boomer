@@ -19,3 +19,12 @@ cdef class EvaluationMeasure(SimilarityMeasure):
 
     cdef unique_ptr[IEvaluationMeasure] get_evaluation_measure_ptr(self):
         pass
+
+
+cdef class SparseEvaluationMeasure(EvaluationMeasure):
+    """
+    A wrapper for the pure virtual C++ class `ISparseEvaluationMeasure`.
+    """
+
+    cdef unique_ptr[ISparseEvaluationMeasure] get_sparse_evaluation_measure_ptr(self):
+        pass

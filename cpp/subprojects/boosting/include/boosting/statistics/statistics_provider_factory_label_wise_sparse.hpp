@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/statistics/statistics_provider_factory.hpp"
+#include "common/measures/measure_evaluation_sparse.hpp"
 #include "boosting/statistics/statistics_label_wise.hpp"
 #include "boosting/losses/loss_label_wise_sparse.hpp"
 
@@ -20,6 +21,8 @@ namespace boosting {
 
             std::unique_ptr<ISparseLabelWiseLoss> lossFunctionPtr_;
 
+            std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr_;
+
             std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
             std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
@@ -33,6 +36,9 @@ namespace boosting {
             /**
              * @param lossFunctionPtr                   An unique pointer to an object of type `ISparseLabelWiseLoss`
              *                                          that should be used for calculating gradients and Hessians
+             * @param evaluationMeasurePtr              An unique pointer to an object of type
+             *                                          `ISparseEvaluationMeasure` that implements the evaluation
+             *                                          measure that should be used to assess the quality of predictions
              * @param defaultRuleEvaluationFactoryPtr   An unique pointer to an object of type
              *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
@@ -50,6 +56,7 @@ namespace boosting {
              */
             SparseLabelWiseStatisticsProviderFactory(
                 std::unique_ptr<ISparseLabelWiseLoss> lossFunctionPtr,
+                std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
                 std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
                 std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
                 std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);

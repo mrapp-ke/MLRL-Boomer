@@ -1,4 +1,4 @@
-from mlrl.common.cython._measures cimport IEvaluationMeasure
+from mlrl.common.cython._measures cimport IEvaluationMeasure, ISparseEvaluationMeasure
 from mlrl.common.cython.statistics cimport StatisticsProviderFactory, IStatisticsProviderFactory
 from mlrl.boosting.cython.losses_label_wise cimport ILabelWiseLoss, ISparseLabelWiseLoss
 from mlrl.boosting.cython.rule_evaluation_label_wise cimport ILabelWiseRuleEvaluationFactory
@@ -28,7 +28,7 @@ cdef extern from "boosting/statistics/statistics_provider_factory_label_wise_spa
         # Constructors:
 
         SparseLabelWiseStatisticsProviderFactoryImpl(
-            unique_ptr[ISparseLabelWiseLoss] lossFunctionPtr,
+            unique_ptr[ISparseLabelWiseLoss] lossFunctionPtr, unique_ptr[ISparseEvaluationMeasure] evaluationMeasurePtr,
             unique_ptr[ILabelWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
             unique_ptr[ILabelWiseRuleEvaluationFactory] regularRuleEvaluationFactoryPtr,
             unique_ptr[ILabelWiseRuleEvaluationFactory] pruningRuleEvaluationFactoryPtr) except +

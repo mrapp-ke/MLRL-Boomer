@@ -1,4 +1,4 @@
-from mlrl.common.cython._measures cimport IEvaluationMeasure, ISimilarityMeasure
+from mlrl.common.cython._measures cimport IEvaluationMeasure, ISparseEvaluationMeasure, ISimilarityMeasure
 
 from libcpp.memory cimport unique_ptr
 
@@ -15,3 +15,10 @@ cdef class EvaluationMeasure(SimilarityMeasure):
     # Functions:
 
     cdef unique_ptr[IEvaluationMeasure] get_evaluation_measure_ptr(self)
+
+
+cdef class SparseEvaluationMeasure(EvaluationMeasure):
+
+    # Functions:
+
+    cdef unique_ptr[ISparseEvaluationMeasure] get_sparse_evaluation_measure_ptr(self)
