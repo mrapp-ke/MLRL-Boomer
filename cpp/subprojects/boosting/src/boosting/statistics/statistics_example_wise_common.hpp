@@ -297,6 +297,8 @@ namespace boosting {
      * @tparam StatisticMatrix                  The type of the matrix that stores the gradients and Hessians
      * @tparam ScoreMatrix                      The type of the matrices that are used to store predicted scores
      * @tparam LossFunction                     The type of the loss function that is used to calculate gradients and Hessians
+     * @tparam EvaluationMeasure                The type of the evaluation measure that is used to assess the quality of
+     *                                          predictions for a specific statistic
      * @tparam LabelWiseRuleEvaluationFactory   The type of the classes that may be used for calculating the label-wise
      *                                          predictions, as well as corresponding quality scores, of rules
      * @tparam ExampleWiseRuleEvaluationFactory The type of the classes that may be used for calculating the
@@ -304,8 +306,8 @@ namespace boosting {
      *                                          rules
      */
     template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename StatisticMatrix,
-             typename ScoreMatrix, typename LossFunction, typename ExampleWiseRuleEvaluationFactory,
-             typename LabelWiseRuleEvaluationFactory>
+             typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure,
+             typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class AbstractExampleWiseStatistics : public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
                                                                                         StatisticMatrix, ScoreMatrix,
                                                                                         ExampleWiseRuleEvaluationFactory>,
@@ -320,6 +322,8 @@ namespace boosting {
 
             const LossFunction& lossFunction_;
 
+            const EvaluationMeasure& evaluationMeasure_;
+
             const LabelMatrix& labelMatrix_;
 
             std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
@@ -329,6 +333,9 @@ namespace boosting {
             /**
              * @param lossFunction          A reference to an object of template type `LossFunction`, representing the
              *                              loss function to be used for calculating gradients and Hessians
+             * @param evaluationMeasure     A reference to an object of template type `EvaluationMeasure` that
+             *                              implements the evaluation measure that should be used to assess the quality
+             *                              of predictions for a specific statistic
              * @param ruleEvaluationFactory A reference to an object of template type
              *                              `ExampleWiseRuleEvaluationFactory`, to be used for calculating the
              *                              predictions, as well as corresponding quality scores, of rules
@@ -339,7 +346,7 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
              */
-            AbstractExampleWiseStatistics(const LossFunction& lossFunction,
+            AbstractExampleWiseStatistics(const LossFunction& lossFunction, const EvaluationMeasure& evaluationMeasure,
                                           const ExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                           const LabelMatrix& labelMatrix,
                                           std::unique_ptr<StatisticView> statisticViewPtr,
@@ -348,7 +355,8 @@ namespace boosting {
                                                          ExampleWiseRuleEvaluationFactory>(
                       std::move(statisticViewPtr), ruleEvaluationFactory),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticViewPtr_->getNumCols())),
-                  lossFunction_(lossFunction), labelMatrix_(labelMatrix), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
+                  lossFunction_(lossFunction), evaluationMeasure_(evaluationMeasure), labelMatrix_(labelMatrix),
+                  scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
 
             }
 
@@ -416,8 +424,8 @@ namespace boosting {
             /**
              * @see `IStatistics::evaluatePrediction`
              */
-            float64 evaluatePrediction(uint32 statisticIndex, const IEvaluationMeasure& measure) const override final {
-                return measure.evaluate(statisticIndex, labelMatrix_, *scoreMatrixPtr_);
+            float64 evaluatePrediction(uint32 statisticIndex) const override final {
+                return evaluationMeasure_.evaluate(statisticIndex, labelMatrix_, *scoreMatrixPtr_);
             }
 
             /**
