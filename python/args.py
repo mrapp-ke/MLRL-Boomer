@@ -11,7 +11,7 @@ from enum import Enum
 
 from mlrl.boosting.boosting_learners import LOSS_LOGISTIC_LABEL_WISE, HEAD_TYPE_VALUES as BOOSTING_HEAD_TYPE_VALUES, \
     EARLY_STOPPING_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, PREDICTOR_VALUES, \
-    PARALLEL_VALUES as BOOSTING_PARALLEL_VALUES
+    PARALLEL_VALUES as BOOSTING_PARALLEL_VALUES, SparseStatisticPolicy
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy, HEAD_TYPE_SINGLE, AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, \
     PRUNING_IREP, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, \
@@ -56,6 +56,8 @@ PARAM_FEATURE_FORMAT = '--feature-format'
 PARAM_LABEL_FORMAT = '--label-format'
 
 PARAM_PREDICTION_FORMAT = '--prediction-format'
+
+PARAM_STATISTIC_FORMAT = '--statistic-format'
 
 PARAM_MAX_RULES = '--max-rules'
 
@@ -311,6 +313,11 @@ class ArgumentParserBuilder:
     def add_boosting_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
         self.add_rule_learner_arguments(max_rules=1000, feature_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
         parser = self.parser
+        parser.add_argument(PARAM_STATISTIC_FORMAT, type=optional_string,
+                            default=ArgumentParserBuilder.__get_or_default('statistic_format',
+                                                                           SparseStatisticPolicy.AUTO.value, **kwargs),
+                            help='The format to be used for the representation of gradients and Hessians. Must be one '
+                                 + 'of ' + format_enum_values(SparseStatisticPolicy) + '.')
         parser.add_argument(PARAM_DEFAULT_RULE, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('default_rule', BooleanOption.TRUE.value,
                                                                            **kwargs),

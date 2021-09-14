@@ -7,6 +7,7 @@ Provides scikit-learn implementations of boosting algorithms.
 """
 import functools
 import logging as log
+from enum import Enum
 from typing import Optional, Dict, Set, List
 
 from mlrl.boosting.cython.label_binning import LabelBinningFactory, EqualWidthLabelBinningFactory
@@ -48,7 +49,7 @@ from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, H
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, create_label_sampling_factory, \
     create_instance_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
-    create_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
+    create_num_threads, create_thresholds_factory, parse_param, parse_param_and_options, format_enum_values
 
 EARLY_STOPPING_LOSS = 'loss'
 
@@ -117,6 +118,11 @@ PARALLEL_VALUES: Dict[str, Set[str]] = {
 }
 
 
+class SparseStatisticPolicy(Enum):
+    AUTO = AUTOMATIC
+    FORCE_DENSE = 'dense'
+
+
 class Boomer(MLRuleLearner, ClassifierMixin):
     """
     A scikit-multilearn implementation of "BOOMER", an algorithm for learning gradient boosted multi-label
@@ -125,6 +131,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, prediction_format: str = SparsePolicy.AUTO.value,
+                 statistic_format: str = SparseStatisticPolicy.AUTO.value,
                  max_rules: int = 1000, default_rule: str = BooleanOption.TRUE.value, time_limit: int = 0,
                  early_stopping: str = None, head_type: str = AUTOMATIC, loss: str = LOSS_LOGISTIC_LABEL_WISE,
                  predictor: str = AUTOMATIC, label_sampling: str = None, instance_sampling: str = None,
@@ -135,6 +142,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  max_head_refinements: int = 1, parallel_rule_refinement: str = AUTOMATIC,
                  parallel_statistic_update: str = AUTOMATIC, parallel_prediction: str = BooleanOption.TRUE.value):
         """
+        :param statistic_format:                    The format to be used for representation of predicted labels. Must
+                                                    be `dense` or `auto`
         :param max_rules:                           The maximum number of rules to be induced (including the default
                                                     rule)
         :param default_rule:                        Whether a default rule should be used, or not. Must be `true` or
@@ -215,6 +224,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     be provided using the bracket notation `true{num_threads=8}`
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
+        self.statistic_format = statistic_format
         self.max_rules = max_rules
         self.default_rule = default_rule
         self.time_limit = time_limit
@@ -312,31 +322,16 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                         default_rule_evaluation_factory,
                                                         regular_rule_evaluation_factory,
                                                         pruning_rule_evaluation_factory, num_threads: int):
-        reasons_for_dense = []
-
-        if not isinstance(loss_function, SparseLabelWiseLoss):
-            reasons_for_dense.append('the loss function "' + str(self.loss) + '"')
-
-        if self.default_rule:
-            reasons_for_dense.append('a default rule')
-
-        if not isinstance(regular_rule_evaluation_factory, LabelWiseSingleLabelRuleEvaluationFactory):
-            reasons_for_dense.append('rules that predict for all available labels')
-
-        if len(reasons_for_dense) > 0:
-            reason = functools.reduce(lambda a, b: a + (' and ' + str(b) if len(a) > 0 else str(b)), reasons_for_dense)
-            log.debug('Dense data structures are used to store statistics in the label space, because sparsity is not '
-                      + 'supported when using ' + reason)
-            return DenseLabelWiseStatisticsProviderFactory(loss_function, evaluation_measure,
-                                                           default_rule_evaluation_factory,
-                                                           regular_rule_evaluation_factory,
-                                                           pruning_rule_evaluation_factory, num_threads)
-        else:
-            log.debug('Sparse data structures are used to store statistics in the label space')
+        if self.__use_sparse_statistics(loss_function, regular_rule_evaluation_factory):
             return SparseLabelWiseStatisticsProviderFactory(loss_function, evaluation_measure,
                                                             default_rule_evaluation_factory,
                                                             regular_rule_evaluation_factory,
                                                             pruning_rule_evaluation_factory, num_threads)
+        else:
+            return DenseLabelWiseStatisticsProviderFactory(loss_function, evaluation_measure,
+                                                           default_rule_evaluation_factory,
+                                                           regular_rule_evaluation_factory,
+                                                           pruning_rule_evaluation_factory, num_threads)
 
     @staticmethod
     def __create_example_wise_statistics_provider_factory(loss_function, evaluation_measure,
@@ -354,6 +349,44 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                              default_rule_evaluation_factory,
                                                              regular_rule_evaluation_factory,
                                                              pruning_rule_evaluation_factory, num_threads)
+
+    def __use_sparse_statistics(self, loss_function, rule_evaluation_factory) -> bool:
+        sparse_policy = self.__create_sparse_statistic_policy()
+
+        if sparse_policy == SparseStatisticPolicy.AUTO:
+            reasons_for_dense = []
+
+            if not isinstance(loss_function, SparseLabelWiseLoss):
+                reasons_for_dense.append('the loss function "' + str(self.loss) + '"')
+
+            if self.default_rule:
+                reasons_for_dense.append('a default rule')
+
+            if not isinstance(rule_evaluation_factory, LabelWiseSingleLabelRuleEvaluationFactory):
+                reasons_for_dense.append('rules that predict for all available labels')
+
+            if len(reasons_for_dense) > 0:
+                reason = functools.reduce(lambda a, b: a + (' and ' + str(b) if len(a) > 0 else str(b)),
+                                          reasons_for_dense)
+                log.debug(
+                    'Dense data structures are used to store statistics in the label space, because sparsity is not '
+                    + 'supported when using ' + reason)
+                return False
+            else:
+                log.debug('Sparse data structures are used to store statistics in the label space')
+                return True
+        else:
+            log.debug('Dense data structures are used to store statistics in the label space')
+            return False
+
+    def __create_sparse_statistic_policy(self) -> SparseStatisticPolicy:
+        policy = self.statistic_format
+
+        try:
+            return SparseStatisticPolicy(policy)
+        except ValueError:
+            raise ValueError('Invalid value given for parameter "statistic_format": Must be one of '
+                             + format_enum_values(SparseStatisticPolicy) + ', but is "' + str(policy) + '"')
 
     def _create_thresholds_factory(self) -> ThresholdsFactory:
         num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(

@@ -70,6 +70,11 @@ The following parameters allow to specify how the training data should be organi
   * ``dense`` Enforces that predicted labels are stored using a dense format.
   * ``sparse`` Enforces that predicted labels are stored using a sparse format. Using a sparse format may reduce the memory footprint on some data sets.
 
+* ``--statistic-format`` (Default value = auto)
+
+  * ``auto`` A sparse format for representation of gradients and Hessians is used if supported by the loss function and if no rule predicts for all labels.
+  * ``dense`` Enforces that gradients and Hessians are stored using a dense format.
+
 **Input Files**
 
 The following parameters allow to specify the directories, where input files can be found:
