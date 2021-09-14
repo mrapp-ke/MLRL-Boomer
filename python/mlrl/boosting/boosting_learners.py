@@ -310,7 +310,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                           pruning_rule_evaluation_factory, num_threads)
 
     def __create_label_wise_statistics_provider_factory(self, loss_function: LabelWiseLoss,
-                                                        evaluationMeasure: EvaluationMeasure,
+                                                        evaluation_measure: EvaluationMeasure,
                                                         default_rule_evaluation_factory,
                                                         regular_rule_evaluation_factory,
                                                         pruning_rule_evaluation_factory, num_threads: int):
@@ -329,13 +329,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             reason = functools.reduce(lambda a, b: a + (' and ' + str(b) if len(a) > 0 else str(b)), reasons_for_dense)
             log.debug('Dense data structures are used to store statistics in the label space, because sparsity is not '
                       + 'supported when using ' + reason)
-            return DenseLabelWiseStatisticsProviderFactory(loss_function, evaluationMeasure,
+            return DenseLabelWiseStatisticsProviderFactory(loss_function, evaluation_measure,
                                                            default_rule_evaluation_factory,
                                                            regular_rule_evaluation_factory,
                                                            pruning_rule_evaluation_factory, num_threads)
         else:
             log.debug('Sparse data structures are used to store statistics in the label space')
-            return SparseLabelWiseStatisticsProviderFactory(loss_function, evaluationMeasure,
+            return SparseLabelWiseStatisticsProviderFactory(loss_function, evaluation_measure,
                                                             default_rule_evaluation_factory,
                                                             regular_rule_evaluation_factory,
                                                             pruning_rule_evaluation_factory, num_threads)
