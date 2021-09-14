@@ -43,4 +43,16 @@ namespace boosting {
         // TODO Implement
     }
 
+    float64 AbstractSparseLabelWiseLoss::evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+                                                  const LilMatrix<float64>& scoreMatrix) const {
+        // TODO Implement
+        return 0;
+    }
+
+    float64 AbstractSparseLabelWiseLoss::evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                  const LilMatrix<float64>& scoreMatrix) const {
+        // TODO Implement
+        return 0;
+    }
+
 }

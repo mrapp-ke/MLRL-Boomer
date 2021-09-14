@@ -69,8 +69,7 @@ cdef class SparseLabelWiseStatisticsProviderFactory(StatisticsProviderFactory):
                                                 in parallel. Must be at least 1
         """
         self.statistics_provider_factory_ptr = <unique_ptr[IStatisticsProviderFactory]>make_unique[SparseLabelWiseStatisticsProviderFactoryImpl](
-            move(loss_function.get_sparse_label_wise_loss_ptr()),
-            move(evaluation_measure.get_sparse_evaluation_measure_ptr()),
+            move(loss_function.loss_function_ptr), move(evaluation_measure.get_sparse_evaluation_measure_ptr()),
             move(default_rule_evaluation_factory.rule_evaluation_factory_ptr),
             move(regular_rule_evaluation_factory.rule_evaluation_factory_ptr),
             move(pruning_rule_evaluation_factory.rule_evaluation_factory_ptr), num_threads)

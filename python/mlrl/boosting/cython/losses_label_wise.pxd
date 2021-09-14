@@ -1,5 +1,5 @@
-from mlrl.common.cython._measures cimport IEvaluationMeasure, ISimilarityMeasure
-from mlrl.common.cython.measures cimport EvaluationMeasure
+from mlrl.common.cython._measures cimport IEvaluationMeasure, ISparseEvaluationMeasure, ISimilarityMeasure
+from mlrl.common.cython.measures cimport EvaluationMeasure, SparseEvaluationMeasure
 
 from libcpp.memory cimport unique_ptr
 
@@ -12,7 +12,7 @@ cdef extern from "boosting/losses/loss_label_wise.hpp" namespace "boosting" nogi
 
 cdef extern from "boosting/losses/loss_label_wise_sparse.hpp" namespace "boosting" nogil:
 
-    cdef cppclass ISparseLabelWiseLoss(ILabelWiseLoss):
+    cdef cppclass ISparseLabelWiseLoss(ILabelWiseLoss, ISparseEvaluationMeasure):
         pass
 
 
@@ -44,9 +44,11 @@ cdef class LabelWiseLoss(EvaluationMeasure):
     cdef unique_ptr[ILabelWiseLoss] loss_function_ptr
 
 
-cdef class SparseLabelWiseLoss(LabelWiseLoss):
+cdef class SparseLabelWiseLoss(SparseEvaluationMeasure):
 
-    cdef unique_ptr[ISparseLabelWiseLoss] get_sparse_label_wise_loss_ptr(self)
+    # Attributes:
+
+    cdef unique_ptr[ISparseLabelWiseLoss] loss_function_ptr
 
 
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):

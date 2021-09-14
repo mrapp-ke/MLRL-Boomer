@@ -18,13 +18,19 @@ cdef class LabelWiseLoss(EvaluationMeasure):
         return <unique_ptr[ISimilarityMeasure]>move(self.loss_function_ptr)
 
 
-cdef class SparseLabelWiseLoss(LabelWiseLoss):
+cdef class SparseLabelWiseLoss(SparseEvaluationMeasure):
     """
     A wrapper for the pure virtual C++ class `ISparseLabelWiseLoss`.
     """
 
-    cdef unique_ptr[ISparseLabelWiseLoss] get_sparse_label_wise_loss_ptr(self):
-        return unique_ptr[ISparseLabelWiseLoss](dynamic_cast[ISparseLabelWiseLossPtr](self.loss_function_ptr.release()))
+    cdef unique_ptr[IEvaluationMeasure] get_evaluation_measure_ptr(self):
+        return <unique_ptr[IEvaluationMeasure]>move(self.loss_function_ptr)
+
+    cdef unique_ptr[ISparseEvaluationMeasure] get_sparse_evaluation_measure_ptr(self):
+        return <unique_ptr[ISparseEvaluationMeasure]>move(self.loss_function_ptr)
+
+    cdef unique_ptr[ISimilarityMeasure] get_similarity_measure_ptr(self):
+        return <unique_ptr[ISimilarityMeasure]>move(self.loss_function_ptr)
 
 
 cdef class LabelWiseLogisticLoss(LabelWiseLoss):
@@ -57,7 +63,7 @@ cdef class LabelWiseSquaredHingeLoss(SparseLabelWiseLoss):
     """
 
     def __cinit__(self):
-        self.loss_function_ptr = <unique_ptr[ILabelWiseLoss]>make_unique[LabelWiseSquaredHingeLossImpl]()
+        self.loss_function_ptr = <unique_ptr[ISparseLabelWiseLoss]>make_unique[LabelWiseSquaredHingeLossImpl]()
 
     def __reduce__(self):
         return (LabelWiseSquaredHingeLoss, ())

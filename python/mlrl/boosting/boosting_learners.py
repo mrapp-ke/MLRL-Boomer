@@ -10,7 +10,7 @@ import logging as log
 from typing import Optional, Dict, Set, List
 
 from mlrl.boosting.cython.label_binning import LabelBinningFactory, EqualWidthLabelBinningFactory
-from mlrl.boosting.cython.losses_example_wise import ExampleWiseLoss, ExampleWiseLogisticLoss
+from mlrl.boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
 from mlrl.boosting.cython.losses_label_wise import LabelWiseLoss, SparseLabelWiseLoss, LabelWiseLogisticLoss, \
     LabelWiseSquaredErrorLoss, LabelWiseSquaredHingeLoss
 from mlrl.boosting.cython.model import RuleListBuilder
@@ -29,7 +29,6 @@ from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
 from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
-from mlrl.common.cython.measures import EvaluationMeasure
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
@@ -298,7 +297,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, head_type,
                                                                                 self.__create_label_binning_factory())
 
-        if isinstance(loss_function, LabelWiseLoss):
+        if isinstance(loss_function, LabelWiseLoss) or isinstance(loss_function, SparseLabelWiseLoss):
             return self.__create_label_wise_statistics_provider_factory(loss_function, evaluation_measure,
                                                                         default_rule_evaluation_factory,
                                                                         regular_rule_evaluation_factory,
@@ -309,8 +308,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                           regular_rule_evaluation_factory,
                                                                           pruning_rule_evaluation_factory, num_threads)
 
-    def __create_label_wise_statistics_provider_factory(self, loss_function: LabelWiseLoss,
-                                                        evaluation_measure: EvaluationMeasure,
+    def __create_label_wise_statistics_provider_factory(self, loss_function, evaluation_measure,
                                                         default_rule_evaluation_factory,
                                                         regular_rule_evaluation_factory,
                                                         pruning_rule_evaluation_factory, num_threads: int):
@@ -341,8 +339,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                             pruning_rule_evaluation_factory, num_threads)
 
     @staticmethod
-    def __create_example_wise_statistics_provider_factory(loss_function: ExampleWiseLoss,
-                                                          evaluation_measure: EvaluationMeasure,
+    def __create_example_wise_statistics_provider_factory(loss_function, evaluation_measure,
                                                           default_rule_evaluation_factory,
                                                           regular_rule_evaluation_factory,
                                                           pruning_rule_evaluation_factory, num_threads: int):
