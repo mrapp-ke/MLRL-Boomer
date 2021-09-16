@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=https://github.com/mrapp-ke/Boomer-Development/logo_with_text.png height=150/>
+  <img src=https://github.com/mrapp-ke/Boomer-Development/blob/development/logo.png height=150/>
 </p>
 
 # Gradient Boosted Multi-label Classification Rules
