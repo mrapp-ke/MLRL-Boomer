@@ -212,21 +212,21 @@
          y="0"><tspan
            x="534.14895"
            y="228.48789"
-           id="tspan988"><tspan
+           id="tspan1055"><tspan
              style="font-weight:500;-inkscape-font-specification:'Jost* Medium';text-align:center;text-anchor:middle"
-             id="tspan986">BOOMER</tspan></tspan></text>
+             id="tspan1053">BOOMER</tspan></tspan></text>
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,2.2259822,-1.1541691e-6)"
          id="text5064"
-         style="font-size:50.6667px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect5066)"><tspan
+         style="font-size:50.6667px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect5066);fill:#1e1e1e;fill-opacity:1"><tspan
            x="458.90625"
            y="316.3571"
-           id="tspan992"><tspan
+           id="tspan1059"><tspan
              style="font-weight:500;-inkscape-font-specification:'Jost* Medium'"
-             id="tspan990">Gradient Boosted Multi-Label Classification Rules</tspan></tspan></text>
+             id="tspan1057">Gradient Boosted Multi-Label Classification Rules</tspan></tspan></text>
       <path
-         style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#1e1e1e;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="M 116.20723,66.113946 419.04695,65.617083"
          id="path25487" />
     </g>
