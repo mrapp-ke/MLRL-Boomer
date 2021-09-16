@@ -1,8 +1,6 @@
 <p align="center">
-  <img src=https://github.com/mrapp-ke/Boomer-Development/blob/development/logo.png height=128/>
+  <img alt="BOOMER - Gradient Boosted Multi-Label Classification Rules" src="https://github.com/mrapp-ke/Boomer-Development/blob/development/logo.png" height="128"/>
 </p>
-
-# Gradient Boosted Multi-label Classification Rules
 
 [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
