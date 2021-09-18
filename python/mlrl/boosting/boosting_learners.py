@@ -359,7 +359,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             if not isinstance(loss_function, SparseLabelWiseLoss):
                 reasons_for_dense.append('the loss function "' + str(self.loss) + '"')
 
-            if self.default_rule:
+            if self._use_default_rule():
                 reasons_for_dense.append('a default rule')
 
             if not isinstance(rule_evaluation_factory, LabelWiseSingleLabelRuleEvaluationFactory):
