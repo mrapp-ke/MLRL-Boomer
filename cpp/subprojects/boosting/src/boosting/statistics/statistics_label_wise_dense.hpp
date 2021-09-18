@@ -5,6 +5,7 @@
 
 #include "boosting/data/statistic_vector_label_wise_dense.hpp"
 #include "boosting/data/statistic_view_label_wise_dense.hpp"
+#include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/losses/loss_label_wise.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "statistics_label_wise_common.hpp"
