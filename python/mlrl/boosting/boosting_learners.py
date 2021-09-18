@@ -494,7 +494,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if head_type == HEAD_TYPE_SINGLE:
             return LabelWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
         elif head_type == HEAD_TYPE_COMPLETE:
-            if isinstance(loss_function, LabelWiseLoss):
+            if isinstance(loss_function, LabelWiseLoss) or isinstance(loss_function, SparseLabelWiseLoss):
                 if label_binning_factory is None:
                     return LabelWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
                 else:
