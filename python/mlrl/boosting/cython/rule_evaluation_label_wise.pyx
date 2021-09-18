@@ -1,9 +1,10 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.memory cimport make_unique
 from mlrl.boosting.cython.label_binning cimport LabelBinningFactory
 
+from libcpp.cast cimport dynamic_cast
+from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
 
@@ -14,7 +15,16 @@ cdef class LabelWiseRuleEvaluationFactory:
     pass
 
 
-cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+cdef class SparseLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+    """
+    A wrapper for the pure virtual C++ class `ISparseLabelWiseRuleEvaluationFactory`.
+    """
+
+    cdef unique_ptr[ISparseLabelWiseRuleEvaluationFactory] get_sparse_label_wise_rule_rule_evaluation_factory_ptr(self):
+        return unique_ptr[ISparseLabelWiseRuleEvaluationFactory](dynamic_cast[ISparseLabelWiseRuleEvaluationFactoryPtr](self.rule_evaluation_factory_ptr.release()))
+
+
+cdef class LabelWiseSingleLabelRuleEvaluationFactory(SparseLabelWiseRuleEvaluationFactory):
     """
     A wrapper for the C++ class `LabelWiseSingleLabelRuleEvaluationFactory`.
     """

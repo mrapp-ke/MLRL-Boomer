@@ -7,6 +7,7 @@
 #include "common/measures/measure_evaluation_sparse.hpp"
 #include "boosting/statistics/statistics_label_wise.hpp"
 #include "boosting/losses/loss_label_wise_sparse.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 
 
 namespace boosting {
@@ -23,11 +24,11 @@ namespace boosting {
 
             std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr_;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
+            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
+            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
             uint32 numThreads_;
 
@@ -40,15 +41,15 @@ namespace boosting {
              *                                          `ISparseEvaluationMeasure` that implements the evaluation
              *                                          measure that should be used to assess the quality of predictions
              * @param defaultRuleEvaluationFactoryPtr   An unique pointer to an object of type
-             *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
+             *                                          `ISparseLabelWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, of the default rule
              * @param regularRuleEvaluationFactoryPtr   An unique pointer to an object of type
-             *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
+             *                                          `ISparseLabelWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, of all remaining rules
              * @param pruningRuleEvaluationFactoryPtr   An unique pointer to an object of type
-             *                                          `ILabelWiseRuleEvaluationFactory` that should be used for
+             *                                          `ISparseLabelWiseRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, when pruning rules
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
@@ -57,9 +58,9 @@ namespace boosting {
             SparseLabelWiseStatisticsProviderFactory(
                 std::unique_ptr<ISparseLabelWiseLoss> lossFunctionPtr,
                 std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
-                std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-                std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-                std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
+                std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+                std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+                std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
 
             std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const override;
 

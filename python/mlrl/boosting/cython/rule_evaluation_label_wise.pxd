@@ -10,10 +10,19 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise.hpp" names
         pass
 
 
+cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp" namespace "boosting" nogil:
+
+    cdef cppclass ISparseLabelWiseRuleEvaluationFactory(ILabelWiseRuleEvaluationFactory):
+        pass
+
+
+ctypedef ISparseLabelWiseRuleEvaluationFactory* ISparseLabelWiseRuleEvaluationFactoryPtr
+
+
 cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp" namespace "boosting" nogil:
 
     cdef cppclass LabelWiseSingleLabelRuleEvaluationFactoryImpl"boosting::LabelWiseSingleLabelRuleEvaluationFactory"(
-            ILabelWiseRuleEvaluationFactory):
+            ISparseLabelWiseRuleEvaluationFactory):
 
         # Constructors:
 
@@ -48,7 +57,14 @@ cdef class LabelWiseRuleEvaluationFactory:
     cdef unique_ptr[ILabelWiseRuleEvaluationFactory] rule_evaluation_factory_ptr
 
 
-cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+cdef class SparseLabelWiseRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
+
+    # Functions:
+
+    cdef unique_ptr[ISparseLabelWiseRuleEvaluationFactory] get_sparse_label_wise_rule_rule_evaluation_factory_ptr(self)
+
+
+cdef class LabelWiseSingleLabelRuleEvaluationFactory(SparseLabelWiseRuleEvaluationFactory):
     pass
 
 
