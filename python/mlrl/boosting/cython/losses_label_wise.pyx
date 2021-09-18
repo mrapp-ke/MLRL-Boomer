@@ -1,7 +1,6 @@
 """
 @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from libcpp.cast cimport dynamic_cast
 from libcpp.utility cimport move
 from libcpp.memory cimport make_unique
 
