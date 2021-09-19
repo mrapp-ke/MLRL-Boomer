@@ -73,6 +73,47 @@ namespace boosting {
 
     };
 
+    /**
+     * Allows to calculate the predictions of single-label rules, as well as an overall quality score, based on the
+     * gradients and Hessians that are stored by a `SparseLabelWiseStatisticVector` using L2 regularization.
+     *
+     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     */
+    template<typename T>
+    class SparseLabelWiseSingleLabelRuleEvaluation final : public IRuleEvaluation<SparseLabelWiseStatisticVector> {
+
+        private:
+
+            const T& labelIndices_;
+
+            PartialIndexVector indexVector_;
+
+            DenseScoreVector<PartialIndexVector> scoreVector_;
+
+            float64 l2RegularizationWeight_;
+
+        public:
+
+            /**
+             * @param labelIndices              A reference to an object of template type `T` that provides access to
+             *                                  the indices of the labels for which the rules may predict
+             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
+             *                                  scores to be predicted by rules
+             */
+            SparseLabelWiseSingleLabelRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight)
+                : labelIndices_(labelIndices), indexVector_(PartialIndexVector(1)),
+                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)),
+                  l2RegularizationWeight_(l2RegularizationWeight) {
+
+            }
+
+            const IScoreVector& calculatePrediction(SparseLabelWiseStatisticVector& statisticVector) override {
+                // TODO Implement
+                return scoreVector_;
+            }
+
+    };
+
     LabelWiseSingleLabelRuleEvaluationFactory::LabelWiseSingleLabelRuleEvaluationFactory(float64 l2RegularizationWeight)
         : l2RegularizationWeight_(l2RegularizationWeight) {
         assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
@@ -92,14 +133,14 @@ namespace boosting {
 
     std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseSingleLabelRuleEvaluationFactory::create(
             const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
-        // TODO Implement
-        return nullptr;
+        return std::make_unique<SparseLabelWiseSingleLabelRuleEvaluation<CompleteIndexVector>>(indexVector,
+                                                                                               l2RegularizationWeight_);
     }
 
     std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseSingleLabelRuleEvaluationFactory::create(
             const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
-        // TODO Implement
-        return nullptr;
+        return std::make_unique<SparseLabelWiseSingleLabelRuleEvaluation<PartialIndexVector>>(indexVector,
+                                                                                              l2RegularizationWeight_);
     }
 
 }
