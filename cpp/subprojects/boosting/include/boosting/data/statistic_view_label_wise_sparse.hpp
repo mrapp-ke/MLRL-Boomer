@@ -36,9 +36,14 @@ namespace boosting {
             SparseLabelWiseStatisticConstView(LilMatrix<Tuple<float64>>* statistics, uint32 numCols);
 
             /**
+             * The type of a row in the view.
+             */
+            typedef LilMatrix<Tuple<float64>>::Row Row;
+
+            /**
              * An iterator that provides read-only access to the elements in the view.
              */
-            typedef LilMatrix<Tuple<float64>>::Row::const_iterator const_iterator;
+            typedef Row::const_iterator const_iterator;
 
             /**
              * Returns a `const_iterator` to the beginning of a specific row.
@@ -55,6 +60,14 @@ namespace boosting {
              * @return      A `const_iterator` to the end of the given row
              */
             const_iterator row_cend(uint32 row) const;
+
+            /**
+             * Returns a const reference to a specific row in the view.
+             *
+             * @param row   The row
+             * @return      A const reference to the row
+             */
+            const Row& getRow(uint32 row) const;
 
             /**
              * Returns the number of rows in the view.
@@ -85,6 +98,14 @@ namespace boosting {
              * @param numCols       The number of columns in the view
              */
             SparseLabelWiseStatisticView(LilMatrix<Tuple<float64>>* statistics, uint32 numCols);
+
+            /**
+             * Returns a reference to a specific row in the view.
+             *
+             * @param row   The row
+             * @return      A reference to the row
+             */
+            Row& getRow(uint32 row);
 
             /**
              * Sets all gradients and Hessians in the matrix to zero.
