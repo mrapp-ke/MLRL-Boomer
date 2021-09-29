@@ -1,10 +1,10 @@
 # Changelog
 
-### Version 0.7.0 (to be released)
+### Version 0.6.1 (to be released)
 
-A major update to the BOOMER algorithm that introduces the following changes:
+A bugfix release that solves the following issues:
 
-* No changes yet.
+* Fixes a mathematical problem when calculating the quality of potential single-label rules that was introduced in version 0.6.0.
 
 ### Version 0.6.0 (Sep 6, 2021)
 
