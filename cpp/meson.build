@@ -1,3 +1,3 @@
-project('boomer', 'cpp', version : '0.7.0')
+project('boomer', 'cpp', version : '0.6.1')
 subproject('boosting')
 subproject('seco')
