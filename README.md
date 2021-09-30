@@ -2,7 +2,7 @@
   <img alt="BOOMER - Gradient Boosted Multi-Label Classification Rules" src="https://github.com/mrapp-ke/Boomer-Development/blob/development/logo.png" height="128"/>
 </p>
 
- [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
 This project provides a scikit-learn implementation of **BOOMER - an algorithm for learning gradient boosted multi-label classification rules**.
