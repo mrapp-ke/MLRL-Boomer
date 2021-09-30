@@ -1,6 +1,6 @@
 # Changelog
 
-### Version 0.6.1 (to be released)
+### Version 0.6.1 (Sep 30, 2021)
 
 A bugfix release that solves the following issues:
 
