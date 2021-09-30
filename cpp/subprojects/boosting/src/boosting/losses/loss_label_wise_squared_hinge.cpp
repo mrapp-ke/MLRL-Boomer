@@ -7,16 +7,16 @@ namespace boosting {
                                                 float64* hessian) {
         if (trueLabel) {
             if (predictedScore < 1) {
-                *gradient = 2 * (predictedScore - 1);
-                *hessian = 2;
+                *gradient = (predictedScore - 1);
+                *hessian = 1;
             } else {
                 *gradient = 0;
                 *hessian = 0;
             }
         } else {
             if (predictedScore > 0) {
-                *gradient = 2 * predictedScore;
-                *hessian = 2;
+                *gradient = predictedScore;
+                *hessian = 1;
             } else {
                 *gradient = 0;
                 *hessian = 0;
