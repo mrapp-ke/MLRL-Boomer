@@ -83,7 +83,7 @@ LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
 
 LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
 
-LOSS_SQUARED_HINGE_LABEL_WISE = 'hinge-label-wise'
+LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
 
 NON_DECOMPOSABLE_LOSSES = {LOSS_LOGISTIC_EXAMPLE_WISE}
 

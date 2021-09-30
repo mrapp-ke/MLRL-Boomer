@@ -267,8 +267,8 @@ The following parameters allow to adjust the behavior of the algorithm:
 
   * ``logistic-label-wise`` A variant of the logistic loss function that is applied to each label individually.
   * ``logistic-example-wise`` A variant of the logistic loss function that takes all labels into account at the same time.
-  * ``squared-error-label-wise`` A variant of the Squared error loss that is applied to each label individually.
-  * ``hinge-label-wise`` A variant of the Hinge loss that is applied to each label individually.
+  * ``squared-error-label-wise`` A variant of the squared error loss that is applied to each label individually.
+  * ``squared-hinge-label-wise`` A variant of the squared hinge loss that is applied to each label individually.
 
 * ``--predictor`` (Default value = auto)
 
