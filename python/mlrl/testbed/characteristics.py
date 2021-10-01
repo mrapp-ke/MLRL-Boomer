@@ -59,14 +59,3 @@ def num_distinct_label_vectors(m) -> int:
         return np.unique(m.rows).shape[0]
     else:
         return np.unique(m, axis=0).shape[0]
-
-
-def label_diversity(m) -> float:
-    """
-    Calculates and returns the label diversity of a given label matrix.
-
-    :param m:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
-                of training examples
-    :return:    The fraction of distinct label vectors in the given matrix among all possible label vectors
-    """
-    return num_distinct_label_vectors(m) / pow(2, m.shape[1])
