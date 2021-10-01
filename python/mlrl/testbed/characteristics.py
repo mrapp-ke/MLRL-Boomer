@@ -46,6 +46,21 @@ def label_cardinality(m) -> float:
         return np.average(np.count_nonzero(m, axis=1))
 
 
+def num_distinct_label_vectors(m) -> int:
+    """
+    Determines and returns the number of distinct label vectors in a label matrix.
+
+    :param m:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
+                of training examples
+    :return:    The number of distinct label vectors in the given matrix
+    """
+    if issparse(m):
+        m = m.tolil()
+        return np.unique(m.rows).shape[0]
+    else:
+        return np.unique(m, axis=0).shape[0]
+
+
 def label_diversity(m) -> float:
     """
     Calculates and returns the label diversity of a given label matrix.
@@ -54,10 +69,4 @@ def label_diversity(m) -> float:
                 of training examples
     :return:    The fraction of distinct label vectors in the given matrix among all possible label vectors
     """
-    if issparse(m):
-        m = m.tolil()
-        num_distinct = np.unique(m.rows).shape[0]
-    else:
-        num_distinct = np.unique(m, axis=0).shape[0]
-
-    return num_distinct / pow(2, m.shape[1])
+    return num_distinct_label_vectors(m) / pow(2, m.shape[1])
