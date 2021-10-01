@@ -25,37 +25,37 @@ def density(m) -> float:
         return np.count_nonzero(m) / num_elements
 
 
-def label_cardinality(m) -> float:
+def label_cardinality(y) -> float:
     """
     Calculates and returns the label cardinality of a given label matrix.
 
-    :param m:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
+    :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
                 of training examples
     :return:    The average number of relevant labels per training example
     """
-    if issparse(m):
-        m = m.tolil()
+    if issparse(y):
+        y = y.tolil()
         cardinality = 0.0
 
-        for i in range(m.shape[0]):
-            row = m.getrowview(i)
+        for i in range(y.shape[0]):
+            row = y.getrowview(i)
             cardinality += ((row.nnz - cardinality) / (i + 1))
 
         return cardinality
     else:
-        return np.average(np.count_nonzero(m, axis=1))
+        return np.average(np.count_nonzero(y, axis=1))
 
 
-def num_distinct_label_vectors(m) -> int:
+def num_distinct_label_vectors(y) -> int:
     """
     Determines and returns the number of distinct label vectors in a label matrix.
 
-    :param m:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
+    :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
                 of training examples
     :return:    The number of distinct label vectors in the given matrix
     """
-    if issparse(m):
-        m = m.tolil()
-        return np.unique(m.rows).shape[0]
+    if issparse(y):
+        y = y.tolil()
+        return np.unique(y.rows).shape[0]
     else:
-        return np.unique(m, axis=0).shape[0]
+        return np.unique(y, axis=0).shape[0]
