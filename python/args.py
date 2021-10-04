@@ -45,6 +45,8 @@ PARAM_OUTPUT_DIR = '--output-dir'
 
 PARAM_STORE_PREDICTIONS = '--store-predictions'
 
+PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
+
 PARAM_PRINT_RULES = '--print-rules'
 
 PARAM_STORE_RULES = '--store-rules'
@@ -231,6 +233,11 @@ class ArgumentParserBuilder:
         self.add_learner_arguments(**kwargs)
         self.add_random_state_argument(**kwargs)
         parser = self.parser
+        parser.add_argument(PARAM_PRINT_DATA_CHARACTERISTICS, type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('print_data_characteristics', False,
+                                                                           **kwargs),
+                            help='Whether the characteristics of the training data should be printed on the console or '
+                                 + 'not')
         parser.add_argument(PARAM_PRINT_RULES, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('print_rules', False, **kwargs),
                             help='Whether the induced rules should be printed on the console or not')
