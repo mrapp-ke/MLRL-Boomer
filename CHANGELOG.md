@@ -6,6 +6,12 @@ A major update to the BOOMER algorithm that introduces the following changes:
 
 * No changes yet.
 
+## Version 0.6.2 (Oct 4, 2021)
+
+A bugfix release that solves the following issues:
+
+* Fixes a segmentation fault when a sparse feature matrix should be used for prediction that was introduced in version 0.6.0.
+
 ### Version 0.6.1 (Sep 30, 2021)
 
 A bugfix release that solves the following issues:
