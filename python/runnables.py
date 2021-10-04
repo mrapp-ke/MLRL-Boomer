@@ -10,6 +10,7 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
+from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput
 from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.parameters import ParameterCsvInput
@@ -58,8 +59,12 @@ class RuleLearnerRunnable(Runnable, ABC):
     def _run(self, args):
         parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
         evaluation_outputs = [EvaluationLogOutput()]
+        data_characteristics_printer_outputs = []
         model_printer_outputs = []
         output_dir = args.output_dir
+
+        if args.print_data_characteristics:
+            data_characteristics_printer_outputs.append(DataCharacteristicsLogOutput())
 
         if args.print_rules:
             model_printer_outputs.append(ModelPrinterLogOutput())
@@ -75,6 +80,9 @@ class RuleLearnerRunnable(Runnable, ABC):
         model_dir = args.model_dir
         persistence = None if model_dir is None else ModelPersistence(model_dir)
         learner = self._create_learner(args)
+
+        data_characteristics_printer = DataCharacteristicsPrinter(data_characteristics_printer_outputs) if len(
+            data_characteristics_printer_outputs) > 0 else None
         model_printer = RulePrinter(args.print_options, model_printer_outputs) if len(
             model_printer_outputs) > 0 else None
         train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
@@ -83,7 +91,8 @@ class RuleLearnerRunnable(Runnable, ABC):
                            use_one_hot_encoding=args.one_hot_encoding)
         experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,
                                 data_set=data_set, num_folds=args.folds, current_fold=args.current_fold,
-                                parameter_input=parameter_input, model_printer=model_printer, persistence=persistence)
+                                parameter_input=parameter_input, model_printer=model_printer,
+                                data_characteristics_printer=data_characteristics_printer, persistence=persistence)
         experiment.random_state = args.random_state
         experiment.run()
 
