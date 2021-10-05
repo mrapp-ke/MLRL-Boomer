@@ -47,6 +47,8 @@ PARAM_STORE_PREDICTIONS = '--store-predictions'
 
 PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
 
+PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
+
 PARAM_PRINT_RULES = '--print-rules'
 
 PARAM_STORE_RULES = '--store-rules'
@@ -237,10 +239,17 @@ class ArgumentParserBuilder:
                             default=ArgumentParserBuilder.__get_or_default('print_data_characteristics', False,
                                                                            **kwargs),
                             help='Whether the characteristics of the training data should be printed on the console or '
-                                 + 'not')
+                                 + 'not. Must be one of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument(PARAM_STORE_DATA_CHARACTERISTICS, type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('store_data_characteristics', False,
+                                                                           **kwargs),
+                            help='Whether the characteristics of the training data should be written into output files '
+                                 + 'or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have '
+                                 + 'an effect if the parameter ' + PARAM_OUTPUT_DIR + ' is specified')
         parser.add_argument(PARAM_PRINT_RULES, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('print_rules', False, **kwargs),
-                            help='Whether the induced rules should be printed on the console or not')
+                            help='Whether the induced rules should be printed on the console or not. Must be one of '
+                                 + format_enum_values(BooleanOption) + '.')
         parser.add_argument(PARAM_STORE_RULES, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_rules', False, **kwargs),
                             help='Whether the induced rules should be written into a text file or not. Must be one of '

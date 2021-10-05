@@ -10,7 +10,8 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
-from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput
+from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
+    DataCharacteristicsCsvOutput
 from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.parameters import ParameterCsvInput
@@ -70,9 +71,16 @@ class RuleLearnerRunnable(Runnable, ABC):
             model_printer_outputs.append(ModelPrinterLogOutput())
 
         if output_dir is not None:
+            clear_dir = args.current_fold == -1
+
+            if args.store_data_characteristics:
+                data_characteristics_printer_outputs.append(
+                    DataCharacteristicsCsvOutput(output_dir=output_dir, clear_dir=clear_dir))
+                clear_dir = False
+
             evaluation_outputs.append(
                 EvaluationCsvOutput(output_dir=output_dir, output_predictions=args.store_predictions,
-                                    clear_dir=args.current_fold == -1))
+                                    clear_dir=clear_dir))
 
             if args.store_rules:
                 model_printer_outputs.append(ModelPrinterTxtOutput(output_dir=output_dir, clear_dir=False))
