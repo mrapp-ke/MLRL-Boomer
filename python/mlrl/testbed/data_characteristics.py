@@ -14,6 +14,7 @@ import numpy as np
 from scipy.sparse import issparse
 
 from mlrl.testbed.data import MetaData, AttributeType
+from mlrl.testbed.io import clear_directory, open_writable_csv_file, create_csv_dict_writer
 
 
 def density(m) -> float:
@@ -138,6 +139,51 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         msg += 'Label cardinality: ' + str(characteristics.avg_label_cardinality) + '\n'
         msg += 'Distinct label vectors: ' + str(characteristics.num_distinct_label_vectors) + '\n'
         log.info(msg)
+
+
+class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
+    """
+    Writes the characteristics of a data set to a CSV file.
+    """
+
+    def __init__(self, output_dir: str, clear_dir: bool = True):
+        """
+        :param output_dir:  The path of the directory, the CSV files should be written to
+        :param clear_dir:   True, if the directory, the CSV files should be written to, should be cleared
+        """
+        self.output_dir = output_dir
+        self.clear_dir = clear_dir
+
+    def write_data_characteristics(self, experiment_name: str, characteristics: DataCharacteristics, total_folds: int,
+                                   fold: int = None):
+        if fold is not None:
+            self.__clear_dir_if_necessary()
+            columns = {'Examples': characteristics.num_examples,
+                       'Features': characteristics.num_nominal_features + characteristics.num_numerical_features,
+                       'Numerical features': characteristics.num_numerical_features,
+                       'Nominal features': characteristics.num_nominal_features,
+                       'Feature density': characteristics.feature_density,
+                       'Feature sparsity': 1 - characteristics.feature_density,
+                       'Labels': characteristics.num_labels,
+                       'Label density': characteristics.label_density,
+                       'Label sparsity': 1 - characteristics.label_density,
+                       'Label cardinality': characteristics.avg_label_cardinality,
+                       'Distinct label vectors': characteristics.num_distinct_label_vectors
+                       }
+            header = sorted(columns.keys())
+            header.insert(0, 'Approach')
+            columns['Approach'] = experiment_name
+            with open_writable_csv_file(self.output_dir, 'data_characteristics', fold) as csv_file:
+                csv_writer = create_csv_dict_writer(csv_file, header)
+                csv_writer.writerow(columns)
+
+    def __clear_dir_if_necessary(self):
+        """
+        Clears the output directory, if necessary.
+        """
+        if self.clear_dir:
+            clear_directory(self.output_dir)
+            self.clear_dir = False
 
 
 class DataCharacteristicsPrinter(ABC):
