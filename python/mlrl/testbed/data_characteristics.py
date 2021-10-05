@@ -35,7 +35,7 @@ def density(m) -> float:
 
 def label_cardinality(y) -> float:
     """
-    Calculates and returns the label cardinality of a given label matrix.
+    Calculates and returns the average label cardinality of a given label matrix.
 
     :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
                 of training examples
