@@ -35,7 +35,7 @@ def density(m) -> float:
 
 def label_cardinality(y) -> float:
     """
-    Calculates and returns the label cardinality of a given label matrix.
+    Calculates and returns the average label cardinality of a given label matrix.
 
     :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
                 of training examples
@@ -43,15 +43,11 @@ def label_cardinality(y) -> float:
     """
     if issparse(y):
         y = y.tolil()
-        cardinality = 0.0
-
-        for i in range(y.shape[0]):
-            row = y.getrowview(i)
-            cardinality += ((row.nnz - cardinality) / (i + 1))
-
-        return cardinality
+        num_relevant_per_example = y.getnnz(axis=1)
     else:
-        return np.average(np.count_nonzero(y, axis=1))
+        num_relevant_per_example = np.count_nonzero(y, axis=1)
+
+    return np.average(num_relevant_per_example)
 
 
 def distinct_label_vectors(y) -> int:
@@ -69,14 +65,32 @@ def distinct_label_vectors(y) -> int:
         return np.unique(y, axis=0).shape[0]
 
 
+def label_imbalance_ratio(y) -> float:
+    """
+    Calculates and returns the average label imbalance ratio of a given label matrix.
+
+    :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
+                of training examples
+    :return:    The label imbalance ratio averaged over the available labels
+    """
+    if issparse(y):
+        y = y.tocsc()
+        num_relevant_per_label = y.getnnz(axis=0)
+    else:
+        num_relevant_per_label = np.count_nonzero(y, axis=0)
+
+    max_relevant = np.max(num_relevant_per_label)
+    return np.average(max_relevant / num_relevant_per_label)
+
+
 class DataCharacteristics:
     """
     Stores characteristics of a multi-label data set.
     """
 
     def __init__(self, num_examples: int, num_nominal_features: int, num_numerical_features: int,
-                 feature_density: float, num_labels: int, label_density: float, avg_label_cardinality: float,
-                 num_distinct_label_vectors: int):
+                 feature_density: float, num_labels: int, label_density: float, avg_label_imbalance_ratio: float,
+                 avg_label_cardinality: float, num_distinct_label_vectors: int):
         """
         :param num_examples:                The number of examples in the data set
         :param num_nominal_features:        The number of nominal features in the data set
@@ -84,6 +98,7 @@ class DataCharacteristics:
         :param feature_density:             The feature density
         :param num_labels:                  The number of labels in the data set
         :param label_density:               The label density
+        :param avg_label_imbalance_ratio:   The average label imbalance ratio
         :param avg_label_cardinality:       The average label cardinality
         :param num_distinct_label_vectors:  The number of distinct label vectors in the data set
         """
@@ -93,6 +108,7 @@ class DataCharacteristics:
         self.feature_density = feature_density
         self.num_labels = num_labels
         self.label_density = label_density
+        self.avg_label_imbalance_ratio = avg_label_imbalance_ratio
         self.avg_label_cardinality = avg_label_cardinality
         self.num_distinct_label_vectors = num_distinct_label_vectors
 
@@ -136,6 +152,7 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         msg += 'Labels: ' + str(characteristics.num_labels) + '\n'
         msg += 'Label density: ' + str(characteristics.label_density) + '\n'
         msg += 'Label sparsity: ' + str(1 - characteristics.label_density) + '\n'
+        msg += 'Label imbalance ratio: ' + str(characteristics.avg_label_imbalance_ratio) + '\n'
         msg += 'Label cardinality: ' + str(characteristics.avg_label_cardinality) + '\n'
         msg += 'Distinct label vectors: ' + str(characteristics.num_distinct_label_vectors) + '\n'
         log.info(msg)
@@ -167,6 +184,7 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
                        'Labels': characteristics.num_labels,
                        'Label density': characteristics.label_density,
                        'Label sparsity': 1 - characteristics.label_density,
+                       'Label imbalance ratio': characteristics.avg_label_imbalance_ratio,
                        'Label cardinality': characteristics.avg_label_cardinality,
                        'Distinct label vectors': characteristics.num_distinct_label_vectors
                        }
@@ -218,12 +236,14 @@ class DataCharacteristicsPrinter(ABC):
             feature_density = density(x)
             num_labels = y.shape[1]
             label_density = density(y)
+            avg_label_imbalance_ratio = label_imbalance_ratio(y)
             avg_label_cardinality = label_cardinality(y)
             num_distinct_label_vectors = distinct_label_vectors(y)
             characteristics = DataCharacteristics(num_examples=num_examples, num_nominal_features=num_nominal_features,
                                                   num_numerical_features=num_numerical_features,
                                                   feature_density=feature_density, num_labels=num_labels,
                                                   label_density=label_density,
+                                                  avg_label_imbalance_ratio=avg_label_imbalance_ratio,
                                                   avg_label_cardinality=avg_label_cardinality,
                                                   num_distinct_label_vectors=num_distinct_label_vectors)
             for output in self.outputs:
