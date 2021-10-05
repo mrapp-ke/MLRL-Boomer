@@ -10,6 +10,8 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
+from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
+    DataCharacteristicsCsvOutput
 from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.parameters import ParameterCsvInput
@@ -57,24 +59,43 @@ class RuleLearnerRunnable(Runnable, ABC):
 
     def _run(self, args):
         parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
-        evaluation_outputs = [EvaluationLogOutput()]
+        evaluation_outputs = []
+        data_characteristics_printer_outputs = []
         model_printer_outputs = []
         output_dir = args.output_dir
+
+        if args.print_data_characteristics:
+            data_characteristics_printer_outputs.append(DataCharacteristicsLogOutput())
+
+        if args.print_evaluation:
+            evaluation_outputs.append(EvaluationLogOutput())
 
         if args.print_rules:
             model_printer_outputs.append(ModelPrinterLogOutput())
 
         if output_dir is not None:
-            evaluation_outputs.append(
-                EvaluationCsvOutput(output_dir=output_dir, output_predictions=args.store_predictions,
-                                    clear_dir=args.current_fold == -1))
+            clear_dir = args.current_fold == -1
+
+            if args.store_data_characteristics:
+                data_characteristics_printer_outputs.append(
+                    DataCharacteristicsCsvOutput(output_dir=output_dir, clear_dir=clear_dir))
+                clear_dir = False
+
+            if args.store_evaluation:
+                evaluation_outputs.append(
+                    EvaluationCsvOutput(output_dir=output_dir, output_predictions=args.store_predictions,
+                                        clear_dir=clear_dir))
+                clear_dir = False
 
             if args.store_rules:
-                model_printer_outputs.append(ModelPrinterTxtOutput(output_dir=output_dir, clear_dir=False))
+                model_printer_outputs.append(ModelPrinterTxtOutput(output_dir=output_dir, clear_dir=clear_dir))
 
         model_dir = args.model_dir
         persistence = None if model_dir is None else ModelPersistence(model_dir)
         learner = self._create_learner(args)
+
+        data_characteristics_printer = DataCharacteristicsPrinter(data_characteristics_printer_outputs) if len(
+            data_characteristics_printer_outputs) > 0 else None
         model_printer = RulePrinter(args.print_options, model_printer_outputs) if len(
             model_printer_outputs) > 0 else None
         train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
@@ -83,7 +104,8 @@ class RuleLearnerRunnable(Runnable, ABC):
                            use_one_hot_encoding=args.one_hot_encoding)
         experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,
                                 data_set=data_set, num_folds=args.folds, current_fold=args.current_fold,
-                                parameter_input=parameter_input, model_printer=model_printer, persistence=persistence)
+                                parameter_input=parameter_input, model_printer=model_printer,
+                                data_characteristics_printer=data_characteristics_printer, persistence=persistence)
         experiment.random_state = args.random_state
         experiment.run()
 

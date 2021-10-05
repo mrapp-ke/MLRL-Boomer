@@ -33,6 +33,10 @@ PARAM_DATASET = '--dataset'
 
 PARAM_FOLDS = '--folds'
 
+PARAM_PRINT_EVALUATION = '--print-evaluation'
+
+PARAM_STORE_EVALUATION = '--store-evaluation'
+
 PARAM_EVALUATE_TRAINING_DATA = '--evaluate-training-data'
 
 PARAM_ONE_HOT_ENCODING = '--one-hot-encoding'
@@ -44,6 +48,10 @@ PARAM_PARAMETER_DIR = '--parameter-dir'
 PARAM_OUTPUT_DIR = '--output-dir'
 
 PARAM_STORE_PREDICTIONS = '--store-predictions'
+
+PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
+
+PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
 
 PARAM_PRINT_RULES = '--print-rules'
 
@@ -204,10 +212,30 @@ class ArgumentParserBuilder:
                             help='The cross validation fold to be performed. Must be in [1, ' + PARAM_FOLDS + '] or 0, '
                                  + 'if all folds should be performed. This parameter is ignored if ' + PARAM_FOLDS
                                  + ' is set to 1.')
+        parser.add_argument(PARAM_PRINT_EVALUATION, type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('print_evaluation', True, **kwargs),
+                            help='Whether the evaluation results should be printed on the console or not. Must be one '
+                                 + 'of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument(PARAM_STORE_EVALUATION, type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('store_evaluation', True, **kwargs),
+                            help='Whether the evaluation results should be written into output files or not. Must be '
+                                 + 'one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
+                                 + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified')
         parser.add_argument(PARAM_EVALUATE_TRAINING_DATA, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('evaluate_training_data', False, **kwargs),
                             help='Whether the models should not only be evaluated on the test data, but also on the '
                                  + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument(PARAM_PRINT_DATA_CHARACTERISTICS, type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('print_data_characteristics', False,
+                                                                           **kwargs),
+                            help='Whether the characteristics of the training data should be printed on the console or '
+                                 + 'not. Must be one of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument(PARAM_STORE_DATA_CHARACTERISTICS, type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('store_data_characteristics', False,
+                                                                           **kwargs),
+                            help='Whether the characteristics of the training data should be written into output files '
+                                 + 'or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have '
+                                 + 'an effect if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
         parser.add_argument(PARAM_ONE_HOT_ENCODING, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('one_hot_encoding', False, **kwargs),
                             help='Whether one-hot-encoding should be used to encode nominal attributes or not. Must be '
@@ -235,7 +263,8 @@ class ArgumentParserBuilder:
         parser = self.parser
         parser.add_argument(PARAM_PRINT_RULES, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('print_rules', False, **kwargs),
-                            help='Whether the induced rules should be printed on the console or not')
+                            help='Whether the induced rules should be printed on the console or not. Must be one of '
+                                 + format_enum_values(BooleanOption) + '.')
         parser.add_argument(PARAM_STORE_RULES, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('store_rules', False, **kwargs),
                             help='Whether the induced rules should be written into a text file or not. Must be one of '
