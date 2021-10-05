@@ -90,6 +90,16 @@ The following parameters allow to customize the console output and output files 
 
   * The path of the directory where experimental results should be saved.
 
+* ``--print-evaluation`` (Default value = true)
+
+  * ``true`` The evaluation results in terms of common metrics are printed on the console.
+  * ``false`` The evaluation results are not printed on the console.
+
+* ``--store-evaluation`` (Default value = true)
+
+  * ``true`` The evaluation results in terms of common metrics are written into output files. Does only have an effect if the parameter --output-dir is specified.
+  * ``false`` The evaluation results are not written into output files.
+
 * ``--store-predictions`` (Default value = false)
 
   * ``true`` The predictions for individual examples and labels are written into output files. Does only have an effect if the parameter --output-dir is specified.
