@@ -95,6 +95,16 @@ The following parameters allow to customize the console output and output files 
   * ``true`` The predictions for individual examples and labels are written into output files. Does only have an effect if the parameter --output-dir is specified.
   * ``false`` Predictions are not written into output files.
 
+* ``--print-data-characteristics`` (Default value = false)
+
+  * ``true`` The characteristics of the training data set are printed on the console
+  * ``false`` The characteristics of the training data set are not printed on the console
+
+* ``--store-data-characteristics`` (Default value = false)
+
+  * ``true`` The characteristics of the training data set are written into a CSV file. Does only have an effect if the parameter --output-dir is specified.
+  * ``false`` The characteristics of the training data set are not written into a CSV file.
+
 * ``--print-rules`` (Default value = false)
 
   * ``true`` The induced rules are printed on the console.

@@ -14,6 +14,7 @@ from sklearn.base import clone
 
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
+from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.evaluation import Evaluation
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
@@ -30,16 +31,19 @@ class Experiment(CrossValidation, ABC):
     def __init__(self, base_learner: Learner, data_set: DataSet, num_folds: int = 1, current_fold: int = -1,
                  train_evaluation: Evaluation = None, test_evaluation: Evaluation = None,
                  parameter_input: ParameterInput = None, model_printer: ModelPrinter = None,
-                 persistence: ModelPersistence = None):
+                 data_characteristics_printer: DataCharacteristicsPrinter = None, persistence: ModelPersistence = None):
         """
-        :param base_learner:        The classifier or ranker to be trained
-        :param train_evaluation:    The evaluation to be used for evaluating the predictions for the training data or
-                                    None, if the predictions should not be evaluated
-        :param test_evaluation:     The evaluation to be used for evaluating the predictions for the test data or None,
-                                    if the predictions should not be evaluated
-        :param parameter_input:     The input that should be used to read the parameter settings
-        :param model_printer:       The printer that should be used to print textual representations of models
-        :param persistence:         The `ModelPersistence` that should be used for loading and saving models
+        :param base_learner:                    The classifier or ranker to be trained
+        :param train_evaluation:                The evaluation to be used for evaluating the predictions for the
+                                                training data or None, if the predictions should not be evaluated
+        :param test_evaluation:                 The evaluation to be used for evaluating the predictions for the test
+                                                data or None, if the predictions should not be evaluated
+        :param parameter_input:                 The input that should be used to read the parameter settings
+        :param model_printer:                   The printer that should be used to print textual representations of
+                                                models or None, if no textual representations should be printed
+        :param data_characteristics_printer:    The printer that should be used to print the characteristics of the
+                                                training data or None, if the characteristics should not be printed
+        :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
         """
         super().__init__(data_set, num_folds, current_fold)
         self.base_learner = base_learner
@@ -47,6 +51,7 @@ class Experiment(CrossValidation, ABC):
         self.test_evaluation = test_evaluation
         self.parameter_input = parameter_input
         self.model_printer = model_printer
+        self.data_characteristics_printer = data_characteristics_printer
         self.persistence = persistence
 
     def run(self):
@@ -67,6 +72,13 @@ class Experiment(CrossValidation, ABC):
             log.info('Successfully applied parameter setting: %s', params)
 
         learner_name = current_learner.get_name()
+
+        # Print data characteristics, if necessary...
+        data_characteristics_printer = self.data_characteristics_printer
+
+        if data_characteristics_printer is not None:
+            data_characteristics_printer.print(learner_name, train_x, train_y, meta_data, current_fold=current_fold,
+                                               num_folds=num_folds)
 
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
