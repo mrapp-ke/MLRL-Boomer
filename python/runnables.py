@@ -59,13 +59,16 @@ class RuleLearnerRunnable(Runnable, ABC):
 
     def _run(self, args):
         parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
-        evaluation_outputs = [EvaluationLogOutput()]
+        evaluation_outputs = []
         data_characteristics_printer_outputs = []
         model_printer_outputs = []
         output_dir = args.output_dir
 
         if args.print_data_characteristics:
             data_characteristics_printer_outputs.append(DataCharacteristicsLogOutput())
+
+        if args.print_evaluation:
+            evaluation_outputs.append(EvaluationLogOutput())
 
         if args.print_rules:
             model_printer_outputs.append(ModelPrinterLogOutput())
@@ -78,12 +81,14 @@ class RuleLearnerRunnable(Runnable, ABC):
                     DataCharacteristicsCsvOutput(output_dir=output_dir, clear_dir=clear_dir))
                 clear_dir = False
 
-            evaluation_outputs.append(
-                EvaluationCsvOutput(output_dir=output_dir, output_predictions=args.store_predictions,
-                                    clear_dir=clear_dir))
+            if args.store_evaluation:
+                evaluation_outputs.append(
+                    EvaluationCsvOutput(output_dir=output_dir, output_predictions=args.store_predictions,
+                                        clear_dir=clear_dir))
+                clear_dir = False
 
             if args.store_rules:
-                model_printer_outputs.append(ModelPrinterTxtOutput(output_dir=output_dir, clear_dir=False))
+                model_printer_outputs.append(ModelPrinterTxtOutput(output_dir=output_dir, clear_dir=clear_dir))
 
         model_dir = args.model_dir
         persistence = None if model_dir is None else ModelPersistence(model_dir)
