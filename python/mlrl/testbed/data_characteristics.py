@@ -43,15 +43,11 @@ def label_cardinality(y) -> float:
     """
     if issparse(y):
         y = y.tolil()
-        cardinality = 0.0
-
-        for i in range(y.shape[0]):
-            row = y.getrowview(i)
-            cardinality += ((row.nnz - cardinality) / (i + 1))
-
-        return cardinality
+        num_relevant_per_example = y.getnnz(axis=1)
     else:
-        return np.average(np.count_nonzero(y, axis=1))
+        num_relevant_per_example = np.count_nonzero(y, axis=1)
+
+    return np.average(num_relevant_per_example)
 
 
 def distinct_label_vectors(y) -> int:
