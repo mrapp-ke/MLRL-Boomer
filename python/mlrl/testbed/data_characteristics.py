@@ -228,13 +228,13 @@ class DataCharacteristicsPrinter(ABC):
         """
         if len(self.outputs) > 0:
             num_examples = x.shape[0]
-            num_features = x.shape[1]
+            num_features = len(meta_data.attributes)
             num_nominal_features = reduce(
                 lambda num, attribute: num + (1 if attribute.attribute_type == AttributeType.NOMINAL else 0),
                 meta_data.attributes, 0)
             num_numerical_features = num_features - num_nominal_features
             feature_density = density(x)
-            num_labels = y.shape[1]
+            num_labels = len(meta_data.labels)
             label_density = density(y)
             avg_label_imbalance_ratio = label_imbalance_ratio(y)
             avg_label_cardinality = label_cardinality(y)
