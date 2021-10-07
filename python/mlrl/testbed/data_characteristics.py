@@ -28,9 +28,11 @@ def density(m) -> float:
     num_elements = m.shape[0] * m.shape[1]
 
     if issparse(m):
-        return m.nnz / num_elements
+        num_non_zero = m.nnz
     else:
-        return np.count_nonzero(m) / num_elements
+        num_non_zero = np.count_nonzero(m)
+
+    return num_non_zero / num_elements if num_elements > 0 else 0
 
 
 def label_cardinality(y) -> float:
@@ -80,7 +82,7 @@ def label_imbalance_ratio(y) -> float:
         num_relevant_per_label = np.count_nonzero(y, axis=0)
 
     max_relevant = np.max(num_relevant_per_label)
-    return np.average(max_relevant / num_relevant_per_label)
+    return np.average(max_relevant / num_relevant_per_label[num_relevant_per_label != 0])
 
 
 class DataCharacteristics:
@@ -228,13 +230,13 @@ class DataCharacteristicsPrinter(ABC):
         """
         if len(self.outputs) > 0:
             num_examples = x.shape[0]
-            num_features = x.shape[1]
+            num_features = len(meta_data.attributes)
             num_nominal_features = reduce(
                 lambda num, attribute: num + (1 if attribute.attribute_type == AttributeType.NOMINAL else 0),
                 meta_data.attributes, 0)
             num_numerical_features = num_features - num_nominal_features
             feature_density = density(x)
-            num_labels = y.shape[1]
+            num_labels = len(meta_data.labels)
             label_density = density(y)
             avg_label_imbalance_ratio = label_imbalance_ratio(y)
             avg_label_cardinality = label_cardinality(y)
