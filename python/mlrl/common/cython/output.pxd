@@ -1,5 +1,5 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
-from mlrl.common.cython._data cimport IndexedValue, CContiguousView
+from mlrl.common.cython._data cimport CContiguousView
 from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVectorSetImpl
 from mlrl.common.cython.model cimport RuleModelImpl
 
