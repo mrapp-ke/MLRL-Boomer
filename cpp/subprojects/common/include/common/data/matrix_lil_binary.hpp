@@ -3,23 +3,21 @@
  */
 #pragma once
 
-#include "common/data/vector_sparse_list.hpp"
+#include "common/data/vector_sparse_list_binary.hpp"
 
 
 /**
- * A two-dimensional matrix that provides row-wise access to values that are stored in the list of lists (LIL) format.
- *
- * @tparam T The type of the values
+ * A two-dimensional matrix that provides row-wise access to binary values that are stored in the list of lists (LIL)
+ * format.
  */
-template<typename T>
-class LilMatrix final {
+class BinaryLilMatrix final {
 
     public:
 
         /**
          * The type of a row in the matrix.
          */
-        typedef SparseListVector<T> Row;
+        typedef BinarySparseListVector Row;
 
     private:
 
@@ -32,19 +30,19 @@ class LilMatrix final {
         /**
          * @param numRows The number of rows in the matrix
          */
-        LilMatrix(uint32 numRows);
+        BinaryLilMatrix(uint32 numRows);
 
-        virtual ~LilMatrix();
+        virtual ~BinaryLilMatrix();
 
         /**
          * An iterator that provides access to the elements at a row and allows to modify them.
          */
-        typedef typename SparseListVector<T>::iterator iterator;
+        typedef typename BinarySparseListVector::iterator iterator;
 
         /**
          * An iterator that provides read-only access to the elements at a row.
          */
-        typedef typename SparseListVector<T>::const_iterator const_iterator;
+        typedef typename BinarySparseListVector::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of a specific row.
