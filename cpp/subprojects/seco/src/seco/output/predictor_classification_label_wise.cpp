@@ -52,22 +52,22 @@ namespace seco {
 
     template<typename ScoreIterator, typename IndexIterator>
     static inline uint32 addFirst(ScoreIterator& scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
-                                  LilMatrix<uint8>::Row& row) {
+                                  BinaryLilMatrix::Row& row) {
         if (scoresBegin != scoresEnd) {
             uint32 index = indexIterator[*scoresBegin];
 
             if (row.empty()) {
-                row.emplace_front(index, 1);
+                row.emplace_front(index);
                 scoresBegin++;
                 return 1;
             } else {
-                LilMatrix<uint8>::Row::iterator it = row.begin();
-                uint32 firstIndex = (*it).index;
+                BinaryLilMatrix::Row::iterator it = row.begin();
+                uint32 firstIndex = *it;
 
                 if (index == firstIndex) {
                     scoresBegin++;
                 } else if (index < firstIndex) {
-                    row.emplace_front(index, 1);
+                    row.emplace_front(index);
                     scoresBegin++;
                     return 1;
                 }
@@ -79,20 +79,20 @@ namespace seco {
 
     template<typename ScoreIterator, typename IndexIterator>
     static inline uint32 applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
-                                   LilMatrix<uint8>::Row& row) {
+                                   BinaryLilMatrix::Row& row) {
         uint32 numNonZeroElements = addFirst(scoresBegin, scoresEnd, indexIterator, row);
-        LilMatrix<uint8>::Row::iterator prevIt = row.begin();
-        LilMatrix<uint8>::Row::iterator it = prevIt;
+        BinaryLilMatrix::Row::iterator prevIt = row.begin();
+        BinaryLilMatrix::Row::iterator it = prevIt;
         it++;
 
         for (; scoresBegin != scoresEnd && it != row.end(); scoresBegin++) {
             uint32 index = indexIterator[*scoresBegin];
-            uint32 currentIndex = (*it).index;
-            LilMatrix<uint8>::Row::iterator nextIt = it;
+            uint32 currentIndex = *it;
+            BinaryLilMatrix::Row::iterator nextIt = it;
             nextIt++;
 
             while (index > currentIndex && nextIt != row.end()) {
-                uint32 nextIndex = (*nextIt).index;
+                uint32 nextIndex = *nextIt;
 
                 if (index >= nextIndex) {
                     currentIndex = nextIndex;
@@ -105,11 +105,11 @@ namespace seco {
             }
 
             if (index > currentIndex) {
-                prevIt = row.emplace_after(it, index, 1);
+                prevIt = row.emplace_after(it, index);
                 numNonZeroElements++;
                 it = prevIt;
             } else if (index < currentIndex) {
-                prevIt = row.emplace_after(prevIt, index, 1);
+                prevIt = row.emplace_after(prevIt, index);
                 numNonZeroElements++;
                 it = prevIt;
             } else {
@@ -121,14 +121,14 @@ namespace seco {
 
         for (; scoresBegin != scoresEnd; scoresBegin++) {
             uint32 index = indexIterator[*scoresBegin];
-            prevIt = row.emplace_after(prevIt, index, 1);
+            prevIt = row.emplace_after(prevIt, index);
             numNonZeroElements++;
         }
 
         return numNonZeroElements;
     }
 
-    static inline uint32 applyHead(const IHead& head, LilMatrix<uint8>::Row& row) {
+    static inline uint32 applyHead(const IHead& head, BinaryLilMatrix::Row& row) {
         uint32 numNonZeroElements;
         auto completeHeadVisitor = [&](const CompleteHead& head) mutable {
             numNonZeroElements = applyHead(
@@ -211,13 +211,13 @@ namespace seco {
         }
     }
 
-    std::unique_ptr<SparsePredictionMatrix<uint8>> LabelWiseClassificationPredictor::predict(
+    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predict(
             const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
             const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
-        std::unique_ptr<LilMatrix<uint8>> lilMatrixPtr = std::make_unique<LilMatrix<uint8>>(numExamples);
+        std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
         const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
-        LilMatrix<uint8>* predictionMatrixPtr = lilMatrixPtr.get();
+        BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
         const RuleModel* modelPtr = &model;
         uint32 numNonZeroElements = 0;
 
@@ -225,7 +225,7 @@ namespace seco {
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
         num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
-            LilMatrix<uint8>::Row& row = predictionMatrixPtr->getRow(i);
+            BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const Rule& rule = *it;
@@ -238,17 +238,17 @@ namespace seco {
             }
         }
 
-        return std::make_unique<SparsePredictionMatrix<uint8>>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
+        return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
     }
 
-    std::unique_ptr<SparsePredictionMatrix<uint8>> LabelWiseClassificationPredictor::predict(
+    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predict(
             const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
             const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
-        std::unique_ptr<LilMatrix<uint8>> lilMatrixPtr = std::make_unique<LilMatrix<uint8>>(numExamples);
+        std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
         const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
-        LilMatrix<uint8>* predictionMatrixPtr = lilMatrixPtr.get();
+        BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
         const RuleModel* modelPtr = &model;
         uint32 numNonZeroElements = 0;
 
@@ -256,7 +256,7 @@ namespace seco {
         firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
         firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
         for (uint32 i = 0; i < numExamples; i++) {
-            LilMatrix<uint8>::Row& row = predictionMatrixPtr->getRow(i);
+            BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
             float32 tmpArray1[numFeatures];
             uint32 tmpArray2[numFeatures] = {};
             uint32 n = 1;
@@ -276,7 +276,7 @@ namespace seco {
             }
         }
 
-        return std::make_unique<SparsePredictionMatrix<uint8>>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
+        return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
     }
 
 }

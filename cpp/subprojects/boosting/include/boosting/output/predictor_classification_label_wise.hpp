@@ -39,13 +39,13 @@ namespace boosting {
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 
-            std::unique_ptr<SparsePredictionMatrix<uint8>> predict(const CContiguousFeatureMatrix& featureMatrix,
-                                                                   uint32 numLabels, const RuleModel& model,
-                                                                   const LabelVectorSet* labelVectors) const override;
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(const CContiguousFeatureMatrix& featureMatrix,
+                                                                  uint32 numLabels, const RuleModel& model,
+                                                                  const LabelVectorSet* labelVectors) const override;
 
-            std::unique_ptr<SparsePredictionMatrix<uint8>> predict(const CsrFeatureMatrix& featureMatrix,
-                                                                   uint32 numLabels, const RuleModel& model,
-                                                                   const LabelVectorSet* labelVectors) const override;
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(const CsrFeatureMatrix& featureMatrix,
+                                                                  uint32 numLabels, const RuleModel& model,
+                                                                  const LabelVectorSet* labelVectors) const override;
 
     };
 

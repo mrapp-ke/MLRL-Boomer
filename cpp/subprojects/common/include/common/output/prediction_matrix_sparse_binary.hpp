@@ -3,21 +3,18 @@
  */
 #pragma once
 
-#include "common/data/matrix_lil.hpp"
+#include "common/data/matrix_lil_binary.hpp"
 #include <memory>
 
 
 /**
- * A sparse matrix that provides read-only access to predictions.
- *
- * @tparam T The type of the predictions
+ * A sparse matrix that provides read-only access to binary predictions.
  */
-template<typename T>
-class SparsePredictionMatrix final {
+class BinarySparsePredictionMatrix final {
 
     private:
 
-        std::unique_ptr<LilMatrix<T>> matrixPtr_;
+        std::unique_ptr<BinaryLilMatrix> matrixPtr_;
 
         uint32 numCols_;
 
@@ -26,16 +23,18 @@ class SparsePredictionMatrix final {
     public:
 
         /**
-         * @param matrixPtr             An unique pointer to an object of type `LilMatrix` that stores the predictions
+         * @param matrixPtr             An unique pointer to an object of type `BinaryLilMatrix` that stores the
+         *                              predictions
          * @param numCols               The number of columns in the matrix
          * @param numNonZeroElements    The number of non-zero elements in the matrix
          */
-        SparsePredictionMatrix(std::unique_ptr<LilMatrix<T>> matrixPtr, uint32 numCols, uint32 numNonZeroElements);
+        BinarySparsePredictionMatrix(std::unique_ptr<BinaryLilMatrix> matrixPtr, uint32 numCols,
+                                     uint32 numNonZeroElements);
 
         /**
          * An iterator that provides read-only access to the elements at a row.
          */
-        typedef typename LilMatrix<T>::const_iterator const_iterator;
+        typedef typename BinaryLilMatrix::const_iterator const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of a specific row.
