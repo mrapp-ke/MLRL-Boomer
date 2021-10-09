@@ -26,25 +26,6 @@ cdef extern from "common/output/prediction_matrix_sparse_binary.hpp" nogil:
         uint32 getNumNonZeroElements()
 
 
-cdef extern from "common/output/prediction_matrix_sparse.hpp" nogil:
-
-    cdef cppclass SparsePredictionMatrix[T]:
-
-        ctypedef forward_list[IndexedValue[T]].const_iterator const_iterator
-
-        # Functions:
-
-        const_iterator row_cbegin(uint32 row)
-
-        const_iterator row_cend(uint32 row)
-
-        uint32 getNumRows()
-
-        uint32 getNumCols()
-
-        uint32 getNumNonZeroElements()
-
-
 cdef extern from "common/output/predictor.hpp" nogil:
 
     cdef cppclass IPredictor[T]:
