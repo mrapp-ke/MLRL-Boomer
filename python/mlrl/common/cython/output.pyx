@@ -119,15 +119,15 @@ cdef class AbstractNumericalPredictor(Predictor):
         return np.asarray(prediction_matrix)
 
 
-cdef inline object __create_csr_matrix(SparsePredictionMatrix[uint8]* prediction_matrix):
+cdef inline object __create_csr_matrix(BinarySparsePredictionMatrix* prediction_matrix):
     cdef uint32 num_rows = prediction_matrix.getNumRows()
     cdef uint32 num_cols = prediction_matrix.getNumCols()
     cdef uint32 num_non_zero_elements = prediction_matrix.getNumNonZeroElements()
     cdef uint8[::1] data = array_uint8(num_non_zero_elements)
     cdef uint32[::1] col_indices = array_uint32(num_non_zero_elements)
     cdef uint32[::1] row_indices = array_uint32(num_rows + 1)
-    cdef SparsePredictionMatrix[uint8].const_iterator it
-    cdef SparsePredictionMatrix[uint8].const_iterator end
+    cdef BinarySparsePredictionMatrix.const_iterator it
+    cdef BinarySparsePredictionMatrix.const_iterator end
     cdef uint32 row_index
     cdef uint32 i = 0
 
@@ -137,8 +137,8 @@ cdef inline object __create_csr_matrix(SparsePredictionMatrix[uint8]* prediction
         row_indices[row_index] = i
 
         while it != end:
-            col_indices[i] = dereference(it).index
-            data[i] = dereference(it).value
+            col_indices[i] = dereference(it)
+            data[i] = 1
             i += 1
             postincrement(it)
 
@@ -188,7 +188,7 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
         cdef ISparsePredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
-        cdef unique_ptr[SparsePredictionMatrix[uint8]] prediction_matrix_ptr = predictor_ptr.predict(
+        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = predictor_ptr.predict(
             dereference(feature_matrix_ptr), num_labels, dereference(model.model_ptr), label_vectors_ptr)
         return __create_csr_matrix(prediction_matrix_ptr.get())
 
@@ -199,6 +199,6 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
         cdef ISparsePredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
-        cdef unique_ptr[SparsePredictionMatrix[uint8]] prediction_matrix_ptr = predictor_ptr.predict(
+        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = predictor_ptr.predict(
             dereference(feature_matrix_ptr), num_labels, dereference(model.model_ptr), label_vectors_ptr)
         return __create_csr_matrix(prediction_matrix_ptr.get())

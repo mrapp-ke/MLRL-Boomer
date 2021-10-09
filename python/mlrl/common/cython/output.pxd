@@ -7,6 +7,25 @@ from libcpp.memory cimport unique_ptr
 from libcpp.forward_list cimport forward_list
 
 
+cdef extern from "common/output/prediction_matrix_sparse_binary.hpp" nogil:
+
+    cdef cppclass BinarySparsePredictionMatrix:
+
+        ctypedef forward_list[uint32].const_iterator const_iterator
+
+        # Functions:
+
+        const_iterator row_cbegin(uint32 row)
+
+        const_iterator row_cend(uint32 row)
+
+        uint32 getNumRows()
+
+        uint32 getNumCols()
+
+        uint32 getNumNonZeroElements()
+
+
 cdef extern from "common/output/prediction_matrix_sparse.hpp" nogil:
 
     cdef cppclass SparsePredictionMatrix[T]:
@@ -45,13 +64,13 @@ cdef extern from "common/output/predictor_sparse.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[SparsePredictionMatrix[T]] predict(const CContiguousFeatureMatrixImpl& featureMatrix,
-                                                      uint32 numLabels, const RuleModelImpl& model,
-                                                      const LabelVectorSetImpl* labelVectors)
+        unique_ptr[BinarySparsePredictionMatrix] predict(const CContiguousFeatureMatrixImpl& featureMatrix,
+                                                         uint32 numLabels, const RuleModelImpl& model,
+                                                         const LabelVectorSetImpl* labelVectors)
 
-        unique_ptr[SparsePredictionMatrix[T]] predict(const CsrFeatureMatrixImpl& featureMatrix, uint32 numLabels,
-                                                      const RuleModelImpl& model,
-                                                      const LabelVectorSetImpl* labelVectors)
+        unique_ptr[BinarySparsePredictionMatrix] predict(const CsrFeatureMatrixImpl& featureMatrix, uint32 numLabels,
+                                                         const RuleModelImpl& model,
+                                                         const LabelVectorSetImpl* labelVectors)
 
 
 cdef class Predictor:
