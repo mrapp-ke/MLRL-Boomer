@@ -1,5 +1,5 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
-from mlrl.common.cython._data cimport IndexedValue, CContiguousView
+from mlrl.common.cython._data cimport CContiguousView
 from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVectorSetImpl
 from mlrl.common.cython.model cimport RuleModelImpl
 
@@ -7,11 +7,11 @@ from libcpp.memory cimport unique_ptr
 from libcpp.forward_list cimport forward_list
 
 
-cdef extern from "common/output/prediction_matrix_sparse.hpp" nogil:
+cdef extern from "common/output/prediction_matrix_sparse_binary.hpp" nogil:
 
-    cdef cppclass SparsePredictionMatrix[T]:
+    cdef cppclass BinarySparsePredictionMatrix:
 
-        ctypedef forward_list[IndexedValue[T]].const_iterator const_iterator
+        ctypedef forward_list[uint32].const_iterator const_iterator
 
         # Functions:
 
@@ -45,13 +45,13 @@ cdef extern from "common/output/predictor_sparse.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[SparsePredictionMatrix[T]] predict(const CContiguousFeatureMatrixImpl& featureMatrix,
-                                                      uint32 numLabels, const RuleModelImpl& model,
-                                                      const LabelVectorSetImpl* labelVectors)
+        unique_ptr[BinarySparsePredictionMatrix] predict(const CContiguousFeatureMatrixImpl& featureMatrix,
+                                                         uint32 numLabels, const RuleModelImpl& model,
+                                                         const LabelVectorSetImpl* labelVectors)
 
-        unique_ptr[SparsePredictionMatrix[T]] predict(const CsrFeatureMatrixImpl& featureMatrix, uint32 numLabels,
-                                                      const RuleModelImpl& model,
-                                                      const LabelVectorSetImpl* labelVectors)
+        unique_ptr[BinarySparsePredictionMatrix] predict(const CsrFeatureMatrixImpl& featureMatrix, uint32 numLabels,
+                                                         const RuleModelImpl& model,
+                                                         const LabelVectorSetImpl* labelVectors)
 
 
 cdef class Predictor:
