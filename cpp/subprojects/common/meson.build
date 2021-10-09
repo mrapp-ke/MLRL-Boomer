@@ -47,7 +47,6 @@ source_files = [
     'src/common/model/head_partial.cpp',
     'src/common/model/rule_model.cpp',
     'src/common/model/rule.cpp',
-    'src/common/output/prediction_matrix_sparse.cpp',
     'src/common/output/prediction_matrix_sparse_binary.cpp',
     'src/common/post_processing/post_processor_no.cpp',
     'src/common/pruning/pruning_irep.cpp',
