@@ -8,6 +8,7 @@ Provides scikit-learn implementations of separate-and-conquer algorithms.
 from typing import Dict, Set, Optional, List
 
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
+from mlrl.common.cython.input import LabelMatrix
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
@@ -216,15 +217,14 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self, label_matrix: LabelMatrix) -> StatisticsProviderFactory:
         heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
         pruning_heuristic = self.__create_heuristic(self.pruning_heuristic, 'pruning_heuristic')
         head_type = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
         default_rule_evaluation_factory = LabelWiseMajorityRuleEvaluationFactory()
-        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(head_type, heuristic,
-                                                                                num_labels)
+        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(head_type, heuristic, label_matrix)
         pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(head_type, pruning_heuristic,
-                                                                                num_labels)
+                                                                                label_matrix)
         return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, regular_rule_evaluation_factory,
                                                        pruning_rule_evaluation_factory)
 
@@ -292,27 +292,25 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             m = options.get_float(ARGUMENT_M, 22.466)
             return MEstimate(m)
 
-    def __create_lift_function(self, num_labels: int) -> LiftFunction:
+    def __create_lift_function(self, label_matrix: LabelMatrix) -> LiftFunction:
         value, options = parse_param_and_options('lift_function', self.lift_function, LIFT_FUNCTION_VALUES)
 
         if value == LIFT_FUNCTION_PEAK:
+            num_labels = label_matrix.get_num_cols()
             peak_label = options.get_int(ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1)
             max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.08)
             curvature = options.get_float(ARGUMENT_CURVATURE, 1.0)
             return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
 
-    def __create_rule_evaluation_factory(self, head_type: str, heuristic: Heuristic, num_labels: int):
+    def __create_rule_evaluation_factory(self, head_type: str, heuristic: Heuristic, label_matrix: LabelMatrix):
         if head_type == HEAD_TYPE_SINGLE:
             return LabelWiseSingleLabelRuleEvaluationFactory(heuristic)
         else:
-            return LabelWisePartialRuleEvaluationFactory(heuristic, self.__create_lift_function(num_labels))
+            return LabelWisePartialRuleEvaluationFactory(heuristic, self.__create_lift_function(label_matrix))
 
     def _create_model_builder(self) -> ModelBuilder:
         return DecisionListBuilder()
 
-    def _create_predictor(self, num_labels: int) -> Predictor:
-        return self.__create_label_wise_predictor(num_labels)
-
-    def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
+    def _create_predictor(self, label_matrix: LabelMatrix) -> Predictor:
         num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
-        return LabelWiseClassificationPredictor(num_labels, num_threads)
+        return LabelWiseClassificationPredictor(num_labels=label_matrix.get_num_cols(), num_threads=num_threads)
