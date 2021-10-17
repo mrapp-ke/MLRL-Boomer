@@ -7,14 +7,16 @@ Provides classes for printing textual representations of models. The models can 
 e.g. to the console or to a file.
 """
 import logging as log
+from _io import StringIO
 from abc import ABC, abstractmethod
 from typing import List, Set
 
-from mlrl.common.cython.model import RuleModelFormatter
+import numpy as np
+from mlrl.common.cython.model import RuleModelVisitor, EmptyBody, ConjunctiveBody, CompleteHead, PartialHead
 
 from mlrl.common.learners import Learner
 from mlrl.common.options import Options
-from mlrl.testbed.data import MetaData
+from mlrl.testbed.data import Attribute, MetaData
 from mlrl.testbed.io import clear_directory, open_writable_txt_file
 
 ARGUMENT_PRINT_FEATURE_NAMES = 'print_feature_names'
@@ -25,6 +27,132 @@ ARGUMENT_PRINT_NOMINAL_VALUES = 'print_nominal_values'
 
 PRINT_OPTION_VALUES: Set[str] = {ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES,
                                  ARGUMENT_PRINT_NOMINAL_VALUES}
+
+
+class RuleModelFormatter(RuleModelVisitor):
+    """
+    Allows to create textual representation of the rules in a `RuleModel`.
+    """
+
+    def __init__(self, attributes: List[Attribute], labels: List[Attribute], print_feature_names: bool,
+                 print_label_names: bool, print_nominal_values: bool):
+        """
+        :param attributes:              A list that contains the attributes
+        :param labels:                  A list that contains the labels
+        :param print_feature_names:     True, if the names of features should be printed, False otherwise
+        :param print_label_names:       True, if the names of labels should be printed, False otherwise
+        :param print_nominal_values:    True, if the values of nominal values should be printed, False otherwise
+        """
+        self.print_feature_names = print_feature_names
+        self.print_label_names = print_label_names
+        self.print_nominal_values = print_nominal_values
+        self.attributes = attributes
+        self.labels = labels
+        self.text = StringIO()
+
+    def visit_empty_body(self, _: EmptyBody):
+        self.text.write('{}')
+
+    def __format_conditions(self, num_conditions: int, indices: np.ndarray, thresholds: np.ndarray,
+                            operator: str) -> int:
+        result = num_conditions
+
+        if indices is not None and thresholds is not None:
+            text = self.text
+            attributes = self.attributes
+            print_feature_names = self.print_feature_names
+            print_nominal_values = self.print_nominal_values
+
+            for i in range(indices.shape[0]):
+                if result > 0:
+                    text.write(' & ')
+
+                feature_index = indices[i]
+                threshold = thresholds[i]
+                attribute = attributes[feature_index] if len(attributes) > feature_index else None
+
+                if print_feature_names and attribute is not None:
+                    text.write(attribute.attribute_name)
+                else:
+                    text.write(str(feature_index))
+
+                text.write(' ')
+                text.write(operator)
+                text.write(' ')
+
+                if attribute is not None and attribute.nominal_values is not None:
+                    if print_nominal_values and len(attribute.nominal_values) > threshold:
+                        text.write('"' + attribute.nominal_values[threshold] + '"')
+                    else:
+                        text.write(str(threshold))
+                else:
+                    text.write(str(threshold))
+
+                result += 1
+
+        return result
+
+    def visit_conjunctive_body(self, body: ConjunctiveBody):
+        text = self.text
+        text.write('{')
+        num_conditions = self.__format_conditions(0, body.leq_indices, body.leq_thresholds, '<=')
+        num_conditions = self.__format_conditions(num_conditions, body.gr_indices, body.gr_thresholds, '>')
+        num_conditions = self.__format_conditions(num_conditions, body.eq_indices, body.eq_thresholds, '==')
+        self.__format_conditions(num_conditions, body.neq_indices, body.neq_thresholds, '!=')
+        text.write('}')
+
+    def visit_complete_head(self, head: CompleteHead):
+        text = self.text
+        print_label_names = self.print_label_names
+        labels = self.labels
+        scores = head.scores
+        text.write(' => (')
+
+        for i in range(scores.shape[0]):
+            if i > 0:
+                text.write(', ')
+
+            if print_label_names and len(labels) > i:
+                text.write(labels[i].attribute_name)
+            else:
+                text.write(str(i))
+
+            text.write(' = ')
+            text.write('{0:.2f}'.format(scores[i]))
+
+        text.write(')\n')
+
+    def visit_partial_head(self, head: PartialHead):
+        text = self.text
+        print_label_names = self.print_label_names
+        labels = self.labels
+        indices = head.indices
+        scores = head.scores
+        text.write(' => (')
+
+        for i in range(indices.shape[0]):
+            if i > 0:
+                text.write(', ')
+
+            label_index = indices[i]
+
+            if print_label_names and len(labels) > label_index:
+                text.write(labels[label_index].attribute_name)
+            else:
+                text.write(str(label_index))
+
+            text.write(' = ')
+            text.write('{0:.2f}'.format(scores[i]))
+
+        text.write(')\n')
+
+    def get_text(self) -> str:
+        """
+        Returns the textual representation that has been created via the `format` method.
+
+        :return: The textual representation
+        """
+        return self.text.getvalue()
 
 
 class ModelPrinterOutput(ABC):
@@ -140,5 +268,5 @@ class RulePrinter(ModelPrinter):
         formatter = RuleModelFormatter(attributes=meta_data.attributes, labels=meta_data.labels,
                                        print_feature_names=print_feature_names, print_label_names=print_label_names,
                                        print_nominal_values=print_nominal_values)
-        formatter.format(model)
+        model.visit(formatter)
         return formatter.get_text()

@@ -4,6 +4,8 @@ from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 from libcpp.list cimport list as double_linked_list
 
+cimport numpy as npc
+
 
 cdef extern from "common/model/body.hpp" nogil:
 
@@ -288,6 +290,55 @@ cdef extern from *:
     PartialHeadVisitor wrapPartialHeadVisitor(void* self, PartialHeadCythonVisitor visitor)
 
 
+cdef class Body:
+    pass
+
+
+cdef class EmptyBody(Body):
+    pass
+
+
+cdef class ConjunctiveBody(Body):
+
+    # Attributes:
+
+    cdef readonly npc.ndarray leq_indices
+
+    cdef readonly npc.ndarray leq_thresholds
+
+    cdef readonly npc.ndarray gr_indices
+
+    cdef readonly npc.ndarray gr_thresholds
+
+    cdef readonly npc.ndarray eq_indices
+
+    cdef readonly npc.ndarray eq_thresholds
+
+    cdef readonly npc.ndarray neq_indices
+
+    cdef readonly npc.ndarray neq_thresholds
+
+
+cdef class Head:
+    pass
+
+
+cdef class CompleteHead(Head):
+
+    # Attributes:
+
+    cdef readonly npc.ndarray scores
+
+
+cdef class PartialHead(Head):
+
+    # Attributes:
+
+    cdef readonly npc.ndarray indices
+
+    cdef readonly npc.ndarray scores
+
+
 cdef class RuleModel:
 
     # Attributes:
@@ -319,21 +370,11 @@ cdef class RuleModelSerializer:
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
 
 
-cdef class RuleModelFormatter:
+cdef class RuleModelVisitorWrapper:
 
     # Attributes:
 
-    cdef list attributes
-
-    cdef list labels
-
-    cdef bint print_feature_names
-
-    cdef bint print_label_names
-
-    cdef bint print_nominal_values
-
-    cdef object text
+    cdef object visitor
 
     # Functions:
 
@@ -344,3 +385,5 @@ cdef class RuleModelFormatter:
     cdef __visit_complete_head(self, const CompleteHeadImpl& head)
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
+
+    cdef visit(self, RuleModel model)
