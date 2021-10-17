@@ -315,6 +315,42 @@ cdef uint32 __format_conditions(uint32 num_processed_conditions, uint32 num_cond
     return result
 
 
+cdef class RuleModelVisitorWrapper:
+    """
+    Wraps a `RuleModelVisitor` and invokes its methods when visiting the bodies and heads of a `RuleModel`.
+    """
+
+    def __cinit__(self, object visitor):
+        """
+        :param visitor: The `RuleModelVisitor` to be wrapped
+        """
+        self.visitor = visitor
+
+    cdef __visit_empty_body(self, const EmptyBodyImpl& body):
+        self.visitor.visit_empty_body()
+
+    cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body):
+        self.visitor.visit_conjunctive_body()
+
+    cdef __visit_complete_head(self, const CompleteHeadImpl& head):
+        self.visitor.visit_complete_head()
+
+    cdef __visit_partial_head(self, const PartialHeadImpl& head):
+        self.visitor.visit_partial_head()
+
+    cdef visit(self, RuleModel model):
+        """
+        Visits a specific model.
+
+        :param model: The `RuleModel` to be visited
+        """
+        model.model_ptr.get().visitUsed(
+            wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
+            wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
+            wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
+            wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
+
+
 cdef class RuleModelFormatter:
     """
     Allows to create textual representations of the rules that are contained by a `RuleModel`.
