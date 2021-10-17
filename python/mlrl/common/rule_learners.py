@@ -127,6 +127,37 @@ class SparseFormat(Enum):
     CSR = 'csr'
 
 
+class LabelCharacteristics:
+    """
+    Allows to obtain certain characteristics of a label matrix.
+    """
+
+    def __init__(self, label_matrix: LabelMatrix):
+        """
+        :param label_matrix: The label matrix
+        """
+        self.label_matrix = label_matrix
+        self.label_cardinality = None
+
+    def get_num_labels(self):
+        """
+        Returns the number of labels.
+
+        :return: The number of labels
+        """
+        return self.label_matrix.get_num_cols()
+
+    def get_label_cardinality(self):
+        """
+        Returns the label cardinality.
+        
+        :return: The label cardinality
+        """
+        if self.label_cardinality is None:
+            self.label_cardinality = self.label_matrix.calculate_label_cardinality()
+        return self.label_cardinality
+
+
 def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
     try:
         return SparsePolicy(policy)
@@ -408,8 +439,9 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             label_matrix = CContiguousLabelMatrix(y)
 
         # Create predictors...
-        self.predictor_ = self._create_predictor(label_matrix)
-        self.probability_predictor_ = self._create_probability_predictor(label_matrix)
+        label_characteristics = LabelCharacteristics(label_matrix)
+        self.predictor_ = self._create_predictor(label_characteristics)
+        self.probability_predictor_ = self._create_probability_predictor(label_characteristics)
         self.label_vectors_ = self._create_label_vector_set(label_matrix)
 
         # Create a mask that provides access to the information whether individual features are nominal or not...
@@ -423,13 +455,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = BitNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        rule_model_assemblage = self.__create_rule_model_assemblage(label_matrix)
+        rule_model_assemblage = self.__create_rule_model_assemblage(label_characteristics)
         model_builder = self._create_model_builder()
         return rule_model_assemblage.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
                                                   model_builder)
 
-    def __create_rule_model_assemblage(self, label_matrix: LabelMatrix) -> RuleModelAssemblage:
-        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(label_matrix),
+    def __create_rule_model_assemblage(self, label_characteristics: LabelCharacteristics) -> RuleModelAssemblage:
+        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(label_characteristics),
                                              self._create_thresholds_factory(), self._create_rule_induction(),
                                              self._create_rule_model_assemblage_factory())
         label_sampling_factory = self._create_label_sampling_factory()
@@ -515,13 +547,14 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
                 return predictor.predict_dense(feature_matrix, model, label_vectors)
 
     @abstractmethod
-    def _create_statistics_provider_factory(self, label_matrix: LabelMatrix) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self,
+                                            label_characteristics: LabelCharacteristics) -> StatisticsProviderFactory:
         """
         Must be implemented by subclasses in order to create the `StatisticsProviderFactory` to be used by the rule
         learner.
 
-        :param label_matrix:    The ground truth label matrix
-        :return:                The `StatisticsProviderFactory` that has been created
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `StatisticsProviderFactory` that has been created
         """
         pass
 
@@ -631,16 +664,16 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         pass
 
     @abstractmethod
-    def _create_predictor(self, label_matrix: LabelMatrix) -> Predictor:
+    def _create_predictor(self, label_characteristics: LabelCharacteristics) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
 
-        :param label_matrix:    The ground truth label matrix
-        :return:                The `Predictor` that has been created
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `Predictor` that has been created
         """
         pass
 
-    def _create_probability_predictor(self, label_matrix: LabelMatrix) -> Predictor:
+    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
         estimates.
