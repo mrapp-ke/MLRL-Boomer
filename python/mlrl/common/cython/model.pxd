@@ -4,6 +4,8 @@ from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 from libcpp.list cimport list as double_linked_list
 
+cimport numpy as npc
+
 
 cdef extern from "common/model/body.hpp" nogil:
 
@@ -297,7 +299,24 @@ cdef class EmptyBody(Body):
 
 
 cdef class ConjunctiveBody(Body):
-    pass
+
+    # Attributes:
+
+    cdef readonly npc.ndarray leq_indices
+
+    cdef readonly npc.ndarray leq_thresholds
+
+    cdef readonly npc.ndarray gr_indices
+
+    cdef readonly npc.ndarray gr_thresholds
+
+    cdef readonly npc.ndarray eq_indices
+
+    cdef readonly npc.ndarray eq_thresholds
+
+    cdef readonly npc.ndarray neq_indices
+
+    cdef readonly npc.ndarray neq_thresholds
 
 
 cdef class Head:
@@ -305,11 +324,19 @@ cdef class Head:
 
 
 cdef class CompleteHead(Head):
-    pass
+
+    # Attributes:
+
+    cdef readonly npc.ndarray scores
 
 
 cdef class PartialHead(Head):
-    pass
+
+    # Attributes:
+
+    cdef readonly npc.ndarray indices
+
+    cdef readonly npc.ndarray scores
 
 
 cdef class RuleModel:

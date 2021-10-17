@@ -32,7 +32,36 @@ cdef class ConjunctiveBody(Body):
     """
     A body that is given as a conjunction of several conditions.
     """
-    pass
+
+    def __cinit__(self, const uint32[::1] leq_indices, const float32[::1] leq_thresholds, const uint32[::1] gr_indices,
+                  const float32[::1] gr_thresholds, const uint32[::1] eq_indices, const float32[::1] eq_thresholds,
+                  const uint32[::1] neq_indices, const float32[::1] neq_thresholds):
+        """
+        :param leq_indices:     A contiguous array of type `uint32`, shape `(num_leq_conditions)`, that stores the
+                                feature indices of the conditions that use the <= operator
+        :param leq_thresholds:  A contiguous array of type `float32`, shape `(num_leq_conditions)` that stores the
+                                thresholds of the conditions that use the <= operator
+        :param gr_indices:      A contiguous array of type `uint32`, shape `(num_gr_conditions)`, that stores the
+                                feature indices of the conditions that use the > operator
+        :param gr_thresholds:   A contiguous array of type `float32`, shape `(num_gr_conditions)` that stores the
+                                thresholds of the conditions that use the > operator
+        :param eq_indices:      A contiguous array of type `uint32`, shape `(num_eq_conditions)`, that stores the
+                                feature indices of the conditions that use the == operator
+        :param eq_thresholds:   A contiguous array of type `float32`, shape `(num_eq_conditions)` that stores the
+                                thresholds of the conditions that use the == operator
+        :param neq_indices:     A contiguous array of type `uint32`, shape `(num_neq_conditions)`, that stores the
+                                feature indices of the conditions that use the != operator
+        :param neq_thresholds:  A contiguous array of type `float32`, shape `(num_neq_conditions)` that stores the
+                                thresholds of the conditions that use the != operator
+        """
+        self.leq_indices = np.asarray(leq_indices) if leq_indices is not None else None
+        self.leq_thresholds = np.asarray(leq_thresholds) if leq_thresholds is not None else None
+        self.gr_indices = np.asarray(gr_indices) if gr_indices is not None else None
+        self.gr_thresholds = np.asarray(gr_thresholds) if gr_thresholds is not None else None
+        self.eq_indices = np.asarray(eq_indices) if eq_indices is not None else None
+        self.eq_thresholds = np.asarray(eq_thresholds) if eq_thresholds is not None else None
+        self.neq_indices = np.asarray(neq_indices) if neq_indices is not None else None
+        self.neq_thresholds = np.asarray(neq_thresholds) if neq_thresholds is not None else None
 
 
 cdef class Head:
@@ -46,14 +75,26 @@ cdef class CompleteHead(Head):
     """
     A head that predicts for all available labels.
     """
-    pass
+
+    def __cinit__(self, const float64[::1] scores):
+        """
+        :param scores: A contiguous array of type `float64`, shape `(num_predictions)` that stores the predicted scores
+        """
+        self.scores = np.asarray(scores)
 
 
 cdef class PartialHead(Head):
     """
     A head that predicts for a subset of the available labels.
     """
-    pass
+
+    def __cinit__(self, const uint32[::1] indices, const float64[::1] scores):
+        """
+        :param indices: A contiguous array of type `uint32`, shape `(num_predictions)` that stores the label indices
+        :param scores:  A contiguous array of type `float64`, shape `(num_predictions)` that stores the predicted scores
+        """
+        self.indices = np.asarray(indices)
+        self.scores = np.asarray(scores)
 
 
 class RuleModelVisitor:
@@ -404,13 +445,32 @@ cdef class RuleModelVisitorWrapper:
         self.visitor.visit_empty_body(EmptyBody.__new__(EmptyBody))
 
     cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body):
-        self.visitor.visit_conjunctive_body(ConjunctiveBody.__new__(ConjunctiveBody))
+        cdef uint32 num_leq = body.getNumLeq()
+        cdef const uint32[::1] leq_indices = <uint32[:num_leq]>body.leq_indices_cbegin() if num_leq > 0 else None
+        cdef const float32[::1] leq_thresholds = <float32[:num_leq]>body.leq_thresholds_cbegin() if num_leq > 0 else None
+        cdef uint32 num_gr = body.getNumGr()
+        cdef const uint32[::1] gr_indices = <uint32[:num_gr]>body.gr_indices_cbegin() if num_gr > 0 else None
+        cdef const float32[::1] gr_thresholds = <float32[:num_gr]>body.gr_thresholds_cbegin() if num_gr > 0 else None
+        cdef uint32 num_eq = body.getNumEq()
+        cdef const uint32[::1] eq_indices = <uint32[:num_eq]>body.eq_indices_cbegin() if num_eq > 0 else None
+        cdef const float32[::1] eq_thresholds = <float32[:num_eq]>body.eq_thresholds_cbegin() if num_eq > 0 else None
+        cdef uint32 num_neq = body.getNumNeq()
+        cdef const uint32[::1] neq_indices = <uint32[:num_neq]>body.neq_indices_cbegin() if num_neq > 0 else None
+        cdef const float32[::1] neq_thresholds = <float32[:num_neq]>body.neq_thresholds_cbegin() if num_neq > 0 else None
+        self.visitor.visit_conjunctive_body(ConjunctiveBody.__new__(ConjunctiveBody, leq_indices, leq_thresholds,
+                                                                    gr_indices, gr_thresholds, eq_indices,
+                                                                    eq_thresholds, neq_indices, neq_thresholds))
 
     cdef __visit_complete_head(self, const CompleteHeadImpl& head):
-        self.visitor.visit_complete_head(CompleteHead.__new__(CompleteHead))
+        cdef uint32 num_elements = head.getNumElements()
+        cdef const float64[::1] scores = <float64[:num_elements]>head.scores_cbegin()
+        self.visitor.visit_complete_head(CompleteHead.__new__(CompleteHead, scores))
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head):
-        self.visitor.visit_partial_head(PartialHead.__new__(PartialHead))
+        cdef uint32 num_elements = head.getNumElements()
+        cdef const uint32[::1] indices = <uint32[:num_elements]>head.indices_cbegin()
+        cdef const float64[::1] scores = <float64[:num_elements]>head.scores_cbegin()
+        self.visitor.visit_partial_head(PartialHead.__new__(PartialHead, indices, scores))
 
     cdef visit(self, RuleModel model):
         """
