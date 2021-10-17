@@ -14,6 +14,48 @@ import numpy as np
 SERIALIZATION_VERSION = 1
 
 
+cdef class Body:
+    """
+    The body of a rule.
+    """
+    pass
+
+
+cdef class EmptyBody(Body):
+    """
+    A body that does not contain any conditions.
+    """
+    pass
+
+
+cdef class ConjunctiveBody(Body):
+    """
+    A body that is given as a conjunction of several conditions.
+    """
+    pass
+
+
+cdef class Head:
+    """
+    The head of a rule.
+    """
+    pass
+
+
+cdef class CompleteHead(Head):
+    """
+    A head that predicts for all available labels.
+    """
+    pass
+
+
+cdef class PartialHead(Head):
+    """
+    A head that predicts for a subset of the available labels.
+    """
+    pass
+
+
 class RuleModelVisitor:
     """
     Defines the methods that must be implemented by a visitor that accesses the bodies and heads of the rules in a
