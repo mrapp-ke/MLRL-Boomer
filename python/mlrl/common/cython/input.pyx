@@ -11,7 +11,30 @@ cdef class LabelMatrix:
     """
     A wrapper for the pure virtual C++ class `ILabelMatrix`.
     """
-    pass
+
+    def get_num_rows(self) -> int:
+        """
+        Returns the number of rows in the matrix.
+
+        :return: The number of rows
+        """
+        return self.label_matrix_ptr.get().getNumRows()
+
+    def get_num_cols(self) -> int:
+        """
+        Returns the number of columns in the matrix.
+
+        :return: The number of columns
+        """
+        return self.label_matrix_ptr.get().getNumCols()
+
+    def calculate_label_cardinality(self) -> float:
+        """
+        Calculates and returns the label cardinality, i.e., the average number of relevant labels per example.
+
+        :return: The label cardinality
+        """
+        return self.label_matrix_ptr.get().calculateLabelCardinality()
 
 
 cdef class CContiguousLabelMatrix(LabelMatrix):
@@ -55,7 +78,22 @@ cdef class FeatureMatrix:
     """
     A wrapper for the pure virtual C++ class `IFeatureMatrix`.
     """
-    pass
+
+    def get_num_rows(self) -> int:
+        """
+        Returns the number of rows in the matrix.
+
+        :return The number of rows
+        """
+        return self.feature_matrix_ptr.get().getNumRows()
+
+    def get_num_cols(self) -> int:
+        """
+        Returns the number of columns in the matrix.
+
+        :return The number of columns
+        """
+        return self.feature_matrix_ptr.get().getNumCols()
 
 
 cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
