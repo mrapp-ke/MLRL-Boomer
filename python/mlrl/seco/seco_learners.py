@@ -296,11 +296,11 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         value, options = parse_param_and_options('lift_function', self.lift_function, LIFT_FUNCTION_VALUES)
 
         if value == LIFT_FUNCTION_PEAK:
-            num_labels = label_matrix.get_num_cols()
-            peak_label = options.get_int(ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1)
+            peak_label = options.get_int(ARGUMENT_PEAK_LABEL, max(round(label_matrix.calculate_label_cardinality()), 1))
             max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.08)
             curvature = options.get_float(ARGUMENT_CURVATURE, 1.0)
-            return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
+            return PeakLiftFunction(num_labels=label_matrix.get_num_cols(), peak_label=peak_label, max_lift=max_lift,
+                                    curvature=curvature)
 
     def __create_rule_evaluation_factory(self, head_type: str, heuristic: Heuristic, label_matrix: LabelMatrix):
         if head_type == HEAD_TYPE_SINGLE:
