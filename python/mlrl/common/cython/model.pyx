@@ -57,12 +57,27 @@ cdef class RuleModel:
     """
 
     def get_num_rules(self) -> int:
+        """
+        Returns the total number of rules in the model.
+
+        :return The total number of rules in the model
+        """
         return self.model_ptr.get().getNumRules()
 
     def get_num_used_rules(self) -> int:
+        """
+        Returns the number of used rules in the model.
+
+        :return The number of used rules in the model
+        """
         return self.model_ptr.get().getNumUsedRules()
 
     def set_num_used_rules(self, int num_used_rules):
+        """
+        Sets the number of used rules in the model.
+
+        :param num_used_rules: The number of used rules to be set
+        """
         self.model_ptr.get().setNumUsedRules(num_used_rules)
 
     def __getstate__(self):
