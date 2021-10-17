@@ -28,6 +28,14 @@ cdef class LabelMatrix:
         """
         return self.label_matrix_ptr.get().getNumCols()
 
+    def calculate_label_cardinality(self) -> float:
+        """
+        Calculates and returns the label cardinality, i.e., the average number of relevant labels per example.
+
+        :return: The label cardinality
+        """
+        return self.label_matrix_ptr.get().calculateLabelCardinality()
+
 
 cdef class CContiguousLabelMatrix(LabelMatrix):
     """
