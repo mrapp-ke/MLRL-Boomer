@@ -14,9 +14,9 @@ from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCh
     DataCharacteristicsCsvOutput
 from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.model_characteristics import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
 from mlrl.testbed.parameters import ParameterCsvInput
 from mlrl.testbed.persistence import ModelPersistence
-from mlrl.testbed.printing import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
 from mlrl.testbed.training import DataSet
 
 LOG_FORMAT = '%(levelname)s %(message)s'
