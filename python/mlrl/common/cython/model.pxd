@@ -387,30 +387,3 @@ cdef class RuleModelVisitorWrapper:
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
 
     cdef visit(self, RuleModel model)
-
-
-cdef class RuleModelFormatter:
-
-    # Attributes:
-
-    cdef list attributes
-
-    cdef list labels
-
-    cdef bint print_feature_names
-
-    cdef bint print_label_names
-
-    cdef bint print_nominal_values
-
-    cdef object text
-
-    # Functions:
-
-    cdef __visit_empty_body(self, const EmptyBodyImpl& body)
-
-    cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body)
-
-    cdef __visit_complete_head(self, const CompleteHeadImpl& head)
-
-    cdef __visit_partial_head(self, const PartialHeadImpl& head)
