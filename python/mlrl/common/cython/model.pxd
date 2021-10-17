@@ -319,6 +319,25 @@ cdef class RuleModelSerializer:
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
 
 
+cdef class RuleModelVisitorWrapper:
+
+    # Attributes:
+
+    cdef object visitor
+
+    # Functions:
+
+    cdef __visit_empty_body(self, const EmptyBodyImpl& body)
+
+    cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body)
+
+    cdef __visit_complete_head(self, const CompleteHeadImpl& head)
+
+    cdef __visit_partial_head(self, const PartialHeadImpl& head)
+
+    cdef visit(self, RuleModel model)
+
+
 cdef class RuleModelFormatter:
 
     # Attributes:
