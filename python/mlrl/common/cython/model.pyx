@@ -80,6 +80,15 @@ cdef class RuleModel:
         """
         self.model_ptr.get().setNumUsedRules(num_used_rules)
 
+    def visit(self, visitor: RuleModelVisitor):
+        """
+        Visits the bodies and heads of the rules in the model.
+
+        :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
+        """
+        cdef RuleModelVisitorWrapper wrapper = RuleModelVisitorWrapper.__new__(RuleModelVisitorWrapper, visitor)
+        wrapper.visit(self)
+
     def __getstate__(self):
         cdef RuleModelSerializer serializer = RuleModelSerializer.__new__(RuleModelSerializer)
         cdef object state = serializer.serialize(self)
