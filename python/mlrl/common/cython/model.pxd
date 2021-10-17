@@ -288,6 +288,30 @@ cdef extern from *:
     PartialHeadVisitor wrapPartialHeadVisitor(void* self, PartialHeadCythonVisitor visitor)
 
 
+cdef class Body:
+    pass
+
+
+cdef class EmptyBody(Body):
+    pass
+
+
+cdef class ConjunctiveBody(Body):
+    pass
+
+
+cdef class Head:
+    pass
+
+
+cdef class CompleteHead(Head):
+    pass
+
+
+cdef class PartialHead(Head):
+    pass
+
+
 cdef class RuleModel:
 
     # Attributes:
