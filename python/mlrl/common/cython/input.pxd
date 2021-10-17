@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport uint8, uint32, float32
+from mlrl.common.cython._types cimport uint8, uint32, float32, float64
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
@@ -68,6 +68,8 @@ cdef extern from "common/input/label_matrix.hpp" nogil:
         uint32 getNumRows()
 
         uint32 getNumCols()
+
+        float64 calculateLabelCardinality()
 
         unique_ptr[LabelVector] createLabelVector(uint32 row)
 
