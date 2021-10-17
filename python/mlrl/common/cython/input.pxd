@@ -93,7 +93,12 @@ cdef extern from "common/input/label_matrix_csr.hpp" nogil:
 cdef extern from "common/input/feature_matrix.hpp" nogil:
 
     cdef cppclass IFeatureMatrix:
-        pass
+
+        # Functions:
+
+        uint32 getNumRows()
+
+        uint32 getNumCols()
 
 
 cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
