@@ -5,11 +5,139 @@ from libcpp.algorithm cimport copy
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
-from _io import StringIO
+from abc import abstractmethod
 
 import numpy as np
 
 SERIALIZATION_VERSION = 1
+
+
+cdef class Body:
+    """
+    The body of a rule.
+    """
+    pass
+
+
+cdef class EmptyBody(Body):
+    """
+    A body that does not contain any conditions.
+    """
+    pass
+
+
+cdef class ConjunctiveBody(Body):
+    """
+    A body that is given as a conjunction of several conditions.
+    """
+
+    def __cinit__(self, const uint32[::1] leq_indices, const float32[::1] leq_thresholds, const uint32[::1] gr_indices,
+                  const float32[::1] gr_thresholds, const uint32[::1] eq_indices, const float32[::1] eq_thresholds,
+                  const uint32[::1] neq_indices, const float32[::1] neq_thresholds):
+        """
+        :param leq_indices:     A contiguous array of type `uint32`, shape `(num_leq_conditions)`, that stores the
+                                feature indices of the conditions that use the <= operator
+        :param leq_thresholds:  A contiguous array of type `float32`, shape `(num_leq_conditions)` that stores the
+                                thresholds of the conditions that use the <= operator
+        :param gr_indices:      A contiguous array of type `uint32`, shape `(num_gr_conditions)`, that stores the
+                                feature indices of the conditions that use the > operator
+        :param gr_thresholds:   A contiguous array of type `float32`, shape `(num_gr_conditions)` that stores the
+                                thresholds of the conditions that use the > operator
+        :param eq_indices:      A contiguous array of type `uint32`, shape `(num_eq_conditions)`, that stores the
+                                feature indices of the conditions that use the == operator
+        :param eq_thresholds:   A contiguous array of type `float32`, shape `(num_eq_conditions)` that stores the
+                                thresholds of the conditions that use the == operator
+        :param neq_indices:     A contiguous array of type `uint32`, shape `(num_neq_conditions)`, that stores the
+                                feature indices of the conditions that use the != operator
+        :param neq_thresholds:  A contiguous array of type `float32`, shape `(num_neq_conditions)` that stores the
+                                thresholds of the conditions that use the != operator
+        """
+        self.leq_indices = np.asarray(leq_indices) if leq_indices is not None else None
+        self.leq_thresholds = np.asarray(leq_thresholds) if leq_thresholds is not None else None
+        self.gr_indices = np.asarray(gr_indices) if gr_indices is not None else None
+        self.gr_thresholds = np.asarray(gr_thresholds) if gr_thresholds is not None else None
+        self.eq_indices = np.asarray(eq_indices) if eq_indices is not None else None
+        self.eq_thresholds = np.asarray(eq_thresholds) if eq_thresholds is not None else None
+        self.neq_indices = np.asarray(neq_indices) if neq_indices is not None else None
+        self.neq_thresholds = np.asarray(neq_thresholds) if neq_thresholds is not None else None
+
+
+cdef class Head:
+    """
+    The head of a rule.
+    """
+    pass
+
+
+cdef class CompleteHead(Head):
+    """
+    A head that predicts for all available labels.
+    """
+
+    def __cinit__(self, const float64[::1] scores):
+        """
+        :param scores: A contiguous array of type `float64`, shape `(num_predictions)` that stores the predicted scores
+        """
+        self.scores = np.asarray(scores)
+
+
+cdef class PartialHead(Head):
+    """
+    A head that predicts for a subset of the available labels.
+    """
+
+    def __cinit__(self, const uint32[::1] indices, const float64[::1] scores):
+        """
+        :param indices: A contiguous array of type `uint32`, shape `(num_predictions)` that stores the label indices
+        :param scores:  A contiguous array of type `float64`, shape `(num_predictions)` that stores the predicted scores
+        """
+        self.indices = np.asarray(indices)
+        self.scores = np.asarray(scores)
+
+
+class RuleModelVisitor:
+    """
+    Defines the methods that must be implemented by a visitor that accesses the bodies and heads of the rules in a
+    `RuleModel` according to the visitor pattern.
+    """
+
+    @abstractmethod
+    def visit_empty_body(self, body: EmptyBody):
+        """
+        Must be implemented by subclasses in order to visit bodies of rules that do not contain any conditions.
+
+        :param body: An `EmptyBody` to be visited
+        """
+        pass
+
+    @abstractmethod
+    def visit_conjunctive_body(self, body: ConjunctiveBody):
+        """
+        Must be implemented by subclasses in order to visit the bodies of rule that are given as a conjunction of
+        several conditions.
+
+        :param body: A `ConjunctiveBody` to be visited
+        """
+        pass
+
+    @abstractmethod
+    def visit_complete_head(self, head: CompleteHead):
+        """
+        Must be implemented by subclasses in order to visit the heads of rules that predict for all available labels.
+
+        :param head: A `CompleteHead` to be visited
+        """
+        pass
+
+    @abstractmethod
+    def visit_partial_head(self, head: PartialHead):
+        """
+        Must be implemented by subclasses in order to visit the heads of rules that predict for a subset of the
+        available labels.
+
+        :param head: A `PartialHead` to be visited
+        """
+        pass
 
 
 cdef class RuleModel:
@@ -18,13 +146,37 @@ cdef class RuleModel:
     """
 
     def get_num_rules(self) -> int:
+        """
+        Returns the total number of rules in the model.
+
+        :return The total number of rules in the model
+        """
         return self.model_ptr.get().getNumRules()
 
     def get_num_used_rules(self) -> int:
+        """
+        Returns the number of used rules in the model.
+
+        :return The number of used rules in the model
+        """
         return self.model_ptr.get().getNumUsedRules()
 
     def set_num_used_rules(self, int num_used_rules):
+        """
+        Sets the number of used rules in the model.
+
+        :param num_used_rules: The number of used rules to be set
+        """
         self.model_ptr.get().setNumUsedRules(num_used_rules)
+
+    def visit(self, visitor: RuleModelVisitor):
+        """
+        Visits the bodies and heads of the rules in the model.
+
+        :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
+        """
+        cdef RuleModelVisitorWrapper wrapper = RuleModelVisitorWrapper.__new__(RuleModelVisitorWrapper, visitor)
+        wrapper.visit(self)
 
     def __getstate__(self):
         cdef RuleModelSerializer serializer = RuleModelSerializer.__new__(RuleModelSerializer)
@@ -237,175 +389,56 @@ cdef class RuleModelSerializer:
         model.model_ptr = move(rule_model_ptr)
 
 
-cdef uint32 __format_conditions(uint32 num_processed_conditions, uint32 num_conditions,
-                                ConjunctiveBodyImpl.index_const_iterator index_iterator,
-                                ConjunctiveBodyImpl.threshold_const_iterator threshold_iterator, object attributes,
-                                bint print_feature_names, bint print_nominal_values, object text, object comparator):
-    cdef uint32 result = num_processed_conditions
-    cdef uint32 feature_index, i
-    cdef float32 threshold
-    cdef object attribute
-
-    for i in range(num_conditions):
-        if result > 0:
-            text.write(' & ')
-
-        feature_index = index_iterator[i]
-        threshold = threshold_iterator[i]
-        attribute = attributes[feature_index] if len(attributes) > feature_index else None
-
-        if print_feature_names and attribute is not None:
-            text.write(attribute.attribute_name)
-        else:
-            text.write(str(feature_index))
-
-        text.write(' ')
-        text.write(comparator)
-        text.write(' ')
-
-        if attribute is not None and attribute.nominal_values is not None:
-            if print_nominal_values and len(attribute.nominal_values) > threshold:
-                text.write('"' + attribute.nominal_values[<uint32>threshold] + '"')
-            else:
-                text.write(str(<uint32>threshold))
-        else:
-            text.write(str(threshold))
-
-        result += 1
-
-    return result
-
-
-cdef class RuleModelFormatter:
+cdef class RuleModelVisitorWrapper:
     """
-    Allows to create textual representations of the rules that are contained by a `RuleModel`.
+    Wraps a `RuleModelVisitor` and invokes its methods when visiting the bodies and heads of a `RuleModel`.
     """
 
-    def __cinit__(self, list attributes not None, list labels not None, bint print_feature_names,
-                  bint print_label_names, bint print_nominal_values):
+    def __cinit__(self, object visitor):
         """
-        :param attributes:              A list that contains the attributes
-        :param labels:                  A list that contains the labels
-        :param print_feature_names:     True, if the names of features should be printed, False otherwise
-        :param print_label_names:       True, if the names of labels should be printed, False otherwise
-        :param print_nominal_values:    True, if the values of nominal values should be printed, False otherwise
+        :param visitor: The `RuleModelVisitor` to be wrapped
         """
-        self.print_feature_names = print_feature_names
-        self.print_label_names = print_label_names
-        self.print_nominal_values = print_nominal_values
-        self.attributes = attributes
-        self.labels = labels
-        self.text = StringIO()
+        self.visitor = visitor
 
     cdef __visit_empty_body(self, const EmptyBodyImpl& body):
-        self.text.write('{}')
+        self.visitor.visit_empty_body(EmptyBody.__new__(EmptyBody))
 
     cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body):
-        cdef object text = self.text
-        cdef bint print_feature_names = self.print_feature_names
-        cdef bint print_nominal_values = self.print_nominal_values
-        cdef list attributes = self.attributes
-        cdef uint32 num_processed_conditions = 0
-
-        text.write('{')
-
-        cdef ConjunctiveBodyImpl.threshold_const_iterator threshold_iterator = body.leq_thresholds_cbegin()
-        cdef ConjunctiveBodyImpl.index_const_iterator index_iterator = body.leq_indices_cbegin()
-        cdef uint32 num_conditions = body.getNumLeq()
-        num_processed_conditions = __format_conditions(num_processed_conditions, num_conditions, index_iterator,
-                                                       threshold_iterator, attributes, print_feature_names,
-                                                       print_nominal_values, text, '<=')
-
-        threshold_iterator = body.gr_thresholds_cbegin()
-        index_iterator = body.gr_indices_cbegin()
-        num_conditions = body.getNumGr()
-        num_processed_conditions = __format_conditions(num_processed_conditions, num_conditions, index_iterator,
-                                                       threshold_iterator, attributes, print_feature_names,
-                                                       print_nominal_values, text, '>')
-
-        threshold_iterator = body.eq_thresholds_cbegin()
-        index_iterator = body.eq_indices_cbegin()
-        num_conditions = body.getNumEq()
-        num_processed_conditions = __format_conditions(num_processed_conditions, num_conditions, index_iterator,
-                                                       threshold_iterator, attributes, print_feature_names,
-                                                       print_nominal_values, text, '==')
-
-        threshold_iterator = body.neq_thresholds_cbegin()
-        index_iterator = body.neq_indices_cbegin()
-        num_conditions = body.getNumNeq()
-        num_processed_conditions = __format_conditions(num_processed_conditions, num_conditions, index_iterator,
-                                                       threshold_iterator, attributes, print_feature_names,
-                                                       print_nominal_values, text, '!=')
-
-        text.write('}')
+        cdef uint32 num_leq = body.getNumLeq()
+        cdef const uint32[::1] leq_indices = <uint32[:num_leq]>body.leq_indices_cbegin() if num_leq > 0 else None
+        cdef const float32[::1] leq_thresholds = <float32[:num_leq]>body.leq_thresholds_cbegin() if num_leq > 0 else None
+        cdef uint32 num_gr = body.getNumGr()
+        cdef const uint32[::1] gr_indices = <uint32[:num_gr]>body.gr_indices_cbegin() if num_gr > 0 else None
+        cdef const float32[::1] gr_thresholds = <float32[:num_gr]>body.gr_thresholds_cbegin() if num_gr > 0 else None
+        cdef uint32 num_eq = body.getNumEq()
+        cdef const uint32[::1] eq_indices = <uint32[:num_eq]>body.eq_indices_cbegin() if num_eq > 0 else None
+        cdef const float32[::1] eq_thresholds = <float32[:num_eq]>body.eq_thresholds_cbegin() if num_eq > 0 else None
+        cdef uint32 num_neq = body.getNumNeq()
+        cdef const uint32[::1] neq_indices = <uint32[:num_neq]>body.neq_indices_cbegin() if num_neq > 0 else None
+        cdef const float32[::1] neq_thresholds = <float32[:num_neq]>body.neq_thresholds_cbegin() if num_neq > 0 else None
+        self.visitor.visit_conjunctive_body(ConjunctiveBody.__new__(ConjunctiveBody, leq_indices, leq_thresholds,
+                                                                    gr_indices, gr_thresholds, eq_indices,
+                                                                    eq_thresholds, neq_indices, neq_thresholds))
 
     cdef __visit_complete_head(self, const CompleteHeadImpl& head):
-        cdef object text = self.text
-        cdef bint print_label_names = self.print_label_names
-        cdef list labels = self.labels
-        cdef CompleteHeadImpl.score_const_iterator score_iterator = head.scores_cbegin()
         cdef uint32 num_elements = head.getNumElements()
-        cdef uint32 i
-
-        text.write(' => (')
-
-        for i in range(num_elements):
-            if i > 0:
-                text.write(', ')
-
-            if print_label_names and len(labels) > i:
-                text.write(labels[i].attribute_name)
-            else:
-                text.write(str(i))
-
-            text.write(' = ')
-            text.write('{0:.2f}'.format(score_iterator[i]))
-
-        text.write(')\n')
+        cdef const float64[::1] scores = <float64[:num_elements]>head.scores_cbegin()
+        self.visitor.visit_complete_head(CompleteHead.__new__(CompleteHead, scores))
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head):
-        cdef object text = self.text
-        cdef bint print_label_names = self.print_label_names
-        cdef list labels = self.labels
-        cdef PartialHeadImpl.score_const_iterator score_iterator = head.scores_cbegin()
-        cdef PartialHeadImpl.index_const_iterator index_iterator = head.indices_cbegin()
         cdef uint32 num_elements = head.getNumElements()
-        cdef uint32 label_index, i
+        cdef const uint32[::1] indices = <uint32[:num_elements]>head.indices_cbegin()
+        cdef const float64[::1] scores = <float64[:num_elements]>head.scores_cbegin()
+        self.visitor.visit_partial_head(PartialHead.__new__(PartialHead, indices, scores))
 
-        text.write(' => (')
-
-        for i in range(num_elements):
-            if i > 0:
-                text.write(', ')
-
-            label_index = index_iterator[i]
-
-            if print_label_names and len(labels) > label_index:
-                text.write(labels[label_index].attribute_name)
-            else:
-                text.write(str(label_index))
-
-            text.write(' = ')
-            text.write('{0:.2f}'.format(score_iterator[i]))
-
-        text.write(')\n')
-
-    def format(self, RuleModel model):
+    cdef visit(self, RuleModel model):
         """
-        Creates a textual representation of a specific model.
+        Visits a specific model.
 
-        :param model: The `RuleModel` to be formatted
+        :param model: The `RuleModel` to be visited
         """
         model.model_ptr.get().visitUsed(
             wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
             wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
             wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
             wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
-
-    def get_text(self) -> object:
-        """
-        Returns the textual representation that has been created via the `format` method.
-
-        :return: The textual representation
-        """
-        return self.text.getvalue()
