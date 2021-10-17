@@ -63,32 +63,40 @@ class RuleModelVisitor:
     """
 
     @abstractmethod
-    def visit_empty_body(self):
+    def visit_empty_body(self, body: EmptyBody):
         """
         Must be implemented by subclasses in order to visit bodies of rules that do not contain any conditions.
+
+        :param body: An `EmptyBody` to be visited
         """
         pass
 
     @abstractmethod
-    def visit_conjunctive_body(self):
+    def visit_conjunctive_body(self, body: ConjunctiveBody):
         """
         Must be implemented by subclasses in order to visit the bodies of rule that are given as a conjunction of
         several conditions.
+
+        :param body: A `ConjunctiveBody` to be visited
         """
         pass
 
     @abstractmethod
-    def visit_complete_head(self):
+    def visit_complete_head(self, head: CompleteHead):
         """
         Must be implemented by subclasses in order to visit the heads of rules that predict for all available labels.
+
+        :param head: A `CompleteHead` to be visited
         """
         pass
 
     @abstractmethod
-    def visit_partial_head(self):
+    def visit_partial_head(self, head: PartialHead):
         """
         Must be implemented by subclasses in order to visit the heads of rules that predict for a subset of the
         available labels.
+
+        :param head: A `PartialHead` to be visited
         """
         pass
 
@@ -393,16 +401,16 @@ cdef class RuleModelVisitorWrapper:
         self.visitor = visitor
 
     cdef __visit_empty_body(self, const EmptyBodyImpl& body):
-        self.visitor.visit_empty_body()
+        self.visitor.visit_empty_body(EmptyBody.__new__(EmptyBody))
 
     cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body):
-        self.visitor.visit_conjunctive_body()
+        self.visitor.visit_conjunctive_body(ConjunctiveBody.__new__(ConjunctiveBody))
 
     cdef __visit_complete_head(self, const CompleteHeadImpl& head):
-        self.visitor.visit_complete_head()
+        self.visitor.visit_complete_head(CompleteHead.__new__(CompleteHead))
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head):
-        self.visitor.visit_partial_head()
+        self.visitor.visit_partial_head(PartialHead.__new__(PartialHead))
 
     cdef visit(self, RuleModel model):
         """
