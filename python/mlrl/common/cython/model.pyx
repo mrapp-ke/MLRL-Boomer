@@ -7,9 +7,48 @@ from libcpp.utility cimport move
 
 from _io import StringIO
 
+from abc import abstractmethod
+
 import numpy as np
 
 SERIALIZATION_VERSION = 1
+
+
+class RuleModelVisitor:
+    """
+    Defines the methods that must be implemented by a visitor that accesses the bodies and heads of the rules in a
+    `RuleModel` according to the visitor pattern.
+    """
+
+    @abstractmethod
+    def visit_empty_body(self):
+        """
+        Must be implemented by subclasses in order to visit bodies of rules that do not contain any conditions.
+        """
+        pass
+
+    @abstractmethod
+    def visit_conjunctive_body(self):
+        """
+        Must be implemented by subclasses in order to visit the bodies of rule that are given as a conjunction of
+        several conditions.
+        """
+        pass
+
+    @abstractmethod
+    def visit_complete_head(self):
+        """
+        Must be implemented by subclasses in order to visit the heads of rules that predict for all available labels.
+        """
+        pass
+
+    @abstractmethod
+    def visit_partial_head(self):
+        """
+        Must be implemented by subclasses in order to visit the heads of rules that predict for a subset of the
+        available labels.
+        """
+        pass
 
 
 cdef class RuleModel:
