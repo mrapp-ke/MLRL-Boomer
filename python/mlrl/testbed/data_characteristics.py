@@ -206,7 +206,7 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
             self.clear_dir = False
 
 
-class DataCharacteristicsPrinter(ABC):
+class DataCharacteristicsPrinter:
     """
     A class that allows to print the characteristics of data sets.
     """
