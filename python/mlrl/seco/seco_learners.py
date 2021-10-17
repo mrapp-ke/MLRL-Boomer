@@ -297,7 +297,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
 
         if value == LIFT_FUNCTION_PEAK:
             peak_label = options.get_int(ARGUMENT_PEAK_LABEL, int(num_labels / 2) + 1)
-            max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.5)
+            max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.08)
             curvature = options.get_float(ARGUMENT_CURVATURE, 1.0)
             return PeakLiftFunction(num_labels, peak_label, max_lift, curvature)
 
