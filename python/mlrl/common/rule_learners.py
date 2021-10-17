@@ -16,8 +16,8 @@ from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
 from mlrl.common.cython.feature_binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
 from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureMask
-from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
-    CContiguousFeatureMatrix
+from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, \
+    CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.input import LabelVectorSet
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
@@ -371,7 +371,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F', dtype=DTYPE_FLOAT32)),
                                 accept_sparse=(x_sparse_format.value if x_enforce_sparse else False),
                                 dtype=DTYPE_FLOAT32, force_all_finite='allow-nan')
-        num_features = x.shape[1]
 
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the training examples')
@@ -398,7 +397,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         y = check_array((y if y_enforce_sparse else y.toarray(order='C')),
                         accept_sparse=(y_sparse_format.value if y_enforce_sparse else False), ensure_2d=False,
                         dtype=DTYPE_UINT8)
-        num_labels = y.shape[1]
 
         if issparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
@@ -410,11 +408,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             label_matrix = CContiguousLabelMatrix(y)
 
         # Create predictors...
-        self.predictor_ = self._create_predictor(num_labels)
-        self.probability_predictor_ = self._create_probability_predictor(num_labels)
+        self.predictor_ = self._create_predictor(label_matrix)
+        self.probability_predictor_ = self._create_probability_predictor(label_matrix)
         self.label_vectors_ = self._create_label_vector_set(label_matrix)
 
         # Create a mask that provides access to the information whether individual features are nominal or not...
+        num_features = feature_matrix.get_num_cols()
+
         if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
             nominal_feature_mask = EqualNominalFeatureMask(False)
         elif len(self.nominal_attribute_indices) == num_features:
@@ -423,13 +423,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = BitNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        rule_model_assemblage = self.__create_rule_model_assemblage(num_labels)
+        rule_model_assemblage = self.__create_rule_model_assemblage(label_matrix)
         model_builder = self._create_model_builder()
         return rule_model_assemblage.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
                                                   model_builder)
 
-    def __create_rule_model_assemblage(self, num_labels: int) -> RuleModelAssemblage:
-        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(num_labels),
+    def __create_rule_model_assemblage(self, label_matrix: LabelMatrix) -> RuleModelAssemblage:
+        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(label_matrix),
                                              self._create_thresholds_factory(), self._create_rule_induction(),
                                              self._create_rule_model_assemblage_factory())
         label_sampling_factory = self._create_label_sampling_factory()
@@ -515,13 +515,13 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
                 return predictor.predict_dense(feature_matrix, model, label_vectors)
 
     @abstractmethod
-    def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self, label_matrix: LabelMatrix) -> StatisticsProviderFactory:
         """
         Must be implemented by subclasses in order to create the `StatisticsProviderFactory` to be used by the rule
         learner.
 
-        :param num_labels:  The number of available labels
-        :return:            The `StatisticsProviderFactory` that has been created
+        :param label_matrix:    The ground truth label matrix
+        :return:                The `StatisticsProviderFactory` that has been created
         """
         pass
 
@@ -631,23 +631,23 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         pass
 
     @abstractmethod
-    def _create_predictor(self, num_labels: int) -> Predictor:
+    def _create_predictor(self, label_matrix: LabelMatrix) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
 
-        :param num_labels:  The number of labels in the training data set
-        :return:            The `Predictor` that has been created
+        :param label_matrix:    The ground truth label matrix
+        :return:                The `Predictor` that has been created
         """
         pass
 
-    def _create_probability_predictor(self, num_labels: int) -> Predictor:
+    def _create_probability_predictor(self, label_matrix: LabelMatrix) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
         estimates.
 
-        :param num_labels:  The number of labels in the training data set
-        :return:            The `Predictor` that has been created or None, if the prediction of probabilities is not
-                            supported
+        :param label_matrix:    The ground truth label matrix
+        :return:                The `Predictor` that has been created or None, if the prediction of probabilities is not
+                                supported
         """
         return None
 

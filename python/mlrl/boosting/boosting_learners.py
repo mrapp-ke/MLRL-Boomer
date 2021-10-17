@@ -274,7 +274,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_statistics_provider_factory(self, num_labels: int) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self, label_matrix: LabelMatrix) -> StatisticsProviderFactory:
         head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
         default_rule_head_type = HEAD_TYPE_COMPLETE if self._use_default_rule() else head_type
         num_threads = create_num_threads(
@@ -491,22 +491,22 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_model_builder(self) -> ModelBuilder:
         return RuleListBuilder()
 
-    def _create_predictor(self, num_labels: int) -> Predictor:
+    def _create_predictor(self, label_matrix: LabelMatrix) -> Predictor:
         predictor = self.__get_preferred_predictor()
         value = parse_param('predictor', predictor, PREDICTOR_VALUES)
 
         if value == PREDICTOR_LABEL_WISE:
-            return self.__create_label_wise_predictor(num_labels)
+            return self.__create_label_wise_predictor(label_matrix)
         elif value == PREDICTOR_EXAMPLE_WISE:
-            return self.__create_example_wise_predictor(num_labels)
+            return self.__create_example_wise_predictor(label_matrix)
 
-    def _create_probability_predictor(self, num_labels: int) -> Predictor:
+    def _create_probability_predictor(self, label_matrix: LabelMatrix) -> Predictor:
         predictor = self.__get_preferred_predictor()
 
         if self.loss == LOSS_LOGISTIC_LABEL_WISE or self.loss == LOSS_LOGISTIC_EXAMPLE_WISE:
             if predictor == PREDICTOR_LABEL_WISE:
                 transformation_function = LogisticFunction()
-                return self.__create_label_wise_probability_predictor(num_labels, transformation_function)
+                return self.__create_label_wise_probability_predictor(transformation_function, label_matrix)
         return None
 
     def _create_label_vector_set(self, label_matrix: LabelMatrix) -> LabelVectorSet:
@@ -526,19 +526,20 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return PREDICTOR_LABEL_WISE
         return predictor
 
-    def __create_label_wise_predictor(self, num_labels: int) -> LabelWiseClassificationPredictor:
+    def __create_label_wise_predictor(self, label_matrix: LabelMatrix) -> LabelWiseClassificationPredictor:
         num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
         threshold = 0.5 if self.loss == LOSS_SQUARED_HINGE_LABEL_WISE else 0.0
-        return LabelWiseClassificationPredictor(num_labels=num_labels, threshold=threshold, num_threads=num_threads)
+        return LabelWiseClassificationPredictor(num_labels=label_matrix.get_num_cols(), threshold=threshold,
+                                                num_threads=num_threads)
 
-    def __create_example_wise_predictor(self, num_labels: int) -> ExampleWiseClassificationPredictor:
+    def __create_example_wise_predictor(self, label_matrix: LabelMatrix) -> ExampleWiseClassificationPredictor:
         loss = self.__create_loss_function()
         num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
-        return ExampleWiseClassificationPredictor(num_labels=num_labels, measure=loss, num_threads=num_threads)
+        return ExampleWiseClassificationPredictor(num_labels=label_matrix.get_num_cols(), measure=loss,
+                                                  num_threads=num_threads)
 
-    def __create_label_wise_probability_predictor(
-            self, num_labels: int,
-            transformation_function: LabelWiseTransformationFunction) -> LabelWiseProbabilityPredictor:
+    def __create_label_wise_probability_predictor(self, transformation_function: LabelWiseTransformationFunction,
+                                                  label_matrix: LabelMatrix) -> LabelWiseProbabilityPredictor:
         num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
-        return LabelWiseProbabilityPredictor(num_labels=num_labels, transformation_function=transformation_function,
-                                             num_threads=num_threads)
+        return LabelWiseProbabilityPredictor(num_labels=label_matrix.get_num_cols(),
+                                             transformation_function=transformation_function, num_threads=num_threads)
