@@ -16,9 +16,9 @@ from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.evaluation import Evaluation
+from mlrl.testbed.model_characteristics import ModelPrinter
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
-from mlrl.testbed.printing import ModelPrinter
 from mlrl.testbed.training import CrossValidation, DataSet
 
 
