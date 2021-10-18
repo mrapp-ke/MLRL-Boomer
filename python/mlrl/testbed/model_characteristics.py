@@ -176,7 +176,7 @@ class ModelPrinterOutput(ABC):
 
 class ModelPrinter(ABC):
     """
-    An abstract base class for all classes that allow to print a textual representation of a `MLLearner`'s model.
+    An abstract base class for all classes that allow to print a textual representation of a `Learner`'s model.
     """
 
     def __init__(self, print_options: str, outputs: List[ModelPrinterOutput]):
@@ -193,7 +193,7 @@ class ModelPrinter(ABC):
 
     def print(self, experiment_name: str, meta_data: MetaData, learner: Learner, current_fold: int, num_folds: int):
         """
-        Prints a textual representation of a `MLLearner`'s model.
+        Prints a textual representation of a `Learner`'s model.
 
         :param experiment_name: The name of the experiment
         :param meta_data:       The meta data of the training data set
