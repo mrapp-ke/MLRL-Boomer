@@ -115,6 +115,16 @@ The following parameters allow to customize the console output and output files 
   * ``true`` The characteristics of the training data set are written into a CSV file. Does only have an effect if the parameter --output-dir is specified.
   * ``false`` The characteristics of the training data set are not written into a CSV file.
 
+* ``--print-model-characteristics`` (Default value = false)
+
+  * ``true`` The characteristics of rule models are printed on the console
+  * ``false`` The characteristics of rule models are not printed on the console
+
+* ``--store-model-characteristics`` (Default value = false)
+
+  * ``true`` The characteristics of rule models are written into a CSV file. Does only have an effect if the parameter --output-dir is specified.
+  * ``false`` The characteristics of rule models are not written into a CSV file.
+
 * ``--print-rules`` (Default value = false)
 
   * ``true`` The induced rules are printed on the console.
