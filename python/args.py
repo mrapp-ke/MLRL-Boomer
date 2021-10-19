@@ -416,7 +416,7 @@ class ArgumentParserBuilder:
         return self
 
     def add_seco_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
-        self.add_rule_learner_arguments(print_rules=True, pruning=PRUNING_IREP, **kwargs)
+        self.add_rule_learner_arguments(pruning=PRUNING_IREP, **kwargs)
         parser = self.parser
         parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('instance_sampling',
