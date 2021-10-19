@@ -177,19 +177,20 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
                                    fold: int = None):
         if fold is not None:
             self.__clear_dir_if_necessary()
-            columns = {'Examples': characteristics.num_examples,
-                       'Features': characteristics.num_nominal_features + characteristics.num_numerical_features,
-                       'Numerical features': characteristics.num_numerical_features,
-                       'Nominal features': characteristics.num_nominal_features,
-                       'Feature density': characteristics.feature_density,
-                       'Feature sparsity': 1 - characteristics.feature_density,
-                       'Labels': characteristics.num_labels,
-                       'Label density': characteristics.label_density,
-                       'Label sparsity': 1 - characteristics.label_density,
-                       'Label imbalance ratio': characteristics.avg_label_imbalance_ratio,
-                       'Label cardinality': characteristics.avg_label_cardinality,
-                       'Distinct label vectors': characteristics.num_distinct_label_vectors
-                       }
+            columns = {
+                'Examples': characteristics.num_examples,
+                'Features': characteristics.num_nominal_features + characteristics.num_numerical_features,
+                'Numerical features': characteristics.num_numerical_features,
+                'Nominal features': characteristics.num_nominal_features,
+                'Feature density': characteristics.feature_density,
+                'Feature sparsity': 1 - characteristics.feature_density,
+                'Labels': characteristics.num_labels,
+                'Label density': characteristics.label_density,
+                'Label sparsity': 1 - characteristics.label_density,
+                'Label imbalance ratio': characteristics.avg_label_imbalance_ratio,
+                'Label cardinality': characteristics.avg_label_cardinality,
+                'Distinct label vectors': characteristics.num_distinct_label_vectors
+            }
             header = sorted(columns.keys())
             header.insert(0, 'Approach')
             columns['Approach'] = experiment_name
@@ -206,7 +207,7 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
             self.clear_dir = False
 
 
-class DataCharacteristicsPrinter(ABC):
+class DataCharacteristicsPrinter:
     """
     A class that allows to print the characteristics of data sets.
     """

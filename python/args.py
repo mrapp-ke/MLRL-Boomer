@@ -53,6 +53,10 @@ PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
 
 PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
 
+PARAM_PRINT_MODEL_CHARACTERISTICS = '--print-model-characteristics'
+
+PARAM_STORE_MODEL_CHARACTERISTICS = '--store-model-characteristics'
+
 PARAM_PRINT_RULES = '--print-rules'
 
 PARAM_STORE_RULES = '--store-rules'
@@ -261,6 +265,17 @@ class ArgumentParserBuilder:
         self.add_learner_arguments(**kwargs)
         self.add_random_state_argument(**kwargs)
         parser = self.parser
+        parser.add_argument(PARAM_PRINT_MODEL_CHARACTERISTICS, type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('print_model_characteristics', False,
+                                                                           **kwargs),
+                            help='Whether the characteristics of models should be printed on the console or not. Must '
+                                 + 'be one of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument(PARAM_STORE_MODEL_CHARACTERISTICS, type=boolean_string,
+                            default=ArgumentParserBuilder.__get_or_default('store_model_characteristics', False,
+                                                                           **kwargs),
+                            help='Whether the characteristics of models should be written into output files or not. '
+                                 + 'Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect '
+                                 + 'if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
         parser.add_argument(PARAM_PRINT_RULES, type=boolean_string,
                             default=ArgumentParserBuilder.__get_or_default('print_rules', False, **kwargs),
                             help='Whether the induced rules should be printed on the console or not. Must be one of '
@@ -423,7 +438,7 @@ class ArgumentParserBuilder:
         return self
 
     def add_seco_learner_arguments(self, **kwargs) -> 'ArgumentParserBuilder':
-        self.add_rule_learner_arguments(print_rules=True, pruning=PRUNING_IREP, **kwargs)
+        self.add_rule_learner_arguments(pruning=PRUNING_IREP, **kwargs)
         parser = self.parser
         parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
                             default=ArgumentParserBuilder.__get_or_default('instance_sampling',
