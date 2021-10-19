@@ -14,7 +14,8 @@ from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCh
     DataCharacteristicsCsvOutput
 from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
-from mlrl.testbed.model_characteristics import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
+from mlrl.testbed.model_characteristics import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput, \
+    RuleModelCharacteristicsPrinter, RuleModelCharacteristicsLogOutput
 from mlrl.testbed.parameters import ParameterCsvInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.training import DataSet
@@ -61,6 +62,7 @@ class RuleLearnerRunnable(Runnable, ABC):
         parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
         evaluation_outputs = []
         data_characteristics_printer_outputs = []
+        model_characteristics_printer_outputs = []
         model_printer_outputs = []
         output_dir = args.output_dir
 
@@ -69,6 +71,9 @@ class RuleLearnerRunnable(Runnable, ABC):
 
         if args.print_evaluation:
             evaluation_outputs.append(EvaluationLogOutput())
+
+        if args.print_model_characteristics:
+            model_characteristics_printer_outputs.append(RuleModelCharacteristicsLogOutput())
 
         if args.print_rules:
             model_printer_outputs.append(ModelPrinterLogOutput())
@@ -98,6 +103,8 @@ class RuleLearnerRunnable(Runnable, ABC):
             data_characteristics_printer_outputs) > 0 else None
         model_printer = RulePrinter(args.print_options, model_printer_outputs) if len(
             model_printer_outputs) > 0 else None
+        model_characteristics_printer = RuleModelCharacteristicsPrinter(model_characteristics_printer_outputs) if len(
+            model_characteristics_printer_outputs) > 0 else None
         train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
         test_evaluation = ClassificationEvaluation(*evaluation_outputs)
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
@@ -105,6 +112,7 @@ class RuleLearnerRunnable(Runnable, ABC):
         experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,
                                 data_set=data_set, num_folds=args.folds, current_fold=args.current_fold,
                                 parameter_input=parameter_input, model_printer=model_printer,
+                                model_characteristics_printer=model_characteristics_printer,
                                 data_characteristics_printer=data_characteristics_printer, persistence=persistence)
         experiment.random_state = args.random_state
         experiment.run()
