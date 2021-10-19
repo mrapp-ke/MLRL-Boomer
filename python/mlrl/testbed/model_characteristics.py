@@ -17,7 +17,7 @@ from mlrl.common.cython.model import RuleModelVisitor, EmptyBody, ConjunctiveBod
 from mlrl.common.learners import Learner
 from mlrl.common.options import Options
 from mlrl.testbed.data import Attribute, MetaData
-from mlrl.testbed.io import clear_directory, open_writable_txt_file
+from mlrl.testbed.io import clear_directory, open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
 
 ARGUMENT_PRINT_FEATURE_NAMES = 'print_feature_names'
 
@@ -423,6 +423,114 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
         msg += 'Predictions total: ' + str(num_total_predictions) + ' (' + str(frac_pos) + '% positive, ' + str(
             frac_neg) + '% negative)\n'
         log.info(msg)
+
+
+class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
+    """
+    Writes the characteristics of a `RuleModel` to a CSV file.
+    """
+
+    COL_RULE_NAME = 'Rule'
+
+    COL_CONDITIONS = 'conditions'
+
+    COL_NUMERICAL_CONDITIONS = 'numerical conditions'
+
+    COL_LEQ_CONDITIONS = 'conditions using <= operator'
+
+    COL_GR_CONDITIONS = 'conditions using > operator'
+
+    COL_NOMINAL_CONDITIONS = 'nominal conditions'
+
+    COL_EQ_CONDITIONS = 'conditions using == operator'
+
+    COL_NEQ_CONDITIONS = 'conditions using != operator'
+
+    COL_PREDICTIONS = 'predictions'
+
+    COL_POS_PREDICTIONS = 'pos. predictions'
+
+    COL_NEG_PREDICTIONS = 'neg. predictions'
+
+    def __init__(self, output_dir: str, clear_dir: bool = True):
+        """
+        :param output_dir:  The path of the directory, the CSV files should be written to
+        :param clear_dir:   True, if the directory, the CSV files should be written to, should be cleared
+        """
+        self.output_dir = output_dir
+        self.clear_dir = clear_dir
+
+    def write_model_characteristics(self, experiment_name: str, characteristics: RuleModelCharacteristics,
+                                    total_folds: int, fold: int = None):
+        if fold is not None:
+            self.__clear_dir_if_necessary()
+            header = [
+                RuleModelCharacteristicsCsvOutput.COL_RULE_NAME,
+                RuleModelCharacteristicsCsvOutput.COL_CONDITIONS,
+                RuleModelCharacteristicsCsvOutput.COL_NUMERICAL_CONDITIONS,
+                RuleModelCharacteristicsCsvOutput.COL_LEQ_CONDITIONS,
+                RuleModelCharacteristicsCsvOutput.COL_GR_CONDITIONS,
+                RuleModelCharacteristicsCsvOutput.COL_NOMINAL_CONDITIONS,
+                RuleModelCharacteristicsCsvOutput.COL_EQ_CONDITIONS,
+                RuleModelCharacteristicsCsvOutput.COL_NEQ_CONDITIONS,
+                RuleModelCharacteristicsCsvOutput.COL_PREDICTIONS,
+                RuleModelCharacteristicsCsvOutput.COL_POS_PREDICTIONS,
+                RuleModelCharacteristicsCsvOutput.COL_NEG_PREDICTIONS
+            ]
+            default_rule_index = characteristics.default_rule_index
+            num_rules = len(characteristics.num_pos_predictions)
+            num_total_rules = num_rules if default_rule_index is None else num_rules + 1
+
+            with open_writable_csv_file(self.output_dir, 'model_characteristics', fold) as csv_file:
+                csv_writer = create_csv_dict_writer(csv_file, header)
+                n = 0
+
+                for i in range(num_total_rules):
+                    rule_name = 'Rule ' + str(i + 1)
+
+                    if i == default_rule_index:
+                        rule_name += ' (Default rule)'
+                        num_leq = 0
+                        num_gr = 0
+                        num_eq = 0
+                        num_neq = 0
+                        num_pos_predictions = characteristics.default_rule_pos_predictions
+                        num_neg_predictions = characteristics.default_rule_neg_predictions
+                    else:
+                        num_leq = characteristics.num_leq[n]
+                        num_gr = characteristics.num_gr[n]
+                        num_eq = characteristics.num_eq[n]
+                        num_neq = characteristics.num_neq[n]
+                        num_pos_predictions = characteristics.num_pos_predictions[n]
+                        num_neg_predictions = characteristics.num_neg_predictions[n]
+                        n += 1
+
+                    num_numerical = num_leq + num_gr
+                    num_nominal = num_eq + num_neq
+                    num_conditions = num_numerical + num_nominal
+                    num_predictions = num_pos_predictions + num_neg_predictions
+                    columns = {
+                        RuleModelCharacteristicsCsvOutput.COL_RULE_NAME: rule_name,
+                        RuleModelCharacteristicsCsvOutput.COL_CONDITIONS: num_conditions,
+                        RuleModelCharacteristicsCsvOutput.COL_NUMERICAL_CONDITIONS: num_numerical,
+                        RuleModelCharacteristicsCsvOutput.COL_LEQ_CONDITIONS: num_leq,
+                        RuleModelCharacteristicsCsvOutput.COL_GR_CONDITIONS: num_gr,
+                        RuleModelCharacteristicsCsvOutput.COL_NOMINAL_CONDITIONS: num_nominal,
+                        RuleModelCharacteristicsCsvOutput.COL_EQ_CONDITIONS: num_eq,
+                        RuleModelCharacteristicsCsvOutput.COL_NEQ_CONDITIONS: num_neq,
+                        RuleModelCharacteristicsCsvOutput.COL_PREDICTIONS: num_predictions,
+                        RuleModelCharacteristicsCsvOutput.COL_POS_PREDICTIONS: num_pos_predictions,
+                        RuleModelCharacteristicsCsvOutput.COL_NEG_PREDICTIONS: num_neg_predictions
+                    }
+                    csv_writer.writerow(columns)
+
+    def __clear_dir_if_necessary(self):
+        """
+        Clears the output directory, if necessary.
+        """
+        if self.clear_dir:
+            clear_directory(self.output_dir)
+            self.clear_dir = False
 
 
 class ModelCharacteristicsPrinter(ABC):
