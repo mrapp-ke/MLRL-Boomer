@@ -15,7 +15,7 @@ from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCh
 from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.model_characteristics import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput, \
-    RuleModelCharacteristicsPrinter, RuleModelCharacteristicsLogOutput
+    RuleModelCharacteristicsPrinter, RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
 from mlrl.testbed.parameters import ParameterCsvInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.training import DataSet
@@ -90,6 +90,11 @@ class RuleLearnerRunnable(Runnable, ABC):
                 evaluation_outputs.append(
                     EvaluationCsvOutput(output_dir=output_dir, output_predictions=args.store_predictions,
                                         clear_dir=clear_dir))
+                clear_dir = False
+
+            if args.store_model_characteristics:
+                model_characteristics_printer_outputs.append(RuleModelCharacteristicsCsvOutput(output_dir=output_dir,
+                                                                                               clear_dir=clear_dir))
                 clear_dir = False
 
             if args.store_rules:
