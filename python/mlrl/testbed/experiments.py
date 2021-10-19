@@ -16,7 +16,7 @@ from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.evaluation import Evaluation
-from mlrl.testbed.model_characteristics import ModelPrinter
+from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristicsPrinter
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.training import CrossValidation, DataSet
@@ -31,6 +31,7 @@ class Experiment(CrossValidation, ABC):
     def __init__(self, base_learner: Learner, data_set: DataSet, num_folds: int = 1, current_fold: int = -1,
                  train_evaluation: Evaluation = None, test_evaluation: Evaluation = None,
                  parameter_input: ParameterInput = None, model_printer: ModelPrinter = None,
+                 model_characteristics_printer: ModelCharacteristicsPrinter = None,
                  data_characteristics_printer: DataCharacteristicsPrinter = None, persistence: ModelPersistence = None):
         """
         :param base_learner:                    The classifier or ranker to be trained
@@ -41,6 +42,8 @@ class Experiment(CrossValidation, ABC):
         :param parameter_input:                 The input that should be used to read the parameter settings
         :param model_printer:                   The printer that should be used to print textual representations of
                                                 models or None, if no textual representations should be printed
+        :param model_characteristics_printer:   The printer that should be used to print the characteristics of models
+                                                or None, if the characteristics should not be printed
         :param data_characteristics_printer:    The printer that should be used to print the characteristics of the
                                                 training data or None, if the characteristics should not be printed
         :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
@@ -51,6 +54,7 @@ class Experiment(CrossValidation, ABC):
         self.test_evaluation = test_evaluation
         self.parameter_input = parameter_input
         self.model_printer = model_printer
+        self.model_characteristics_printer = model_characteristics_printer
         self.data_characteristics_printer = data_characteristics_printer
         self.persistence = persistence
 
@@ -124,6 +128,13 @@ class Experiment(CrossValidation, ABC):
             evaluation.evaluate('test_' + learner_name, meta_data, predictions, test_y, first_fold=first_fold,
                                 current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
                                 train_time=current_learner.train_time_, predict_time=predict_time)
+
+        # Print model characteristics, if necessary...
+        model_characteristics_printer = self.model_characteristics_printer
+
+        if model_characteristics_printer is not None:
+            model_characteristics_printer.print(learner_name, current_learner, current_fold=current_fold,
+                                                num_folds=num_folds)
 
         # Print model, if necessary...
         model_printer = self.model_printer
