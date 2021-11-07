@@ -33,6 +33,8 @@ clean: clean_doc clean_compile clean_venv
 venv:
 	@echo "Creating virtual Python environment..."
 	python3 -m venv venv
+	@echo "Updating \"pip\" to latest version..."
+	venv/bin/python -m pip install --upgrade pip
 	@echo "Installing compile-time dependency \"numpy\" into virtual environment..."
 	venv/bin/pip install numpy
 	@echo "Installing compile-time dependency \"scipy\" into virtual environment..."
