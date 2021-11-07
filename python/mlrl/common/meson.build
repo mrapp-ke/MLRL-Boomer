@@ -1,6 +1,7 @@
 project('common', 'cython', 'cpp')
 
 # Source files
+cython_dir = 'cython'
 cython_module_names = [
     'algorithm_builder',
     'feature_binning',
@@ -31,7 +32,8 @@ numpy_dep = declare_dependency(include_directories : include_directories(numpy_c
 
 cpp = meson.get_compiler('cpp')
 cpp_dir = '../../../cpp/'
-common_lib = cpp.find_library('mlrlcommon', dirs : meson.current_source_dir() / cpp_dir / 'build/mlrl/common/')
+lib_dir = meson.current_source_dir() / cpp_dir / 'build/mlrl/common/'
+common_lib = cpp.find_library('mlrlcommon', dirs : lib_dir)
 common_include = declare_dependency(include_directories : include_directories(cpp_dir / 'mlrl/common/include/'))
 
 dependencies = [
@@ -44,7 +46,11 @@ dependencies = [
 # Cython compiler options
 cython_options = ['cython_language=cpp']
 
+install_dir = meson.current_source_dir() / cython_dir
+rpath = 'cpp/build/mlrl/common/'
+
 foreach module_name : cython_module_names
-    file_name = 'cython' / module_name + '.pyx'
-    python.extension_module(module_name, file_name, dependencies : dependencies, override_options : cython_options)
+    file_name = cython_dir / module_name + '.pyx'
+    python.extension_module(module_name, file_name, dependencies : dependencies, override_options : cython_options,
+                            install : true, install_dir : install_dir, install_rpath : lib_dir)
 endforeach

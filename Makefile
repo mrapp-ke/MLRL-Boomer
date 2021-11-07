@@ -51,7 +51,7 @@ compile: venv
 	@echo "Compiling Cython code..."
 	${ACTIVATE_VENV} && (\
 	    cd python/ && meson setup build/; \
-	    cd build/ && meson compile; \
+	    cd build/ && meson compile && meson install; \
 	) && ${DEACTIVATE_VENV}
 
 install: compile
