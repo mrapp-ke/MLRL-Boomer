@@ -64,7 +64,7 @@ setuptools.setup(
     description='BOOMER - An algorithm for learning gradient boosted multi-label classification rules',
     url='https://github.com/mrapp-ke/Boomer',
     author='Michael Rapp',
-    author_email='mrapp@ke.tu-darmstadt.de',
+    author_email='michael.rapp.ml@gmail.com',
     license='MIT',
     packages=['mlrl.common', 'mlrl.boosting', 'mlrl.seco', 'mlrl.testbed'],
     install_requires=[
