@@ -1,4 +1,4 @@
-project('common', 'cpp', version : '0.7.0')
+project('mlrlcommon', 'cpp', version : '0.7.0')
 
 # Source files
 source_files = [
@@ -101,6 +101,6 @@ dependencies = [
 # Directory containing public headers
 include_directories = include_directories('include')
 
-common_lib = library('mlrlcommon', source_files, include_directories : include_directories, dependencies : dependencies,
-                     version : meson.project_version())
+common_lib = library(meson.project_name(), source_files, include_directories : include_directories,
+                     dependencies : dependencies, version : meson.project_version())
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
