@@ -11,6 +11,7 @@ clean_cpp:
 
 clean_cython:
 	@echo "Removing Cython compilation files..."
+	rm -rf python/build/
 	find python/ -type f -name "*.o" -delete
 	find python/ -type f -name "*.so" -delete
 	find python/ -type f -name "*.c" -delete
