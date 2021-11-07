@@ -57,7 +57,7 @@ install: compile
 doc: install
 	@echo "Installing dependencies into virtual environment..."
 	${ACTIVATE_VENV} && (\
-	    pip install Sphinx sphinx_rtd_theme; \
+	    pip install -r doc/requirements.txt; \
 	) && ${DEACTIVATE_VENV}
 	@echo "Generating C++ API documentation via Doxygen..."
 	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile
