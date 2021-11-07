@@ -71,7 +71,7 @@ setuptools.setup(
         'numpy>=1.21.0',
         'scipy>=1.7.0',
         'Cython>=0.29.0',
-        'scikit-learn>=0.24.0',
+        'scikit-learn>=1.0.0',
         'liac-arff>=2.5.0'
     ],
     python_requires='>=3.7',
