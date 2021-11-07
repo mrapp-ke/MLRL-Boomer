@@ -39,7 +39,7 @@ venv:
 	python3 -m venv venv
 	${ACTIVATE_VENV} && (\
 	   python -m pip install --upgrade pip; \
-	   pip install numpy scipy Cython meson ninja wheel; \
+	   pip install -r python/requirements.txt; \
 	) && ${DEACTIVATE_VENV}
 
 compile: venv
