@@ -54,7 +54,8 @@ compile: venv
 	cd cpp/ && PATH=$$PATH:../venv/bin/ ../venv/bin/meson setup build/
 	cd cpp/build/ && PATH=$$PATH:../../venv/bin/ ../../venv/bin/meson compile
 	@echo "Compiling Cython code..."
-	cd python/ && ../venv/bin/python setup.py build_ext --inplace
+	cd python/ && PATH=$$PATH:../venv/bin/ ../venv/bin/meson setup build/
+	cd python/build/ && PATH=$$PATH:../../venv/bin/ ../../venv/bin/meson compile
 
 install: compile
 	@echo "Installing package into virtual environment..."
