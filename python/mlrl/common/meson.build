@@ -26,7 +26,7 @@ cython_module_names = [
 # Dependencies
 python = import('python').find_installation()
 python_dep = python.dependency()
-numpy_cmd = run_command('python3', ['-c', 'import numpy; print(numpy.get_include())'], check : true )
+numpy_cmd = run_command(python.full_path(), '-c', 'import numpy; print(numpy.get_include())', check : true )
 numpy_dep = declare_dependency(include_directories : include_directories(numpy_cmd.stdout().strip()))
 
 cpp = meson.get_compiler('cpp')
