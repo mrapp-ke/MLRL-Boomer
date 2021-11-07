@@ -1,6 +1,9 @@
 default_target: compile
 .PHONY: clean_venv clean_cpp clean_cython clean_compile clean_doc clean install doc
 
+ACTIVATE_VENV = . venv/bin/activate
+DEACTIVATE_VENV = deactivate
+
 clean_venv:
 	@echo "Removing virtual Python environment..."
 	rm -rf venv/
@@ -34,42 +37,39 @@ clean: clean_doc clean_compile clean_venv
 venv:
 	@echo "Creating virtual Python environment..."
 	python3 -m venv venv
-	@echo "Updating \"pip\" to latest version..."
-	venv/bin/python -m pip install --upgrade pip
-	@echo "Installing compile-time dependency \"numpy\" into virtual environment..."
-	venv/bin/pip install numpy
-	@echo "Installing compile-time dependency \"scipy\" into virtual environment..."
-	venv/bin/pip install scipy
-	@echo "Installing compile-time dependency \"Cython\" into virtual environment..."
-	venv/bin/pip install Cython
-	@echo "Installing compile-time dependency \"meson\" into virtual environment..."
-	venv/bin/pip install meson
-	@echo "Installing compile-time dependency \"ninja\" into virtual environment..."
-	venv/bin/pip install ninja
-	@echo "Installing compile-time dependency \"wheel\" into virtual environment..."
-	venv/bin/pip install wheel
+	${ACTIVATE_VENV} && (\
+	   python -m pip install --upgrade pip; \
+	   pip install numpy scipy Cython meson ninja wheel; \
+	) && ${DEACTIVATE_VENV}
 
 compile: venv
 	@echo "Compiling C++ code..."
-	cd cpp/ && PATH=$$PATH:../venv/bin/ ../venv/bin/meson setup build/
-	cd cpp/build/ && PATH=$$PATH:../../venv/bin/ ../../venv/bin/meson compile
+	${ACTIVATE_VENV} && (\
+	    cd cpp/ && meson setup build/; \
+	    cd build/ && meson compile; \
+	) && ${DEACTIVATE_VENV}
 	@echo "Compiling Cython code..."
-	cd python/ && ../venv/bin/python setup.py build_ext --inplace
+	${ACTIVATE_VENV} && (\
+	    cd python/ && python setup.py build_ext --inplace; \
+	) && ${DEACTIVATE_VENV}
 
 install: compile
 	@echo "Installing package into virtual environment..."
-	venv/bin/pip install python/
+	${ACTIVATE_VENV} && (\
+	    pip install python/; \
+	) && ${DEACTIVATE_VENV}
 
 doc: install
-	@echo "Installing dependency \"Sphinx\" into virtual environment..."
-	venv/bin/pip install Sphinx
-	@echo "Installing dependency \"sphinx_rtd_theme\" into virtual environment..."
-	venv/bin/pip install sphinx_rtd_theme
+	@echo "Installing dependencies into virtual environment..."
+	${ACTIVATE_VENV} && (\
+	    pip install Sphinx sphinx_rtd_theme; \
+	) && ${DEACTIVATE_VENV}
 	@echo "Generating C++ API documentation via Doxygen..."
 	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile
-	@echo "Generating Python API documentation via sphinx-apidoc..."
-	venv/bin/sphinx-apidoc --tocfile index -f -o doc/python python/mlrl **/seco **/cython
-	cd doc/python/ && PATH=$$PATH:../../venv/bin/ LD_PRELOAD="../../cpp/build/mlrl/common/libmlrlcommon.so \
-	    ../../cpp/build/mlrl/boosting/libmlrlboosting.so" sphinx-build -M html . ../python_apidoc/api/python
 	@echo "Generating Sphinx documentation..."
-	cd doc/ && PATH=$$PATH:../venv/bin/ sphinx-build -M html . _build
+	${ACTIVATE_VENV} && (\
+	    sphinx-apidoc --tocfile index -f -o doc/python python/mlrl **/seco **/cython; \
+	    cd doc/python/ && LD_PRELOAD="../../cpp/build/mlrl/common/libmlrlcommon.so \
+	        ../../cpp/build/mlrl/boosting/libmlrlboosting.so" sphinx-build -M html . ../python_apidoc/api/python; \
+	    cd ../ && sphinx-build -M html . _build; \
+	) && ${DEACTIVATE_VENV}
