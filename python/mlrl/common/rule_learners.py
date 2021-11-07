@@ -42,11 +42,11 @@ from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_do
 from sklearn.utils import check_array
 
 from mlrl.common.arrays import enforce_dense
+from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.common.options import BooleanOption
 from mlrl.common.options import Options
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
-from mlrl.common.types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 
 AUTOMATIC = 'auto'
 
