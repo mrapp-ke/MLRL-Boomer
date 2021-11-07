@@ -1,4 +1,4 @@
-project('seco', 'cpp', version : '0.7.0')
+project('mlrlseco', 'cpp', version : '0.7.0')
 
 # Source files
 source_files = [
@@ -36,5 +36,5 @@ dependencies = [
 # Directory containing public headers
 include_directories = include_directories('include')
 
-seco_lib = library('mlrlseco', source_files, include_directories : include_directories, dependencies : dependencies,
-                   version : meson.project_version())
+seco_lib = library(meson.project_name(), source_files, include_directories : include_directories,
+                   dependencies : dependencies, version : meson.project_version())
