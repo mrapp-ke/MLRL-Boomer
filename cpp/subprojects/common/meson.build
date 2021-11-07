@@ -102,5 +102,5 @@ dependencies = [
 include_directories = include_directories('include')
 
 common_lib = library('mlrlcommon', source_files, include_directories : include_directories, dependencies : dependencies,
-                     version : '0.7.0')
+                     version : meson.project_version())
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)

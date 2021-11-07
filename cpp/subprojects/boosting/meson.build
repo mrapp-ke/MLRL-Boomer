@@ -44,4 +44,4 @@ dependencies = [
 include_directories = include_directories('include')
 
 boosting_lib = library('mlrlboosting', source_files, include_directories : include_directories,
-                       dependencies : dependencies, version : '0.7.0')
+                       dependencies : dependencies, version : meson.project_version())
