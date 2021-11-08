@@ -49,3 +49,10 @@ foreach module_name : cython_module_names
     python.extension_module(module_name, file_name, dependencies : dependencies, override_options : cython_options,
                             install : true, install_dir : install_dir  / cython_dir, install_rpath : runtime_lib_dir)
 endforeach
+
+# Python source files
+source_files = [
+    'seco_learners.py'
+]
+
+install_data(source_files, install_dir : install_dir)
