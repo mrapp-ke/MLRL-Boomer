@@ -47,7 +47,6 @@ dependencies = [
 cython_options = ['cython_language=cpp']
 
 install_dir = meson.current_source_dir() / cython_dir
-rpath = 'cpp/build/mlrl/common/'
 
 foreach module_name : cython_module_names
     file_name = cython_dir / module_name + '.pyx'
