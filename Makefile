@@ -48,13 +48,7 @@ compile: venv
 	    cd build/ && meson compile && meson install; \
 	) && ${DEACTIVATE_VENV}
 
-install: compile
-	@echo "Installing package into virtual environment..."
-	${ACTIVATE_VENV} && (\
-	    pip install python/; \
-	) && ${DEACTIVATE_VENV}
-
-doc: install
+doc: compile
 	@echo "Installing dependencies into virtual environment..."
 	${ACTIVATE_VENV} && (\
 	    pip install -r doc/requirements.txt; \
