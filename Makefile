@@ -57,8 +57,7 @@ doc: compile
 	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile
 	@echo "Generating Sphinx documentation..."
 	${ACTIVATE_VENV} && (\
-	    sphinx-apidoc --tocfile index -f -o doc/python python/mlrl **/seco **/cython; \
-	    cd doc/python/ && LD_PRELOAD="../../cpp/build/mlrl/common/libmlrlcommon.so \
-	        ../../cpp/build/mlrl/boosting/libmlrlboosting.so" sphinx-build -M html . ../python_apidoc/api/python; \
-	    cd ../ && sphinx-build -M html . _build; \
+	    sphinx-apidoc --tocfile index -f -o doc/python/ python/mlrl/ **/seco **/cython; \
+	    sphinx-build -M html doc/python/ doc/python_apidoc/api/python/; \
+	    sphinx-build -M html doc/ doc/_build/; \
 	) && ${DEACTIVATE_VENV}
