@@ -32,7 +32,8 @@ source_files = [
 ]
 
 # Dependencies
-common_dep = subproject('common').get_variable('common_dep')
+common_project = subproject('common')
+common_dep = common_project.get_variable('common_dep')
 openmp_dep = dependency('openmp')
 
 dependencies = [
@@ -43,5 +44,10 @@ dependencies = [
 # Directory containing public headers
 include_directories = include_directories('include')
 
+# Directory into which the library should be installed
+install_dir = subproject('common').get_variable('install_dir')
+
+# Library declaration
 boosting_lib = library(meson.project_name(), source_files, include_directories : include_directories,
-                       dependencies : dependencies, version : meson.project_version())
+                       dependencies : dependencies, version : meson.project_version(), install : true,
+                       install_dir : install_dir)

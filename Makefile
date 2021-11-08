@@ -40,7 +40,7 @@ compile: venv
 	@echo "Compiling C++ code..."
 	${ACTIVATE_VENV} && (\
 	    cd cpp/ && meson setup build/; \
-	    cd build/ && meson compile; \
+	    cd build/ && meson compile && meson install; \
 	) && ${DEACTIVATE_VENV}
 	@echo "Compiling Cython code..."
 	${ACTIVATE_VENV} && (\
