@@ -3,9 +3,23 @@
 """
 Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
-from args import ArgumentParserBuilder
-from mlrl.seco.seco_learners import SeCoRuleLearner
+from argparse import ArgumentParser
+
+from mlrl.common.options import BooleanOption
+from mlrl.common.rule_learners import PRUNING_IREP, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, PARALLEL_VALUES
+from mlrl.common.strings import format_dict_keys, format_string_set
+from mlrl.seco.seco_learners import SeCoRuleLearner, HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK, \
+    INSTANCE_SAMPLING_VALUES as SECO_INSTANCE_SAMPLING_VALUES, HEAD_TYPE_VALUES as SECO_HEAD_TYPE_VALUES, \
+    HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, HEAD_TYPE_PARTIAL
+from mlrl.testbed.args import PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE
+from mlrl.testbed.args import add_rule_learner_arguments, get_or_default, optional_string, PARAM_INSTANCE_SAMPLING
 from mlrl.testbed.runnables import RuleLearnerRunnable
+
+PARAM_HEURISTIC = '--heuristic'
+
+PARAM_PRUNING_HEURISTIC = '--pruning-heuristic'
+
+PARAM_LIFT_FUNCTION = '--lift-function'
 
 
 class SeCoRunnable(RuleLearnerRunnable):
@@ -25,9 +39,50 @@ class SeCoRunnable(RuleLearnerRunnable):
                                parallel_prediction=args.parallel_prediction)
 
 
-if __name__ == '__main__':
-    parser = ArgumentParserBuilder(description='Allows to run experiments using the Separate-and-Conquer algorithm') \
-        .add_seco_learner_arguments() \
-        .build()
+def __add_arguments(parser: ArgumentParser, **kwargs):
+    add_rule_learner_arguments(parser, pruning=PRUNING_IREP, **kwargs)
+    parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
+                        default=get_or_default(PARAM_INSTANCE_SAMPLING, SAMPLING_WITHOUT_REPLACEMENT, **kwargs),
+                        help='The name of the strategy to be used for instance sampling. Must be one of '
+                             + format_dict_keys(SECO_INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance sampling '
+                             + 'should be used. For additional options refer to the documentation.')
+    parser.add_argument(PARAM_HEURISTIC, type=str,
+                        default=get_or_default(PARAM_HEURISTIC, HEURISTIC_F_MEASURE, **kwargs),
+                        help='The name of the heuristic to be used for learning rules. Must be one of '
+                             + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
+                             + 'documentation.')
+    parser.add_argument(PARAM_PRUNING_HEURISTIC, type=str,
+                        default=get_or_default(PARAM_PRUNING_HEURISTIC, HEURISTIC_ACCURACY, **kwargs),
+                        help='The name of the heuristic to be used for pruning rules. Must be one of '
+                             + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
+                             + 'documentation.')
+    parser.add_argument(PARAM_LIFT_FUNCTION, type=optional_string,
+                        default=get_or_default(PARAM_LIFT_FUNCTION, LIFT_FUNCTION_PEAK, **kwargs),
+                        help='The lift function to be used for the induction of multi-label rules. Must be one of '
+                             + format_dict_keys(LIFT_FUNCTION_VALUES) + '. Does only have an effect if the parameter '
+                             + PARAM_HEAD_TYPE + ' is set to "' + HEAD_TYPE_PARTIAL + '".')
+    parser.add_argument(PARAM_HEAD_TYPE, type=str,
+                        default=get_or_default(PARAM_HEAD_TYPE, HEAD_TYPE_SINGLE, **kwargs),
+                        help='The type of the rule heads that should be used. Must be one of '
+                             + format_string_set(SECO_HEAD_TYPE_VALUES) + '.')
+    parser.add_argument(PARAM_PARALLEL_RULE_REFINEMENT, type=optional_string,
+                        default=get_or_default(PARAM_PARALLEL_RULE_REFINEMENT, BooleanOption.TRUE.value, **kwargs),
+                        help='Whether potential refinements of rules should be searched for in parallel or not. Must '
+                             + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to '
+                             + 'the documentation.')
+    parser.add_argument(PARAM_PARALLEL_STATISTIC_UPDATE, type=optional_string,
+                        default=get_or_default(PARAM_PARALLEL_STATISTIC_UPDATE, BooleanOption.FALSE.value, **kwargs),
+                        help='Whether the confusion matrices for different examples should be calculated in parallel '
+                             + 'or not. Must be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional '
+                             + 'options refer to the documentation')
+
+
+def main():
+    parser = ArgumentParser(description='Allows to run experiments using the Separate-and-Conquer algorithm')
+    __add_arguments(parser)
     runnable = SeCoRunnable()
     runnable.run(parser)
+
+
+if __name__ == '__main__':
+    main()
