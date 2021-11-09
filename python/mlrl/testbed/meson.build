@@ -2,7 +2,8 @@ project('testbed')
 
 # Directory into which Python source files should be installed
 lib_dir = subproject('common').get_variable('lib_dir')
-install_dir = lib_dir / 'mlrl' / meson.project_name()
+package_dir = 'mlrl' / meson.project_name()
+install_dir = lib_dir / package_dir
 
 # Python source files
 source_files = [
