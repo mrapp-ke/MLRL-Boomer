@@ -18,15 +18,15 @@ sources = [
 ]
 
 library_dirs = [
-    '../cpp/build/mlrl/common',
-    '../cpp/build/mlrl/boosting',
-    '../cpp/build/mlrl/seco'
+    '../cpp/build/subprojects/common',
+    '../cpp/build/subprojects/boosting',
+    '../cpp/build/subprojects/seco'
 ]
 
 runtime_library_dirs = [
-    'cpp/build/mlrl/common',
-    'cpp/build/mlrl/boosting',
-    'cpp/build/mlrl/seco'
+    'cpp/build/subprojects/common',
+    'cpp/build/subprojects/boosting',
+    'cpp/build/subprojects/seco'
 ]
 
 libraries = [
@@ -36,9 +36,9 @@ libraries = [
 ]
 
 include_dirs = [
-    '../cpp/mlrl/common/include',
-    '../cpp/mlrl/boosting/include',
-    '../cpp/mlrl/seco/include'
+    '../cpp/subprojects/common/include',
+    '../cpp/subprojects/boosting/include',
+    '../cpp/subprojects/seco/include'
 ]
 
 define_macros = [
