@@ -1,4 +1,4 @@
-Cython
+cython
 meson
 ninja
 wheel
