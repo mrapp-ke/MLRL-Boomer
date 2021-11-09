@@ -39,7 +39,7 @@ venv:
 	python3 -m venv venv
 	${ACTIVATE_VENV} && (\
 	   python -m pip install --upgrade pip; \
-	   pip install numpy scipy Cython meson ninja wheel; \
+	   pip install -r python/requirements.txt; \
 	) && ${DEACTIVATE_VENV}
 
 compile: venv
@@ -62,7 +62,7 @@ install: compile
 doc: install
 	@echo "Installing dependencies into virtual environment..."
 	${ACTIVATE_VENV} && (\
-	    pip install Sphinx sphinx_rtd_theme; \
+	    pip install -r doc/requirements.txt; \
 	) && ${DEACTIVATE_VENV}
 	@echo "Generating C++ API documentation via Doxygen..."
 	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile

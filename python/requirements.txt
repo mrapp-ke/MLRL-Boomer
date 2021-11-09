@@ -1,0 +1,10 @@
+cython
+meson
+ninja
+wheel
+numpy
+scipy
+numpy
+scipy
+scikit-learn
+liac-arff
