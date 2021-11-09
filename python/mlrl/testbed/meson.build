@@ -7,6 +7,7 @@ install_dir = lib_dir / package_dir
 
 # Python source files
 source_files = [
+    'args.py',
     'bbc_cv.py',
     'data.py',
     'data_characteristics.py',
@@ -14,9 +15,12 @@ source_files = [
     'experiments.py',
     'interfaces.py',
     'io.py',
+    'main_boomer.py',
+    'main_seco.py',
     'model_characteristics.py',
     'parameters.py',
     'persistence.py',
+    'runnables.py',
     'training.py'
 ]
 
