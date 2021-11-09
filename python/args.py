@@ -170,18 +170,6 @@ def optional_string(s):
     return s
 
 
-def string_list(s):
-    return [x.strip() for x in s.split(',')]
-
-
-def int_list(s):
-    return [int(x) for x in string_list(s)]
-
-
-def float_list(s):
-    return [float(x) for x in string_list(s)]
-
-
 class ArgumentParserBuilder:
     """
     A builder that allows to configure an `ArgumentParser` that accepts commonly used command-line arguments.
