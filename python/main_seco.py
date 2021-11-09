@@ -5,7 +5,7 @@ Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
 """
 from args import ArgumentParserBuilder
 from mlrl.seco.seco_learners import SeCoRuleLearner
-from runnables import RuleLearnerRunnable
+from mlrl.testbed.runnables import RuleLearnerRunnable
 
 
 class SeCoRunnable(RuleLearnerRunnable):
