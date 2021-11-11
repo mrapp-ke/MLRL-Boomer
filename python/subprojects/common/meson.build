@@ -44,7 +44,10 @@ dependencies = [
 ]
 
 # Cython compiler options
-cython_options = ['cython_language=cpp']
+cython_options = [
+    'cython_language=cpp',
+    'cython_version=3'
+]
 
 # Directory into which the extension modules and Python source files should be installed
 python_version = python.language_version()
