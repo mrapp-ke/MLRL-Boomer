@@ -2,6 +2,7 @@ cython
 meson
 ninja
 wheel
+build
 numpy
 scipy
 numpy
