@@ -69,7 +69,7 @@ doc: install
 	@echo "Generating Sphinx documentation..."
 	${ACTIVATE_VENV} && (\
 	    sphinx-apidoc --tocfile index -f -o doc/python python/mlrl **/seco **/cython; \
-	    cd doc/python/ && LD_PRELOAD="../../cpp/build/mlrl/common/libmlrlcommon.so \
-	        ../../cpp/build/mlrl/boosting/libmlrlboosting.so" sphinx-build -M html . ../python_apidoc/api/python; \
+	    cd doc/python/ && LD_PRELOAD="../../cpp/build/subprojects/common/libmlrlcommon.so \
+	        ../../cpp/build/subprojects/boosting/libmlrlboosting.so" sphinx-build -M html . ../python_apidoc/api/python; \
 	    cd ../ && sphinx-build -M html . _build; \
 	) && ${DEACTIVATE_VENV}
