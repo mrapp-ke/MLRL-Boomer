@@ -1,4 +1,4 @@
-project('common', 'cpp')
+project('common', 'cython', 'cpp')
 
 # Source files
 cython_dir = 'cython'
@@ -43,6 +43,16 @@ dependencies = [
     common_include
 ]
 
+# Cython compiler arguments
+cython_options = [
+    'cython_language=cpp',
+    'cython_version=3'
+]
+
+cython_args = [
+    '-I', meson.current_source_dir()
+]
+
 # Directory into which the extension modules and Python source files should be installed
 python_version = python.language_version()
 lib_dir = meson.current_source_dir() / '../../../venv/lib/python' + python_version + '/site-packages/'
@@ -50,16 +60,11 @@ install_dir = lib_dir / package_dir
 
 # Extension modules
 runtime_lib_dir = lib_dir / 'mlrl.libs'
-cython_include_dir = meson.current_source_dir()
 
 foreach module_name : cython_module_names
     pyx_file = package_dir / cython_dir / module_name + '.pyx'
-    pxd_file = package_dir / cython_dir / module_name + '.pxd'
-    command = ['cython', '--cplus', '-3', '--fast-fail', '@INPUT@', '-o', '@OUTPUT@']
-    cython_output_file = custom_target(module_name, output : module_name + '.cpp', input : pyx_file,
-                                       depend_files: pxd_file, command : command)
-    python.extension_module(module_name, cython_output_file, dependencies : dependencies, install : true,
-                            install_dir : install_dir / cython_dir, install_rpath : runtime_lib_dir)
+    python.extension_module(module_name, pyx_file, dependencies : dependencies, override_options : cython_options,
+                            install : true, install_dir : install_dir / cython_dir, install_rpath : runtime_lib_dir)
 endforeach
 
 # Python source files
