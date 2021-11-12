@@ -1,7 +1,9 @@
 # Build files
 python/build/
 cpp/build/
-__pycache__/
+python/**/__pycache__/
+python/**/dist/
+python/**/*egg-info/
 
 # Documentation files
 doc/_build/
