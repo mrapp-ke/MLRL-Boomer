@@ -32,6 +32,7 @@ venv:
 	python3 -m venv venv
 	${ACTIVATE_VENV} && (\
 	   python -m pip install --upgrade pip; \
+	   pip install --upgrade setuptools; \
 	   pip install -r python/requirements.txt; \
 	) && ${DEACTIVATE_VENV}
 
