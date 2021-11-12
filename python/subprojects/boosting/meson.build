@@ -24,9 +24,8 @@ common_include = common_project.get_variable('common_include')
 
 cpp = meson.get_compiler('cpp')
 cpp_dir = common_project.get_variable('cpp_dir')
-package_dir = 'mlrl' / meson.project_name()
-boosting_lib = cpp.find_library('mlrlboosting', dirs : meson.current_source_dir() / cpp_dir / 'build' / package_dir)
-boosting_include = declare_dependency(include_directories : include_directories(cpp_dir / package_dir / 'include'))
+boosting_lib = cpp.find_library('mlrlboosting', dirs : meson.current_source_dir() / cpp_dir / 'build/subprojects/boosting/')
+boosting_include = declare_dependency(include_directories : include_directories(cpp_dir / 'subprojects/boosting/include/'))
 
 dependencies = [
     python_dep,
@@ -43,6 +42,7 @@ cython_args = common_project.get_variable('cython_args')
 
 # Directory into which the extension modules and Python source files should be installed
 lib_dir = common_project.get_variable('lib_dir')
+package_dir = 'mlrl' / meson.project_name()
 install_dir = lib_dir / package_dir
 
 # Extension modules
