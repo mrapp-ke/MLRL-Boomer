@@ -11,10 +11,9 @@ from functools import reduce
 from typing import List
 
 import numpy as np
-from scipy.sparse import issparse
-
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.io import clear_directory, open_writable_csv_file, create_csv_dict_writer
+from scipy.sparse import issparse
 
 
 def density(m) -> float:

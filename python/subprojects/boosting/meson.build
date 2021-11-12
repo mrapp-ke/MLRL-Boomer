@@ -1,4 +1,4 @@
-project('boosting', 'cython', 'cpp')
+project('boosting', 'cpp')
 
 # Source files
 cython_dir = 'cython'
@@ -37,9 +37,6 @@ dependencies = [
     boosting_include
 ]
 
-# Cython compiler options
-cython_options = common_project.get_variable('cython_options')
-
 # Directory into which the extension modules and Python source files should be installed
 lib_dir = common_project.get_variable('lib_dir')
 install_dir = lib_dir / package_dir
@@ -47,16 +44,21 @@ install_dir = lib_dir / package_dir
 # Extension modules
 python = common_project.get_variable('python')
 runtime_lib_dir = common_project.get_variable('runtime_lib_dir')
+cython_include_dir = common_project.get_variable('cython_include_dir')
 
 foreach module_name : cython_module_names
-    file_name = cython_dir / module_name + '.pyx'
-    python.extension_module(module_name, file_name, dependencies : dependencies, override_options : cython_options,
-                            install : true, install_dir : install_dir  / cython_dir, install_rpath : runtime_lib_dir)
+    pyx_file = package_dir / cython_dir / module_name + '.pyx'
+    pxd_file = package_dir / cython_dir / module_name + '.pxd'
+    command = ['cython', '--cplus', '-3', '--fast-fail', '@INPUT@', '-o', '@OUTPUT@', '-I', cython_include_dir]
+    cython_output_file = custom_target(module_name, output : module_name + '.cpp', input : pyx_file,
+                                       depend_files : pxd_file, command : command)
+    python.extension_module(module_name, cython_output_file, dependencies : dependencies, install : true,
+                            install_dir : install_dir / cython_dir, install_rpath : runtime_lib_dir)
 endforeach
 
 # Python source files
 source_files = [
-    'boosting_learners.py'
+    package_dir / 'boosting_learners.py'
 ]
 
 install_data(source_files, install_dir : install_dir)
