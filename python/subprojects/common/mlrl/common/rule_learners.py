@@ -12,6 +12,7 @@ from enum import Enum
 from typing import List, Dict, Set, Optional
 
 import numpy as np
+from mlrl.common.arrays import enforce_dense
 from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
 from mlrl.common.cython.feature_binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
@@ -38,15 +39,13 @@ from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
 from mlrl.common.cython.thresholds_exact import ExactThresholdsFactory
-from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
-from sklearn.utils import check_array
-
-from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.common.options import BooleanOption
 from mlrl.common.options import Options
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
+from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
+from sklearn.utils import check_array
 
 AUTOMATIC = 'auto'
 

@@ -9,14 +9,13 @@ import logging as log
 from abc import ABC
 from abc import abstractmethod
 
-from sklearn.model_selection import KFold
-
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.interfaces import Randomized
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.io import open_readable_csv_file, create_csv_dict_writer
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_reader
 from mlrl.testbed.training import CrossValidation, DataSet
+from sklearn.model_selection import KFold
 
 
 class ParameterSearch(Randomized, ABC):

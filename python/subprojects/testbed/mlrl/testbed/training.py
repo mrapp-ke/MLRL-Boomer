@@ -12,11 +12,10 @@ import os.path as path
 from abc import ABC, abstractmethod
 from timeit import default_timer as timer
 
-from sklearn.model_selection import KFold
-
 from mlrl.testbed.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
 from mlrl.testbed.interfaces import Randomized
 from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
+from sklearn.model_selection import KFold
 
 
 class DataSet:

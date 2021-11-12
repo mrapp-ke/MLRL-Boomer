@@ -11,9 +11,6 @@ from abc import abstractmethod, ABC
 from typing import List
 
 import numpy as np
-from sklearn.base import clone
-from sklearn.utils import check_random_state
-
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32
 from mlrl.common.learners import Learner
 from mlrl.testbed.data import MetaData
@@ -21,6 +18,8 @@ from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutpu
 from mlrl.testbed.interfaces import Randomized
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.training import CrossValidation, DataSet
+from sklearn.base import clone
+from sklearn.utils import check_random_state
 
 
 class BbcCvAdapter(CrossValidation):

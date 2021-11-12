@@ -12,13 +12,12 @@ from typing import List, Dict, Set, Optional
 
 import numpy as np
 import sklearn.metrics as metrics
-from sklearn.utils.multiclass import is_multilabel
-
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.testbed.data import MetaData, save_arff_file, Label
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, \
     get_file_name_per_fold
+from sklearn.utils.multiclass import is_multilabel
 
 # The name of the accuracy metric
 ACCURACY = 'Acc.'

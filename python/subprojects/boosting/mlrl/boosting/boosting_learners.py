@@ -38,8 +38,6 @@ from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import StoppingCriterion, MeasureStoppingCriterion, AggregationFunction, MinFunction, \
     MaxFunction, ArithmeticMeanFunction
 from mlrl.common.cython.thresholds import ThresholdsFactory
-from sklearn.base import ClassifierMixin
-
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
@@ -47,6 +45,7 @@ from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy, LabelCharacte
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, create_label_sampling_factory, \
     create_instance_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
     create_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
+from sklearn.base import ClassifierMixin
 
 EARLY_STOPPING_LOSS = 'loss'
 
