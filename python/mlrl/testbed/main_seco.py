@@ -11,8 +11,8 @@ from mlrl.common.strings import format_dict_keys, format_string_set
 from mlrl.seco.seco_learners import SeCoRuleLearner, HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK, \
     INSTANCE_SAMPLING_VALUES as SECO_INSTANCE_SAMPLING_VALUES, HEAD_TYPE_VALUES as SECO_HEAD_TYPE_VALUES, \
     HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, HEAD_TYPE_PARTIAL
-from mlrl.testbed.args import PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE
-from mlrl.testbed.args import add_rule_learner_arguments, get_or_default, optional_string, PARAM_INSTANCE_SAMPLING
+from mlrl.testbed.args import add_rule_learner_arguments, get_or_default, optional_string, PARAM_INSTANCE_SAMPLING, \
+    PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE, PARAM_PRUNING
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
 PARAM_HEURISTIC = '--heuristic'
@@ -40,7 +40,9 @@ class SeCoRunnable(RuleLearnerRunnable):
 
 
 def __add_arguments(parser: ArgumentParser, **kwargs):
-    add_rule_learner_arguments(parser, pruning=PRUNING_IREP, **kwargs)
+    args = dict(kwargs)
+    args[PARAM_PRUNING] = PRUNING_IREP
+    add_rule_learner_arguments(parser, **args)
     parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
                         default=get_or_default(PARAM_INSTANCE_SAMPLING, SAMPLING_WITHOUT_REPLACEMENT, **kwargs),
                         help='The name of the strategy to be used for instance sampling. Must be one of '
