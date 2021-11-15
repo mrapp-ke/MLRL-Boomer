@@ -54,27 +54,15 @@ cython_args = [
 
 # Directory into which the extension modules and Python source files should be installed
 python_version = python.language_version()
-lib_dir = meson.current_source_dir() / '../../../venv/lib/python' + python_version + '/site-packages/'
 package_dir = 'mlrl' / meson.project_name()
-install_dir = lib_dir / package_dir
+install_dir = meson.current_source_dir() / package_dir / cython_dir
 
 # Extension modules
+lib_dir = meson.current_source_dir() / '../../../venv/lib/python' + python_version + '/site-packages/'
 runtime_lib_dir = lib_dir / 'mlrl.libs'
 
 foreach module_name : cython_module_names
     pyx_file = package_dir / cython_dir / module_name + '.pyx'
     python.extension_module(module_name, pyx_file, dependencies : dependencies, override_options : cython_options,
-                            install : true, install_dir : install_dir / cython_dir, install_rpath : runtime_lib_dir)
+                            install : true, install_dir : install_dir, install_rpath : runtime_lib_dir)
 endforeach
-
-# Python source files
-source_files = [
-    package_dir / 'arrays.py',
-    package_dir / 'data_types.py',
-    package_dir / 'learners.py',
-    package_dir / 'options.py',
-    package_dir / 'rule_learners.py',
-    package_dir / 'strings.py'
-]
-
-install_data(source_files, install_dir : install_dir)
