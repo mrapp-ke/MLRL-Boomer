@@ -3,9 +3,18 @@
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/validation.hpp"
 #include "rule_evaluation_example_wise_complete_common.hpp"
+#include "rule_evaluation_label_wise_common.hpp"
 
 
 namespace boosting {
+
+    static inline void addL1RegularizationWeight(float64* ordinates, uint32 numPredictions,
+                                                 float64 l1RegularizationWeight) {
+        for (uint32 i = 0; i < numPredictions; i++) {
+            float64 gradient = ordinates[i];
+            ordinates[i] += getL1RegularizationWeight(gradient, l1RegularizationWeight);
+        }
+    }
 
     static inline void addL2RegularizationWeight(float64* coefficients, uint32 numPredictions,
                                                  float64 l2RegularizationWeight) {
@@ -70,7 +79,7 @@ namespace boosting {
                 // Copy gradients to the vector of ordinates...
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 copyOrdinates(statisticVector.gradients_cbegin(), scoreIterator, numPredictions);
-                // TODO addL1RegularizationWeight();
+                addL1RegularizationWeight(scoreIterator, numPredictions, l1RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual labels by solving a system of linear equations...
                 lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
