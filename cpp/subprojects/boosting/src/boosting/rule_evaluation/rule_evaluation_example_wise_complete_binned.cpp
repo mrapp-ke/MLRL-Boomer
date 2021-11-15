@@ -88,6 +88,15 @@ namespace boosting {
         }
     }
 
+    static inline void addL1RegularizationWeight(float64* ordinates, uint32 numPredictions, const uint32* weights,
+                                                 float64 l1RegularizationWeight) {
+        for (uint32 i = 0; i < numPredictions; i++) {
+            uint32 weight = weights[i];
+            float64 gradient = ordinates[i];
+            ordinates[i] += (weight * getL1RegularizationWeight(gradient, l1RegularizationWeight));
+        }
+    }
+
     static inline void addL2RegularizationWeight(float64* coefficients, uint32 numPredictions, const uint32* weights,
                                                  float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numPredictions; i++) {
@@ -225,7 +234,7 @@ namespace boosting {
                     typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                         scoreVector_.scores_binned_begin();
                     copyOrdinates(aggregatedGradients_, scoreIterator, numBins);
-                    // TODO addL1RegularizationWeight();
+                    addL1RegularizationWeight(scoreIterator, numBins, numElementsPerBin_, l1RegularizationWeight_);
 
                     // Calculate the scores to be predicted for the individual labels by solving a system of linear
                     // equations...
