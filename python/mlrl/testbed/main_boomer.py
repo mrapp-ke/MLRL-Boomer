@@ -28,6 +28,8 @@ PARAM_SHRINKAGE = '--shrinkage'
 
 PARAM_PREDICTOR = '--predictor'
 
+PARAM_L1_REGULARIZATION_WEIGHT = '--l1-regularization-weight'
+
 PARAM_L2_REGULARIZATION_WEIGHT = '--l2-regularization-weight'
 
 
@@ -42,6 +44,7 @@ class BoomerRunnable(RuleLearnerRunnable):
                       instance_sampling=args.instance_sampling, recalculate_predictions=args.recalculate_predictions,
                       shrinkage=args.shrinkage, feature_sampling=args.feature_sampling, holdout=args.holdout,
                       feature_binning=args.feature_binning, label_binning=args.label_binning, head_type=args.head_type,
+                      l1_regularization_weight=args.l1_regularization_weight,
                       l2_regularization_weight=args.l2_regularization_weight, min_coverage=args.min_coverage,
                       max_conditions=args.max_conditions, max_head_refinements=args.max_head_refinements,
                       parallel_rule_refinement=args.parallel_rule_refinement,
@@ -91,6 +94,9 @@ def __add_arguments(parser: ArgumentParser, **kwargs):
                              + format_string_set(PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
                              + 'suitable strategy is chosen automatically based on the parameter ' + PARAM_LOSS
                              + '.')
+    parser.add_argument(PARAM_L1_REGULARIZATION_WEIGHT, type=float,
+                        default=get_or_default(PARAM_L1_REGULARIZATION_WEIGHT, 0.0, **kwargs),
+                        help='The weight of the L1 regularization. Must be at least 0.')
     parser.add_argument(PARAM_L2_REGULARIZATION_WEIGHT, type=float,
                         default=get_or_default(PARAM_L2_REGULARIZATION_WEIGHT, 1.0, **kwargs),
                         help='The weight of the L2 regularization. Must be at least 0.')
