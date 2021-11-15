@@ -224,7 +224,8 @@ namespace boosting {
                     // Copy gradients to the vector of ordinates...
                     typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                         scoreVector_.scores_binned_begin();
-                    copyOrdinates(aggregatedGradients_, scoreIterator, numBins, l1RegularizationWeight_);
+                    copyOrdinates(aggregatedGradients_, scoreIterator, numBins);
+                    // TODO addL1RegularizationWeight();
 
                     // Calculate the scores to be predicted for the individual labels by solving a system of linear
                     // equations...
