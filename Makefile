@@ -54,6 +54,14 @@ compile: venv
 	    cd python/ && meson setup build/; \
 	    cd build/ && meson compile && meson install; \
 	) && ${DEACTIVATE_VENV}
+	@echo "Building and installing wheel packages..."
+	${ACTIVATE_VENV} && (\
+	    cd python/subprojects/; \
+	    python -m build common/ && pip install common/dist/*.whl; \
+	    python -m build boosting/ && pip install boosting/dist/*.whl; \
+	    python -m build seco/ && pip install seco/dist/*.whl; \
+	    python -m build testbed/ && pip install testbed/dist/*.whl; \
+	) && ${DEACTIVATE_VENV}
 
 doc: compile
 	@echo "Installing dependencies into virtual environment..."
