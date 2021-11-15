@@ -82,10 +82,10 @@ namespace boosting {
                                                                     this->dspmvTmpArray_, numPredictions, blas_);
 
                 // Evaluate regularization term...
-                // TODO Take L1 regularization weight into account
-                float64 regularizationTerm = 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
+                float64 l1RegularizationTerm = l1RegularizationWeight_ * l1Norm(scoreIterator, numPredictions);
+                float64 l2RegularizationTerm = 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
 
-                scoreVector_.overallQualityScore = qualityScore + regularizationTerm;
+                scoreVector_.overallQualityScore = qualityScore + l1RegularizationTerm + l2RegularizationTerm;
                 return scoreVector_;
             }
 
