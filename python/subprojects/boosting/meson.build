@@ -54,4 +54,3 @@ foreach module_name : cython_module_names
     python.extension_module(module_name, pyx_file, dependencies : dependencies, override_options : cython_options,
                             install : true, install_dir : install_dir, install_rpath : runtime_lib_dir)
 endforeach
-
