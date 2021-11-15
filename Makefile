@@ -15,6 +15,7 @@ clean_cpp:
 clean_cython:
 	@echo "Removing Cython compilation files..."
 	rm -rf python/build/
+	rm -f python/subprojects/**/mlrl/**/cython/*.so
 
 clean_python:
 	@echo "Removing Python build files..."
