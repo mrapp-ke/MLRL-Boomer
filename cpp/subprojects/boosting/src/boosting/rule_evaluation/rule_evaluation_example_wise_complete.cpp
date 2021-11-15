@@ -28,6 +28,8 @@ namespace boosting {
 
             DenseScoreVector<T> scoreVector_;
 
+            float64 l1RegularizationWeight_;
+
             float64 l2RegularizationWeight_;
 
             const Blas& blas_;
@@ -39,6 +41,8 @@ namespace boosting {
             /**
              * @param labelIndices              A reference to an object of template type `T` that provides access to
              *                                  the indices of the labels for which the rules may predict
+             * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
+             *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param blas                      A reference to an object of type `Blas` that allows to execute different
@@ -46,12 +50,13 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute
              *                                  different LAPACK routines
              */
-            DenseExampleWiseCompleteRuleEvaluation(const T& labelIndices, float64 l2RegularizationWeight,
-                                                   const Blas& blas, const Lapack& lapack)
+            DenseExampleWiseCompleteRuleEvaluation(const T& labelIndices, float64 l1RegularizationWeight,
+                                                   float64 l2RegularizationWeight, const Blas& blas,
+                                                   const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices.getNumElements(),
                                                                                         lapack),
-                  scoreVector_(DenseScoreVector<T>(labelIndices)), l2RegularizationWeight_(l2RegularizationWeight),
-                  blas_(blas), lapack_(lapack) {
+                  scoreVector_(DenseScoreVector<T>(labelIndices)), l1RegularizationWeight_(l1RegularizationWeight),
+                  l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {
 
             }
 
@@ -64,7 +69,8 @@ namespace boosting {
 
                 // Copy gradients to the vector of ordinates...
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                copyOrdinates(statisticVector.gradients_cbegin(), scoreIterator, numPredictions);
+                copyOrdinates(statisticVector.gradients_cbegin(), scoreIterator, numPredictions,
+                              l1RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual labels by solving a system of linear equations...
                 lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
@@ -76,6 +82,7 @@ namespace boosting {
                                                                     this->dspmvTmpArray_, numPredictions, blas_);
 
                 // Evaluate regularization term...
+                // TODO Take L1 regularization weight into account
                 float64 regularizationTerm = 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
 
                 scoreVector_.overallQualityScore = qualityScore + regularizationTerm;
@@ -85,9 +92,11 @@ namespace boosting {
     };
 
     ExampleWiseCompleteRuleEvaluationFactory::ExampleWiseCompleteRuleEvaluationFactory(
-            float64 l2RegularizationWeight, std::unique_ptr<Blas> blasPtr, std::unique_ptr<Lapack> lapackPtr)
-        : l2RegularizationWeight_(l2RegularizationWeight), blasPtr_(std::move(blasPtr)),
-          lapackPtr_(std::move(lapackPtr)) {
+            float64 l1RegularizationWeight, float64 l2RegularizationWeight, std::unique_ptr<Blas> blasPtr,
+            std::unique_ptr<Lapack> lapackPtr)
+        : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
+          blasPtr_(std::move(blasPtr)), lapackPtr_(std::move(lapackPtr)) {
+        assertGreaterOrEqual<float64>("l1RegularizationWeight", l1RegularizationWeight, 0);
         assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
         assertNotNull("blasPtr", blasPtr_.get());
         assertNotNull("lapackPtr", lapackPtr_.get());
@@ -96,6 +105,7 @@ namespace boosting {
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteRuleEvaluationFactory::create(
             const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseCompleteRuleEvaluation<CompleteIndexVector>>(indexVector,
+                                                                                             l1RegularizationWeight_,
                                                                                              l2RegularizationWeight_,
                                                                                              *blasPtr_, *lapackPtr_);
     }
@@ -103,6 +113,7 @@ namespace boosting {
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteRuleEvaluationFactory::create(
             const DenseExampleWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseCompleteRuleEvaluation<PartialIndexVector>>(indexVector,
+                                                                                            l1RegularizationWeight_,
                                                                                             l2RegularizationWeight_,
                                                                                             *blasPtr_, *lapackPtr_);
     }

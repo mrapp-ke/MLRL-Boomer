@@ -21,13 +21,15 @@ cdef class ExampleWiseCompleteRuleEvaluationFactory(ExampleWiseRuleEvaluationFac
     A wrapper for the C++ class `ExampleWiseCompleteRuleEvaluationFactory`.
     """
 
-    def __cinit__(self, float64 l2_regularization_weight):
+    def __cinit__(self, float64 l1_regularization_weight, float64 l2_regularization_weight):
         """
-        :param l2_regularization_weight: The weight of the L2 regularization that is applied for calculating the scores
-                                         to be predicted by rules
+        :param l1_regularization_weight:    The weight of the L1 regularization that is applied for calculating the
+                                            scores to be predicted by rules
+        :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
+                                            scores to be predicted by rules
         """
         self.rule_evaluation_factory_ptr = <unique_ptr[IExampleWiseRuleEvaluationFactory]>make_unique[ExampleWiseCompleteRuleEvaluationFactoryImpl](
-            l2_regularization_weight, move(init_blas()), move(init_lapack()))
+            l1_regularization_weight, l2_regularization_weight, move(init_blas()), move(init_lapack()))
 
 
 cdef class ExampleWiseCompleteBinnedRuleEvaluationFactory(ExampleWiseRuleEvaluationFactory):
@@ -35,13 +37,16 @@ cdef class ExampleWiseCompleteBinnedRuleEvaluationFactory(ExampleWiseRuleEvaluat
     A wrapper for the C++ class `ExampleWiseCompleteBinnedRuleEvaluationFactory`.
     """
 
-    def __cinit__(self, float64 l2_regularization_weight, LabelBinningFactory label_binning_factory not None):
+    def __cinit__(self, float64 l1_regularization_weight, float64 l2_regularization_weight,
+                  LabelBinningFactory label_binning_factory not None):
         """
+        :param l1_regularization_weight:    The weight of the L1 regularization that is applied for calculating the
+                                            scores to be predicted by rules
         :param l2_regularization_weight:    The weight of the L2 regularization that is applied for calculating the
                                             scores to be predicted by rules
         :param label_binning_factory:       A `LabelBinningFactory` that allows to create the implementation that should
                                             be used to assign labels to bins
         """
         self.rule_evaluation_factory_ptr = <unique_ptr[IExampleWiseRuleEvaluationFactory]>make_unique[ExampleWiseCompleteBinnedRuleEvaluationFactoryImpl](
-            l2_regularization_weight, move(label_binning_factory.label_binning_factory_ptr), move(init_blas()),
-            move(init_lapack()))
+            l1_regularization_weight, l2_regularization_weight, move(label_binning_factory.label_binning_factory_ptr),
+            move(init_blas()), move(init_lapack()))

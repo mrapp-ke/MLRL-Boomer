@@ -17,7 +17,8 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp
 
         # Constructors:
 
-        LabelWiseSingleLabelRuleEvaluationFactoryImpl(float64 l2RegularizationWeight) except +
+        LabelWiseSingleLabelRuleEvaluationFactoryImpl(float64 l1RegularizationWeight,
+                                                      float64 l2RegularizationWeight) except +
 
 
 cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_complete.hpp" namespace "boosting" nogil:
@@ -27,7 +28,8 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_complete.h
 
         # Constructors:
 
-        LabelWiseCompleteRuleEvaluationFactoryImpl(float64 l2RegularizationWeight) except +
+        LabelWiseCompleteRuleEvaluationFactoryImpl(float64 l1RegularizationWeight,
+                                                   float64 l2RegularizationWeight) except +
 
 
 cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.hpp" namespace "boosting" nogil:
@@ -38,7 +40,8 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_label_wise_complete_b
         # Constructors:
 
         LabelWiseCompleteBinnedRuleEvaluationFactoryImpl(
-            float64 l2RegularizationWeight, unique_ptr[ILabelBinningFactory] labelBinningFactoryPtr) except +
+            float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+            unique_ptr[ILabelBinningFactory] labelBinningFactoryPtr) except +
 
 
 cdef class LabelWiseRuleEvaluationFactory:
