@@ -69,8 +69,8 @@ namespace boosting {
 
                 // Copy gradients to the vector of ordinates...
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                copyOrdinates(statisticVector.gradients_cbegin(), scoreIterator, numPredictions,
-                              l1RegularizationWeight_);
+                copyOrdinates(statisticVector.gradients_cbegin(), scoreIterator, numPredictions);
+                // TODO addL1RegularizationWeight();
 
                 // Calculate the scores to be predicted for individual labels by solving a system of linear equations...
                 lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
