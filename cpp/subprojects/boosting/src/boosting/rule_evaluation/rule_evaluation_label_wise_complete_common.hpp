@@ -46,9 +46,11 @@ namespace boosting {
     static inline constexpr float64 calculateLabelWiseQualityScore(float64 score, float64 gradient, float64 hessian,
                                                                    float64 l1RegularizationWeight,
                                                                    float64 l2RegularizationWeight) {
-        // TODO Take L1 regularization weight into account
         float64 scorePow = score * score;
-        return (gradient * score) + (0.5 * hessian * scorePow) + (0.5 * l2RegularizationWeight * scorePow);
+        float64 qualityScore =  (gradient * score) + (0.5 * hessian * scorePow);
+        float64 l1RegularizationTerm = l1RegularizationWeight * std::abs(score);
+        float64 l2RegularizationTerm = 0.5 * l2RegularizationWeight * scorePow;
+        return qualityScore + l1RegularizationTerm + l2RegularizationTerm;
     }
 
 }

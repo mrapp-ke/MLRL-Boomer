@@ -237,11 +237,12 @@ namespace boosting {
                                                                         numBins, blas_);
 
                     // Evaluate regularization term...
-                    // TODO Take L1 regularization weight into account
-                    float64 regularizationTerm = 0.5 * l2RegularizationWeight_
-                                                 * l2NormPow(scoreIterator, numElementsPerBin_, numBins);
+                    float64 l1RegularizationTerm = l1RegularizationWeight_
+                                                   * l1Norm(scoreIterator, numElementsPerBin_, numBins);
+                    float64 l2RegularizationTerm = 0.5 * l2RegularizationWeight_
+                                                   * l2NormPow(scoreIterator, numElementsPerBin_, numBins);
 
-                    scoreVector_.overallQualityScore = qualityScore + regularizationTerm;
+                    scoreVector_.overallQualityScore = qualityScore + l1RegularizationTerm + l2RegularizationTerm;
                 } else {
                     setArrayToValue(scoreVector_.indices_binned_begin(), numLabels, maxBins_);
                     scoreVector_.overallQualityScore = 0;
