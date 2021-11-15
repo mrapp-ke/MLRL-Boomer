@@ -41,9 +41,8 @@ cython_options = common_project.get_variable('cython_options')
 cython_args = common_project.get_variable('cython_args')
 
 # Directory into which the extension modules and Python source files should be installed
-lib_dir = common_project.get_variable('lib_dir')
 package_dir = 'mlrl' / meson.project_name()
-install_dir = lib_dir / package_dir
+install_dir = meson.current_source_dir() / package_dir / cython_dir
 
 # Extension modules
 python = common_project.get_variable('python')
@@ -53,12 +52,6 @@ add_project_arguments(cython_args, language : 'cython')
 foreach module_name : cython_module_names
     pyx_file = package_dir / cython_dir / module_name + '.pyx'
     python.extension_module(module_name, pyx_file, dependencies : dependencies, override_options : cython_options,
-                            install : true, install_dir : install_dir  / cython_dir, install_rpath : runtime_lib_dir)
+                            install : true, install_dir : install_dir, install_rpath : runtime_lib_dir)
 endforeach
 
-# Python source files
-source_files = [
-    package_dir / 'boosting_learners.py'
-]
-
-install_data(source_files, install_dir : install_dir)
