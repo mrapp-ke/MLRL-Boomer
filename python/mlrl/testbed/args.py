@@ -141,6 +141,10 @@ def optional_string(s):
     return s
 
 
+def get_argument_name(name: str) -> str:
+    return '--' + name.replace('_', '-')
+
+
 def get_or_default(key: str, default_value, **kwargs):
     return kwargs[key] if key in kwargs else default_value
 
