@@ -7,8 +7,8 @@
 
 namespace boosting {
 
-    static inline void addRegularizationWeight(float64* coefficients, uint32 numPredictions,
-                                               float64 l2RegularizationWeight) {
+    static inline void addL2RegularizationWeight(float64* coefficients, uint32 numPredictions,
+                                                 float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numPredictions; i++) {
             coefficients[(i * numPredictions) + i] += l2RegularizationWeight;
         }
@@ -60,7 +60,7 @@ namespace boosting {
 
                 // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
                 copyCoefficients(statisticVector.hessians_cbegin(), this->dsysvTmpArray1_, numPredictions);
-                addRegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
+                addL2RegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates...
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
