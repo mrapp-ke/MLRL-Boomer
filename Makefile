@@ -1,5 +1,5 @@
 default_target: compile
-.PHONY: clean_venv clean_cpp clean_cython clean_compile clean_doc clean install doc
+.PHONY: clean_venv clean_cpp clean_cython clean_python clean_compile clean_doc clean install doc
 
 ACTIVATE_VENV = . venv/bin/activate
 DEACTIVATE_VENV = deactivate
@@ -16,7 +16,13 @@ clean_cython:
 	@echo "Removing Cython compilation files..."
 	rm -rf python/build/
 
-clean_compile: clean_cpp clean_cython
+clean_python:
+	@echo "Removing Python build files..."
+	rm -rf python/subprojects/**/build/
+	rm -rf python/subprojects/**/dist/
+	rm -rf python/subprojects/**/*.egg-info/
+
+clean_compile: clean_cpp clean_cython clean_python
 
 clean_doc:
 	@echo "Removing documentation..."
