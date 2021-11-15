@@ -14,23 +14,23 @@ from mlrl.common.rule_learners import SparsePolicy, LABEL_SAMPLING_VALUES, FEATU
     PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 
-PARAM_LOG_LEVEL = 'log_level'
+PARAM_LOG_LEVEL = '--log-level'
 
-PARAM_CURRENT_FOLD = 'current_fold'
+PARAM_CURRENT_FOLD = '--current-fold'
 
-PARAM_RANDOM_STATE = 'random_state'
+PARAM_RANDOM_STATE = '--random-state'
 
-PARAM_DATA_DIR = 'data_dir'
+PARAM_DATA_DIR = '--data-dir'
 
-PARAM_DATASET = 'dataset'
+PARAM_DATASET = '--dataset'
 
-PARAM_FOLDS = 'folds'
+PARAM_FOLDS = '--folds'
 
-PARAM_PRINT_EVALUATION = 'print_evaluation'
+PARAM_PRINT_EVALUATION = '--print-evaluation'
 
-PARAM_STORE_EVALUATION = 'store_evaluation'
+PARAM_STORE_EVALUATION = '--store-evaluation'
 
-PARAM_EVALUATE_TRAINING_DATA = 'evaluate_training_data'
+PARAM_EVALUATE_TRAINING_DATA = '--evaluate-training-data'
 
 PARAM_ONE_HOT_ENCODING = '--one-hot-encoding'
 
