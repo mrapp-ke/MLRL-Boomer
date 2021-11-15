@@ -1,6 +1,6 @@
 # Build files
-python/build/
 cpp/build/
+python/**/build/
 python/**/__pycache__/
 python/**/dist/
 python/**/*egg-info/
