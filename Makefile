@@ -32,6 +32,7 @@ clean_cython_install:
 
 clean_wheel:
 	@echo "Removing Python build files..."
+	rm -rf python/subprojects/**/build/
 	rm -rf python/subprojects/**/dist/
 	rm -rf python/subprojects/**/*.egg-info/
 
