@@ -58,11 +58,10 @@ package_dir = 'mlrl' / meson.project_name()
 install_dir = meson.current_source_dir() / package_dir / cython_dir
 
 # Extension modules
-lib_dir = meson.current_source_dir() / '../../../venv/lib/python' + python_version + '/site-packages/'
-runtime_lib_dir = lib_dir / 'mlrl.libs'
+rpath = '$ORIGIN'
 
 foreach module_name : cython_module_names
     pyx_file = package_dir / cython_dir / module_name + '.pyx'
     python.extension_module(module_name, pyx_file, dependencies : dependencies, override_options : cython_options,
-                            install : true, install_dir : install_dir, install_rpath : runtime_lib_dir)
+                            install : true, install_dir : install_dir, install_rpath : rpath)
 endforeach

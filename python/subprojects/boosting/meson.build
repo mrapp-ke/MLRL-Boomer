@@ -46,11 +46,11 @@ install_dir = meson.current_source_dir() / package_dir / cython_dir
 
 # Extension modules
 python = common_project.get_variable('python')
-runtime_lib_dir = common_project.get_variable('runtime_lib_dir')
+rpath = common_project.get_variable('rpath')
 add_project_arguments(cython_args, language : 'cython')
 
 foreach module_name : cython_module_names
     pyx_file = package_dir / cython_dir / module_name + '.pyx'
     python.extension_module(module_name, pyx_file, dependencies : dependencies, override_options : cython_options,
-                            install : true, install_dir : install_dir, install_rpath : runtime_lib_dir)
+                            install : true, install_dir : install_dir, install_rpath : rpath)
 endforeach
