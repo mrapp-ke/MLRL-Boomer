@@ -2,10 +2,9 @@
 cpp/build/
 python/**/build/
 python/**/__pycache__/
-python/**/lib/
 python/**/dist/
 python/**/*egg-info/
-python/**/cython/*.so
+python/**/cython/*.so*
 
 # Documentation files
 doc/_build/

@@ -102,7 +102,8 @@ dependencies = [
 include_directories = include_directories('include')
 
 # Directory into which the library should be installed
-install_dir = meson.current_source_dir() / '../../../python/subprojects' / meson.project_name() / 'lib'
+install_root = meson.current_source_dir() / '../../../python/subprojects'
+install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
 
 # Library declaration
 common_lib = library('mlrl' + meson.project_name(), source_files, include_directories : include_directories,
