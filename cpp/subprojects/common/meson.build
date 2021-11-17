@@ -1,4 +1,4 @@
-project('mlrlcommon', 'cpp', version : '0.7.0')
+project('common', 'cpp', version : '0.7.0')
 
 # Source files
 source_files = [
@@ -102,13 +102,10 @@ dependencies = [
 include_directories = include_directories('include')
 
 # Directory into which the library should be installed
-source_dir = meson.current_source_dir()
-python = import('python').find_installation()
-python_version = python.language_version()
-install_dir = source_dir / '../../../venv/lib/python' + python_version + '/site-packages/mlrl.libs/'
+install_dir = meson.current_source_dir() / '../../../python/subprojects' / meson.project_name() / 'lib'
 
 # Library declaration
-common_lib = library(meson.project_name(), source_files, include_directories : include_directories,
+common_lib = library('mlrl' + meson.project_name(), source_files, include_directories : include_directories,
                      dependencies : dependencies, version : meson.project_version(), install : true,
                      install_dir : install_dir)
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
