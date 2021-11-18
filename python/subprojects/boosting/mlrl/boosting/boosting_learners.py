@@ -500,7 +500,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         elif value == PREDICTOR_EXAMPLE_WISE:
             return self.__create_example_wise_predictor(label_characteristics)
 
-    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Predictor:
+    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
         predictor = self.__get_preferred_predictor()
 
         if self.loss == LOSS_LOGISTIC_LABEL_WISE or self.loss == LOSS_LOGISTIC_EXAMPLE_WISE:
@@ -509,7 +509,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return self.__create_label_wise_probability_predictor(transformation_function, label_characteristics)
         return None
 
-    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> LabelVectorSet:
+    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> Optional[LabelVectorSet]:
         predictor = self.__get_preferred_predictor()
 
         if predictor == PREDICTOR_EXAMPLE_WISE:

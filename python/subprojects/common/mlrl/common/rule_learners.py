@@ -165,7 +165,7 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
                          + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
 
 
-def create_label_sampling_factory(label_sampling: str) -> LabelSamplingFactory:
+def create_label_sampling_factory(label_sampling: str) -> Optional[LabelSamplingFactory]:
     if label_sampling is not None:
         value, options = parse_param_and_options('label_sampling', label_sampling, LABEL_SAMPLING_VALUES)
 
@@ -175,7 +175,7 @@ def create_label_sampling_factory(label_sampling: str) -> LabelSamplingFactory:
     return None
 
 
-def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFactory:
+def create_feature_sampling_factory(feature_sampling: str) -> Optional[FeatureSamplingFactory]:
     if feature_sampling is not None:
         value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
 
@@ -185,7 +185,7 @@ def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFac
     return None
 
 
-def create_instance_sampling_factory(instance_sampling: str) -> InstanceSamplingFactory:
+def create_instance_sampling_factory(instance_sampling: str) -> Optional[InstanceSamplingFactory]:
     if instance_sampling is not None:
         value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
 
@@ -204,7 +204,7 @@ def create_instance_sampling_factory(instance_sampling: str) -> InstanceSampling
     return None
 
 
-def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
+def create_partition_sampling_factory(holdout: str) -> Optional[PartitionSamplingFactory]:
     if holdout is not None:
         value, options = parse_param_and_options('holdout', holdout, PARTITION_SAMPLING_VALUES)
 
@@ -220,7 +220,7 @@ def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
     return None
 
 
-def create_pruning(pruning: str, instance_sampling: str) -> Pruning:
+def create_pruning(pruning: str, instance_sampling: str) -> Optional[Pruning]:
     if pruning is not None:
         value = parse_param('pruning', pruning, PRUNING_VALUES)
 
@@ -672,7 +672,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         pass
 
-    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Predictor:
+    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
         estimates.
@@ -683,7 +683,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         return None
 
-    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> LabelVectorSet:
+    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> Optional[LabelVectorSet]:
         """
         Must be implemented by subclasses in order to create a `LabelVectorSet` that stores all known label vectors.
 
