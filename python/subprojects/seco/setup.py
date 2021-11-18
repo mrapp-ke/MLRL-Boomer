@@ -22,7 +22,6 @@ setup(
         'Issue Tracker': 'https://github.com/mrapp-ke/Boomer/issues'
     },
     license='MIT',
-    license_file=str(Path(__file__).resolve().parent.parent.parent.parent / 'LICENSE.txt'),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
