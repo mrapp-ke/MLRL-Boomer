@@ -114,7 +114,7 @@ class BbcCvAdapter(CrossValidation):
 
 class BbcCvObserver(ABC):
     """
-    A base class for all observers that should be notified about the predictions and ground truth labelings that result
+    A base class for all observers that should be notified about the predictions and ground truth labellings that result
     from applying the BBC-CV method.
     """
 
