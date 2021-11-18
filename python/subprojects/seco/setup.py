@@ -1,0 +1,56 @@
+#!/usr/bin/python
+
+"""
+Author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+"""
+from pathlib import Path
+
+from setuptools import setup, find_packages
+
+setup(
+    name='mlrl-seco',
+    version='0.7.0',
+    description='A scikit-learn implementation of a separate-and-conquer multi-label rule learning algorithm',
+    long_description=(Path(__file__).resolve().parent / 'README.md').read_text(),
+    long_description_content_type='text/markdown',
+    author='Michael Rapp',
+    author_email='michael.rapp.ml@gmail.com',
+    url='https://github.com/mrapp-ke/Boomer',
+    download_url='https://github.com/mrapp-ke/Boomer/releases',
+    project_urls={
+        'Documentation': 'https://mlrl-boomer.readthedocs.io/en/latest',
+        'Issue Tracker': 'https://github.com/mrapp-ke/Boomer/issues'
+    },
+    license='MIT',
+    license_file=str(Path(__file__).resolve().parent.parent.parent.parent / 'LICENSE.txt'),
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: C++',
+        'Programming Language :: Cython',
+        'Programming Language :: Python :: 3',
+        'Operating System :: POSIX :: Linux',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
+        'Topic :: Software Development :: Libraries :: Python Modules'
+    ],
+    keywords=[
+        'machine learning',
+        'scikit-learn',
+        'multi-label classification',
+        'rule learning',
+        'separate-and-conquer'
+    ],
+    platforms=[
+        'Linux'
+    ],
+    python_requires='>=3.7',
+    install_requires=[
+        'mlrl-common == 0.7.0'
+    ],
+    packages=find_packages(),
+    package_data={
+        "": ['*.so*']
+    },
+    zip_safe=True
+)
