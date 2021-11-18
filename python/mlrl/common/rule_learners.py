@@ -12,6 +12,7 @@ from enum import Enum
 from typing import List, Dict, Set, Optional
 
 import numpy as np
+from mlrl.common.arrays import enforce_dense
 from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
 from mlrl.common.cython.feature_binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
@@ -38,15 +39,13 @@ from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
 from mlrl.common.cython.thresholds_exact import ExactThresholdsFactory
-from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
-from sklearn.utils import check_array
-
-from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.common.options import BooleanOption
 from mlrl.common.options import Options
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
+from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
+from sklearn.utils import check_array
 
 AUTOMATIC = 'auto'
 
@@ -166,7 +165,7 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
                          + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
 
 
-def create_label_sampling_factory(label_sampling: str) -> LabelSamplingFactory:
+def create_label_sampling_factory(label_sampling: str) -> Optional[LabelSamplingFactory]:
     if label_sampling is not None:
         value, options = parse_param_and_options('label_sampling', label_sampling, LABEL_SAMPLING_VALUES)
 
@@ -176,7 +175,7 @@ def create_label_sampling_factory(label_sampling: str) -> LabelSamplingFactory:
     return None
 
 
-def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFactory:
+def create_feature_sampling_factory(feature_sampling: str) -> Optional[FeatureSamplingFactory]:
     if feature_sampling is not None:
         value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
 
@@ -186,7 +185,7 @@ def create_feature_sampling_factory(feature_sampling: str) -> FeatureSamplingFac
     return None
 
 
-def create_instance_sampling_factory(instance_sampling: str) -> InstanceSamplingFactory:
+def create_instance_sampling_factory(instance_sampling: str) -> Optional[InstanceSamplingFactory]:
     if instance_sampling is not None:
         value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
 
@@ -205,7 +204,7 @@ def create_instance_sampling_factory(instance_sampling: str) -> InstanceSampling
     return None
 
 
-def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
+def create_partition_sampling_factory(holdout: str) -> Optional[PartitionSamplingFactory]:
     if holdout is not None:
         value, options = parse_param_and_options('holdout', holdout, PARTITION_SAMPLING_VALUES)
 
@@ -221,7 +220,7 @@ def create_partition_sampling_factory(holdout: str) -> PartitionSamplingFactory:
     return None
 
 
-def create_pruning(pruning: str, instance_sampling: str) -> Pruning:
+def create_pruning(pruning: str, instance_sampling: str) -> Optional[Pruning]:
     if pruning is not None:
         value = parse_param('pruning', pruning, PRUNING_VALUES)
 
@@ -673,7 +672,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         pass
 
-    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Predictor:
+    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
         estimates.
@@ -684,7 +683,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         return None
 
-    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> LabelVectorSet:
+    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> Optional[LabelVectorSet]:
         """
         Must be implemented by subclasses in order to create a `LabelVectorSet` that stores all known label vectors.
 
