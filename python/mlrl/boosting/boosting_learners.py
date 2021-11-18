@@ -38,8 +38,6 @@ from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import StoppingCriterion, MeasureStoppingCriterion, AggregationFunction, MinFunction, \
     MaxFunction, ArithmeticMeanFunction
 from mlrl.common.cython.thresholds import ThresholdsFactory
-from sklearn.base import ClassifierMixin
-
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
@@ -47,6 +45,7 @@ from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy, LabelCharacte
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, create_label_sampling_factory, \
     create_instance_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
     create_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
+from sklearn.base import ClassifierMixin
 
 EARLY_STOPPING_LOSS = 'loss'
 
@@ -509,7 +508,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         elif value == PREDICTOR_EXAMPLE_WISE:
             return self.__create_example_wise_predictor(label_characteristics)
 
-    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Predictor:
+    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
         predictor = self.__get_preferred_predictor()
 
         if self.loss == LOSS_LOGISTIC_LABEL_WISE or self.loss == LOSS_LOGISTIC_EXAMPLE_WISE:
@@ -518,7 +517,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return self.__create_label_wise_probability_predictor(transformation_function, label_characteristics)
         return None
 
-    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> LabelVectorSet:
+    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> Optional[LabelVectorSet]:
         predictor = self.__get_preferred_predictor()
 
         if predictor == PREDICTOR_EXAMPLE_WISE:
