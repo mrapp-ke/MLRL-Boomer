@@ -32,7 +32,7 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param labelBinningFactoryPtr    An unique pointer to an object of type `ILabelBinningFactory` that
-                                                allows to create the implementation to be used to assign labels to bins
+             *                                  allows to create the implementation to be used to assign labels to bins
              * @param blasPtr                   An unique pointer to an object of type `Blas` that allows to execute
              *                                  different BLAS routines
              * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute

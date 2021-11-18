@@ -9,7 +9,8 @@ from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, INSTANCE_SAMPLING_VALUES
 from mlrl.common.strings import format_enum_values, format_dict_keys, format_string_set
 from mlrl.testbed.args import add_rule_learner_arguments, get_or_default, optional_string, PARAM_INSTANCE_SAMPLING, \
-    PARAM_PARTITION_SAMPLING, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE
+    PARAM_PARTITION_SAMPLING, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE, \
+    PARAM_MAX_RULES, PARAM_FEATURE_SAMPLING
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
 from mlrl.boosting.boosting_learners import Boomer, LOSS_LOGISTIC_LABEL_WISE, HEAD_TYPE_VALUES, EARLY_STOPPING_VALUES, \
@@ -51,7 +52,10 @@ class BoomerRunnable(RuleLearnerRunnable):
 
 
 def __add_arguments(parser: ArgumentParser, **kwargs):
-    add_rule_learner_arguments(parser, max_rules=1000, feature_sampling=SAMPLING_WITHOUT_REPLACEMENT, **kwargs)
+    args = dict(kwargs)
+    args[PARAM_MAX_RULES] = 1000
+    args[PARAM_FEATURE_SAMPLING] = SAMPLING_WITHOUT_REPLACEMENT
+    add_rule_learner_arguments(parser, **args)
     parser.add_argument(PARAM_DEFAULT_RULE, type=optional_string,
                         default=get_or_default(PARAM_DEFAULT_RULE, BooleanOption.TRUE.value, **kwargs),
                         help='Whether the first rule should be a default rule or not. Must be one of '
