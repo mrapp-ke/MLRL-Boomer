@@ -46,7 +46,7 @@ setup(
     ],
     extras_require={
         'BOOMER': ['mlrl-boomer==0.7.0'],
-        'SECO' : ['mlrl-seco==0.7.0']
+        'SECO': ['mlrl-seco==0.7.0']
     },
     packages=find_packages(),
     entry_points='''
