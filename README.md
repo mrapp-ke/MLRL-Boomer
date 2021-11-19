@@ -23,7 +23,7 @@ The algorithm that is provided by this project currently supports the following 
 
 * Different label-wise or example-wise loss functions can be minimized during training (optionally using L2 regularization).
 * The rules may predict for a single label or for all labels (which enables to model local label dependencies).
-* When learning a new rule, random samples of the training examples, features or labels may be used (including different techniques such as sampling with or without replacement).
+* When learning a new rule, random samples of the training examples, features or labels may be used (including different techniques such as sampling with or without replacement or stratification methods).
 * The impact of individual rules on the ensemble can be controlled using shrinkage.
 * Hyper-parameters that provide fine-grained control over the specificity/generality of rules are available.
 * The conditions of rules can be pruned based on a hold-out set.
