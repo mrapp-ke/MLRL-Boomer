@@ -46,7 +46,7 @@ setup(
     ],
     python_requires='>=3.7',
     install_requires=[
-        'mlrl-common==0.70'
+        'mlrl-common==0.7.0'
     ],
     packages=find_packages(),
     package_data={
