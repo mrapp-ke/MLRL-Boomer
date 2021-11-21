@@ -41,7 +41,7 @@ clean_install: clean_cpp_install clean_cython_install clean_wheel
 clean_doc:
 	@echo "Removing documentation..."
 	rm -rf doc/_build/
-	rm -rf doc/doxygen/
+	rm -rf doc/apidoc/
 	rm -rf doc/python_apidoc/
 	rm -f doc/python/*.rst
 
@@ -110,7 +110,8 @@ doc: install
 	    pip install -r doc/requirements.txt; \
 	) && ${DEACTIVATE_VENV}
 	@echo "Generating C++ API documentation via Doxygen..."
-	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile
+	cd doc/ && mkdir -p apidoc/api/cpp/common/ && doxygen Doxyfile_common
+	cd doc/ && mkdir -p apidoc/api/cpp/boosting/ && doxygen Doxyfile_boosting
 	@echo "Generating Sphinx documentation..."
 	${ACTIVATE_VENV} && (\
 	    sphinx-apidoc --tocfile index -f -o doc/python/ python/mlrl/ **/seco **/cython; \

@@ -54,4 +54,4 @@ html_static_path = ['_static']
 # documentation, such as robots.txt or .htaccess. Relative paths are taken
 # as relative to the configuration directory. They are copied to the output
 # directory. They will overwrite any existing file of the same name.
-html_extra_path = ['doxygen', 'python_apidoc']
+html_extra_path = ['apidoc', 'python_apidoc']
