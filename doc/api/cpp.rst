@@ -1,6 +1,7 @@
 C++ API Documentation
 ---------------------
 
-The internals of the algorithms that are included in this project are implemented in C++. For a documentation of the public C++ headers, refer to the following documentation:
+The algorithms that are included in this project are implemented as C++ libraries. For a documentation of the C++ code, refer to the documentation of the following libraries:
 
-* `C++ API Documentation <cpp/html/index.html>`_
+* `Library "mlrlcommon" <cpp/common/html/index.html>`_
+* `Library "mlrlboosting" <cpp/boosting/html/index.html>`_
