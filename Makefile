@@ -9,6 +9,9 @@ MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
 BUILD_WHEEL = python -m build --wheel
 INSTALL_WHEEL = pip install --force-reinstall --no-deps
+DOXYGEN = doxygen
+SPHINX_APIDOC = sphinx-apidoc --tocfile index -f
+SPHINX_BUILD = sphinx-build -M html
 
 clean_venv:
 	@echo "Removing virtual Python environment..."
@@ -42,8 +45,7 @@ clean_doc:
 	@echo "Removing documentation..."
 	rm -rf doc/_build/
 	rm -rf doc/apidoc/
-	rm -rf doc/python_apidoc/
-	rm -f doc/python/*.rst
+	rm -f doc/python/**/*.rst
 
 clean: clean_doc clean_compile clean_install clean_venv
 
@@ -110,11 +112,16 @@ doc: install
 	    pip install -r doc/requirements.txt; \
 	) && ${DEACTIVATE_VENV}
 	@echo "Generating C++ API documentation via Doxygen..."
-	cd doc/ && mkdir -p apidoc/api/cpp/common/ && doxygen Doxyfile_common
-	cd doc/ && mkdir -p apidoc/api/cpp/boosting/ && doxygen Doxyfile_boosting
+	cd doc/ && mkdir -p apidoc/api/cpp/common/ && ${DOXYGEN} Doxyfile_common
+	cd doc/ && mkdir -p apidoc/api/cpp/boosting/ && ${DOXYGEN} Doxyfile_boosting
 	@echo "Generating Sphinx documentation..."
 	${ACTIVATE_VENV} && (\
-	    sphinx-apidoc --tocfile index -f -o doc/python/ python/mlrl/ **/seco **/cython; \
-	    sphinx-build -M html doc/python/ doc/python_apidoc/api/python/; \
-	    sphinx-build -M html doc/ doc/_build/; \
+	    ${SPHINX_APIDOC} -o doc/python/common/ python/subprojects/common/mlrl/ **/cython; \
+	    ${SPHINX_BUILD} doc/python/common/ doc/apidoc/api/python/common/; \
+	    ${SPHINX_APIDOC} -o doc/python/boosting/ python/subprojects/boosting/mlrl/ **/cython; \
+	    LD_LIBRARY_PATH=cpp/build/subprojects/common/ \
+	        ${SPHINX_BUILD} doc/python/boosting/ doc/apidoc/api/python/boosting/; \
+	    ${SPHINX_APIDOC} -o doc/python/testbed/ python/subprojects/testbed/mlrl/; \
+	    ${SPHINX_BUILD} doc/python/testbed/ doc/apidoc/api/python/testbed/; \
+	    ${SPHINX_BUILD} doc/ doc/_build/; \
 	) && ${DEACTIVATE_VENV}
