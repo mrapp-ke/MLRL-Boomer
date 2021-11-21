@@ -9,8 +9,7 @@ python/**/cython/*.so*
 # Documentation files
 doc/_build/
 doc/apidoc/
-doc/python_apidoc/
-doc/python/*.rst
+doc/python/**/*.rst
 
 # Virtual Environment
 venv/
