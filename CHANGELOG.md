@@ -4,6 +4,7 @@
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
+* L1 regularization can now be used.
 * The Python API does now allow to access the rules in a model in a programmatic way.
 * It is now possible to output certain characteristics of training datasets and rule models. 
 
