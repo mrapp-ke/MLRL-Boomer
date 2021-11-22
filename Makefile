@@ -1,8 +1,17 @@
-default_target: compile
-.PHONY: clean_venv clean_cpp clean_cython clean_compile clean_doc clean install doc
+default_target: install
+.PHONY: clean_venv clean_cpp clean_cython clean_compile clean_cpp_install clean_cython_install clean_wheel \
+        clean_install clean_doc clean compile_cpp compile_cython compile install_cpp install_cython wheel install doc
 
-ACTIVATE_VENV = . venv/bin/activate
-DEACTIVATE_VENV = deactivate
+VENV_ACTIVATE = . venv/bin/activate
+VENV_DEACTIVATE = deactivate
+MESON_SETUP = meson setup
+MESON_COMPILE = meson compile
+MESON_INSTALL = meson install
+WHEEL_BUILD = python -m build --wheel
+WHEEL_INSTALL = pip install --force-reinstall --no-deps
+DOXYGEN = doxygen
+SPHINX_APIDOC = sphinx-apidoc --tocfile index -f
+SPHINX_BUILD = sphinx-build -M html
 
 clean_venv:
 	@echo "Removing virtual Python environment..."
@@ -15,61 +24,104 @@ clean_cpp:
 clean_cython:
 	@echo "Removing Cython compilation files..."
 	rm -rf python/build/
-	find python/ -type f -name "*.o" -delete
-	find python/ -type f -name "*.so" -delete
-	find python/ -type f -name "*.c" -delete
-	find python/ -type f -name "*.cpp" -delete
-	find python/ -type f -name "*.pyd" -delete
-	find python/ -type f -name "*.pyc" -delete
-	find python/ -type f -name "*.html" -delete
 
 clean_compile: clean_cpp clean_cython
+
+clean_cpp_install:
+	rm -f python/subprojects/**/mlrl/**/cython/lib*.so*
+
+clean_cython_install:
+	rm -f python/subprojects/**/mlrl/**/cython/*.so
+
+clean_wheel:
+	@echo "Removing Python build files..."
+	rm -rf python/subprojects/**/build/
+	rm -rf python/subprojects/**/dist/
+	rm -rf python/subprojects/**/*.egg-info/
+
+clean_install: clean_cpp_install clean_cython_install clean_wheel
 
 clean_doc:
 	@echo "Removing documentation..."
 	rm -rf doc/_build/
-	rm -rf doc/doxygen/
-	rm -rf doc/python_apidoc/
-	rm -f doc/python/*.rst
+	rm -rf doc/apidoc/
+	rm -f doc/python/**/*.rst
 
-clean: clean_doc clean_compile clean_venv
+clean: clean_doc clean_compile clean_install clean_venv
 
 venv:
 	@echo "Creating virtual Python environment..."
 	python3 -m venv venv
-	${ACTIVATE_VENV} && (\
-	   python -m pip install --upgrade pip; \
+	${VENV_ACTIVATE} && (\
+	   pip install --upgrade pip; \
+	   pip install --upgrade setuptools; \
 	   pip install -r python/requirements.txt; \
-	) && ${DEACTIVATE_VENV}
+	) && ${VENV_DEACTIVATE}
 
-compile: venv
+compile_cpp: venv
 	@echo "Compiling C++ code..."
-	${ACTIVATE_VENV} && (\
-	    cd cpp/ && meson setup build/; \
-	    cd build/ && meson compile; \
-	) && ${DEACTIVATE_VENV}
-	@echo "Compiling Cython code..."
-	${ACTIVATE_VENV} && (\
-	    cd python/ && python setup.py build_ext --inplace; \
-	) && ${DEACTIVATE_VENV}
+	${VENV_ACTIVATE} && (\
+	    cd cpp/ && ${MESON_SETUP} build/; \
+	    cd build/ && ${MESON_COMPILE}; \
+	) && ${VENV_DEACTIVATE}
 
-install: compile
-	@echo "Installing package into virtual environment..."
-	${ACTIVATE_VENV} && (\
-	    pip install python/; \
-	) && ${DEACTIVATE_VENV}
+compile_cython: venv
+	@echo "Compiling Cython code..."
+	${VENV_ACTIVATE} && (\
+	    cd python/ && ${MESON_SETUP} build/; \
+	    cd build/ && ${MESON_COMPILE}; \
+	) && ${VENV_DEACTIVATE}
+
+compile: compile_cpp compile_cython
+
+install_cpp: compile_cpp
+	@echo "Installing shared libraries into source tree..."
+	${VENV_ACTIVATE} && (\
+	    cd cpp/build/ && ${MESON_INSTALL}; \
+	) && ${VENV_DEACTIVATE}
+
+install_cython: compile_cython
+	@echo "Installing extension modules into source tree..."
+	${VENV_ACTIVATE} && (\
+	    cd python/build/ && ${MESON_INSTALL}; \
+	) && ${VENV_DEACTIVATE}
+
+wheel: install_cpp install_cython
+	@echo "Building wheel packages..."
+	${VENV_ACTIVATE} && (\
+	    cd python/subprojects/; \
+	    ${WHEEL_BUILD} common/; \
+	    ${WHEEL_BUILD} boosting/; \
+	    ${WHEEL_BUILD} seco/; \
+	    ${WHEEL_BUILD} testbed/; \
+	) && ${VENV_DEACTIVATE}
+
+install: wheel
+	@echo "Installing wheel packages into virtual environment..."
+	${VENV_ACTIVATE} && (\
+	    cd python/subprojects/; \
+	    ${WHEEL_INSTALL} common/dist/*.whl; \
+	    ${WHEEL_INSTALL} boosting/dist/*.whl; \
+	    ${WHEEL_INSTALL} seco/dist/*.whl; \
+	    ${WHEEL_INSTALL} testbed/dist/*.whl; \
+	) && ${VENV_DEACTIVATE}
 
 doc: install
-	@echo "Installing dependencies into virtual environment..."
-	${ACTIVATE_VENV} && (\
+	@echo "Installing documentation dependencies into virtual environment..."
+	${VENV_ACTIVATE} && (\
 	    pip install -r doc/requirements.txt; \
-	) && ${DEACTIVATE_VENV}
+	) && ${VENV_DEACTIVATE}
 	@echo "Generating C++ API documentation via Doxygen..."
-	cd doc/ && mkdir -p doxygen/api/cpp/ && doxygen Doxyfile
+	cd doc/ && mkdir -p apidoc/api/cpp/common/ && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_common
+	cd doc/ && mkdir -p apidoc/api/cpp/boosting/ && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
 	@echo "Generating Sphinx documentation..."
-	${ACTIVATE_VENV} && (\
-	    sphinx-apidoc --tocfile index -f -o doc/python python/mlrl **/seco **/cython; \
-	    cd doc/python/ && LD_PRELOAD="../../cpp/build/subprojects/common/libmlrlcommon.so \
-	        ../../cpp/build/subprojects/boosting/libmlrlboosting.so" sphinx-build -M html . ../python_apidoc/api/python; \
-	    cd ../ && sphinx-build -M html . _build; \
-	) && ${DEACTIVATE_VENV}
+	${VENV_ACTIVATE} && (\
+	    ${SPHINX_APIDOC} -o doc/python/common/ python/subprojects/common/mlrl/ **/cython; \
+	    ${SPHINX_BUILD} doc/python/common/ doc/apidoc/api/python/common/; \
+	    ${SPHINX_APIDOC} -o doc/python/boosting/ python/subprojects/boosting/mlrl/ **/cython; \
+	    LD_LIBRARY_PATH=cpp/build/subprojects/common/ \
+	        ${SPHINX_BUILD} doc/python/boosting/ doc/apidoc/api/python/boosting/; \
+	    ${SPHINX_APIDOC} -o doc/python/testbed/ python/subprojects/testbed/mlrl/; \
+	    ${SPHINX_BUILD} doc/python/testbed/ doc/apidoc/api/python/testbed/; \
+	    ${SPHINX_BUILD} doc/ doc/_build/; \
+	) && ${VENV_DEACTIVATE}
