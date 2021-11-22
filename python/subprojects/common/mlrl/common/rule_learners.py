@@ -138,6 +138,14 @@ class LabelCharacteristics:
         self.label_matrix = label_matrix
         self.label_cardinality = None
 
+    def get_num_examples(self):
+        """
+        Returns the number of examples.
+
+        :return: The number of examples
+        """
+        return self.label_matrix.get_num_rows()
+
     def get_num_labels(self):
         """
         Returns the number of labels.
