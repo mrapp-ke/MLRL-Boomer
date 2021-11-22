@@ -2,13 +2,13 @@ default_target: install
 .PHONY: clean_venv clean_cpp clean_cython clean_compile clean_cpp_install clean_cython_install clean_wheel \
         clean_install clean_doc clean compile_cpp compile_cython compile install_cpp install_cython wheel install doc
 
-ACTIVATE_VENV = . venv/bin/activate
-DEACTIVATE_VENV = deactivate
+VENV_ACTIVATE = . venv/bin/activate
+VENV_DEACTIVATE = deactivate
 MESON_SETUP = meson setup
 MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
-BUILD_WHEEL = python -m build --wheel
-INSTALL_WHEEL = pip install --force-reinstall --no-deps
+WHEEL_BUILD = python -m build --wheel
+WHEEL_INSTALL = pip install --force-reinstall --no-deps
 DOXYGEN = doxygen
 SPHINX_APIDOC = sphinx-apidoc --tocfile index -f
 SPHINX_BUILD = sphinx-build -M html
@@ -52,70 +52,70 @@ clean: clean_doc clean_compile clean_install clean_venv
 venv:
 	@echo "Creating virtual Python environment..."
 	python3 -m venv venv
-	${ACTIVATE_VENV} && (\
+	${VENV_ACTIVATE} && (\
 	   pip install --upgrade pip; \
 	   pip install --upgrade setuptools; \
 	   pip install -r python/requirements.txt; \
-	) && ${DEACTIVATE_VENV}
+	) && ${VENV_DEACTIVATE}
 
 compile_cpp: venv
 	@echo "Compiling C++ code..."
-	${ACTIVATE_VENV} && (\
+	${VENV_ACTIVATE} && (\
 	    cd cpp/ && ${MESON_SETUP} build/; \
 	    cd build/ && ${MESON_COMPILE}; \
-	) && ${DEACTIVATE_VENV}
+	) && ${VENV_DEACTIVATE}
 
 compile_cython: venv
 	@echo "Compiling Cython code..."
-	${ACTIVATE_VENV} && (\
+	${VENV_ACTIVATE} && (\
 	    cd python/ && ${MESON_SETUP} build/; \
 	    cd build/ && ${MESON_COMPILE}; \
-	) && ${DEACTIVATE_VENV}
+	) && ${VENV_DEACTIVATE}
 
 compile: compile_cpp compile_cython
 
 install_cpp: compile_cpp
 	@echo "Installing shared libraries into source tree..."
-	${ACTIVATE_VENV} && (\
+	${VENV_ACTIVATE} && (\
 	    cd cpp/build/ && ${MESON_INSTALL}; \
-	) && ${DEACTIVATE_VENV}
+	) && ${VENV_DEACTIVATE}
 
 install_cython: compile_cython
 	@echo "Installing extension modules into source tree..."
-	${ACTIVATE_VENV} && (\
+	${VENV_ACTIVATE} && (\
 	    cd python/build/ && ${MESON_INSTALL}; \
-	) && ${DEACTIVATE_VENV}
+	) && ${VENV_DEACTIVATE}
 
 wheel: install_cpp install_cython
 	@echo "Building wheel packages..."
-	${ACTIVATE_VENV} && (\
+	${VENV_ACTIVATE} && (\
 	    cd python/subprojects/; \
-	    ${BUILD_WHEEL} common/; \
-	    ${BUILD_WHEEL} boosting/; \
-	    ${BUILD_WHEEL} seco/; \
-	    ${BUILD_WHEEL} testbed/; \
-	) && ${DEACTIVATE_VENV}
+	    ${WHEEL_BUILD} common/; \
+	    ${WHEEL_BUILD} boosting/; \
+	    ${WHEEL_BUILD} seco/; \
+	    ${WHEEL_BUILD} testbed/; \
+	) && ${VENV_DEACTIVATE}
 
 install: wheel
 	@echo "Installing wheel packages into virtual environment..."
-	${ACTIVATE_VENV} && (\
+	${VENV_ACTIVATE} && (\
 	    cd python/subprojects/; \
-	    ${INSTALL_WHEEL} common/dist/*.whl; \
-	    ${INSTALL_WHEEL} boosting/dist/*.whl; \
-	    ${INSTALL_WHEEL} seco/dist/*.whl; \
-	    ${INSTALL_WHEEL} testbed/dist/*.whl; \
-	) && ${DEACTIVATE_VENV}
+	    ${WHEEL_INSTALL} common/dist/*.whl; \
+	    ${WHEEL_INSTALL} boosting/dist/*.whl; \
+	    ${WHEEL_INSTALL} seco/dist/*.whl; \
+	    ${WHEEL_INSTALL} testbed/dist/*.whl; \
+	) && ${VENV_DEACTIVATE}
 
 doc: install
 	@echo "Installing dependencies into virtual environment..."
-	${ACTIVATE_VENV} && (\
+	${VENV_ACTIVATE} && (\
 	    pip install -r doc/requirements.txt; \
-	) && ${DEACTIVATE_VENV}
+	) && ${VENV_DEACTIVATE}
 	@echo "Generating C++ API documentation via Doxygen..."
 	cd doc/ && mkdir -p apidoc/api/cpp/common/ && ${DOXYGEN} Doxyfile_common
 	cd doc/ && mkdir -p apidoc/api/cpp/boosting/ && ${DOXYGEN} Doxyfile_boosting
 	@echo "Generating Sphinx documentation..."
-	${ACTIVATE_VENV} && (\
+	${VENV_ACTIVATE} && (\
 	    ${SPHINX_APIDOC} -o doc/python/common/ python/subprojects/common/mlrl/ **/cython; \
 	    ${SPHINX_BUILD} doc/python/common/ doc/apidoc/api/python/common/; \
 	    ${SPHINX_APIDOC} -o doc/python/boosting/ python/subprojects/boosting/mlrl/ **/cython; \
@@ -124,4 +124,4 @@ doc: install
 	    ${SPHINX_APIDOC} -o doc/python/testbed/ python/subprojects/testbed/mlrl/; \
 	    ${SPHINX_BUILD} doc/python/testbed/ doc/apidoc/api/python/testbed/; \
 	    ${SPHINX_BUILD} doc/ doc/_build/; \
-	) && ${DEACTIVATE_VENV}
+	) && ${VENV_DEACTIVATE}
