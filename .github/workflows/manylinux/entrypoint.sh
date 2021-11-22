@@ -11,7 +11,7 @@ for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
   pip install auditwheel
 
   for WHEEL in python/subprojects/*/dist/*.whl; do
-    auditwheel repair ${WHEEL}
+    LD_LIBRARY_PATH=cpp/build/subprojects/common/ auditwheel repair ${WHEEL}
   done
 
   deactivate
