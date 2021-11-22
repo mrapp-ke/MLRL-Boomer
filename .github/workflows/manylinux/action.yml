@@ -1,4 +1,12 @@
 name: 'Manylinux'
+inputs:
+  python-versions:
+    description: 'A comma-separated list of Python versions to build against'
+    type: string
+    required: true
+    default: 'cp37-cp37m'
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  args:
+    - ${{ inputs.python-versions }}
