@@ -322,8 +322,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             head_type=self.__get_preferred_head_type()), 'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
-    def _create_rule_induction(self, _) -> RuleInduction:
-        num_threads = create_num_threads(self.__get_preferred_parallel_rule_refinement(), 'parallel_rule_refinement')
+    def _create_rule_induction(self, feature_characteristics: FeatureCharacteristics, _) -> RuleInduction:
+        num_threads = create_num_threads(self.__get_preferred_parallel_rule_refinement(feature_characteristics),
+                                         'parallel_rule_refinement')
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     BooleanOption.parse(self.recalculate_predictions), num_threads)
 
@@ -473,7 +474,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return HEAD_TYPE_SINGLE
         return head_type
 
-    def __get_preferred_parallel_rule_refinement(self) -> str:
+    def __get_preferred_parallel_rule_refinement(self, feature_characteristics: FeatureCharacteristics) -> str:
         parallel_rule_refinement = self.parallel_rule_refinement
 
         if parallel_rule_refinement == AUTOMATIC:
@@ -482,7 +483,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             if head_type != HEAD_TYPE_SINGLE and self.loss in NON_DECOMPOSABLE_LOSSES:
                 return BooleanOption.FALSE.value
             else:
-                return BooleanOption.TRUE.value
+                if feature_characteristics.is_sparse() and self.feature_sampling is not None:
+                    return BooleanOption.FALSE.value
+                else:
+                    return BooleanOption.TRUE.value
         return parallel_rule_refinement
 
     def __get_preferred_parallel_statistic_update(self, head_type: str) -> str:
