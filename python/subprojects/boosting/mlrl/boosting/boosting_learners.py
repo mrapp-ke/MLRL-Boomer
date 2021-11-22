@@ -41,7 +41,7 @@ from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
-from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy, LabelCharacteristics
+from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy, FeatureCharacteristics, LabelCharacteristics
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, create_label_sampling_factory, \
     create_instance_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
     create_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
@@ -278,7 +278,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_statistics_provider_factory(self, _: LabelCharacteristics) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self, _) -> StatisticsProviderFactory:
         head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
         default_rule_head_type = HEAD_TYPE_COMPLETE if self._use_default_rule() else head_type
         num_threads = create_num_threads(
@@ -317,35 +317,35 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                  regular_rule_evaluation_factory,
                                                                  pruning_rule_evaluation_factory, num_threads)
 
-    def _create_thresholds_factory(self) -> ThresholdsFactory:
+    def _create_thresholds_factory(self, _) -> ThresholdsFactory:
         num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(
             head_type=self.__get_preferred_head_type()), 'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
-    def _create_rule_induction(self) -> RuleInduction:
+    def _create_rule_induction(self, _) -> RuleInduction:
         num_threads = create_num_threads(self.__get_preferred_parallel_rule_refinement(), 'parallel_rule_refinement')
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     BooleanOption.parse(self.recalculate_predictions), num_threads)
 
-    def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
+    def _create_rule_model_assemblage_factory(self, _) -> RuleModelAssemblageFactory:
         return SequentialRuleModelAssemblageFactory()
 
-    def _create_label_sampling_factory(self) -> Optional[LabelSamplingFactory]:
+    def _create_label_sampling_factory(self, _) -> Optional[LabelSamplingFactory]:
         return create_label_sampling_factory(self.label_sampling)
 
-    def _create_instance_sampling_factory(self) -> Optional[InstanceSamplingFactory]:
+    def _create_instance_sampling_factory(self, _) -> Optional[InstanceSamplingFactory]:
         return create_instance_sampling_factory(self.instance_sampling)
 
-    def _create_feature_sampling_factory(self) -> Optional[FeatureSamplingFactory]:
+    def _create_feature_sampling_factory(self, _) -> Optional[FeatureSamplingFactory]:
         return create_feature_sampling_factory(self.feature_sampling)
 
-    def _create_partition_sampling_factory(self) -> Optional[PartitionSamplingFactory]:
+    def _create_partition_sampling_factory(self, _) -> Optional[PartitionSamplingFactory]:
         return create_partition_sampling_factory(self.holdout)
 
-    def _create_pruning(self) -> Optional[Pruning]:
+    def _create_pruning(self, _) -> Optional[Pruning]:
         return create_pruning(self.pruning, self.instance_sampling)
 
-    def _create_post_processor(self) -> Optional[PostProcessor]:
+    def _create_post_processor(self, _) -> Optional[PostProcessor]:
         shrinkage = float(self.shrinkage)
 
         if shrinkage == 1.0:
@@ -353,7 +353,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         else:
             return ConstantShrinkage(shrinkage)
 
-    def _create_stopping_criteria(self) -> List[StoppingCriterion]:
+    def _create_stopping_criteria(self, _) -> List[StoppingCriterion]:
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         early_stopping_criterion = self.__create_early_stopping()
 
@@ -362,7 +362,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
         return stopping_criteria
 
-    def _use_default_rule(self) -> bool:
+    def _use_default_rule(self, _) -> bool:
         return BooleanOption.parse(self.default_rule)
 
     def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
@@ -495,10 +495,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return BooleanOption.FALSE.value
         return parallel_statistic_update
 
-    def _create_model_builder(self) -> ModelBuilder:
+    def _create_model_builder(self, _) -> ModelBuilder:
         return RuleListBuilder()
 
-    def _create_predictor(self, label_characteristics: LabelCharacteristics) -> Predictor:
+    def _create_predictor(self, _: FeatureCharacteristics, label_characteristics: LabelCharacteristics) -> Predictor:
         predictor = self.__get_preferred_predictor()
         value = parse_param('predictor', predictor, PREDICTOR_VALUES)
 
@@ -507,7 +507,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         elif value == PREDICTOR_EXAMPLE_WISE:
             return self.__create_example_wise_predictor(label_characteristics)
 
-    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
+    def _create_probability_predictor(self, _: FeatureCharacteristics,
+                                      label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
         predictor = self.__get_preferred_predictor()
 
         if self.loss == LOSS_LOGISTIC_LABEL_WISE or self.loss == LOSS_LOGISTIC_EXAMPLE_WISE:
