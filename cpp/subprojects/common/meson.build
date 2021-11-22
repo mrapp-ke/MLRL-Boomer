@@ -1,4 +1,4 @@
-project('common', 'cpp', version : '0.7.0')
+project('common', 'cpp')
 
 # Source files
 source_files = [
@@ -105,8 +105,11 @@ include_directories = include_directories('include')
 install_root = meson.current_source_dir() / '../../../python/subprojects'
 install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
 
+# Library version
+fs = import('fs')
+version = fs.read('../../../VERSION')
+
 # Library declaration
 common_lib = library('mlrl' + meson.project_name(), source_files, include_directories : include_directories,
-                     dependencies : dependencies, version : meson.project_version(), install : true,
-                     install_dir : install_dir)
+                     dependencies : dependencies, version : version, install : true, install_dir : install_dir)
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
