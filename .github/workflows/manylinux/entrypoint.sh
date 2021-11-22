@@ -11,6 +11,8 @@ for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
   . venv/bin/activate
   pip install auditwheel
 
+  cp cpp/build/subprojects/common/libmlrlcommon* python/subprojects/boosting/mlrl/boosting/cython/
+
   for WHEEL in python/subprojects/*/dist/*.whl; do
     auditwheel repair ${WHEEL} \
       || { echo "Failed to repair wheel."; auditwheel show ${WHEEL}; exit 1; }
