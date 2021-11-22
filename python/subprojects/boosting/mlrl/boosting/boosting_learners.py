@@ -128,8 +128,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  recalculate_predictions: str = BooleanOption.TRUE.value,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = AUTOMATIC, pruning: str = None, shrinkage: float = 0.3,
-                 l2_regularization_weight: float = 1.0, min_coverage: int = 1, max_conditions: int = 0,
-                 max_head_refinements: int = 1, parallel_rule_refinement: str = AUTOMATIC,
+                 l1_regularization_weight: float = 0.0, l2_regularization_weight: float = 1.0, min_coverage: int = 1,
+                 max_conditions: int = 0, max_head_refinements: int = 1, parallel_rule_refinement: str = AUTOMATIC,
                  parallel_statistic_update: str = AUTOMATIC, parallel_prediction: str = BooleanOption.TRUE.value):
         """
         :param max_rules:                           The maximum number of rules to be induced (including the default
@@ -187,6 +187,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param shrinkage:                           The shrinkage parameter that should be applied to the predictions of
                                                     newly induced rules to reduce their effect on the entire model. Must
                                                     be in (0, 1]
+        :param l1_regularization_weight:            The weight of the L1 regularization that is applied for calculating
+                                                    the scores that are predicted by rules. Must be at least 0
         :param l2_regularization_weight:            The weight of the L2 regularization that is applied for calculating
                                                     the scores that are predicted by rules. Must be at least 0
         :param min_coverage:                        The minimum number of training examples that must be covered by a
@@ -228,6 +230,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.label_binning = label_binning
         self.pruning = pruning
         self.shrinkage = shrinkage
+        self.l1_regularization_weight = l1_regularization_weight
         self.l2_regularization_weight = l2_regularization_weight
         self.min_coverage = min_coverage
         self.max_conditions = max_conditions
@@ -261,6 +264,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_pruning=' + str(self.pruning)
         if float(self.shrinkage) < 1.0:
             name += '_shrinkage=' + str(self.shrinkage)
+        if float(self.l1_regularization_weight) > 0.0:
+            name += '_l1=' + str(self.l1_regularization_weight)
         if float(self.l2_regularization_weight) > 0.0:
             name += '_l2=' + str(self.l2_regularization_weight)
         if int(self.min_coverage) > 1:
@@ -414,21 +419,24 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __create_rule_evaluation_factory(self, loss_function, head_type: str,
                                          label_binning_factory: LabelBinningFactory):
+        l1_regularization_weight = float(self.l1_regularization_weight)
         l2_regularization_weight = float(self.l2_regularization_weight)
 
         if head_type == HEAD_TYPE_SINGLE:
-            return LabelWiseSingleLabelRuleEvaluationFactory(l2_regularization_weight)
+            return LabelWiseSingleLabelRuleEvaluationFactory(l1_regularization_weight, l2_regularization_weight)
         elif head_type == HEAD_TYPE_COMPLETE:
             if isinstance(loss_function, LabelWiseLoss):
                 if label_binning_factory is None:
-                    return LabelWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
+                    return LabelWiseCompleteRuleEvaluationFactory(l1_regularization_weight, l2_regularization_weight)
                 else:
-                    return LabelWiseCompleteBinnedRuleEvaluationFactory(l2_regularization_weight, label_binning_factory)
+                    return LabelWiseCompleteBinnedRuleEvaluationFactory(l1_regularization_weight,
+                                                                        l2_regularization_weight, label_binning_factory)
             else:
                 if label_binning_factory is None:
-                    return ExampleWiseCompleteRuleEvaluationFactory(l2_regularization_weight)
+                    return ExampleWiseCompleteRuleEvaluationFactory(l1_regularization_weight, l2_regularization_weight)
                 else:
-                    return ExampleWiseCompleteBinnedRuleEvaluationFactory(l2_regularization_weight,
+                    return ExampleWiseCompleteBinnedRuleEvaluationFactory(l1_regularization_weight,
+                                                                          l2_regularization_weight,
                                                                           label_binning_factory)
 
         raise ValueError('configuration currently not supported :-(')

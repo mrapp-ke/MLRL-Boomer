@@ -19,8 +19,8 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_complete
 
         # Constructors:
 
-        ExampleWiseCompleteRuleEvaluationFactoryImpl(float64 l2RegularizationWeight, unique_ptr[Blas] blasPtr,
-                                                     unique_ptr[Lapack] lapackPtr) except +
+        ExampleWiseCompleteRuleEvaluationFactoryImpl(float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+                                                     unique_ptr[Blas] blasPtr, unique_ptr[Lapack] lapackPtr) except +
 
 
 cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_complete_binned.hpp" namespace "boosting" nogil:
@@ -30,7 +30,8 @@ cdef extern from "boosting/rule_evaluation/rule_evaluation_example_wise_complete
 
         # Constructors:
 
-        ExampleWiseCompleteBinnedRuleEvaluationFactoryImpl(float64 l2RegularizationWeight,
+        ExampleWiseCompleteBinnedRuleEvaluationFactoryImpl(float64 l1RegularizationWeight,
+                                                           float64 l2RegularizationWeight,
                                                            unique_ptr[ILabelBinningFactory] labelBinningFactoryPtr,
                                                            unique_ptr[Blas] blasPtr,
                                                            unique_ptr[Lapack] lapackPtr) except +
