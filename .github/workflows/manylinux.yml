@@ -8,3 +8,9 @@ on:
 runs:
   using: 'docker'
   image: 'Dockerfile'
+jobs:
+  manylinux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
