@@ -215,7 +215,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_statistics_provider_factory(self, _: FeatureCharacteristics,
+    def _create_statistics_provider_factory(self, feature_characteristics: FeatureCharacteristics,
                                             label_characteristics: LabelCharacteristics) -> StatisticsProviderFactory:
         heuristic = self.__create_heuristic(self.heuristic, 'heuristic')
         pruning_heuristic = self.__create_heuristic(self.pruning_heuristic, 'pruning_heuristic')
@@ -228,22 +228,29 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, regular_rule_evaluation_factory,
                                                        pruning_rule_evaluation_factory)
 
-    def _create_thresholds_factory(self, _) -> ThresholdsFactory:
+    def _create_thresholds_factory(self, feature_characteristics: FeatureCharacteristics,
+                                   label_characteristics: LabelCharacteristics) -> ThresholdsFactory:
         num_threads = create_num_threads(self.parallel_statistic_update, 'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
-    def _create_rule_induction(self, _) -> RuleInduction:
+    def _create_rule_induction(self, feature_characteristics: FeatureCharacteristics,
+                               label_characteristics: LabelCharacteristics) -> RuleInduction:
         num_threads = create_num_threads(self.parallel_rule_refinement, 'parallel_rule_refinement')
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     False, num_threads)
 
-    def _create_rule_model_assemblage_factory(self, _) -> RuleModelAssemblageFactory:
+    def _create_rule_model_assemblage_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> RuleModelAssemblageFactory:
         return SequentialRuleModelAssemblageFactory()
 
-    def _create_label_sampling_factory(self, _) -> Optional[LabelSamplingFactory]:
+    def _create_label_sampling_factory(self, feature_characteristics: FeatureCharacteristics,
+                                       label_characteristics: LabelCharacteristics) -> Optional[LabelSamplingFactory]:
         return create_label_sampling_factory(self.label_sampling)
 
-    def _create_instance_sampling_factory(self, _) -> Optional[InstanceSamplingFactory]:
+    def _create_instance_sampling_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[InstanceSamplingFactory]:
         instance_sampling = self.instance_sampling
 
         if instance_sampling is not None:
@@ -257,16 +264,22 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                 return InstanceSamplingWithoutReplacementFactory(sample_size)
         return None
 
-    def _create_feature_sampling_factory(self, _) -> Optional[FeatureSamplingFactory]:
+    def _create_feature_sampling_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[FeatureSamplingFactory]:
         return create_feature_sampling_factory(self.feature_sampling)
 
-    def _create_partition_sampling_factory(self, _) -> Optional[PartitionSamplingFactory]:
+    def _create_partition_sampling_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[PartitionSamplingFactory]:
         return create_partition_sampling_factory(self.holdout)
 
-    def _create_pruning(self, _) -> Optional[Pruning]:
+    def _create_pruning(self, feature_characteristics: FeatureCharacteristics,
+                        label_characteristics: LabelCharacteristics) -> Optional[Pruning]:
         return create_pruning(self.pruning, self.instance_sampling)
 
-    def _create_stopping_criteria(self, _) -> List[StoppingCriterion]:
+    def _create_stopping_criteria(self, feature_characteristics: FeatureCharacteristics,
+                                  label_characteristics: LabelCharacteristics) -> List[StoppingCriterion]:
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         stopping_criteria.append(CoverageStoppingCriterion(0))
         return stopping_criteria
@@ -310,10 +323,12 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         else:
             return LabelWisePartialRuleEvaluationFactory(heuristic, self.__create_lift_function(label_characteristics))
 
-    def _create_model_builder(self, _) -> ModelBuilder:
+    def _create_model_builder(self, feature_characteristics: FeatureCharacteristics,
+                              label_characteristics: LabelCharacteristics) -> ModelBuilder:
         return DecisionListBuilder()
 
-    def _create_predictor(self, _: FeatureCharacteristics, label_characteristics: LabelCharacteristics) -> Predictor:
+    def _create_predictor(self, feature_characteristics: FeatureCharacteristics,
+                          label_characteristics: LabelCharacteristics) -> Predictor:
         num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
         return LabelWiseClassificationPredictor(num_labels=label_characteristics.get_num_labels(),
                                                 num_threads=num_threads)
