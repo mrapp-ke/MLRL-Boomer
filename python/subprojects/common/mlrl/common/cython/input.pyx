@@ -4,8 +4,6 @@
 from libcpp.utility cimport move
 from libcpp.memory cimport make_unique
 
-from abc import abstractmethod
-
 SERIALIZATION_VERSION = 1
 
 
@@ -30,14 +28,13 @@ cdef class LabelMatrix:
         """
         return self.label_matrix_ptr.get().getNumCols()
 
-    @abstractmethod
     def is_sparse(self) -> bool:
         """
         Returns whether the label matrix is sparse or not.
 
         :return: True, if the label matrix is sparse, False otherwise
         """
-        pass
+        return False
 
     def calculate_label_cardinality(self) -> float:
         """
@@ -63,9 +60,6 @@ cdef class CContiguousLabelMatrix(LabelMatrix):
         self.label_matrix_ptr = <unique_ptr[ILabelMatrix]>make_unique[CContiguousLabelMatrixImpl](num_examples,
                                                                                                   num_labels,
                                                                                                   &array[0, 0])
-
-    def is_sparse(self) -> bool:
-        return False
 
 
 cdef class CsrLabelMatrix(LabelMatrix):
@@ -112,14 +106,13 @@ cdef class FeatureMatrix:
         """
         return self.feature_matrix_ptr.get().getNumCols()
 
-    @abstractmethod
     def is_sparse(self) -> bool:
         """
         Returns whether the feature matrix is sparse or not.
 
         :return: True, if the feature matrix is sparse, False otherwise
         """
-        pass
+        return False
 
 
 cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
@@ -136,9 +129,6 @@ cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
         cdef uint32 num_features = array.shape[1]
         self.feature_matrix_ptr = <unique_ptr[IFeatureMatrix]>make_unique[FortranContiguousFeatureMatrixImpl](
             num_examples, num_features, &array[0, 0])
-
-    def is_sparse(self) -> bool:
-        return False
 
 
 cdef class CscFeatureMatrix(FeatureMatrix):
@@ -181,9 +171,6 @@ cdef class CContiguousFeatureMatrix:
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_features = array.shape[1]
         self.feature_matrix_ptr = make_unique[CContiguousFeatureMatrixImpl](num_examples, num_features, &array[0, 0])
-
-    def is_sparse(self) -> bool:
-        return False
 
 
 cdef class CsrFeatureMatrix:
