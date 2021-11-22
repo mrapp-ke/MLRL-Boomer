@@ -6,7 +6,7 @@ python -V
 
 for VERSION in "${PYTHON_VERSIONS[@]}"; do
   echo "${VERSION}"
-  PYTHON="/opt/python/${VERSION}/bin"
+  PYTHON="/opt/python/${VERSION}/bin/python"
   ln -fs ${PYTHON} /usr/bin/python
   python -V
 done
