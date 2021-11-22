@@ -10,8 +10,6 @@ import logging as log
 from abc import ABC
 from timeit import default_timer as timer
 
-from sklearn.base import clone
-
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
@@ -20,6 +18,7 @@ from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristic
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.training import CrossValidation, DataSet
+from sklearn.base import clone
 
 
 class Experiment(CrossValidation, ABC):
