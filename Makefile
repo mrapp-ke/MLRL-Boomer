@@ -107,7 +107,7 @@ install: wheel
 	) && ${VENV_DEACTIVATE}
 
 doc: install
-	@echo "Installing dependencies into virtual environment..."
+	@echo "Installing documentation dependencies into virtual environment..."
 	${VENV_ACTIVATE} && (\
 	    pip install -r doc/requirements.txt; \
 	) && ${VENV_DEACTIVATE}
