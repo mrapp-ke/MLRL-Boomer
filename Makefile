@@ -4,6 +4,7 @@ default_target: install
 
 VENV_ACTIVATE = . venv/bin/activate
 VENV_DEACTIVATE = deactivate
+PIP_INSTALL = pip install --prefer-binary
 MESON_SETUP = meson setup
 MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
@@ -53,9 +54,9 @@ venv:
 	@echo "Creating virtual Python environment..."
 	python -m venv venv
 	${VENV_ACTIVATE} && (\
-	   pip install --upgrade pip; \
-	   pip install --upgrade setuptools; \
-	   pip install -r python/requirements.txt; \
+	   ${PIP_INSTALL} --upgrade pip; \
+	   ${PIP_INSTALL} --upgrade setuptools; \
+	   ${PIP_INSTALL} -r python/requirements.txt; \
 	) && ${VENV_DEACTIVATE}
 
 compile_cpp: venv
@@ -109,7 +110,7 @@ install: wheel
 doc: install
 	@echo "Installing documentation dependencies into virtual environment..."
 	${VENV_ACTIVATE} && (\
-	    pip install -r doc/requirements.txt; \
+	    ${PIP_INSTALL} -r doc/requirements.txt; \
 	) && ${VENV_DEACTIVATE}
 	@echo "Generating C++ API documentation via Doxygen..."
 	cd doc/ && mkdir -p apidoc/api/cpp/common/ && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_common
