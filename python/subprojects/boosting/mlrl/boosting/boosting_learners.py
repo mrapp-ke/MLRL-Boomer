@@ -278,9 +278,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_statistics_provider_factory(self, _) -> StatisticsProviderFactory:
+    def _create_statistics_provider_factory(self, feature_characteristics: FeatureCharacteristics,
+                                            label_characteristics: LabelCharacteristics) -> StatisticsProviderFactory:
         head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
-        default_rule_head_type = HEAD_TYPE_COMPLETE if self._use_default_rule(_) else head_type
+        default_rule_head_type = HEAD_TYPE_COMPLETE if self._use_default_rule(feature_characteristics,
+                                                                              label_characteristics) else head_type
         num_threads = create_num_threads(
             self.__get_preferred_parallel_statistic_update(head_type=default_rule_head_type),
             'parallel_statistic_update')
@@ -317,36 +319,49 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                  regular_rule_evaluation_factory,
                                                                  pruning_rule_evaluation_factory, num_threads)
 
-    def _create_thresholds_factory(self, _) -> ThresholdsFactory:
+    def _create_thresholds_factory(self, feature_characteristics: FeatureCharacteristics,
+                                   label_characteristics: LabelCharacteristics) -> ThresholdsFactory:
         num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(
             head_type=self.__get_preferred_head_type()), 'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
-    def _create_rule_induction(self, feature_characteristics: FeatureCharacteristics, _) -> RuleInduction:
+    def _create_rule_induction(self, feature_characteristics: FeatureCharacteristics,
+                               label_characteristics: LabelCharacteristics) -> RuleInduction:
         num_threads = create_num_threads(self.__get_preferred_parallel_rule_refinement(feature_characteristics),
                                          'parallel_rule_refinement')
         return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
                                     BooleanOption.parse(self.recalculate_predictions), num_threads)
 
-    def _create_rule_model_assemblage_factory(self, _) -> RuleModelAssemblageFactory:
+    def _create_rule_model_assemblage_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> RuleModelAssemblageFactory:
         return SequentialRuleModelAssemblageFactory()
 
-    def _create_label_sampling_factory(self, _) -> Optional[LabelSamplingFactory]:
+    def _create_label_sampling_factory(self, feature_characteristics: FeatureCharacteristics,
+                                       label_characteristics: LabelCharacteristics) -> Optional[LabelSamplingFactory]:
         return create_label_sampling_factory(self.label_sampling)
 
-    def _create_instance_sampling_factory(self, _) -> Optional[InstanceSamplingFactory]:
+    def _create_instance_sampling_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[InstanceSamplingFactory]:
         return create_instance_sampling_factory(self.instance_sampling)
 
-    def _create_feature_sampling_factory(self, _) -> Optional[FeatureSamplingFactory]:
+    def _create_feature_sampling_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[FeatureSamplingFactory]:
         return create_feature_sampling_factory(self.feature_sampling)
 
-    def _create_partition_sampling_factory(self, _) -> Optional[PartitionSamplingFactory]:
+    def _create_partition_sampling_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[PartitionSamplingFactory]:
         return create_partition_sampling_factory(self.holdout)
 
-    def _create_pruning(self, _) -> Optional[Pruning]:
+    def _create_pruning(self, feature_characteristics: FeatureCharacteristics,
+                        label_characteristics: LabelCharacteristics) -> Optional[Pruning]:
         return create_pruning(self.pruning, self.instance_sampling)
 
-    def _create_post_processor(self, _) -> Optional[PostProcessor]:
+    def _create_post_processor(self, feature_characteristics: FeatureCharacteristics,
+                               label_characteristics: LabelCharacteristics) -> Optional[PostProcessor]:
         shrinkage = float(self.shrinkage)
 
         if shrinkage == 1.0:
@@ -354,7 +369,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         else:
             return ConstantShrinkage(shrinkage)
 
-    def _create_stopping_criteria(self, _) -> List[StoppingCriterion]:
+    def _create_stopping_criteria(self, feature_characteristics: FeatureCharacteristics,
+                                  label_characteristics: LabelCharacteristics) -> List[StoppingCriterion]:
         stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
         early_stopping_criterion = self.__create_early_stopping()
 
@@ -363,7 +379,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
         return stopping_criteria
 
-    def _use_default_rule(self, _) -> bool:
+    def _use_default_rule(self, feature_characteristics: FeatureCharacteristics,
+                          label_characteristics: LabelCharacteristics) -> bool:
         return BooleanOption.parse(self.default_rule)
 
     def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
@@ -499,10 +516,12 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return BooleanOption.FALSE.value
         return parallel_statistic_update
 
-    def _create_model_builder(self, _) -> ModelBuilder:
+    def _create_model_builder(self, feature_characteristics: FeatureCharacteristics,
+                              label_characteristics: LabelCharacteristics) -> ModelBuilder:
         return RuleListBuilder()
 
-    def _create_predictor(self, _: FeatureCharacteristics, label_characteristics: LabelCharacteristics) -> Predictor:
+    def _create_predictor(self, feature_characteristics: FeatureCharacteristics,
+                          label_characteristics: LabelCharacteristics) -> Predictor:
         predictor = self.__get_preferred_predictor()
         value = parse_param('predictor', predictor, PREDICTOR_VALUES)
 
@@ -511,7 +530,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         elif value == PREDICTOR_EXAMPLE_WISE:
             return self.__create_example_wise_predictor(label_characteristics)
 
-    def _create_probability_predictor(self, _: FeatureCharacteristics,
+    def _create_probability_predictor(self, feature_characteristics: FeatureCharacteristics,
                                       label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
         predictor = self.__get_preferred_predictor()
 
