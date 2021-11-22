@@ -7,9 +7,11 @@ from pathlib import Path
 
 from setuptools import setup, find_packages
 
+VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
+
 setup(
     name='mlrl-seco',
-    version='0.7.0',
+    version=VERSION,
     description='A scikit-learn implementation of a separate-and-conquer multi-label rule learning algorithm',
     long_description=(Path(__file__).resolve().parent / 'README.md').read_text(),
     long_description_content_type='text/markdown',
@@ -45,7 +47,7 @@ setup(
     ],
     python_requires='>=3.7',
     install_requires=[
-        'mlrl-common == 0.7.0'
+        'mlrl-common==' + VERSION
     ],
     packages=find_packages(),
     package_data={

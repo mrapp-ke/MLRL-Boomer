@@ -1,3 +1,5 @@
+from pathlib import Path
+
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -19,8 +21,7 @@ copyright = '2020-2021, Michael Rapp'
 author = 'Michael Rapp'
 
 # The full version, including alpha/beta/rc tags
-release = '0.7.0'
-
+release = (Path(__file__).resolve().parent.parent / 'VERSION').read_text()
 
 # -- General configuration ---------------------------------------------------
 
@@ -36,7 +37,6 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'python']
-
 
 # -- Options for HTML output -------------------------------------------------
 

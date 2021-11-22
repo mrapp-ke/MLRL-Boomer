@@ -7,9 +7,11 @@ from pathlib import Path
 
 from setuptools import setup, find_packages
 
+VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
+
 setup(
     name='mlrl-testbed',
-    version='0.7.0',
+    version=VERSION,
     description='Provides utilities for the training and evaluation of multi-label rule learning algorithms',
     long_description=(Path(__file__).resolve().parent / 'README.md').read_text(),
     long_description_content_type='text/markdown',
@@ -42,11 +44,11 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         'liac-arff>=2.5.0',
-        'mlrl-common==0.7.0'
+        'mlrl-common==' + VERSION
     ],
     extras_require={
-        'BOOMER': ['mlrl-boomer==0.7.0'],
-        'SECO': ['mlrl-seco==0.7.0']
+        'BOOMER': ['mlrl-boomer==' + VERSION],
+        'SECO': ['mlrl-seco==' + VERSION]
     },
     packages=find_packages(),
     entry_points='''

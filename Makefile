@@ -112,8 +112,8 @@ doc: install
 	    pip install -r doc/requirements.txt; \
 	) && ${VENV_DEACTIVATE}
 	@echo "Generating C++ API documentation via Doxygen..."
-	cd doc/ && mkdir -p apidoc/api/cpp/common/ && ${DOXYGEN} Doxyfile_common
-	cd doc/ && mkdir -p apidoc/api/cpp/boosting/ && ${DOXYGEN} Doxyfile_boosting
+	cd doc/ && mkdir -p apidoc/api/cpp/common/ && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_common
+	cd doc/ && mkdir -p apidoc/api/cpp/boosting/ && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
 	@echo "Generating Sphinx documentation..."
 	${VENV_ACTIVATE} && (\
 	    ${SPHINX_APIDOC} -o doc/python/common/ python/subprojects/common/mlrl/ **/cython; \
