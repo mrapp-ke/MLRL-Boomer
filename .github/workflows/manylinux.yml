@@ -1,21 +1,10 @@
 name: 'Manylinux'
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
 on:
   push:
     branches: [ development ]
   release:
     types: [ published ]
     branches: [ master ]
-jobs:
-  Linux-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup Python environment
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - name: Compile and install wheel packages
-        run: make install
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
