@@ -17,7 +17,7 @@ from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
 from mlrl.common.cython.feature_binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
 from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureMask
-from mlrl.common.cython.input import FortranContiguousFeatureMatrix, CscFeatureMatrix, \
+from mlrl.common.cython.input import FeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.input import LabelVectorSet
@@ -124,6 +124,34 @@ class SparsePolicy(Enum):
 class SparseFormat(Enum):
     CSC = 'csc'
     CSR = 'csr'
+
+
+class FeatureCharacteristics:
+    """
+    Allows to obtain certain characteristics of a feature matrix.
+    """
+
+    def __init__(self, feature_matrix: FeatureMatrix):
+        """
+        :param feature_matrix: The feature matrix
+        """
+        self.feature_matrix = feature_matrix
+
+    def get_num_examples(self):
+        """
+        Returns the number of examples.
+
+        :return: The number of examples
+        """
+        return self.feature_matrix.get_num_rows()
+
+    def get_num_features(self):
+        """
+        Returns the number of features.
+
+        :return: The number of features
+        """
+        return self.feature_matrix.get_num_cols()
 
 
 class LabelCharacteristics:
@@ -446,9 +474,10 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             label_matrix = CContiguousLabelMatrix(y)
 
         # Create predictors...
+        feature_characteristics = FeatureCharacteristics(feature_matrix)
         label_characteristics = LabelCharacteristics(label_matrix)
-        self.predictor_ = self._create_predictor(label_characteristics)
-        self.probability_predictor_ = self._create_probability_predictor(label_characteristics)
+        self.predictor_ = self._create_predictor(feature_characteristics, label_characteristics)
+        self.probability_predictor_ = self._create_probability_predictor(feature_characteristics, label_characteristics)
         self.label_vectors_ = self._create_label_vector_set(label_matrix)
 
         # Create a mask that provides access to the information whether individual features are nominal or not...
@@ -462,49 +491,58 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = BitNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        rule_model_assemblage = self.__create_rule_model_assemblage(label_characteristics)
-        model_builder = self._create_model_builder()
+        rule_model_assemblage = self.__create_rule_model_assemblage(feature_characteristics, label_characteristics)
+        model_builder = self._create_model_builder(feature_characteristics, label_characteristics)
         return rule_model_assemblage.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
                                                   model_builder)
 
-    def __create_rule_model_assemblage(self, label_characteristics: LabelCharacteristics) -> RuleModelAssemblage:
-        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(label_characteristics),
-                                             self._create_thresholds_factory(), self._create_rule_induction(),
-                                             self._create_rule_model_assemblage_factory())
-        label_sampling_factory = self._create_label_sampling_factory()
+    def __create_rule_model_assemblage(self, feature_characteristics: FeatureCharacteristics,
+                                       label_characteristics: LabelCharacteristics) -> RuleModelAssemblage:
+        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(feature_characteristics,
+                                                                                      label_characteristics),
+                                             self._create_thresholds_factory(feature_characteristics,
+                                                                             label_characteristics),
+                                             self._create_rule_induction(feature_characteristics,
+                                                                         label_characteristics),
+                                             self._create_rule_model_assemblage_factory(feature_characteristics,
+                                                                                        label_characteristics))
+        label_sampling_factory = self._create_label_sampling_factory(feature_characteristics, label_characteristics)
 
         if label_sampling_factory is not None:
             algorithm_builder.set_label_sampling_factory(label_sampling_factory)
 
-        instance_sampling_factory = self._create_instance_sampling_factory()
+        instance_sampling_factory = self._create_instance_sampling_factory(feature_characteristics,
+                                                                           label_characteristics)
 
         if instance_sampling_factory is not None:
             algorithm_builder.set_instance_sampling_factory(instance_sampling_factory)
 
-        feature_sampling_factory = self._create_feature_sampling_factory()
+        feature_sampling_factory = self._create_feature_sampling_factory(feature_characteristics,
+                                                                         label_characteristics)
 
         if feature_sampling_factory is not None:
             algorithm_builder.set_feature_sampling_factory(feature_sampling_factory)
 
-        partition_sampling_factory = self._create_partition_sampling_factory()
+        partition_sampling_factory = self._create_partition_sampling_factory(feature_characteristics,
+                                                                             label_characteristics)
 
         if partition_sampling_factory is not None:
             algorithm_builder.set_partition_sampling_factory(partition_sampling_factory)
 
-        pruning = self._create_pruning()
+        pruning = self._create_pruning(feature_characteristics, label_characteristics)
 
         if pruning is not None:
             algorithm_builder.set_pruning(pruning)
 
-        post_processor = self._create_post_processor()
+        post_processor = self._create_post_processor(feature_characteristics, label_characteristics)
 
         if post_processor is not None:
             algorithm_builder.set_post_processor(post_processor)
 
-        for stopping_criterion in self._create_stopping_criteria():
+        for stopping_criterion in self._create_stopping_criteria(feature_characteristics, label_characteristics):
             algorithm_builder.add_stopping_criterion(stopping_criterion)
 
-        algorithm_builder.set_use_default_rule(self._use_default_rule())
+        algorithm_builder.set_use_default_rule(self._use_default_rule(feature_characteristics, label_characteristics))
         return algorithm_builder.build()
 
     def _predict(self, x):
@@ -555,139 +593,190 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     @abstractmethod
     def _create_statistics_provider_factory(self,
+                                            feature_characteristics: FeatureCharacteristics,
                                             label_characteristics: LabelCharacteristics) -> StatisticsProviderFactory:
         """
         Must be implemented by subclasses in order to create the `StatisticsProviderFactory` to be used by the rule
         learner.
 
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
         :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
         :return:                        The `StatisticsProviderFactory` that has been created
         """
         pass
 
     @abstractmethod
-    def _create_thresholds_factory(self) -> ThresholdsFactory:
+    def _create_thresholds_factory(self, feature_characteristics: FeatureCharacteristics,
+                                   label_characteristics: LabelCharacteristics) -> ThresholdsFactory:
         """
         Must be implemented by subclasses in order to create the `ThresholdsFactory` to be used by the rule learner.
 
-        :return: The `ThresholdFactory` that has been created
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `ThresholdFactory` that has been created
         """
         pass
 
     @abstractmethod
-    def _create_rule_induction(self) -> RuleInduction:
+    def _create_rule_induction(self, feature_characteristics: FeatureCharacteristics,
+                               label_characteristics: LabelCharacteristics) -> RuleInduction:
         """
         Must be implemented by subclasses in order to create the `RuleInduction` to be used by the rule learner.
 
-        :return: The `RuleInduction` that has been created
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `RuleInduction` that has been created
         """
         pass
 
     @abstractmethod
-    def _create_rule_model_assemblage_factory(self) -> RuleModelAssemblageFactory:
+    def _create_rule_model_assemblage_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> RuleModelAssemblageFactory:
         """
         Must be implemented by subclasses in order to create the `RuleModelAssemblageFactory` to be used by the rule
         learner.
 
-        :return: The `RuleModelAssemblage` that has been created
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `RuleModelAssemblage` that has been created
         """
         pass
 
-    def _create_label_sampling_factory(self) -> Optional[LabelSamplingFactory]:
+    def _create_label_sampling_factory(self, feature_characteristics: FeatureCharacteristics,
+                                       label_characteristics: LabelCharacteristics) -> Optional[LabelSamplingFactory]:
         """
         Must be implemented by subclasses in order to create the `LabelSamplingFactory` to be used by the rule learner.
 
-        :return: The `LabelSamplingFactory` that has been created or None, if no label sampling should be used
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `LabelSamplingFactory` that has been created or None, if no label sampling
+                                        should be used
         """
         return None
 
-    def _create_instance_sampling_factory(self) -> Optional[InstanceSamplingFactory]:
+    def _create_instance_sampling_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[InstanceSamplingFactory]:
         """
         Must be implemented by subclasses in order to create the `InstanceSamplingFactory` to be used by the rule
         learner.
 
-        :return: The `InstanceSamplingFactory` that has been created or None, if no instance sampling should be used
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `InstanceSamplingFactory` that has been created or None, if no instance
+                                        sampling should be used
         """
         return None
 
-    def _create_feature_sampling_factory(self) -> Optional[FeatureSamplingFactory]:
+    def _create_feature_sampling_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[FeatureSamplingFactory]:
         """
         Must be implemented by subclasses in order to create the `FeatureSamplingFactory` to be used by the rule
         learner.
 
-        :return: The `FeatureSamplingFactory` that has been created or None, if no feature sampling should be used
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `FeatureSamplingFactory` that has been created or None, if no feature
+                                        sampling should be used
         """
         return None
 
-    def _create_partition_sampling_factory(self) -> Optional[PartitionSamplingFactory]:
+    def _create_partition_sampling_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[PartitionSamplingFactory]:
         """
         Must be implemented by subclasses in order to create the `PartitionSamplingFactory` to be used by the rule
         learner.
 
-        :return: The `PartitionSamplingFactory` that has been created or None, if no holdout set should be created
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `PartitionSamplingFactory` that has been created or None, if no holdout set
+                                        should be created
         """
         return None
 
-    def _create_pruning(self) -> Optional[Pruning]:
+    def _create_pruning(self, feature_characteristics: FeatureCharacteristics,
+                        label_characteristics: LabelCharacteristics) -> Optional[Pruning]:
         """
         Must be implemented by subclasses in order to create the `Pruning` to be used by the rule learner.
 
-        :return: The `Pruning` that has been created or None, if no pruning should be used
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `Pruning` that has been created or None, if no pruning should be used
         """
         return None
 
-    def _create_post_processor(self) -> Optional[PostProcessor]:
+    def _create_post_processor(self, feature_characteristics: FeatureCharacteristics,
+                               label_characteristics: LabelCharacteristics) -> Optional[PostProcessor]:
         """
         Must be implemented by subclasses in order to create the `PostProcessor` to be used by the rule learner.
 
-        :return: The `PostProcessor` that has been created or None, if no post-processor should be used
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `PostProcessor` that has been created or None, if no post-processor should
+                                        be used
         """
         return None
 
-    def _create_stopping_criteria(self) -> List[StoppingCriterion]:
+    def _create_stopping_criteria(self, feature_characteristics: FeatureCharacteristics,
+                                  label_characteristics: LabelCharacteristics) -> List[StoppingCriterion]:
         """
         Must be implemented by subclasses in order to create a list of stopping criteria to be used by the rule learner.
 
-        :return: A list of stopping criteria that has been created
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        A list of stopping criteria that has been created
         """
         return []
 
-    def _use_default_rule(self) -> bool:
+    def _use_default_rule(self, feature_characteristics: FeatureCharacteristics,
+                          label_characteristics: LabelCharacteristics) -> bool:
         """
         Must be implemented by subclasses in order to specify whether the first rule induced by the rule learner should
         be a default rule or not.
 
-        :return: True, if the first rule should be a default rule, False otherwise
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        True, if the first rule should be a default rule, False otherwise
         """
         return True
 
     @abstractmethod
-    def _create_model_builder(self) -> ModelBuilder:
+    def _create_model_builder(self, feature_characteristics: FeatureCharacteristics,
+                              label_characteristics: LabelCharacteristics) -> ModelBuilder:
         """
         Must be implemented by subclasses in order to create the builder that should be used for building the model.
 
-        :return: The builder that has been created
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The builder that has been created
         """
         pass
 
     @abstractmethod
-    def _create_predictor(self, label_characteristics: LabelCharacteristics) -> Predictor:
+    def _create_predictor(self, feature_characteristics: FeatureCharacteristics,
+                          label_characteristics: LabelCharacteristics) -> Predictor:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
 
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
         :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
         :return:                        The `Predictor` that has been created
         """
         pass
 
-    def _create_probability_predictor(self, label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
+    def _create_probability_predictor(self, feature_characteristics: FeatureCharacteristics,
+                                      label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
         """
         Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
         estimates.
 
-        :param label_matrix:    The ground truth label matrix
-        :return:                The `Predictor` that has been created or None, if the prediction of probabilities is not
-                                supported
+        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
+        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
+        :return:                        The `Predictor` that has been created or None, if the prediction of
+                                        probabilities is not supported
         """
         return None
 
