@@ -137,7 +137,7 @@ class FeatureCharacteristics:
         """
         self.feature_matrix = feature_matrix
 
-    def get_num_examples(self):
+    def get_num_examples(self) -> int:
         """
         Returns the number of examples.
 
@@ -145,13 +145,16 @@ class FeatureCharacteristics:
         """
         return self.feature_matrix.get_num_rows()
 
-    def get_num_features(self):
+    def get_num_features(self) -> int:
         """
         Returns the number of features.
 
         :return: The number of features
         """
         return self.feature_matrix.get_num_cols()
+
+    def is_sparse(self) -> bool:
+        return self.feature_matrix.is_sparse()
 
 
 class LabelCharacteristics:
@@ -166,7 +169,7 @@ class LabelCharacteristics:
         self.label_matrix = label_matrix
         self.label_cardinality = None
 
-    def get_num_examples(self):
+    def get_num_examples(self) -> int:
         """
         Returns the number of examples.
 
@@ -174,7 +177,7 @@ class LabelCharacteristics:
         """
         return self.label_matrix.get_num_rows()
 
-    def get_num_labels(self):
+    def get_num_labels(self) -> int:
         """
         Returns the number of labels.
 
@@ -182,7 +185,10 @@ class LabelCharacteristics:
         """
         return self.label_matrix.get_num_cols()
 
-    def get_label_cardinality(self):
+    def is_sparse(self) -> bool:
+        return self.label_matrix.is_sparse()
+
+    def get_label_cardinality(self) -> float:
         """
         Returns the label cardinality.
         
