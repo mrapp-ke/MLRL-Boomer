@@ -1,7 +1,7 @@
 name: 'Manylinux'
 inputs:
   python-versions:
-    description: 'A comma-separated list of Python versions to build against'
+    description: 'A space-separated list of Python versions to build against'
     type: string
     required: true
     default: 'cp37-cp37m'
