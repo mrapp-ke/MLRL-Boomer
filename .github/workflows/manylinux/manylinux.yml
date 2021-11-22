@@ -3,6 +3,8 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
 on:
+  push:
+    branches: [ development ]
   release:
     types: [ published ]
     branches: [ master ]
