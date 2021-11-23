@@ -80,8 +80,6 @@ install_cpp: compile_cpp
 	${VENV_ACTIVATE} && (\
 	    cd cpp/build/ && ${MESON_INSTALL}; \
 	) && ${VENV_DEACTIVATE}
-	cp -r cpp/build/subprojects/common/* python/subprojects/boosting/mlrl/boosting/cython/
-	cp -r cpp/build/subprojects/common/* python/subprojects/seco/mlrl/seco/cython/
 
 install_cython: compile_cython
 	@echo "Installing extension modules into source tree..."
