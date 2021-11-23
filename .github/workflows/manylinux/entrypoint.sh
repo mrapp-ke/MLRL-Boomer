@@ -14,6 +14,8 @@ for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
   for WHEEL in python/subprojects/*/dist/*.whl; do
     if [[ "${WHEEL}" != "python/subprojects/testbed/"* ]]; then
       auditwheel repair ${WHEEL} || { echo "Failed to repair wheel."; auditwheel show ${WHEEL}; exit 1; }
+    else
+      echo "Ignoring wheel ${WHEEL}."
     fi
   done
 
