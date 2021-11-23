@@ -33,3 +33,4 @@ jobs:
           pip install --upgrade pip
           pip install twine
           twine upload --non-interactive wheelhouse/out/*
+        continue-on-error: true
