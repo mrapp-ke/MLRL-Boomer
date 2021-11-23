@@ -23,7 +23,7 @@ for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
 
   for WHEEL in wheelhouse/*.whl; do
     mkdir -p wheelhouse/${VERSION}/
-    mv ${WHEEL} wheelhouse/${VERSION}/
+    mv $WHEEL ${WHEEL//-py3-/-${VERSION}-}
   done
 
   deactivate
