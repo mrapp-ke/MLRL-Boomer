@@ -120,8 +120,7 @@ doc: install
 	    ${SPHINX_APIDOC} -o doc/python/common/ python/subprojects/common/mlrl/ **/cython; \
 	    ${SPHINX_BUILD} doc/python/common/ doc/apidoc/api/python/common/; \
 	    ${SPHINX_APIDOC} -o doc/python/boosting/ python/subprojects/boosting/mlrl/ **/cython; \
-	    LD_LIBRARY_PATH=cpp/build/subprojects/common/ \
-	        ${SPHINX_BUILD} doc/python/boosting/ doc/apidoc/api/python/boosting/; \
+	    ${SPHINX_BUILD} doc/python/boosting/ doc/apidoc/api/python/boosting/; \
 	    ${SPHINX_APIDOC} -o doc/python/testbed/ python/subprojects/testbed/mlrl/; \
 	    ${SPHINX_BUILD} doc/python/testbed/ doc/apidoc/api/python/testbed/; \
 	    ${SPHINX_BUILD} doc/ doc/_build/; \
