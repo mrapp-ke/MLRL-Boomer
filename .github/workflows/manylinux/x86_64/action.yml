@@ -1,4 +1,4 @@
-name: 'Manylinux'
+name: 'Manylinux_x86_64'
 inputs:
   python-versions:
     description: 'A space-separated list of Python versions to build against'
