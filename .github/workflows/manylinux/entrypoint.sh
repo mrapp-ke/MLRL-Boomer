@@ -12,7 +12,8 @@ for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
   pip install auditwheel
 
   for WHEEL in python/subprojects/*/dist/*.whl; do
-    auditwheel repair ${WHEEL} \
+    ls -l cpp/build/subprojects/common/
+    LD_LIBRARY_PATH=cpp/build/subprojects/common/ auditwheel repair ${WHEEL} \
       || { echo "Failed to repair wheel."; auditwheel show ${WHEEL}; exit 1; }
   done
 
