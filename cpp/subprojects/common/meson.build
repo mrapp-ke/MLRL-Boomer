@@ -112,4 +112,6 @@ version = fs.read('../../../VERSION')
 # Library declaration
 common_lib = library('mlrl' + meson.project_name(), source_files, include_directories : include_directories,
                      dependencies : dependencies, version : version, install : true, install_dir : install_dir)
-common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
+common_static_lib = static_library('mlrl' + meson.project_name(), source_files,
+                                   include_directories : include_directories, dependencies : dependencies)
+common_dep = declare_dependency(include_directories : include_directories, link_with : common_static_lib)
