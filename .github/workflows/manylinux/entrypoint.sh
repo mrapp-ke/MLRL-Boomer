@@ -12,7 +12,9 @@ for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
   pip install auditwheel
 
   for WHEEL in python/subprojects/*/dist/*.whl; do
-    auditwheel show ${WHEEL} && auditwheel repair ${WHEEL} || { echo "Failed to repair wheel."; exit 1; }
+    if [[ auditwheel show ${WHEEL} ]]; then
+      auditwheel repair ${WHEEL} || { echo "Failed to repair wheel."; exit 1; }
+    fi
   done
 
   deactivate
