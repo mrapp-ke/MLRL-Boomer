@@ -283,9 +283,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         head_type = parse_param("head_type", self.__get_preferred_head_type(), HEAD_TYPE_VALUES)
         default_rule_head_type = HEAD_TYPE_COMPLETE if self._use_default_rule(feature_characteristics,
                                                                               label_characteristics) else head_type
-        num_threads = create_num_threads(
-            self.__get_preferred_parallel_statistic_update(head_type=default_rule_head_type),
-            'parallel_statistic_update')
+        num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(label_characteristics),
+                                         'parallel_statistic_update')
         loss_function = self.__create_loss_function()
         evaluation_measure = self.__create_loss_function()
         label_binning_factory = self.__create_label_binning_factory()
@@ -321,8 +320,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def _create_thresholds_factory(self, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics) -> ThresholdsFactory:
-        num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(
-            head_type=self.__get_preferred_head_type()), 'parallel_statistic_update')
+        num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(label_characteristics),
+                                         'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
     def _create_rule_induction(self, feature_characteristics: FeatureCharacteristics,
@@ -506,11 +505,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                     return BooleanOption.TRUE.value
         return parallel_rule_refinement
 
-    def __get_preferred_parallel_statistic_update(self, head_type: str) -> str:
+    def __get_preferred_parallel_statistic_update(self, label_characteristics: LabelCharacteristics) -> str:
         parallel_statistic_update = self.parallel_statistic_update
 
         if parallel_statistic_update == AUTOMATIC:
-            if head_type != HEAD_TYPE_SINGLE or self.loss in NON_DECOMPOSABLE_LOSSES:
+            if self.loss in NON_DECOMPOSABLE_LOSSES and label_characteristics.get_num_labels() > 20:
                 return BooleanOption.TRUE.value
             else:
                 return BooleanOption.FALSE.value
