@@ -28,8 +28,8 @@ jobs:
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-          TWINE_ARGS: ${{ secrets.TWINE_ARGS }}
+          TWINE_REPOSITORY: ${{ secrets.PYPI_REPOSITORY }}
         run: |
           pip install --upgrade pip
           pip install twine
-          twine upload "$TWINE_ARGS" wheelhouse/out/*
+          twine upload --non-interactive wheelhouse/out/*
