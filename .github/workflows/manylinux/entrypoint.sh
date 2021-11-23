@@ -14,7 +14,7 @@ for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
   for WHEEL in python/subprojects/*/dist/*.whl; do
     ls -l cpp/build/subprojects/common/
     LD_LIBRARY_PATH=cpp/build/subprojects/common/ auditwheel repair ${WHEEL} \
-      || { echo "Failed to repair wheel."; auditwheel show ${WHEEL}; exit 1; }
+      || { echo "Failed to repair wheel."; auditwheel -v show ${WHEEL}; exit 1; }
   done
 
   deactivate
