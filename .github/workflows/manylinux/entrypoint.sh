@@ -17,14 +17,14 @@ for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
       auditwheel repair ${WHEEL} || { echo "Failed to repair wheel."; auditwheel show ${WHEEL}; exit 1; }
     else
       echo "Keeping wheel ${WHEEL} as it is."
-      OUT_DIR = "wheelhouse/pure/"
+      OUT_DIR="wheelhouse/pure/"
       mkdir -p ${OUT_DIR}
       cp -n ${WHEEL} ${OUT_DIR}
     fi
   done
 
   for WHEEL in wheelhouse/*.whl; do
-    OUT_DIR = "wheelhouse/${VERSION}/"
+    OUT_DIR="wheelhouse/${VERSION}/"
     mkdir -p ${OUT_DIR}
     mv $WHEEL ${OUT_DIR}/${WHEEL//-py3-/-${VERSION}-}
   done
