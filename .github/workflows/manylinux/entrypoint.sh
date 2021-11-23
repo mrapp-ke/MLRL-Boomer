@@ -23,11 +23,15 @@ for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
     fi
   done
 
-  for WHEEL in wheelhouse/*.whl; do
-    OUT_DIR="wheelhouse/${VERSION}/"
+  cd wheelhouse/
+
+  for WHEEL in *.whl; do
+    OUT_DIR="${VERSION}_${PLAT}/"
     mkdir -p ${OUT_DIR}
     mv $WHEEL ${OUT_DIR}/${WHEEL//-py3-/-${VERSION}-}
   done
+
+  cd ..
 
   deactivate
   make clean
