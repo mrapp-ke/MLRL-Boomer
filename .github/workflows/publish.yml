@@ -1,7 +1,5 @@
 name: 'Publish'
 on:
-  push:
-    branches: [ development ]
   release:
     types: [ published ]
     branches: [ master ]
