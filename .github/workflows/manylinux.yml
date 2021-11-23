@@ -13,6 +13,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Build
         uses: ./.github/workflows/manylinux/
+        with:
+          python-versions: 'cp37-cp37m cp38-cp38 cp39-cp39'
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
