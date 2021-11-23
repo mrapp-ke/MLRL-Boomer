@@ -16,8 +16,14 @@ for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
       auditwheel repair ${WHEEL} || { echo "Failed to repair wheel."; auditwheel show ${WHEEL}; exit 1; }
     else
       echo "Keeping wheel ${WHEEL} as it is."
-      cp ${WHEEL} wheelhouse/
+      mkdir -p wheelhouse/pure/
+      cp -n ${WHEEL} wheelhouse/pure/
     fi
+  done
+
+  for WHEEL in wheelhouse/*.whl; do
+    mkdir -p wheelhouse/${VERSION}/
+    mv ${WHEEL} wheelhouse/${VERSION}/
   done
 
   deactivate
