@@ -16,6 +16,7 @@ cython_module_names = [
 common_project = subproject('common')
 python_dep = common_project.get_variable('python_dep')
 numpy_dep = common_project.get_variable('numpy_dep')
+common_lib = common_project.get_variable('common_lib')
 common_include = common_project.get_variable('common_include')
 
 cpp = meson.get_compiler('cpp')
@@ -26,6 +27,7 @@ seco_include = declare_dependency(include_directories : include_directories(cpp_
 dependencies = [
     python_dep,
     numpy_dep,
+    common_lib,
     common_include,
     seco_lib,
     seco_include
