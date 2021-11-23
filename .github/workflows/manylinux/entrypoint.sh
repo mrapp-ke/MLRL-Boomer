@@ -5,6 +5,7 @@ PYTHON_VERSIONS_ARRAY=(${PYTHON_VERSIONS// / })
 
 for VERSION in "${PYTHON_VERSIONS_ARRAY[@]}"; do
   PYTHON="/opt/python/${VERSION}/bin/python"
+  [[ -f ${PYTHON} ]] || { echo "Python installation ${PYTHON} does not exist."; exit 1; }
   ln -fs ${PYTHON} /usr/bin/python
   make wheel \
     || { echo "Building wheels failed."; exit 1; }
