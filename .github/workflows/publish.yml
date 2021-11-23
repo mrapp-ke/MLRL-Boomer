@@ -20,3 +20,16 @@ jobs:
         with:
           path: './wheelhouse/out/'
           if-no-files-found: error
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Upload to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          TWINE_ARGS: ${{ secrets.TWINE_ARGS }}
+        run: |
+          pip install --upgrade pip
+          pip install twine
+          twine upload "$TWINE_ARGS" wheelhouse/out/*
