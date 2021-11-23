@@ -7,6 +7,6 @@ inputs:
     default: 'cp39-cp39'
 runs:
   using: 'docker'
-  image: 'Dockerfile_x86_64'
+  image: '../Dockerfile_x86_64'
   args:
     - ${{ inputs.python-versions }}
