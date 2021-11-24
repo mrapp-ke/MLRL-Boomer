@@ -509,7 +509,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         parallel_statistic_update = self.parallel_statistic_update
 
         if parallel_statistic_update == AUTOMATIC:
-            if self.loss in NON_DECOMPOSABLE_LOSSES and label_characteristics.get_num_labels() > 20:
+            if self.loss in NON_DECOMPOSABLE_LOSSES and label_characteristics.get_num_labels() >= 20:
                 return BooleanOption.TRUE.value
             else:
                 return BooleanOption.FALSE.value
