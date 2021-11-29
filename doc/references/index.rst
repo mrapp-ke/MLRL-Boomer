@@ -3,8 +3,6 @@
 References
 ----------
 
-.. references:
-
 If you use the BOOMER algorithm in a scientific publication, we would appreciate citations to one of the following papers.
 
 **Learning Gradient Boosted Multi-label Classification Rules**
