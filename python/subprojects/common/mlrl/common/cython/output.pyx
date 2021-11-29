@@ -123,8 +123,8 @@ cdef inline object __create_csr_matrix(BinarySparsePredictionMatrix* prediction_
     cdef uint32 num_rows = prediction_matrix.getNumRows()
     cdef uint32 num_cols = prediction_matrix.getNumCols()
     cdef uint32 num_non_zero_elements = prediction_matrix.getNumNonZeroElements()
-    cdef uint8[::1] data = array_uint8(num_non_zero_elements)
-    cdef uint32[::1] col_indices = array_uint32(num_non_zero_elements)
+    cdef uint8[::1] data = array_uint8(num_non_zero_elements) if num_non_zero_elements > 0 else None
+    cdef uint32[::1] col_indices = array_uint32(num_non_zero_elements) if num_non_zero_elements > 0 else None
     cdef uint32[::1] row_indices = array_uint32(num_rows + 1)
     cdef BinarySparsePredictionMatrix.const_iterator it
     cdef BinarySparsePredictionMatrix.const_iterator end
@@ -143,7 +143,8 @@ cdef inline object __create_csr_matrix(BinarySparsePredictionMatrix* prediction_
             postincrement(it)
 
     row_indices[num_rows] = i
-    return csr_matrix((np.asarray(data), np.asarray(col_indices), np.asarray(row_indices)), shape=(num_rows, num_cols))
+    return csr_matrix((np.asarray([] if data is None else data), np.asarray([] if col_indices is None else col_indices),
+                       np.asarray(row_indices)), shape=(num_rows, num_cols))
 
 
 cdef class AbstractBinaryPredictor(SparsePredictor):
