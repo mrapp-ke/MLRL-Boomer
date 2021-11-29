@@ -1,7 +1,7 @@
 Python API Documentation
 ------------------------
 
-We provide the following Python modules for easy use of the different algorithms that are included in this project:
+The following Python modules that ease to use the different algorithms that are included in this project are available:
 
 * `Python module "mlrl-common" <python/common/html/index.html>`_
 * `Python module "mlrl-boosting" <python/boosting/html/index.html>`_
