@@ -6,3 +6,4 @@ Quickstart
 .. include:: testbed.rst
 .. include:: compilation.rst
 .. include:: parameters.rst
+.. include:: datasets.rst
