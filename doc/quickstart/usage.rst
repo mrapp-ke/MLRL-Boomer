@@ -3,11 +3,52 @@
 Using the Algorithm
 -------------------
 
-The Python script ``python/main_boomer.py`` allows to run experiments on a specific data set using different configurations of the learning algorithm. Besides the training and evaluation of models, the script does also allow to write experimental results into an output directory. Furthermore, the learned models can be stored on disk for later use.
+The BOOMER algorithm is implemented by the class ``Boomer`` that is part of the `mlrl-boomer <https://pypi.org/project/mlrl-boomer/>`__ package. As it follows the conventions of a scikit-learn `estimator <https://scikit-learn.org/stable/glossary.html#term-estimators>`_, it can be used similarly to other classification methods that are included in this popular machine learning framework. The `getting started guide <https://scikit-learn.org/stable/getting_started.html>`_ that is provided by the scikit-learn developers is a good starting point for learning about the framework's functionalities and how to use them.
 
-In the following, an example of how the script can be executed is shown:
+**Fitting an estimator to training data**
 
-.. code-block:: text
+An illustration of how the algorithm can be fit to exemplary training data is shown in the following:
 
-   venv/bin/python3 python/main_boomer.py --data-dir /path/to/data --output-dir /path/to/results/emotions --model-dir /path/to/models/emotions --dataset emotions --folds 10 --max-rules 1000 --instance-sampling with-replacement --feature-sampling without-replacement --loss logistic-label-wise --shrinkage 0.3 --pruning None --head-type single-label
+.. code-block:: python
 
+   from mlrl.boosting import Boomer
+
+   clf = Boomer()  # Create a new estimator
+   x = [[  1,  2,  3],  # Two training examples with three features
+        [ 11, 12, 13]]
+   y = [[1, 0],  # Ground truth labels of each training example
+        [0, 1]]
+   clf.fit(x, y)
+
+The ``fit`` method accepts two inputs, ``x`` and ``y``:
+
+* A two-dimensional feature matrix ``x``, where each row corresponds to a training example and each column corresponds to a particular feature.
+* An one- or two-dimensional binary feature matrix ``y``, where each row corresponds to a training example and each column corresponds to a label. If an element in the matrix is unlike zero, it indicates that the respective label is relevant to an example. Elements that are equal to zero denote irrelevant labels. In multi-label classification, where each example may be associated with several labels, the label matrix is two-dimensional. However, the BOOMER algorithm is also capable of dealing with traditional binary classification problems, where an one-dimensional vector of ground truth labels is provided to the learning algorithm.
+
+Both, ``x`` and ``y``, are expected to be `numpy arrays <https://numpy.org/doc/stable/reference/generated/numpy.array.html>`_ or equivalent `array-like <https://scikit-learn.org/stable/glossary.html#term-array-like>`_ data types. In addition, the BOOMER algorithm does also support to use `scipy sparse matrices <https://docs.scipy.org/doc/scipy/reference/sparse.html>`_.
+
+In the previous example the BOOMER algorithm's default configuration is used. However, in many cases it is desirable to adjust its behavior by providing custom values for one or several of its parameters. This can be achieved by passing the names and values of the respective parameters as constructor arguments:
+
+.. code-block:: python
+
+   clf = Boomer(max_rules=100, loss='logistic_example_wise')
+
+A description of all available parameters is available in the section :ref:`parameters`.
+
+**Using an estimator for making predictions**
+
+Once the estimator has been fitted to the training data, its ``predict`` method can be used to obtain predictions for previously unseen examples:
+
+.. code-block:: python
+
+   pred = clf.predict(x)
+   print(pred)
+
+In this example, we use the estimator to predict for the same data that has previously been used for training. This results in the original ground truth labels to be printed:
+
+.. code-block:: python
+
+   [[1 0]
+    [0 1]]
+
+In practice, one usually retrieves the data from files rather than manually specifying the values of the feature and label matrices. Links to benchmark datasets that are commonly used to evaluate the performance of multi-label classifiers, together with suggestions on how to use them, are provided in the section :ref:`datasets`.
