@@ -69,6 +69,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IRuleEvaluation::calculatePrediction`
+             */
             const IScoreVector& calculatePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
                 uint32 numPredictions = scoreVector_.getNumElements();
 

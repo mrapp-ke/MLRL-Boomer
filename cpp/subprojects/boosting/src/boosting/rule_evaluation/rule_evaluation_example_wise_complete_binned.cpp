@@ -183,6 +183,9 @@ namespace boosting {
                 delete[] criteria_;
             }
 
+            /**
+             * @see `IRuleEvaluation::calculatePrediction`
+             */
             const IScoreVector& calculatePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
                 // Calculate label-wise criteria...
                 uint32 numLabels = statisticVector.getNumElements();

@@ -86,6 +86,9 @@ namespace seco {
                         delete totalCoverableSumVector_;
                     }
 
+                    /**
+                     * @see `IStatisticsSubset::addToMissing`
+                     */
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
                         if (totalCoverableSumVector_ == nullptr) {
@@ -100,12 +103,18 @@ namespace seco {
                                                       *statistics_.weightMatrixPtr_, -weight);
                     }
 
+                    /**
+                     * @see `IStatisticsSubset::addToSubset`
+                     */
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
                         sumVector_.addToSubset(statisticIndex, statistics_.labelMatrix_,
                                                *statistics_.majorityLabelVectorPtr_, *statistics_.weightMatrixPtr_,
                                                labelIndices_, weight);
                     }
 
+                    /**
+                     * @see `IStatisticsSubset::resetSubset`
+                     */
                     void resetSubset() override {
                         // Allocate a vector for storing the accumulated confusion matrices, if necessary...
                         if (accumulatedSumVector_ == nullptr) {
@@ -119,6 +128,9 @@ namespace seco {
                         sumVector_.clear();
                     }
 
+                    /**
+                     * @see `IStatisticsSubset::calculatePrediction`
+                     */
                     const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
                         const ConfusionMatrixVector& sumsOfConfusionMatrices =
                             accumulated ? *accumulatedSumVector_ : sumVector_;
