@@ -48,11 +48,11 @@ A technical report on the implementation of the BOOMER algorithm was published f
 .. code-block:: bibtex
 
   @article{rapp2021boomer,
-    title = {{BOOMER} -- An Algorithm for Learning Gradient Boosted Multi-label Classification Rules},
-    author = {Rapp, Michael},
-    journal = {Software Impacts},
-    volume = {10},
-    pages = {100137},
-    year = {2021},
-    publisher = {Elsevier}
+    title={{BOOMER} -- An Algorithm for Learning Gradient Boosted Multi-label Classification Rules},
+    author={Rapp, Michael},
+    journal={Software Impacts},
+    volume={10},
+    pages={100137},
+    year={2021},
+    publisher={Elsevier}
   }
