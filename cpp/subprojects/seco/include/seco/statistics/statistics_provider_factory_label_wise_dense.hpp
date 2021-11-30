@@ -45,8 +45,14 @@ namespace seco {
                 std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
                 std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr);
 
+            /**
+             * @see `IStatisticsProviderFactory::create`
+             */
             std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const override;
 
+            /**
+             * @see `IStatisticsProviderFactory::create`
+             */
             std::unique_ptr<IStatisticsProvider> create(const CsrLabelMatrix& labelMatrix) const override;
 
     };
