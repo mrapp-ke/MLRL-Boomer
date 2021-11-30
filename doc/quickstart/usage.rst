@@ -1,7 +1,7 @@
-.. _running:
+.. _usage:
 
-Running the Algorithm
----------------------
+Using the Algorithm
+-------------------
 
 The Python script ``python/main_boomer.py`` allows to run experiments on a specific data set using different configurations of the learning algorithm. Besides the training and evaluation of models, the script does also allow to write experimental results into an output directory. Furthermore, the learned models can be stored on disk for later use.
 
