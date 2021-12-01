@@ -1,3 +1,5 @@
+.. _cppapi:
+
 C++ API Documentation
 ---------------------
 

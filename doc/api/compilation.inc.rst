@@ -1,4 +1,6 @@
-Building the Project
+.. _compilation:
+
+Building from Source
 --------------------
 
 The algorithm provided by this project is mostly implemented in C++. In addition, a Python wrapper that implements the scikit-learn API is provided. To integrate the underlying C++ implementation with Python, `Cython <https://cython.org>`_ is used.
