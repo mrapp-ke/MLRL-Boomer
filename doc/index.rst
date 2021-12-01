@@ -16,6 +16,8 @@ This document is intended for users and developers who are interested in the alg
 
    quickstart/index
 
+   testbed/index
+
    api/index
 
    references/index

@@ -14,7 +14,7 @@ The BOOMER algorithm is provided as part of the Python package `mlrl-boomer <htt
 
 An example of how to use the algorithm in your own Python program can be found in the section :ref:`usage` below.
 
-In addition, the package `mlrl-testbed <https://pypi.org/project/mlrl-testbed/>`_ can optionally be installed via the following command:
+In addition, the package `mlrl-testbed <https://pypi.org/project/mlrl-testbed/>`__ can optionally be installed via the following command:
 
 .. code-block:: text
 
