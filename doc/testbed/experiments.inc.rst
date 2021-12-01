@@ -19,4 +19,4 @@ The program requires the data set files to be provided in the `Mulan format <htt
 #. An `.arff <http://weka.wikispaces.com/ARFF>`_ file that specifies the feature values and ground truth labels of the training examples.
 #. A .xml file that specifies the names of the labels.
 
-The Mulan dataset format is commonly used for benchmark datasets that allow to compare the performance of different machine learning approaches in empirical studies. A list of publicly available benchmark datasets is provided in the section :ref:`datasets`.
+The Mulan dataset format is commonly used for benchmark datasets that allow to compare the performance of different machine learning approaches in empirical studies. A collection of publicly available benchmark datasets is available `here <https://github.com/mrapp-ke/Boomer-Datasets>`_.
