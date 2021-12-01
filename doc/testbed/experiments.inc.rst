@@ -1,9 +1,7 @@
-.. _testbed:
+.. _experiments:
 
-Command Line API
-----------------
-
-TODO
+Running Experiments
+-------------------
 
 .. note::
     Each parameter is identified by an unique name and must be specified according to the following syntax:
