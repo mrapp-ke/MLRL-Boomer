@@ -5,7 +5,7 @@ Command Line Arguments
 
 In addition to the mandatory arguments that must be provided to the command line API to specify the dataset to be used for training, a wide variety of optional arguments are available as well. In the following, we provide an overview of these arguments and discuss their respective purposes.
 
-* ``--folds`` (Default value = `1`)
+* ``--folds`` (Default value = ``1``)
 
   * The total number of folds to be used for cross validation. Must be greater than 1 or 1, if no cross validation should be used. If set to 1, the program will try to use predefined splits of a dataset into training and test data. Given that ``name`` is provided as the value of the argument ``--dataset``, the former must be provided as a file named ``name-train.arff``, whereas the latter is retrieved from a file with the name ``name-test.arff``. If no such files are available or if cross validation should be used, the program will look for a file with the name ``name.arff`` instead.
 
