@@ -5,5 +5,4 @@ Quickstart
 .. include:: usage.inc.rst
 .. include:: parameters.inc.rst
 .. include:: testbed.inc.rst
-.. include:: compilation.inc.rst
 .. include:: datasets.inc.rst
