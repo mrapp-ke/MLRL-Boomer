@@ -21,6 +21,7 @@ venv/
 .vscode/
 
 # Experiments
+data/
 results/
 models/
 parameters/
