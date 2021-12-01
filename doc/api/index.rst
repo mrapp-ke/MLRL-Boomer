@@ -1,3 +1,5 @@
+.. _api:
+
 Documentation for Developers
 ============================
 
