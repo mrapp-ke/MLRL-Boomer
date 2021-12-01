@@ -24,4 +24,4 @@ In the following paper, the predictive performance of the BOOMER algorithm in te
 
 In the following paper, a novel rule learning approach for discovering syndrome definitions for the early detection of infectious diseases is presented. The implementation of the proposed method, which is available at `Github <https://github.com/mrapp-ke/SyndromeLearner>`__, is based on this project's source code. A preprint of the paper is available at `arxiv.org <https://arxiv.org/pdf/2110.09208.pdf>`__.
 
-*Michael Rapp, Moritz Kulessa, Eneldo Loza Mencía and Johannes Fürnkranz. Correlation-based Discovery of Disease Patterns for Syndromic Surveillance. In: Frontiers in Big Data, 2021.
+*Michael Rapp, Moritz Kulessa, Eneldo Loza Mencía and Johannes Fürnkranz. Correlation-based Discovery of Disease Patterns for Syndromic Surveillance. In: Frontiers in Big Data, 2021.*
