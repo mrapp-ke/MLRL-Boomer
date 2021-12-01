@@ -48,6 +48,8 @@ An extensive user guide, as well as an API documentation for developers, is avai
 * [Examples](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#running-the-algorithm) of how the algorithm can be run.
 * An overview of available [parameters](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#parameters).
 
+A collection of benchmark datasets that are compatible with the algorithm are provided in a separate [repository](https://github.com/mrapp-ke/Boomer-Datasets).
+
 For an overview of changes and new features that have been included in past releases, please refer to the [changelog](https://github.com/mrapp-ke/Boomer/blob/master/CHANGELOG.md).
 
 ## License
