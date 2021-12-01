@@ -18,8 +18,6 @@ This document is intended for users and developers who are interested in the alg
 
    testbed/index
 
-   data/index
-
    api/index
 
    references/index

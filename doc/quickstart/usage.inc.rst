@@ -51,4 +51,4 @@ In this example, we use the estimator to predict for the same data that has prev
    [[1 0]
     [0 1]]
 
-In practice, one usually retrieves the data from files rather than manually specifying the values of the feature and label matrices. Links to benchmark datasets that are commonly used to evaluate the performance of multi-label classifiers, together with suggestions on how to use them, are provided in the section :ref:`datasets`.
+In practice, one usually retrieves the data from files rather than manually specifying the values of the feature and label matrices. A collection of benchmark datasets can be found `here <https://github.com/mrapp-ke/Boomer-Datasets>`_.
