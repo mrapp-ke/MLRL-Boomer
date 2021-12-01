@@ -1,9 +1,9 @@
 Quickstart
 ==========
 
-.. include:: installation.rst
-.. include:: usage.rst
-.. include:: parameters.rst
-.. include:: testbed.rst
-.. include:: compilation.rst
-.. include:: datasets.rst
+.. include:: installation.inc.rst
+.. include:: usage.inc.rst
+.. include:: parameters.inc.rst
+.. include:: testbed.inc.rst
+.. include:: compilation.inc.rst
+.. include:: datasets.inc.rst
