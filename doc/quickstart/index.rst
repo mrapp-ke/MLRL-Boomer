@@ -8,4 +8,3 @@ This guide is intended for users who want to use the BOOMER algorithm in their o
 .. include:: installation.inc.rst
 .. include:: usage.inc.rst
 .. include:: parameters.inc.rst
-.. include:: datasets.inc.rst
