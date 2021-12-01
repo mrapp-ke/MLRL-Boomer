@@ -1,6 +1,6 @@
 .. _datasets:
 
-Datasets
-========
+Benchmark Datasets
+==================
 
 TODO
