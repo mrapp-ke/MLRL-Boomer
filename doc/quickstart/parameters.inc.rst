@@ -96,7 +96,7 @@ The following parameters allow to control the behavior of the algorithm:
 
 * ``recalculate_predictions`` (Default value = ``'true'``)
 
-  * ``'true'`` The predictions of rules are recalculated on the entire training data, if the parameter --instance-sampling is not set to None.
+  * ``'true'`` The predictions of rules are recalculated on the entire training data, if the parameter ``instance_sampling`` is not set to None.
   * ``'false'`` The predictions of rules are not recalculated.
 
 * ``holdout`` (Default value = ``None``)
@@ -117,7 +117,7 @@ The following parameters allow to control the behavior of the algorithm:
 * ``early_stopping`` (Default value = ``None``)
 
   * ``None`` No strategy for early-stopping is used.
-  * ``'loss'`` Stops the induction of new rules as soon as the performance of the model does not improve on a holdout set, according to the loss function. This parameter does only have an effect if the parameter --holdout is set to a value greater than 0. The following options may be provided using the bracket notation:
+  * ``'loss'`` Stops the induction of new rules as soon as the performance of the model does not improve on a holdout set, according to the loss function. This parameter does only have an effect if the parameter ``holdout`` is set to a value greater than 0. The following options may be provided using the bracket notation:
 
     * ``min_rules`` (Default value = ``100``) The minimum number of rules. Must be at least 1.
     * ``update_interval`` (Default value = ``1``) The interval to be used to update the quality of the current model. For example, a value of 5 means that the model quality is assessed every 5 rules. Must be at least 1.
@@ -156,7 +156,7 @@ The following parameters allow to control the behavior of the algorithm:
 * ``pruning`` (Default value = ``None``)
 
   * ``None`` No pruning is used.
-  * ``'irep'``. Subsequent conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter --instance-sampling is not set to None.
+  * ``'irep'``. Subsequent conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter ``instance_sampling`` is not set to None.
 
 * ``min_coverage`` (Default value = ``1``)
 
