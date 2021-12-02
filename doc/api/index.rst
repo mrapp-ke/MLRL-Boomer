@@ -7,5 +7,6 @@ This section is intended for developers who are interested in the technical deta
 
 .. include:: structure.inc.rst
 .. include:: compilation.inc.rst
+.. include:: documentation.inc.rst
 .. include:: cpp.inc.rst
 .. include:: python.inc.rst
