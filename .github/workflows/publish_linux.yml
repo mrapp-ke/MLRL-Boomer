@@ -1,7 +1,5 @@
 name: 'Publish Linux Packages'
 on:
-  push:
-    branches: [ development ]
   release:
     types: [ published ]
     branches: [ master ]
@@ -11,8 +9,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Manylinux aarch64
-        uses: ./.github/actions/manylinux_aarch64/
+      - name: Manylinux x86_64
+        uses: ./.github/actions/manylinux_x86_64/
         with:
           python-versions: 'cp37-cp37m cp38-cp38 cp39-cp39'
       - name: Upload Artifacts
