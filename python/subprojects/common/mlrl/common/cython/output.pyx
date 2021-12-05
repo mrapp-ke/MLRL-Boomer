@@ -1,5 +1,5 @@
 """
-@author: Michael Rapp (mrapp@ke.tu-darmstadt.de)
+@author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from mlrl.common.cython._arrays cimport array_uint8, array_uint32, c_matrix_uint8, c_matrix_float64
 from mlrl.common.cython._data cimport CContiguousView
