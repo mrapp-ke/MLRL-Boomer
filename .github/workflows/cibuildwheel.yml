@@ -15,6 +15,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.3.0
         env:
           CIBW_BEFORE_ALL: make install_cpp install_cython
+          CIBW_BUILD_VERBOSITY: 1
         with:
           package-dir: python/subprojects/common
       - name: Upload Artifacts
