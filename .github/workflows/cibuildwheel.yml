@@ -13,6 +13,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.3.0
+        env:
+          CIBW_BEFORE_ALL: make install_cpp install_cython
+        with:
+          package-dir: python/subprojects/common
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
