@@ -1,0 +1,2 @@
+[tool.cibuildwheel]
+before-build = "make wheel"
