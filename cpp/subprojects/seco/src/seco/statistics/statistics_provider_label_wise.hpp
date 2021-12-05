@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #include "common/statistics/statistics_provider_factory.hpp"
 #include "seco/statistics/statistics_label_wise.hpp"
