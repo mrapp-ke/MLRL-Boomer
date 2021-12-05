@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 quay.io/pypa/manylinux2014_aarch64
+FROM --platform=linux/arm64/v8 quay.io/pypa/manylinux2014_aarch64
 ENV PLAT manylinux2014_aarch64
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
