@@ -5,7 +5,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from pathlib import Path
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
 
@@ -54,5 +54,6 @@ setup(
     package_data={
         "": ['*.so*']
     },
+    ext_modules=[Extension(name='*', sources=[])],
     zip_safe=True
 )
