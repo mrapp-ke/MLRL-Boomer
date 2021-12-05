@@ -1,2 +1,2 @@
 [tool.cibuildwheel]
-before-build = "make wheel && mkdir -p packages/ && cp python/subprojects/common/dist/*.whl packages/"
+before-build = "make wheel && cp python/subprojects/common/dist/*.whl . && cp python/subprojects/boosting/dist/*.whl ."
