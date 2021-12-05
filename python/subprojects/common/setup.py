@@ -5,7 +5,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from pathlib import Path
 
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
+from setuptools.dist import Distribution
+
+
+class BinaryDistribution(Distribution):
+
+    def has_ext_modules(self):
+        return True
+
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
 
@@ -54,6 +62,6 @@ setup(
     package_data={
         "": ['*.so*']
     },
-    ext_modules=[Extension(name='*', sources=[])],
+    distclass=BinaryDistribution,
     zip_safe=True
 )
