@@ -28,11 +28,8 @@ clean_cython:
 
 clean_compile: clean_cpp clean_cython
 
-clean_cpp_install:
-	rm -f python/subprojects/**/mlrl/**/cython/lib*.so*
-
-clean_cython_install:
-	rm -f python/subprojects/**/mlrl/**/cython/*.so
+clean_install:
+	rm -f python/subprojects/**/mlrl/**/cython/*.so*
 
 clean_wheel:
 	@echo "Removing Python build files..."
@@ -40,7 +37,6 @@ clean_wheel:
 	rm -rf python/subprojects/**/dist/
 	rm -rf python/subprojects/**/*.egg-info/
 
-clean_install: clean_cpp_install clean_cython_install clean_wheel
 
 clean_doc:
 	@echo "Removing documentation..."
