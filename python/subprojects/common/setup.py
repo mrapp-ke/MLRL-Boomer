@@ -46,10 +46,6 @@ def find_extensions(directory):
     return extensions
 
 
-EXT_MODULES = [
-    PrecompiledExtension('algorithm_builder', 'mlrl/common/cython/algorithm_builder.cpython-39-x86_64-linux-gnu.so')
-]
-
 setup(
     name='mlrl-common',
     version=VERSION,
