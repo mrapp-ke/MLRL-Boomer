@@ -3,19 +3,54 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+import os
+import shutil
 from pathlib import Path
 
-from setuptools import setup, find_packages
-from setuptools.dist import Distribution
-
-
-class BinaryDistribution(Distribution):
-
-    def has_ext_modules(self):
-        return True
-
+from setuptools import setup, find_packages, Extension
+from setuptools.command.build_ext import build_ext
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
+
+
+class PrecompiledExtension(Extension):
+
+    def __init__(self, name, path):
+        super().__init__(name, [])
+        self.name = name
+        self.path = path
+
+
+class PrecompiledExtensionBuilder(build_ext):
+
+    def build_extension(self, ext):
+        if isinstance(ext, PrecompiledExtension):
+            build_dir = Path(self.get_ext_fullpath(ext.name)).parent
+            target_file = Path(os.path.join(build_dir, ext.path))
+            os.makedirs(target_file.parent, exist_ok=True)
+            shutil.copy(ext.path, target_file)
+        else:
+            super().build_extension(ext)
+
+
+def find_extensions(directory):
+    extensions = []
+
+    for path, _, file_names in os.walk(directory):
+        for file_name in file_names:
+            extension_path = Path(os.path.join(path, file_name))
+            suffix = extension_path.suffix
+
+            if suffix == '.so' or suffix == '.pyd':
+                extension_name = file_name[:file_name.find('.')]
+                extensions.append(PrecompiledExtension(extension_name, extension_path))
+
+    return extensions
+
+
+EXT_MODULES = [
+    PrecompiledExtension('algorithm_builder', 'mlrl/common/cython/algorithm_builder.cpython-39-x86_64-linux-gnu.so')
+]
 
 setup(
     name='mlrl-common',
@@ -59,9 +94,7 @@ setup(
         'scikit-learn>=1.0.0'
     ],
     packages=find_packages(),
-    package_data={
-        "": ['*.so*']
-    },
-    distclass=BinaryDistribution,
+    ext_modules=find_extensions('mlrl'),
+    cmdclass={'build_ext': PrecompiledExtensionBuilder},
     zip_safe=True
 )
