@@ -16,7 +16,7 @@ jobs:
         env:
           CIBW_BEFORE_ALL: make install_cpp install_cython
           CIBW_BUILD_FRONTEND: build
-          CIBW_BUILD_VERBOSITY: 1
+          CIBW_ARCHS_LINUX: "x86_64 aarch64"
         with:
           package-dir: python/subprojects/common
       - name: Upload Artifacts
