@@ -18,6 +18,7 @@ jobs:
           CIBW_BEFORE_BUILD: make clean_install clean_wheel clean_cython install_cpp install_cython
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS_LINUX: auto64
+          CIBW_SKIP: 'pp* *musllinux*'
         with:
           package-dir: python/subprojects/common
       - name: Upload Artifacts
