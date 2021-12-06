@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build wheels
+      - name: Build wheels for package mlrl-common
         uses: pypa/cibuildwheel@v2.3.0
         env:
           CIBW_BEFORE_ALL: make install_cpp
@@ -21,6 +21,16 @@ jobs:
           CIBW_SKIP: 'pp* *musllinux*'
         with:
           package-dir: python/subprojects/common
+      - name: Build wheels for package mlrl-boosting
+        uses: pypa/cibuildwheel@v2.3.0
+        env:
+          CIBW_BEFORE_ALL: make install_cpp
+          CIBW_BEFORE_BUILD: make clean_install clean_wheel clean_cython install_cpp install_cython
+          CIBW_BUILD_FRONTEND: build
+          CIBW_ARCHS_LINUX: auto64
+          CIBW_SKIP: 'pp* *musllinux*'
+        with:
+          package-dir: python/subprojects/boosting
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
