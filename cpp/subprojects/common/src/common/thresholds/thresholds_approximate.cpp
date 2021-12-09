@@ -353,7 +353,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                     #pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) \
                     firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
-                    for (uint32 i = 0; i < numCovered; i++) {
+                    for (intp i = 0; i < numCovered; i++) {
                         uint32 exampleIndex = iterator[i];
                         predictionPtr->apply(*statisticsPtr, exampleIndex);
                     }
