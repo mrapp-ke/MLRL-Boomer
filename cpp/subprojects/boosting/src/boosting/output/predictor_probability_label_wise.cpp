@@ -43,7 +43,7 @@ namespace boosting {
         firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(transformationFunctionPtr) \
         schedule(dynamic) num_threads(numThreads_)
         for (intp i = 0; i < numExamples; i++) {
-            float64 scoreVector[numLabels] = {};
+            float64* scoreVector = new float64[numLabels] {};
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const Rule& rule = *it;
@@ -52,6 +52,7 @@ namespace boosting {
 
             applyTransformationFunction(&scoreVector[0], predictionMatrixPtr->row_begin(i), numLabels,
                                         *transformationFunctionPtr);
+            delete[] scoreVector;
         }
     }
 
@@ -70,9 +71,9 @@ namespace boosting {
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
         firstprivate(transformationFunctionPtr) schedule(dynamic) num_threads(numThreads_)
         for (intp i = 0; i < numExamples; i++) {
-            float64 scoreVector[numLabels] = {};
-            float32 tmpArray1[numFeatures];
-            uint32 tmpArray2[numFeatures] = {};
+            float64* scoreVector = new float64[numLabels] {};
+            float32* tmpArray1 = new float32[numFeatures];
+            uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
@@ -85,6 +86,9 @@ namespace boosting {
 
             applyTransformationFunction(&scoreVector[0], predictionMatrixPtr->row_begin(i), numLabels,
                                         *transformationFunctionPtr);
+            delete[] scoreVector;
+            delete[] tmpArray1;
+            delete[] tmpArray2;
         }
     }
 

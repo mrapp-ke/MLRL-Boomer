@@ -117,7 +117,7 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
         }
 
         // Remove empty bins and calculate thresholds...
-        uint32 mapping[numBins];
+        uint32* mapping = new uint32[numBins];
         uint32 n = 0;
 
         for (uint32 i = 0; i < numBins; i++) {
@@ -145,6 +145,8 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
                 binIndices.setBinIndex(i, mapping[binIndex]);
             }
         }
+
+        delete[] mapping;
     }
 
     return result;

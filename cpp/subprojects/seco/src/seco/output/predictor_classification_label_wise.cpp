@@ -162,7 +162,7 @@ namespace seco {
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
         firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
         for (intp i = 0; i < numExamples; i++) {
-            uint8 mask[numLabels] = {};
+            uint8* mask = new uint8[numLabels] {};
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const Rule& rule = *it;
@@ -173,6 +173,8 @@ namespace seco {
                     applyHead(head, *predictionMatrixPtr, &mask[0], i);
                 }
             }
+
+            delete[] mask;
         }
     }
 
@@ -190,9 +192,9 @@ namespace seco {
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
         num_threads(numThreads_)
         for (intp i = 0; i < numExamples; i++) {
-            uint8 mask[numLabels] = {};
-            float32 tmpArray1[numFeatures];
-            uint32 tmpArray2[numFeatures] = {};
+            uint8* mask = new uint8[numLabels] {};
+            float32* tmpArray1 = new float32[numFeatures];
+            uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
@@ -208,6 +210,10 @@ namespace seco {
 
                 n++;
             }
+
+            delete[] mask;
+            delete[] tmpArray1;
+            delete[] tmpArray2;
         }
     }
 
@@ -257,8 +263,8 @@ namespace seco {
         firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
         for (intp i = 0; i < numExamples; i++) {
             BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
-            float32 tmpArray1[numFeatures];
-            uint32 tmpArray2[numFeatures] = {};
+            float32* tmpArray1 = new float32[numFeatures];
+            uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
@@ -274,6 +280,9 @@ namespace seco {
 
                 n++;
             }
+
+            delete[] tmpArray1;
+            delete[] tmpArray2;
         }
 
         return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);

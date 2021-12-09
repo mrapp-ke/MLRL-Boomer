@@ -122,7 +122,7 @@ static inline void sampleIndicesWithoutReplacementViaRandomPermutation(PartialIn
                                                                        Iterator iterator, uint32 numTotal, RNG& rng) {
     uint32 numSamples = indexVector.getNumElements();
     PartialIndexVector::iterator sampleIterator = indexVector.begin();
-    uint32 unusedIndices[numTotal - numSamples];
+    uint32* unusedIndices = new uint32[numTotal - numSamples];
 
     for (uint32 i = 0; i < numSamples; i++) {
         sampleIterator[i] = iterator[i];
@@ -134,6 +134,7 @@ static inline void sampleIndicesWithoutReplacementViaRandomPermutation(PartialIn
 
     randomPermutation<PartialIndexVector::iterator, uint32*>(sampleIterator, &unusedIndices[0], numSamples, numTotal,
                                                              numSamples, rng);
+    delete[] unusedIndices;
 }
 
 /**
