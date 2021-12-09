@@ -64,7 +64,7 @@ EqualWidthFeatureBinning::EqualWidthFeatureBinning(float32 binRatio, uint32 minB
     if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins); }
 }
 
-static inline constexpr uint32 getBinIndex(float32 value, float32 min, float32 width, uint32 numBins) {
+static inline uint32 getBinIndex(float32 value, float32 min, float32 width, uint32 numBins) {
     uint32 binIndex = (uint32) std::floor((value - min) / width);
     return binIndex >= numBins ? numBins - 1 : binIndex;
 }
