@@ -516,7 +516,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                     #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) \
                     firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
-                    for (uint32 i = 0; i < numStatistics; i++) {
+                    for (intp i = 0; i < numStatistics; i++) {
                         if (coverageMaskPtr->isCovered(i)) {
                             predictionPtr->apply(*statisticsPtr, i);
                         }

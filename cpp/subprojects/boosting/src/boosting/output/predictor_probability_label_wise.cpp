@@ -42,7 +42,7 @@ namespace boosting {
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
         firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(transformationFunctionPtr) \
         schedule(dynamic) num_threads(numThreads_)
-        for (uint32 i = 0; i < numExamples; i++) {
+        for (intp i = 0; i < numExamples; i++) {
             float64 scoreVector[numLabels] = {};
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
@@ -69,7 +69,7 @@ namespace boosting {
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(numFeatures) \
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
         firstprivate(transformationFunctionPtr) schedule(dynamic) num_threads(numThreads_)
-        for (uint32 i = 0; i < numExamples; i++) {
+        for (intp i = 0; i < numExamples; i++) {
             float64 scoreVector[numLabels] = {};
             float32 tmpArray1[numFeatures];
             uint32 tmpArray2[numFeatures] = {};
