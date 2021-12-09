@@ -114,11 +114,12 @@ namespace boosting {
         firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(measurePtr) \
         firstprivate(labelVectors) schedule(dynamic) num_threads(numThreads_)
         for (intp i = 0; i < numExamples; i++) {
-            float64 scoreVector[numLabels] = {};
+            float64* scoreVector = new float64[numLabels] {};
             applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i), &scoreVector[0]);
             const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
                                                                            *measurePtr, labelVectors);
             predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
+            delete[] scoreVector;
         }
     }
 
@@ -137,13 +138,14 @@ namespace boosting {
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
         firstprivate(measurePtr) firstprivate(labelVectors) schedule(dynamic) num_threads(numThreads_)
         for (intp i = 0; i < numExamples; i++) {
-            float64 scoreVector[numLabels] = {};
+            float64* scoreVector = new float64[numLabels] {};
             applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                           featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
             const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
                                                                            *measurePtr, labelVectors);
             predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
+            delete[] scoreVector;
         }
     }
 
@@ -162,11 +164,12 @@ namespace boosting {
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
         firstprivate(measurePtr) firstprivate(labelVectors) schedule(dynamic) num_threads(numThreads_)
         for (intp i = 0; i < numExamples; i++) {
-            float64 scoreVector[numLabels] = {};
+            float64* scoreVector = new float64[numLabels] {};
             applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i), &scoreVector[0]);
             const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
                                                                            *measurePtr, labelVectors);
             numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
+            delete[] scoreVector;
         }
 
         return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
@@ -189,13 +192,14 @@ namespace boosting {
         firstprivate(predictionMatrixPtr) firstprivate(measurePtr) firstprivate(labelVectors) schedule(dynamic) \
         num_threads(numThreads_)
         for (intp i = 0; i < numExamples; i++) {
-            float64 scoreVector[numLabels] = {};
+            float64* scoreVector = new float64[numLabels] {};
             applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                           featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
             const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
                                                                            *measurePtr, labelVectors);
             numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
+            delete[] scoreVector;
         }
 
         return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
