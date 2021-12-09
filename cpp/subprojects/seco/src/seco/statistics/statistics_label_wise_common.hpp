@@ -1,6 +1,8 @@
 /*
  * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
+#pragma once
+
 #include "seco/statistics/statistics_label_wise.hpp"
 
 
