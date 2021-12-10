@@ -161,7 +161,7 @@ namespace seco {
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
         firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
-        for (intp i = 0; i < numExamples; i++) {
+        for (int64 i = 0; i < numExamples; i++) {
             uint8* mask = new uint8[numLabels] {};
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
@@ -191,7 +191,7 @@ namespace seco {
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
         num_threads(numThreads_)
-        for (intp i = 0; i < numExamples; i++) {
+        for (int64 i = 0; i < numExamples; i++) {
             uint8* mask = new uint8[numLabels] {};
             float32* tmpArray1 = new float32[numFeatures];
             uint32* tmpArray2 = new uint32[numFeatures] {};
@@ -230,7 +230,7 @@ namespace seco {
         #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
         num_threads(numThreads_)
-        for (intp i = 0; i < numExamples; i++) {
+        for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
@@ -261,7 +261,7 @@ namespace seco {
         #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
         firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
         firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
-        for (intp i = 0; i < numExamples; i++) {
+        for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
             float32* tmpArray1 = new float32[numFeatures];
             uint32* tmpArray2 = new uint32[numFeatures] {};
