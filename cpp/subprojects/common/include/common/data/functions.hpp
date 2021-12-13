@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include <cstddef>
 
 
 /**
