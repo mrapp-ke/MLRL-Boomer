@@ -16,6 +16,16 @@ jobs:
         with:
           path: './python/subprojects/testbed/dist/*.whl'
           if-no-files-found: error
+      - name: Upload to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          TWINE_REPOSITORY: ${{ secrets.PYPI_REPOSITORY }}
+        run:
+          pip install --upgrade pip
+          pip install twine
+          twine upload --non-interactive python/subprojects/testbed/dist/
+        continue-on-error: true
   build_platform_wheels:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -49,3 +59,13 @@ jobs:
         with:
           path: './wheelhouse/*.whl'
           if-no-files-found: error
+      - name: Upload to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          TWINE_REPOSITORY: ${{ secrets.PYPI_REPOSITORY }}
+        run:
+          pip install --upgrade pip
+          pip install twine
+          twine upload --non-interactive wheelhouse/
+        continue-on-error: true
