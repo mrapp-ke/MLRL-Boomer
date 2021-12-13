@@ -37,7 +37,6 @@ clean_wheel:
 	rm -rf python/subprojects/**/dist/
 	rm -rf python/subprojects/**/*.egg-info/
 
-
 clean_doc:
 	@echo "Removing documentation..."
 	rm -rf doc/_build/
