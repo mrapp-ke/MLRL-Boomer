@@ -44,7 +44,7 @@ clean_doc:
 	rm -rf doc/apidoc/
 	rm -f doc/python/**/*.rst
 
-clean: clean_doc clean_compile clean_install clean_venv
+clean: clean_doc clean_wheel clean_compile clean_install clean_venv
 
 venv:
 	@echo "Creating virtual Python environment..."
