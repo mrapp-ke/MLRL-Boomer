@@ -3,7 +3,20 @@ on:
   push:
     branches: [ cibuildwheel ]
 jobs:
-  cibuildwheel:
+  build_pure_wheels:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build package mlrl-testbed
+        run:
+          make wheel_pure
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: './python/subprojects/testbed/dist/*.whl'
+          if-no-files-found: error
+  build_platform_wheels:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -34,5 +47,5 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          path: './wheelhouse/*whl'
+          path: './wheelhouse/*.whl'
           if-no-files-found: error
