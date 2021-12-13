@@ -82,23 +82,15 @@ install_cython: compile_cython
 	    cd python/build/ && ${MESON_INSTALL}; \
 	) && ${VENV_DEACTIVATE}
 
-wheel_pure: venv
-	@echo "Building pure wheels..."
-	${VENV_ACTIVATE} && (\
-	    cd python/subprojects/; \
-	    ${WHEEL_BUILD} testbed/; \
-	) && ${VENV_DEACTIVATE}
-
-wheel_platform: install_cpp install_cython
-	@echo "Building platform wheels..."
+wheel: install_cpp install_cython
+	@echo "Building wheel packages..."
 	${VENV_ACTIVATE} && (\
 	    cd python/subprojects/; \
 	    ${WHEEL_BUILD} common/; \
 	    ${WHEEL_BUILD} boosting/; \
 	    ${WHEEL_BUILD} seco/; \
+	    ${WHEEL_BUILD} testbed/; \
 	) && ${VENV_DEACTIVATE}
-
-wheel: wheel_platform wheel_pure
 
 install: wheel
 	@echo "Installing wheel packages into virtual environment..."

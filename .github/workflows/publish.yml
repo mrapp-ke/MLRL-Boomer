@@ -9,12 +9,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build package mlrl-testbed
-        run:
-          make wheel_pure
+        run: |
+          mkdir wheelhouse
+          python -m build --wheel python/subprojects/testbed/
+          cp python/subprojects/testbed/dist/*.whl wheelhouse/
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          path: './python/subprojects/testbed/dist/*.whl'
+          path: './wheelhouse/*.whl'
           if-no-files-found: error
       - name: Upload to PyPI
         env:
@@ -24,7 +26,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install twine
-          twine upload --non-interactive python/subprojects/testbed/dist/*
+          twine upload --non-interactive wheelhouse/*
         continue-on-error: true
   build_platform_wheels:
     runs-on: ${{ matrix.os }}
