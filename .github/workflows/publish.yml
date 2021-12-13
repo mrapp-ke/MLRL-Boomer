@@ -24,7 +24,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install twine
-          twine upload --non-interactive python/subprojects/testbed/dist/
+          twine upload --non-interactive python/subprojects/testbed/dist/*
         continue-on-error: true
   build_platform_wheels:
     runs-on: ${{ matrix.os }}
@@ -67,5 +67,5 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install twine
-          twine upload --non-interactive wheelhouse/
+          twine upload --non-interactive wheelhouse/*
         continue-on-error: true
