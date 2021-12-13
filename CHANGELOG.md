@@ -1,8 +1,8 @@
 # Changelog
 
-### Version 0.8.0 (to be released)
+### Version 0.7.1 (to be released)
 
-A major update to the BOOMER algorithm that introduces the following changes:
+A bugfix release that solves the following issues:
 
 * No changes yet.
 
