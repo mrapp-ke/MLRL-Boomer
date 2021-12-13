@@ -7,7 +7,7 @@ Provides type definitions.
 """
 import numpy as np
 
-DTYPE_INTP = np.intp
+DTYPE_INT64 = np.long
 
 DTYPE_UINT8 = np.uint8
 
