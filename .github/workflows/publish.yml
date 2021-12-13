@@ -21,7 +21,7 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
           TWINE_REPOSITORY: ${{ secrets.PYPI_REPOSITORY }}
-        run:
+        run: |
           pip install --upgrade pip
           pip install twine
           twine upload --non-interactive python/subprojects/testbed/dist/
@@ -64,7 +64,7 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
           TWINE_REPOSITORY: ${{ secrets.PYPI_REPOSITORY }}
-        run:
+        run: |
           pip install --upgrade pip
           pip install twine
           twine upload --non-interactive wheelhouse/
