@@ -17,9 +17,9 @@ class TopDownRuleInduction : public IRuleInduction {
 
         uint32 minCoverage_;
 
-        intp maxConditions_;
+        uint32 maxConditions_;
 
-        intp maxHeadRefinements_;
+        uint32 maxHeadRefinements_;
 
         bool recalculatePredictions_;
 
