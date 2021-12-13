@@ -51,12 +51,12 @@ class Condition {
         /**
          * The index of the first element (inclusive) that is covered (or uncovered) by the condition.
          */
-        intp start;
+        int64 start;
 
         /**
          * The index of the last element (exclusive) that is covered (or uncovered) by the condition.
          */
-        intp end;
+        int64 end;
 
         /**
          * True, if the elements in [start, end) are covered by the condition, false otherwise.
