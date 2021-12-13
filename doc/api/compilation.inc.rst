@@ -81,17 +81,23 @@ After this final step has completed, the Python packages can be used from within
 
 **Cleanup**
 
-To get rid of any compilation files, as well as of the generated wheel packages, the following command can be used:
+The Makefile allows to delete the files that result from the individual steps that have been described above. To delete the wheel packages that have been created via the command ``make wheel`` the following command can be used:
+
+.. code-block:: text
+
+   make clean_wheel
+
+The following command allows to remove the shared library files and Python extension modules that have been copied into the Python source tree via the commands ``make install_cpp`` and ``make install_cython``:
 
 .. code-block:: text
 
    make clean_install
 
-If you want to delete the virtual environment as well, you should use the following command instead:
+The commands ``make clean_cython`` and ``make clean_cpp`` remove the Cython or C++ compilation files that have been created via the command ``make compile_cython`` or ``make compile_cpp`` from the respective `build/` directories. If you want to delete both, the Cython and C++ compilation files, the following command can be used:
 
 .. code-block:: text
 
-   make clean
+   make clean_compile
 
 .. note::
-    For even more fine-grained control, the Makefile allows to delete the files that result from the individual steps that have been described above. This includes the command ``clean_wheel`` for deleting the wheel packages that are located in the individual `dist/` directories, the commands ``make clean_cython_install`` and ``make clean_cpp_install`` for removing the Cython or C++ compilation files from the Python source tree, as well as ``make clean_cython`` and ``make clean_cpp`` for removing the Cython or C++ compilation files from the respective `build/` directories.
+    If you want to delete all compilation files that have been created via the Makefile, including the virtual environment, you should use the command ``make clean``.
