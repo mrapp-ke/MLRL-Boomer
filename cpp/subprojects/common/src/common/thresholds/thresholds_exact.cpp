@@ -451,7 +451,7 @@ class ExactThresholds final : public AbstractThresholds {
                     coverageMask_.reset();
                 }
 
-                const ICoverageState& getCoverageState() const {
+                const ICoverageState& getCoverageState() const override {
                     return coverageMask_;
                 }
 

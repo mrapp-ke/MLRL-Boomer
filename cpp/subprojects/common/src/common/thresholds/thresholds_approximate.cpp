@@ -290,7 +290,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     coverageSet_.reset();
                 }
 
-                const ICoverageState& getCoverageState() const {
+                const ICoverageState& getCoverageState() const override {
                     return coverageSet_;
                 }
 
