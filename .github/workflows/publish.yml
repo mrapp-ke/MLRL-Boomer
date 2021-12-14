@@ -11,11 +11,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Build package mlrl-testbed
         run: |
-          pip install --upgrade pip
-          pip install --upgrade setuptools
-          pip install build
+          python3 -m pip install --upgrade pip
+          python3 -m pip install --upgrade setuptools
+          python3 -m pip install build
           mkdir wheelhouse
-          python -m build --wheel python/subprojects/testbed/
+          python3 -m build --wheel python/subprojects/testbed/
           cp python/subprojects/testbed/dist/*.whl wheelhouse/
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
@@ -28,8 +28,8 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
           TWINE_REPOSITORY: ${{ secrets.PYPI_REPOSITORY }}
         run: |
-          pip install twine
-          twine upload --non-interactive wheelhouse/*
+          python3 -m pip install twine
+          python3 -m twine upload --non-interactive wheelhouse/*
         continue-on-error: true
   build_platform_wheels:
     runs-on: ${{ matrix.os }}
@@ -70,7 +70,7 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
           TWINE_REPOSITORY: ${{ secrets.PYPI_REPOSITORY }}
         run: |
-          pip install --upgrade pip
-          pip install twine
-          twine upload --non-interactive wheelhouse/*
+          python3 -m pip install --upgrade pip
+          python3 -m pip install twine
+          python3 -m twine upload --non-interactive wheelhouse/*
         continue-on-error: true
