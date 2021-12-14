@@ -47,7 +47,7 @@ clean: clean_doc clean_wheel clean_compile clean_install clean_venv
 
 venv:
 	@echo "Creating virtual Python environment..."
-	python -m venv venv
+	python3 -m venv venv
 	${VENV_ACTIVATE} && (\
 	   ${PIP_INSTALL} --upgrade pip; \
 	   ${PIP_INSTALL} --upgrade setuptools; \
