@@ -217,7 +217,7 @@ namespace seco {
         }
     }
 
-    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predict(
+    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predictSparse(
             const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
             const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
@@ -247,7 +247,7 @@ namespace seco {
         return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
     }
 
-    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predict(
+    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predictSparse(
             const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
             const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
