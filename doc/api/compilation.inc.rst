@@ -3,7 +3,7 @@
 Building from Source
 --------------------
 
-As discussed in the previous section :ref:`structure`, the algorithm that is provided by this project is mostly implemented in `C++ <https://en.wikipedia.org/wiki/C%2B%2B>`__ to ensure maximum efficiency. In addition, a `Python <https://en.wikipedia.org/wiki/Python_(programming_language)>`__ wrapper that integrates the algorithm with the `scikit-learn <https://scikit-learn.org>`__ framework is provided. To make the underlying C++ implementation accessible from within the Python code, `Cython <https://en.wikipedia.org/wiki/Cython>`__ is used.
+As discussed in the previous section :ref:`structure`, the algorithm that is provided by this project is mostly implemented in `C++ <https://en.wikipedia.org/wiki/C%2B%2B>`__ to ensure maximum efficiency (requires C++ 14 or newer). In addition, a `Python <https://en.wikipedia.org/wiki/Python_(programming_language)>`__ wrapper that integrates the algorithm with the `scikit-learn <https://scikit-learn.org>`__ framework is provided (requires Python 3.7 or newer). To make the underlying C++ implementation accessible from within the Python code, `Cython <https://en.wikipedia.org/wiki/Cython>`__ is used (requires Cython 29 or newer).
 
 Unlike pure Python programs, the C++ and Cython source files must be compiled for a particular target platform. To ease the process of compiling the source code, the project comes with a Makefile that automates the necessary steps. In the following, we discuss the individual steps that are necessary for building the project from scratch.
 
