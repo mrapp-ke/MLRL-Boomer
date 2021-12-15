@@ -6,6 +6,7 @@ A bugfix release that solves the following issues:
 
 * Fixes an issue preventing the use of dense representations of ground truth label matrices that was introduced in version 0.7.0.
 * Pre-built packages for MacOS systems are now available at [PyPI](https://pypi.org/project/mlrl-boomer/).
+* Linux and MacOS packages for Python 3.10 are now provided.
 
 ### Version 0.7.0 (Dec. 5, 2021)
 
