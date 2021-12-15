@@ -18,7 +18,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * Pre-built packages for the Linux platform are now available at [PyPI](https://pypi.org/project/mlrl-boomer/).
 * The [documentation](https://mlrl-boomer.readthedocs.io) has vastly been improved.
 
-## Version 0.6.2 (Oct 4, 2021)
+### Version 0.6.2 (Oct 4, 2021)
 
 A bugfix release that solves the following issues:
 
