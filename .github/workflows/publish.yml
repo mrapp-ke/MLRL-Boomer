@@ -5,6 +5,7 @@ on:
     branches: [ master ]
 jobs:
   build_pure_wheels:
+    name: Build pure wheels
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,6 +33,7 @@ jobs:
           python3 -m twine upload --non-interactive wheelhouse/*
         continue-on-error: true
   build_platform_wheels:
+    name: Build platform wheels
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
