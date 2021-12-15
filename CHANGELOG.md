@@ -1,5 +1,11 @@
 # Changelog
 
+### Version 0.8.0 (to be released)
+
+A major update to the BOOMER algorithm that introduces the following changes:
+
+* No changes yet.
+
 ### Version 0.7.1 (Dec. 15, 2021)
 
 A bugfix release that solves the following issues:
