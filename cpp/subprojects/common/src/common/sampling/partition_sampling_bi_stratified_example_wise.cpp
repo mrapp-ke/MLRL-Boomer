@@ -1,5 +1,5 @@
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
-#include "common/sampling/stratified_sampling.hpp"
+#include "common/sampling/stratified_sampling_example_wise.hpp"
 #include "common/iterator/index_iterator.hpp"
 #include "common/validation.hpp"
 
