@@ -6,6 +6,7 @@
 #include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/stratified_sampling_common.hpp"
+#include <unordered_map>
 #include <vector>
 #include <cmath>
 #include <functional>

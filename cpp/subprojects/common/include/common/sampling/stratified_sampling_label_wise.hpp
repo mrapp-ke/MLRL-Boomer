@@ -4,13 +4,45 @@
 #pragma once
 
 #include "common/data/indexed_value.hpp"
+#include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csc.hpp"
+#include "common/input/label_matrix_csr.hpp"
 #include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/stratified_sampling_common.hpp"
+#include <unordered_map>
 #include <set>
 #include <cmath>
 
+
+static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& labelMatrix, uint32 exampleIndex,
+                                             uint32* numExamplesPerLabel,
+                                             std::unordered_map<uint32, uint32>& affectedLabelIndices) {
+    CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
+    uint32 numLabels = labelMatrix.getNumCols();
+
+    for (uint32 i = 0; i < numLabels; i++) {
+        if (labelIterator[i]) {
+            uint32 numRemaining = numExamplesPerLabel[i];
+            numExamplesPerLabel[i] = numRemaining - 1;
+            affectedLabelIndices.emplace(i, numRemaining);
+        }
+    }
+}
+
+static inline void updateNumExamplesPerLabel(const CsrLabelMatrix& labelMatrix, uint32 exampleIndex,
+                                             uint32* numExamplesPerLabel,
+                                             std::unordered_map<uint32, uint32>& affectedLabelIndices) {
+    CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
+    uint32 numLabels = labelMatrix.row_indices_cend(exampleIndex) - indexIterator;
+
+    for (uint32 i = 0; i < numLabels; i++) {
+        uint32 labelIndex = indexIterator[i];
+        uint32 numRemaining = numExamplesPerLabel[labelIndex];
+        numExamplesPerLabel[labelIndex] = numRemaining - 1;
+        affectedLabelIndices.emplace(labelIndex, numRemaining);
+    }
+}
 
 /**
  * Implements iterative stratified sampling for selecting a subset of the available training examples as proposed in the
