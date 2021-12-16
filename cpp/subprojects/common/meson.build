@@ -78,6 +78,8 @@ source_files = [
     'src/common/sampling/partition_sampling_no.cpp',
     'src/common/sampling/partition_single.cpp',
     'src/common/sampling/random.cpp',
+    'src/common/sampling/stratified_sampling_example_wise.cpp',
+    'src/common/sampling/stratified_sampling_label_wise.cpp',
     'src/common/sampling/weight_vector_bit.cpp',
     'src/common/sampling/weight_vector_dense.cpp',
     'src/common/sampling/weight_vector_equal.cpp',
