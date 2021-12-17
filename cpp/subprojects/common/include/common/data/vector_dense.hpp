@@ -31,7 +31,7 @@ class DenseVector final : public VectorView<T> {
          */
         DenseVector(uint32 numElements, bool init);
 
-        virtual ~DenseVector();
+        ~DenseVector();
 
         /**
          * Sets the number of elements in the vector.
