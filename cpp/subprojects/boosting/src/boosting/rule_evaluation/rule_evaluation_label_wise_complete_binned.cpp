@@ -90,7 +90,7 @@ namespace boosting {
                 scoreVector_.scores_binned_begin()[maxBins_] = 0;
             }
 
-            ~DenseLabelWiseCompleteBinnedRuleEvaluation() {
+            ~DenseLabelWiseCompleteBinnedRuleEvaluation() override {
                 delete[] numElementsPerBin_;
                 delete[] criteria_;
             }

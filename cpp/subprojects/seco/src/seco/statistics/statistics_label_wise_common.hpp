@@ -83,7 +83,7 @@ namespace seco {
 
                     }
 
-                    ~StatisticsSubset() {
+                    ~StatisticsSubset() override {
                         delete accumulatedSumVector_;
                         delete totalCoverableSumVector_;
                     }

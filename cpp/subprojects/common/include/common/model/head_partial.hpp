@@ -33,7 +33,7 @@ class PartialHead final : public IHead {
          */
         PartialHead(const PartialPrediction& prediction);
 
-        ~PartialHead();
+        ~PartialHead() override;
 
         /**
          * An iterator that provides access to the scores that are contained by the head and allows to modify them.

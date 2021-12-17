@@ -22,7 +22,7 @@ namespace seco {
 
         public:
 
-            virtual ~ILabelWiseStatistics() { };
+            virtual ~ILabelWiseStatistics() override { };
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the

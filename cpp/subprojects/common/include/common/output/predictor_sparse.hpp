@@ -18,7 +18,7 @@ class ISparsePredictor : public IPredictor<T> {
 
     public:
 
-        virtual ~ISparsePredictor() { };
+        virtual ~ISparsePredictor() override { };
 
         /**
          * Obtains and returns sparse predictions for all examples in a C-contiguous matrix, using a specific rule-based

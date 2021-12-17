@@ -173,7 +173,7 @@ class AbstractThresholds : public IThresholds {
 
         }
 
-        virtual ~AbstractThresholds() { };
+        virtual ~AbstractThresholds() override { };
 
         uint32 getNumExamples() const override final {
             return featureMatrix_.getNumRows();

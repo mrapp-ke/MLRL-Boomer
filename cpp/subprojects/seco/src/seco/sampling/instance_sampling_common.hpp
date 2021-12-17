@@ -102,7 +102,7 @@ namespace seco {
 
             }
 
-            virtual ~AbstractInstanceSampling() {
+            virtual ~AbstractInstanceSampling() override {
                 delete[] exampleIndices_;
             }
 

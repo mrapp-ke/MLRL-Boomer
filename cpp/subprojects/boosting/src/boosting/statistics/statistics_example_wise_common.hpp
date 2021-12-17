@@ -92,7 +92,7 @@ namespace boosting {
 
                     }
 
-                    ~StatisticsSubset() {
+                    ~StatisticsSubset() override {
                         delete accumulatedSumVector_;
                         delete totalCoverableSumVector_;
                     }
