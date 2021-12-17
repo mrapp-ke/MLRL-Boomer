@@ -21,7 +21,7 @@ namespace seco {
 
         public:
 
-            virtual ~ICoverageStatistics() { };
+            virtual ~ICoverageStatistics() override { };
 
             /**
              * A visitor function for handling objects of the type `DenseWeightMatrix`.

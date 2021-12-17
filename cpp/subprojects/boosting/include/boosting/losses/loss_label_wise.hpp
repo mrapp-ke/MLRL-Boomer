@@ -19,7 +19,7 @@ namespace boosting {
 
         public:
 
-            virtual ~ILabelWiseLoss() { };
+            virtual ~ILabelWiseLoss() override { };
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -134,7 +134,7 @@ namespace boosting {
 
         public:
 
-            virtual ~AbstractLabelWiseLoss() { };
+            virtual ~AbstractLabelWiseLoss() override { };
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                            const CContiguousConstView<float64>& scoreMatrix,

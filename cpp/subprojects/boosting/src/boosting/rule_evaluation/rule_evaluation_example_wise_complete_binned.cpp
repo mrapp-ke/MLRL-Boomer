@@ -175,7 +175,7 @@ namespace boosting {
                 scoreVector_.scores_binned_begin()[maxBins_] = 0;
             }
 
-            ~DenseExampleWiseCompleteBinnedRuleEvaluation() {
+            ~DenseExampleWiseCompleteBinnedRuleEvaluation() override {
                 delete[] aggregatedGradients_;
                 delete[] aggregatedHessians_;
                 delete[] binIndices_;
