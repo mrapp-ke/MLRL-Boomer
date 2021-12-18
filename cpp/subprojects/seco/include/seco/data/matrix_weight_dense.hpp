@@ -23,10 +23,11 @@ namespace seco {
         public:
 
             /**
-             * @param numRows   The number of rows in the matrix
-             * @param numCols   The number of columns in the matrix
+             * @param numRows               The number of rows in the matrix
+             * @param numCols               The number of columns in the matrix
+             * @param sumOfUncoveredWeights The sum of the weights of all labels that remain to be covered
              */
-            DenseWeightMatrix(uint32 numRows, uint32 numCols);
+            DenseWeightMatrix(uint32 numRows, uint32 numCols, float64 sumOfUncoveredWeights);
 
             /**
              * Returns the sum of the weights of all labels that remain to be covered.
@@ -34,13 +35,6 @@ namespace seco {
              * @return The sum of the weights
              */
             float64 getSumOfUncoveredWeights() const;
-
-            /**
-             * Sets the sum of the weights of all labels that remain to be covered.
-             *
-             * @param sumOfUncoveredWeights The sum of weights to be set
-             */
-            void setSumOfUncoveredWeights(float64 sumOfUncoveredWeights);
 
             /**
              * Updates the weights at a specific row of this matrix, given the predictions for certain labels.
