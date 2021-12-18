@@ -64,7 +64,7 @@ namespace boosting {
 
         for (uint32 c = 0; c < numLabels; c++) {
             float64 predictedScore = scoreIterator[c];
-            uint8 trueLabel = *labelIterator;
+            bool trueLabel = *labelIterator;
             float64 invertedExpectedScore = trueLabel ? -1 : 1;
             float64 x = predictedScore * invertedExpectedScore;
             Tuple<float64>& tuple = statisticIterator[c];
@@ -136,7 +136,7 @@ namespace boosting {
 
         for (uint32 c = 0; c < numLabels; c++) {
             float64 predictedScore = scoreIterator[c];
-            uint8 trueLabel = *labelIterator;
+            bool trueLabel = *labelIterator;
             float64 invertedExpectedScore = trueLabel ? -1 : 1;
             float64 x = predictedScore * invertedExpectedScore;
 
