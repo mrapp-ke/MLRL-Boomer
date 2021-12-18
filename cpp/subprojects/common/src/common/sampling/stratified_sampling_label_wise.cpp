@@ -72,11 +72,11 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
 
     // Create a boolean array that stores whether individual examples remain to be processed (1) or not (0)...
     uint32 numTotalExamples = labelMatrix.getNumRows();
-    uint8* mask = new uint8[numTotalExamples] {};
+    BitVector mask(numTotalExamples, true);
 
     for (uint32 i = 0; i < numRows_; i++) {
         uint32 exampleIndex = indicesBegin[i];
-        mask[exampleIndex] = 1;
+        mask.set(exampleIndex, true);
     }
 
     // As long as there are labels that have not been processed yet, proceed with the label that has the smallest number
@@ -104,7 +104,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
 
             // If the example has not been processed yet...
             if (mask[exampleIndex]) {
-                mask[exampleIndex] = 0;
+                mask.set(exampleIndex, false);
 
                 // Add the example's index to the array of row indices...
                 rowIndices_[numNonZeroElements] = exampleIndex;
@@ -167,7 +167,6 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     numCols_ = numCols - 1;
 
     delete[] numExamplesPerLabel;
-    delete[] mask;
 }
 
 template<typename LabelMatrix, typename IndexIterator>
