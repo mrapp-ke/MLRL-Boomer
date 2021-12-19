@@ -40,7 +40,7 @@ namespace boosting {
 
         for (uint32 c = 0; c < numLabels; c++) {
             float64 predictedScore = scoreIterator[c];
-            uint32 trueLabel = *labelIterator;
+            bool trueLabel = *labelIterator;
             float64 x = trueLabel ? -predictedScore : predictedScore;
             statisticIterator[c].first = x;  // Temporarily store `x` in the array of statistics
 
@@ -98,7 +98,7 @@ namespace boosting {
 
         for (uint32 c = 0; c < numLabels; c++) {
             float64 predictedScore = scoreIterator[c];
-            uint32 trueLabel = *labelIterator;
+            bool trueLabel = *labelIterator;
             float64 x = trueLabel ? -predictedScore : predictedScore;
             gradientIterator[c] = x;  // Temporarily store `x` in the array of gradients
 
@@ -148,7 +148,7 @@ namespace boosting {
 
             for (uint32 r = 0; r < c; r++) {
                 float64 predictedScore2 = scoreIterator[r];
-                uint32 trueLabel2 = *labelIterator2;
+                bool trueLabel2 = *labelIterator2;
                 float64 expectedScore2 = trueLabel2 ? 1 : -1;
                 float64 x2 = predictedScore2 * -expectedScore2;
                 *hessianIterator = invertedExpectedScore * expectedScore2
