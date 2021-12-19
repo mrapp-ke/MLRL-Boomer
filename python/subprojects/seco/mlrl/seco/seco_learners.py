@@ -20,15 +20,12 @@ from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import StoppingCriterion
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_WITH_REPLACEMENT, \
-    SAMPLING_WITHOUT_REPLACEMENT, ARGUMENT_SAMPLE_SIZE
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy, FeatureCharacteristics, LabelCharacteristics
 from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
-    create_label_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
-    create_num_threads, create_thresholds_factory, parse_param_and_options, parse_param
+    create_label_sampling_factory, create_instance_sampling_factory, create_partition_sampling_factory, \
+    create_stopping_criteria, create_num_threads, create_thresholds_factory, parse_param_and_options, parse_param
 from mlrl.seco.cython.heuristics import Heuristic, Accuracy, Precision, Recall, Laplace, WRA, FMeasure, MEstimate
-from mlrl.seco.cython.instance_sampling import InstanceSamplingWithReplacementFactory, \
-    InstanceSamplingWithoutReplacementFactory
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
 from mlrl.seco.cython.rule_evaluation_label_wise import LiftFunction, PeakLiftFunction, \
@@ -66,11 +63,6 @@ ARGUMENT_BETA = 'beta'
 
 ARGUMENT_M = 'm'
 
-INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
-    SAMPLING_WITH_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
-    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}
-}
-
 HEAD_TYPE_VALUES: Set[str] = {HEAD_TYPE_SINGLE, HEAD_TYPE_PARTIAL}
 
 HEURISTIC_VALUES: Dict[str, Set[str]] = {
@@ -90,7 +82,7 @@ LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
 
 class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     """
-    A scikit-multilearn implementation of an Separate-and-Conquer (SeCo) algorithm for learning multi-label
+    A scikit-multilearn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label
     classification rules.
     """
 
@@ -99,7 +91,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                  max_rules: int = 500, time_limit: int = 0, head_type: str = HEAD_TYPE_SINGLE,
                  lift_function: str = LIFT_FUNCTION_PEAK, heuristic: str = HEURISTIC_F_MEASURE,
                  pruning_heuristic: str = HEURISTIC_ACCURACY, label_sampling: str = None,
-                 instance_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, feature_sampling: str = None,
+                 instance_sampling: str = SAMPLING_STRATIFIED_LABEL_WISE, feature_sampling: str = None,
                  holdout: str = None, feature_binning: str = None, pruning: str = PRUNING_IREP, min_coverage: int = 1,
                  max_conditions: int = 0, max_head_refinements: int = 1,
                  parallel_rule_refinement: str = BooleanOption.TRUE.value,
@@ -130,9 +122,10 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                                     `without-replacement{num_samples=5}`
         :param instance_sampling:                   The strategy that is used for sampling the training examples each
                                                     time a new classification rule is learned. Must be
-                                                    `with-replacement`, `without-replacement` or None, if no sampling
-                                                    should be used. Additional options may be provided using the bracket
-                                                    notation `with-replacement{sample_size=0.5}`
+                                                    `with-replacement`, `without-replacement`, `stratified_label_wise`,
+                                                    `stratified_example_wise` or None, if no sampling should be used.
+                                                    Additional options may be provided using the bracket notation
+                                                    `with-replacement{sample_size=0.5}`
         :param feature_sampling:                    The strategy that is used for sampling the features each time a
                                                     classification rule is refined. Must be `without-replacement` or
                                                     None, if no sampling should be used. Additional options may be
@@ -251,18 +244,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     def _create_instance_sampling_factory(
             self, feature_characteristics: FeatureCharacteristics,
             label_characteristics: LabelCharacteristics) -> Optional[InstanceSamplingFactory]:
-        instance_sampling = self.instance_sampling
-
-        if instance_sampling is not None:
-            value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
-
-            if value == SAMPLING_WITH_REPLACEMENT:
-                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0)
-                return InstanceSamplingWithReplacementFactory(sample_size)
-            elif value == SAMPLING_WITHOUT_REPLACEMENT:
-                sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
-                return InstanceSamplingWithoutReplacementFactory(sample_size)
-        return None
+        return create_instance_sampling_factory(self.instance_sampling)
 
     def _create_feature_sampling_factory(
             self, feature_characteristics: FeatureCharacteristics,

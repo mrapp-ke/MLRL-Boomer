@@ -6,11 +6,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from argparse import ArgumentParser
 
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import PRUNING_IREP, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, PARALLEL_VALUES
+from mlrl.common.rule_learners import PRUNING_IREP, HEAD_TYPE_SINGLE, PARALLEL_VALUES
 from mlrl.common.strings import format_dict_keys, format_string_set
 from mlrl.seco.seco_learners import SeCoRuleLearner, HEURISTIC_F_MEASURE, HEURISTIC_ACCURACY, LIFT_FUNCTION_PEAK, \
-    INSTANCE_SAMPLING_VALUES as SECO_INSTANCE_SAMPLING_VALUES, HEAD_TYPE_VALUES as SECO_HEAD_TYPE_VALUES, \
-    HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, HEAD_TYPE_PARTIAL
+    HEAD_TYPE_VALUES as SECO_HEAD_TYPE_VALUES, HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, HEAD_TYPE_PARTIAL, \
+    SAMPLING_STRATIFIED_LABEL_WISE
 from mlrl.testbed.args import add_rule_learner_arguments, get_or_default, optional_string, PARAM_INSTANCE_SAMPLING, \
     PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE, PARAM_PRUNING
 from mlrl.testbed.runnables import RuleLearnerRunnable
@@ -41,13 +41,9 @@ class SeCoRunnable(RuleLearnerRunnable):
 
 def __add_arguments(parser: ArgumentParser, **kwargs):
     args = dict(kwargs)
+    args[PARAM_INSTANCE_SAMPLING] = SAMPLING_STRATIFIED_LABEL_WISE
     args[PARAM_PRUNING] = PRUNING_IREP
     add_rule_learner_arguments(parser, **args)
-    parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
-                        default=get_or_default(PARAM_INSTANCE_SAMPLING, SAMPLING_WITHOUT_REPLACEMENT, **kwargs),
-                        help='The name of the strategy to be used for instance sampling. Must be one of '
-                             + format_dict_keys(SECO_INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance sampling '
-                             + 'should be used. For additional options refer to the documentation.')
     parser.add_argument(PARAM_HEURISTIC, type=str,
                         default=get_or_default(PARAM_HEURISTIC, HEURISTIC_F_MEASURE, **kwargs),
                         help='The name of the heuristic to be used for learning rules. Must be one of '

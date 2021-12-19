@@ -6,7 +6,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from argparse import ArgumentParser
 
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, INSTANCE_SAMPLING_VALUES
+from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT
 from mlrl.common.strings import format_enum_values, format_dict_keys, format_string_set
 from mlrl.testbed.args import add_rule_learner_arguments, get_or_default, optional_string, PARAM_INSTANCE_SAMPLING, \
     PARAM_PARTITION_SAMPLING, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE, \
@@ -74,11 +74,6 @@ def __add_arguments(parser: ArgumentParser, **kwargs):
                              + format_dict_keys(EARLY_STOPPING_VALUES) + ' or "None", if no early stopping should be '
                              + 'used. Does only have an effect if the parameter ' + PARAM_PARTITION_SAMPLING + ' is '
                              + 'not set to "None". For additional options refer to the documentation.')
-    parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
-                        default=get_or_default(PARAM_INSTANCE_SAMPLING, None, **kwargs),
-                        help='The name of the strategy to be used for instance sampling. Must be one of'
-                             + format_dict_keys(INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance sampling '
-                             + 'should be used. For additional options refer to the documentation.')
     parser.add_argument(PARAM_LABEL_BINNING, type=optional_string,
                         default=get_or_default(PARAM_LABEL_BINNING, AUTOMATIC, **kwargs),
                         help='The name of the strategy to be used for gradient-based label binning (GBLB). Must be one '
