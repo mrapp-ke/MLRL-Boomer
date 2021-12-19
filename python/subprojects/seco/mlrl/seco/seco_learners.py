@@ -82,7 +82,7 @@ LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
 
 class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     """
-    A scikit-multilearn implementation of an Separate-and-Conquer (SeCo) algorithm for learning multi-label
+    A scikit-multilearn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label
     classification rules.
     """
 
