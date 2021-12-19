@@ -11,7 +11,7 @@ from enum import Enum
 
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, \
-    PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, PRUNING_VALUES, PARALLEL_VALUES
+    INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 
 PARAM_LOG_LEVEL = '--log-level'
@@ -270,6 +270,11 @@ def add_rule_learner_arguments(parser: ArgumentParser, **kwargs):
                         help='The name of the strategy to be used for label sampling. Must be one of '
                              + format_dict_keys(LABEL_SAMPLING_VALUES) + ' or "None", if no label sampling should be '
                              + 'used. For additional options refer to the documentation.')
+    parser.add_argument(PARAM_INSTANCE_SAMPLING, type=optional_string,
+                        default=get_or_default(PARAM_INSTANCE_SAMPLING, None, **kwargs),
+                        help='The name of the strategy to be used for instance sampling. Must be one of'
+                             + format_dict_keys(INSTANCE_SAMPLING_VALUES) + ' or "None", if no instance sampling '
+                             + 'should be used. For additional options refer to the documentation.')
     parser.add_argument(PARAM_FEATURE_SAMPLING, type=optional_string,
                         default=get_or_default(PARAM_FEATURE_SAMPLING, None, **kwargs),
                         help='The name of the strategy to be used for feature sampling. Must be one of '
