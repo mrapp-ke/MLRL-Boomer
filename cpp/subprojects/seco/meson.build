@@ -17,9 +17,6 @@ source_files = [
     'src/seco/rule_evaluation/rule_evaluation_label_wise_majority.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_partial.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_single.cpp',
-    'src/seco/sampling/instance_sampling_no.cpp',
-    'src/seco/sampling/instance_sampling_with_replacement.cpp',
-    'src/seco/sampling/instance_sampling_without_replacement.cpp',
     'src/seco/statistics/statistics_provider_factory_label_wise_dense.cpp',
     'src/seco/stopping/stopping_criterion_coverage.cpp'
 ]
