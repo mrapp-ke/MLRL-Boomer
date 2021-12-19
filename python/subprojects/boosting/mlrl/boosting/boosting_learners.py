@@ -157,9 +157,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                     `without-replacement{num_samples=5}`
         :param instance_sampling:                   The strategy that is used for sampling the training examples each
                                                     time a new classification rule is learned. Must be
-                                                    `with-replacement`, `without-replacement` or None, if no sampling
-                                                    should be used. Additional options may be provided using the bracket
-                                                    notation `with-replacement{sample_size=0.5}`
+                                                    `with-replacement`, `without-replacement`, `stratified_label_wise`,
+                                                    `stratified_example_wise` or None, if no sampling should be used.
+                                                    Additional options may be provided using the bracket notation
+                                                    `with-replacement{sample_size=0.5}`
         :param recalculate_predictions:             Whether the predictions of rules should be recalculated on the
                                                     entire training data, if instance sampling is used, or not. Must be
                                                     `true` or `false`
