@@ -2,6 +2,7 @@ default_target: install
 .PHONY: clean_venv clean_cpp clean_cython clean_compile clean_cpp_install clean_cython_install clean_wheel \
         clean_install clean_doc clean compile_cpp compile_cython compile install_cpp install_cython wheel install doc
 
+VENV_CREATE = python3 -m venv
 VENV_ACTIVATE = . venv/bin/activate
 VENV_DEACTIVATE = deactivate
 PIP_INSTALL = pip install --prefer-binary
@@ -48,7 +49,7 @@ clean: clean_doc clean_wheel clean_compile clean_install clean_venv
 
 venv:
 	@echo Creating virtual Python environment...
-	python3 -m venv venv
+	${VENV_CREATE} venv
 	${VENV_ACTIVATE} && (\
 	   ${PIP_INSTALL} --upgrade pip; \
 	   ${PIP_INSTALL} --upgrade setuptools; \
