@@ -3,6 +3,10 @@ default_target: install
         clean_install clean_doc clean compile_cpp compile_cython compile install_cpp install_cython wheel install doc
 
 VENV_DIR = venv
+CPP_SRC_DIR = cpp
+CPP_BUILD_DIR = ${CPP_SRC_DIR}${SEP}build
+PYTHON_SRC_DIR = python
+PYTHON_BUILD_DIR = ${PYTHON_SRC_DIR}${SEP}build
 
 VENV_CREATE = python3 -m venv ${VENV_DIR}
 VENV_ACTIVATE = . ${VENV_DIR}/bin/activate
@@ -24,23 +28,23 @@ clean_venv:
 
 clean_cpp:
 	@echo Removing C++ compilation files...
-	rm -rf cpp/build
+	rm -rf ${CPP_BUILD_DIR}
 
 clean_cython:
 	@echo Removing Cython compilation files...
-	rm -rf python/build
+	rm -rf ${PYTHON_BUILD_DIR}
 
 clean_compile: clean_cpp clean_cython
 
 clean_install:
-	rm -f python/subprojects/**/mlrl/**/cython/*.so*
-	rm -f python/subprojects/**/mlrl/**/cython/*.dylib
+	rm -f ${PYTHON_SRC_DIR}/subprojects/**/mlrl/**/cython/*.so*
+	rm -f ${PYTHON_SRC_DIR}/subprojects/**/mlrl/**/cython/*.dylib
 
 clean_wheel:
 	@echo Removing Python build files...
-	rm -rf python/subprojects/**/build
-	rm -rf python/subprojects/**/dist
-	rm -rf python/subprojects/**/*.egg-info
+	rm -rf ${PYTHON_SRC_DIR}/subprojects/**/build
+	rm -rf ${PYTHON_SRC_DIR}/subprojects/**/dist
+	rm -rf ${PYTHON_SRC_DIR}/subprojects/**/*.egg-info
 
 clean_doc:
 	@echo Removing documentation...
@@ -56,21 +60,21 @@ venv:
 	${VENV_ACTIVATE} && (\
 	   ${PIP_UPGRADE} pip; \
 	   ${PIP_UPGRADE} setuptools; \
-	   ${PIP_INSTALL} -r python/requirements.txt; \
+	   ${PIP_INSTALL} -r ${PYTHON_SRC_DIR}/requirements.txt; \
 	) && ${VENV_DEACTIVATE}
 
 compile_cpp: venv
 	@echo Compiling C++ code...
 	${VENV_ACTIVATE} && (\
-	    ${MESON_SETUP} cpp/build cpp; \
-	    ${MESON_COMPILE} -C cpp/build; \
+	    ${MESON_SETUP} ${CPP_BUILD_DIR} ${CPP_SRC_DIR}; \
+	    ${MESON_COMPILE} -C ${CPP_BUILD_DIR}; \
 	) && ${VENV_DEACTIVATE}
 
 compile_cython: venv
 	@echo Compiling Cython code...
 	${VENV_ACTIVATE} && (\
-	    ${MESON_SETUP} python/build python; \
-	    ${MESON_COMPILE} -C python/build; \
+	    ${MESON_SETUP} ${PYTHON_BUILD_DIR} ${PYTHON_SRC_DIR}; \
+	    ${MESON_COMPILE} -C ${PYTHON_BUILD_DIR}; \
 	) && ${VENV_DEACTIVATE}
 
 compile: compile_cpp compile_cython
@@ -78,19 +82,19 @@ compile: compile_cpp compile_cython
 install_cpp: compile_cpp
 	@echo Installing shared libraries into source tree...
 	${VENV_ACTIVATE} && (\
-	    ${MESON_INSTALL} -C cpp/build; \
+	    ${MESON_INSTALL} -C ${CPP_BUILD_DIR}; \
 	) && ${VENV_DEACTIVATE}
 
 install_cython: compile_cython
 	@echo Installing extension modules into source tree...
 	${VENV_ACTIVATE} && (\
-	    ${MESON_INSTALL} -C python/build; \
+	    ${MESON_INSTALL} -C ${PYTHON_BUILD_DIR}; \
 	) && ${VENV_DEACTIVATE}
 
 wheel: install_cpp install_cython
 	@echo Building wheel packages...
 	${VENV_ACTIVATE} && (\
-	    cd python/subprojects; \
+	    cd ${PYTHON_SRC_DIR}/subprojects; \
 	    ${WHEEL_BUILD} common; \
 	    ${WHEEL_BUILD} boosting; \
 	    ${WHEEL_BUILD} seco; \
@@ -100,7 +104,7 @@ wheel: install_cpp install_cython
 install: wheel
 	@echo Installing wheel packages into virtual environment...
 	${VENV_ACTIVATE} && (\
-	    cd python/subprojects; \
+	    cd ${PYTHON_SRC_DIR}/subprojects; \
 	    ${WHEEL_INSTALL} common/dist/*.whl; \
 	    ${WHEEL_INSTALL} boosting/dist/*.whl; \
 	    ${WHEEL_INSTALL} seco/dist/*.whl; \
