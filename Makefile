@@ -7,6 +7,8 @@ CPP_SRC_DIR = cpp
 CPP_BUILD_DIR = ${CPP_SRC_DIR}/build
 PYTHON_SRC_DIR = python
 PYTHON_BUILD_DIR = ${PYTHON_SRC_DIR}/build
+PYTHON_MODULE_DIR = ${PYTHON_SRC_DIR}/subprojects
+DIST_DIR = dist
 DOC_DIR = doc
 DOC_API_DIR = ${DOC_DIR}/apidoc
 DOC_BUILD_DIR = ${DOC_DIR}/_build
@@ -40,14 +42,14 @@ clean_cython:
 clean_compile: clean_cpp clean_cython
 
 clean_install:
-	rm -f ${PYTHON_SRC_DIR}/subprojects/**/*.so*
-	rm -f ${PYTHON_SRC_DIR}/subprojects/**/*.dylib
+	rm -f ${PYTHON_MODULE_DIR}/**/*.so*
+	rm -f ${PYTHON_MODULE_DIR}/**/*.dylib
 
 clean_wheel:
 	@echo Removing Python build files...
-	rm -rf ${PYTHON_SRC_DIR}/subprojects/**/build
-	rm -rf ${PYTHON_SRC_DIR}/subprojects/**/dist
-	rm -rf ${PYTHON_SRC_DIR}/subprojects/**/*.egg-info
+	rm -rf ${PYTHON_MODULE_DIR}/**/build
+	rm -rf ${PYTHON_MODULE_DIR}/**/${DIST_DIR}
+	rm -rf ${PYTHON_MODULE_DIR}/**/*.egg-info
 
 clean_doc:
 	@echo Removing documentation...
@@ -97,21 +99,19 @@ install_cython: compile_cython
 wheel: install_cpp install_cython
 	@echo Building wheel packages...
 	${VENV_ACTIVATE} && (\
-	    cd ${PYTHON_SRC_DIR}/subprojects; \
-	    ${WHEEL_BUILD} common; \
-	    ${WHEEL_BUILD} boosting; \
-	    ${WHEEL_BUILD} seco; \
-	    ${WHEEL_BUILD} testbed; \
+	    ${WHEEL_BUILD} ${PYTHON_MODULE_DIR}/common; \
+	    ${WHEEL_BUILD} ${PYTHON_MODULE_DIR}/boosting; \
+	    ${WHEEL_BUILD} ${PYTHON_MODULE_DIR}/seco; \
+	    ${WHEEL_BUILD} ${PYTHON_MODULE_DIR}/testbed; \
 	) && ${VENV_DEACTIVATE}
 
 install: wheel
 	@echo Installing wheel packages into virtual environment...
 	${VENV_ACTIVATE} && (\
-	    cd ${PYTHON_SRC_DIR}/subprojects; \
-	    ${WHEEL_INSTALL} common/dist/*.whl; \
-	    ${WHEEL_INSTALL} boosting/dist/*.whl; \
-	    ${WHEEL_INSTALL} seco/dist/*.whl; \
-	    ${WHEEL_INSTALL} testbed/dist/*.whl; \
+	    ${WHEEL_INSTALL} ${PYTHON_MODULE_DIR}/common/${DIST_DIR}/*.whl; \
+	    ${WHEEL_INSTALL} ${PYTHON_MODULE_DIR}/boosting/${DIST_DIR}/*.whl; \
+	    ${WHEEL_INSTALL} ${PYTHON_MODULE_DIR}/seco/${DIST_DIR}/*.whl; \
+	    ${WHEEL_INSTALL} ${PYTHON_MODULE_DIR}/testbed/${DIST_DIR}/*.whl; \
 	) && ${VENV_DEACTIVATE}
 
 doc: install
@@ -126,11 +126,11 @@ doc: install
 	cd ${DOC_DIR} && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
 	@echo Generating Sphinx documentation...
 	${VENV_ACTIVATE} && (\
-	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/common python/subprojects/common/mlrl **/cython; \
+	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/common ${PYTHON_MODULE_DIR}/common/mlrl **/cython; \
 	    ${SPHINX_BUILD} ${DOC_DIR}/python/common ${DOC_API_DIR}/api/python/common; \
-	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/boosting python/subprojects/boosting/mlrl **/cython; \
+	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/boosting ${PYTHON_MODULE_DIR}/boosting/mlrl **/cython; \
 	    ${SPHINX_BUILD} ${DOC_DIR}/python/boosting ${DOC_API_DIR}/api/python/boosting; \
-	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/testbed python/subprojects/testbed/mlrl; \
+	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/testbed ${PYTHON_MODULE_DIR}/testbed/mlrl; \
 	    ${SPHINX_BUILD} ${DOC_DIR}/python/testbed ${DOC_API_DIR}/api/python/testbed; \
 	    ${SPHINX_BUILD} ${DOC_DIR} ${DOC_BUILD_DIR}; \
 	) && ${VENV_DEACTIVATE}
