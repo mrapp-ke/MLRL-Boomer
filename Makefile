@@ -20,7 +20,7 @@ SPHINX_BUILD = sphinx-build -M html
 
 clean_venv:
 	@echo Removing virtual Python environment...
-	rm -rf venv/
+	rm -rf ${VENV_DIR}
 
 clean_cpp:
 	@echo Removing C++ compilation files...
