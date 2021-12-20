@@ -4,9 +4,9 @@ default_target: install
 
 VENV_DIR = venv
 CPP_SRC_DIR = cpp
-CPP_BUILD_DIR = ${CPP_SRC_DIR}${SEP}build
+CPP_BUILD_DIR = ${CPP_SRC_DIR}/build
 PYTHON_SRC_DIR = python
-PYTHON_BUILD_DIR = ${PYTHON_SRC_DIR}${SEP}build
+PYTHON_BUILD_DIR = ${PYTHON_SRC_DIR}/build
 
 VENV_CREATE = python3 -m venv ${VENV_DIR}
 VENV_ACTIVATE = . ${VENV_DIR}/bin/activate
