@@ -24,11 +24,11 @@ clean_venv:
 
 clean_cpp:
 	@echo Removing C++ compilation files...
-	rm -rf cpp/build/
+	rm -rf cpp/build
 
 clean_cython:
 	@echo Removing Cython compilation files...
-	rm -rf python/build/
+	rm -rf python/build
 
 clean_compile: clean_cpp clean_cython
 
@@ -38,14 +38,14 @@ clean_install:
 
 clean_wheel:
 	@echo Removing Python build files...
-	rm -rf python/subprojects/**/build/
-	rm -rf python/subprojects/**/dist/
-	rm -rf python/subprojects/**/*.egg-info/
+	rm -rf python/subprojects/**/build
+	rm -rf python/subprojects/**/dist
+	rm -rf python/subprojects/**/*.egg-info
 
 clean_doc:
 	@echo Removing documentation...
-	rm -rf doc/_build/
-	rm -rf doc/apidoc/
+	rm -rf doc/_build
+	rm -rf doc/apidoc
 	rm -f doc/python/**/*.rst
 
 clean: clean_doc clean_wheel clean_compile clean_install clean_venv
@@ -62,15 +62,15 @@ venv:
 compile_cpp: venv
 	@echo Compiling C++ code...
 	${VENV_ACTIVATE} && (\
-	    cd cpp/ && ${MESON_SETUP} build/; \
-	    cd build/ && ${MESON_COMPILE}; \
+	    cd cpp && ${MESON_SETUP} build; \
+	    cd build && ${MESON_COMPILE}; \
 	) && ${VENV_DEACTIVATE}
 
 compile_cython: venv
 	@echo Compiling Cython code...
 	${VENV_ACTIVATE} && (\
-	    cd python/ && ${MESON_SETUP} build/; \
-	    cd build/ && ${MESON_COMPILE}; \
+	    cd python && ${MESON_SETUP} build; \
+	    cd build && ${MESON_COMPILE}; \
 	) && ${VENV_DEACTIVATE}
 
 compile: compile_cpp compile_cython
@@ -78,29 +78,29 @@ compile: compile_cpp compile_cython
 install_cpp: compile_cpp
 	@echo Installing shared libraries into source tree...
 	${VENV_ACTIVATE} && (\
-	    cd cpp/build/ && ${MESON_INSTALL}; \
+	    cd cpp/build && ${MESON_INSTALL}; \
 	) && ${VENV_DEACTIVATE}
 
 install_cython: compile_cython
 	@echo Installing extension modules into source tree...
 	${VENV_ACTIVATE} && (\
-	    cd python/build/ && ${MESON_INSTALL}; \
+	    cd python/build && ${MESON_INSTALL}; \
 	) && ${VENV_DEACTIVATE}
 
 wheel: install_cpp install_cython
 	@echo Building wheel packages...
 	${VENV_ACTIVATE} && (\
-	    cd python/subprojects/; \
-	    ${WHEEL_BUILD} common/; \
-	    ${WHEEL_BUILD} boosting/; \
-	    ${WHEEL_BUILD} seco/; \
-	    ${WHEEL_BUILD} testbed/; \
+	    cd python/subprojects; \
+	    ${WHEEL_BUILD} common; \
+	    ${WHEEL_BUILD} boosting; \
+	    ${WHEEL_BUILD} seco; \
+	    ${WHEEL_BUILD} testbed; \
 	) && ${VENV_DEACTIVATE}
 
 install: wheel
 	@echo Installing wheel packages into virtual environment...
 	${VENV_ACTIVATE} && (\
-	    cd python/subprojects/; \
+	    cd python/subprojects; \
 	    ${WHEEL_INSTALL} common/dist/*.whl; \
 	    ${WHEEL_INSTALL} boosting/dist/*.whl; \
 	    ${WHEEL_INSTALL} seco/dist/*.whl; \
@@ -113,15 +113,15 @@ doc: install
 	    ${PIP_INSTALL} -r doc/requirements.txt; \
 	) && ${VENV_DEACTIVATE}
 	@echo Generating C++ API documentation via Doxygen...
-	cd doc/ && mkdir -p apidoc/api/cpp/common/ && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_common
-	cd doc/ && mkdir -p apidoc/api/cpp/boosting/ && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
+	cd doc && mkdir -p apidoc/api/cpp/common && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_common
+	cd doc && mkdir -p apidoc/api/cpp/boosting && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
 	@echo Generating Sphinx documentation...
 	${VENV_ACTIVATE} && (\
-	    ${SPHINX_APIDOC} -o doc/python/common/ python/subprojects/common/mlrl/ **/cython; \
-	    ${SPHINX_BUILD} doc/python/common/ doc/apidoc/api/python/common/; \
-	    ${SPHINX_APIDOC} -o doc/python/boosting/ python/subprojects/boosting/mlrl/ **/cython; \
-	    ${SPHINX_BUILD} doc/python/boosting/ doc/apidoc/api/python/boosting/; \
-	    ${SPHINX_APIDOC} -o doc/python/testbed/ python/subprojects/testbed/mlrl/; \
-	    ${SPHINX_BUILD} doc/python/testbed/ doc/apidoc/api/python/testbed/; \
-	    ${SPHINX_BUILD} doc/ doc/_build/; \
+	    ${SPHINX_APIDOC} -o doc/python/common python/subprojects/common/mlrl **/cython; \
+	    ${SPHINX_BUILD} doc/python/common doc/apidoc/api/python/common; \
+	    ${SPHINX_APIDOC} -o doc/python/boosting python/subprojects/boosting/mlrl **/cython; \
+	    ${SPHINX_BUILD} doc/python/boosting doc/apidoc/api/python/boosting; \
+	    ${SPHINX_APIDOC} -o doc/python/testbed python/subprojects/testbed/mlrl; \
+	    ${SPHINX_BUILD} doc/python/testbed doc/apidoc/api/python/testbed; \
+	    ${SPHINX_BUILD} doc/ doc/_build; \
 	) && ${VENV_DEACTIVATE}
