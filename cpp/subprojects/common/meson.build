@@ -1,4 +1,4 @@
-project('common', 'cpp', version : '0.7.0')
+project('common', 'cpp')
 
 # Source files
 source_files = [
@@ -79,6 +79,8 @@ source_files = [
     'src/common/sampling/partition_sampling_no.cpp',
     'src/common/sampling/partition_single.cpp',
     'src/common/sampling/random.cpp',
+    'src/common/sampling/stratified_sampling_example_wise.cpp',
+    'src/common/sampling/stratified_sampling_label_wise.cpp',
     'src/common/sampling/weight_vector_bit.cpp',
     'src/common/sampling/weight_vector_dense.cpp',
     'src/common/sampling/weight_vector_equal.cpp',
@@ -92,16 +94,29 @@ source_files = [
     'src/common/algorithm_builder.cpp'
 ]
 
-# Dependencies
-openmp_dep = dependency('openmp')
-
-dependencies = [
-    openmp_dep
-]
-
 # Directory containing public headers
 include_directories = include_directories('include')
 
-common_lib = library('mlrlcommon', source_files, include_directories : include_directories, dependencies : dependencies,
-                     version : '0.7.0')
+# Directory into which the library should be installed
+install_root = meson.current_source_dir() / '../../../python/subprojects'
+install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
+
+# Library version
+fs = import('fs')
+version = fs.read('../../../VERSION')
+
+# Library declaration
+lib_name = 'mlrl' + meson.project_name()
+cpp_args = ['-fopenmp']
+link_args = ['-fopenmp']
+
+if host_machine.system() == 'darwin'
+    cpp_args = ['-Xclang', '-fopenmp']
+    link_args = ['-lomp']
+endif
+
+library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args, link_args : link_args,
+        version : version, install : true, install_dir : install_dir)
+common_lib = static_library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
+                            link_args : link_args)
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)

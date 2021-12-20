@@ -1,4 +1,4 @@
-project('seco', 'cpp', version : '0.7.0')
+project('seco', 'cpp')
 
 # Source files
 source_files = [
@@ -17,24 +17,31 @@ source_files = [
     'src/seco/rule_evaluation/rule_evaluation_label_wise_majority.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_partial.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_single.cpp',
-    'src/seco/sampling/instance_sampling_no.cpp',
-    'src/seco/sampling/instance_sampling_with_replacement.cpp',
-    'src/seco/sampling/instance_sampling_without_replacement.cpp',
     'src/seco/statistics/statistics_provider_factory_label_wise_dense.cpp',
     'src/seco/stopping/stopping_criterion_coverage.cpp'
 ]
 
 # Dependencies
-common_dep = subproject('common').get_variable('common_dep')
-openmp_dep = dependency('openmp')
+common_project = subproject('common')
+common_dep = common_project.get_variable('common_dep')
 
 dependencies = [
-    common_dep,
-    openmp_dep
+    common_dep
 ]
 
 # Directory containing public headers
 include_directories = include_directories('include')
 
-seco_lib = library('mlrlseco', source_files, include_directories : include_directories, dependencies : dependencies,
-                   version : '0.7.0')
+# Directory into which the library should be installed
+install_root = common_project.get_variable('install_root')
+install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
+
+# Library version
+version = common_project.get_variable('version')
+
+# Library declaration
+cpp_args = common_project.get_variable('cpp_args')
+link_args = common_project.get_variable('link_args')
+seco_lib = library('mlrl' + meson.project_name(), source_files, include_directories : include_directories,
+                   dependencies : dependencies, cpp_args : cpp_args, link_args : link_args, version : version,
+                   install : true, install_dir : install_dir)

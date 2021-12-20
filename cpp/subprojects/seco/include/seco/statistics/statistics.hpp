@@ -1,6 +1,6 @@
 /*
  * @author Jakob Steeg (jakob.steeg@gmail.com)
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -21,7 +21,7 @@ namespace seco {
 
         public:
 
-            virtual ~ICoverageStatistics() { };
+            virtual ~ICoverageStatistics() override { };
 
             /**
              * A visitor function for handling objects of the type `DenseWeightMatrix`.

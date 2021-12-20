@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #include "common/statistics/statistics_provider_factory.hpp"
 #include "seco/statistics/statistics_label_wise.hpp"
@@ -43,14 +43,23 @@ namespace seco {
 
             }
 
+            /**
+             * @see `IStatisticsProvider::get`
+             */
             IStatistics& get() const override {
                 return *statisticsPtr_;
             }
 
+            /**
+             * @see `IStatisticsProvider::switchToRegularRuleEvaluation`
+             */
             void switchToRegularRuleEvaluation() override {
                 statisticsPtr_->setRuleEvaluationFactory(regularRuleEvaluationFactory_);
             }
 
+            /**
+             * @see `IStatisticsProvider::switchToPruningRuleEvaluation`
+             */
             void switchToPruningRuleEvaluation() override {
                 statisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
             }

@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -50,7 +50,7 @@ class CsrLabelMatrix final : public ILabelMatrix {
                 struct Pred {
 
                     /**
-                     * Returns whether two objects of tyep `CsrLabelMatrix::View` are equal or not.
+                     * Returns whether two objects of type `CsrLabelMatrix::View` are equal or not.
                      *
                      * @param lhs   A reference to a first object of type `CsrLabelMatrix::View`
                      * @param rhs   A reference to a second object of type `CsrLabelMatrix::View`

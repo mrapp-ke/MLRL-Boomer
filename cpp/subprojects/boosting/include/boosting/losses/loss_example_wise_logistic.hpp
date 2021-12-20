@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -47,9 +47,15 @@ namespace boosting {
                                              const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override;
 
+            /**
+             * @see `IEvaluationMeasure::evaluate`
+             */
             float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override;
 
+            /**
+             * @see `IEvaluationMeasure::evaluate`
+             */
             float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override;
 

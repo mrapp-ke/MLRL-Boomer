@@ -1,6 +1,6 @@
 /*
  * @author Jakob Steeg (jakob.steeg@gmail.com)
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -45,8 +45,14 @@ namespace seco {
                 std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
                 std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr);
 
+            /**
+             * @see `IStatisticsProviderFactory::create`
+             */
             std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const override;
 
+            /**
+             * @see `IStatisticsProviderFactory::create`
+             */
             std::unique_ptr<IStatisticsProvider> create(const CsrLabelMatrix& labelMatrix) const override;
 
     };

@@ -1,13 +1,31 @@
 # Changelog
 
-### Version 0.7.0 (to be released)
+### Version 0.8.0 (to be released)
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
-* The Python API does now allow to access the rules in a model in a programmatic way.
-* It is now possible to output certain characteristics of training datasets and rule models. 
+* No changes yet.
 
-## Version 0.6.2 (Oct 4, 2021)
+### Version 0.7.1 (Dec. 15, 2021)
+
+A bugfix release that solves the following issues:
+
+* Fixes an issue preventing the use of dense representations of ground truth label matrices that was introduced in version 0.7.0.
+* Pre-built packages for MacOS systems are now available at [PyPI](https://pypi.org/project/mlrl-boomer/).
+* Linux and MacOS packages for Python 3.10 are now provided.
+
+### Version 0.7.0 (Dec. 5, 2021)
+
+A major update to the BOOMER algorithm that introduces the following changes:
+
+* L1 regularization can now be used.
+* A more space-efficient data structure is now used for the sparse representation of binary predictions.
+* The Python API does now allow to access the rules in a model in a programmatic way.
+* It is now possible to output certain characteristics of training datasets and rule models.
+* Pre-built packages for the Linux platform are now available at [PyPI](https://pypi.org/project/mlrl-boomer/).
+* The [documentation](https://mlrl-boomer.readthedocs.io) has vastly been improved.
+
+### Version 0.6.2 (Oct 4, 2021)
 
 A bugfix release that solves the following issues:
 

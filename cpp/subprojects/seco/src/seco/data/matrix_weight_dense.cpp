@@ -5,17 +5,13 @@
 
 namespace seco {
 
-    DenseWeightMatrix::DenseWeightMatrix(uint32 numRows, uint32 numCols)
-        : DenseMatrix<float64>(numRows, numCols), sumOfUncoveredWeights_(0) {
+    DenseWeightMatrix::DenseWeightMatrix(uint32 numRows, uint32 numCols, float64 sumOfUncoveredWeights)
+        : DenseMatrix<float64>(numRows, numCols), sumOfUncoveredWeights_(sumOfUncoveredWeights) {
         setArrayToValue<float64>(this->array_, numRows * numCols, 1);
     }
 
     float64 DenseWeightMatrix::getSumOfUncoveredWeights() const {
         return sumOfUncoveredWeights_;
-    }
-
-    void DenseWeightMatrix::setSumOfUncoveredWeights(float64 sumOfUncoveredWeights) {
-        sumOfUncoveredWeights_ = sumOfUncoveredWeights;
     }
 
     void DenseWeightMatrix::updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,

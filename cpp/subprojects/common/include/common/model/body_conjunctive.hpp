@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -55,7 +55,7 @@ class ConjunctiveBody final : public IBody {
          */
         ConjunctiveBody(const ConditionList& conditionList);
 
-        ~ConjunctiveBody();
+        ~ConjunctiveBody() override;
 
         /**
          * An iterator that provides access to the thresholds that are used by the conditions in the body and allows to

@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -33,10 +33,10 @@ namespace boosting {
     /**
      * Copies gradients from an iterator to a vector of ordinates that may be passed to LAPACK's DSYSV routine.
      *
-     * @tparam GradientIterator The type of the iterator that provides access to the gradients
-     * @param gradientIterator  An iterator that provides random access to the gradients
-     * @param ordinates         An array of type `float64`, shape `(n)`, the gradients should be copied to
-     * @param n                 The number of gradients
+     * @tparam GradientIterator         The type of the iterator that provides access to the gradients
+     * @param gradientIterator          An iterator that provides random access to the gradients
+     * @param ordinates                 An array of type `float64`, shape `(n)`, the gradients should be copied to
+     * @param n                         The number of gradients
      */
     template<typename GradientIterator>
     static inline void copyOrdinates(GradientIterator gradientIterator, float64* ordinates, uint32 n) {
@@ -124,7 +124,7 @@ namespace boosting {
                 dsysvTmpArray3_ = new double[dsysvLwork_];
             }
 
-            virtual ~AbstractExampleWiseRuleEvaluation() {
+            virtual ~AbstractExampleWiseRuleEvaluation() override {
                 delete[] dsysvTmpArray1_;
                 delete[] dsysvTmpArray2_;
                 delete[] dsysvTmpArray3_;

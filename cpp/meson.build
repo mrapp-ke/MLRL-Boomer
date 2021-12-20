@@ -1,3 +1,3 @@
-project('boomer', 'cpp', version : '0.7.0')
+project('mlrl', default_options : ['cpp_std=c++14', 'buildtype=release'])
 subproject('boosting')
 subproject('seco')

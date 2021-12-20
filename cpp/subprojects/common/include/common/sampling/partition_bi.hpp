@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -33,7 +33,7 @@ class BiPartition : public IPartition {
          */
         BiPartition(uint32 numFirst, uint32 numSecond);
 
-        ~BiPartition();
+        ~BiPartition() override;
 
         /**
          * An iterator that provides access to the indices that are contained by the first or second set and allows to

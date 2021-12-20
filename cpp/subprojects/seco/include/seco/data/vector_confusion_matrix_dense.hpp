@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -14,7 +14,7 @@ namespace seco {
     /**
      * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
      */
-    class DenseConfusionMatrixVector {
+    class DenseConfusionMatrixVector final {
 
         private:
 

@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -19,7 +19,7 @@ namespace boosting {
 
         public:
 
-            virtual ~ILabelWiseLoss() { };
+            virtual ~ILabelWiseLoss() override { };
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -138,7 +138,7 @@ namespace boosting {
 
         public:
 
-            virtual ~AbstractLabelWiseLoss() { };
+            virtual ~AbstractLabelWiseLoss() override { };
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                                            const CContiguousConstView<float64>& scoreMatrix,
@@ -164,9 +164,15 @@ namespace boosting {
                                             PartialIndexVector::const_iterator labelIndicesEnd,
                                             DenseLabelWiseStatisticView& statisticView) const override final;
 
+            /**
+             * @see `IEvaluationMeasure::evaluate`
+             */
             float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override final;
 
+            /**
+             * @see `IEvaluationMeasure::evaluate`
+             */
             float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override final;
 

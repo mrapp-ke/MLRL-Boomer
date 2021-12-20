@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -24,10 +24,19 @@ namespace seco {
 
             DecisionListBuilder();
 
+            /**
+             * @see `IModelBuilder::setDefaultRule`
+             */
             void setDefaultRule(const AbstractPrediction& prediction) override;
 
+            /**
+             * @see `IModelBuilder::addRule`
+             */
             void addRule(const ConditionList& conditions, const AbstractPrediction& prediction) override;
 
+            /**
+             * @see `IModelBuilder::build`
+             */
             std::unique_ptr<RuleModel> build(uint32 numUsedRules) override;
 
     };

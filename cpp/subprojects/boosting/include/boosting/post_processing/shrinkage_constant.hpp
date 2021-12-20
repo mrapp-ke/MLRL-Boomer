@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -24,6 +24,9 @@ namespace boosting {
              */
             ConstantShrinkage(float64 shrinkage);
 
+            /**
+             * @see `IPostProcessor::postProcess`
+             */
             void postProcess(AbstractPrediction& prediction) const override;
 
     };

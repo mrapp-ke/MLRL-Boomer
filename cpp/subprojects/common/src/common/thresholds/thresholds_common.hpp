@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -173,7 +173,7 @@ class AbstractThresholds : public IThresholds {
 
         }
 
-        virtual ~AbstractThresholds() { };
+        virtual ~AbstractThresholds() override { };
 
         uint32 getNumExamples() const override final {
             return featureMatrix_.getNumRows();

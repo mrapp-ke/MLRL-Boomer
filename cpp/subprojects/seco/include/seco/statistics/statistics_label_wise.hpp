@@ -1,6 +1,6 @@
 /*
  * @author Jakob Steeg (jakob.steeg@gmail.com)
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -22,7 +22,7 @@ namespace seco {
 
         public:
 
-            virtual ~ILabelWiseStatistics() { };
+            virtual ~ILabelWiseStatistics() override { };
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the

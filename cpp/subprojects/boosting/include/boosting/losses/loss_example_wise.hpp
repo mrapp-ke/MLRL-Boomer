@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -16,7 +16,7 @@ namespace boosting {
 
         public:
 
-            virtual ~IExampleWiseLoss() { };
+            virtual ~IExampleWiseLoss() override { };
 
             /**
              * Updates the statistics of the example at a specific index.

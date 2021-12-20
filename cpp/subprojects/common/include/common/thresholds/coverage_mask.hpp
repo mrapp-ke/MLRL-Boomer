@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -9,7 +9,7 @@
 /**
  * Allows to check whether individual examples are covered by a rule or not. For each example, an integer is stored in a
  * C-contiguous array that may be updated when the rule is refined. If the value that corresponds to a certain example
- * is equal to the "target", it is considered to be covered.
+ * is equal to the "indicator value", it is considered to be covered.
  */
 class CoverageMask final : public ICoverageState {
 
@@ -19,7 +19,7 @@ class CoverageMask final : public ICoverageState {
 
         uint32 numElements_;
 
-        uint32 target_;
+        uint32 indicatorValue_;
 
     public:
 
@@ -33,7 +33,7 @@ class CoverageMask final : public ICoverageState {
          */
         CoverageMask(const CoverageMask& coverageMask);
 
-        ~CoverageMask();
+        ~CoverageMask() override;
 
         /**
          * An iterator that provides access to the values in the mask and allows to modify them.
@@ -81,21 +81,21 @@ class CoverageMask final : public ICoverageState {
         uint32 getNumElements() const;
 
         /**
-         * Returns the "target".
+         * Returns the "indicator value".
          *
-         * @return The "target"
+         * @return The "indicator value"
          */
-        uint32 getTarget() const;
+        uint32 getIndicatorValue() const;
 
         /**
-         * Sets the "target".
+         * Sets the "indicator value".
          *
-         * @param target The "target" to be set
+         * @param indicatorValue The "indicator value" to be set
          */
-        void setTarget(uint32 target);
+        void setIndicatorValue(uint32 indicatorValue);
 
         /**
-         * Resets the mask and the target such that all examples are marked as covered.
+         * Resets the mask and the "indicator value" such that all examples are marked as covered.
          */
         void reset();
 

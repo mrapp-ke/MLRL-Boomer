@@ -56,6 +56,8 @@ namespace boosting {
             /**
              * @param lossFunction          A reference to an object of type `IExampleWiseLoss`, representing the loss
              *                              function to be used for calculating gradients and Hessians
+             * @param evaluationMeasure     A reference to an object of type `IEvaluationMeasure` that implements the
+             *                              evaluation measure that should be used to assess the quality of predictions
              * @param ruleEvaluationFactory A reference to an object of type `IExampleWiseRuleEvaluationFactory`, to be
              *                              used for calculating the predictions, as well as corresponding quality
              *                              scores, of rules
@@ -96,7 +98,7 @@ namespace boosting {
                 #pragma omp parallel for firstprivate(numRows) firstprivate(numCols) \
                 firstprivate(labelWiseStatisticMatrixRawPtr) firstprivate(exampleWiseStatisticViewRawPtr) \
                 schedule(dynamic) num_threads(numThreads)
-                for (uint32 i = 0; i < numRows; i++) {
+                for (int64 i = 0; i < numRows; i++) {
                     DenseLabelWiseStatisticView::iterator iterator = labelWiseStatisticMatrixRawPtr->row_begin(i);
                     DenseExampleWiseStatisticView::gradient_const_iterator gradientIterator =
                         exampleWiseStatisticViewRawPtr->gradients_row_cbegin(i);
@@ -139,7 +141,7 @@ namespace boosting {
         #pragma omp parallel for firstprivate(numExamples) firstprivate(lossFunctionRawPtr) \
         firstprivate(labelMatrixPtr) firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) \
         schedule(dynamic) num_threads(numThreads)
-        for (uint32 i = 0; i < numExamples; i++) {
+        for (int64 i = 0; i < numExamples; i++) {
             lossFunctionRawPtr->updateExampleWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr,
                                                             *statisticMatrixRawPtr);
         }

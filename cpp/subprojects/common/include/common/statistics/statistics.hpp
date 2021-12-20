@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  * @author Lukas Johannes Eberle (lukasjohannes.eberle@stud.tu-darmstadt.de)
  */
 #pragma once
@@ -18,7 +18,7 @@ class IStatistics : virtual public IImmutableStatistics {
 
     public:
 
-        virtual ~IStatistics() { };
+        virtual ~IStatistics() override { };
 
         /**
          * Resets the statistics which should be considered in the following for learning a new rule. The indices of the

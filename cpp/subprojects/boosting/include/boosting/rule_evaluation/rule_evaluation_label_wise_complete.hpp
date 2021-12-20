@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -15,15 +15,19 @@ namespace boosting {
 
         private:
 
+            float64 l1RegularizationWeight_;
+
             float64 l2RegularizationWeight_;
 
         public:
 
             /**
-             * @param l2RegularizationWeight The weight of the L2 regularization that is applied for calculating the
-             *                               scores to be predicted by rules
+             * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
+             *                                  scores to be predicted by rules
+             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
+             *                                  scores to be predicted by rules
              */
-            LabelWiseCompleteRuleEvaluationFactory(float64 l2RegularizationWeight);
+            LabelWiseCompleteRuleEvaluationFactory(float64 l1RegularizationWeight, float64 l2RegularizationWeight);
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
                 const DenseLabelWiseStatisticVector& statisticVector,

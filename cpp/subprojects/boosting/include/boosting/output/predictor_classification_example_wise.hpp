@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -49,19 +49,31 @@ namespace boosting {
             void transform(const CContiguousConstView<float64>& scoreMatrix,
                            CContiguousView<uint8>& predictionMatrix, const LabelVectorSet* labelVectors) const;
 
+            /**
+             * @see `IPredictor::predict`
+             */
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 
+            /**
+             * @see `IPredictor::predict`
+             */
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predict(const CContiguousFeatureMatrix& featureMatrix,
-                                                                  uint32 numLabels, const RuleModel& model,
-                                                                  const LabelVectorSet* labelVectors) const override;
+            /**
+             * @see `ISparsePredictor::predictSparse`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+                const LabelVectorSet* labelVectors) const override;
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predict(const CsrFeatureMatrix& featureMatrix,
-                                                                  uint32 numLabels, const RuleModel& model,
-                                                                  const LabelVectorSet* labelVectors) const override;
+            /**
+             * @see `ISparsePredictor::predictSparse`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+                const LabelVectorSet* labelVectors) const override;
 
     };
 

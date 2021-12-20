@@ -1,5 +1,5 @@
 /*
- * @author Michael Rapp (mrapp@ke.tu-darmstadt.de)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
 #pragma once
 
@@ -68,9 +68,15 @@ namespace boosting {
             LabelWiseProbabilityPredictor(std::unique_ptr<ILabelWiseTransformationFunction> transformationFunctionPtr,
                                           uint32 numThreads);
 
+            /**
+             * @see `IPredictor::predict`
+             */
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
                          const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 
+            /**
+             * @see `IPredictor::predict`
+             */
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
                          const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 

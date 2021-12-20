@@ -1,4 +1,5 @@
 #include "seco/output/predictor_classification_label_wise.hpp"
+#include "common/data/vector_bit.hpp"
 #include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
@@ -9,21 +10,21 @@
 namespace seco {
 
     static inline void applyCompleteHead(const CompleteHead& head, CContiguousView<uint8>::iterator begin,
-                                         CContiguousView<uint8>::iterator end, CContiguousView<uint8>::iterator mask) {
+                                         CContiguousView<uint8>::iterator end, BitVector& mask) {
         CompleteHead::score_const_iterator iterator = head.scores_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
-            if (mask[i] == 0) {
+            if (!mask[i]) {
                 uint8 prediction = iterator[i] > 0;
                 begin[i] = prediction;
-                mask[i] = 1;
+                mask.set(i, true);
             }
         }
     }
 
     static inline void applyPartialHead(const PartialHead& head, CContiguousView<uint8>::iterator begin,
-                                        CContiguousView<uint8>::iterator end, CContiguousView<uint8>::iterator mask) {
+                                        CContiguousView<uint8>::iterator end, BitVector& mask) {
         PartialHead::score_const_iterator scoreIterator = head.scores_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
@@ -31,16 +32,16 @@ namespace seco {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indexIterator[i];
 
-            if (mask[index] == 0) {
+            if (!mask[index]) {
                 uint8 prediction = scoreIterator[i] > 0;
                 begin[index] = prediction;
-                mask[index] = 1;
+                mask.set(index, true);
             }
         }
     }
 
-    static inline void applyHead(const IHead& head, CContiguousView<uint8>& predictionMatrix,
-                                 CContiguousView<uint8>::iterator mask, uint32 row) {
+    static inline void applyHead(const IHead& head, CContiguousView<uint8>& predictionMatrix, BitVector& mask,
+                                 uint32 row) {
         auto completeHeadVisitor = [&, row](const CompleteHead& head) {
             applyCompleteHead(head, predictionMatrix.row_begin(row), predictionMatrix.row_end(row), mask);
         };
@@ -161,8 +162,8 @@ namespace seco {
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
         firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
-        for (uint32 i = 0; i < numExamples; i++) {
-            uint8 mask[numLabels] = {};
+        for (int64 i = 0; i < numExamples; i++) {
+            BitVector mask(numLabels, true);
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const Rule& rule = *it;
@@ -170,7 +171,7 @@ namespace seco {
 
                 if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
                     const IHead& head = rule.getHead();
-                    applyHead(head, *predictionMatrixPtr, &mask[0], i);
+                    applyHead(head, *predictionMatrixPtr, mask, i);
                 }
             }
         }
@@ -189,10 +190,10 @@ namespace seco {
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
         num_threads(numThreads_)
-        for (uint32 i = 0; i < numExamples; i++) {
-            uint8 mask[numLabels] = {};
-            float32 tmpArray1[numFeatures];
-            uint32 tmpArray2[numFeatures] = {};
+        for (int64 i = 0; i < numExamples; i++) {
+            BitVector mask(numLabels, true);
+            float32* tmpArray1 = new float32[numFeatures];
+            uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
@@ -203,15 +204,18 @@ namespace seco {
                                 featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                 &tmpArray1[0], &tmpArray2[0], n)) {
                     const IHead& head = rule.getHead();
-                    applyHead(head, *predictionMatrixPtr, &mask[0], i);
+                    applyHead(head, *predictionMatrixPtr, mask, i);
                 }
 
                 n++;
             }
+
+            delete[] tmpArray1;
+            delete[] tmpArray2;
         }
     }
 
-    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predict(
+    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predictSparse(
             const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
             const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
@@ -224,7 +228,7 @@ namespace seco {
         #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
         num_threads(numThreads_)
-        for (uint32 i = 0; i < numExamples; i++) {
+        for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
@@ -241,7 +245,7 @@ namespace seco {
         return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
     }
 
-    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predict(
+    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predictSparse(
             const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
             const LabelVectorSet* labelVectors) const {
         uint32 numExamples = featureMatrix.getNumRows();
@@ -255,10 +259,10 @@ namespace seco {
         #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
         firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
         firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
-        for (uint32 i = 0; i < numExamples; i++) {
+        for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
-            float32 tmpArray1[numFeatures];
-            uint32 tmpArray2[numFeatures] = {};
+            float32* tmpArray1 = new float32[numFeatures];
+            uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
@@ -274,6 +278,9 @@ namespace seco {
 
                 n++;
             }
+
+            delete[] tmpArray1;
+            delete[] tmpArray2;
         }
 
         return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
