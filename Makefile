@@ -8,6 +8,7 @@ VENV_CREATE = python3 -m venv ${VENV_DIR}
 VENV_ACTIVATE = . ${VENV_DIR}/bin/activate
 VENV_DEACTIVATE = deactivate
 PIP_INSTALL = python -m pip install --prefer-binary
+PIP_UPGRADE = ${PIP_INSTALL} --upgrade
 MESON_SETUP = meson setup
 MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
@@ -53,8 +54,8 @@ venv:
 	@echo Creating virtual Python environment...
 	${VENV_CREATE}
 	${VENV_ACTIVATE} && (\
-	   ${PIP_INSTALL} --upgrade pip; \
-	   ${PIP_INSTALL} --upgrade setuptools; \
+	   ${PIP_UPGRADE} pip; \
+	   ${PIP_UPGRADE} setuptools; \
 	   ${PIP_INSTALL} -r python/requirements.txt; \
 	) && ${VENV_DEACTIVATE}
 
