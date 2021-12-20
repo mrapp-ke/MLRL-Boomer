@@ -8,6 +8,8 @@ CPP_BUILD_DIR = ${CPP_SRC_DIR}/build
 PYTHON_SRC_DIR = python
 PYTHON_BUILD_DIR = ${PYTHON_SRC_DIR}/build
 DOC_DIR = doc
+DOC_API_DIR = ${DOC_DIR}/apidoc
+DOC_BUILD_DIR = ${DOC_DIR}/_build
 
 VENV_CREATE = python3 -m venv ${VENV_DIR}
 VENV_ACTIVATE = . ${VENV_DIR}/bin/activate
@@ -49,8 +51,8 @@ clean_wheel:
 
 clean_doc:
 	@echo Removing documentation...
-	rm -rf ${DOC_DIR}/_build
-	rm -rf ${DOC_DIR}/apidoc
+	rm -rf ${DOC_BUILD_DIR}
+	rm -rf ${DOC_API_DIR}
 	rm -f ${DOC_DIR}/python/**/*.rst
 
 clean: clean_doc clean_wheel clean_compile clean_install clean_venv
@@ -118,15 +120,17 @@ doc: install
 	    ${PIP_INSTALL} -r ${DOC_DIR}/requirements.txt; \
 	) && ${VENV_DEACTIVATE}
 	@echo Generating C++ API documentation via Doxygen...
-	cd ${DOC_DIR} && mkdir -p apidoc/api/cpp/common && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_common
-	cd ${DOC_DIR} && mkdir -p apidoc/api/cpp/boosting && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
+	mkdir -p ${DOC_API_DIR}/api/cpp/common
+	cd ${DOC_DIR} && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_common
+	mkdir -p ${DOC_API_DIR}/api/cpp/boosting
+	cd ${DOC_DIR} && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
 	@echo Generating Sphinx documentation...
 	${VENV_ACTIVATE} && (\
 	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/common python/subprojects/common/mlrl **/cython; \
-	    ${SPHINX_BUILD} ${DOC_DIR}/python/common ${DOC_DIR}/apidoc/api/python/common; \
+	    ${SPHINX_BUILD} ${DOC_DIR}/python/common ${DOC_API_DIR}/api/python/common; \
 	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/boosting python/subprojects/boosting/mlrl **/cython; \
-	    ${SPHINX_BUILD} ${DOC_DIR}/python/boosting ${DOC_DIR}/apidoc/api/python/boosting; \
+	    ${SPHINX_BUILD} ${DOC_DIR}/python/boosting ${DOC_API_DIR}/api/python/boosting; \
 	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/testbed python/subprojects/testbed/mlrl; \
-	    ${SPHINX_BUILD} ${DOC_DIR}/python/testbed ${DOC_DIR}/apidoc/api/python/testbed; \
-	    ${SPHINX_BUILD} ${DOC_DIR}/ ${DOC_DIR}/_build; \
+	    ${SPHINX_BUILD} ${DOC_DIR}/python/testbed ${DOC_API_DIR}/api/python/testbed; \
+	    ${SPHINX_BUILD} ${DOC_DIR} ${DOC_BUILD_DIR}; \
 	) && ${VENV_DEACTIVATE}
