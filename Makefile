@@ -11,6 +11,7 @@ PYTHON_MODULE_DIR = ${PYTHON_SRC_DIR}/subprojects
 DIST_DIR = dist
 DOC_DIR = doc
 DOC_API_DIR = ${DOC_DIR}/apidoc
+DOC_TMP_DIR = ${DOC_DIR}/python
 DOC_BUILD_DIR = ${DOC_DIR}/_build
 
 VENV_CREATE = python3 -m venv ${VENV_DIR}
@@ -55,7 +56,7 @@ clean_doc:
 	@echo Removing documentation...
 	rm -rf ${DOC_BUILD_DIR}
 	rm -rf ${DOC_API_DIR}
-	rm -f ${DOC_DIR}/python/**/*.rst
+	rm -f ${DOC_TMP_DIR}/**/*.rst
 
 clean: clean_doc clean_wheel clean_compile clean_install clean_venv
 
@@ -126,11 +127,11 @@ doc: install
 	cd ${DOC_DIR} && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
 	@echo Generating Sphinx documentation...
 	${VENV_ACTIVATE} && (\
-	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/common ${PYTHON_MODULE_DIR}/common/mlrl **/cython; \
-	    ${SPHINX_BUILD} ${DOC_DIR}/python/common ${DOC_API_DIR}/api/python/common; \
-	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/boosting ${PYTHON_MODULE_DIR}/boosting/mlrl **/cython; \
-	    ${SPHINX_BUILD} ${DOC_DIR}/python/boosting ${DOC_API_DIR}/api/python/boosting; \
-	    ${SPHINX_APIDOC} -o ${DOC_DIR}/python/testbed ${PYTHON_MODULE_DIR}/testbed/mlrl; \
-	    ${SPHINX_BUILD} ${DOC_DIR}/python/testbed ${DOC_API_DIR}/api/python/testbed; \
+	    ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/common ${PYTHON_MODULE_DIR}/common/mlrl **/cython; \
+	    ${SPHINX_BUILD} ${DOC_TMP_DIR}/common ${DOC_API_DIR}/api/python/common; \
+	    ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/boosting ${PYTHON_MODULE_DIR}/boosting/mlrl **/cython; \
+	    ${SPHINX_BUILD} ${DOC_TMP_DIR}/boosting ${DOC_API_DIR}/api/python/boosting; \
+	    ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/testbed ${PYTHON_MODULE_DIR}/testbed/mlrl; \
+	    ${SPHINX_BUILD} ${DOC_TMP_DIR}/testbed ${DOC_API_DIR}/api/python/testbed; \
 	    ${SPHINX_BUILD} ${DOC_DIR} ${DOC_BUILD_DIR}; \
 	) && ${VENV_DEACTIVATE}
