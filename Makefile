@@ -62,15 +62,15 @@ venv:
 compile_cpp: venv
 	@echo Compiling C++ code...
 	${VENV_ACTIVATE} && (\
-	    cd cpp && ${MESON_SETUP} build; \
-	    cd build && ${MESON_COMPILE}; \
+	    ${MESON_SETUP} cpp/build cpp; \
+	    ${MESON_COMPILE} -C cpp/build; \
 	) && ${VENV_DEACTIVATE}
 
 compile_cython: venv
 	@echo Compiling Cython code...
 	${VENV_ACTIVATE} && (\
-	    cd python && ${MESON_SETUP} build; \
-	    cd build && ${MESON_COMPILE}; \
+	    ${MESON_SETUP} python/build python; \
+	    ${MESON_COMPILE} -C python/build; \
 	) && ${VENV_DEACTIVATE}
 
 compile: compile_cpp compile_cython
@@ -78,13 +78,13 @@ compile: compile_cpp compile_cython
 install_cpp: compile_cpp
 	@echo Installing shared libraries into source tree...
 	${VENV_ACTIVATE} && (\
-	    cd cpp/build && ${MESON_INSTALL}; \
+	    ${MESON_INSTALL} -C cpp/build; \
 	) && ${VENV_DEACTIVATE}
 
 install_cython: compile_cython
 	@echo Installing extension modules into source tree...
 	${VENV_ACTIVATE} && (\
-	    cd python/build && ${MESON_INSTALL}; \
+	    ${MESON_INSTALL} -C python/build; \
 	) && ${VENV_DEACTIVATE}
 
 wheel: install_cpp install_cython
