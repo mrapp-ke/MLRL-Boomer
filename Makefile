@@ -63,75 +63,75 @@ clean: clean_doc clean_wheel clean_compile clean_install clean_venv
 venv:
 	@echo Creating virtual Python environment...
 	${VENV_CREATE}
-	${VENV_ACTIVATE} && (\
-	   ${PIP_UPGRADE} pip; \
-	   ${PIP_UPGRADE} setuptools; \
-	   ${PIP_INSTALL} -r ${PYTHON_SRC_DIR}/requirements.txt; \
-	) && ${VENV_DEACTIVATE}
+	${VENV_ACTIVATE} \
+	    && ${PIP_UPGRADE} pip \
+	    && ${PIP_UPGRADE} setuptools \
+	    && ${PIP_INSTALL} -r ${PYTHON_SRC_DIR}/requirements.txt \
+	    && ${VENV_DEACTIVATE}
 
 compile_cpp: venv
 	@echo Compiling C++ code...
-	${VENV_ACTIVATE} && (\
-	    ${MESON_SETUP} ${CPP_BUILD_DIR} ${CPP_SRC_DIR}; \
-	    ${MESON_COMPILE} -C ${CPP_BUILD_DIR}; \
-	) && ${VENV_DEACTIVATE}
+	${VENV_ACTIVATE} \
+	    && ${MESON_SETUP} ${CPP_BUILD_DIR} ${CPP_SRC_DIR} \
+	    && ${MESON_COMPILE} -C ${CPP_BUILD_DIR} \
+	    && ${VENV_DEACTIVATE}
 
 compile_cython: venv
 	@echo Compiling Cython code...
-	${VENV_ACTIVATE} && (\
-	    ${MESON_SETUP} ${PYTHON_BUILD_DIR} ${PYTHON_SRC_DIR}; \
-	    ${MESON_COMPILE} -C ${PYTHON_BUILD_DIR}; \
-	) && ${VENV_DEACTIVATE}
+	${VENV_ACTIVATE} \
+	    && ${MESON_SETUP} ${PYTHON_BUILD_DIR} ${PYTHON_SRC_DIR} \
+	    && ${MESON_COMPILE} -C ${PYTHON_BUILD_DIR} \
+	    && ${VENV_DEACTIVATE}
 
 compile: compile_cpp compile_cython
 
 install_cpp: compile_cpp
 	@echo Installing shared libraries into source tree...
-	${VENV_ACTIVATE} && (\
-	    ${MESON_INSTALL} -C ${CPP_BUILD_DIR}; \
-	) && ${VENV_DEACTIVATE}
+	${VENV_ACTIVATE} \
+	    && ${MESON_INSTALL} -C ${CPP_BUILD_DIR} \
+	    && ${VENV_DEACTIVATE}
 
 install_cython: compile_cython
 	@echo Installing extension modules into source tree...
-	${VENV_ACTIVATE} && (\
-	    ${MESON_INSTALL} -C ${PYTHON_BUILD_DIR}; \
-	) && ${VENV_DEACTIVATE}
+	${VENV_ACTIVATE} \
+	    && ${MESON_INSTALL} -C ${PYTHON_BUILD_DIR} \
+	    && ${VENV_DEACTIVATE}
 
 wheel: install_cpp install_cython
 	@echo Building wheel packages...
-	${VENV_ACTIVATE} && (\
-	    ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/common; \
-	    ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/boosting; \
-	    ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/seco; \
-	    ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/testbed; \
-	) && ${VENV_DEACTIVATE}
+	${VENV_ACTIVATE} \
+	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/common \
+	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/boosting \
+	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/seco \
+	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/testbed \
+	    && ${VENV_DEACTIVATE}
 
 install: wheel
 	@echo Installing wheel packages into virtual environment...
-	${VENV_ACTIVATE} && (\
-	    ${WHEEL_INSTALL} ${PYTHON_PACKAGE_DIR}/common/${DIST_DIR}/*.whl; \
-	    ${WHEEL_INSTALL} ${PYTHON_PACKAGE_DIR}/boosting/${DIST_DIR}/*.whl; \
-	    ${WHEEL_INSTALL} ${PYTHON_PACKAGE_DIR}/seco/${DIST_DIR}/*.whl; \
-	    ${WHEEL_INSTALL} ${PYTHON_PACKAGE_DIR}/testbed/${DIST_DIR}/*.whl; \
-	) && ${VENV_DEACTIVATE}
+	${VENV_ACTIVATE} \
+	    && ${WHEEL_INSTALL} ${PYTHON_PACKAGE_DIR}/common/${DIST_DIR}/*.whl \
+	    && ${WHEEL_INSTALL} ${PYTHON_PACKAGE_DIR}/boosting/${DIST_DIR}/*.whl \
+	    && ${WHEEL_INSTALL} ${PYTHON_PACKAGE_DIR}/seco/${DIST_DIR}/*.whl \
+	    && ${WHEEL_INSTALL} ${PYTHON_PACKAGE_DIR}/testbed/${DIST_DIR}/*.whl \
+	    && ${VENV_DEACTIVATE}
 
 doc: install
 	@echo Installing documentation dependencies into virtual environment...
-	${VENV_ACTIVATE} && (\
-	    ${PIP_INSTALL} -r ${DOC_DIR}/requirements.txt; \
-	) && ${VENV_DEACTIVATE}
+	${VENV_ACTIVATE} \
+	    && ${PIP_INSTALL} -r ${DOC_DIR}/requirements.txt \
+	    && ${VENV_DEACTIVATE}
 	@echo Generating C++ API documentation via Doxygen...
 	mkdir -p ${DOC_API_DIR}/api/cpp/common
 	cd ${DOC_DIR} && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_common
 	mkdir -p ${DOC_API_DIR}/api/cpp/boosting
 	cd ${DOC_DIR} && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
 	@echo Generating Sphinx documentation...
-	${VENV_ACTIVATE} && (\
-	    ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/common ${PYTHON_PACKAGE_DIR}/common/mlrl **/cython; \
-	    ${SPHINX_BUILD} ${DOC_TMP_DIR}/common ${DOC_API_DIR}/api/python/common; \
-	    ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/boosting ${PYTHON_PACKAGE_DIR}/boosting/mlrl **/cython; \
-	    ${SPHINX_BUILD} ${DOC_TMP_DIR}/boosting ${DOC_API_DIR}/api/python/boosting; \
-	    ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/testbed ${PYTHON_PACKAGE_DIR}/testbed/mlrl; \
-	    ${SPHINX_BUILD} ${DOC_TMP_DIR}/testbed ${DOC_API_DIR}/api/python/testbed; \
-	    ${SPHINX_BUILD} ${DOC_DIR} ${DOC_BUILD_DIR}; \
-	) && ${VENV_DEACTIVATE}
+	${VENV_ACTIVATE} \
+	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/common ${PYTHON_PACKAGE_DIR}/common/mlrl **/cython \
+	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/common ${DOC_API_DIR}/api/python/common \
+	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/boosting ${PYTHON_PACKAGE_DIR}/boosting/mlrl **/cython \
+	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/boosting ${DOC_API_DIR}/api/python/boosting \
+	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/testbed ${PYTHON_PACKAGE_DIR}/testbed/mlrl \
+	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/testbed ${DOC_API_DIR}/api/python/testbed \
+	    && ${SPHINX_BUILD} ${DOC_DIR} ${DOC_BUILD_DIR} \
+	    && ${VENV_DEACTIVATE}
