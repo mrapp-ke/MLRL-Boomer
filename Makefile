@@ -40,8 +40,8 @@ clean_cython:
 clean_compile: clean_cpp clean_cython
 
 clean_install:
-	rm -f ${PYTHON_SRC_DIR}/subprojects/**/mlrl/**/cython/*.so*
-	rm -f ${PYTHON_SRC_DIR}/subprojects/**/mlrl/**/cython/*.dylib
+	rm -f ${PYTHON_SRC_DIR}/subprojects/**/*.so*
+	rm -f ${PYTHON_SRC_DIR}/subprojects/**/*.dylib
 
 clean_wheel:
 	@echo Removing Python build files...
