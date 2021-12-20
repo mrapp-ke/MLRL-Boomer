@@ -15,15 +15,15 @@ SPHINX_APIDOC = sphinx-apidoc --tocfile index -f
 SPHINX_BUILD = sphinx-build -M html
 
 clean_venv:
-	@echo "Removing virtual Python environment..."
+	@echo Removing virtual Python environment...
 	rm -rf venv/
 
 clean_cpp:
-	@echo "Removing C++ compilation files..."
+	@echo Removing C++ compilation files...
 	rm -rf cpp/build/
 
 clean_cython:
-	@echo "Removing Cython compilation files..."
+	@echo Removing Cython compilation files...
 	rm -rf python/build/
 
 clean_compile: clean_cpp clean_cython
@@ -33,13 +33,13 @@ clean_install:
 	rm -f python/subprojects/**/mlrl/**/cython/*.dylib
 
 clean_wheel:
-	@echo "Removing Python build files..."
+	@echo Removing Python build files...
 	rm -rf python/subprojects/**/build/
 	rm -rf python/subprojects/**/dist/
 	rm -rf python/subprojects/**/*.egg-info/
 
 clean_doc:
-	@echo "Removing documentation..."
+	@echo Removing documentation...
 	rm -rf doc/_build/
 	rm -rf doc/apidoc/
 	rm -f doc/python/**/*.rst
@@ -47,7 +47,7 @@ clean_doc:
 clean: clean_doc clean_wheel clean_compile clean_install clean_venv
 
 venv:
-	@echo "Creating virtual Python environment..."
+	@echo Creating virtual Python environment...
 	python3 -m venv venv
 	${VENV_ACTIVATE} && (\
 	   ${PIP_INSTALL} --upgrade pip; \
@@ -56,14 +56,14 @@ venv:
 	) && ${VENV_DEACTIVATE}
 
 compile_cpp: venv
-	@echo "Compiling C++ code..."
+	@echo Compiling C++ code...
 	${VENV_ACTIVATE} && (\
 	    cd cpp/ && ${MESON_SETUP} build/; \
 	    cd build/ && ${MESON_COMPILE}; \
 	) && ${VENV_DEACTIVATE}
 
 compile_cython: venv
-	@echo "Compiling Cython code..."
+	@echo Compiling Cython code...
 	${VENV_ACTIVATE} && (\
 	    cd python/ && ${MESON_SETUP} build/; \
 	    cd build/ && ${MESON_COMPILE}; \
@@ -72,19 +72,19 @@ compile_cython: venv
 compile: compile_cpp compile_cython
 
 install_cpp: compile_cpp
-	@echo "Installing shared libraries into source tree..."
+	@echo Installing shared libraries into source tree...
 	${VENV_ACTIVATE} && (\
 	    cd cpp/build/ && ${MESON_INSTALL}; \
 	) && ${VENV_DEACTIVATE}
 
 install_cython: compile_cython
-	@echo "Installing extension modules into source tree..."
+	@echo Installing extension modules into source tree...
 	${VENV_ACTIVATE} && (\
 	    cd python/build/ && ${MESON_INSTALL}; \
 	) && ${VENV_DEACTIVATE}
 
 wheel: install_cpp install_cython
-	@echo "Building wheel packages..."
+	@echo Building wheel packages...
 	${VENV_ACTIVATE} && (\
 	    cd python/subprojects/; \
 	    ${WHEEL_BUILD} common/; \
@@ -94,7 +94,7 @@ wheel: install_cpp install_cython
 	) && ${VENV_DEACTIVATE}
 
 install: wheel
-	@echo "Installing wheel packages into virtual environment..."
+	@echo Installing wheel packages into virtual environment...
 	${VENV_ACTIVATE} && (\
 	    cd python/subprojects/; \
 	    ${WHEEL_INSTALL} common/dist/*.whl; \
@@ -104,14 +104,14 @@ install: wheel
 	) && ${VENV_DEACTIVATE}
 
 doc: install
-	@echo "Installing documentation dependencies into virtual environment..."
+	@echo Installing documentation dependencies into virtual environment...
 	${VENV_ACTIVATE} && (\
 	    ${PIP_INSTALL} -r doc/requirements.txt; \
 	) && ${VENV_DEACTIVATE}
-	@echo "Generating C++ API documentation via Doxygen..."
+	@echo Generating C++ API documentation via Doxygen...
 	cd doc/ && mkdir -p apidoc/api/cpp/common/ && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_common
 	cd doc/ && mkdir -p apidoc/api/cpp/boosting/ && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
-	@echo "Generating Sphinx documentation..."
+	@echo Generating Sphinx documentation...
 	${VENV_ACTIVATE} && (\
 	    ${SPHINX_APIDOC} -o doc/python/common/ python/subprojects/common/mlrl/ **/cython; \
 	    ${SPHINX_BUILD} doc/python/common/ doc/apidoc/api/python/common/; \
