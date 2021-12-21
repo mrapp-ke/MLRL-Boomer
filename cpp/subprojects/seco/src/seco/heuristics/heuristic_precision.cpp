@@ -9,4 +9,8 @@ namespace seco {
         return precision(cin, cip, crn, crp);
     }
 
+    std::unique_ptr<IHeuristic> PrecisionFactory::create() const {
+        return std::make_unique<Precision>();
+    }
+
 }
