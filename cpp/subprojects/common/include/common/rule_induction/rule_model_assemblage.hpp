@@ -84,8 +84,9 @@ class IRuleModelAssemblageFactory {
          *                                      training examples into a training set and a holdout set
          * @param pruningFactoryPtr             A shared pointer to an object of type `IPruningFactory` that allows to
          *                                      create the implementation to be used for pruning rules
-         * @param postProcessorPtr              A shared pointer to an object of type `IPostProcessor` that should be
-         *                                      used to post-process the predictions of rules
+         * @param postProcessorFactoryPtr       A shared pointer to an object of type `IPostProcessorFactory` that
+         *                                      allows to create the implementation to be used for post-processing the
+         *                                      predictions of rules
          * @param stoppingCriteria              A list that stores the stopping criteria, which should be used to decide
          *                                      whether additional rules should be induced or not
          * @param useDefaultRule                True, if a default rule should be used, false otherwise
@@ -97,7 +98,8 @@ class IRuleModelAssemblageFactory {
             std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
             std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
             std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-            std::shared_ptr<IPruningFactory> pruningFactoryPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
+            std::shared_ptr<IPruningFactory> pruningFactoryPtr,
+            std::shared_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
             const std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria,
             bool useDefaultRule) const = 0;
 

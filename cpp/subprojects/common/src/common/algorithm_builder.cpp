@@ -19,8 +19,8 @@ AlgorithmBuilder::AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> s
       instanceSamplingFactoryPtr_(std::make_shared<NoInstanceSamplingFactory>()),
       featureSamplingFactoryPtr_(std::make_shared<NoFeatureSamplingFactory>()),
       partitionSamplingFactoryPtr_(std::make_shared<NoPartitionSamplingFactory>()),
-      pruningFactoryPtr_(std::make_shared<NoPruningFactory>()), postProcessorPtr_(std::make_shared<NoPostProcessor>()),
-      useDefaultRule_(true) {
+      pruningFactoryPtr_(std::make_shared<NoPruningFactory>()),
+      postProcessorFactoryPtr_(std::make_shared<NoPostProcessorFactory>()), useDefaultRule_(true) {
     assertNotNull("statisticsProviderFactoryPtr", statisticsProviderFactoryPtr_.get());
     assertNotNull("thresholdsFactoryPtr", thresholdsFactoryPtr_.get());
     assertNotNull("ruleInductionPtr", ruleInductionPtr_.get());
@@ -66,9 +66,10 @@ AlgorithmBuilder& AlgorithmBuilder::setPruningFactory(std::unique_ptr<IPruningFa
     return *this;
 }
 
-AlgorithmBuilder& AlgorithmBuilder::setPostProcessor(std::unique_ptr<IPostProcessor> postProcessorPtr) {
-    assertNotNull("postProcessorPtr", postProcessorPtr.get());
-    postProcessorPtr_ = std::move(postProcessorPtr);
+AlgorithmBuilder& AlgorithmBuilder::setPostProcessorFactory(
+        std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr) {
+    assertNotNull("postProcessorFactoryPtr", postProcessorFactoryPtr.get());
+    postProcessorFactoryPtr_ = std::move(postProcessorFactoryPtr);
     return *this;
 }
 
@@ -82,6 +83,6 @@ std::unique_ptr<IRuleModelAssemblage> AlgorithmBuilder::build() const {
     return ruleModelAssemblageFactoryPtr_->create(statisticsProviderFactoryPtr_, thresholdsFactoryPtr_,
                                                   ruleInductionPtr_, labelSamplingFactoryPtr_,
                                                   instanceSamplingFactoryPtr_, featureSamplingFactoryPtr_,
-                                                  partitionSamplingFactoryPtr_, pruningFactoryPtr_, postProcessorPtr_,
-                                                  stoppingCriteria_, useDefaultRule_);
+                                                  partitionSamplingFactoryPtr_, pruningFactoryPtr_,
+                                                  postProcessorFactoryPtr_, stoppingCriteria_, useDefaultRule_);
 }

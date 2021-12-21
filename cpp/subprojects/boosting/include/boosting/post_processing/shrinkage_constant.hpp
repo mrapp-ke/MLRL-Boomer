@@ -9,9 +9,10 @@
 namespace boosting {
 
     /**
-     * Post-processes the predictions of rules by shrinking their weights by a constant shrinkage parameter.
+     * Allows to create instances of the type `IPostProcessor` that post-process the predictions of rules by shrinking
+     * their weights by a constant shrinkage parameter.
      */
-    class ConstantShrinkage final : public IPostProcessor {
+    class ConstantShrinkageFactory final : public IPostProcessorFactory {
 
         private:
 
@@ -20,14 +21,11 @@ namespace boosting {
         public:
 
             /**
-             * @param shrinkage The shrinkage parameter. Must be in (0, 1).
+             * @param shrinkage The shrinkage parameter. Must be in (0, 1)
              */
-            ConstantShrinkage(float64 shrinkage);
+            ConstantShrinkageFactory(float64 shrinkage);
 
-            /**
-             * @see `IPostProcessor::postProcess`
-             */
-            void postProcess(AbstractPrediction& prediction) const override;
+            std::unique_ptr<IPostProcessor> create() const override;
 
     };
 
