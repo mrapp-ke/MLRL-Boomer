@@ -60,4 +60,4 @@ class IPruningFactory {
          */
         virtual std::unique_ptr<IPruning> create() const = 0;
 
-}
+};
