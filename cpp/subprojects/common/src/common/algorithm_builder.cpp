@@ -19,7 +19,7 @@ AlgorithmBuilder::AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> s
       instanceSamplingFactoryPtr_(std::make_shared<NoInstanceSamplingFactory>()),
       featureSamplingFactoryPtr_(std::make_shared<NoFeatureSamplingFactory>()),
       partitionSamplingFactoryPtr_(std::make_shared<NoPartitionSamplingFactory>()),
-      pruningPtr_(std::make_shared<NoPruning>()), postProcessorPtr_(std::make_shared<NoPostProcessor>()),
+      pruningFactoryPtr_(std::make_shared<NoPruningFactory>()), postProcessorPtr_(std::make_shared<NoPostProcessor>()),
       useDefaultRule_(true) {
     assertNotNull("statisticsProviderFactoryPtr", statisticsProviderFactoryPtr_.get());
     assertNotNull("thresholdsFactoryPtr", thresholdsFactoryPtr_.get());
@@ -60,9 +60,9 @@ AlgorithmBuilder& AlgorithmBuilder::setPartitionSamplingFactory(
     return *this;
 }
 
-AlgorithmBuilder& AlgorithmBuilder::setPruning(std::unique_ptr<IPruning> pruningPtr) {
-    assertNotNull("pruningPtr", pruningPtr.get());
-    pruningPtr_ = std::move(pruningPtr);
+AlgorithmBuilder& AlgorithmBuilder::setPruningFactory(std::unique_ptr<IPruningFactory> pruningFactoryPtr) {
+    assertNotNull("pruningFactoryPtr", pruningFactoryPtr.get());
+    pruningFactoryPtr_ = std::move(pruningFactoryPtr);
     return *this;
 }
 
@@ -82,6 +82,6 @@ std::unique_ptr<IRuleModelAssemblage> AlgorithmBuilder::build() const {
     return ruleModelAssemblageFactoryPtr_->create(statisticsProviderFactoryPtr_, thresholdsFactoryPtr_,
                                                   ruleInductionPtr_, labelSamplingFactoryPtr_,
                                                   instanceSamplingFactoryPtr_, featureSamplingFactoryPtr_,
-                                                  partitionSamplingFactoryPtr_, pruningPtr_, postProcessorPtr_,
+                                                  partitionSamplingFactoryPtr_, pruningFactoryPtr_, postProcessorPtr_,
                                                   stoppingCriteria_, useDefaultRule_);
 }

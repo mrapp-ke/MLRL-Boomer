@@ -29,7 +29,7 @@ class AlgorithmBuilder final {
 
         std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr_;
 
-        std::shared_ptr<IPruning> pruningPtr_;
+        std::shared_ptr<IPruningFactory> pruningFactoryPtr_;
 
         std::shared_ptr<IPostProcessor> postProcessorPtr_;
 
@@ -104,12 +104,12 @@ class AlgorithmBuilder final {
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr);
 
         /**
-         * Sets the `IPruning` to be used by the rule learner to prune individual rules.
+         * Sets the `IPruningFactory` to be used by the rule learner to prune individual rules.
          *
-         * @param pruningPtr    An unique pointer to an object of type `IPruning` to be set
-         * @return              A reference to the builder itself
+         * @param pruningFactoryPtr An unique pointer to an object of type `IPruningFactory` to be set
+         * @return                  A reference to the builder itself
          */
-        AlgorithmBuilder& setPruning(std::unique_ptr<IPruning> pruningPtr);
+        AlgorithmBuilder& setPruningFactory(std::unique_ptr<IPruningFactory> pruningFactoryPtr);
 
         /**
          * Sets the `IPostProcessor` to be used by the rule learner to post-process the predictions of individual rules.
