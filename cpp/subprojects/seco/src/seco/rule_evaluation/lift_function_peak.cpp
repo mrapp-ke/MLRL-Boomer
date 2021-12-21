@@ -33,4 +33,14 @@ namespace seco {
         return maxLift_;
     }
 
+    PeakLiftFunctionFactory::PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float64 maxLift,
+                                                     float64 curvature)
+        : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature) {
+
+    }
+
+    std::unique_ptr<ILiftFunction> create() const {
+        return std::make_unique<PeakLiftFunction>(numLabels_, peakLabel_, maxLift_, curvature_);
+    }
+
 }
