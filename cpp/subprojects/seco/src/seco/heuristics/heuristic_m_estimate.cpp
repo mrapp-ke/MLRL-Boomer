@@ -35,4 +35,13 @@ namespace seco {
         }
     }
 
+    MEstimateFactory::MEstimateFactory(float64 m)
+        : m_(m) {
+
+    }
+
+    std::unique_ptr<IHeuristic> MEstimateFactory::create() const {
+        return std::make_unique<MEstimate>(m_);
+    }
+
 }
