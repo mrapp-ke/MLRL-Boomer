@@ -34,4 +34,13 @@ namespace seco {
         }
     }
 
+    FMeasureFactory::FMeasureFactory(float64 beta)
+        : beta_(beta) {
+
+    }
+
+    std::unique_ptr<IHeuristic> FMeasureFactory::create() const {
+        return std::make_unique<FMeasure>(beta_);
+    }
+
 }
