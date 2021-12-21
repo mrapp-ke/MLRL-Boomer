@@ -6,7 +6,7 @@ from mlrl.common.cython.instance_sampling cimport IInstanceSamplingFactory
 from mlrl.common.cython.label_sampling cimport ILabelSamplingFactory
 from mlrl.common.cython.partition_sampling cimport IPartitionSamplingFactory
 from mlrl.common.cython.pruning cimport IPruningFactory
-from mlrl.common.cython.post_processing cimport IPostProcessor
+from mlrl.common.cython.post_processing cimport IPostProcessorFactory
 from mlrl.common.cython.stopping cimport IStoppingCriterion
 from mlrl.common.cython.rule_model_assemblage cimport IRuleModelAssemblage, IRuleModelAssemblageFactory
 
@@ -43,7 +43,8 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
 
         AlgorithmBuilderImpl& setPruningFactory(unique_ptr[IPruningFactory] pruningFactoryPtr) except +
 
-        AlgorithmBuilderImpl& setPostProcessor(unique_ptr[IPostProcessor] postProcessorPtr) except +
+        AlgorithmBuilderImpl& setPostProcessorFactory(
+            unique_ptr[IPostProcessorFactory] postProcessorFactoryPtr) except +
 
         AlgorithmBuilderImpl& addStoppingCriterion(unique_ptr[IStoppingCriterion] stoppingCriterionPtr) except +
 
