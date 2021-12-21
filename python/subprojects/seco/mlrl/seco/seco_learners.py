@@ -27,11 +27,11 @@ from mlrl.common.rule_learners import create_pruning_factory, create_feature_sam
     create_stopping_criteria, create_num_threads, create_thresholds_factory, parse_param_and_options, parse_param
 from mlrl.seco.cython.heuristics import HeuristicFactory, AccuracyFactory, PrecisionFactory, RecallFactory, \
     LaplaceFactory, WraFactory, FMeasureFactory, MEstimateFactory
+from mlrl.seco.cython.lift_functions import LiftFunction, PeakLiftFunction
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
-from mlrl.seco.cython.rule_evaluation_label_wise import LiftFunction, PeakLiftFunction, \
-    LabelWiseMajorityRuleEvaluationFactory, LabelWisePartialRuleEvaluationFactory, \
-    LabelWiseSingleLabelRuleEvaluationFactory
+from mlrl.seco.cython.rule_evaluation_label_wise import LabelWiseMajorityRuleEvaluationFactory, \
+    LabelWisePartialRuleEvaluationFactory, LabelWiseSingleLabelRuleEvaluationFactory
 from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.seco.cython.stopping import CoverageStoppingCriterion
 from sklearn.base import ClassifierMixin
