@@ -31,7 +31,7 @@ namespace seco {
 
         public:
 
-            std::unique_pointer<IHeuristic> create() const override;
+            std::unique_ptr<IHeuristic> create() const override;
 
     };
 
