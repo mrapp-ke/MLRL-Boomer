@@ -31,7 +31,7 @@ class AlgorithmBuilder final {
 
         std::shared_ptr<IPruningFactory> pruningFactoryPtr_;
 
-        std::shared_ptr<IPostProcessor> postProcessorPtr_;
+        std::shared_ptr<IPostProcessorFactory> postProcessorFactoryPtr_;
 
         std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria_;
 
@@ -112,12 +112,13 @@ class AlgorithmBuilder final {
         AlgorithmBuilder& setPruningFactory(std::unique_ptr<IPruningFactory> pruningFactoryPtr);
 
         /**
-         * Sets the `IPostProcessor` to be used by the rule learner to post-process the predictions of individual rules.
+         * Sets the `IPostProcessorFactory` to be used by the rule learner to post-process the predictions of individual
+         * rules.
          *
-         * @param postProcessorPtr  An unique pointer to an object of type `IPostProcessor` to be set
-         * @return                  A reference to the builder itself
+         * @param postProcessorFactoryPtr   An unique pointer to an object of type `IPostProcessorFactory` to be set
+         * @return                          A reference to the builder itself
          */
-        AlgorithmBuilder& setPostProcessor(std::unique_ptr<IPostProcessor> postProcessorPtr);
+        AlgorithmBuilder& setPostProcessorFactory(std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr);
 
         /**
          * Adds a `IStoppingCriterion` that should be used by the rule learner to decide when the induction of

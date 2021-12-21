@@ -6,7 +6,7 @@ from mlrl.common.cython.instance_sampling cimport InstanceSamplingFactory
 from mlrl.common.cython.label_sampling cimport LabelSamplingFactory
 from mlrl.common.cython.partition_sampling cimport PartitionSamplingFactory
 from mlrl.common.cython.pruning cimport PruningFactory
-from mlrl.common.cython.post_processing cimport PostProcessor
+from mlrl.common.cython.post_processing cimport PostProcessorFactory
 from mlrl.common.cython.rule_induction cimport RuleInduction
 from mlrl.common.cython.rule_model_assemblage cimport RuleModelAssemblage, RuleModelAssemblageFactory
 from mlrl.common.cython.statistics cimport StatisticsProviderFactory
@@ -106,14 +106,15 @@ cdef class AlgorithmBuilder:
         self.builder_ptr.get().setPruningFactory(move(pruning_factory.pruning_factory_ptr))
         return self
 
-    def set_post_processor(self, PostProcessor post_processor not None) -> AlgorithmBuilder:
+    def set_post_processor_factory(self, PostProcessorFactory post_processor_factory not None) -> AlgorithmBuilder:
         """
-        Sets the `PostProcessor` to be used by the rule learner to post-process the predictions of individual rules.
+        Sets the `PostProcessorFactory` to be used by the rule learner to post-process the predictions of individual
+        rules.
 
-        :param post_processor:  The `PostProcessor` to be set
-        :return:                The builder itself
+        :param post_processor_factory:  The `PostProcessorFactory` to be set
+        :return:                        The builder itself
         """
-        self.builder_ptr.get().setPostProcessor(move(post_processor.post_processor_ptr))
+        self.builder_ptr.get().setPostProcessorFactory(move(post_processor_factory.post_processor_factory_ptr))
         return self
 
     def add_stopping_criterion(self, StoppingCriterion stopping_criterion not None) -> AlgorithmBuilder:

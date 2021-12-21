@@ -15,7 +15,7 @@ from mlrl.boosting.cython.losses_label_wise import LabelWiseLoss, LabelWiseLogis
 from mlrl.boosting.cython.model import RuleListBuilder
 from mlrl.boosting.cython.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor, \
     LabelWiseProbabilityPredictor, LabelWiseTransformationFunction, LogisticFunction
-from mlrl.boosting.cython.post_processing import ConstantShrinkage
+from mlrl.boosting.cython.post_processing import ConstantShrinkageFactory
 from mlrl.boosting.cython.rule_evaluation_example_wise import ExampleWiseCompleteRuleEvaluationFactory, \
     ExampleWiseCompleteBinnedRuleEvaluationFactory
 from mlrl.boosting.cython.rule_evaluation_label_wise import LabelWiseSingleLabelRuleEvaluationFactory, \
@@ -30,7 +30,7 @@ from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
-from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
+from mlrl.common.cython.post_processing import PostProcessorFactory
 from mlrl.common.cython.pruning import PruningFactory
 from mlrl.common.cython.rule_induction import RuleInduction, TopDownRuleInduction
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory, SequentialRuleModelAssemblageFactory
@@ -360,14 +360,14 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                 label_characteristics: LabelCharacteristics) -> Optional[PruningFactory]:
         return create_pruning_factory(self.pruning, self.instance_sampling)
 
-    def _create_post_processor(self, feature_characteristics: FeatureCharacteristics,
-                               label_characteristics: LabelCharacteristics) -> Optional[PostProcessor]:
+    def _create_post_processor_factory(self, feature_characteristics: FeatureCharacteristics,
+                                       label_characteristics: LabelCharacteristics) -> Optional[PostProcessorFactory]:
         shrinkage = float(self.shrinkage)
 
         if shrinkage == 1.0:
-            return NoPostProcessor()
+            return None
         else:
-            return ConstantShrinkage(shrinkage)
+            return ConstantShrinkageFactory(shrinkage)
 
     def _create_stopping_criteria(self, feature_characteristics: FeatureCharacteristics,
                                   label_characteristics: LabelCharacteristics) -> List[StoppingCriterion]:

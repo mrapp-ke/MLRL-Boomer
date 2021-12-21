@@ -4,13 +4,14 @@
 from libcpp.memory cimport unique_ptr, make_unique
 
 
-cdef class ConstantShrinkage(PostProcessor):
+cdef class ConstantShrinkageFactory(PostProcessorFactory):
     """
-    A wrapper for the C++ class `ConstantShrinkage`.
+    A wrapper for the C++ class `ConstantShrinkageFactory`.
     """
 
     def __cinit__(self, float64 shrinkage):
         """
         :param shrinkage: The shrinkage parameter. Must be in (0, 1)
         """
-        self.post_processor_ptr = <unique_ptr[IPostProcessor]>make_unique[ConstantShrinkageImpl](shrinkage)
+        self.post_processor_factory_ptr = <unique_ptr[IPostProcessorFactory]>make_unique[ConstantShrinkageFactoryImpl](
+            shrinkage)
