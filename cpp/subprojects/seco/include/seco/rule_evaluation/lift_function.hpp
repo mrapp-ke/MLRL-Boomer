@@ -50,7 +50,7 @@ namespace seco {
              *
              * @return An unique pointer to an object of type `ILiftFunction` that has been created
              */
-            virtual std::unique_ptr<ILiftFunction> create() const override;
+            virtual std::unique_ptr<ILiftFunction> create() const = 0;
 
     };
 
