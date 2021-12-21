@@ -96,7 +96,7 @@ namespace seco {
              *
              * @return An unique pointer to an object of type `IHeuristic` that has been created
              */
-            std::unique_ptr<IHeuristic> create() const = 0;
+            virtual std::unique_ptr<IHeuristic> create() const = 0;
 
     };
 
