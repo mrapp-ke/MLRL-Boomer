@@ -2,7 +2,8 @@
 
 
 /**
- * Implements "incremental reduced error pruning" (IREP).
+ * An implementation of the class `IPruning` that prunes rules by following the ideas of "incremental reduced error
+ * pruning" (IREP).
  */
 class Irep final : public IPruning {
 
