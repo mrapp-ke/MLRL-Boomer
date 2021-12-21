@@ -9,4 +9,8 @@ namespace seco {
         return wra(cin, cip, crn, crp, uin, uip, urn, urp);
     }
 
+    std::unique_ptr<IHeuristic> WraFactory::create() const {
+        return std::make_unique<WRA>();
+    }
+
 }
