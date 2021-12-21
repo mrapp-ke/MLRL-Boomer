@@ -9,7 +9,7 @@ namespace seco {
         return recall(cin, crp, uin, urp);
     }
 
-    std::unique_pointer<IHeuristic> RecallFactory::create() const {
+    std::unique_ptr<IHeuristic> RecallFactory::create() const {
         return std::make_unique<Recall>();
     }
 
