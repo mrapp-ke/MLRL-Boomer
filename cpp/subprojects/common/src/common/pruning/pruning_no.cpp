@@ -5,3 +5,7 @@ std::unique_ptr<ICoverageState> NoPruning::prune(IThresholdsSubset& thresholdsSu
                                                  ConditionList& conditions, const AbstractPrediction& head) const {
     return nullptr;
 }
+
+std::unique_ptr<IPruning> NoPruningFactory::create() const {
+    return std::make_unique<NoPruning>();
+}
