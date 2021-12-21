@@ -10,4 +10,8 @@ namespace seco {
         return (numCoveredIncorrect + 1) / (numCovered + 2);
     }
 
+    std::unique_ptr<IHeuristic> LaplaceFactory::create() const {
+        return std::make_unique<Laplace>();
+    }
+
 }
