@@ -43,3 +43,21 @@ class IPruning {
                                                       const AbstractPrediction& head) const = 0;
 
 };
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IPruning`.
+ */
+class IPruningFactory {
+
+    public:
+
+        virtual ~IPruningFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IPruning`.
+         *
+         * @return An unique pointer to an object of type `IPruning` that has been created
+         */
+        virtual std::unique_ptr<IPruning> create() const = 0;
+
+};

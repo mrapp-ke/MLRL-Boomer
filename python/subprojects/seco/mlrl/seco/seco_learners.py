@@ -13,7 +13,7 @@ from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
-from mlrl.common.cython.pruning import Pruning
+from mlrl.common.cython.pruning import PruningFactory
 from mlrl.common.cython.rule_induction import RuleInduction, TopDownRuleInduction
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory, SequentialRuleModelAssemblageFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
@@ -22,7 +22,7 @@ from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy, FeatureCharacteristics, LabelCharacteristics
-from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, \
+from mlrl.common.rule_learners import create_pruning_factory, create_feature_sampling_factory, \
     create_label_sampling_factory, create_instance_sampling_factory, create_partition_sampling_factory, \
     create_stopping_criteria, create_num_threads, create_thresholds_factory, parse_param_and_options, parse_param
 from mlrl.seco.cython.heuristics import Heuristic, Accuracy, Precision, Recall, Laplace, WRA, FMeasure, MEstimate
@@ -256,9 +256,9 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             label_characteristics: LabelCharacteristics) -> Optional[PartitionSamplingFactory]:
         return create_partition_sampling_factory(self.holdout)
 
-    def _create_pruning(self, feature_characteristics: FeatureCharacteristics,
-                        label_characteristics: LabelCharacteristics) -> Optional[Pruning]:
-        return create_pruning(self.pruning, self.instance_sampling)
+    def _create_pruning_factory(self, feature_characteristics: FeatureCharacteristics,
+                                label_characteristics: LabelCharacteristics) -> Optional[PruningFactory]:
+        return create_pruning_factory(self.pruning, self.instance_sampling)
 
     def _create_stopping_criteria(self, feature_characteristics: FeatureCharacteristics,
                                   label_characteristics: LabelCharacteristics) -> List[StoppingCriterion]:

@@ -5,7 +5,7 @@ from mlrl.common.cython.feature_sampling cimport FeatureSamplingFactory
 from mlrl.common.cython.instance_sampling cimport InstanceSamplingFactory
 from mlrl.common.cython.label_sampling cimport LabelSamplingFactory
 from mlrl.common.cython.partition_sampling cimport PartitionSamplingFactory
-from mlrl.common.cython.pruning cimport Pruning
+from mlrl.common.cython.pruning cimport PruningFactory
 from mlrl.common.cython.post_processing cimport PostProcessor
 from mlrl.common.cython.rule_induction cimport RuleInduction
 from mlrl.common.cython.rule_model_assemblage cimport RuleModelAssemblage, RuleModelAssemblageFactory
@@ -96,14 +96,14 @@ cdef class AlgorithmBuilder:
         self.builder_ptr.get().setPartitionSamplingFactory(move(partition_sampling_factory.partition_sampling_factory_ptr))
         return self
 
-    def set_pruning(self, Pruning pruning not None ) -> AlgorithmBuilder:
+    def set_pruning_factory(self, PruningFactory pruning_factory not None ) -> AlgorithmBuilder:
         """
-        Sets the `Pruning` to be used by the rule learner to prune individual rules.
+        Sets the `PruningFactory` to be used by the rule learner to prune individual rules.
 
-        :param pruning: The `Pruning` to be set
+        :param pruning: The `PruningFactory` to be set
         :return:        The builder itself
         """
-        self.builder_ptr.get().setPruning(move(pruning.pruning_ptr))
+        self.builder_ptr.get().setPruningFactory(move(pruning_factory.pruning_factory_ptr))
         return self
 
     def set_post_processor(self, PostProcessor post_processor not None) -> AlgorithmBuilder:
