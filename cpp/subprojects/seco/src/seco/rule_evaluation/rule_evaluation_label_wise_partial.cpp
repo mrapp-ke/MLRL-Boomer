@@ -25,7 +25,7 @@ namespace seco {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            const IHeuristic& heuristic_;
+            std::unique_ptr<IHeuristic> heuristicPtr_;
 
             const ILiftFunction& liftFunction_;
 
@@ -34,15 +34,15 @@ namespace seco {
             /**
              * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices of the labels for which the rules may predict
-             * @param heuristic     A reference to an object of type `IHeuristic`, implementing the heuristic to be
-             *                      optimized
+             * @param heuristicPtr  An unique pointer to an object of type `IHeuristic` that implements the heuristic to
+             *                      be optimized
              * @param liftFunction  A reference to an object of type `ILiftFunction` that should affect the quality
              *                      scores of rules, depending on how many labels they predict
              */
-            LabelWiseCompleteRuleEvaluation(const PartialIndexVector& labelIndices, const IHeuristic& heuristic,
-                                            const ILiftFunction& liftFunction)
-                : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices)), heuristic_(heuristic),
-                  liftFunction_(liftFunction) {
+            LabelWiseCompleteRuleEvaluation(const PartialIndexVector& labelIndices,
+                                            std::unique_ptr<IHeuristic> heuristicPtr, const ILiftFunction& liftFunction)
+                : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices)),
+                  heuristicPtr_(std::move(heuristicPtr)), liftFunction_(liftFunction) {
 
             }
 
@@ -66,7 +66,7 @@ namespace seco {
                     std::advance(labelIterator, index - previousIndex);
                     scoreIterator[i] = (float64) !(*labelIterator);
                     sumOfQualityScores += (1 - calculateLabelWiseQualityScore(totalIterator[index], coveredIterator[i],
-                                                                              heuristic_));
+                                                                              *heuristicPtr_));
                     previousIndex = index;
                 }
 
@@ -97,7 +97,7 @@ namespace seco {
 
             SparseArrayVector<float64> sortedVector_;
 
-            const IHeuristic& heuristic_;
+            std::unique_ptr<IHeuristic> heuristicPtr_;
 
             const ILiftFunction& liftFunction_;
 
@@ -106,17 +106,17 @@ namespace seco {
             /**
              * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
              *                      the labels for which the rules may predict
-             * @param heuristic     A reference to an object of type `IHeuristic`, implementing the heuristic to be
-             *                      optimized
+             * @param heuristicPtr  An unique pointer to an object of type `IHeuristic` that implements the heuristic to
+             *                      be optimized
              * @param liftFunction  A reference to an object of type `ILiftFunction` that should affect the quality
              *                      scores of rules, depending on how many labels they predict
              */
-            LabelWisePartialRuleEvaluation(const T& labelIndices, const IHeuristic& heuristic,
+            LabelWisePartialRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr,
                                            const ILiftFunction& liftFunction)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)),
                   sortedVector_(SparseArrayVector<float64>(labelIndices.getNumElements())),
-                  heuristic_(heuristic), liftFunction_(liftFunction) {
+                  heuristicPtr_(std::move(heuristicPtr)), liftFunction_(liftFunction) {
 
             }
 
@@ -138,7 +138,7 @@ namespace seco {
                     uint32 index = indexIterator[i];
                     sortedIterator[i].index = index;
                     sortedIterator[i].value = calculateLabelWiseQualityScore(totalIterator[index], coveredIterator[i],
-                                                                             heuristic_);
+                                                                             *heuristicPtr_);
                 }
 
                 sortedVector_.sortByValues();
@@ -186,21 +186,25 @@ namespace seco {
     };
 
     LabelWisePartialRuleEvaluationFactory::LabelWisePartialRuleEvaluationFactory(
-            std::unique_ptr<IHeuristic> heuristicPtr, std::unique_ptr<ILiftFunction> liftFunctionPtr)
-        : heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
-        assertNotNull("heuristicPtr", heuristicPtr_.get());
+            std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr, std::unique_ptr<ILiftFunction> liftFunctionPtr)
+        : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
+        assertNotNull("heuristicFactoryPtr", heuristicFactoryPtr_.get());
         assertNotNull("liftFunctionPtr", liftFunctionPtr_.get());
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWisePartialRuleEvaluationFactory::create(
             const CompleteIndexVector& indexVector) const {
-        return std::make_unique<LabelWisePartialRuleEvaluation<CompleteIndexVector>>(indexVector, *heuristicPtr_,
+        std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
+        return std::make_unique<LabelWisePartialRuleEvaluation<CompleteIndexVector>>(indexVector,
+                                                                                     std::move(heuristicPtr),
                                                                                      *liftFunctionPtr_);
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWisePartialRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseCompleteRuleEvaluation>(indexVector, *heuristicPtr_, *liftFunctionPtr_);
+        std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
+        return std::make_unique<LabelWiseCompleteRuleEvaluation>(indexVector, std::move(heuristicPtr),
+                                                                 *liftFunctionPtr_);
     }
 
 }

@@ -5,88 +5,88 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "seco/heuristics/heuristic.hpp" namespace "seco" nogil:
 
-    cdef cppclass IHeuristic:
+    cdef cppclass IHeuristicFactory:
         pass
 
 
 cdef extern from "seco/heuristics/heuristic_accuracy.hpp" namespace "seco" nogil:
 
-    cdef cppclass AccuracyImpl"seco::Accuracy"(IHeuristic):
+    cdef cppclass AccuracyFactoryImpl"seco::AccuracyFactory"(IHeuristicFactory):
         pass
 
 
 cdef extern from "seco/heuristics/heuristic_precision.hpp" namespace "seco" nogil:
 
-    cdef cppclass PrecisionImpl"seco::Precision"(IHeuristic):
+    cdef cppclass PrecisionFactoryImpl"seco::PrecisionFactory"(IHeuristicFactory):
         pass
 
 
 cdef extern from "seco/heuristics/heuristic_recall.hpp" namespace "seco" nogil:
 
-    cdef cppclass RecallImpl"seco::Recall"(IHeuristic):
+    cdef cppclass RecallFactoryImpl"seco::RecallFactory"(IHeuristicFactory):
         pass
 
 
 cdef extern from "seco/heuristics/heuristic_laplace.hpp" namespace "seco" nogil:
 
-    cdef cppclass LaplaceImpl"seco::Laplace"(IHeuristic):
+    cdef cppclass LaplaceFactoryImpl"seco::LaplaceFactory"(IHeuristicFactory):
         pass
 
 
 cdef extern from "seco/heuristics/heuristic_wra.hpp" namespace "seco" nogil:
 
-    cdef cppclass WRAImpl"seco::WRA"(IHeuristic):
+    cdef cppclass WraFactoryImpl"seco::WraFactory"(IHeuristicFactory):
         pass
 
 
 cdef extern from "seco/heuristics/heuristic_f_measure.hpp" namespace "seco" nogil:
 
-    cdef cppclass FMeasureImpl"seco::FMeasure"(IHeuristic):
+    cdef cppclass FMeasureFactoryImpl"seco::FMeasureFactory"(IHeuristicFactory):
 
         # Constructors:
 
-        FMeasureImpl(float64 beta) except +
+        FMeasureFactoryImpl(float64 beta) except +
 
 
 cdef extern from "seco/heuristics/heuristic_m_estimate.hpp" namespace "seco" nogil:
 
-    cdef cppclass MEstimateImpl"seco::MEstimate"(IHeuristic):
+    cdef cppclass MEstimateFactoryImpl"seco::MEstimateFactory"(IHeuristicFactory):
 
         # Constructors:
 
-        MEstimateImpl(float64 m) except +
+        MEstimateFactoryImpl(float64 m) except +
 
 
-cdef class Heuristic:
+cdef class HeuristicFactory:
 
     # Attributes:
 
-    cdef unique_ptr[IHeuristic] heuristic_ptr
+    cdef unique_ptr[IHeuristicFactory] heuristic_factory_ptr
 
 
-cdef class Accuracy(Heuristic):
+cdef class AccuracyFactory(HeuristicFactory):
     pass
 
 
-cdef class Precision(Heuristic):
+cdef class PrecisionFactory(HeuristicFactory):
     pass
 
 
-cdef class Recall(Heuristic):
+cdef class RecallFactory(HeuristicFactory):
     pass
 
 
-cdef class Laplace(Heuristic):
+cdef class LaplaceFactory(HeuristicFactory):
     pass
 
 
-cdef class WRA(Heuristic):
+cdef class WraFactory(HeuristicFactory):
     pass
 
 
-cdef class FMeasure(Heuristic):
+cdef class FMeasureFactory(HeuristicFactory):
     pass
 
 
-cdef class MEstimate(Heuristic):
+cdef class MEstimateFactory(HeuristicFactory):
     pass
