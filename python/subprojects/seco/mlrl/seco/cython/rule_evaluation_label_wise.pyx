@@ -3,7 +3,7 @@
 @author Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from mlrl.seco.cython.heuristics cimport HeuristicFactory
-from mlrl.seco.cython.lift_functions cimport LiftFunction
+from mlrl.seco.cython.lift_functions cimport LiftFunctionFactory
 
 from libcpp.utility cimport move
 from libcpp.memory cimport make_unique
@@ -30,13 +30,14 @@ cdef class LabelWisePartialRuleEvaluationFactory(LabelWiseRuleEvaluationFactory)
     A wrapper for the C++ class `LabelWisePartialRuleEvaluationFactory`.
     """
 
-    def __cinit__(self, HeuristicFactory heuristic_factory not None, LiftFunction lift_function not None):
+    def __cinit__(self, HeuristicFactory heuristic_factory not None,
+                  LiftFunctionFactory lift_function_factory not None):
         """
-        :param heuristic_factory:   The `HeuristicFactory` that should be used
-        :param liftFunction:        The `LiftFunction` that should be used
+        :param heuristic_factory:       The `HeuristicFactory` that should be used
+        :param liftFunction_factory:    The `LiftFunctionFactory` that should be used
         """
         self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWisePartialRuleEvaluationFactoryImpl](
-            move(heuristic_factory.heuristic_factory_ptr), move(lift_function.lift_function_ptr))
+            move(heuristic_factory.heuristic_factory_ptr), move(lift_function_factory.lift_function_factory_ptr))
 
 
 cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):

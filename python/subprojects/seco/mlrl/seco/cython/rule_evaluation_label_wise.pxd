@@ -1,5 +1,5 @@
 from mlrl.seco.cython.heuristics cimport IHeuristicFactory
-from mlrl.seco.cython.lift_functions cimport ILiftFunction
+from mlrl.seco.cython.lift_functions cimport ILiftFunctionFactory
 
 from libcpp.memory cimport unique_ptr
 
@@ -25,7 +25,7 @@ cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise_partial.hpp" n
         # Constructors:
 
         LabelWisePartialRuleEvaluationFactoryImpl(unique_ptr[IHeuristicFactory] heuristicFactoryPtr,
-                                                  unique_ptr[ILiftFunction] liftFunctionPtr) except +
+                                                  unique_ptr[ILiftFunctionFactory] liftFunctionFactoryPtr) except +
 
 
 cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise_single.hpp" namespace "seco" nogil:
