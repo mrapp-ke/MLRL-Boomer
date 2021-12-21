@@ -19,9 +19,6 @@ namespace seco {
 
         private:
 
-            /**
-             * The value of the beta-parameter.
-             */
             float64 beta_;
 
         public:
