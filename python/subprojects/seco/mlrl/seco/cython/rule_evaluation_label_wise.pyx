@@ -2,7 +2,7 @@
 @author Jakob Steeg (jakob.steeg@gmail.com)
 @author Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.seco.cython.heuristics cimport Heuristic
+from mlrl.seco.cython.heuristics cimport HeuristicFactory
 
 from libcpp.utility cimport move
 from libcpp.memory cimport make_unique
@@ -53,13 +53,13 @@ cdef class LabelWisePartialRuleEvaluationFactory(LabelWiseRuleEvaluationFactory)
     A wrapper for the C++ class `LabelWisePartialRuleEvaluationFactory`.
     """
 
-    def __cinit__(self, Heuristic heuristic not None, LiftFunction lift_function not None):
+    def __cinit__(self, HeuristicFactory heuristic_factory not None, LiftFunction lift_function not None):
         """
-        :param heuristic:       The heuristic that should be used
-        :param liftFunction:    The lift function that should be used
+        :param heuristic_factory:   The `HeuristicFactory` that should be used
+        :param liftFunction:        The `LiftFunction` that should be used
         """
         self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWisePartialRuleEvaluationFactoryImpl](
-            move(heuristic.heuristic_ptr), move(lift_function.lift_function_ptr))
+            move(heuristic_factory.heuristic_factory_ptr), move(lift_function.lift_function_ptr))
 
 
 cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFactory):
@@ -67,9 +67,9 @@ cdef class LabelWiseSingleLabelRuleEvaluationFactory(LabelWiseRuleEvaluationFact
     A wrapper for the C++ class `LabelWiseSingleLabelRuleEvaluationFactory`.
     """
 
-    def __cinit__(self, Heuristic heuristic not None):
+    def __cinit__(self, HeuristicFactory heuristic_factory not None):
         """
-        :param heuristic: The heuristic that should be used
+        :param heuristic_factory: The `HeuristicFactory` that should be used
         """
         self.rule_evaluation_factory_ptr = <unique_ptr[ILabelWiseRuleEvaluationFactory]>make_unique[LabelWiseSingleLabelRuleEvaluationFactoryImpl](
-            move(heuristic.heuristic_ptr))
+            move(heuristic_factory.heuristic_factory_ptr))

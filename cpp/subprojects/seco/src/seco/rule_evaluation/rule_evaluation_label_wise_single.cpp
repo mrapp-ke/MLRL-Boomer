@@ -24,19 +24,20 @@ namespace seco {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            const IHeuristic& heuristic_;
+            std::unique_ptr<IHeuristic> heuristicPtr_;
 
         public:
 
             /**
              * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
              *                      the labels for which the rules may predict
-             * @param heuristic     A reference to an object of type `IHeuristic`, implementing the heuristic to be
-             *                      optimized
+             * @param heuristicPtr  An unique pointer to an object of type `IHeuristic` that implements the heuristic to
+             *                      be optimized
              */
-            LabelWiseSingleLabelRuleEvaluation(const T& labelIndices, const IHeuristic& heuristic)
+            LabelWiseSingleLabelRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(1)),
-                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)), heuristic_(heuristic) {
+                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)),
+                  heuristicPtr_(std::move(heuristicPtr)) {
 
             }
 
@@ -50,12 +51,12 @@ namespace seco {
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 uint32 bestIndex = indexIterator[0];
                 float64 bestQualityScore = calculateLabelWiseQualityScore(totalIterator[bestIndex], coveredIterator[0],
-                                                                          heuristic_);
+                                                                          *heuristicPtr_);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 index = indexIterator[i];
                     float64 qualityScore = calculateLabelWiseQualityScore(totalIterator[index], coveredIterator[i],
-                                                                          heuristic_);
+                                                                          *heuristicPtr_);
 
                     if (qualityScore < bestQualityScore) {
                         bestIndex = index;
@@ -75,19 +76,23 @@ namespace seco {
     };
 
     LabelWiseSingleLabelRuleEvaluationFactory::LabelWiseSingleLabelRuleEvaluationFactory(
-            std::unique_ptr<IHeuristic> heuristicPtr)
-        : heuristicPtr_(std::move(heuristicPtr)) {
-        assertNotNull("heuristicPtr", heuristicPtr_.get());
+            std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr)
+        : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)) {
+        assertNotNull("heuristicFactoryPtr", heuristicFactoryPtr_.get());
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWiseSingleLabelRuleEvaluationFactory::create(
             const CompleteIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseSingleLabelRuleEvaluation<CompleteIndexVector>>(indexVector, *heuristicPtr_);
+        std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
+        return std::make_unique<LabelWiseSingleLabelRuleEvaluation<CompleteIndexVector>>(indexVector,
+                                                                                         std::move(heuristicPtr));
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWiseSingleLabelRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseSingleLabelRuleEvaluation<PartialIndexVector>>(indexVector, *heuristicPtr_);
+        std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
+        return std::make_unique<LabelWiseSingleLabelRuleEvaluation<PartialIndexVector>>(indexVector,
+                                                                                        std::move(heuristicPtr));
     }
 
 }
