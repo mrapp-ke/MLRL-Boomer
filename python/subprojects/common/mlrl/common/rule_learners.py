@@ -30,7 +30,7 @@ from mlrl.common.cython.output import Predictor, SparsePredictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, RandomBiPartitionSamplingFactory, \
     LabelWiseStratifiedBiPartitionSamplingFactory, \
     ExampleWiseStratifiedBiPartitionSamplingFactory
-from mlrl.common.cython.post_processing import PostProcessor
+from mlrl.common.cython.post_processing import PostProcessorFactory
 from mlrl.common.cython.pruning import PruningFactory, IrepFactory
 from mlrl.common.cython.rule_induction import RuleInduction
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblage, RuleModelAssemblageFactory
@@ -540,10 +540,10 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         if pruning_factory is not None:
             algorithm_builder.set_pruning_factory(pruning_factory)
 
-        post_processor = self._create_post_processor(feature_characteristics, label_characteristics)
+        post_processor_factory = self._create_post_processor_factory(feature_characteristics, label_characteristics)
 
-        if post_processor is not None:
-            algorithm_builder.set_post_processor(post_processor)
+        if post_processor_factory is not None:
+            algorithm_builder.set_post_processor_factory(post_processor_factory)
 
         for stopping_criterion in self._create_stopping_criteria(feature_characteristics, label_characteristics):
             algorithm_builder.add_stopping_criterion(stopping_criterion)
@@ -714,15 +714,15 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         return None
 
-    def _create_post_processor(self, feature_characteristics: FeatureCharacteristics,
-                               label_characteristics: LabelCharacteristics) -> Optional[PostProcessor]:
+    def _create_post_processor_factory(self, feature_characteristics: FeatureCharacteristics,
+                                       label_characteristics: LabelCharacteristics) -> Optional[PostProcessorFactory]:
         """
-        Must be implemented by subclasses in order to create the `PostProcessor` to be used by the rule learner.
+        Must be implemented by subclasses in order to create the `PostProcessorFactory` to be used by the rule learner.
 
         :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
         :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `PostProcessor` that has been created or None, if no post-processor should
-                                        be used
+        :return:                        The `PostProcessorFactory` that has been created or None, if no post-processor
+                                        should be used
         """
         return None
 

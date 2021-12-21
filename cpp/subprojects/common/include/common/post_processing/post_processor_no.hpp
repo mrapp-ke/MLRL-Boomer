@@ -7,13 +7,13 @@
 
 
 /**
- * An implementation of the class `IPostProcessor` that does not perform any post-processing, but retains the original
- * predictions of rules.
+ * Allows to create instances of the type `IPostProcessor` that do not perform any post-processing, but retain the
+ * original predictions of rules.
  */
-class NoPostProcessor final : public IPostProcessor {
+class NoPostProcessorFactory final : public IPostProcessorFactory {
 
     public:
 
-        void postProcess(AbstractPrediction& prediction) const override;
+        std::unique_ptr<IPostProcessor> create() const override;
 
 };
