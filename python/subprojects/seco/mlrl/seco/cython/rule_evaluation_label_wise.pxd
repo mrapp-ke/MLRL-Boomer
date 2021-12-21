@@ -1,5 +1,5 @@
 from mlrl.common.cython._types cimport uint32, float64
-from mlrl.seco.cython.heuristics cimport IHeuristic
+from mlrl.seco.cython.heuristics cimport IHeuristicFactory
 
 from libcpp.memory cimport unique_ptr
 
@@ -39,7 +39,7 @@ cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise_partial.hpp" n
 
         # Constructors:
 
-        LabelWisePartialRuleEvaluationFactoryImpl(unique_ptr[IHeuristic] heuristicPtr,
+        LabelWisePartialRuleEvaluationFactoryImpl(unique_ptr[IHeuristicFactory] heuristicFactoryPtr,
                                                   unique_ptr[ILiftFunction] liftFunctionPtr) except +
 
 
@@ -50,7 +50,7 @@ cdef extern from "seco/rule_evaluation/rule_evaluation_label_wise_single.hpp" na
 
         # Constructors:
 
-        LabelWiseSingleLabelRuleEvaluationFactoryImpl(unique_ptr[IHeuristic] heuristicPtr) except +
+        LabelWiseSingleLabelRuleEvaluationFactoryImpl(unique_ptr[IHeuristicFactory] heuristicFactoryPtr) except +
 
 
 cdef class LiftFunction:

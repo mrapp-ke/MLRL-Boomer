@@ -6,77 +6,77 @@
 from libcpp.memory cimport make_unique
 
 
-cdef class Heuristic:
+cdef class HeuristicFactory:
     """
-    A wrapper for the pure virtual C++ class `IHeuristic`.
+    A wrapper for the pure virtual C++ class `IHeuristicFactory`.
     """
     pass
 
 
-cdef class Accuracy(Heuristic):
+cdef class AccuracyFactory(HeuristicFactory):
     """
-    A wrapper for the C++ class `Accuracy`.
-    """
-
-    def __cinit__(self):
-        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[AccuracyImpl]()
-
-
-cdef class Precision(Heuristic):
-    """
-    A wrapper for the C++ class `Precision`.
+    A wrapper for the C++ class `AccuracyFactory`.
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[PrecisionImpl]()
+        self.heuristic_factory_ptr = <unique_ptr[IHeuristicFactory]>make_unique[AccuracyFactoryImpl]()
 
 
-cdef class Recall(Heuristic):
+cdef class PrecisionFactory(HeuristicFactory):
     """
-    A wrapper for the C++ class `Recall`.
-    """
-
-    def __cinit__(self):
-        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[RecallImpl]()
-
-
-cdef class Laplace(Heuristic):
-    """
-    A wrapper for the C++ class 'Laplace'.
+    A wrapper for the C++ class `PrecisionFactory`.
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[LaplaceImpl]()
+        self.heuristic_factory_ptr = <unique_ptr[IHeuristicFactory]>make_unique[PrecisionFactoryImpl]()
 
 
-cdef class WRA(Heuristic):
+cdef class RecallFactory(HeuristicFactory):
     """
-    A wrapper for the C++ class `WRA`.
+    A wrapper for the C++ class `RecallFactory`.
     """
 
     def __cinit__(self):
-        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[WRAImpl]()
+        self.heuristic_factory_ptr = <unique_ptr[IHeuristicFactory]>make_unique[RecallFactoryImpl]()
 
 
-cdef class FMeasure(Heuristic):
+cdef class LaplaceFactory(HeuristicFactory):
     """
-    A wrapper for the C++ class `FMeasure`.
+    A wrapper for the C++ class 'LaplaceFactory'.
+    """
+
+    def __cinit__(self):
+        self.heuristic_factory_ptr = <unique_ptr[IHeuristicFactory]>make_unique[LaplaceFactoryImpl]()
+
+
+cdef class WraFactory(HeuristicFactory):
+    """
+    A wrapper for the C++ class `WraFactory`.
+    """
+
+    def __cinit__(self):
+        self.heuristic_factory_ptr = <unique_ptr[IHeuristicFactory]>make_unique[WraFactoryImpl]()
+
+
+cdef class FMeasureFactory(HeuristicFactory):
+    """
+    A wrapper for the C++ class `FMeasureFactory`.
     """
 
     def __cinit__(self, float64 beta):
         """
         :param beta: The value of the beta-parameter. Must be at least 0
         """
-        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[FMeasureImpl](beta)
+        self.heuristic_factory_ptr = <unique_ptr[IHeuristicFactory]>make_unique[FMeasureFactoryImpl](beta)
 
 
-cdef class MEstimate(Heuristic):
+cdef class MEstimateFactory(HeuristicFactory):
     """
-    A wrapper for the C++ class `MEstimate`.
+    A wrapper for the C++ class `MEstimateFactory`.
     """
 
     def __cinit__(self, float64 m):
         """
         :param m: The value of the m-parameter. Must be at least 0
         """
-        self.heuristic_ptr = <unique_ptr[IHeuristic]>make_unique[MEstimateImpl](m)
+        self.heuristic_factory_ptr = <unique_ptr[IHeuristicFactory]>make_unique[MEstimateFactoryImpl](m)

@@ -17,15 +17,15 @@ namespace seco {
 
         private:
 
-            std::unique_ptr<IHeuristic> heuristicPtr_;
+            std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr_;
 
         public:
 
             /**
-             * @param heuristicPtr An unique pointer to an object of type `IHeuristic`, implementing the heuristic to be
-             *                     optimized
+             * @param heuristicFactoryPtr An unique pointer to an object of type `IHeuristicFactory`, that allows to
+             *                            create implementations of the heuristic to be optimized
              */
-            LabelWiseSingleLabelRuleEvaluationFactory(std::unique_ptr<IHeuristic> heuristicPtr);
+            LabelWiseSingleLabelRuleEvaluationFactory(std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr);
 
             std::unique_ptr<IRuleEvaluation> create(const CompleteIndexVector& indexVector) const override;
 

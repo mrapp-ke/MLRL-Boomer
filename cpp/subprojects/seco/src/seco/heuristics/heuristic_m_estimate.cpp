@@ -6,33 +6,59 @@
 
 namespace seco {
 
-    MEstimate::MEstimate(float64 m)
-        : m_(m) {
-        assertGreaterOrEqual<float64>("m", m, 0);
-    }
+    /**
+     * An implementation of the type `IHeuristic` that allows to trade off between the heuristics "Precision" and "WRA",
+     * where the "m" parameter allows to control the trade-off between both heuristics.
+     */
+    class MEstimate final : public IHeuristic {
 
-    float64 MEstimate::evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                               float64 uip, float64 urn, float64 urp) const {
-        if (std::isinf(m_)) {
-            // Equivalent to weighted relative accuracy
-            return wra(cin, cip, crn, crp, uin, uip, urn, urp);
-        } else if (m_ > 0) {
-            // Trade-off between precision and weighted relative accuracy
-            float64 numCoveredEqual = cin + crp;
-            float64 numCovered = numCoveredEqual + cip + crn;
+        private:
 
-            if (numCovered == 0) {
-                return 1;
+            float64 m_;
+
+        public:
+
+            /**
+             * @param m The value of the "m" parameter. Must be at least 0
+             */
+            MEstimate(float64 m)
+                : m_(m) {
+                assertGreaterOrEqual<float64>("m", m, 0);
             }
 
-            float64 numUncoveredEqual = uin + urp;
-            float64 numTotal = numCovered + numUncoveredEqual + uip + urn;
-            float64 numEqual = numCoveredEqual + numUncoveredEqual;
-            return 1 - ((numCoveredEqual + (m_ * (numEqual / numTotal))) / (numCovered + m_));
-        } else {
-            // Equivalent to precision
-            return precision(cin, cip, crn, crp);
-        }
+            float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
+                                            float64 uip, float64 urn, float64 urp) const override {
+                if (std::isinf(m_)) {
+                    // Equivalent to weighted relative accuracy
+                    return wra(cin, cip, crn, crp, uin, uip, urn, urp);
+                } else if (m_ > 0) {
+                    // Trade-off between precision and weighted relative accuracy
+                    float64 numCoveredEqual = cin + crp;
+                    float64 numCovered = numCoveredEqual + cip + crn;
+
+                    if (numCovered == 0) {
+                        return 1;
+                    }
+
+                    float64 numUncoveredEqual = uin + urp;
+                    float64 numTotal = numCovered + numUncoveredEqual + uip + urn;
+                    float64 numEqual = numCoveredEqual + numUncoveredEqual;
+                    return 1 - ((numCoveredEqual + (m_ * (numEqual / numTotal))) / (numCovered + m_));
+                } else {
+                    // Equivalent to precision
+                    return precision(cin, cip, crn, crp);
+                }
+            }
+
+    };
+
+    MEstimateFactory::MEstimateFactory(float64 m)
+        : m_(m) {
+
+    }
+
+    std::unique_ptr<IHeuristic> MEstimateFactory::create() const {
+        return std::make_unique<MEstimate>(m_);
     }
 
 }
