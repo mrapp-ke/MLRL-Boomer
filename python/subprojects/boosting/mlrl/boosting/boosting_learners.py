@@ -31,7 +31,7 @@ from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
 from mlrl.common.cython.post_processing import PostProcessor, NoPostProcessor
-from mlrl.common.cython.pruning import Pruning
+from mlrl.common.cython.pruning import PruningFactory
 from mlrl.common.cython.rule_induction import RuleInduction, TopDownRuleInduction
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory, SequentialRuleModelAssemblageFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
@@ -42,9 +42,9 @@ from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy, FeatureCharacteristics, LabelCharacteristics
-from mlrl.common.rule_learners import create_pruning, create_feature_sampling_factory, create_label_sampling_factory, \
-    create_instance_sampling_factory, create_partition_sampling_factory, create_stopping_criteria, \
-    create_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
+from mlrl.common.rule_learners import create_pruning_factory, create_feature_sampling_factory, \
+    create_label_sampling_factory, create_instance_sampling_factory, create_partition_sampling_factory, \
+    create_stopping_criteria, create_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
 from sklearn.base import ClassifierMixin
 
 EARLY_STOPPING_LOSS = 'loss'
@@ -356,9 +356,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             label_characteristics: LabelCharacteristics) -> Optional[PartitionSamplingFactory]:
         return create_partition_sampling_factory(self.holdout)
 
-    def _create_pruning(self, feature_characteristics: FeatureCharacteristics,
-                        label_characteristics: LabelCharacteristics) -> Optional[Pruning]:
-        return create_pruning(self.pruning, self.instance_sampling)
+    def _create_pruning_factory(self, feature_characteristics: FeatureCharacteristics,
+                                label_characteristics: LabelCharacteristics) -> Optional[PruningFactory]:
+        return create_pruning_factory(self.pruning, self.instance_sampling)
 
     def _create_post_processor(self, feature_characteristics: FeatureCharacteristics,
                                label_characteristics: LabelCharacteristics) -> Optional[PostProcessor]:

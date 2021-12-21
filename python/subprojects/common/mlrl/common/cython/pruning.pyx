@@ -4,26 +4,26 @@
 from libcpp.memory cimport make_unique
 
 
-cdef class Pruning:
+cdef class PruningFactory:
     """
-    A wrapper for the pure virtual C++ class `IPruning`.
+    A wrapper for the pure virtual C++ class `IPruningFactory`.
     """
     pass
 
 
-cdef class NoPruning(Pruning):
+cdef class NoPruningFactory(PruningFactory):
     """
-    A wrapper for the C++ class `NoPruning`.
-    """
-
-    def __cinit__(self):
-        self.pruning_ptr = <unique_ptr[IPruning]>make_unique[NoPruningImpl]()
-
-
-cdef class IREP(Pruning):
-    """
-    A wrapper for the C++ class `IREP`.
+    A wrapper for the C++ class `NoPruningFactory`.
     """
 
     def __cinit__(self):
-        self.pruning_ptr = <unique_ptr[IPruning]>make_unique[IREPImpl]()
+        self.pruning_factory_ptr = <unique_ptr[IPruningFactory]>make_unique[NoPruningFactoryImpl]()
+
+
+cdef class IrepFactory(PruningFactory):
+    """
+    A wrapper for the C++ class `IrepFactory`.
+    """
+
+    def __cinit__(self):
+        self.pruning_factory_ptr = <unique_ptr[IPruningFactory]>make_unique[IrepFactoryImpl]()

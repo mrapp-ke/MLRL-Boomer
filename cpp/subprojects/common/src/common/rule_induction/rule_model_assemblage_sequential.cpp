@@ -55,7 +55,7 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
 
         std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr_;
 
-        std::shared_ptr<IPruning> pruningPtr_;
+        std::shared_ptr<IPruningFactory> pruningFactoryPtr_;
 
         std::shared_ptr<IPostProcessor> postProcessorPtr_;
 
@@ -86,8 +86,8 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
          * @param partitionSamplingFactoryPtr   A shared pointer to an object of type `IPartitionSamplingFactory` that
          *                                      allows to create the implementation to be used for partitioning the
          *                                      training examples into a training set and a holdout set
-         * @param pruningPtr                    A shared pointer to an object of type `IPruning` that should be used to
-         *                                      prune the rules
+         * @param pruningFactoryPtr             A shared pointer to an object of type `IPruningFactory` that allows to
+         *                                      create the implementation to be used for pruning rules
          * @param postProcessorPtr              A shared pointer to an object of type `IPostProcessor` that should be
          *                                      used to post-process the predictions of rules
          * @param stoppingCriteria              A list that contains the stopping criteria, which should be used to
@@ -101,13 +101,13 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
             std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
             std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
             std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-            std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
+            std::shared_ptr<IPruningFactory> pruningFactoryPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
             std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria, bool useDefaultRule)
         : statisticsProviderFactoryPtr_(statisticsProviderFactoryPtr), thresholdsFactoryPtr_(thresholdsFactoryPtr),
           ruleInductionPtr_(ruleInductionPtr), labelSamplingFactoryPtr_(labelSamplingFactoryPtr),
           instanceSamplingFactoryPtr_(instanceSamplingFactoryPtr),
           featureSamplingFactoryPtr_(featureSamplingFactoryPtr),
-          partitionSamplingFactoryPtr_(partitionSamplingFactoryPtr), pruningPtr_(pruningPtr),
+          partitionSamplingFactoryPtr_(partitionSamplingFactoryPtr), pruningFactoryPtr_(pruningFactoryPtr),
           postProcessorPtr_(postProcessorPtr), stoppingCriteria_(stoppingCriteria), useDefaultRule_(useDefaultRule) {
 
         }
@@ -141,6 +141,7 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
                 *instanceSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr_->create(numFeatures);
             std::unique_ptr<ILabelSampling> labelSamplingPtr = labelSamplingFactoryPtr_->create(numLabels);
+            std::unique_ptr<IPruning> pruningPtr = pruningFactoryPtr_->create();
             IStoppingCriterion::Result stoppingCriterionResult;
 
             while (stoppingCriterionResult = testStoppingCriteria(stoppingCriteria_, partition,
@@ -153,7 +154,7 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
                 const IWeightVector& weights = instanceSamplingPtr->sample(rng);
                 const IIndexVector& labelIndices = labelSamplingPtr->sample(rng);
                 bool success = ruleInductionPtr_->induceRule(*thresholdsPtr, labelIndices, weights, partition,
-                                                             *featureSamplingPtr, *pruningPtr_, *postProcessorPtr_, rng,
+                                                             *featureSamplingPtr, *pruningPtr, *postProcessorPtr_, rng,
                                                              modelBuilder);
 
                 if (success) {
@@ -176,11 +177,11 @@ std::unique_ptr<IRuleModelAssemblage> SequentialRuleModelAssemblageFactory::crea
         std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
         std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
         std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-        std::shared_ptr<IPruning> pruningPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
+        std::shared_ptr<IPruningFactory> pruningFactoryPtr, std::shared_ptr<IPostProcessor> postProcessorPtr,
         const std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria, bool useDefaultRule) const {
     return std::make_unique<SequentialRuleModelAssemblage>(statisticsProviderFactoryPtr, thresholdsFactoryPtr,
                                                            ruleInductionPtr, labelSamplingFactoryPtr,
                                                            instanceSamplingFactoryPtr, featureSamplingFactoryPtr,
-                                                           partitionSamplingFactoryPtr, pruningPtr, postProcessorPtr,
-                                                           stoppingCriteria, useDefaultRule);
+                                                           partitionSamplingFactoryPtr, pruningFactoryPtr,
+                                                           postProcessorPtr, stoppingCriteria, useDefaultRule);
 }

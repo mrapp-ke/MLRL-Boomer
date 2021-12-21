@@ -31,7 +31,7 @@ from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, Rand
     LabelWiseStratifiedBiPartitionSamplingFactory, \
     ExampleWiseStratifiedBiPartitionSamplingFactory
 from mlrl.common.cython.post_processing import PostProcessor
-from mlrl.common.cython.pruning import Pruning, IREP
+from mlrl.common.cython.pruning import PruningFactory, IrepFactory
 from mlrl.common.cython.rule_induction import RuleInduction
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblage, RuleModelAssemblageFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
@@ -262,7 +262,7 @@ def create_partition_sampling_factory(holdout: str) -> Optional[PartitionSamplin
     return None
 
 
-def create_pruning(pruning: str, instance_sampling: str) -> Optional[Pruning]:
+def create_pruning_factory(pruning: str, instance_sampling: str) -> Optional[PruningFactory]:
     if pruning is not None:
         value = parse_param('pruning', pruning, PRUNING_VALUES)
 
@@ -271,7 +271,7 @@ def create_pruning(pruning: str, instance_sampling: str) -> Optional[Pruning]:
                 log.warning('Parameter "pruning" does not have any effect, because parameter "instance_sampling" is '
                             + 'set to "None"!')
                 return None
-            return IREP()
+            return IrepFactory()
     return None
 
 
@@ -535,10 +535,10 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         if partition_sampling_factory is not None:
             algorithm_builder.set_partition_sampling_factory(partition_sampling_factory)
 
-        pruning = self._create_pruning(feature_characteristics, label_characteristics)
+        pruning_factory = self._create_pruning_factory(feature_characteristics, label_characteristics)
 
-        if pruning is not None:
-            algorithm_builder.set_pruning(pruning)
+        if pruning_factory is not None:
+            algorithm_builder.set_pruning_factory(pruning_factory)
 
         post_processor = self._create_post_processor(feature_characteristics, label_characteristics)
 
@@ -703,14 +703,14 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         return None
 
-    def _create_pruning(self, feature_characteristics: FeatureCharacteristics,
-                        label_characteristics: LabelCharacteristics) -> Optional[Pruning]:
+    def _create_pruning_factory(self, feature_characteristics: FeatureCharacteristics,
+                                label_characteristics: LabelCharacteristics) -> Optional[PruningFactory]:
         """
-        Must be implemented by subclasses in order to create the `Pruning` to be used by the rule learner.
+        Must be implemented by subclasses in order to create the `PruningFactory` to be used by the rule learner.
 
         :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
         :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `Pruning` that has been created or None, if no pruning should be used
+        :return:                        The `PruningFactory` that has been created or None, if no pruning should be used
         """
         return None
 
