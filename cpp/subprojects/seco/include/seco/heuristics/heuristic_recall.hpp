@@ -22,4 +22,17 @@ namespace seco {
 
     };
 
+    /**
+     * Allows to create instances of the type `IHeuristic` that measure the fraction of uncovered labels among all
+     * labels for which a rule's prediction is (or would be) correct, i.e., for which the ground truth is equal to the
+     * rule's prediction.
+     */
+    class RecallFactory final : public IHeuristicFactory {
+
+        public:
+
+            std::unique_pointer<IHeuristic> create() const override;
+
+    };
+
 }
