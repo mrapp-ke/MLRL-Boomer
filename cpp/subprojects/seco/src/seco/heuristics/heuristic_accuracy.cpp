@@ -11,4 +11,8 @@ namespace seco {
         return (numUncoveredCorrect + numCoveredIncorrect) / numTotal;
     }
 
+    std::unique_ptr<IHeuristic> AccuracyFactory::create() const {
+        return std::make_unique<Accuracy>();
+    }
+
 }
