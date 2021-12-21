@@ -19,4 +19,13 @@ namespace boosting {
         }
     }
 
+    ConstantShrinkageFactory::ConstantShrinkageFactory(float64 shrinkage)
+        : shrinkage_(shrinkage) {
+
+    }
+
+    std::unique_ptr<IPostProcessor> ConstantShrinkageFactory::create() const {
+        return std::make_unique<ConstantShrinkage>(shrinkage_);
+    }
+
 }
