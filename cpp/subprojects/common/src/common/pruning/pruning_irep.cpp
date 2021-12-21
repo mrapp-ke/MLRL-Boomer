@@ -53,3 +53,7 @@ std::unique_ptr<ICoverageState> IREP::prune(IThresholdsSubset& thresholdsSubset,
 
     return bestCoverageStatePtr;
 }
+
+std::unique_ptr<IPruning> IrepFactory::create() const {
+    return std::make_unique<IREP>();
+}
