@@ -39,7 +39,7 @@ namespace seco {
 
     }
 
-    std::unique_ptr<ILiftFunction> create() const {
+    std::unique_ptr<ILiftFunction> PeakLiftFunctionFactory::create() const {
         return std::make_unique<PeakLiftFunction>(numLabels_, peakLabel_, maxLift_, curvature_);
     }
 
