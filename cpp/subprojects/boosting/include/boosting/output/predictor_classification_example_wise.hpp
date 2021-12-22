@@ -21,19 +21,22 @@ namespace boosting {
 
         private:
 
-            std::unique_ptr<ISimilarityMeasure> measurePtr_;
+            std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param measurePtr    An unique pointer to an object of type `ISimilarityMeasure` that should be used to
-             *                      quantify the similarity between predictions and known label vectors
-             * @param numThreads    The number of CPU threads to be used to make predictions for different query
-             *                      examples in parallel. Must be at least 1
+             * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasureFactory`
+             *                                      that allows to create implementations of the similarity measure
+             *                                      that should be used to quantify the similarity between predictions
+             *                                      and known label vectors
+             * @param numThreads                    The number of CPU threads to be used to make predictions for
+             *                                      different query examples in parallel. Must be at least 1
              */
-            ExampleWiseClassificationPredictor(std::unique_ptr<ISimilarityMeasure> measurePtr, uint32 numThreads);
+            ExampleWiseClassificationPredictor(std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr,
+                                               uint32 numThreads);
 
             /**
              * Obtains predictions for different examples, based on predicted scores, and writes them to a given

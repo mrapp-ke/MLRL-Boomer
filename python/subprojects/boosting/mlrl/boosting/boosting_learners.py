@@ -9,9 +9,9 @@ import logging as log
 from typing import Optional, Dict, Set, List
 
 from mlrl.boosting.cython.label_binning import LabelBinningFactory, EqualWidthLabelBinningFactory
-from mlrl.boosting.cython.losses_example_wise import ExampleWiseLogisticLoss
-from mlrl.boosting.cython.losses_label_wise import LabelWiseLoss, LabelWiseLogisticLoss, LabelWiseSquaredErrorLoss, \
-    LabelWiseSquaredHingeLoss
+from mlrl.boosting.cython.losses_example_wise import ExampleWiseLogisticLossFactory
+from mlrl.boosting.cython.losses_label_wise import LabelWiseLossFactory, LabelWiseLogisticLossFactory, \
+    LabelWiseSquaredErrorLossFactory, LabelWiseSquaredHingeLossFactory
 from mlrl.boosting.cython.model import RuleListBuilder
 from mlrl.boosting.cython.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor, \
     LabelWiseProbabilityPredictor, LabelWiseTransformationFunction, LogisticFunction
@@ -32,7 +32,7 @@ from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
 from mlrl.common.cython.post_processing import PostProcessorFactory
 from mlrl.common.cython.pruning import PruningFactory
-from mlrl.common.cython.rule_induction import RuleInduction, TopDownRuleInduction
+from mlrl.common.cython.rule_induction import RuleInductionFactory, TopDownRuleInductionFactory
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory, SequentialRuleModelAssemblageFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import StoppingCriterion, MeasureStoppingCriterion, AggregationFunction, MinFunction, \
@@ -286,35 +286,35 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                               label_characteristics) else head_type
         num_threads = create_num_threads(self.__get_preferred_parallel_statistic_update(label_characteristics),
                                          'parallel_statistic_update')
-        loss_function = self.__create_loss_function()
-        evaluation_measure = self.__create_loss_function()
+        loss_factory = self.__create_loss_factory()
+        evaluation_measure_factory = self.__create_loss_factory()
         label_binning_factory = self.__create_label_binning_factory()
 
         if label_binning_factory is not None and head_type == HEAD_TYPE_SINGLE:
             log.warning('Parameter "label_binning" does not have any effect, because parameter "head_type" is set to "'
                         + self.head_type + '"!')
 
-        default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, default_rule_head_type,
+        default_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_factory, default_rule_head_type,
                                                                                 label_binning_factory)
-        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, head_type,
+        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_factory, head_type,
                                                                                 self.__create_label_binning_factory())
-        pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_function, head_type,
+        pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(loss_factory, head_type,
                                                                                 self.__create_label_binning_factory())
 
-        if isinstance(loss_function, LabelWiseLoss):
-            return DenseLabelWiseStatisticsProviderFactory(loss_function, evaluation_measure,
+        if isinstance(loss_factory, LabelWiseLossFactory):
+            return DenseLabelWiseStatisticsProviderFactory(loss_factory, evaluation_measure_factory,
                                                            default_rule_evaluation_factory,
                                                            regular_rule_evaluation_factory,
                                                            pruning_rule_evaluation_factory, num_threads)
         else:
             if head_type == HEAD_TYPE_SINGLE:
-                return DenseConvertibleExampleWiseStatisticsProviderFactory(loss_function, evaluation_measure,
+                return DenseConvertibleExampleWiseStatisticsProviderFactory(loss_factory, evaluation_measure_factory,
                                                                             default_rule_evaluation_factory,
                                                                             regular_rule_evaluation_factory,
                                                                             pruning_rule_evaluation_factory,
                                                                             num_threads)
             else:
-                return DenseExampleWiseStatisticsProviderFactory(loss_function, evaluation_measure,
+                return DenseExampleWiseStatisticsProviderFactory(loss_factory, evaluation_measure_factory,
                                                                  default_rule_evaluation_factory,
                                                                  regular_rule_evaluation_factory,
                                                                  pruning_rule_evaluation_factory, num_threads)
@@ -325,12 +325,13 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                          'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
-    def _create_rule_induction(self, feature_characteristics: FeatureCharacteristics,
-                               label_characteristics: LabelCharacteristics) -> RuleInduction:
+    def _create_rule_induction_factory(self, feature_characteristics: FeatureCharacteristics,
+                                       label_characteristics: LabelCharacteristics) -> RuleInductionFactory:
         num_threads = create_num_threads(self.__get_preferred_parallel_rule_refinement(feature_characteristics),
                                          'parallel_rule_refinement')
-        return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
-                                    BooleanOption.parse(self.recalculate_predictions), num_threads)
+        return TopDownRuleInductionFactory(int(self.min_coverage), int(self.max_conditions),
+                                           int(self.max_head_refinements),
+                                           BooleanOption.parse(self.recalculate_predictions), num_threads)
 
     def _create_rule_model_assemblage_factory(
             self, feature_characteristics: FeatureCharacteristics,
@@ -422,19 +423,19 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         elif value == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
             return ArithmeticMeanFunction()
 
-    def __create_loss_function(self):
+    def __create_loss_factory(self):
         value = parse_param("loss", self.loss, LOSS_VALUES)
 
         if value == LOSS_SQUARED_ERROR_LABEL_WISE:
-            return LabelWiseSquaredErrorLoss()
+            return LabelWiseSquaredErrorLossFactory()
         elif value == LOSS_SQUARED_HINGE_LABEL_WISE:
-            return LabelWiseSquaredHingeLoss()
+            return LabelWiseSquaredHingeLossFactory()
         elif value == LOSS_LOGISTIC_LABEL_WISE:
-            return LabelWiseLogisticLoss()
+            return LabelWiseLogisticLossFactory()
         elif value == LOSS_LOGISTIC_EXAMPLE_WISE:
-            return ExampleWiseLogisticLoss()
+            return ExampleWiseLogisticLossFactory()
 
-    def __create_rule_evaluation_factory(self, loss_function, head_type: str,
+    def __create_rule_evaluation_factory(self, loss_factory, head_type: str,
                                          label_binning_factory: LabelBinningFactory):
         l1_regularization_weight = float(self.l1_regularization_weight)
         l2_regularization_weight = float(self.l2_regularization_weight)
@@ -442,7 +443,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if head_type == HEAD_TYPE_SINGLE:
             return LabelWiseSingleLabelRuleEvaluationFactory(l1_regularization_weight, l2_regularization_weight)
         elif head_type == HEAD_TYPE_COMPLETE:
-            if isinstance(loss_function, LabelWiseLoss):
+            if isinstance(loss_factory, LabelWiseLossFactory):
                 if label_binning_factory is None:
                     return LabelWiseCompleteRuleEvaluationFactory(l1_regularization_weight, l2_regularization_weight)
                 else:
@@ -566,10 +567,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __create_example_wise_predictor(
             self, label_characteristics: LabelCharacteristics) -> ExampleWiseClassificationPredictor:
-        loss = self.__create_loss_function()
+        loss_factory = self.__create_loss_factory()
         num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
-        return ExampleWiseClassificationPredictor(num_labels=label_characteristics.get_num_labels(), measure=loss,
-                                                  num_threads=num_threads)
+        return ExampleWiseClassificationPredictor(num_labels=label_characteristics.get_num_labels(),
+                                                  similarity_measure_factory=loss_factory, num_threads=num_threads)
 
     def __create_label_wise_probability_predictor(
             self, transformation_function: LabelWiseTransformationFunction,
