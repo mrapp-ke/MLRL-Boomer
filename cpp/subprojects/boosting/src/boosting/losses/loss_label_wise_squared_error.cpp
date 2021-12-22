@@ -1,4 +1,5 @@
 #include "boosting/losses/loss_label_wise_squared_error.hpp"
+#include "loss_label_wise_common.hpp"
 
 
 namespace boosting {
@@ -16,23 +17,8 @@ namespace boosting {
         return difference * difference;
     }
 
-    /**
-     * An implementation of the type `ILabelWiseLoss` that implements a multi-label variant of the squared error loss
-     * that is applied label-wise.
-     */
-    class LabelWiseSquaredErrorLoss final : public AbstractLabelWiseLoss {
-
-        public:
-
-            LabelWiseSquaredErrorLoss()
-                : AbstractLabelWiseLoss(&updateGradientAndHessian, &evaluatePrediction) {
-
-            }
-
-    };
-
     std::unique_ptr<ILabelWiseLoss> LabelWiseSquaredErrorLossFactory::createLabelWiseLoss() const {
-        return std::make_unique<LabelWiseSquaredErrorLoss>();
+        return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
     }
 
 }

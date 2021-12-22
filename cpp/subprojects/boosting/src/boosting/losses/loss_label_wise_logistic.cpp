@@ -1,5 +1,6 @@
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/math/math.hpp"
+#include "loss_label_wise_common.hpp"
 
 
 namespace boosting {
@@ -57,23 +58,8 @@ namespace boosting {
         return logSumExp(x);
     }
 
-    /**
-     * An implementation of the type `ILabelWiseLoss` that implements a multi-label variant of the logistic loss that is
-     * applied label-wise.
-     */
-    class LabelWiseLogisticLoss final : public AbstractLabelWiseLoss {
-
-        public:
-
-            LabelWiseLogisticLoss()
-                : AbstractLabelWiseLoss(&updateGradientAndHessian, &evaluatePrediction) {
-
-            }
-
-    };
-
     std::unique_ptr<ILabelWiseLoss> LabelWiseLogisticLossFactory::createLabelWiseLoss() const {
-        return std::make_unique<LabelWiseLogisticLoss>();
+        return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
     }
 
 }
