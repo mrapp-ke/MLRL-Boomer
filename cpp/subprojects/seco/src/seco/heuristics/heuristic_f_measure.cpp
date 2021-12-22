@@ -23,7 +23,7 @@ namespace seco {
              */
             FMeasure(float64 beta)
                 : beta_(beta) {
-                assertGreaterOrEqual<float64>("beta", beta, 0);
+
             }
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -53,7 +53,7 @@ namespace seco {
 
     FMeasureFactory::FMeasureFactory(float64 beta)
         : beta_(beta) {
-
+        assertGreaterOrEqual<float64>("beta", beta, 0);
     }
 
     std::unique_ptr<IHeuristic> FMeasureFactory::create() const {
