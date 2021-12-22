@@ -1,6 +1,6 @@
 from mlrl.common.cython.statistics cimport IStatisticsProviderFactory
 from mlrl.common.cython.thresholds cimport IThresholdsFactory
-from mlrl.common.cython.rule_induction cimport IRuleInduction
+from mlrl.common.cython.rule_induction cimport IRuleInductionFactory
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingFactory
 from mlrl.common.cython.instance_sampling cimport IInstanceSamplingFactory
 from mlrl.common.cython.label_sampling cimport ILabelSamplingFactory
@@ -22,7 +22,7 @@ cdef extern from "common/algorithm_builder.hpp" nogil:
 
         AlgorithmBuilderImpl(unique_ptr[IStatisticsProviderFactory] statisticsProviderFactoryPtr,
                              unique_ptr[IThresholdsFactory] thresholdsFactoryPtr,
-                             unique_ptr[IRuleInduction] ruleInductionPtr,
+                             unique_ptr[IRuleInductionFactory] ruleInductionFactoryPtr,
                              unique_ptr[IRuleModelAssemblageFactory] ruleModelAssemblageFactoryPtr) except +
 
         # Functions:

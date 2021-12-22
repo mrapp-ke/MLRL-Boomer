@@ -14,7 +14,7 @@ from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import Predictor
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
 from mlrl.common.cython.pruning import PruningFactory
-from mlrl.common.cython.rule_induction import RuleInduction, TopDownRuleInduction
+from mlrl.common.cython.rule_induction import RuleInductionFactory, TopDownRuleInductionFactory
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory, SequentialRuleModelAssemblageFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import StoppingCriterion
@@ -227,11 +227,11 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         num_threads = create_num_threads(self.parallel_statistic_update, 'parallel_statistic_update')
         return create_thresholds_factory(self.feature_binning, num_threads)
 
-    def _create_rule_induction(self, feature_characteristics: FeatureCharacteristics,
-                               label_characteristics: LabelCharacteristics) -> RuleInduction:
+    def _create_rule_induction_factory(self, feature_characteristics: FeatureCharacteristics,
+                                       label_characteristics: LabelCharacteristics) -> RuleInductionFactory:
         num_threads = create_num_threads(self.parallel_rule_refinement, 'parallel_rule_refinement')
-        return TopDownRuleInduction(int(self.min_coverage), int(self.max_conditions), int(self.max_head_refinements),
-                                    False, num_threads)
+        return TopDownRuleInductionFactory(int(self.min_coverage), int(self.max_conditions),
+                                           int(self.max_head_refinements), False, num_threads)
 
     def _create_rule_model_assemblage_factory(
             self, feature_characteristics: FeatureCharacteristics,
