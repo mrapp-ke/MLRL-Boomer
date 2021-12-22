@@ -9,7 +9,8 @@
 namespace boosting {
 
     /**
-     * A multi-label variant of the logistic loss that is applied example-wise.
+     * An implementation of the type `IExampleWiseLoss` that implements a multi-label variant of the logistic loss that
+     * is applied example-wise.
      */
     class ExampleWiseLogisticLoss final : public IExampleWiseLoss {
 
@@ -65,6 +66,18 @@ namespace boosting {
             float64 measureSimilarity(const LabelVector& labelVector,
                                       CContiguousView<float64>::const_iterator scoresBegin,
                                       CContiguousView<float64>::const_iterator scoresEnd) const override;
+
+    };
+
+    /**
+     * Allows to create instances of the type `IExampleWiseLoss` that implement a multi-label variant of the logistic
+     * loss that is applied example-wise.
+     */
+    class ExampleWiseLogisticLossFactory final : public IExampleWiseLossFactory {
+
+        public:
+
+            std::unique_ptr<IExampleWiseLoss> createExampleWiseLoss() const override;
 
     };
 
