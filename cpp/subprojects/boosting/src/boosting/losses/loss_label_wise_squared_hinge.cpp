@@ -1,4 +1,5 @@
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
+#include "loss_label_wise_common.hpp"
 
 
 namespace boosting {
@@ -38,9 +39,8 @@ namespace boosting {
         }
     }
 
-    LabelWiseSquaredHingeLoss::LabelWiseSquaredHingeLoss()
-        : AbstractLabelWiseLoss(&updateGradientAndHessian, &evaluatePrediction) {
-
+    std::unique_ptr<ILabelWiseLoss> LabelWiseSquaredHingeLossFactory::createLabelWiseLoss() const {
+        return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
     }
 
 }

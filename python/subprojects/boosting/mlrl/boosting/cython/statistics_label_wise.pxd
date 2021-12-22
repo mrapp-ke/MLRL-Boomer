@@ -1,6 +1,6 @@
-from mlrl.common.cython._measures cimport IEvaluationMeasure
+from mlrl.common.cython._measures cimport IEvaluationMeasureFactory
 from mlrl.common.cython.statistics cimport StatisticsProviderFactory, IStatisticsProviderFactory
-from mlrl.boosting.cython.losses_label_wise cimport ILabelWiseLoss
+from mlrl.boosting.cython.losses_label_wise cimport ILabelWiseLossFactory
 from mlrl.boosting.cython.rule_evaluation_label_wise cimport ILabelWiseRuleEvaluationFactory
 
 from libcpp.memory cimport unique_ptr
@@ -14,7 +14,8 @@ cdef extern from "boosting/statistics/statistics_provider_factory_label_wise_den
         # Constructors:
 
         DenseLabelWiseStatisticsProviderFactoryImpl(
-            unique_ptr[ILabelWiseLoss] lossFunctionPtr, unique_ptr[IEvaluationMeasure] evaluationMeasurePtr,
+            unique_ptr[ILabelWiseLossFactory] lossFactoryPtr,
+            unique_ptr[IEvaluationMeasureFactory] evaluationMeasureFactoryPtr,
             unique_ptr[ILabelWiseRuleEvaluationFactory] defaultRuleEvaluationFactoryPtr,
             unique_ptr[ILabelWiseRuleEvaluationFactory] regularRuleEvaluationFactoryPtr,
             unique_ptr[ILabelWiseRuleEvaluationFactory] pruningRuleEvaluationFactoryPtr) except +

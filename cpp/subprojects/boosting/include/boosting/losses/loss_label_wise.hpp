@@ -100,84 +100,28 @@ namespace boosting {
     };
 
     /**
-     * An abstract base class for all (decomposable) loss functions that are applied label-wise.
+     * Defines an interface for all factories that allow to create instances of the type `ILabelWiseLoss`.
      */
-    class AbstractLabelWiseLoss : public ILabelWiseLoss {
-
-        private:
-
-            /**
-             * A function that allows to update the gradient and Hessian for a single example and label. The function
-             * accepts the true label, the predicted score, as well as pointers to the gradient and Hessian to be
-             * updated, as arguments.
-             */
-            typedef void (*UpdateFunction)(bool trueLabel, float64 predictedScore, float64* gradient, float64* hessian);
-
-            /**
-             * A function that allows to calculate a numerical score that assesses the quality of the prediction for a
-             * single example and label. The function accepts the true label and the predicted score as arguments and
-             * returns a numerical score.
-             */
-            typedef float64 (*EvaluateFunction)(bool trueLabel, float64 predictedScore);
-
-            UpdateFunction updateFunction_;
-
-            EvaluateFunction evaluateFunction_;
-
-        protected:
-
-            /**
-             * @param updateFunction    The function to be used for updating gradients and Hessians
-             * @param evaluateFunction  The function to be used for evaluating predictions
-             */
-            AbstractLabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction);
+    class ILabelWiseLossFactory : public IEvaluationMeasureFactory, public ISimilarityMeasureFactory {
 
         public:
 
-            virtual ~AbstractLabelWiseLoss() override { };
-
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
-                                           const CContiguousConstView<float64>& scoreMatrix,
-                                           CompleteIndexVector::const_iterator labelIndicesBegin,
-                                           CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final;
-
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
-                                           const CContiguousConstView<float64>& scoreMatrix,
-                                           PartialIndexVector::const_iterator labelIndicesBegin,
-                                           PartialIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final;
-
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                           const CContiguousConstView<float64>& scoreMatrix,
-                                           CompleteIndexVector::const_iterator labelIndicesBegin,
-                                           CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final;
-
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                            const CContiguousConstView<float64> scoreMatrix,
-                                            PartialIndexVector::const_iterator labelIndicesBegin,
-                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                            DenseLabelWiseStatisticView& statisticView) const override final;
+            virtual ~ILabelWiseLossFactory() { };
 
             /**
-             * @see `IEvaluationMeasure::evaluate`
+             * Creates and returns a new object of type `ILabelWiseLoss`.
+             *
+             * @return An unique pointer to an object of type `ILabelWiseLoss` that has been created
              */
-            float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
-                             const CContiguousConstView<float64>& scoreMatrix) const override final;
+            virtual std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const = 0;
 
-            /**
-             * @see `IEvaluationMeasure::evaluate`
-             */
-            float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                             const CContiguousConstView<float64>& scoreMatrix) const override final;
+            std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const override final {
+                return this->createLabelWiseLoss();
+            }
 
-            /**
-             * @see `ISimilarityMeasure::measureSimilarity`
-             */
-            float64 measureSimilarity(const LabelVector& labelVector,
-                                      CContiguousView<float64>::const_iterator scoresBegin,
-                                      CContiguousView<float64>::const_iterator scoresEnd) const override final;
+            std::unique_ptr<ISimilarityMeasure> createSimilarityMeasure() const override final {
+                return this->createLabelWiseLoss();
+            }
 
     };
 

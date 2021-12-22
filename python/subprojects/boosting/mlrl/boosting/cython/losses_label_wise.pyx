@@ -5,49 +5,49 @@ from libcpp.utility cimport move
 from libcpp.memory cimport make_unique
 
 
-cdef class LabelWiseLoss(EvaluationMeasure):
+cdef class LabelWiseLossFactory(EvaluationMeasureFactory):
     """
-    A wrapper for the pure virtual C++ class `ILabelWiseLoss`.
-    """
-
-    cdef unique_ptr[IEvaluationMeasure] get_evaluation_measure_ptr(self):
-        return <unique_ptr[IEvaluationMeasure]>move(self.loss_function_ptr)
-
-    cdef unique_ptr[ISimilarityMeasure] get_similarity_measure_ptr(self):
-        return <unique_ptr[ISimilarityMeasure]>move(self.loss_function_ptr)
-
-
-cdef class LabelWiseLogisticLoss(LabelWiseLoss):
-    """
-    A wrapper for the C++ class `LabelWiseLogisticLoss`.
+    A wrapper for the pure virtual C++ class `ILabelWiseLossFactory`.
     """
 
-    def __cinit__(self):
-        self.loss_function_ptr = <unique_ptr[ILabelWiseLoss]>make_unique[LabelWiseLogisticLossImpl]()
+    cdef unique_ptr[IEvaluationMeasureFactory] get_evaluation_measure_factory_ptr(self):
+        return <unique_ptr[IEvaluationMeasureFactory]>move(self.loss_factory_ptr)
 
-    def __reduce__(self):
-        return (LabelWiseLogisticLoss, ())
+    cdef unique_ptr[ISimilarityMeasureFactory] get_similarity_measure_factory_ptr(self):
+        return <unique_ptr[ISimilarityMeasureFactory]>move(self.loss_factory_ptr)
 
 
-cdef class LabelWiseSquaredErrorLoss(LabelWiseLoss):
+cdef class LabelWiseLogisticLossFactory(LabelWiseLossFactory):
     """
-    A wrapper for the C++ class `LabelWiseSquaredErrorLoss`.
+    A wrapper for the C++ class `LabelWiseLogisticLossFactory`.
     """
 
     def __cinit__(self):
-        self.loss_function_ptr = <unique_ptr[ILabelWiseLoss]>make_unique[LabelWiseSquaredErrorLossImpl]()
+        self.loss_factory_ptr = <unique_ptr[ILabelWiseLossFactory]>make_unique[LabelWiseLogisticLossFactoryImpl]()
 
     def __reduce__(self):
-        return (LabelWiseSquaredErrorLoss, ())
+        return (LabelWiseLogisticLossFactory, ())
 
 
-cdef class LabelWiseSquaredHingeLoss(LabelWiseLoss):
+cdef class LabelWiseSquaredErrorLossFactory(LabelWiseLossFactory):
     """
-    A wrapper for the C++ class `LabelWiseSquaredHingeLoss`.
+    A wrapper for the C++ class `LabelWiseSquaredErrorLossFactory`.
     """
 
     def __cinit__(self):
-        self.loss_function_ptr = <unique_ptr[ILabelWiseLoss]>make_unique[LabelWiseSquaredHingeLossImpl]()
+        self.loss_factory_ptr = <unique_ptr[ILabelWiseLossFactory]>make_unique[LabelWiseSquaredErrorLossFactoryImpl]()
 
     def __reduce__(self):
-        return (LabelWiseSquaredHingeLoss, ())
+        return (LabelWiseSquaredErrorLossFactory, ())
+
+
+cdef class LabelWiseSquaredHingeLossFactory(LabelWiseLossFactory):
+    """
+    A wrapper for the C++ class `LabelWiseSquaredHingeLossFactory`.
+    """
+
+    def __cinit__(self):
+        self.loss_factory_ptr = <unique_ptr[ILabelWiseLossFactory]>make_unique[LabelWiseSquaredHingeLossFactoryImpl]()
+
+    def __reduce__(self):
+        return (LabelWiseSquaredHingeLossFactory, ())

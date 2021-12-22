@@ -5,6 +5,7 @@
 
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
+#include <memory>
 
 
 /**
@@ -46,5 +47,23 @@ class IEvaluationMeasure {
          */
         virtual float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
                                  const CContiguousConstView<float64>& scoreMatrix) const = 0;
+
+};
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IEvaluationMeasure`.
+ */
+class IEvaluationMeasureFactory {
+
+    public:
+
+        virtual ~IEvaluationMeasureFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IEvaluationMeasure`.
+         *
+         * @return An unique pointer to an object of type `IEvaluationMeasure` that has been created
+         */
+        virtual std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const = 0;
 
 };

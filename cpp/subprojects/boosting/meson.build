@@ -10,7 +10,6 @@ source_files = [
     'src/boosting/data/statistic_view_label_wise_dense.cpp',
     'src/boosting/iterator/diagonal_iterator.cpp',
     'src/boosting/losses/loss_example_wise_logistic.cpp',
-    'src/boosting/losses/loss_label_wise.cpp',
     'src/boosting/losses/loss_label_wise_logistic.cpp',
     'src/boosting/losses/loss_label_wise_squared_error.cpp',
     'src/boosting/losses/loss_label_wise_squared_hinge.cpp',
