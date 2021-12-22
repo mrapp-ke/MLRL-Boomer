@@ -43,4 +43,8 @@ namespace boosting {
 
     }
 
+    std::unique_ptr<ILabelWiseLoss> LabelWiseSquaredHingeLossFactory::create() const {
+        return std::make_unique<LabelWiseSquaredHingeLoss>();
+    }
+
 }
