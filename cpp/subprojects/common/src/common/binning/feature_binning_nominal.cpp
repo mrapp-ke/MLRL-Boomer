@@ -5,7 +5,8 @@
 
 
 /**
- * Assigns nominal feature values to bins, such that each bin contains one of the available values.
+ * An implementation of the type `IFeatureBinning` that assigns nominal feature values to bins, such that each bin
+ * contains one of the available values.
  */
 class NominalFeatureBinning final : public IFeatureBinning {
 
