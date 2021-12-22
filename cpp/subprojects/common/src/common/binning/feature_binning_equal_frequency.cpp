@@ -41,7 +41,8 @@ static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float
 }
 
 /**
- * Assigns numerical feature values to bins, such that each bin contains approximately the same number of values.
+ * An implementation of the type `IFeatureBinning` that assigns numerical feature values to bins, such that each bin
+ * contains approximately the same number of values.
  */
 class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 
