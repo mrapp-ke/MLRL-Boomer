@@ -68,8 +68,9 @@ class IRuleModelAssemblageFactory {
          * @param thresholdsFactoryPtr          A shared pointer to an object of type `IThresholdsFactory` that allows
          *                                      to create objects that provide access to the thresholds that may be used
          *                                      by the conditions of rules
-         * @param ruleInductionPtr              A shared pointer to an object of type `IRuleInduction` that should be
-         *                                      used to induce individual rules
+         * @param ruleInductionFactoryPtr       A shared pointer to an object of type `IRuleInductionFactory` that
+         *                                      allows to create the implementation to be used for the induction of
+         *                                      individual rules
          * @param labelSamplingFactoryPtr       A shared pointer to an object of type `ILabelSamplingFactory` that
          *                                      allows to create the implementation to be used for sampling the labels
          *                                      whenever a new rule is induced
@@ -93,7 +94,8 @@ class IRuleModelAssemblageFactory {
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
             std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-            std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
+            std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
+            std::shared_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
             std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
             std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
             std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,

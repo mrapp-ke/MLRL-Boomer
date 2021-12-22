@@ -15,7 +15,8 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
 
         std::unique_ptr<IRuleModelAssemblage> create(
             std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-            std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr, std::shared_ptr<IRuleInduction> ruleInductionPtr,
+            std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
+            std::shared_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
             std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
             std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
             std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
