@@ -127,3 +127,13 @@ IFeatureBinning::Result EqualFrequencyFeatureBinning::createBins(FeatureVector& 
 
     return result;
 }
+
+EqualFrequencyFeatureBinningFactory::EqualFrequencyFeatureBinningFactory(float32 binRatio, uint32 minBins,
+                                                                         uint32 maxBins)
+    : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
+
+}
+
+std::unique_ptr<IFeatureBinning> EqualFrequencyFeatureBinningFactory::create() const {
+    return std::make_unique<EqualFrequencyFeatureBinning>(binRatio_, minBins_, maxBins_);
+}
