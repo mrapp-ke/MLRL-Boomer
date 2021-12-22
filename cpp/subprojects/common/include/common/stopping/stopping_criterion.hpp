@@ -61,3 +61,21 @@ class IStoppingCriterion {
         virtual Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) = 0;
 
 };
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IStoppingCriterion`.
+ */
+class IStoppingCriterionFactory {
+
+    public:
+
+        virtual ~IStoppingCriterionFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IStoppingCriterion`.
+         *
+         * @return An unique pointer to an object of type `IStoppingCriterion` that has been created
+         */
+        std::unique_ptr<IStoppingCriterion> create() const = 0;
+
+};
