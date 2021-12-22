@@ -5,16 +5,16 @@
 from libcpp.memory cimport make_unique
 
 
-cdef class LiftFunction:
+cdef class LiftFunctionFactory:
     """
-    A wrapper for the pure virtual C++ class `ILiftFunction`.
+    A wrapper for the pure virtual C++ class `ILiftFunctionFactory`.
     """
     pass
 
 
-cdef class PeakLiftFunction(LiftFunction):
+cdef class PeakLiftFunctionFactory(LiftFunctionFactory):
     """
-    A wrapper for the C++ class `PeakLiftFunction`.
+    A wrapper for the C++ class `PeakLiftFunctionFactory`.
     """
 
     def __cinit__(self, uint32 num_labels, uint32 peak_label, float64 max_lift, float64 curvature):
@@ -25,6 +25,6 @@ cdef class PeakLiftFunction(LiftFunction):
         :param curvature:   The curvature of the lift function. A greater value results in a steeper curvature, a
                             smaller value results in a flatter curvature. Must be greater than 0
         """
-        self.lift_function_ptr = <unique_ptr[ILiftFunction]>make_unique[PeakLiftFunctionImpl](num_labels, peak_label,
-                                                                                              max_lift, curvature)
+        self.lift_function_factory_ptr = <unique_ptr[ILiftFunctionFactory]>make_unique[PeakLiftFunctionFactoryImpl](
+            num_labels, peak_label, max_lift, curvature)
 
