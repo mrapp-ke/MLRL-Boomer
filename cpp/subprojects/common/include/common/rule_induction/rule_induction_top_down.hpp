@@ -7,11 +7,11 @@
 
 
 /**
- * Allows to induce classification rules using a top-down greedy search, where new conditions are added iteratively to
- * the (initially empty) body of a rule. At each iteration, the refinement that improves the rule the most is chosen.
- * The search stops if no refinement results in an improvement.
+ * Allows to create instances of the type `IRuleInduction` that induce classification rules by using a top-down greedy
+ * search, where new conditions are added iteratively to the (initially empty) body of a rule. At each iteration, the
+ * refinement that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
  */
-class TopDownRuleInduction : public IRuleInduction {
+class TopDownRuleInductionFactory final : public IRuleInductionFactory {
 
     private:
 
@@ -40,13 +40,9 @@ class TopDownRuleInduction : public IRuleInduction {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        TopDownRuleInduction(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
-                             bool recalculatePredictions, uint32 numThreads);
+        TopDownRuleInductionFactory(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
+                                    bool recalculatePredictions, uint32 numThreads);
 
-        void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override;
-
-        bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-                        IPartition& partition, IFeatureSampling& featureSampling, const IPruning& pruning,
-                        const IPostProcessor& postProcessor, RNG& rng, IModelBuilder& modelBuilder) const override;
+        std::unique_ptr<IRuleInduction> create() const override;
 
 };

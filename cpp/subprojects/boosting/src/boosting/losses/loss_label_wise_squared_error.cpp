@@ -1,4 +1,5 @@
 #include "boosting/losses/loss_label_wise_squared_error.hpp"
+#include "loss_label_wise_common.hpp"
 
 
 namespace boosting {
@@ -16,9 +17,8 @@ namespace boosting {
         return difference * difference;
     }
 
-    LabelWiseSquaredErrorLoss::LabelWiseSquaredErrorLoss()
-        : AbstractLabelWiseLoss(&updateGradientAndHessian, &evaluatePrediction) {
-
+    std::unique_ptr<ILabelWiseLoss> LabelWiseSquaredErrorLossFactory::createLabelWiseLoss() const {
+        return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
     }
 
 }

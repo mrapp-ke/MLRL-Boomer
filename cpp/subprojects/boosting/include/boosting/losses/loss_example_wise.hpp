@@ -48,4 +48,26 @@ namespace boosting {
 
     };
 
+    /**
+     * Defines an interface for all factories that allow to create instances of the type `IExampleWiseLoss`.
+     */
+    class IExampleWiseLossFactory : public ILabelWiseLossFactory {
+
+        public:
+
+            virtual ~IExampleWiseLossFactory() { };
+
+            /**
+             * Creates and returns a new object of type `IExampleWiseLoss`.
+             *
+             * @return An unique pointer to an object of type `IExampleWiseLoss` that has been created
+             */
+            virtual std::unique_ptr<IExampleWiseLoss> createExampleWiseLoss() const = 0;
+
+            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override final {
+                return this->createExampleWiseLoss();
+            }
+
+    };
+
 }

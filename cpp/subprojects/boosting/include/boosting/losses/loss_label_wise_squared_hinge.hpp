@@ -6,13 +6,14 @@
 namespace boosting {
 
     /**
-     * A multi-label variant of the squared hinge loss that is applied label-wise.
+     * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the squared hinge
+     * loss that is applied label-wise.
      */
-    class LabelWiseSquaredHingeLoss final : public AbstractLabelWiseLoss {
+    class LabelWiseSquaredHingeLossFactory final : public ILabelWiseLossFactory {
 
         public:
 
-            LabelWiseSquaredHingeLoss();
+            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override;
 
     };
 
