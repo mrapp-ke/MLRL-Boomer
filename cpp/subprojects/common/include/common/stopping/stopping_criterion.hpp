@@ -76,6 +76,6 @@ class IStoppingCriterionFactory {
          *
          * @return An unique pointer to an object of type `IStoppingCriterion` that has been created
          */
-        std::unique_ptr<IStoppingCriterion> create() const = 0;
+        virtual std::unique_ptr<IStoppingCriterion> create() const = 0;
 
 };
