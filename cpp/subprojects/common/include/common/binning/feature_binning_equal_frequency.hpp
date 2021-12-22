@@ -8,7 +8,7 @@
 
 
 /**
- * Assigns feature values to bins, such that each bin contains approximately the same number of values.
+ * Assigns numerical feature values to bins, such that each bin contains approximately the same number of values.
  */
 class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 
@@ -36,8 +36,8 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 };
 
 /**
- * Allows to create instances of the type `IFeatureBinning` that assign feature values to bins, such that each bin
- * contains approximately the same number of values.
+ * Allows to create instances of the type `IFeatureBinning` that assign numerical feature values to bins, such that each
+ * bin contains approximately the same number of values.
  */
 class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory {
 
