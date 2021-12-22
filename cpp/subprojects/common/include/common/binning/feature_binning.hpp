@@ -52,3 +52,21 @@ class IFeatureBinning {
         virtual Result createBins(FeatureVector& featureVector, uint32 numExamples) const = 0;
 
 };
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IFeatureBinning`.
+ */
+class IFeatureBinningFactory {
+
+    public:
+
+        virtual ~IFeatureBinningFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IFeatureBinning`.
+         *
+         * @return An unique pointer to an object of type `IFeatureBinning` that has been created
+         */
+        virtual std::unique_ptr<IFeatureBinning> create() const = 0;
+
+};
