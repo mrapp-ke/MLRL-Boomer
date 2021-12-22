@@ -21,4 +21,8 @@ namespace boosting {
 
     }
 
+    std::unique_ptr<ILabelWiseLoss> LabelWiseSquaredErrorLossFactory::create() const {
+        return std::make_unique<LabelWiseSquaredErrorLoss>();
+    }
+
 }
