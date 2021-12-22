@@ -30,3 +30,12 @@ IStoppingCriterion::Result TimeStoppingCriterion::test(const IPartition& partiti
 
     return result;
 }
+
+TimeStoppingCriterionFactory::TimeStoppingCriterionFactory(uint32 timeLimit)
+    : timeLimit_(timeLimit) {
+
+}
+
+std::unique_ptr<IStoppingCriterion> TimeStoppingCriterionFactory::create() const {
+    return std::make_unique<TimeStoppingCriterion>(timeLimit_);
+}

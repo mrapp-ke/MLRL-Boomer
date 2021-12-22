@@ -34,3 +34,23 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
         Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
 
 };
+
+/**
+ * Allows to create instances of the type `IStoppingCriterion` that ensure that a certain time limit is not exceeded.
+ */
+class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
+
+    private:
+
+        uint32 timeLimit_;
+
+    public:
+
+        /**
+         * @param timeLimit The time limit in seconds. Must be at least 1
+         */
+        TimeStoppingCriterionFactory(uint32 timeLimit);
+
+        std::unique_ptr<IStoppingCriterion> create() const override;
+
+};
