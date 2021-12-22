@@ -8,7 +8,7 @@
 
 
 /**
- * Assigns feature values to bins such that each bin contains values from equally sized value ranges.
+ * Assigns feature values to bins, such that each bin contains values from equally sized value ranges.
  */
 class EqualWidthFeatureBinning final : public IFeatureBinning {
 
@@ -36,7 +36,7 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
 };
 
 /**
- * Allows to create instances of the type `IFeatureBinning` that assign feature values to bins such that each bin
+ * Allows to create instances of the type `IFeatureBinning` that assign feature values to bins, such that each bin
  * contains values from equally sized value ranges.
  */
 class EqualWidthFeatureBinningFactory final : public IFeatureBinningFactory {
