@@ -10,10 +10,7 @@ TopDownRuleInduction::TopDownRuleInduction(uint32 minCoverage, uint32 maxConditi
                                            bool recalculatePredictions, uint32 numThreads)
     : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
       recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
-    assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
-    if (maxConditions != 0) { assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 1); }
-    if (maxHeadRefinements != 0) { assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1); }
-    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
 }
 
 void TopDownRuleInduction::induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const {
@@ -157,4 +154,20 @@ bool TopDownRuleInduction::induceRule(IThresholds& thresholds, const IIndexVecto
         modelBuilder.addRule(conditions, *bestHead);
         return true;
     }
+}
+
+TopDownRuleInductionFactory::TopDownRuleInductionFactory(uint32 minCoverage, uint32 maxConditions,
+                                                         uint32 maxHeadRefinements, bool recalculatePredictions,
+                                                         uint32 numThreads)
+    : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
+      recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
+    assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
+    if (maxConditions != 0) { assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 1); }
+    if (maxHeadRefinements != 0) { assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1); }
+    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+}
+
+std::unique_ptr<IRuleInduction> TopDownRuleInductionFactory::create() const {
+    return std::make_unique<TopDownRuleInduction>(minCoverage_, maxConditions_, maxHeadRefinements_,
+                                                  recalculatePredictions_, numThreads_);
 }
