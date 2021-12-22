@@ -17,7 +17,7 @@ class AlgorithmBuilder final {
 
         std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr_;
 
-        std::shared_ptr<IRuleInduction> ruleInductionPtr_;
+        std::shared_ptr<IRuleInductionFactory> ruleInductionFactoryPtr_;
 
         std::shared_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr_;
 
@@ -46,14 +46,14 @@ class AlgorithmBuilder final {
          * @param thresholdsFactoryPtr          An unique pointer to an object of type `IThresholdsFactory` to be used
          *                                      by the rule learner to access the thresholds that may be used by the
          *                                      conditions of rules
-         * @param ruleInductionPtr              An unique pointer to an object of type `IRuleInduction` to be used by
-         *                                      the rule learner to induce individual rules
+         * @param ruleInductionFactoryPtr       An unique pointer to an object of type `IRuleInductionFactory` to be
+         *                                      used by the rule learner to induce individual rules
          * @param ruleModelAssemblageFactoryPtr An unique pointer to an object of type `IRuleModelAssemblageFactory` to
          *                                      be used by the rule learner for the assemblage of a rule model
          */
         AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
                          std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-                         std::unique_ptr<IRuleInduction> ruleInductionPtr,
+                         std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
                          std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr);
 
         /**

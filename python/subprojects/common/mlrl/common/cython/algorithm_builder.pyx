@@ -7,7 +7,7 @@ from mlrl.common.cython.label_sampling cimport LabelSamplingFactory
 from mlrl.common.cython.partition_sampling cimport PartitionSamplingFactory
 from mlrl.common.cython.pruning cimport PruningFactory
 from mlrl.common.cython.post_processing cimport PostProcessorFactory
-from mlrl.common.cython.rule_induction cimport RuleInduction
+from mlrl.common.cython.rule_induction cimport RuleInductionFactory
 from mlrl.common.cython.rule_model_assemblage cimport RuleModelAssemblage, RuleModelAssemblageFactory
 from mlrl.common.cython.statistics cimport StatisticsProviderFactory
 from mlrl.common.cython.stopping cimport StoppingCriterion
@@ -23,21 +23,21 @@ cdef class AlgorithmBuilder:
     """
 
     def __cinit__(self, StatisticsProviderFactory statistics_provider_factory not None,
-                  ThresholdsFactory thresholds_factory not None, RuleInduction rule_induction not None,
+                  ThresholdsFactory thresholds_factory not None, RuleInductionFactory rule_induction_factory not None,
                   RuleModelAssemblageFactory rule_model_assemblage_factory not None):
         """
         :param statistics_provider_factory:     The `StatisticsProviderFactory` to be used by the rule learner to access
                                                 the statistics that serve as the basis for learning rules
         :param thresholds_factory:              The `IThresholdsFactory` to be used by the rule learner to access the
                                                 thresholds that may be used by the conditions of rules
-        :param rule_induction:                  The `IRuleInduction` to be used by the rule learner to induce individual
-                                                rules
+        :param rule_induction_factory:          The `IRuleInductionFactory` to be used by the rule learner to induce
+                                                individual rules
         :param rule_model_assemblage_factory:   The `IRuleModelAssemblageFactory` to be used by the rule learner for the
                                                 assemblage of a rule model
         """
         self.builder_ptr = make_unique[AlgorithmBuilderImpl](
             move(statistics_provider_factory.statistics_provider_factory_ptr),
-            move(thresholds_factory.thresholds_factory_ptr), move(rule_induction.rule_induction_ptr),
+            move(thresholds_factory.thresholds_factory_ptr), move(rule_induction_factory.rule_induction_factory_ptr),
             move(rule_model_assemblage_factory.rule_model_assemblage_factory_ptr))
 
     def set_use_default_rule(self, bint use_default_rule) -> AlgorithmBuilder:

@@ -32,7 +32,7 @@ from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, Rand
     ExampleWiseStratifiedBiPartitionSamplingFactory
 from mlrl.common.cython.post_processing import PostProcessorFactory
 from mlrl.common.cython.pruning import PruningFactory, IrepFactory
-from mlrl.common.cython.rule_induction import RuleInduction
+from mlrl.common.cython.rule_induction import RuleInductionFactory
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblage, RuleModelAssemblageFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
 from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
@@ -509,8 +509,8 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
                                                                                       label_characteristics),
                                              self._create_thresholds_factory(feature_characteristics,
                                                                              label_characteristics),
-                                             self._create_rule_induction(feature_characteristics,
-                                                                         label_characteristics),
+                                             self._create_rule_induction_factory(feature_characteristics,
+                                                                                 label_characteristics),
                                              self._create_rule_model_assemblage_factory(feature_characteristics,
                                                                                         label_characteristics))
         label_sampling_factory = self._create_label_sampling_factory(feature_characteristics, label_characteristics)
@@ -625,14 +625,14 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         pass
 
     @abstractmethod
-    def _create_rule_induction(self, feature_characteristics: FeatureCharacteristics,
-                               label_characteristics: LabelCharacteristics) -> RuleInduction:
+    def _create_rule_induction_factory(self, feature_characteristics: FeatureCharacteristics,
+                                       label_characteristics: LabelCharacteristics) -> RuleInductionFactory:
         """
-        Must be implemented by subclasses in order to create the `RuleInduction` to be used by the rule learner.
+        Must be implemented by subclasses in order to create the `RuleInductionFactory` to be used by the rule learner.
 
         :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
         :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `RuleInduction` that has been created
+        :return:                        The `RuleInductionFactory` that has been created
         """
         pass
 
