@@ -9,13 +9,26 @@
 namespace boosting {
 
     /**
-     * A multi-label variant of the logistic loss that is applied label-wise.
+     * An implementation of the type `ILabelWiseLoss` that implements a multi-label variant of the logistic loss that is
+     * applied label-wise.
      */
     class LabelWiseLogisticLoss final : public AbstractLabelWiseLoss {
 
         public:
 
             LabelWiseLogisticLoss();
+
+    };
+
+    /**
+     * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the logistic loss
+     * that is applied label-wise.
+     */
+    class LabelWiseLogisticLossFactory final : public ILabelWiseLossFactory {
+
+        public:
+
+            std::unique_ptr<ILabelWiseLoss> create() const override;
 
     };
 
