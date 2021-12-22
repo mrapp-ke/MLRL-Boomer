@@ -6,18 +6,6 @@
 namespace boosting {
 
     /**
-     * An implementation of the type `ILabelWiseLoss` that implements a multi-label variant of the squared hinge loss
-     * that is applied label-wise.
-     */
-    class LabelWiseSquaredHingeLoss final : public AbstractLabelWiseLoss {
-
-        public:
-
-            LabelWiseSquaredHingeLoss();
-
-    };
-
-    /**
      * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the squared hinge
      * loss that is applied label-wise.
      */
