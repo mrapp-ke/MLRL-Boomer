@@ -60,3 +60,21 @@ class IRuleInduction {
                                 IModelBuilder& modelBuilder) const = 0;
 
 };
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IRuleInduction`.
+ */
+class IRuleInductionFactory {
+
+    public:
+
+        virtual IRuleInductionFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IRuleInduction`.
+         *
+         * @return An unique pointer to an object of type `IRuleInduction` that has been created.
+         */
+        std::unique_ptr<IRuleInduction> create() const = 0;
+
+};
