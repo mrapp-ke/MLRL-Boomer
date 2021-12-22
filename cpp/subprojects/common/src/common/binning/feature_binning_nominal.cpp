@@ -53,3 +53,7 @@ IFeatureBinning::Result NominalFeatureBinning::createBins(FeatureVector& feature
 
     return result;
 }
+
+std::unique_ptr<IFeatureBinning> NominalFeatureBinningFactory::create() const {
+    return std::make_unique<NominalFeatureBinning>();
+}
