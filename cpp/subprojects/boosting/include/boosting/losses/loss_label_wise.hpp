@@ -184,7 +184,7 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type `ILabelWiseLoss`.
      */
-    class ILabelWiseLossFactory {
+    class ILabelWiseLossFactory : public IEvaluationMeasureFactory, public ISimilarityMeasureFactory {
 
         public:
 
@@ -196,6 +196,14 @@ namespace boosting {
              * @return An unique pointer to an object of type `ILabelWiseLoss` that has been created
              */
             virtual std::unique_ptr<ILabelWiseLoss> create() const = 0;
+
+            std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const override final {
+                return this->create();
+            }
+
+            std::unique_ptr<ISimilarityMeasure> createSimilarityMeasure() const override final {
+                return this->create();
+            }
 
     };
 
