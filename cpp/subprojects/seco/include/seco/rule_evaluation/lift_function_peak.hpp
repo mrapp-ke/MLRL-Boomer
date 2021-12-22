@@ -10,10 +10,10 @@
 namespace seco {
 
     /**
-     * A lift function that monotonously increases until a certain number of labels, where the maximum lift is reached,
-     * and monotonously decreases afterwards.
+     * Allows to create instances of the type `ILiftFunction` that monotonously increase until a certain number of
+     * labels, where the maximum lift is reached, and monotonously decrease afterwards.
      */
-    class PeakLiftFunction final : public ILiftFunction {
+    class PeakLiftFunctionFactory final : public ILiftFunctionFactory {
 
         private:
 
@@ -23,7 +23,7 @@ namespace seco {
 
             float64 maxLift_;
 
-            float64 exponent_;
+            float64 curvature_;
 
         public:
 
@@ -34,11 +34,9 @@ namespace seco {
              * @param curvature The curvature of the lift function. A greater value results in a steeper curvature, a
              *                  smaller value results in a flatter curvature. Must be greater than 0
              */
-            PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature);
+            PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature);
 
-            float64 calculateLift(uint32 numLabels) const override;
-
-            float64 getMaxLift() const override;
+            std::unique_ptr<ILiftFunction> create() const override;
 
     };
 

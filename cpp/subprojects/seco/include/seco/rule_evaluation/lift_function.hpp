@@ -5,6 +5,7 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include <memory>
 
 
 namespace seco {
@@ -32,6 +33,24 @@ namespace seco {
              * @return The maximum lift possible
              */
             virtual float64 getMaxLift() const = 0;
+
+    };
+
+    /**
+     * Defines an interface for all factories that allow to create instances of the type `ILiftFunction`.
+     */
+    class ILiftFunctionFactory {
+
+        public:
+
+            virtual ~ILiftFunctionFactory() { };
+
+            /**
+             * Creates and returns a new object of type `ILiftFunction`.
+             *
+             * @return An unique pointer to an object of type `ILiftFunction` that has been created
+             */
+            virtual std::unique_ptr<ILiftFunction> create() const = 0;
 
     };
 

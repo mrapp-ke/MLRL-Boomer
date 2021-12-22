@@ -27,22 +27,23 @@ namespace seco {
 
             std::unique_ptr<IHeuristic> heuristicPtr_;
 
-            const ILiftFunction& liftFunction_;
+            std::unique_ptr<ILiftFunction> liftFunctionPtr_;
 
         public:
 
             /**
-             * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-             *                      indices of the labels for which the rules may predict
-             * @param heuristicPtr  An unique pointer to an object of type `IHeuristic` that implements the heuristic to
-             *                      be optimized
-             * @param liftFunction  A reference to an object of type `ILiftFunction` that should affect the quality
-             *                      scores of rules, depending on how many labels they predict
+             * @param labelIndices      A reference to an object of type `PartialIndexVector` that provides access to
+             *                          the indices of the labels for which the rules may predict
+             * @param heuristicPtr      An unique pointer to an object of type `IHeuristic` that implements the
+             *                          heuristic to be optimized
+             * @param liftFunctionPtr   An unique pointer to an object of type `ILiftFunction` that should affect the
+             *                          quality scores of rules, depending on how many labels they predict
              */
             LabelWiseCompleteRuleEvaluation(const PartialIndexVector& labelIndices,
-                                            std::unique_ptr<IHeuristic> heuristicPtr, const ILiftFunction& liftFunction)
+                                            std::unique_ptr<IHeuristic> heuristicPtr,
+                                            std::unique_ptr<ILiftFunction> liftFunctionPtr)
                 : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices)),
-                  heuristicPtr_(std::move(heuristicPtr)), liftFunction_(liftFunction) {
+                  heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
 
             }
 
@@ -71,7 +72,7 @@ namespace seco {
                 }
 
                 scoreVector_.overallQualityScore = (1 - calculateLiftedQualityScore(sumOfQualityScores, numElements,
-                                                                                    liftFunction_));
+                                                                                    *liftFunctionPtr_));
                 return scoreVector_;
             }
 
@@ -99,24 +100,24 @@ namespace seco {
 
             std::unique_ptr<IHeuristic> heuristicPtr_;
 
-            const ILiftFunction& liftFunction_;
+            std::unique_ptr<ILiftFunction> liftFunctionPtr_;
 
         public:
 
             /**
-             * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
-             *                      the labels for which the rules may predict
-             * @param heuristicPtr  An unique pointer to an object of type `IHeuristic` that implements the heuristic to
-             *                      be optimized
-             * @param liftFunction  A reference to an object of type `ILiftFunction` that should affect the quality
-             *                      scores of rules, depending on how many labels they predict
+             * @param labelIndices      A reference to an object of template type `T` that provides access to the
+             *                          indices of the labels for which the rules may predict
+             * @param heuristicPtr      An unique pointer to an object of type `IHeuristic` that implements the
+             *                          heuristic to be optimized
+             * @param liftFunctionPtr   An unique pointer to an object of type `ILiftFunction` that should affect the
+             *                          quality scores of rules, depending on how many labels they predict
              */
             LabelWisePartialRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr,
-                                           const ILiftFunction& liftFunction)
+                                           std::unique_ptr<ILiftFunction> liftFunctionPtr)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)),
                   sortedVector_(SparseArrayVector<float64>(labelIndices.getNumElements())),
-                  heuristicPtr_(std::move(heuristicPtr)), liftFunction_(liftFunction) {
+                  heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
 
             }
 
@@ -142,16 +143,16 @@ namespace seco {
                 }
 
                 sortedVector_.sortByValues();
-                float64 maxLift = liftFunction_.getMaxLift();
+                float64 maxLift = liftFunctionPtr_->getMaxLift();
                 float64 sumOfQualityScores = (1 - sortedIterator[0].value);
-                float64 bestQualityScore = calculateLiftedQualityScore(sumOfQualityScores, 1, liftFunction_);
+                float64 bestQualityScore = calculateLiftedQualityScore(sumOfQualityScores, 1, *liftFunctionPtr_);
                 uint32 bestNumPredictions = 1;
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 numPredictions = i + 1;
                     sumOfQualityScores += (1 - sortedIterator[i].value);
                     float64 qualityScore = calculateLiftedQualityScore(sumOfQualityScores, numPredictions,
-                                                                       liftFunction_);
+                                                                       *liftFunctionPtr_);
 
                     if (qualityScore > bestQualityScore) {
                         bestNumPredictions = numPredictions;
@@ -186,25 +187,29 @@ namespace seco {
     };
 
     LabelWisePartialRuleEvaluationFactory::LabelWisePartialRuleEvaluationFactory(
-            std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr, std::unique_ptr<ILiftFunction> liftFunctionPtr)
-        : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
+            std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr,
+            std::unique_ptr<ILiftFunctionFactory> liftFunctionFactoryPtr)
+        : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)),
+          liftFunctionFactoryPtr_(std::move(liftFunctionFactoryPtr)) {
         assertNotNull("heuristicFactoryPtr", heuristicFactoryPtr_.get());
-        assertNotNull("liftFunctionPtr", liftFunctionPtr_.get());
+        assertNotNull("liftFunctionFactoryPtr", liftFunctionFactoryPtr_.get());
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWisePartialRuleEvaluationFactory::create(
             const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
+        std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<LabelWisePartialRuleEvaluation<CompleteIndexVector>>(indexVector,
                                                                                      std::move(heuristicPtr),
-                                                                                     *liftFunctionPtr_);
+                                                                                     std::move(liftFunctionPtr));
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWisePartialRuleEvaluationFactory::create(
             const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
+        std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<LabelWiseCompleteRuleEvaluation>(indexVector, std::move(heuristicPtr),
-                                                                 *liftFunctionPtr_);
+                                                                 std::move(liftFunctionPtr));
     }
 
 }

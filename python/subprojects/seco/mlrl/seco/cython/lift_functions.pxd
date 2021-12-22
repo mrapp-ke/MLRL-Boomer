@@ -5,25 +5,25 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "seco/rule_evaluation/lift_function.hpp" namespace "seco" nogil:
 
-    cdef cppclass ILiftFunction:
+    cdef cppclass ILiftFunctionFactory:
         pass
 
 
 cdef extern from "seco/rule_evaluation/lift_function_peak.hpp" namespace "seco" nogil:
 
-    cdef cppclass PeakLiftFunctionImpl"seco::PeakLiftFunction"(ILiftFunction):
+    cdef cppclass PeakLiftFunctionFactoryImpl"seco::PeakLiftFunctionFactory"(ILiftFunctionFactory):
 
         # Constructors:
 
-        PeakLiftFunctionImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature) except +
+        PeakLiftFunctionFactoryImpl(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature) except +
 
 
-cdef class LiftFunction:
+cdef class LiftFunctionFactory:
 
     # Attributes:
 
-    cdef unique_ptr[ILiftFunction] lift_function_ptr
+    cdef unique_ptr[ILiftFunctionFactory] lift_function_factory_ptr
 
 
-cdef class PeakLiftFunction(LiftFunction):
+cdef class PeakLiftFunctionFactory(LiftFunctionFactory):
     pass

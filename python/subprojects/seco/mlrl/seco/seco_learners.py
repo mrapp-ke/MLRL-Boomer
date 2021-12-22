@@ -27,7 +27,7 @@ from mlrl.common.rule_learners import create_pruning_factory, create_feature_sam
     create_stopping_criteria, create_num_threads, create_thresholds_factory, parse_param_and_options, parse_param
 from mlrl.seco.cython.heuristics import HeuristicFactory, AccuracyFactory, PrecisionFactory, RecallFactory, \
     LaplaceFactory, WraFactory, FMeasureFactory, MEstimateFactory
-from mlrl.seco.cython.lift_functions import LiftFunction, PeakLiftFunction
+from mlrl.seco.cython.lift_functions import LiftFunctionFactory, PeakLiftFunctionFactory
 from mlrl.seco.cython.model import DecisionListBuilder
 from mlrl.seco.cython.output import LabelWiseClassificationPredictor
 from mlrl.seco.cython.rule_evaluation_label_wise import LabelWiseMajorityRuleEvaluationFactory, \
@@ -288,7 +288,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             m = options.get_float(ARGUMENT_M, 22.466)
             return MEstimateFactory(m)
 
-    def __create_lift_function(self, label_characteristics: LabelCharacteristics) -> LiftFunction:
+    def __create_lift_function_factory(self, label_characteristics: LabelCharacteristics) -> LiftFunctionFactory:
         value, options = parse_param_and_options('lift_function', self.lift_function, LIFT_FUNCTION_VALUES)
 
         if value == LIFT_FUNCTION_PEAK:
@@ -296,8 +296,8 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                          max(round(label_characteristics.get_label_cardinality()), 1))
             max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.08)
             curvature = options.get_float(ARGUMENT_CURVATURE, 1.0)
-            return PeakLiftFunction(num_labels=label_characteristics.get_num_labels(), peak_label=peak_label,
-                                    max_lift=max_lift, curvature=curvature)
+            return PeakLiftFunctionFactory(num_labels=label_characteristics.get_num_labels(), peak_label=peak_label,
+                                           max_lift=max_lift, curvature=curvature)
 
     def __create_rule_evaluation_factory(self, head_type: str, heuristic_factory: HeuristicFactory,
                                          label_characteristics: LabelCharacteristics):
@@ -305,7 +305,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             return LabelWiseSingleLabelRuleEvaluationFactory(heuristic_factory)
         else:
             return LabelWisePartialRuleEvaluationFactory(heuristic_factory,
-                                                         self.__create_lift_function(label_characteristics))
+                                                         self.__create_lift_function_factory(label_characteristics))
 
     def _create_model_builder(self, feature_characteristics: FeatureCharacteristics,
                               label_characteristics: LabelCharacteristics) -> ModelBuilder:
