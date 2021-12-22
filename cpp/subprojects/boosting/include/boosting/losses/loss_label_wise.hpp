@@ -195,14 +195,14 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `ILabelWiseLoss` that has been created
              */
-            virtual std::unique_ptr<ILabelWiseLoss> create() const = 0;
+            virtual std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const = 0;
 
             std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const override final {
-                return this->create();
+                return this->createLabelWiseLoss();
             }
 
             std::unique_ptr<ISimilarityMeasure> createSimilarityMeasure() const override final {
-                return this->create();
+                return this->createLabelWiseLoss();
             }
 
     };

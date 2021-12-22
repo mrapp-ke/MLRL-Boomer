@@ -25,7 +25,7 @@ namespace boosting {
 
         public:
 
-            std::unique_ptr<ILabelWiseLoss> create() const override;
+            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override;
 
     };
 
