@@ -308,4 +308,8 @@ namespace boosting {
         return max + std::log(sumExp);
     }
 
+    std::unique_ptr<IExampleWiseLoss> ExampleWiseLogisticLossFactory::create() const {
+        return std::make_unique<ExampleWiseLogisticLoss>();
+    }
+
 }
