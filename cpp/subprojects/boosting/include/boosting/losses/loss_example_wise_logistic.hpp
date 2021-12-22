@@ -77,7 +77,7 @@ namespace boosting {
 
         public:
 
-            std::unique_ptr<IExampleWiseLoss> create() const override;
+            std::unique_ptr<IExampleWiseLoss> createExampleWiseLoss() const override;
 
     };
 
