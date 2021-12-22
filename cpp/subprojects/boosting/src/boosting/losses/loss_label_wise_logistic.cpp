@@ -62,4 +62,8 @@ namespace boosting {
 
     }
 
+    std::unique_ptr<ILabelWiseLoss> LabelWiseLogisticLossFactory::create() const {
+        return std::make_unique<LabelWiseLogisticLoss>();
+    }
+
 }
