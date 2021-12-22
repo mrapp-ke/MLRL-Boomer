@@ -206,107 +206,127 @@ namespace boosting {
         return max + std::log(sumExp);
     }
 
-    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex,
-                                                            const CContiguousLabelMatrix& labelMatrix,
-                                                            const CContiguousConstView<float64>& scoreMatrix,
-                                                            CompleteIndexVector::const_iterator labelIndicesBegin,
-                                                            CompleteIndexVector::const_iterator labelIndicesEnd,
-                                                            DenseLabelWiseStatisticView& statisticView) const {
-        updateLabelWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
-                                                                    statisticView);
-    }
+    /**
+     * An implementation of the type `IExampleWiseLoss` that implements a multi-label variant of the logistic loss that
+     * is applied example-wise.
+     */
+    class ExampleWiseLogisticLoss final : public IExampleWiseLoss {
 
-    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex,
-                                                            const CContiguousLabelMatrix& labelMatrix,
-                                                            const CContiguousConstView<float64>& scoreMatrix,
-                                                            PartialIndexVector::const_iterator labelIndicesBegin,
-                                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                                            DenseLabelWiseStatisticView& statisticView) const {
-        updateLabelWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
-                                                                    statisticView);
-    }
+        public:
 
-    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                                            const CContiguousConstView<float64>& scoreMatrix,
-                                                            CompleteIndexVector::const_iterator labelIndicesBegin,
-                                                            CompleteIndexVector::const_iterator labelIndicesEnd,
-                                                            DenseLabelWiseStatisticView& statisticView) const {
-        updateLabelWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix, statisticView);
-    }
-
-    void ExampleWiseLogisticLoss::updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                                            const CContiguousConstView<float64> scoreMatrix,
-                                                            PartialIndexVector::const_iterator labelIndicesBegin,
-                                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                                            DenseLabelWiseStatisticView& statisticView) const {
-        updateLabelWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix, statisticView);
-    }
-
-    void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex,
-                                                              const CContiguousLabelMatrix& labelMatrix,
-                                                              const CContiguousConstView<float64>& scoreMatrix,
-                                                              DenseExampleWiseStatisticView& statisticView) const {
-        updateExampleWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
-                                                                      statisticView);
-    }
-
-    void ExampleWiseLogisticLoss::updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                                              const CContiguousConstView<float64>& scoreMatrix,
-                                                              DenseExampleWiseStatisticView& statisticView) const {
-        updateExampleWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix, statisticView);
-    }
-
-    float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
-                                              const CContiguousConstView<float64>& scoreMatrix) const {
-        return evaluateInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix);
-    }
-
-    float64 ExampleWiseLogisticLoss::evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
-                                              const CContiguousConstView<float64>& scoreMatrix) const {
-        return evaluateInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix);
-    }
-
-    float64 ExampleWiseLogisticLoss::measureSimilarity(const LabelVector& labelVector,
-                                                       CContiguousConstView<float64>::const_iterator scoresBegin,
-                                                       CContiguousConstView<float64>::const_iterator scoresEnd) const {
-        // The example-wise logistic loss calculates as
-        // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2) + ...)`.
-        // In the following, we exploit the identity
-        // `log(exp(x_1) + exp(x_2) + ...) = max + log(exp(x_1 - max) + exp(x_2 - max) + ...)`, where
-        // `max = max(x_1, x_2, ...)`, to increase numerical stability (see, e.g., section "Log-sum-exp for computing
-        // the log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
-        uint32 numLabels = scoresEnd - scoresBegin;
-        auto labelIterator = make_binary_forward_iterator(labelVector.indices_cbegin(), labelVector.indices_cend());
-        float64 max = 0;
-
-        // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value (that must
-        // be greater than 0, because `exp(1) = 0`) among all of them...
-        for (uint32 i = 0; i < numLabels; i++) {
-            float64 predictedScore = scoresBegin[i];
-            bool trueLabel = *labelIterator;
-            float64 x = trueLabel ? -predictedScore : predictedScore;
-
-            if (x > max) {
-                max = x;
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+                                                   const CContiguousConstView<float64>& scoreMatrix,
+                                                   CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                   CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticView& statisticView) const override {
+                updateLabelWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                            statisticView);
             }
 
-            labelIterator++;
-        }
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+                                                   const CContiguousConstView<float64>& scoreMatrix,
+                                                   PartialIndexVector::const_iterator labelIndicesBegin,
+                                                   PartialIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticView& statisticView) const override {
+                updateLabelWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                            statisticView);
+            }
 
-        // Calculate the example-wise loss as `max + log(exp(0 - max) + exp(x_1 - max) + ...)`...
-        float64 sumExp = std::exp(0 - max);
-        labelIterator = make_binary_forward_iterator(labelVector.indices_cbegin(), labelVector.indices_cend());
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                   const CContiguousConstView<float64>& scoreMatrix,
+                                                   CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                   CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticView& statisticView) const override {
+                updateLabelWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                    statisticView);
+            }
 
-        for (uint32 i = 0; i < numLabels; i++) {
-            float64 predictedScore = scoresBegin[i];
-            bool trueLabel = *labelIterator;
-            float64 x = trueLabel ? -predictedScore : predictedScore;
-            sumExp += std::exp(x - max);
-            labelIterator++;
-        }
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                                   const CContiguousConstView<float64> scoreMatrix,
+                                                   PartialIndexVector::const_iterator labelIndicesBegin,
+                                                   PartialIndexVector::const_iterator labelIndicesEnd,
+                                                   DenseLabelWiseStatisticView& statisticView) const override {
+                updateLabelWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                    statisticView);
+            }
 
-        return max + std::log(sumExp);
-    }
+            void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+                                             const CContiguousConstView<float64>& scoreMatrix,
+                                             DenseExampleWiseStatisticView& statisticView) const override {
+                updateExampleWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                              statisticView);
+            }
+
+            void updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                                             const CContiguousConstView<float64>& scoreMatrix,
+                                             DenseExampleWiseStatisticView& statisticView) const override {
+                updateExampleWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                      statisticView);
+            }
+
+            /**
+             * @see `IEvaluationMeasure::evaluate`
+             */
+            float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+                             const CContiguousConstView<float64>& scoreMatrix) const override {
+                return evaluateInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix);
+            }
+
+            /**
+             * @see `IEvaluationMeasure::evaluate`
+             */
+            float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+                             const CContiguousConstView<float64>& scoreMatrix) const override {
+                return evaluateInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix);
+            }
+
+            /**
+             * @see `ISimilarityMeasure::measureSimilarity`
+             */
+            float64 measureSimilarity(const LabelVector& labelVector,
+                                      CContiguousView<float64>::const_iterator scoresBegin,
+                                      CContiguousView<float64>::const_iterator scoresEnd) const override {
+                // The example-wise logistic loss calculates as
+                // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2)
+                // + ...)`. In the following, we exploit the identity `log(exp(x_1) + exp(x_2) + ...) =
+                // max + log(exp(x_1 - max) + exp(x_2 - max) + ...)`, where `max = max(x_1, x_2, ...)`, to increase
+                // numerical stability (see, e.g., section "Log-sum-exp for computing the log-distribution" in
+                // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
+                uint32 numLabels = scoresEnd - scoresBegin;
+                auto labelIterator = make_binary_forward_iterator(labelVector.indices_cbegin(),
+                                                                  labelVector.indices_cend());
+                float64 max = 0;
+
+                // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value
+                // (that must be greater than 0, because `exp(1) = 0`) among all of them...
+                for (uint32 i = 0; i < numLabels; i++) {
+                    float64 predictedScore = scoresBegin[i];
+                    bool trueLabel = *labelIterator;
+                    float64 x = trueLabel ? -predictedScore : predictedScore;
+
+                    if (x > max) {
+                        max = x;
+                    }
+
+                    labelIterator++;
+                }
+
+                // Calculate the example-wise loss as `max + log(exp(0 - max) + exp(x_1 - max) + ...)`...
+                float64 sumExp = std::exp(0 - max);
+                labelIterator = make_binary_forward_iterator(labelVector.indices_cbegin(), labelVector.indices_cend());
+
+                for (uint32 i = 0; i < numLabels; i++) {
+                    float64 predictedScore = scoresBegin[i];
+                    bool trueLabel = *labelIterator;
+                    float64 x = trueLabel ? -predictedScore : predictedScore;
+                    sumExp += std::exp(x - max);
+                    labelIterator++;
+                }
+
+                return max + std::log(sumExp);
+            }
+
+    };
 
     std::unique_ptr<IExampleWiseLoss> ExampleWiseLogisticLossFactory::createExampleWiseLoss() const {
         return std::make_unique<ExampleWiseLogisticLoss>();
