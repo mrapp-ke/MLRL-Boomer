@@ -64,10 +64,7 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
          */
         EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
             : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-            assertGreater<float32>("binRatio", binRatio, 0);
-            assertLess<float32>("binRatio", binRatio, 1);
-            assertGreaterOrEqual<uint32>("minBins", minBins, 2);
-            if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins); }
+
         }
 
         Result createBins(FeatureVector& featureVector, uint32 numExamples) const override {
@@ -154,7 +151,10 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 EqualFrequencyFeatureBinningFactory::EqualFrequencyFeatureBinningFactory(float32 binRatio, uint32 minBins,
                                                                          uint32 maxBins)
     : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-
+    assertGreater<float32>("binRatio", binRatio, 0);
+    assertLess<float32>("binRatio", binRatio, 1);
+    assertGreaterOrEqual<uint32>("minBins", minBins, 2);
+    if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins); }
 }
 
 std::unique_ptr<IFeatureBinning> EqualFrequencyFeatureBinningFactory::create() const {
