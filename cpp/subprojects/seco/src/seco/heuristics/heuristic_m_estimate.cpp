@@ -23,7 +23,7 @@ namespace seco {
              */
             MEstimate(float64 m)
                 : m_(m) {
-                assertGreaterOrEqual<float64>("m", m, 0);
+
             }
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -54,7 +54,7 @@ namespace seco {
 
     MEstimateFactory::MEstimateFactory(float64 m)
         : m_(m) {
-
+        assertGreaterOrEqual<float64>("m", m, 0);
     }
 
     std::unique_ptr<IHeuristic> MEstimateFactory::create() const {
