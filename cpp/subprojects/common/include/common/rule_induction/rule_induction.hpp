@@ -68,7 +68,7 @@ class IRuleInductionFactory {
 
     public:
 
-        virtual IRuleInductionFactory() { };
+        virtual ~IRuleInductionFactory() { };
 
         /**
          * Creates and returns a new object of type `IRuleInduction`.
