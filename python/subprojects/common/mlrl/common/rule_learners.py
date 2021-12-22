@@ -14,7 +14,7 @@ from typing import List, Dict, Set, Optional
 import numpy as np
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
-from mlrl.common.cython.feature_binning import EqualWidthFeatureBinning, EqualFrequencyFeatureBinning
+from mlrl.common.cython.feature_binning import EqualWidthFeatureBinningFactory, EqualFrequencyFeatureBinningFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
 from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureMask
 from mlrl.common.cython.input import FeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
@@ -311,13 +311,14 @@ def create_thresholds_factory(feature_binning: str, num_threads: int) -> Thresho
             bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33)
             min_bins = options.get_int(ARGUMENT_MIN_BINS, 2)
             max_bins = options.get_int(ARGUMENT_MAX_BINS, 0)
-            return ApproximateThresholdsFactory(EqualFrequencyFeatureBinning(bin_ratio, min_bins, max_bins),
-                                                num_threads)
+            feature_binning_factory = EqualFrequencyFeatureBinningFactory(bin_ratio, min_bins, max_bins)
+            return ApproximateThresholdsFactory(feature_binning_factory, num_threads)
         elif value == BINNING_EQUAL_WIDTH:
             bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33)
             min_bins = options.get_int(ARGUMENT_MIN_BINS, 2)
             max_bins = options.get_int(ARGUMENT_MAX_BINS, 0)
-            return ApproximateThresholdsFactory(EqualWidthFeatureBinning(bin_ratio, min_bins, max_bins), num_threads)
+            feature_binning_factory = EqualWidthFeatureBinningFactory(bin_ratio, min_bins, max_bins)
+            return ApproximateThresholdsFactory(feature_binning_factory, num_threads)
 
 
 def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:

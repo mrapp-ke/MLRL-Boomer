@@ -7,12 +7,13 @@
 
 
 /**
- * Assigns nominal feature values to bins, such that each bin contains one of the available values.
+ * Allows to create instances of the type `IFeatureBinning` that assign nominal feature values to bins, such that each
+ * bin contains one of the available values.
  */
-class NominalFeatureBinning final : public IFeatureBinning {
+class NominalFeatureBinningFactory final : public IFeatureBinningFactory {
 
     public:
 
-        Result createBins(FeatureVector& featureVector, uint32 numExamples) const override;
+        std::unique_ptr<IFeatureBinning> create() const override;
 
 };
