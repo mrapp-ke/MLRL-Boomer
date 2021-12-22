@@ -57,10 +57,20 @@ namespace boosting {
         return logSumExp(x);
     }
 
-    LabelWiseLogisticLoss::LabelWiseLogisticLoss()
-        : AbstractLabelWiseLoss(&updateGradientAndHessian, &evaluatePrediction) {
+    /**
+     * An implementation of the type `ILabelWiseLoss` that implements a multi-label variant of the logistic loss that is
+     * applied label-wise.
+     */
+    class LabelWiseLogisticLoss final : public AbstractLabelWiseLoss {
 
-    }
+        public:
+
+            LabelWiseLogisticLoss()
+                : AbstractLabelWiseLoss(&updateGradientAndHessian, &evaluatePrediction) {
+
+            }
+
+    };
 
     std::unique_ptr<ILabelWiseLoss> LabelWiseLogisticLossFactory::createLabelWiseLoss() const {
         return std::make_unique<LabelWiseLogisticLoss>();

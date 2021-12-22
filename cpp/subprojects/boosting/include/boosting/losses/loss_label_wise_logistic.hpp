@@ -9,18 +9,6 @@
 namespace boosting {
 
     /**
-     * An implementation of the type `ILabelWiseLoss` that implements a multi-label variant of the logistic loss that is
-     * applied label-wise.
-     */
-    class LabelWiseLogisticLoss final : public AbstractLabelWiseLoss {
-
-        public:
-
-            LabelWiseLogisticLoss();
-
-    };
-
-    /**
      * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the logistic loss
      * that is applied label-wise.
      */
