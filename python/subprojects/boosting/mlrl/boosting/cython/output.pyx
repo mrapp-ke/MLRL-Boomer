@@ -86,18 +86,19 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
     A wrapper for the C++ class `ExampleWiseClassificationPredictor`.
     """
 
-    def __cinit__(self, uint32 num_labels, SimilarityMeasure measure not None, uint32 num_threads):
+    def __cinit__(self, uint32 num_labels, SimilarityMeasureFactory similarity_measure_factory not None,
+                  uint32 num_threads):
         """
-        :param num_labels:  The total number of available labels
-        :param measure:     The measure to be used
-        :param num_threads: The number of CPU threads to be used to make predictions for different query examples in
-                            parallel. Must be at least 1
+        :param num_labels:                  The total number of available labels
+        :param similarity_measure_factory:  The `SimilarityMeasureFactory` to be used
+        :param num_threads:                 The number of CPU threads to be used to make predictions for different query
+                                            examples in parallel. Must be at least 1
         """
         self.num_labels = num_labels
-        self.measure = measure
+        self.similarity_measure_factory = similarity_measure_factory
         self.num_threads = num_threads
         self.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>make_unique[ExampleWiseClassificationPredictorImpl](
-            move(measure.get_similarity_measure_ptr()), num_threads)
+            move(similarity_measure_factory.get_similarity_measure_factory_ptr()), num_threads)
 
     def __reduce__(self):
         return (ExampleWiseClassificationPredictor, (self.num_labels, self.measure, self.num_threads))
