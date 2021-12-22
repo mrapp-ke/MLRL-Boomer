@@ -75,6 +75,6 @@ class IRuleInductionFactory {
          *
          * @return An unique pointer to an object of type `IRuleInduction` that has been created.
          */
-        std::unique_ptr<IRuleInduction> create() const = 0;
+        virtual std::unique_ptr<IRuleInduction> create() const = 0;
 
 };
