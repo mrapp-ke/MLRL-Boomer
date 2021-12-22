@@ -4,16 +4,16 @@
 from libcpp.memory cimport make_unique
 
 
-cdef class RuleInduction:
+cdef class RuleInductionFactory:
     """
-    A wrapper for the pure virtual C++ class `IRuleInduction`.
+    A wrapper for the pure virtual C++ class `IRuleInductionFactory`.
     """
     pass
 
 
-cdef class TopDownRuleInduction(RuleInduction):
+cdef class TopDownRuleInductionFactory(RuleInductionFactory):
     """
-    A wrapper for the C++ class `TopDownRuleInduction`.
+    A wrapper for the C++ class `TopDownRuleInductionFactory`.
     """
 
     def __cinit__(self, uint32 min_coverage, uint32 max_conditions, uint32 max_head_refinements,
@@ -31,5 +31,5 @@ cdef class TopDownRuleInduction(RuleInduction):
         :param num_threads:             The number of CPU threads to be used to search for potential refinements of a
                                         rule in parallel. Must be at least 1
         """
-        self.rule_induction_ptr = <unique_ptr[IRuleInduction]>make_unique[TopDownRuleInductionImpl](
+        self.rule_induction_factory_ptr = <unique_ptr[IRuleInductionFactory]>make_unique[TopDownRuleInductionFactoryImpl](
             min_coverage, max_conditions, max_head_refinements, recalculate_predictions, num_threads)
