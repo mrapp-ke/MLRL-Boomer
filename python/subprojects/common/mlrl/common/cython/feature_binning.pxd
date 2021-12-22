@@ -5,38 +5,38 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "common/binning/feature_binning.hpp" nogil:
 
-    cdef cppclass IFeatureBinning:
+    cdef cppclass IFeatureBinningFactory:
         pass
 
 
 cdef extern from "common/binning/feature_binning_equal_frequency.hpp" nogil:
 
-    cdef cppclass EqualFrequencyFeatureBinningImpl"EqualFrequencyFeatureBinning"(IFeatureBinning):
+    cdef cppclass EqualFrequencyFeatureBinningFactoryImpl"EqualFrequencyFeatureBinningFactory"(IFeatureBinningFactory):
 
         # Constructors:
 
-        EqualFrequencyFeatureBinningImpl(float32 binRatio, uint32 minBins, uint32 maxBins) except +
+        EqualFrequencyFeatureBinningFactoryImpl(float32 binRatio, uint32 minBins, uint32 maxBins) except +
 
 
 cdef extern from "common/binning/feature_binning_equal_width.hpp" nogil:
 
-    cdef cppclass EqualWidthFeatureBinningImpl"EqualWidthFeatureBinning"(IFeatureBinning):
+    cdef cppclass EqualWidthFeatureBinningFactoryImpl"EqualWidthFeatureBinningFactory"(IFeatureBinningFactory):
 
         # Constructors:
 
-        EqualWidthFeatureBinningImpl(float32 binRatio, uint32 minBins, uint32 maxBins) except +
+        EqualWidthFeatureBinningFactoryImpl(float32 binRatio, uint32 minBins, uint32 maxBins) except +
 
 
-cdef class FeatureBinning:
+cdef class FeatureBinningFactory:
 
     # Attributes:
 
-    cdef unique_ptr[IFeatureBinning] binning_ptr
+    cdef unique_ptr[IFeatureBinningFactory] feature_binning_factory_ptr
 
 
-cdef class EqualFrequencyFeatureBinning(FeatureBinning):
+cdef class EqualFrequencyFeatureBinningFactory(FeatureBinningFactory):
     pass
 
 
-cdef class EqualWidthFeatureBinning(FeatureBinning):
+cdef class EqualWidthFeatureBinningFactory(FeatureBinningFactory):
     pass

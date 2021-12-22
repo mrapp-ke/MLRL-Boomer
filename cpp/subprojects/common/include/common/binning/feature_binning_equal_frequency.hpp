@@ -8,9 +8,10 @@
 
 
 /**
- * Assigns feature values to bins in a way such that each bin contains approximately the same number of values.
+ * Allows to create instances of the type `IFeatureBinning` that assign numerical feature values to bins, such that each
+ * bin contains approximately the same number of values.
  */
-class EqualFrequencyFeatureBinning final : public IFeatureBinning {
+class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory {
 
     private:
 
@@ -29,8 +30,8 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
          * @param maxBins   The maximum number of bins to be used. Must be at least `minBins` or 0, if the maximum
          *                  number of bins should not be restricted
          */
-        EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins);
+        EqualFrequencyFeatureBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins);
 
-        Result createBins(FeatureVector& featureVector, uint32 numExamples) const override;
+        std::unique_ptr<IFeatureBinning> create() const override;
 
 };
