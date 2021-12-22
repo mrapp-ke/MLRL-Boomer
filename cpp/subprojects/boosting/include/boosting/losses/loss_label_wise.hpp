@@ -181,4 +181,22 @@ namespace boosting {
 
     };
 
+    /**
+     * Defines an interface for all factories that allow to create instances of the type `ILabelWiseLoss`.
+     */
+    class ILabelWiseLossFactory {
+
+        public:
+
+            virtual ~ILabelWiseLossFactory() { };
+
+            /**
+             * Creates and returns a new object of type `ILabelWiseLoss`.
+             *
+             * @return An unique pointer to an object of type `ILabelWiseLoss` that has been created
+             */
+            virtual std::unique_ptr<ILabelWiseLoss> create() const = 0;
+
+    };
+
 }
