@@ -9,18 +9,6 @@
 namespace boosting {
 
     /**
-     * An implementation of the type `ILabelWiseLoss` that implements a multi-label variant of the squared error loss
-     * that is applied label-wise.
-     */
-    class LabelWiseSquaredErrorLoss final : public AbstractLabelWiseLoss {
-
-        public:
-
-            LabelWiseSquaredErrorLoss();
-
-    };
-
-    /**
      * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the squared error
      * loss that is applied label-wise.
      */
