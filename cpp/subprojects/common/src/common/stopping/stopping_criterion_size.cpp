@@ -20,3 +20,12 @@ IStoppingCriterion::Result SizeStoppingCriterion::test(const IPartition& partiti
 
     return result;
 }
+
+SizeStoppingCriterionFactory::SizeStoppingCriterionFactory(uint32 maxRules)
+    : maxRules_(maxRules) {
+
+}
+
+std::unique_ptr<IStoppingCriterion> SizeStoppingCriterionFactory::create() const {
+    return std::make_unique<SizeStoppingCriterion>(maxRules_);
+}
