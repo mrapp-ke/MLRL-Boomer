@@ -48,6 +48,6 @@ class ISimilarityMeasureFactory {
          *
          * @return An unique pointer to an object of type `ISimilarityMeasure` that has been created
          */
-        virtual std::unique_ptr<ISimilarityMeasure> create() const = 0;
+        virtual std::unique_ptr<ISimilarityMeasure> createSimilarityMeasure() const = 0;
 
 };

@@ -64,6 +64,6 @@ class IEvaluationMeasureFactory {
          *
          * @return An unique pointer to an object of type `IEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<IEvaluationMeasure> create() const = 0;
+        virtual std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const = 0;
 
 };
