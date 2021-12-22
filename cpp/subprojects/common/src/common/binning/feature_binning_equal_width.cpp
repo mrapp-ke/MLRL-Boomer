@@ -151,3 +151,12 @@ IFeatureBinning::Result EqualWidthFeatureBinning::createBins(FeatureVector& feat
 
     return result;
 }
+
+EqualWidthFeatureBinningFactory::EqualWidthFeatureBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
+    : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
+
+}
+
+std::unique_ptr<IFeatureBinning> EqualWidthFeatureBinningFactory::create() const {
+    return std::make_unique<EqualWidthFeatureBinning>(binRatio_, minBins_, maxBins_);
+}
