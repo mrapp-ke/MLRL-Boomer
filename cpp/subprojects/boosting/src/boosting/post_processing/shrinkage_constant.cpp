@@ -20,8 +20,7 @@ namespace boosting {
              */
             ConstantShrinkage(float64 shrinkage)
                 : shrinkage_(shrinkage) {
-                assertGreater<float64>("shrinkage", shrinkage, 0);
-                assertLess<float64>("shrinkage", shrinkage, 1);
+
             }
 
             void postProcess(AbstractPrediction& prediction) const override {
@@ -37,7 +36,8 @@ namespace boosting {
 
     ConstantShrinkageFactory::ConstantShrinkageFactory(float64 shrinkage)
         : shrinkage_(shrinkage) {
-
+        assertGreater<float64>("shrinkage", shrinkage, 0);
+        assertLess<float64>("shrinkage", shrinkage, 1);
     }
 
     std::unique_ptr<IPostProcessor> ConstantShrinkageFactory::create() const {

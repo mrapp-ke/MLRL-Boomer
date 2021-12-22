@@ -32,11 +32,7 @@ namespace seco {
              */
             PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature)
                 : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), exponent_(1.0 / curvature) {
-                assertGreater<uint32>("numLabels", numLabels, 0);
-                assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 0);
-                assertLessOrEqual<uint32>("peakLabel", peakLabel, numLabels);
-                assertGreaterOrEqual<float64>("maxLift", maxLift, 1);
-                assertGreater<float64>("curvature", curvature, 0);
+
             }
 
             float64 calculateLift(uint32 numLabels) const override {
@@ -63,7 +59,11 @@ namespace seco {
     PeakLiftFunctionFactory::PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float64 maxLift,
                                                      float64 curvature)
         : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature) {
-
+        assertGreater<uint32>("numLabels", numLabels, 0);
+        assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 0);
+        assertLessOrEqual<uint32>("peakLabel", peakLabel, numLabels);
+        assertGreaterOrEqual<float64>("maxLift", maxLift, 1);
+        assertGreater<float64>("curvature", curvature, 0);
     }
 
     std::unique_ptr<ILiftFunction> PeakLiftFunctionFactory::create() const {
