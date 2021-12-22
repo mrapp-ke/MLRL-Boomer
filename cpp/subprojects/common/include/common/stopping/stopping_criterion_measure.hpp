@@ -32,7 +32,7 @@ class IAggregationFunction {
 /**
  * Allows to aggregate the values that are stored in a buffer by finding the minimum value.
  */
-class MinFunction : public IAggregationFunction {
+class MinFunction final : public IAggregationFunction {
 
     public:
 
@@ -44,7 +44,7 @@ class MinFunction : public IAggregationFunction {
 /**
  * Allows to aggregate the values that are stored in a buffer by finding the maximum value.
  */
-class MaxFunction : public IAggregationFunction {
+class MaxFunction final : public IAggregationFunction {
 
     public:
 
@@ -56,7 +56,7 @@ class MaxFunction : public IAggregationFunction {
 /**
  * Allows to aggregate the values that are stored in a buffer by calculating the arithmetic mean.
  */
-class ArithmeticMeanFunction : public IAggregationFunction {
+class ArithmeticMeanFunction final : public IAggregationFunction {
 
     public:
 
