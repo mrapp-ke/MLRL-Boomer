@@ -60,6 +60,8 @@ class IFeatureBinningFactory {
 
     public:
 
+        virtual ~IFeatureBinningFactory() { };
+
         /**
          * Creates and returns a new object of type `IFeatureBinning`.
          *
