@@ -1,6 +1,6 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
-from mlrl.common.cython._measures cimport ISimilarityMeasure
-from mlrl.common.cython.measures cimport SimilarityMeasure
+from mlrl.common.cython._measures cimport ISimilarityMeasureFactory
+from mlrl.common.cython.measures cimport SimilarityMeasureFactory
 from mlrl.common.cython.output cimport AbstractBinaryPredictor, AbstractNumericalPredictor, IPredictor, ISparsePredictor
 
 from libcpp.memory cimport unique_ptr
@@ -50,7 +50,8 @@ cdef extern from "boosting/output/predictor_classification_example_wise.hpp" nam
 
         # Constructors:
 
-        ExampleWiseClassificationPredictorImpl(unique_ptr[ISimilarityMeasure] measurePtr, uint32 numThreads) except +
+        ExampleWiseClassificationPredictorImpl(unique_ptr[ISimilarityMeasureFactory] similarityMeasureFactoryPtr,
+                                               uint32 numThreads) except +
 
 
 cdef class LabelWiseTransformationFunction:
@@ -93,6 +94,6 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
 
     # Attributes
 
-    cdef SimilarityMeasure measure
+    cdef SimilarityMeasureFactory similarity_measure_factory
 
     cdef uint32 num_threads
