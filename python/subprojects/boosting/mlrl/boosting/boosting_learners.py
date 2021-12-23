@@ -35,8 +35,9 @@ from mlrl.common.cython.pruning import PruningFactory
 from mlrl.common.cython.rule_induction import RuleInductionFactory, TopDownRuleInductionFactory
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory, SequentialRuleModelAssemblageFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
-from mlrl.common.cython.stopping import StoppingCriterion, MeasureStoppingCriterion, AggregationFunction, MinFunction, \
-    MaxFunction, ArithmeticMeanFunction
+from mlrl.common.cython.stopping import StoppingCriterionFactory, MeasureStoppingCriterionFactory, \
+    AggregationFunctionFactory, MinAggregationFunctionFactory, MaxAggregationFunctionFactory, \
+    ArithmeticMeanAggregationFunctionFactory
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
@@ -44,7 +45,8 @@ from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, H
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy, FeatureCharacteristics, LabelCharacteristics
 from mlrl.common.rule_learners import create_pruning_factory, create_feature_sampling_factory, \
     create_label_sampling_factory, create_instance_sampling_factory, create_partition_sampling_factory, \
-    create_stopping_criteria, create_num_threads, create_thresholds_factory, parse_param, parse_param_and_options
+    create_stopping_criterion_factories, create_num_threads, create_thresholds_factory, parse_param, \
+    parse_param_and_options
 from sklearn.base import ClassifierMixin
 
 EARLY_STOPPING_LOSS = 'loss'
@@ -370,21 +372,22 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         else:
             return ConstantShrinkageFactory(shrinkage)
 
-    def _create_stopping_criteria(self, feature_characteristics: FeatureCharacteristics,
-                                  label_characteristics: LabelCharacteristics) -> List[StoppingCriterion]:
-        stopping_criteria = create_stopping_criteria(int(self.max_rules), int(self.time_limit))
+    def _create_stopping_criterion_factories(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> List[StoppingCriterionFactory]:
+        stopping_criterion_factories = create_stopping_criterion_factories(int(self.max_rules), int(self.time_limit))
         early_stopping_criterion = self.__create_early_stopping()
 
         if early_stopping_criterion is not None:
-            stopping_criteria.append(early_stopping_criterion)
+            stopping_criterion_factories.append(early_stopping_criterion)
 
-        return stopping_criteria
+        return stopping_criterion_factories
 
     def _use_default_rule(self, feature_characteristics: FeatureCharacteristics,
                           label_characteristics: LabelCharacteristics) -> bool:
         return BooleanOption.parse(self.default_rule)
 
-    def __create_early_stopping(self) -> Optional[MeasureStoppingCriterion]:
+    def __create_early_stopping(self) -> Optional[MeasureStoppingCriterionFactory]:
         early_stopping = self.early_stopping
 
         if early_stopping is not None:
@@ -396,7 +399,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                 + 'set to "None"!')
                     return None
                 else:
-                    aggregation_function = self.__create_aggregation_function(
+                    aggregation_function_factory = self.__create_aggregation_function(
                         options.get_string(ARGUMENT_AGGREGATION_FUNCTION, 'avg'))
                     min_rules = options.get_int(ARGUMENT_MIN_RULES, 100)
                     update_interval = options.get_int(ARGUMENT_UPDATE_INTERVAL, 1)
@@ -405,23 +408,23 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                     num_recent = options.get_int(ARGUMENT_NUM_RECENT, 50)
                     min_improvement = options.get_float(ARGUMENT_MIN_IMPROVEMENT, 0.005)
                     force_stop = options.get_bool(ARGUMENT_FORCE_STOP, True)
-                    return MeasureStoppingCriterion(aggregation_function, min_rules=min_rules,
-                                                    update_interval=update_interval, stop_interval=stop_interval,
-                                                    num_past=num_past, num_recent=num_recent,
-                                                    min_improvement=min_improvement, force_stop=force_stop)
+                    return MeasureStoppingCriterionFactory(aggregation_function_factory, min_rules=min_rules,
+                                                           update_interval=update_interval, stop_interval=stop_interval,
+                                                           num_past=num_past, num_recent=num_recent,
+                                                           min_improvement=min_improvement, force_stop=force_stop)
         return None
 
     @staticmethod
-    def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:
+    def __create_aggregation_function(aggregation_function: str) -> AggregationFunctionFactory:
         value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function, {AGGREGATION_FUNCTION_MIN,
                                                                                   AGGREGATION_FUNCTION_MAX,
                                                                                   AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
         if value == AGGREGATION_FUNCTION_MIN:
-            return MinFunction()
+            return MinAggregationFunctionFactory()
         elif value == AGGREGATION_FUNCTION_MAX:
-            return MaxFunction()
+            return MaxAggregationFunctionFactory()
         elif value == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
-            return ArithmeticMeanFunction()
+            return ArithmeticMeanAggregationFunctionFactory()
 
     def __create_loss_factory(self):
         value = parse_param("loss", self.loss, LOSS_VALUES)

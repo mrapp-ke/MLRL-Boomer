@@ -10,10 +10,11 @@
 namespace seco {
 
     /**
-     * A stopping criterion that stops when the sum of the weights of the uncovered labels provided by
-     * `ICoverageStatistics` is smaller than or equal to a certain threshold.
+     * Allows to create instances of the type `IStoppingCriterion` that stop the induction of rules as soon as the sum
+     * of the weights of the uncovered labels, as provided by an object of type `ICoverageStatistics`, is smaller than
+     * or equal to a certain threshold.
      */
-    class CoverageStoppingCriterion final : public IStoppingCriterion {
+    class CoverageStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
         private:
 
@@ -24,9 +25,9 @@ namespace seco {
             /**
              * @param threshold The threshold. Must be at least 0
              */
-            CoverageStoppingCriterion(float64 threshold);
+            CoverageStoppingCriterionFactory(float64 threshold);
 
-            Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
+            std::unique_ptr<IStoppingCriterion> create() const override;
 
     };
 

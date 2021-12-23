@@ -10,7 +10,7 @@ from mlrl.common.cython.post_processing cimport PostProcessorFactory
 from mlrl.common.cython.rule_induction cimport RuleInductionFactory
 from mlrl.common.cython.rule_model_assemblage cimport RuleModelAssemblage, RuleModelAssemblageFactory
 from mlrl.common.cython.statistics cimport StatisticsProviderFactory
-from mlrl.common.cython.stopping cimport StoppingCriterion
+from mlrl.common.cython.stopping cimport StoppingCriterionFactory
 from mlrl.common.cython.thresholds cimport ThresholdsFactory
 
 from libcpp.utility cimport move
@@ -117,15 +117,15 @@ cdef class AlgorithmBuilder:
         self.builder_ptr.get().setPostProcessorFactory(move(post_processor_factory.post_processor_factory_ptr))
         return self
 
-    def add_stopping_criterion(self, StoppingCriterion stopping_criterion not None) -> AlgorithmBuilder:
+    def add_stopping_criterion(self, StoppingCriterionFactory stopping_criterion_factory not None) -> AlgorithmBuilder:
         """
-        Adds a `StoppingCriterion` that should be used by the rule learner to decide when the induction of additional
-        rules should be stopped.
+        Adds a `StoppingCriterionFactory` that should be used by the rule learner to decide when the induction of
+        additional rules should be stopped.
 
-        :param stopping_criterion:  The `StoppingCriterion` to be added
-        :return:                    The builder itself
+        :param stopping_criterion_factory:  The `StoppingCriterionFactory` to be added
+        :return:                            The builder itself
         """
-        self.builder_ptr.get().addStoppingCriterion(move(stopping_criterion.stopping_criterion_ptr))
+        self.builder_ptr.get().addStoppingCriterion(move(stopping_criterion_factory.stopping_criterion_factory_ptr))
         return self
 
     def build(self) -> RuleModelAssemblage:

@@ -7,9 +7,10 @@
 
 
 /**
- * A stopping criterion that ensures that the number of induced rules does not exceed a certain maximum.
+ * Allows to create instances of the type `IStoppingCriterion` that ensure that the number of induced rules does not
+ * exceed a certain maximum.
  */
-class SizeStoppingCriterion final : public IStoppingCriterion {
+class SizeStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
     private:
 
@@ -20,8 +21,8 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
         /**
          * @param maxRules The maximum number of rules. Must be at least 1
          */
-        SizeStoppingCriterion(uint32 maxRules);
+        SizeStoppingCriterionFactory(uint32 maxRules);
 
-        Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
+        std::unique_ptr<IStoppingCriterion> create() const override;
 
 };
