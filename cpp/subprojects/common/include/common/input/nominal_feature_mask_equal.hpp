@@ -4,13 +4,25 @@
 #pragma once
 
 #include "common/input/nominal_feature_mask.hpp"
+#include <memory>
 
 
 /**
- * Provides access to the information whether the features at specific indices are nominal or not, if all features are
- * either nominal or if all features are not nominal.
+ * Defines an interface for all classes that allow to check whether individual features are nominal or not in cases
+ * where all features are of the same type, i.e., where all features are either nominal or numerical/ordinal.
  */
-class EqualNominalFeatureMask : public INominalFeatureMask {
+class IEqualNominalFeatureMask : public INominalFeatureMask {
+
+    public:
+
+        virtual ~IEqualNominalFeatureMask() { };
+
+};
+
+/**
+ * Allows to create instances of the type `IEqualNominalFeatureMask`.
+ */
+class EqualNominalFeatureMaskFactory final {
 
     private:
 
@@ -19,10 +31,10 @@ class EqualNominalFeatureMask : public INominalFeatureMask {
     public:
 
         /**
-         * @param nominal True, if all features are nominal, false, if all features are not nominal
+         * @param nominal True, if all features are nominal, false, if all features are numerical/ordinal
          */
-        EqualNominalFeatureMask(bool nominal);
+        EqualNominalFeatureMaskFactory(bool nominal);
 
-        bool isNominal(uint32 featureIndex) const override;
+        std::unique_ptr<IEqualNominalFeatureMask> create() const;
 
 };

@@ -16,7 +16,7 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
 from mlrl.common.cython.feature_binning import EqualWidthFeatureBinningFactory, EqualFrequencyFeatureBinningFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
-from mlrl.common.cython.input import BitNominalFeatureMask, EqualNominalFeatureMask
+from mlrl.common.cython.input import EqualNominalFeatureMaskFactory, MixedNominalFeatureMaskFactory
 from mlrl.common.cython.input import FeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
@@ -492,11 +492,14 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         num_features = feature_matrix.get_num_cols()
 
         if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
-            nominal_feature_mask = EqualNominalFeatureMask(False)
+            nominal_feature_mask = EqualNominalFeatureMaskFactory(False).create()
         elif len(self.nominal_attribute_indices) == num_features:
-            nominal_feature_mask = EqualNominalFeatureMask(True)
+            nominal_feature_mask = EqualNominalFeatureMaskFactory(True).create()
         else:
-            nominal_feature_mask = BitNominalFeatureMask(num_features, self.nominal_attribute_indices)
+            nominal_feature_mask = MixedNominalFeatureMaskFactory(num_features).create()
+
+            for attribute_index in self.nominal_attribute_indices:
+                nominal_feature_mask.set_nominal(attribute_index, True)
 
         # Induce rules...
         rule_model_assemblage = self.__create_rule_model_assemblage(feature_characteristics, label_characteristics)
