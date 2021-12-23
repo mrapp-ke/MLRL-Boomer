@@ -30,6 +30,24 @@ class IAggregationFunction {
 };
 
 /**
+ * Defines an interface for all factories that allow to create instances of the type `IAggregationFunction`.
+ */
+class IAggregationFunctionFactory {
+
+    public:
+
+        virtual ~IAggregationFunctionFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IAggregationFunction`.
+         *
+         * @return An unique pointer to an object of type `IAggregationFunction` that has been created
+         */
+        virtual std::unique_ptr<IAggregationFunction> create() const = 0;
+
+};
+
+/**
  * Allows to aggregate the values that are stored in a buffer by finding the minimum value.
  */
 class MinFunction final : public IAggregationFunction {
