@@ -154,22 +154,41 @@ cdef extern from "common/input/nominal_feature_mask.hpp" nogil:
         pass
 
 
-cdef extern from "common/input/nominal_feature_mask_bit.hpp" nogil:
-
-    cdef cppclass BitNominalFeatureMaskImpl"BitNominalFeatureMask"(INominalFeatureMask):
-
-        # Functions:
-
-        void setNominal(uint32 featureIndex)
-
-
 cdef extern from "common/input/nominal_feature_mask_equal.hpp" nogil:
 
-    cdef cppclass EqualNominalFeatureMaskImpl"EqualNominalFeatureMask"(INominalFeatureMask):
+    cdef cppclass IEqualNominalFeatureMask(INominalFeatureMask):
+        pass
+
+
+    cdef cppclass EqualNominalFeatureMaskFactoryImpl"EqualNominalFeatureMaskFactory":
 
         # Constructors:
 
-        EqualNominalFeatureMaskImpl(bool nominal)
+        EqualNominalFeatureMaskFactoryImpl(bool nominal)
+
+        # Functions:
+
+        unique_ptr[IEqualNominalFeatureMask] create() const
+
+
+cdef extern from "common/input/nominal_feature_mask_mixed.hpp" nogil:
+
+    cdef cppclass IMixedNominalFeatureMask(INominalFeatureMask):
+
+        # Functions:
+
+        void setNominal(uint32 featureIndex, bool nominal)
+
+
+    cdef cppclass MixedNominalFeatureMaskFactoryImpl"MixedNominalFeatureMaskFactory":
+
+        # Constructors:
+
+        MixedNominalFeatureMaskFactoryImpl(uint32 numFeatures)
+
+        # Functions:
+
+        unique_ptr[IMixedNominalFeatureMask] create() const
 
 
 cdef class LabelMatrix:
@@ -222,17 +241,37 @@ cdef class CsrFeatureMatrix:
 
 cdef class NominalFeatureMask:
 
-    # Attributes:
+    # Functions:
 
-    cdef unique_ptr[INominalFeatureMask] nominal_feature_mask_ptr
-
-
-cdef class BitNominalFeatureMask(NominalFeatureMask):
-    pass
+    cdef INominalFeatureMask* get_nominal_feature_mask_ptr(self)
 
 
 cdef class EqualNominalFeatureMask(NominalFeatureMask):
-    pass
+
+    # Attributes:
+
+    cdef unique_ptr[IEqualNominalFeatureMask] nominal_feature_mask_ptr
+
+
+cdef class EqualNominalFeatureMaskFactory:
+
+    # Attributes:
+
+    cdef unique_ptr[EqualNominalFeatureMaskFactoryImpl] nominal_feature_mask_factory_ptr
+
+
+cdef class MixedNominalFeatureMask(NominalFeatureMask):
+
+    # Attributes:
+
+    cdef unique_ptr[IMixedNominalFeatureMask] nominal_feature_mask_ptr
+
+
+cdef class MixedNominalFeatureMaskFactory:
+
+    # Attributes:
+
+    cdef unique_ptr[MixedNominalFeatureMaskFactoryImpl] nominal_feature_mask_factory_ptr
 
 
 cdef class LabelVectorSet:
