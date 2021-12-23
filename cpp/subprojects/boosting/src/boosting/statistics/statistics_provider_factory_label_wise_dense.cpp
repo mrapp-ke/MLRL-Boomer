@@ -1,3 +1,8 @@
+#ifdef _WIN32
+    #pragma warning( push )
+    #pragma warning( disable : 4250 )
+#endif
+
 #include "boosting/statistics/statistics_provider_factory_label_wise_dense.hpp"
 #include "common/validation.hpp"
 #include "statistics_label_wise_dense.hpp"
@@ -77,3 +82,7 @@ namespace boosting {
     }
 
 }
+
+#ifdef _WIN32
+    #pragma warning( pop )
+#endif
