@@ -72,6 +72,10 @@ float64 ArithmeticMeanFunction::aggregate(RingBuffer<float64>::const_iterator be
     return mean;
 }
 
+std::unique_ptr<IAggregationFunction> ArithmeticMeanAggregationFunctionFactory::create() const {
+    return std::make_unique<ArithmeticMeanFunction>();
+}
+
 MeasureStoppingCriterion::MeasureStoppingCriterion(std::unique_ptr<IAggregationFunction> aggregationFunctionPtr,
                                                    uint32 minRules, uint32 updateInterval, uint32 stopInterval,
                                                    uint32 numPast, uint32 numCurrent, float64 minImprovement,
