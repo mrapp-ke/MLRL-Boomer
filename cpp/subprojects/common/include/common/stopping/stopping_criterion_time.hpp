@@ -4,33 +4,24 @@
 #pragma once
 
 #include "common/stopping/stopping_criterion.hpp"
-#include <chrono>
 
 
 /**
- * A stopping criterion that ensures that a certain time limit is not exceeded.
+ * Allows to create instances of the type `IStoppingCriterion` that ensure that a certain time limit is not exceeded.
  */
-class TimeStoppingCriterion final : public IStoppingCriterion {
+class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
     private:
 
-        typedef std::chrono::steady_clock timer;
-
-        typedef std::chrono::seconds timer_unit;
-
-        timer_unit timeLimit_;
-
-        std::chrono::time_point<timer> startTime_;
-
-        bool timerStarted_;
+        uint32 timeLimit_;
 
     public:
 
         /**
          * @param timeLimit The time limit in seconds. Must be at least 1
          */
-        TimeStoppingCriterion(uint32 timeLimit);
+        TimeStoppingCriterionFactory(uint32 timeLimit);
 
-        Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
+        std::unique_ptr<IStoppingCriterion> create() const override;
 
 };

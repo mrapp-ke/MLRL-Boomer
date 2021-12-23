@@ -33,7 +33,7 @@ class AlgorithmBuilder final {
 
         std::shared_ptr<IPostProcessorFactory> postProcessorFactoryPtr_;
 
-        std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria_;
+        std::forward_list<std::shared_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories_;
 
         bool useDefaultRule_;
 
@@ -124,10 +124,11 @@ class AlgorithmBuilder final {
          * Adds a `IStoppingCriterion` that should be used by the rule learner to decide when the induction of
          * additional rules should be stopped.
          *
-         * @param stoppingCriterionPtr  An unique pointer to an object of type `IStoppingCriterion` to be added
-         * @return                      A reference to the builder itself
+         * @param stoppingCriterionFactoryPtr   An unique pointer to an object of type `IStoppingCriterionFactory` to be
+         *                                      added
+         * @return                              A reference to the builder itself
          */
-        AlgorithmBuilder& addStoppingCriterion(std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr);
+        AlgorithmBuilder& addStoppingCriterion(std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr);
 
         /**
          * Creates and returns a new object of type `IRuleModelAssemblage`.

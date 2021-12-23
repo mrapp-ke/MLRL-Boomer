@@ -5,7 +5,7 @@
 from libcpp.memory cimport unique_ptr, make_unique
 
 
-cdef class CoverageStoppingCriterion(StoppingCriterion):
+cdef class CoverageStoppingCriterionFactory(StoppingCriterionFactory):
     """
     A wrapper for the C++ class `CoverageStoppingCriterion`.
     """
@@ -14,5 +14,5 @@ cdef class CoverageStoppingCriterion(StoppingCriterion):
         """
         :param threshold: The threshold
         """
-        self.stopping_criterion_ptr = <unique_ptr[IStoppingCriterion]>make_unique[CoverageStoppingCriterionImpl](
+        self.stopping_criterion_factory_ptr = <unique_ptr[IStoppingCriterionFactory]>make_unique[CoverageStoppingCriterionFactoryImpl](
             threshold)
