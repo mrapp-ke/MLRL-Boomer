@@ -60,6 +60,18 @@ class MinFunction final : public IAggregationFunction {
 };
 
 /**
+ * Allows to create instances of the type `IAggregationFunction` that aggregate the values that are stored in a buffer
+ * by finding the minimum value.
+ */
+class MinAggregationFunctionFactory final : public IAggregationFunctionFactory {
+
+    public:
+
+        std::unique_ptr<IAggregationFunction> create() const override;
+
+};
+
+/**
  * Allows to aggregate the values that are stored in a buffer by finding the maximum value.
  */
 class MaxFunction final : public IAggregationFunction {
