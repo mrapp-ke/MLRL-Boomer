@@ -108,6 +108,18 @@ class ArithmeticMeanFunction final : public IAggregationFunction {
 };
 
 /**
+ * Allows to create instances of the type `IAggregationFunction` that aggregate the values that are stored in a buffer
+ * by calculating the arithmetic mean.
+ */
+class ArithmeticMeanAggregationFunctionFactory final : public IAggregationFunctionFactory {
+
+    public:
+
+        std::unique_ptr<IAggregationFunction> create() const override;
+
+};
+
+/**
  * A stopping criterion that stops the induction of rules as soon as the quality of a model's predictions for the
  * examples in a holdout set do not improve according a certain measure.
  *
