@@ -35,6 +35,10 @@ float64 MinFunction::aggregate(RingBuffer<float64>::const_iterator begin,
     return min;
 }
 
+std::unique_ptr<IAggregationFunction> MinAggregationFunctionFactory::create() const {
+    return std::make_unique<MinFunction>();
+}
+
 float64 MaxFunction::aggregate(RingBuffer<float64>::const_iterator begin,
                                RingBuffer<float64>::const_iterator end) const {
     uint32 numElements = end - begin;
