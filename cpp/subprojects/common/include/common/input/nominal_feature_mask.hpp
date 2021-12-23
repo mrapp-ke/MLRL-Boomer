@@ -7,8 +7,7 @@
 
 
 /**
- * Defines an interface for all classes that provide access to the information whether the features at specific indices
- * are nominal or not.
+ * Defines an interface for all classes that allow to check whether individual features are nominal or not.
  */
 class INominalFeatureMask {
 
