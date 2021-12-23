@@ -45,28 +45,38 @@ class MinAggregationFunction final : public IAggregationFunction {
 
 };
 
+/**
+ * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
+ * finding the maximum value.
+ */
+class MaxAggregationFunction final : public IAggregationFunction {
+
+    public:
+
+        float64 aggregate(RingBuffer<float64>::const_iterator begin,
+                          RingBuffer<float64>::const_iterator end) const override {
+            uint32 numElements = end - begin;
+            float64 max = begin[0];
+
+            for (uint32 i = 1; i < numElements; i++) {
+                float64 value = begin[i];
+
+                if (value > max) {
+                    max = value;
+                }
+            }
+
+            return max;
+        }
+
+};
+
 std::unique_ptr<IAggregationFunction> MinAggregationFunctionFactory::create() const {
     return std::make_unique<MinAggregationFunction>();
 }
 
-float64 MaxFunction::aggregate(RingBuffer<float64>::const_iterator begin,
-                               RingBuffer<float64>::const_iterator end) const {
-    uint32 numElements = end - begin;
-    float64 max = begin[0];
-
-    for (uint32 i = 1; i < numElements; i++) {
-        float64 value = begin[i];
-
-        if (value > max) {
-            max = value;
-        }
-    }
-
-    return max;
-}
-
 std::unique_ptr<IAggregationFunction> MaxAggregationFunctionFactory::create() const {
-    return std::make_unique<MaxFunction>();
+    return std::make_unique<MaxAggregationFunction>();
 }
 
 float64 ArithmeticMeanFunction::aggregate(RingBuffer<float64>::const_iterator begin,
