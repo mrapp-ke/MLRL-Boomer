@@ -19,24 +19,34 @@ static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const I
     return mean;
 }
 
-float64 MinFunction::aggregate(RingBuffer<float64>::const_iterator begin,
-                               RingBuffer<float64>::const_iterator end) const {
-    uint32 numElements = end - begin;
-    float64 min = begin[0];
+/**
+ * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
+ * finding the minimum value.
+ */
+class MinAggregationFunction final : public IAggregationFunction {
 
-    for (uint32 i = 1; i < numElements; i++) {
-        float64 value = begin[i];
+    public:
 
-        if (value < min) {
-            min = value;
+        float64 aggregate(RingBuffer<float64>::const_iterator begin,
+                          RingBuffer<float64>::const_iterator end) const override {
+            uint32 numElements = end - begin;
+            float64 min = begin[0];
+
+            for (uint32 i = 1; i < numElements; i++) {
+                float64 value = begin[i];
+
+                if (value < min) {
+                    min = value;
+                }
+            }
+
+            return min;
         }
-    }
 
-    return min;
-}
+};
 
 std::unique_ptr<IAggregationFunction> MinAggregationFunctionFactory::create() const {
-    return std::make_unique<MinFunction>();
+    return std::make_unique<MinAggregationFunction>();
 }
 
 float64 MaxFunction::aggregate(RingBuffer<float64>::const_iterator begin,
