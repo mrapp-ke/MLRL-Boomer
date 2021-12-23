@@ -19,8 +19,8 @@ cdef class RuleModelAssemblage:
                      LabelMatrix label_matrix not None, int random_state,
                      ModelBuilder model_builder not None) -> RuleModel:
         cdef unique_ptr[RuleModelImpl] rule_model_ptr = self.rule_model_assemblage_ptr.get().induceRules(
-            dereference(nominal_feature_mask.nominal_feature_mask_ptr), dereference(feature_matrix.feature_matrix_ptr),
-            dereference(label_matrix.label_matrix_ptr), random_state,
+            dereference(nominal_feature_mask.get_nominal_feature_mask_ptr()),
+            dereference(feature_matrix.feature_matrix_ptr), dereference(label_matrix.label_matrix_ptr), random_state,
             dereference(model_builder.model_builder_ptr))
         cdef RuleModel model = RuleModel.__new__(RuleModel)
         model.model_ptr = move(rule_model_ptr)
