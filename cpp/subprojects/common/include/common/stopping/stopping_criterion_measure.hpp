@@ -86,15 +86,6 @@ class ArithmeticMeanAggregationFunctionFactory final : public IAggregationFuncti
 /**
  * A stopping criterion that stops the induction of rules as soon as the quality of a model's predictions for the
  * examples in a holdout set do not improve according a certain measure.
- *
- * This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
- * the resulting quality score in a buffer that keeps track of the last `numRecent` scores. If the capacity of this
- * buffer is already reached, the oldest score is passed to a buffer of size `numPast`. Every `stopInterval` rules, it
- * is decided whether the rule induction should be stopped. For this reason, the `numRecent` scores in the first buffer,
- * as well as the `numPast` scores in the second buffer are aggregated according to a certain `aggregationFunction`. If
- * the percentage improvement, which results from comparing the more recent scores from the first buffer to the older
- * scores from the second buffer, is greater than a certain `minImprovement`, the rule induction is continued,
- * otherwise it is stopped.
  */
 class MeasureStoppingCriterion final : public IStoppingCriterion {
 
@@ -151,5 +142,70 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
                                  uint32 numCurrent, float64 minImprovement, bool forceStop);
 
         Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override;
+
+};
+
+/**
+ * Allows to create implementations of the type `IStoppingCriterion` that stop the induction of rules as soon as the
+ * quality of a model's predictions for the examples in a holdout set do not improve according a certain measure.
+ *
+ * This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
+ * the resulting quality score in a buffer that keeps track of the last `numRecent` scores. If the capacity of this
+ * buffer is already reached, the oldest score is passed to a buffer of size `numPast`. Every `stopInterval` rules, it
+ * is decided whether the rule induction should be stopped. For this reason, the `numRecent` scores in the first buffer,
+ * as well as the `numPast` scores in the second buffer are aggregated according to a certain `aggregationFunction`. If
+ * the percentage improvement, which results from comparing the more recent scores from the first buffer to the older
+ * scores from the second buffer, is greater than a certain `minImprovement`, the rule induction is continued,
+ * otherwise it is stopped.
+ */
+class MeasureStoppingCriterionFactory : public IStoppingCriterionFactory {
+
+    private:
+
+        std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr_;
+
+        uint32 minRules_;
+
+        uint32 updateInterval_;
+
+        uint32 stopInterval_;
+
+        uint32 numPast_;
+
+        uint32 numCurrent_;
+
+        float64 minImprovement_;
+
+        bool forceStop_;
+
+    public:
+
+        /**
+         * @param aggregationFunctionFactoryPtr An unique pointer to an object of type `IAggregationFunctionFactory`
+         *                                      that allows to create implementations of the aggregation function that
+         *                                      should be used to aggregate the scores in the buffer
+         * @param minRules                      The minimum number of rules that must have been learned until the
+         *                                      induction of rules might be stopped. Must be at least 1
+         * @param updateInterval                The interval to be used to update the quality of the current model,
+         *                                      e.g., a value of 5 means that the model quality is assessed every 5
+         *                                      rules. Must be at least 1
+         * @param stopInterval                  The interval to be used to decide whether the induction of rules should
+         *                                      be stopped, e.g., a value of 10 means that the rule induction might be
+         *                                      stopped after 10, 20, ... rules. Must be a multiple of `updateInterval`
+         * @param numPast                       The number of quality scores of past iterations to be stored in a
+         *                                      buffer. Must be at least 1
+         * @param numCurrent                    The number of quality scores of the most recent iterations to be stored
+         *                                      in a buffer. Must be at least 1
+         * @param minImprovement                The minimum improvement in percent that must be reached for the rule
+         *                                      induction to be continued. Must be in [0, 1]
+         * @param forceStop                     True, if the induction of rules should be forced to be stopped, if the
+         *                                      stopping criterion is met, false, if the time of stopping should only be
+         *                                      stored
+         */
+        MeasureStoppingCriterionFactory(std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr,
+                                        uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
+                                        uint32 numCurrent, float64 minImprovement, bool forceStop);
+
+        std::unique_ptr<IStoppingCriterion> create() const override;
 
 };
