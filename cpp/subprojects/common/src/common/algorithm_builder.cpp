@@ -74,9 +74,10 @@ AlgorithmBuilder& AlgorithmBuilder::setPostProcessorFactory(
     return *this;
 }
 
-AlgorithmBuilder& AlgorithmBuilder::addStoppingCriterion(std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr) {
-    assertNotNull("stoppingCriterionPtr", stoppingCriterionPtr.get());
-    stoppingCriteria_.push_front(std::move(stoppingCriterionPtr));
+AlgorithmBuilder& AlgorithmBuilder::addStoppingCriterion(
+        std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) {
+    assertNotNull("stoppingCriterionFactoryPtr", stoppingCriterionFactoryPtr.get());
+    stoppingCriterionFactories_.push_front(std::move(stoppingCriterionFactoryPtr));
     return *this;
 }
 
@@ -85,5 +86,6 @@ std::unique_ptr<IRuleModelAssemblage> AlgorithmBuilder::build() const {
                                                   ruleInductionFactoryPtr_, labelSamplingFactoryPtr_,
                                                   instanceSamplingFactoryPtr_, featureSamplingFactoryPtr_,
                                                   partitionSamplingFactoryPtr_, pruningFactoryPtr_,
-                                                  postProcessorFactoryPtr_, stoppingCriteria_, useDefaultRule_);
+                                                  postProcessorFactoryPtr_, stoppingCriterionFactories_,
+                                                  useDefaultRule_);
 }
