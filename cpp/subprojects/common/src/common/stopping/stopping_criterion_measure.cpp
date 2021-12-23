@@ -55,6 +55,10 @@ float64 MaxFunction::aggregate(RingBuffer<float64>::const_iterator begin,
     return max;
 }
 
+std::unique_ptr<IAggregationFunction> MaxAggregationFunctionFactory::create() const {
+    return std::make_unique<MaxFunction>();
+}
+
 float64 ArithmeticMeanFunction::aggregate(RingBuffer<float64>::const_iterator begin,
                                           RingBuffer<float64>::const_iterator end) const {
     uint32 numElements = end - begin;

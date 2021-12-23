@@ -84,6 +84,18 @@ class MaxFunction final : public IAggregationFunction {
 };
 
 /**
+ * Allows to create instances of the type `IAggregationFunction` that aggregate the values that are stored in a buffer
+ * by finding the maximum value.
+ */
+class MaxAggregationFunctionFactory final : public IAggregationFunctionFactory {
+
+    public:
+
+        std::unique_ptr<IAggregationFunction> create() const override;
+
+};
+
+/**
  * Allows to aggregate the values that are stored in a buffer by calculating the arithmetic mean.
  */
 class ArithmeticMeanFunction final : public IAggregationFunction {
