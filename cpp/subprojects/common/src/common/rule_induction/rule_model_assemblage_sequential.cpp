@@ -123,18 +123,21 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
         std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
                                                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
                                                uint32 randomState, IModelBuilder& modelBuilder) {
-            // Induce default rule...
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
-            std::unique_ptr<IStatisticsProvider> statisticsProviderPtr = labelMatrix.createStatisticsProvider(
-                *statisticsProviderFactoryPtr_);
-            std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr_->create();
+
+            // Initialize stopping criteria...
             std::forward_list<std::unique_ptr<IStoppingCriterion>> stoppingCriteria;
 
             for (auto it = stoppingCriterionFactories_.cbegin(); it != stoppingCriterionFactories_.cend(); it++) {
                 std::shared_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr = *it;
                 stoppingCriteria.push_front(stoppingCriterionFactoryPtr->create());
             }
+
+            // Induce default rule...
+            std::unique_ptr<IStatisticsProvider> statisticsProviderPtr = labelMatrix.createStatisticsProvider(
+                *statisticsProviderFactoryPtr_);
+            std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr_->create();
 
             if (useDefaultRule_) {
                 ruleInductionPtr->induceDefaultRule(statisticsProviderPtr->get(), modelBuilder);
