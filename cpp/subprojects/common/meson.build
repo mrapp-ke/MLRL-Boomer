@@ -109,7 +109,10 @@ lib_name = 'mlrl' + meson.project_name()
 cpp_args = ['-fopenmp']
 link_args = ['-fopenmp']
 
-if host_machine.system() == 'darwin'
+if host_machine.system() == 'windows'
+    cpp_args = ['/openmp']
+    link_args = []
+elif host_machine.system() == 'darwin'
     cpp_args = ['-Xclang', '-fopenmp']
     link_args = ['-lomp']
 endif
