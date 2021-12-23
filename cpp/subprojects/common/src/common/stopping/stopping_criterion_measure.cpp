@@ -115,14 +115,6 @@ MeasureStoppingCriterion::MeasureStoppingCriterion(
       stopInterval_(stopInterval), minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
       recentBuffer_(RingBuffer<float64>(numCurrent)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
       bestScore_(std::numeric_limits<float64>::infinity()), stopped_(false) {
-    assertNotNull("aggregationFunctionFactoryPtr", aggregationFunctionFactoryPtr_.get());
-    assertGreaterOrEqual<uint32>("minRules", minRules, 1);
-    assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
-    assertMultiple<uint32>("stopInterval", stopInterval, updateInterval);
-    assertGreaterOrEqual<uint32>("numPast", numPast, 1);
-    assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
-    assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
-    assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
     uint32 bufferInterval = (numPast * updateInterval) + (numCurrent * updateInterval);
     offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
 }
@@ -166,4 +158,26 @@ IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& part
     }
 
     return result;
+}
+
+MeasureStoppingCriterionFactory::MeasureStoppingCriterionFactory(
+        std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr, uint32 minRules,
+        uint32 updateInterval, uint32 stopInterval, uint32 numPast, uint32 numCurrent, float64 minImprovement,
+        bool forceStop)
+    : aggregationFunctionFactoryPtr_(std::move(aggregationFunctionFactoryPtr)), minRules_(minRules),
+      updateInterval_(updateInterval), stopInterval_(stopInterval), numPast_(numPast), numCurrent_(numCurrent),
+      minImprovement_(minImprovement), forceStop_(forceStop) {
+    assertNotNull("aggregationFunctionFactoryPtr", aggregationFunctionFactoryPtr_.get());
+    assertGreaterOrEqual<uint32>("minRules", minRules, 1);
+    assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
+    assertMultiple<uint32>("stopInterval", stopInterval, updateInterval);
+    assertGreaterOrEqual<uint32>("numPast", numPast, 1);
+    assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
+    assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
+    assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
+}
+
+std::unique_ptr<IStoppingCriterion> MeasureStoppingCriterionFactory::create() const {
+    // TODO
+    return nullptr;
 }
