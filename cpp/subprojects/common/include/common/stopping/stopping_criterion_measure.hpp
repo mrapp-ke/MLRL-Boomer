@@ -72,18 +72,6 @@ class MaxAggregationFunctionFactory final : public IAggregationFunctionFactory {
 };
 
 /**
- * Allows to aggregate the values that are stored in a buffer by calculating the arithmetic mean.
- */
-class ArithmeticMeanFunction final : public IAggregationFunction {
-
-    public:
-
-        float64 aggregate(RingBuffer<float64>::const_iterator begin,
-                          RingBuffer<float64>::const_iterator end) const override;
-
-};
-
-/**
  * Allows to create instances of the type `IAggregationFunction` that aggregate the values that are stored in a buffer
  * by calculating the arithmetic mean.
  */
