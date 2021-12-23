@@ -76,15 +76,15 @@ std::unique_ptr<IAggregationFunction> ArithmeticMeanAggregationFunctionFactory::
     return std::make_unique<ArithmeticMeanFunction>();
 }
 
-MeasureStoppingCriterion::MeasureStoppingCriterion(std::unique_ptr<IAggregationFunction> aggregationFunctionPtr,
-                                                   uint32 minRules, uint32 updateInterval, uint32 stopInterval,
-                                                   uint32 numPast, uint32 numCurrent, float64 minImprovement,
-                                                   bool forceStop)
-    : aggregationFunctionPtr_(std::move(aggregationFunctionPtr)), updateInterval_(updateInterval),
+MeasureStoppingCriterion::MeasureStoppingCriterion(
+        std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr, uint32 minRules,
+        uint32 updateInterval, uint32 stopInterval, uint32 numPast, uint32 numCurrent, float64 minImprovement,
+        bool forceStop)
+    : aggregationFunctionFactoryPtr_(std::move(aggregationFunctionFactoryPtr)), updateInterval_(updateInterval),
       stopInterval_(stopInterval), minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
       recentBuffer_(RingBuffer<float64>(numCurrent)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
       bestScore_(std::numeric_limits<float64>::infinity()), stopped_(false) {
-    assertNotNull("aggregationFunctionPtr", aggregationFunctionPtr_.get());
+    assertNotNull("aggregationFunctionFactoryPtr", aggregationFunctionFactoryPtr_.get());
     assertGreaterOrEqual<uint32>("minRules", minRules, 1);
     assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
     assertMultiple<uint32>("stopInterval", stopInterval, updateInterval);
@@ -112,10 +112,11 @@ IStoppingCriterion::Result MeasureStoppingCriterion::test(const IPartition& part
             }
 
             if (numRules % stopInterval_ == 0) {
-                float64 aggregatedScorePast = aggregationFunctionPtr_->aggregate(pastBuffer_.cbegin(),
-                                                                                 pastBuffer_.cend());
-                float64 aggregatedScoreRecent = aggregationFunctionPtr_->aggregate(recentBuffer_.cbegin(),
-                                                                                   recentBuffer_.cend());
+                std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
+                float64 aggregatedScorePast = aggregationFunctionPtr->aggregate(pastBuffer_.cbegin(),
+                                                                                pastBuffer_.cend());
+                float64 aggregatedScoreRecent = aggregationFunctionPtr->aggregate(recentBuffer_.cbegin(),
+                                                                                  recentBuffer_.cend());
                 float64 percentageImprovement = (aggregatedScorePast - aggregatedScoreRecent) / aggregatedScoreRecent;
 
                 if (percentageImprovement <= minImprovement_) {

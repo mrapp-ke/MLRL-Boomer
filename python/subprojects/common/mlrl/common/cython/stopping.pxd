@@ -30,19 +30,20 @@ cdef extern from "common/stopping/stopping_criterion_time.hpp" nogil:
 
 cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
 
-    cdef cppclass IAggregationFunction:
+    cdef cppclass IAggregationFunctionFactory:
         pass
 
 
-    cdef cppclass MinFunctionImpl"MinFunction"(IAggregationFunction):
+    cdef cppclass MinAggregationFunctionFactoryImpl"MinAggregationFunctionFactory"(IAggregationFunctionFactory):
         pass
 
 
-    cdef cppclass MaxFunctionImpl"MaxFunction"(IAggregationFunction):
+    cdef cppclass MaxAggregationFunctionFactoryImpl"MaxAggregationFunctionFactory"(IAggregationFunctionFactory):
         pass
 
 
-    cdef cppclass ArithmeticMeanFunctionImpl"ArithmeticMeanFunction"(IAggregationFunction):
+    cdef cppclass ArithmeticMeanAggregationFunctionFactoryImpl"ArithmeticMeanAggregationFunctionFactory"(
+            IAggregationFunctionFactory):
         pass
 
 
@@ -50,9 +51,9 @@ cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
 
         # Constructors:
 
-        MeasureStoppingCriterionImpl(unique_ptr[IAggregationFunction] aggregationFunctionPtr, uint32 minRules,
-                                     uint32 updateInterval, uint32 stopInterval, uint32 numPast, uint32 numRecent,
-                                     float64 minImprovement, bool forceStop) except +
+        MeasureStoppingCriterionImpl(unique_ptr[IAggregationFunctionFactory] aggregationFunctionFactoryPtr,
+                                     uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
+                                     uint32 numRecent, float64 minImprovement, bool forceStop) except +
 
 
 cdef class StoppingCriterion:
@@ -69,22 +70,22 @@ cdef class SizeStoppingCriterion(StoppingCriterion):
 cdef class TimeStoppingCriterion(StoppingCriterion):
     pass
 
-cdef class AggregationFunction:
+cdef class AggregationFunctionFactory:
 
     # Attributes:
 
-    cdef unique_ptr[IAggregationFunction] aggregation_function_ptr
+    cdef unique_ptr[IAggregationFunctionFactory] aggregation_function_factory_ptr
 
 
-cdef class MinFunction(AggregationFunction):
+cdef class MinAggregationFunctionFactory(AggregationFunctionFactory):
     pass
 
 
-cdef class MaxFunction(AggregationFunction):
+cdef class MaxAggregationFunctionFactory(AggregationFunctionFactory):
     pass
 
 
-cdef class ArithmeticMeanFunction(AggregationFunction):
+cdef class ArithmeticMeanAggregationFunctionFactory(AggregationFunctionFactory):
     pass
 
 
