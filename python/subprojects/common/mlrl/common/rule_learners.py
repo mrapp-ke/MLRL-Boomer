@@ -35,7 +35,8 @@ from mlrl.common.cython.pruning import PruningFactory, IrepFactory
 from mlrl.common.cython.rule_induction import RuleInductionFactory
 from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblage, RuleModelAssemblageFactory
 from mlrl.common.cython.statistics import StatisticsProviderFactory
-from mlrl.common.cython.stopping import StoppingCriterion, SizeStoppingCriterion, TimeStoppingCriterion
+from mlrl.common.cython.stopping import StoppingCriterionFactory, SizeStoppingCriterionFactory, \
+    TimeStoppingCriterionFactory
 from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
 from mlrl.common.cython.thresholds_exact import ExactThresholdsFactory
@@ -275,16 +276,16 @@ def create_pruning_factory(pruning: str, instance_sampling: str) -> Optional[Pru
     return None
 
 
-def create_stopping_criteria(max_rules: int, time_limit: int) -> List[StoppingCriterion]:
-    stopping_criteria: List[StoppingCriterion] = []
+def create_stopping_criterion_factories(max_rules: int, time_limit: int) -> List[StoppingCriterionFactory]:
+    stopping_criterion_factories: List[StoppingCriterionFactory] = []
 
     if max_rules != 0:
-        stopping_criteria.append(SizeStoppingCriterion(max_rules))
+        stopping_criterion_factories.append(SizeStoppingCriterionFactory(max_rules))
 
     if time_limit != 0:
-        stopping_criteria.append(TimeStoppingCriterion(time_limit))
+        stopping_criterion_factories.append(TimeStoppingCriterionFactory(time_limit))
 
-    return stopping_criteria
+    return stopping_criterion_factories
 
 
 def create_num_threads(parallel: str, parameter_name: str) -> int:
@@ -546,8 +547,9 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         if post_processor_factory is not None:
             algorithm_builder.set_post_processor_factory(post_processor_factory)
 
-        for stopping_criterion in self._create_stopping_criteria(feature_characteristics, label_characteristics):
-            algorithm_builder.add_stopping_criterion(stopping_criterion)
+        for stopping_criterion_factory in self._create_stopping_criterion_factories(feature_characteristics,
+                                                                                    label_characteristics):
+            algorithm_builder.add_stopping_criterion(stopping_criterion_factory)
 
         algorithm_builder.set_use_default_rule(self._use_default_rule(feature_characteristics, label_characteristics))
         return algorithm_builder.build()
@@ -727,14 +729,16 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         return None
 
-    def _create_stopping_criteria(self, feature_characteristics: FeatureCharacteristics,
-                                  label_characteristics: LabelCharacteristics) -> List[StoppingCriterion]:
+    def _create_stopping_criterion_factories(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> List[StoppingCriterionFactory]:
         """
-        Must be implemented by subclasses in order to create a list of stopping criteria to be used by the rule learner.
+        Must be implemented by subclasses in order to create a list of objects of the type `StoppingCriterionFactory` to
+        be used by the rule learner.
 
         :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
         :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        A list of stopping criteria that has been created
+        :return:                        A list of objects of the type `StoppingCriterionFactory` that has been created
         """
         return []
 
