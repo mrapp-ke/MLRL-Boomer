@@ -115,6 +115,8 @@ cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
 
         uint32 getNumRows()
 
+        uint32 getNumCols()
+
 
 cdef extern from "common/input/feature_matrix_fortran_contiguous.hpp" nogil:
 
@@ -146,6 +148,8 @@ cdef extern from "common/input/feature_matrix_csr.hpp" nogil:
         # Functions:
 
         uint32 getNumRows()
+
+        uint32 getNumCols()
 
 
 cdef extern from "common/input/nominal_feature_mask.hpp" nogil:
