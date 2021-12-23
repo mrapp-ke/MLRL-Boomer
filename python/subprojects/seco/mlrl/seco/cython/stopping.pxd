@@ -1,15 +1,16 @@
 from mlrl.common.cython._types cimport float64
-from mlrl.common.cython.stopping cimport IStoppingCriterion, StoppingCriterion
+from mlrl.common.cython.stopping cimport IStoppingCriterionFactory, StoppingCriterionFactory
 
 
 cdef extern from "seco/stopping/stopping_criterion_coverage.hpp" nogil:
 
-    cdef cppclass CoverageStoppingCriterionImpl"seco::CoverageStoppingCriterion"(IStoppingCriterion):
+    cdef cppclass CoverageStoppingCriterionFactoryImpl"seco::CoverageStoppingCriterionFactory"(
+            IStoppingCriterionFactory):
 
         # Constructors:
 
-        CoverageStoppingCriterionImpl(float64 threshold) except +
+        CoverageStoppingCriterionFactoryImpl(float64 threshold) except +
 
 
-cdef class CoverageStoppingCriterion(StoppingCriterion):
+cdef class CoverageStoppingCriterionFactory(StoppingCriterionFactory):
     pass

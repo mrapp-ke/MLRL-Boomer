@@ -6,26 +6,26 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "common/stopping/stopping_criterion.hpp" nogil:
 
-    cdef cppclass IStoppingCriterion:
+    cdef cppclass IStoppingCriterionFactory:
         pass
 
 
 cdef extern from "common/stopping/stopping_criterion_size.hpp" nogil:
 
-    cdef cppclass SizeStoppingCriterionImpl"SizeStoppingCriterion"(IStoppingCriterion):
+    cdef cppclass SizeStoppingCriterionFactoryImpl"SizeStoppingCriterionFactory"(IStoppingCriterionFactory):
 
         # Constructors:
 
-        SizeStoppingCriterionImpl(uint32 maxRules) except +
+        SizeStoppingCriterionFactoryImpl(uint32 maxRules) except +
 
 
 cdef extern from "common/stopping/stopping_criterion_time.hpp" nogil:
 
-    cdef cppclass TimeStoppingCriterionImpl"TimeStoppingCriterion"(IStoppingCriterion):
+    cdef cppclass TimeStoppingCriterionFactoryImpl"TimeStoppingCriterionFactory"(IStoppingCriterionFactory):
 
         # Constructors:
 
-        TimeStoppingCriterionImpl(uint32 timeLimit) except +
+        TimeStoppingCriterionFactoryImpl(uint32 timeLimit) except +
 
 
 cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
@@ -47,27 +47,27 @@ cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
         pass
 
 
-    cdef cppclass MeasureStoppingCriterionImpl"MeasureStoppingCriterion"(IStoppingCriterion):
+    cdef cppclass MeasureStoppingCriterionFactoryImpl"MeasureStoppingCriterionFactory"(IStoppingCriterionFactory):
 
         # Constructors:
 
-        MeasureStoppingCriterionImpl(unique_ptr[IAggregationFunctionFactory] aggregationFunctionFactoryPtr,
-                                     uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
-                                     uint32 numRecent, float64 minImprovement, bool forceStop) except +
+        MeasureStoppingCriterionFactoryImpl(unique_ptr[IAggregationFunctionFactory] aggregationFunctionFactoryPtr,
+                                            uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
+                                            uint32 numRecent, float64 minImprovement, bool forceStop) except +
 
 
-cdef class StoppingCriterion:
+cdef class StoppingCriterionFactory:
 
     # Attributes:
 
-    cdef unique_ptr[IStoppingCriterion] stopping_criterion_ptr
+    cdef unique_ptr[IStoppingCriterionFactory] stopping_criterion_factory_ptr
 
 
-cdef class SizeStoppingCriterion(StoppingCriterion):
+cdef class SizeStoppingCriterionFactory(StoppingCriterionFactory):
     pass
 
 
-cdef class TimeStoppingCriterion(StoppingCriterion):
+cdef class TimeStoppingCriterionFactory(StoppingCriterionFactory):
     pass
 
 cdef class AggregationFunctionFactory:
@@ -89,5 +89,5 @@ cdef class ArithmeticMeanAggregationFunctionFactory(AggregationFunctionFactory):
     pass
 
 
-cdef class MeasureStoppingCriterion(StoppingCriterion):
+cdef class MeasureStoppingCriterionFactory(StoppingCriterionFactory):
     pass

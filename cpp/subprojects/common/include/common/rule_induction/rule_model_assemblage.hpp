@@ -88,8 +88,9 @@ class IRuleModelAssemblageFactory {
          * @param postProcessorFactoryPtr       A shared pointer to an object of type `IPostProcessorFactory` that
          *                                      allows to create the implementation to be used for post-processing the
          *                                      predictions of rules
-         * @param stoppingCriteria              A list that stores the stopping criteria, which should be used to decide
-         *                                      whether additional rules should be induced or not
+         * @param stoppingCriterionFactories    A list that stores objects of type `IStoppingCriterionFactory` that
+         *                                      allow to create the implementations to be used to decide whether
+         *                                      additional rules should be induced or not
          * @param useDefaultRule                True, if a default rule should be used, false otherwise
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
@@ -102,7 +103,7 @@ class IRuleModelAssemblageFactory {
             std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::shared_ptr<IPruningFactory> pruningFactoryPtr,
             std::shared_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-            const std::forward_list<std::shared_ptr<IStoppingCriterion>> stoppingCriteria,
+            const std::forward_list<std::shared_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories,
             bool useDefaultRule) const = 0;
 
 };

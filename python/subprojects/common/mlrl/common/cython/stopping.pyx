@@ -5,35 +5,37 @@ from libcpp.utility cimport move
 from libcpp.memory cimport make_unique
 
 
-cdef class StoppingCriterion:
+cdef class StoppingCriterionFactory:
     """
-    A wrapper for the pure virtual C++ class `IStoppingCriterion`.
+    A wrapper for the pure virtual C++ class `IStoppingCriterionFactory`.
     """
     pass
 
 
-cdef class SizeStoppingCriterion(StoppingCriterion):
+cdef class SizeStoppingCriterionFactory(StoppingCriterionFactory):
     """
-    A wrapper for the C++ class `SizeStoppingCriterion`.
+    A wrapper for the C++ class `SizeStoppingCriterionFactory`.
     """
 
     def __cinit__(self, uint32 max_rules):
         """
         :param max_rules: The maximum number of rules
         """
-        self.stopping_criterion_ptr = <unique_ptr[IStoppingCriterion]>make_unique[SizeStoppingCriterionImpl](max_rules)
+        self.stopping_criterion_factory_ptr = <unique_ptr[IStoppingCriterionFactory]>make_unique[SizeStoppingCriterionFactoryImpl](
+            max_rules)
 
 
-cdef class TimeStoppingCriterion(StoppingCriterion):
+cdef class TimeStoppingCriterionFactory(StoppingCriterionFactory):
     """
-    A wrapper for the C++ class `TimeStoppingCriterion`.
+    A wrapper for the C++ class `TimeStoppingCriterionFactory`.
     """
 
     def __cinit__(self, uint32 time_limit):
         """
         :param time_limit: The time limit in seconds
         """
-        self.stopping_criterion_ptr = <unique_ptr[IStoppingCriterion]>make_unique[TimeStoppingCriterionImpl](time_limit)
+        self.stopping_criterion_factory_ptr = <unique_ptr[IStoppingCriterionFactory]>make_unique[TimeStoppingCriterionFactoryImpl](
+            time_limit)
 
 
 cdef class AggregationFunctionFactory:
@@ -70,9 +72,9 @@ cdef class ArithmeticMeanAggregationFunctionFactory(AggregationFunctionFactory):
         self.aggregation_function_factory_ptr = <unique_ptr[IAggregationFunctionFactory]>make_unique[ArithmeticMeanAggregationFunctionFactoryImpl]()
 
 
-cdef class MeasureStoppingCriterion(StoppingCriterion):
+cdef class MeasureStoppingCriterionFactory(StoppingCriterionFactory):
     """
-    A wrapper for the C++ class `MeasureStoppingCriterion`.
+    A wrapper for the C++ class `MeasureStoppingCriterionFactory`.
     """
 
     def __cinit__(self, AggregationFunctionFactory aggregation_function_factory not None, uint32 min_rules,
@@ -99,6 +101,6 @@ cdef class MeasureStoppingCriterion(StoppingCriterion):
                                                 stopping criterion is met, False, if the time of stopping should only be
                                                 stored
         """
-        self.stopping_criterion_ptr = <unique_ptr[IStoppingCriterion]>make_unique[MeasureStoppingCriterionImpl](
+        self.stopping_criterion_factory_ptr = <unique_ptr[IStoppingCriterionFactory]>make_unique[MeasureStoppingCriterionFactoryImpl](
             move(aggregation_function_factory.aggregation_function_factory_ptr), min_rules, update_interval,
             stop_interval, num_past, num_recent, min_improvement, force_stop)
