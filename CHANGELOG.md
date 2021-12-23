@@ -4,7 +4,7 @@
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
-* No changes yet.
+* Pre-built packages for Linux aarch64 systems are now provided.
 
 ### Version 0.7.1 (Dec. 15, 2021)
 
