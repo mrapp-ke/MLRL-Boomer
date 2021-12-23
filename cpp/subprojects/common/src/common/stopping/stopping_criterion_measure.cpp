@@ -71,6 +71,30 @@ class MaxAggregationFunction final : public IAggregationFunction {
 
 };
 
+/**
+ * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
+ * calculating the arithmetic mean.
+ */
+class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
+
+    public:
+
+        float64 aggregate(RingBuffer<float64>::const_iterator begin,
+                          RingBuffer<float64>::const_iterator end) const override {
+            uint32 numElements = end - begin;
+            float64 mean = 0;
+
+            for (uint32 i = 0; i < numElements; i++) {
+                float64 value = begin[i];
+                mean = iterativeArithmeticMean<float64>(i + 1, value, mean);
+            }
+
+            return mean;
+        }
+
+};
+
+
 std::unique_ptr<IAggregationFunction> MinAggregationFunctionFactory::create() const {
     return std::make_unique<MinAggregationFunction>();
 }
@@ -79,21 +103,8 @@ std::unique_ptr<IAggregationFunction> MaxAggregationFunctionFactory::create() co
     return std::make_unique<MaxAggregationFunction>();
 }
 
-float64 ArithmeticMeanFunction::aggregate(RingBuffer<float64>::const_iterator begin,
-                                          RingBuffer<float64>::const_iterator end) const {
-    uint32 numElements = end - begin;
-    float64 mean = 0;
-
-    for (uint32 i = 0; i < numElements; i++) {
-        float64 value = begin[i];
-        mean = iterativeArithmeticMean<float64>(i + 1, value, mean);
-    }
-
-    return mean;
-}
-
 std::unique_ptr<IAggregationFunction> ArithmeticMeanAggregationFunctionFactory::create() const {
-    return std::make_unique<ArithmeticMeanFunction>();
+    return std::make_unique<ArithmeticMeanAggregationFunction>();
 }
 
 MeasureStoppingCriterion::MeasureStoppingCriterion(
