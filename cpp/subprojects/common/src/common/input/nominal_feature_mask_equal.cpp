@@ -26,11 +26,6 @@ class EqualNominalFeatureMask : public IEqualNominalFeatureMask {
 
 };
 
-EqualNominalFeatureMaskFactory::EqualNominalFeatureMaskFactory(bool nominal)
-    : nominal_(nominal) {
-
-}
-
-std::unique_ptr<IEqualNominalFeatureMask> EqualNominalFeatureMaskFactory::create() const {
-    return std::make_unique<EqualNominalFeatureMask>(nominal_);
+std::unique_ptr<IEqualNominalFeatureMask> createEqualNominalFeatureMask(bool nominal) {
+    return std::make_unique<EqualNominalFeatureMask>(nominal);
 }

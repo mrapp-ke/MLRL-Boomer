@@ -28,21 +28,9 @@ class IMixedNominalFeatureMask : public INominalFeatureMask {
 };
 
 /**
- * Allows to create instances of the type `IMixedNominalFeatureMask`.
+ * Creates and returns a new object of type `IMixedNominalFeatureMask`.
+ *
+ * @param numFeatures   The total number of available features
+ * @return              An unique pointer to an object of type `IMixedNominalFeatureMask` that has been created
  */
-class MixedNominalFeatureMaskFactory final {
-
-    private:
-
-        uint32 numFeatures_;
-
-    public:
-
-        /**
-         * @param numFeatures The total number of available features
-         */
-        MixedNominalFeatureMaskFactory(uint32 numFeatures);
-
-        std::unique_ptr<IMixedNominalFeatureMask> create() const;
-
-};
+std::unique_ptr<IMixedNominalFeatureMask> createMixedNominalFeatureMask(uint32 numFeatures);

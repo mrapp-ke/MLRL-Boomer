@@ -164,15 +164,7 @@ cdef extern from "common/input/nominal_feature_mask_equal.hpp" nogil:
         pass
 
 
-    cdef cppclass EqualNominalFeatureMaskFactoryImpl"EqualNominalFeatureMaskFactory":
-
-        # Constructors:
-
-        EqualNominalFeatureMaskFactoryImpl(bool nominal)
-
-        # Functions:
-
-        unique_ptr[IEqualNominalFeatureMask] create() const
+    unique_ptr[IEqualNominalFeatureMask] createEqualNominalFeatureMask(bool nominal)
 
 
 cdef extern from "common/input/nominal_feature_mask_mixed.hpp" nogil:
@@ -184,15 +176,7 @@ cdef extern from "common/input/nominal_feature_mask_mixed.hpp" nogil:
         void setNominal(uint32 featureIndex, bool nominal)
 
 
-    cdef cppclass MixedNominalFeatureMaskFactoryImpl"MixedNominalFeatureMaskFactory":
-
-        # Constructors:
-
-        MixedNominalFeatureMaskFactoryImpl(uint32 numFeatures)
-
-        # Functions:
-
-        unique_ptr[IMixedNominalFeatureMask] create() const
+    unique_ptr[IMixedNominalFeatureMask] createMixedNominalFeatureMask(uint32 numFeatures)
 
 
 cdef class LabelMatrix:
@@ -257,25 +241,11 @@ cdef class EqualNominalFeatureMask(NominalFeatureMask):
     cdef unique_ptr[IEqualNominalFeatureMask] nominal_feature_mask_ptr
 
 
-cdef class EqualNominalFeatureMaskFactory:
-
-    # Attributes:
-
-    cdef unique_ptr[EqualNominalFeatureMaskFactoryImpl] nominal_feature_mask_factory_ptr
-
-
 cdef class MixedNominalFeatureMask(NominalFeatureMask):
 
     # Attributes:
 
     cdef unique_ptr[IMixedNominalFeatureMask] nominal_feature_mask_ptr
-
-
-cdef class MixedNominalFeatureMaskFactory:
-
-    # Attributes:
-
-    cdef unique_ptr[MixedNominalFeatureMaskFactoryImpl] nominal_feature_mask_factory_ptr
 
 
 cdef class LabelVectorSet:

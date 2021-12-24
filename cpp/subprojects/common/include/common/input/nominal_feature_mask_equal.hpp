@@ -20,21 +20,9 @@ class IEqualNominalFeatureMask : public INominalFeatureMask {
 };
 
 /**
- * Allows to create instances of the type `IEqualNominalFeatureMask`.
+ * Creates and returns a new object of type `IEqualNominalFeatureMask`.
+ *
+ * @param nominal   True, if all features are nominal, false, if all features are numerical/ordinal
+ * @return          An unique pointer to an object of type `IEqualNominalFeatureMask` that has been created
  */
-class EqualNominalFeatureMaskFactory final {
-
-    private:
-
-        bool nominal_;
-
-    public:
-
-        /**
-         * @param nominal True, if all features are nominal, false, if all features are numerical/ordinal
-         */
-        EqualNominalFeatureMaskFactory(bool nominal);
-
-        std::unique_ptr<IEqualNominalFeatureMask> create() const;
-
-};
+std::unique_ptr<IEqualNominalFeatureMask> createEqualNominalFeatureMask(bool nominal);

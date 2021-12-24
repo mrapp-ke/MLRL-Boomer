@@ -32,11 +32,6 @@ class BitNominalFeatureMask : public IMixedNominalFeatureMask {
 
 };
 
-MixedNominalFeatureMaskFactory::MixedNominalFeatureMaskFactory(uint32 numFeatures)
-    : numFeatures_(numFeatures) {
-
-}
-
-std::unique_ptr<IMixedNominalFeatureMask> MixedNominalFeatureMaskFactory::create() const {
-    return std::make_unique<BitNominalFeatureMask>(numFeatures_);
+std::unique_ptr<IMixedNominalFeatureMask> createMixedNominalFeatureMask(uint32 numFeatures) {
+    return std::make_unique<BitNominalFeatureMask>(numFeatures);
 }
