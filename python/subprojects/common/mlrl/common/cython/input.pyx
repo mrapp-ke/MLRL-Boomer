@@ -264,23 +264,6 @@ cdef class EqualNominalFeatureMask(NominalFeatureMask):
         return self.nominal_feature_mask_ptr.get()
 
 
-cdef class EqualNominalFeatureMaskFactory:
-    """
-    A wrapper for the C++ class `EqualNominalFeatureMaskFactory`.
-    """
-
-    def __cinit__(self, bint nominal):
-        """
-        :param nominal: True, if all features are nominal, false, if all features are numerical/ordinal
-        """
-        self.nominal_feature_mask_factory_ptr = make_unique[EqualNominalFeatureMaskFactoryImpl](nominal)
-
-    def create(self) -> EqualNominalFeatureMask:
-        cdef EqualNominalFeatureMask nominal_feature_mask = EqualNominalFeatureMask.__new__(EqualNominalFeatureMask)
-        nominal_feature_mask.nominal_feature_mask_ptr = self.nominal_feature_mask_factory_ptr.get().create()
-        return nominal_feature_mask
-
-
 cdef class MixedNominalFeatureMask(NominalFeatureMask):
     """
     A wrapper for the pure virtual C++ class `IMixedNominalFeatureMask`.
@@ -293,21 +276,16 @@ cdef class MixedNominalFeatureMask(NominalFeatureMask):
         self.nominal_feature_mask_ptr.get().setNominal(feature_index, nominal)
 
 
-cdef class MixedNominalFeatureMaskFactory:
-    """
-    A wrapper for the C++ class `MixedNominalFeatureMaskFactory`.
-    """
+def create_equal_nominal_feature_mask(nominal: bool) -> EqualNominalFeatureMask:
+    cdef EqualNominalFeatureMask nominal_feature_mask = EqualNominalFeatureMask.__new__(EqualNominalFeatureMask)
+    nominal_feature_mask.nominal_feature_mask_ptr = createEqualNominalFeatureMask(nominal)
+    return nominal_feature_mask
 
-    def __cinit__(self, uint32 num_features):
-        """
-        :param num_features: The total number of available features
-        """
-        self.nominal_feature_mask_factory_ptr = make_unique[MixedNominalFeatureMaskFactoryImpl](num_features)
 
-    def create(self) -> MixedNominalFeatureMask:
-        cdef MixedNominalFeatureMask nominal_feature_mask = MixedNominalFeatureMask.__new__(MixedNominalFeatureMask)
-        nominal_feature_mask.nominal_feature_mask_ptr = self.nominal_feature_mask_factory_ptr.get().create()
-        return nominal_feature_mask
+def create_mixed_nominal_feature_mask(num_features: int) -> MixedNominalFeatureMask:
+    cdef MixedNominalFeatureMask nominal_feature_mask = MixedNominalFeatureMask.__new__(MixedNominalFeatureMask)
+    nominal_feature_mask.nominal_feature_mask_ptr = createMixedNominalFeatureMask(num_features)
+    return nominal_feature_mask
 
 
 cdef class LabelVectorSet:
