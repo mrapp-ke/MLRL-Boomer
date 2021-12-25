@@ -16,11 +16,11 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
 from mlrl.common.cython.feature_binning import EqualWidthFeatureBinningFactory, EqualFrequencyFeatureBinningFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
+from mlrl.common.cython.input import EqualNominalFeatureMask, MixedNominalFeatureMask
 from mlrl.common.cython.input import FeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.input import LabelVectorSet
-from mlrl.common.cython.input import create_equal_nominal_feature_mask, create_mixed_nominal_feature_mask
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
     InstanceSamplingWithoutReplacementFactory, \
     LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
@@ -492,14 +492,11 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         num_features = feature_matrix.get_num_cols()
 
         if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
-            nominal_feature_mask = create_equal_nominal_feature_mask(False)
+            nominal_feature_mask = EqualNominalFeatureMask(False)
         elif len(self.nominal_attribute_indices) == num_features:
-            nominal_feature_mask = create_equal_nominal_feature_mask(True)
+            nominal_feature_mask = EqualNominalFeatureMask(True)
         else:
-            nominal_feature_mask = create_mixed_nominal_feature_mask(num_features)
-
-            for attribute_index in self.nominal_attribute_indices:
-                nominal_feature_mask.set_nominal(attribute_index, True)
+            nominal_feature_mask = MixedNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
         rule_model_assemblage = self.__create_rule_model_assemblage(feature_characteristics, label_characteristics)
