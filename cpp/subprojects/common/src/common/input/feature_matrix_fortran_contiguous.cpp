@@ -1,47 +1,64 @@
 #include "common/input/feature_matrix_fortran_contiguous.hpp"
+#include "common/data/view_fortran_contiguous.hpp"
 
 
-FortranContiguousFeatureMatrix::FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array)
-    : view_(FortranContiguousConstView<const float32>(numRows, numCols, array)) {
+/**
+ * An implementation of the type `IFortranContiguousFeatureMatrix` that provides column-wise read-only access to the
+ * feature values of individual examples that are stored in a pre-allocated Fortran-contiguous array.
+ */
+class FortranContiguousFeatureMatrix final : public IFortranContiguousFeatureMatrix {
 
-}
+    private:
 
-FortranContiguousFeatureMatrix::const_iterator FortranContiguousFeatureMatrix::column_cbegin(uint32 col) const {
-    return view_.column_cbegin(col);
-}
+        FortranContiguousConstView<const float32> view_;
 
-FortranContiguousFeatureMatrix::const_iterator FortranContiguousFeatureMatrix::column_cend(uint32 col) const {
-    return view_.column_cend(col);
-}
+    public:
 
-uint32 FortranContiguousFeatureMatrix::getNumRows() const {
-    return view_.getNumRows();
-}
+        /**
+         * @param numRows   The number of rows in the feature matrix
+         * @param numCols   The number of columns in the feature matrix
+         * @param array     A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
+         */
+        FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array)
+            : view_(FortranContiguousConstView<const float32>(numRows, numCols, array)) {
 
-uint32 FortranContiguousFeatureMatrix::getNumCols() const {
-    return view_.getNumCols();
-}
-
-void FortranContiguousFeatureMatrix::fetchFeatureVector(uint32 featureIndex,
-                                                        std::unique_ptr<FeatureVector>& featureVectorPtr) const {
-    FortranContiguousConstView<const float32>::const_iterator columnIterator = view_.column_cbegin(featureIndex);
-    uint32 numElements = this->getNumRows();
-    featureVectorPtr = std::make_unique<FeatureVector>(numElements);
-    FeatureVector::iterator vectorIterator = featureVectorPtr->begin();
-    uint32 i = 0;
-
-    for (uint32 j = 0; j < numElements; j++) {
-        float32 value = columnIterator[j];
-
-        if (value != value) {
-            // The value is NaN (because comparisons to NaN always evaluate to false)...
-            featureVectorPtr->addMissingIndex(j);
-        } else {
-            vectorIterator[i].index = j;
-            vectorIterator[i].value = value;
-            i++;
         }
-    }
 
-    featureVectorPtr->setNumElements(i, true);
+        uint32 getNumRows() const override {
+            return view_.getNumRows();
+        }
+
+        uint32 getNumCols() const override {
+            return view_.getNumCols();
+        }
+
+        void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
+            FortranContiguousConstView<const float32>::const_iterator columnIterator =
+                view_.column_cbegin(featureIndex);
+            uint32 numElements = this->getNumRows();
+            featureVectorPtr = std::make_unique<FeatureVector>(numElements);
+            FeatureVector::iterator vectorIterator = featureVectorPtr->begin();
+            uint32 i = 0;
+
+            for (uint32 j = 0; j < numElements; j++) {
+                float32 value = columnIterator[j];
+
+                if (value != value) {
+                    // The value is NaN (because comparisons to NaN always evaluate to false)...
+                    featureVectorPtr->addMissingIndex(j);
+                } else {
+                    vectorIterator[i].index = j;
+                    vectorIterator[i].value = value;
+                    i++;
+                }
+            }
+
+            featureVectorPtr->setNumElements(i, true);
+        }
+
+};
+
+std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
+                                                                                      const float32* array) {
+    return std::make_unique<FortranContiguousFeatureMatrix>(numRows, numCols, array);
 }

@@ -103,6 +103,12 @@ cdef extern from "common/input/feature_matrix.hpp" nogil:
         uint32 getNumCols()
 
 
+cdef extern from "common/input/feature_matrix_column_wise.hpp" nogil:
+
+    cdef cppclass IColumnWiseFeatureMatrix(IFeatureMatrix):
+        pass
+
+
 cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
 
     cdef cppclass CContiguousFeatureMatrixImpl"CContiguousFeatureMatrix":
@@ -120,21 +126,22 @@ cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
 
 cdef extern from "common/input/feature_matrix_fortran_contiguous.hpp" nogil:
 
-    cdef cppclass FortranContiguousFeatureMatrixImpl"FortranContiguousFeatureMatrix"(IFeatureMatrix):
+    cdef cppclass IFortranContiguousFeatureMatrix(IColumnWiseFeatureMatrix):
+        pass
 
-        # Constructors:
 
-        FortranContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array)
+    unique_ptr[IFortranContiguousFeatureMatrix] createFortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
+                                                                                     const float32* array)
 
 
 cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
 
-    cdef cppclass CscFeatureMatrixImpl"CscFeatureMatrix"(IFeatureMatrix):
+    cdef cppclass ICscFeatureMatrix(IColumnWiseFeatureMatrix):
+        pass
 
-        # Constructors:
 
-        CscFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices,
-                             uint32* colIndices)
+    unique_ptr[ICscFeatureMatrix] createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
+                                                         uint32* rowIndices, uint32* colIndices)
 
 
 cdef extern from "common/input/feature_matrix_csr.hpp" nogil:
@@ -194,23 +201,32 @@ cdef class CsrLabelMatrix(LabelMatrix):
     pass
 
 
-cdef class DokLabelMatrix(LabelMatrix):
-    pass
-
-
 cdef class FeatureMatrix:
+
+    # Functions:
+
+    cdef IFeatureMatrix* get_feature_matrix_ptr(self)
+
+
+cdef class ColumnWiseFeatureMatrix(FeatureMatrix):
+
+    # Functions:
+
+    cdef IColumnWiseFeatureMatrix* get_column_wise_feature_matrix_ptr(self)
+
+
+cdef class FortranContiguousFeatureMatrix(ColumnWiseFeatureMatrix):
 
     # Attributes:
 
-    cdef unique_ptr[IFeatureMatrix] feature_matrix_ptr
+    cdef unique_ptr[IFortranContiguousFeatureMatrix] feature_matrix_ptr
 
 
-cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
-    pass
+cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
 
+    # Attributes:
 
-cdef class CscFeatureMatrix(FeatureMatrix):
-    pass
+    cdef unique_ptr[ICscFeatureMatrix] feature_matrix_ptr
 
 
 cdef class CContiguousFeatureMatrix:

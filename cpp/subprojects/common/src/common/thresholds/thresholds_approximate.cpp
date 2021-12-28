@@ -194,7 +194,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                             if (thresholdVector == nullptr) {
                                 // Fetch feature vector...
                                 std::unique_ptr<FeatureVector> featureVectorPtr;
-                                const IFeatureMatrix& featureMatrix = thresholdsSubset_.thresholds_.featureMatrix_;
+                                const IColumnWiseFeatureMatrix& featureMatrix =
+                                    thresholdsSubset_.thresholds_.featureMatrix_;
                                 uint32 numExamples = featureMatrix.getNumRows();
                                 featureMatrix.fetchFeatureVector(featureIndex_, featureVectorPtr);
 
@@ -373,8 +374,9 @@ class ApproximateThresholds final : public AbstractThresholds {
     public:
 
         /**
-         * @param featureMatrix                 A reference to an object of type `IFeatureMatrix` that provides access
-         *                                      to the feature values of the training examples
+         * @param featureMatrix                 A reference to an object of type `IColumnWiseFeatureMatrix` that
+         *                                      provides column-wise access to the feature values of individual training
+         *                                      examples
          * @param nominalFeatureMask            A reference  to an object of type `INominalFeatureMask` that provides
          *                                      access to the information whether individual features are nominal or not
          * @param statisticsProvider            A reference to an object of type `IStatisticsProvider` that provides
@@ -385,8 +387,8 @@ class ApproximateThresholds final : public AbstractThresholds {
          *                                      used to assign nominal feature values to bins
          * @param numThreads                    The number of CPU threads to be used to update statistics in parallel
          */
-        ApproximateThresholds(const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-                              IStatisticsProvider& statisticsProvider,
+        ApproximateThresholds(const IColumnWiseFeatureMatrix& featureMatrix,
+                              const INominalFeatureMask& nominalFeatureMask, IStatisticsProvider& statisticsProvider,
                               std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr,
                               std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr, uint32 numThreads)
             : AbstractThresholds(featureMatrix, nominalFeatureMask, statisticsProvider),
@@ -410,7 +412,7 @@ ApproximateThresholdsFactory::ApproximateThresholdsFactory(
 }
 
 std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(
-        const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
+        const IColumnWiseFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
         IStatisticsProvider& statisticsProvider) const {
     std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr = featureBinningFactoryPtr_->create();
     std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr = NominalFeatureBinningFactory().create();

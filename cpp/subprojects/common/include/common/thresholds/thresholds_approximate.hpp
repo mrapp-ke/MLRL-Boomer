@@ -31,7 +31,7 @@ class ApproximateThresholdsFactory final : public IThresholdsFactory {
         ApproximateThresholdsFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr,
                                      uint32 numThreads);
 
-        std::unique_ptr<IThresholds> create(const IFeatureMatrix& featureMatrix,
+        std::unique_ptr<IThresholds> create(const IColumnWiseFeatureMatrix& featureMatrix,
                                             const INominalFeatureMask& nominalFeatureMask,
                                             IStatisticsProvider& statisticsProvider) const override;
 

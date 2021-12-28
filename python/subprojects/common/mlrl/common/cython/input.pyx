@@ -90,13 +90,16 @@ cdef class FeatureMatrix:
     A wrapper for the pure virtual C++ class `IFeatureMatrix`.
     """
 
+    cdef IFeatureMatrix* get_feature_matrix_ptr(self):
+        pass
+
     def get_num_rows(self) -> int:
         """
         Returns the number of rows in the matrix.
 
         :return The number of rows
         """
-        return self.feature_matrix_ptr.get().getNumRows()
+        return self.get_feature_matrix_ptr().getNumRows()
 
     def get_num_cols(self) -> int:
         """
@@ -104,7 +107,7 @@ cdef class FeatureMatrix:
 
         :return The number of columns
         """
-        return self.feature_matrix_ptr.get().getNumCols()
+        return self.get_feature_matrix_ptr().getNumCols()
 
     def is_sparse(self) -> bool:
         """
@@ -115,9 +118,18 @@ cdef class FeatureMatrix:
         return False
 
 
-cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
+cdef class ColumnWiseFeatureMatrix(FeatureMatrix):
     """
-    A wrapper for the C++ class `FortranContiguousFeatureMatrix`.
+    A wrapper for the pure virtual C++ class `IColumnWiseFeatureMatrix`.
+    """
+
+    cdef IColumnWiseFeatureMatrix* get_column_wise_feature_matrix_ptr(self):
+        pass
+
+
+cdef class FortranContiguousFeatureMatrix(ColumnWiseFeatureMatrix):
+    """
+    A wrapper for the pure virtual C++ class `IFortranContiguousFeatureMatrix`.
     """
 
     def __cinit__(self, const float32[::1, :] array):
@@ -127,13 +139,18 @@ cdef class FortranContiguousFeatureMatrix(FeatureMatrix):
         """
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_features = array.shape[1]
-        self.feature_matrix_ptr = <unique_ptr[IFeatureMatrix]>make_unique[FortranContiguousFeatureMatrixImpl](
-            num_examples, num_features, &array[0, 0])
+        self.feature_matrix_ptr = createFortranContiguousFeatureMatrix(num_examples, num_features, &array[0, 0])
+
+    cdef IFeatureMatrix* get_feature_matrix_ptr(self):
+        return self.feature_matrix_ptr.get()
+
+    cdef IColumnWiseFeatureMatrix* get_column_wise_feature_matrix_ptr(self):
+        return self.feature_matrix_ptr.get()
 
 
-cdef class CscFeatureMatrix(FeatureMatrix):
+cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
     """
-    A wrapper for the C++ class `CscFeatureMatrix`.
+    A wrapper for the C++ class `ICscFeatureMatrix`.
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] data, uint32[::1] row_indices,
@@ -149,10 +166,14 @@ cdef class CscFeatureMatrix(FeatureMatrix):
                                 first element in `data` and `row_indices` that corresponds to a certain feature. The
                                 index at the last position is equal to `num_non_zero_values`
         """
-        self.feature_matrix_ptr = <unique_ptr[IFeatureMatrix]>make_unique[CscFeatureMatrixImpl](num_examples,
-                                                                                                num_features, &data[0],
-                                                                                                &row_indices[0],
-                                                                                                &col_indices[0])
+        self.feature_matrix_ptr = createCscFeatureMatrix(num_examples, num_features, &data[0], &row_indices[0],
+                                                         &col_indices[0])
+
+    cdef IFeatureMatrix* get_feature_matrix_ptr(self):
+        return self.feature_matrix_ptr.get()
+
+    cdef IColumnWiseFeatureMatrix* get_column_wise_feature_matrix_ptr(self):
+        return self.feature_matrix_ptr.get()
 
     def is_sparse(self) -> bool:
         return True
