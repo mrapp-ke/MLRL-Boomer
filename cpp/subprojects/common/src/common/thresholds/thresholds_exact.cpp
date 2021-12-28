@@ -532,15 +532,15 @@ class ExactThresholds final : public AbstractThresholds {
     public:
 
         /**
-         * @param featureMatrix         A reference to an object of type `IFeatureMatrix` that provides access to the
-         *                              feature values of the training examples
+         * @param featureMatrix         A reference to an object of type `IColumnWiseFeatureMatrix` that provides
+         *                              column-wise access to the feature values of individual training examples
          * @param nominalFeatureMask    A reference  to an object of type `INominalFeatureMask` that provides access to
          *                              the information whether individual features are nominal or not
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              statistics about the labels of the training examples
          * @param numThreads            The number of CPU threads to be used to update statistics in parallel
          */
-        ExactThresholds(const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
+        ExactThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
                         IStatisticsProvider& statisticsProvider, uint32 numThreads)
             : AbstractThresholds(featureMatrix, nominalFeatureMask, statisticsProvider), numThreads_(numThreads) {
 
@@ -559,7 +559,7 @@ ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
 }
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(
-        const IFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
+        const IColumnWiseFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
         IStatisticsProvider& statisticsProvider) const {
     return std::make_unique<ExactThresholds>(featureMatrix, nominalFeatureMask, statisticsProvider, numThreads_);
 }

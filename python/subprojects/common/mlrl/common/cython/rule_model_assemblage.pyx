@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython.input cimport NominalFeatureMask, FeatureMatrix, LabelMatrix
+from mlrl.common.cython.input cimport NominalFeatureMask, ColumnWiseFeatureMatrix, LabelMatrix
 from mlrl.common.cython.model cimport ModelBuilder, RuleModel
 
 from cython.operator cimport dereference
@@ -15,13 +15,13 @@ cdef class RuleModelAssemblage:
     A wrapper for the pure virtual C++ class `IRuleModelAssemblage`.
     """
 
-    def induce_rules(self, NominalFeatureMask nominal_feature_mask not None, FeatureMatrix feature_matrix not None,
-                     LabelMatrix label_matrix not None, int random_state,
-                     ModelBuilder model_builder not None) -> RuleModel:
+    def induce_rules(self, NominalFeatureMask nominal_feature_mask not None,
+                     ColumnWiseFeatureMatrix feature_matrix not None, LabelMatrix label_matrix not None,
+                     int random_state, ModelBuilder model_builder not None) -> RuleModel:
         cdef unique_ptr[RuleModelImpl] rule_model_ptr = self.rule_model_assemblage_ptr.get().induceRules(
             dereference(nominal_feature_mask.get_nominal_feature_mask_ptr()),
-            dereference(feature_matrix.feature_matrix_ptr), dereference(label_matrix.label_matrix_ptr), random_state,
-            dereference(model_builder.model_builder_ptr))
+            dereference(feature_matrix.get_column_wise_feature_matrix_ptr()),
+            dereference(label_matrix.label_matrix_ptr), random_state, dereference(model_builder.model_builder_ptr))
         cdef RuleModel model = RuleModel.__new__(RuleModel)
         model.model_ptr = move(rule_model_ptr)
         return model
