@@ -146,145 +146,168 @@ namespace seco {
         return numNonZeroElements;
     }
 
-    LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(uint32 numThreads)
-        : numThreads_(numThreads) {
+    /**
+     * An implementation of the type `IClassificationPredictor` that allows to predict whether individual labels of
+     * given query examples are relevant or irrelevant by processing rules of an existing rule-based model in the order
+     * they have been learned. If a rule covers an example, its prediction (1 if the label is relevant, 0 otherwise) is
+     * applied to each label individually, if none of the previous rules has already predicted for a particular example
+     * and label.
+     */
+    class LabelWiseClassificationPredictor final : public IClassificationPredictor {
 
-    }
+        private:
 
-    void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix,
-                                                   const RuleModel& model, const LabelVectorSet* labelVectors) const {
-        uint32 numExamples = featureMatrix.getNumRows();
-        uint32 numLabels = predictionMatrix.getNumCols();
-        const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
-        CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
-        const RuleModel* modelPtr = &model;
+            uint32 numThreads_;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-        firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
-        for (int64 i = 0; i < numExamples; i++) {
-            BitVector mask(numLabels, true);
+        public:
 
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const Rule& rule = *it;
-                const IBody& body = rule.getBody();
+            /**
+             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
+             *                   in parallel. Must be at least 1
+             */
+            LabelWiseClassificationPredictor(uint32 numThreads)
+                : numThreads_(numThreads) {
 
-                if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
-                    const IHead& head = rule.getHead();
-                    applyHead(head, *predictionMatrixPtr, mask, i);
-                }
-            }
-        }
-    }
-
-    void LabelWiseClassificationPredictor::predict(const CsrFeatureMatrix& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix,
-                                                   const RuleModel& model, const LabelVectorSet* labelVectors) const {
-        uint32 numExamples = featureMatrix.getNumRows();
-        uint32 numFeatures = featureMatrix.getNumCols();
-        uint32 numLabels = predictionMatrix.getNumCols();
-        const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
-        CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
-        const RuleModel* modelPtr = &model;
-
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
-        num_threads(numThreads_)
-        for (int64 i = 0; i < numExamples; i++) {
-            BitVector mask(numLabels, true);
-            float32* tmpArray1 = new float32[numFeatures];
-            uint32* tmpArray2 = new uint32[numFeatures] {};
-            uint32 n = 1;
-
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const Rule& rule = *it;
-                const IBody& body = rule.getBody();
-
-                if (body.covers(featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
-                                featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                                &tmpArray1[0], &tmpArray2[0], n)) {
-                    const IHead& head = rule.getHead();
-                    applyHead(head, *predictionMatrixPtr, mask, i);
-                }
-
-                n++;
             }
 
-            delete[] tmpArray1;
-            delete[] tmpArray2;
-        }
-    }
+            void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
+                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                uint32 numExamples = featureMatrix.getNumRows();
+                uint32 numLabels = predictionMatrix.getNumCols();
+                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
+                const RuleModel* modelPtr = &model;
 
-    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predictSparse(
-            const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
-            const LabelVectorSet* labelVectors) const {
-        uint32 numExamples = featureMatrix.getNumRows();
-        std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
-        const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
-        BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
-        const RuleModel* modelPtr = &model;
-        uint32 numNonZeroElements = 0;
+                #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
+                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
+                num_threads(numThreads_)
+                for (int64 i = 0; i < numExamples; i++) {
+                    BitVector mask(numLabels, true);
 
-        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
-        num_threads(numThreads_)
-        for (int64 i = 0; i < numExamples; i++) {
-            BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
+                    for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+                        const Rule& rule = *it;
+                        const IBody& body = rule.getBody();
 
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const Rule& rule = *it;
-                const IBody& body = rule.getBody();
-
-                if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
-                    const IHead& head = rule.getHead();
-                    numNonZeroElements += applyHead(head, row);
+                        if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
+                            const IHead& head = rule.getHead();
+                            applyHead(head, *predictionMatrixPtr, mask, i);
+                        }
+                    }
                 }
             }
-        }
 
-        return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
-    }
+            void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
+                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                uint32 numExamples = featureMatrix.getNumRows();
+                uint32 numFeatures = featureMatrix.getNumCols();
+                uint32 numLabels = predictionMatrix.getNumCols();
+                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
+                const RuleModel* modelPtr = &model;
 
-    std::unique_ptr<BinarySparsePredictionMatrix> LabelWiseClassificationPredictor::predictSparse(
-            const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
-            const LabelVectorSet* labelVectors) const {
-        uint32 numExamples = featureMatrix.getNumRows();
-        uint32 numFeatures = featureMatrix.getNumCols();
-        std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
-        const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
-        BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
-        const RuleModel* modelPtr = &model;
-        uint32 numNonZeroElements = 0;
+                #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+                firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+                schedule(dynamic) num_threads(numThreads_)
+                for (int64 i = 0; i < numExamples; i++) {
+                    BitVector mask(numLabels, true);
+                    float32* tmpArray1 = new float32[numFeatures];
+                    uint32* tmpArray2 = new uint32[numFeatures] {};
+                    uint32 n = 1;
 
-        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
-        firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-        firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
-        for (int64 i = 0; i < numExamples; i++) {
-            BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
-            float32* tmpArray1 = new float32[numFeatures];
-            uint32* tmpArray2 = new uint32[numFeatures] {};
-            uint32 n = 1;
+                    for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+                        const Rule& rule = *it;
+                        const IBody& body = rule.getBody();
 
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const Rule& rule = *it;
-                const IBody& body = rule.getBody();
+                        if (body.covers(featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
+                                        featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
+                                        &tmpArray1[0], &tmpArray2[0], n)) {
+                            const IHead& head = rule.getHead();
+                            applyHead(head, *predictionMatrixPtr, mask, i);
+                        }
 
-                if (body.covers(featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
-                                featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                                &tmpArray1[0], &tmpArray2[0], n)) {
-                    const IHead& head = rule.getHead();
-                    numNonZeroElements += applyHead(head, row);
+                        n++;
+                    }
+
+                    delete[] tmpArray1;
+                    delete[] tmpArray2;
                 }
-
-                n++;
             }
 
-            delete[] tmpArray1;
-            delete[] tmpArray2;
-        }
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                    const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+                    const LabelVectorSet* labelVectors) const override {
+                uint32 numExamples = featureMatrix.getNumRows();
+                std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
+                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
+                const RuleModel* modelPtr = &model;
+                uint32 numNonZeroElements = 0;
 
-        return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
-    }
+                #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
+                firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+                firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
+                for (int64 i = 0; i < numExamples; i++) {
+                    BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
+
+                    for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+                        const Rule& rule = *it;
+                        const IBody& body = rule.getBody();
+
+                        if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
+                            const IHead& head = rule.getHead();
+                            numNonZeroElements += applyHead(head, row);
+                        }
+                    }
+                }
+
+                return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels,
+                                                                      numNonZeroElements);
+            }
+
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                    const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+                    const LabelVectorSet* labelVectors) const override {
+                uint32 numExamples = featureMatrix.getNumRows();
+                uint32 numFeatures = featureMatrix.getNumCols();
+                std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
+                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
+                const RuleModel* modelPtr = &model;
+                uint32 numNonZeroElements = 0;
+
+                #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
+                firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) \
+                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
+                num_threads(numThreads_)
+                for (int64 i = 0; i < numExamples; i++) {
+                    BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
+                    float32* tmpArray1 = new float32[numFeatures];
+                    uint32* tmpArray2 = new uint32[numFeatures] {};
+                    uint32 n = 1;
+
+                    for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+                        const Rule& rule = *it;
+                        const IBody& body = rule.getBody();
+
+                        if (body.covers(featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
+                                        featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
+                                        &tmpArray1[0], &tmpArray2[0], n)) {
+                            const IHead& head = rule.getHead();
+                            numNonZeroElements += applyHead(head, row);
+                        }
+
+                        n++;
+                    }
+
+                    delete[] tmpArray1;
+                    delete[] tmpArray2;
+                }
+
+                return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels,
+                                                                      numNonZeroElements);
+            }
+
+    };
 
     LabelWiseClassificationPredictorFactory::LabelWiseClassificationPredictorFactory(uint32 numThreads)
         : numThreads_(numThreads) {
