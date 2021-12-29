@@ -27,7 +27,7 @@ namespace boosting {
      * threshold that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is
      * relevant, 0 otherwise).
      */
-    class LabelWiseClassificationPredictor : public ILabelWiseClassificationPredictor {
+    class LabelWiseClassificationPredictor final : public ILabelWiseClassificationPredictor {
 
         private:
 
