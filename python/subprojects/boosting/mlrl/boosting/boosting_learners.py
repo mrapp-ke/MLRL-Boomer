@@ -13,8 +13,9 @@ from mlrl.boosting.cython.losses_example_wise import ExampleWiseLogisticLossFact
 from mlrl.boosting.cython.losses_label_wise import LabelWiseLossFactory, LabelWiseLogisticLossFactory, \
     LabelWiseSquaredErrorLossFactory, LabelWiseSquaredHingeLossFactory
 from mlrl.boosting.cython.model import RuleListBuilder
-from mlrl.boosting.cython.output import LabelWiseClassificationPredictor, ExampleWiseClassificationPredictor, \
-    LabelWiseProbabilityPredictor, LabelWiseTransformationFunction, LogisticFunction
+from mlrl.boosting.cython.output import LabelWiseClassificationPredictorFactory, \
+    ExampleWiseClassificationPredictorFactory, LabelWiseProbabilityPredictorFactory, ProbabilityFunctionFactory, \
+    LogisticFunctionFactory
 from mlrl.boosting.cython.post_processing import ConstantShrinkageFactory
 from mlrl.boosting.cython.rule_evaluation_example_wise import ExampleWiseCompleteRuleEvaluationFactory, \
     ExampleWiseCompleteBinnedRuleEvaluationFactory
@@ -28,7 +29,7 @@ from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import Predictor
+from mlrl.common.cython.output import ClassificationPredictorFactory, ProbabilityPredictorFactory
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
 from mlrl.common.cython.post_processing import PostProcessorFactory
 from mlrl.common.cython.pruning import PruningFactory
@@ -524,8 +525,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                               label_characteristics: LabelCharacteristics) -> ModelBuilder:
         return RuleListBuilder()
 
-    def _create_predictor(self, feature_characteristics: FeatureCharacteristics,
-                          label_characteristics: LabelCharacteristics) -> Predictor:
+    def _create_predictor_factory(self, feature_characteristics: FeatureCharacteristics,
+                                  label_characteristics: LabelCharacteristics) -> ClassificationPredictorFactory:
         predictor = self.__get_preferred_predictor()
         value = parse_param('predictor', predictor, PREDICTOR_VALUES)
 
@@ -534,14 +535,16 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         elif value == PREDICTOR_EXAMPLE_WISE:
             return self.__create_example_wise_predictor(label_characteristics)
 
-    def _create_probability_predictor(self, feature_characteristics: FeatureCharacteristics,
-                                      label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
+    def _create_probability_predictor_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[ProbabilityPredictorFactory]:
         predictor = self.__get_preferred_predictor()
 
         if self.loss == LOSS_LOGISTIC_LABEL_WISE or self.loss == LOSS_LOGISTIC_EXAMPLE_WISE:
             if predictor == PREDICTOR_LABEL_WISE:
-                transformation_function = LogisticFunction()
-                return self.__create_label_wise_probability_predictor(transformation_function, label_characteristics)
+                probability_function_factory = LogisticFunctionFactory()
+                return self.__create_label_wise_probability_predictor(probability_function_factory,
+                                                                      label_characteristics)
         return None
 
     def _create_label_vector_set(self, label_matrix: LabelMatrix) -> Optional[LabelVectorSet]:
@@ -561,23 +564,25 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 return PREDICTOR_LABEL_WISE
         return predictor
 
-    def __create_label_wise_predictor(self,
-                                      label_characteristics: LabelCharacteristics) -> LabelWiseClassificationPredictor:
+    def __create_label_wise_predictor(
+            self, label_characteristics: LabelCharacteristics) -> LabelWiseClassificationPredictorFactory:
         num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
         threshold = 0.5 if self.loss == LOSS_SQUARED_HINGE_LABEL_WISE else 0.0
-        return LabelWiseClassificationPredictor(num_labels=label_characteristics.get_num_labels(), threshold=threshold,
-                                                num_threads=num_threads)
+        return LabelWiseClassificationPredictorFactory(num_labels=label_characteristics.get_num_labels(),
+                                                       threshold=threshold, num_threads=num_threads)
 
     def __create_example_wise_predictor(
-            self, label_characteristics: LabelCharacteristics) -> ExampleWiseClassificationPredictor:
+            self, label_characteristics: LabelCharacteristics) -> ExampleWiseClassificationPredictorFactory:
         loss_factory = self.__create_loss_factory()
         num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
-        return ExampleWiseClassificationPredictor(num_labels=label_characteristics.get_num_labels(),
-                                                  similarity_measure_factory=loss_factory, num_threads=num_threads)
+        return ExampleWiseClassificationPredictorFactory(num_labels=label_characteristics.get_num_labels(),
+                                                         similarity_measure_factory=loss_factory,
+                                                         num_threads=num_threads)
 
     def __create_label_wise_probability_predictor(
-            self, transformation_function: LabelWiseTransformationFunction,
-            label_characteristics: LabelCharacteristics) -> LabelWiseProbabilityPredictor:
+            self, probability_function_factory: ProbabilityFunctionFactory,
+            label_characteristics: LabelCharacteristics) -> LabelWiseProbabilityPredictorFactory:
         num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
-        return LabelWiseProbabilityPredictor(num_labels=label_characteristics.get_num_labels(),
-                                             transformation_function=transformation_function, num_threads=num_threads)
+        return LabelWiseProbabilityPredictorFactory(num_labels=label_characteristics.get_num_labels(),
+                                                    probability_function_factory=probability_function_factory,
+                                                    num_threads=num_threads)

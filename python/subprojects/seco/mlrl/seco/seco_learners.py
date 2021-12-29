@@ -11,7 +11,7 @@ from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import Predictor
+from mlrl.common.cython.output import ClassificationPredictorFactory
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
 from mlrl.common.cython.pruning import PruningFactory
 from mlrl.common.cython.rule_induction import RuleInductionFactory, TopDownRuleInductionFactory
@@ -30,7 +30,7 @@ from mlrl.seco.cython.heuristics import HeuristicFactory, AccuracyFactory, Preci
     LaplaceFactory, WraFactory, FMeasureFactory, MEstimateFactory
 from mlrl.seco.cython.lift_functions import LiftFunctionFactory, PeakLiftFunctionFactory
 from mlrl.seco.cython.model import DecisionListBuilder
-from mlrl.seco.cython.output import LabelWiseClassificationPredictor
+from mlrl.seco.cython.output import LabelWiseClassificationPredictorFactory
 from mlrl.seco.cython.rule_evaluation_label_wise import LabelWiseMajorityRuleEvaluationFactory, \
     LabelWisePartialRuleEvaluationFactory, LabelWiseSingleLabelRuleEvaluationFactory
 from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
@@ -314,7 +314,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         return DecisionListBuilder()
 
     def _create_predictor(self, feature_characteristics: FeatureCharacteristics,
-                          label_characteristics: LabelCharacteristics) -> Predictor:
+                          label_characteristics: LabelCharacteristics) -> ClassificationPredictorFactory:
         num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
-        return LabelWiseClassificationPredictor(num_labels=label_characteristics.get_num_labels(),
-                                                num_threads=num_threads)
+        return LabelWiseClassificationPredictorFactory(num_labels=label_characteristics.get_num_labels(),
+                                                       num_threads=num_threads)

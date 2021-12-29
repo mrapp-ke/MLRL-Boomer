@@ -7,42 +7,43 @@ from libcpp.utility cimport move
 from libcpp.memory cimport unique_ptr, make_unique
 
 
-cdef class LabelWiseTransformationFunction:
+cdef class ProbabilityFunctionFactory:
     """
-    A wrapper for the pure virtual C++ class `ILabelWiseTransformationFunction`.
+    A wrapper for the pure virtual C++ class `IProbabilityFunctionFactory`.
     """
     pass
 
 
-cdef class LogisticFunction(LabelWiseTransformationFunction):
+cdef class LogisticFunctionFactory(ProbabilityFunctionFactory):
     """
-    A wrapper for the C++ class `LogisticFunction`.
+    A wrapper for the C++ class `LogisticFunctionFactory`.
     """
 
     def __cinit__(self):
-        self.transformation_function_ptr = <unique_ptr[ILabelWiseTransformationFunction]>make_unique[LogisticFunctionImpl]()
+        self.probability_function_factory_ptr = <unique_ptr[IProbabilityFunctionFactory]>make_unique[LogisticFunctionFactoryImpl]()
 
     def __reduce__(self):
-        return (LogisticFunction, ())
+        return (LogisticFunctionFactory, ())
 
 
-cdef class LabelWiseProbabilityPredictor(AbstractNumericalPredictor):
+cdef class LabelWiseProbabilityPredictorFactory(ProbabilityPredictorFactory):
 
-    def __cinit__(self, uint32 num_labels, LabelWiseTransformationFunction transformation_function not None,
+    def __cinit__(self, uint32 num_labels, ProbabilityFunctionFactory probability_function_factory not None,
                   uint32 num_threads):
         self.num_labels = num_labels
-        self.transformation_function = transformation_function
+        self.probability_function_factory = probability_function_factory
         self.num_threads = num_threads
-        self.predictor_ptr = <unique_ptr[IPredictor[float64]]>make_unique[LabelWiseProbabilityPredictorImpl](
-            move(transformation_function.transformation_function_ptr), num_threads)
+        self.predictor_factory_ptr = <unique_ptr[IProbabilityPredictorFactory]>make_unique[LabelWiseProbabilityPredictorFactoryImpl](
+            move(probability_function_factory.probability_function_factory_ptr), num_threads)
 
     def __reduce__(self):
-        return (LabelWiseProbabilityPredictor, (self.num_labels, self.transformation_function, self.num_threads))
+        return (LabelWiseProbabilityPredictorFactory, (self.num_labels, self.probability_function_factory,
+                                                       self.num_threads))
 
 
-cdef class LabelWiseRegressionPredictor(AbstractNumericalPredictor):
+cdef class LabelWiseRegressionPredictorFactory(RegressionPredictorFactory):
     """
-    A wrapper for the C++ class `LabelWiseRegressionPredictor`.
+    A wrapper for the C++ class `LabelWiseRegressionPredictorFactory`.
     """
 
     def __cinit__(self, uint32 num_labels, uint32 num_threads):
@@ -53,15 +54,16 @@ cdef class LabelWiseRegressionPredictor(AbstractNumericalPredictor):
         """
         self.num_labels = num_labels
         self.num_threads = num_threads
-        self.predictor_ptr = <unique_ptr[IPredictor[float64]]>make_unique[LabelWiseRegressionPredictorImpl](num_threads)
+        self.predictor_factory_ptr = <unique_ptr[IRegressionPredictorFactory]>make_unique[LabelWiseRegressionPredictorFactoryImpl](
+            num_threads)
 
     def __reduce__(self):
-        return (LabelWiseRegressionPredictor, (self.num_labels, self.num_threads))
+        return (LabelWiseRegressionPredictorFactory, (self.num_labels, self.num_threads))
 
 
-cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
+cdef class LabelWiseClassificationPredictorFactory(ClassificationPredictorFactory):
     """
-    A wrapper for the C++ class `LabelWiseClassificationPredictor`.
+    A wrapper for the C++ class `LabelWiseClassificationPredictorFactory`.
     """
 
     def __cinit__(self, uint32 num_labels, float64 threshold, uint32 num_threads):
@@ -74,16 +76,16 @@ cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
         self.num_labels = num_labels
         self.threshold = threshold
         self.num_threads = num_threads
-        self.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>make_unique[LabelWiseClassificationPredictorImpl](
+        self.predictor_factory_ptr = <unique_ptr[IClassificationPredictorFactory]>make_unique[LabelWiseClassificationPredictorFactoryImpl](
             threshold, num_threads)
 
     def __reduce__(self):
-        return (LabelWiseClassificationPredictor, (self.num_labels, self.threshold, self.num_threads))
+        return (LabelWiseClassificationPredictorFactory, (self.num_labels, self.threshold, self.num_threads))
 
 
-cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
+cdef class ExampleWiseClassificationPredictorFactory(ClassificationPredictorFactory):
     """
-    A wrapper for the C++ class `ExampleWiseClassificationPredictor`.
+    A wrapper for the C++ class `ExampleWiseClassificationPredictorFactory`.
     """
 
     def __cinit__(self, uint32 num_labels, SimilarityMeasureFactory similarity_measure_factory not None,
@@ -97,8 +99,8 @@ cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
         self.num_labels = num_labels
         self.similarity_measure_factory = similarity_measure_factory
         self.num_threads = num_threads
-        self.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>make_unique[ExampleWiseClassificationPredictorImpl](
+        self.predictor_factory_ptr = <unique_ptr[IClassificationPredictorFactory]>make_unique[ExampleWiseClassificationPredictorFactoryImpl](
             move(similarity_measure_factory.get_similarity_measure_factory_ptr()), num_threads)
 
     def __reduce__(self):
-        return (ExampleWiseClassificationPredictor, (self.num_labels, self.measure, self.num_threads))
+        return (ExampleWiseClassificationPredictorFactory, (self.num_labels, self.measure, self.num_threads))

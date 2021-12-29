@@ -26,7 +26,7 @@ from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, Instan
     LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory
 from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import Predictor, SparsePredictor
+from mlrl.common.cython.output import SparsePredictor, ClassificationPredictorFactory, ProbabilityPredictorFactory
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, RandomBiPartitionSamplingFactory, \
     LabelWiseStratifiedBiPartitionSamplingFactory, \
     ExampleWiseStratifiedBiPartitionSamplingFactory
@@ -484,8 +484,9 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         # Create predictors...
         feature_characteristics = FeatureCharacteristics(feature_matrix)
         label_characteristics = LabelCharacteristics(label_matrix)
-        self.predictor_ = self._create_predictor(feature_characteristics, label_characteristics)
-        self.probability_predictor_ = self._create_probability_predictor(feature_characteristics, label_characteristics)
+        self.predictor_factory_ = self._create_predictor_factory(feature_characteristics, label_characteristics)
+        self.probability_predictor_factory_ = self._create_probability_predictor_factory(feature_characteristics,
+                                                                                         label_characteristics)
         self.label_vectors_ = self._create_label_vector_set(label_matrix)
 
         # Create a mask that provides access to the information whether individual features are nominal or not...
@@ -555,20 +556,24 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         return algorithm_builder.build()
 
     def _predict(self, x):
-        predictor = self.predictor_
+        predictor_factory = self.predictor_factory_
         label_vectors = self.label_vectors_
-        return self.__predict(predictor, label_vectors, x)
+        model = self.model_
+        predictor = predictor_factory.create(model)
+        return self.__predict(predictor, model, label_vectors, x)
 
     def _predict_proba(self, x):
-        predictor = self.probability_predictor_
+        predictor_factory = self.probability_predictor_factory_
 
-        if predictor is None:
+        if predictor_factory is None:
             return super()._predict_proba(x)
         else:
             label_vectors = self.label_vectors_
-            return self.__predict(predictor, label_vectors, x)
+            model = self.model_
+            predictor = predictor_factory.create(model)
+            return self.__predict(predictor, model, label_vectors, x)
 
-    def __predict(self, predictor, label_vectors: LabelVectorSet, x):
+    def __predict(self, predictor, model, label_vectors: LabelVectorSet, x):
         sparse_format = SparseFormat.CSR
         sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
@@ -576,7 +581,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C', dtype=DTYPE_FLOAT32), reset=False,
                                 accept_sparse=(sparse_format.value if enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
-        model = self.model_
         predict_sparse = isinstance(predictor, SparsePredictor) and self.sparse_predictions_
         log.debug('A ' + ('sparse' if predict_sparse else 'dense') + ' matrix is used to store the predictions')
 
@@ -767,27 +771,29 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         pass
 
     @abstractmethod
-    def _create_predictor(self, feature_characteristics: FeatureCharacteristics,
-                          label_characteristics: LabelCharacteristics) -> Predictor:
+    def _create_predictor_factory(self, feature_characteristics: FeatureCharacteristics,
+                                  label_characteristics: LabelCharacteristics) -> ClassificationPredictorFactory:
         """
-        Must be implemented by subclasses in order to create the `Predictor` to be used for making predictions.
+        Must be implemented by subclasses in order to create the `ClassificationPredictorFactory` to be used for making
+        predictions.
 
         :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
         :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `Predictor` that has been created
+        :return:                        The `ClassificationPredictorFactory` that has been created
         """
         pass
 
-    def _create_probability_predictor(self, feature_characteristics: FeatureCharacteristics,
-                                      label_characteristics: LabelCharacteristics) -> Optional[Predictor]:
+    def _create_probability_predictor_factory(
+            self, feature_characteristics: FeatureCharacteristics,
+            label_characteristics: LabelCharacteristics) -> Optional[ProbabilityPredictorFactory]:
         """
-        Must be implemented by subclasses in order to create the `Predictor` to be used for predicting probability
-        estimates.
+        Must be implemented by subclasses in order to create the `ProbabilityPredictorFactory` to be used for predicting
+        probability estimates.
 
         :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
         :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `Predictor` that has been created or None, if the prediction of
-                                        probabilities is not supported
+        :return:                        The `ProbabilityPredictorFactory` that has been created or None, if the
+                                        prediction of probabilities is not supported
         """
         return None
 
