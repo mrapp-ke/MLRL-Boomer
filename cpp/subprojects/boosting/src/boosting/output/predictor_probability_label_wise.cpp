@@ -7,9 +7,19 @@
 
 namespace boosting {
 
-    float64 LogisticFunction::transform(float64 predictedScore) const {
-        return logisticFunction(predictedScore);
-    }
+    /**
+     * Allows to transform the score that is predicted for an individual label into a probability by applying the
+     * logistic sigmoid function.
+     */
+    class LogisticFunction final : public IProbabilityFunction {
+
+        public:
+
+            float64 transform(float64 predictedScore) const override {
+                return logisticFunction(predictedScore);
+            }
+
+    };
 
     static inline void applyTransformationFunction(CContiguousConstView<float64>::const_iterator originalIterator,
                                                    CContiguousView<float64>::iterator transformedIterator,
@@ -25,8 +35,7 @@ namespace boosting {
     LabelWiseProbabilityPredictor::LabelWiseProbabilityPredictor(
             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
         : probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {
-        assertNotNull("probabilityFunctionPtr", probabilityFunctionPtr_.get());
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     void LabelWiseProbabilityPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
@@ -90,6 +99,22 @@ namespace boosting {
             delete[] tmpArray1;
             delete[] tmpArray2;
         }
+    }
+
+    std::unique_ptr<IProbabilityFunction> LogisticFunctionFactory::create() const {
+        return std::make_unique<LogisticFunction>();
+    }
+
+    LabelWiseProbabilityPredictorFactory::LabelWiseProbabilityPredictorFactory(
+            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
+        : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
+        assertNotNull("probabilityFunctionFactoryPtr", probabilityFunctionFactoryPtr_.get());
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+    }
+
+    std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(const RuleModel& model) const {
+        std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
+        return std::make_unique<LabelWiseProbabilityPredictor>(std::move(probabilityFunctionPtr), numThreads_);
     }
 
 }
