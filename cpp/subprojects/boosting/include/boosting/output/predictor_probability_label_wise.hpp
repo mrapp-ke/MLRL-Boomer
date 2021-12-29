@@ -9,20 +9,20 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that implement a transformation function that is applied to the scores that
-     * are predicted for individual labels.
+     * Defines an interface for all classes that allow to transform the scores that are predicted for individual labels
+     * into probabilities.
      */
-    class ILabelWiseTransformationFunction {
+    class IProbabilityFunction {
 
         public:
 
-            virtual ~ILabelWiseTransformationFunction() { };
+            virtual ~IProbabilityFunction() { };
 
             /**
-             * Transforms the score that is predicted for an individual label.
+             * Transforms the score that is predicted for an individual label into a probability.
              *
              * @param predictedScore    The predicted score
-             * @return                  The result of the transformation
+             * @return                  The probability
              */
             virtual float64 transform(float64 predictedScore) const = 0;
 
@@ -32,7 +32,7 @@ namespace boosting {
      * Allows to transform the score that is predicted for an individual label into a probability by applying the
      * logistic sigmoid function.
      */
-    class LogisticFunction : public ILabelWiseTransformationFunction {
+    class LogisticFunction : public IProbabilityFunction {
 
         public:
 
@@ -51,20 +51,19 @@ namespace boosting {
 
         private:
 
-            std::unique_ptr<ILabelWiseTransformationFunction> transformationFunctionPtr_;
+            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param transformationFunctionPtr An unique pointer to an object of type
-             *                                  `ILabelWiseTransformationFunction` that should be used to transform
-             *                                  predicted scores into probabilities
+             * @param probabilityFunctionPtr    An unique pointer to an object of type `IProbabilityFunction` that
+             *                                  should be used to transform predicted scores into probabilities
              * @param numThreads                The number of CPU threads to be used to make predictions for different
              *                                  query examples in parallel. Must be at least 1
              */
-            LabelWiseProbabilityPredictor(std::unique_ptr<ILabelWiseTransformationFunction> transformationFunctionPtr,
+            LabelWiseProbabilityPredictor(std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                           uint32 numThreads);
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
