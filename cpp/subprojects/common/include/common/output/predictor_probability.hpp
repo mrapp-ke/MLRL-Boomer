@@ -18,3 +18,22 @@ class IProbabilityPredictor : public IPredictor<float64> {
         virtual ~IProbabilityPredictor() { };
 
 };
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IProbabilityPredictor`.
+ */
+class IProbabilityPredictorFactory {
+
+    public:
+
+        virtual ~IProbabilityPredictorFactory() { };
+
+        /**
+         * Creates and returns a new object of the type `IProbabilityPredictor`.
+         *
+         * @param model A reference to an object of type `RuleModel` that should be used to obtain the predictions
+         * @return      An unique pointer to an object of type `IProbabilityPredictor` that has been created
+         */
+        virtual std::unique_ptr<IProbabilityPredictor> create(const RuleModel& model) const = 0;
+
+};
