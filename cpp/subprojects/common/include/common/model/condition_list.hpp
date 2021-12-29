@@ -55,14 +55,6 @@ class ConditionList final {
         size_type getNumConditions() const;
 
         /**
-         * Returns how many conditions with a specific comparator are contained by the list.
-         *
-         * @param comparator The comparator
-         * @return           The number of conditions with the given comparator that are contained by the list
-         */
-        uint32 getNumConditions(Comparator comparator) const;
-
-        /**
          * Adds a new condition to the end of the list.
          *
          * @param condition A reference to an object of type `Condition` that should be added
