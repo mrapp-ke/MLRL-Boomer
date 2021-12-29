@@ -1,4 +1,4 @@
-#include "boosting/model/rule_list.hpp"
+#include "boosting/model/rule_list_builder.hpp"
 #include "common/model/body_empty.hpp"
 #include "common/model/body_conjunctive.hpp"
 
