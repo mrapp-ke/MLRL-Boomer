@@ -15,6 +15,45 @@ from scipy.sparse import csr_matrix
 import numpy as np
 
 
+cdef class ClassificationPredictorFactory:
+    """
+    A wrapper for the pure virtual C++ class `IClassificationPredictorFactory`.
+    """
+
+    def create(self, RuleModel model not None) -> AbstractBinaryPredictor:
+        cdef AbstractBinaryPredictor predictor = AbstractBinaryPredictor.__new__(AbstractBinaryPredictor)
+        predictor.num_labels = self.num_labels
+        predictor.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>self.predictor_factory_ptr.get().create(
+            dereference(model.model_ptr))
+        return predictor
+
+
+cdef class RegressionPredictorFactory:
+    """
+    A wrapper for the pure virtual C++ class `IRegressionPredictorFactory`.
+    """
+
+    def create(self, RuleModel model not None) -> AbstractNumericalPredictor:
+        cdef AbstractNumericalPredictor predictor = AbstractNumericalPredictor.__new__(AbstractNumericalPredictor)
+        predictor.num_labels = self.num_labels
+        predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>self.predictor_factory_ptr.get().create(
+            dereference(model.model_ptr))
+        return predictor
+
+
+cdef class ProbabilityPredictorFactory:
+    """
+    A wrapper for the pure virtual C++ class `IProbabilityPredictorFactory`.
+    """
+
+    def create(self, RuleModel model not None) -> AbstractNumericalPredictor:
+        cdef AbstractNumericalPredictor predictor = AbstractNumericalPredictor.__new__(AbstractNumericalPredictor)
+        predictor.num_labels = self.num_labels
+        predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>self.predictor_factory_ptr.get().create(
+            dereference(model.model_ptr))
+        return predictor
+
+
 cdef class Predictor:
     """
     A wrapper for the pure virtual C++ class `IPredictor`.

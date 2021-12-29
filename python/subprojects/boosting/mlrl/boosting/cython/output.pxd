@@ -1,87 +1,91 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
 from mlrl.common.cython._measures cimport ISimilarityMeasureFactory
 from mlrl.common.cython.measures cimport SimilarityMeasureFactory
-from mlrl.common.cython.output cimport AbstractBinaryPredictor, AbstractNumericalPredictor, IPredictor, ISparsePredictor
+from mlrl.common.cython.output cimport AbstractBinaryPredictor, AbstractNumericalPredictor, \
+    ProbabilityPredictorFactory, IProbabilityPredictorFactory, RegressionPredictorFactory, \
+    IRegressionPredictorFactory, ClassificationPredictorFactory, IClassificationPredictorFactory
 
 from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "boosting/output/predictor_probability_label_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass ILabelWiseTransformationFunction:
+    cdef cppclass IProbabilityFunctionFactory:
         pass
 
 
-    cdef cppclass LogisticFunctionImpl"boosting::LogisticFunction"(ILabelWiseTransformationFunction):
+    cdef cppclass LogisticFunctionFactoryImpl"boosting::LogisticFunctionFactory"(IProbabilityFunctionFactory):
         pass
 
 
-    cdef cppclass LabelWiseProbabilityPredictorImpl"boosting::LabelWiseProbabilityPredictor"(IPredictor[float64]):
+    cdef cppclass LabelWiseProbabilityPredictorFactoryImpl"boosting::LabelWiseProbabilityPredictorFactory"(
+            IProbabilityPredictorFactory):
 
         # Constructors:
 
-        LabelWiseProbabilityPredictorImpl(unique_ptr[ILabelWiseTransformationFunction] transformationFunctionPtr,
-                                          uint32 numThreads) except +
+        LabelWiseProbabilityPredictorFactoryImpl(unique_ptr[IProbabilityFunctionFactory] probabilityFunctionFactoryPtr,
+                                                 uint32 numThreads) except +
 
 
 cdef extern from "boosting/output/predictor_regression_label_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass LabelWiseRegressionPredictorImpl"boosting::LabelWiseRegressionPredictor"(IPredictor[float64]):
+    cdef cppclass LabelWiseRegressionPredictorFactoryImpl"boosting::LabelWiseRegressionPredictorFactory"(
+            IRegressionPredictorFactory):
 
         # Constructors:
 
-        LabelWiseRegressionPredictorImpl(uint32 numThreads) except +
+        LabelWiseRegressionPredictorFactoryImpl(uint32 numThreads) except +
 
 
 cdef extern from "boosting/output/predictor_classification_label_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass LabelWiseClassificationPredictorImpl"boosting::LabelWiseClassificationPredictor"(
-            ISparsePredictor[uint8]):
+    cdef cppclass LabelWiseClassificationPredictorFactoryImpl"boosting::LabelWiseClassificationPredictorFactory"(
+            IClassificationPredictorFactory):
 
         # Constructors:
 
-        LabelWiseClassificationPredictorImpl(float64 threshold, uint32 numThreads) except +
+        LabelWiseClassificationPredictorFactoryImpl(float64 threshold, uint32 numThreads) except +
 
 
 cdef extern from "boosting/output/predictor_classification_example_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass ExampleWiseClassificationPredictorImpl"boosting::ExampleWiseClassificationPredictor"(
-            ISparsePredictor[uint8]):
+    cdef cppclass ExampleWiseClassificationPredictorFactoryImpl"boosting::ExampleWiseClassificationPredictorFactory"(
+            IClassificationPredictorFactory):
 
         # Constructors:
 
-        ExampleWiseClassificationPredictorImpl(unique_ptr[ISimilarityMeasureFactory] similarityMeasureFactoryPtr,
-                                               uint32 numThreads) except +
+        ExampleWiseClassificationPredictorFactoryImpl(unique_ptr[ISimilarityMeasureFactory] similarityMeasureFactoryPtr,
+                                                      uint32 numThreads) except +
 
 
-cdef class LabelWiseTransformationFunction:
+cdef class ProbabilityFunctionFactory:
 
     # Attributes:
 
-    cdef unique_ptr[ILabelWiseTransformationFunction] transformation_function_ptr
+    cdef unique_ptr[IProbabilityFunctionFactory] probability_function_factory_ptr
 
 
-cdef class LogisticFunction(LabelWiseTransformationFunction):
+cdef class LogisticFunctionFactory(ProbabilityFunctionFactory):
     pass
 
 
-cdef class LabelWiseProbabilityPredictor(AbstractNumericalPredictor):
+cdef class LabelWiseProbabilityPredictorFactory(ProbabilityPredictorFactory):
 
     # Attributes:
 
-    cdef LabelWiseTransformationFunction transformation_function
+    cdef ProbabilityFunctionFactory probability_function_factory
 
     cdef uint32 num_threads
 
 
-cdef class LabelWiseRegressionPredictor(AbstractNumericalPredictor):
+cdef class LabelWiseRegressionPredictorFactory(RegressionPredictorFactory):
 
     # Attributes
 
     cdef uint32 num_threads
 
 
-cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
+cdef class LabelWiseClassificationPredictorFactory(ClassificationPredictorFactory):
 
     # Attributes:
 
@@ -90,7 +94,7 @@ cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
     cdef uint32 num_threads
 
 
-cdef class ExampleWiseClassificationPredictor(AbstractBinaryPredictor):
+cdef class ExampleWiseClassificationPredictorFactory(ClassificationPredictorFactory):
 
     # Attributes
 
