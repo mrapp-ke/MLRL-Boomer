@@ -12,21 +12,24 @@ cdef class LabelMatrix:
     A wrapper for the pure virtual C++ class `ILabelMatrix`.
     """
 
+    cdef ILabelMatrix* get_label_matrix_ptr(self):
+        pass
+
     def get_num_rows(self) -> int:
         """
         Returns the number of rows in the matrix.
 
-        :return: The number of rows
+        :return The number of rows
         """
-        return self.label_matrix_ptr.get().getNumRows()
+        return self.get_label_matrix_ptr().getNumRows()
 
     def get_num_cols(self) -> int:
         """
         Returns the number of columns in the matrix.
 
-        :return: The number of columns
+        :return The number of columns
         """
-        return self.label_matrix_ptr.get().getNumCols()
+        return self.get_label_matrix_ptr().getNumCols()
 
     def is_sparse(self) -> bool:
         """
@@ -36,18 +39,22 @@ cdef class LabelMatrix:
         """
         return False
 
-    def calculate_label_cardinality(self) -> float:
-        """
-        Calculates and returns the label cardinality, i.e., the average number of relevant labels per example.
 
-        :return: The label cardinality
-        """
-        return self.label_matrix_ptr.get().calculateLabelCardinality()
-
-
-cdef class CContiguousLabelMatrix(LabelMatrix):
+cdef class RowWiseLabelMatrix(LabelMatrix):
     """
-    A wrapper for the C++ class `CContiguousLabelMatrix`.
+    A wrapper for the pure virtual C++ class `IRowWiseLabelMatrix`.
+    """
+
+    cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self):
+        pass
+
+    def calculate_label_cardinality(self) -> int:
+        return self.get_row_wise_label_matrix_ptr().calculateLabelCardinality()
+
+
+cdef class CContiguousLabelMatrix(RowWiseLabelMatrix):
+    """
+    A wrapper for the pure virtual C++ class `ICContiguousLabelMatrix`.
     """
 
     def __cinit__(self, const uint8[:, ::1] array):
@@ -57,14 +64,18 @@ cdef class CContiguousLabelMatrix(LabelMatrix):
         """
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_labels = array.shape[1]
-        self.label_matrix_ptr = <unique_ptr[ILabelMatrix]>make_unique[CContiguousLabelMatrixImpl](num_examples,
-                                                                                                  num_labels,
-                                                                                                  &array[0, 0])
+        self.label_matrix_ptr = createCContiguousLabelMatrix(num_examples, num_labels, &array[0, 0])
+
+    cdef ILabelMatrix* get_label_matrix_ptr(self):
+        return self.label_matrix_ptr.get()
+
+    cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self):
+        return self.label_matrix_ptr.get()
 
 
-cdef class CsrLabelMatrix(LabelMatrix):
+cdef class CsrLabelMatrix(RowWiseLabelMatrix):
     """
-    A wrapper for the C++ class `CsrLabelMatrix`.
+    A wrapper for the pure virtual C++ class `ICsrLabelMatrix`.
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_labels, uint32[::1] row_indices, uint32[::1] col_indices):
@@ -77,9 +88,13 @@ cdef class CsrLabelMatrix(LabelMatrix):
         :param col_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
                                 column-indices, the relevant labels correspond to
         """
-        self.label_matrix_ptr = <unique_ptr[ILabelMatrix]>make_unique[CsrLabelMatrixImpl](num_examples, num_labels,
-                                                                                          &row_indices[0],
-                                                                                          &col_indices[0])
+        self.label_matrix_ptr = createCsrLabelMatrix(num_examples, num_labels, &row_indices[0], &col_indices[0])
+
+    cdef ILabelMatrix* get_label_matrix_ptr(self):
+        return self.label_matrix_ptr.get()
+
+    cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self):
+        return self.label_matrix_ptr.get()
 
     def is_sparse(self) -> bool:
         return True
@@ -325,8 +340,8 @@ cdef class LabelVectorSet:
         self.label_vector_set_ptr = make_unique[LabelVectorSetImpl]()
 
     @classmethod
-    def create(cls, LabelMatrix label_matrix):
-        cdef ILabelMatrix* label_matrix_ptr = label_matrix.label_matrix_ptr.get()
+    def create(cls, RowWiseLabelMatrix label_matrix):
+        cdef IRowWiseLabelMatrix* label_matrix_ptr = label_matrix.get_row_wise_label_matrix_ptr()
         cdef uint32 num_rows = label_matrix_ptr.getNumRows()
         cdef uint32 num_cols = label_matrix_ptr.getNumCols()
         cdef unique_ptr[LabelVectorSetImpl] label_vector_set_ptr = make_unique[LabelVectorSetImpl]()

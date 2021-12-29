@@ -87,7 +87,7 @@ const BitVector& BiPartition::getSecondSet() {
 }
 
 std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(const IInstanceSamplingFactory& factory,
-                                                                       const ILabelMatrix& labelMatrix,
+                                                                       const IRowWiseLabelMatrix& labelMatrix,
                                                                        IStatistics& statistics) {
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
 }

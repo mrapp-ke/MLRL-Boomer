@@ -3,16 +3,28 @@
  */
 #pragma once
 
+#include "common/input/label_matrix_row_wise.hpp"
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/functions.hpp"
-#include "common/input/label_matrix.hpp"
 
+
+/**
+ * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
+ * are stored in a C-contiguous array.
+ */
+class ICContiguousLabelMatrix : public IRowWiseLabelMatrix {
+
+    public:
+
+        virtual ~ICContiguousLabelMatrix() { };
+
+};
 
 /**
  * Implements random read-only access to the labels of individual training examples that are stored in a pre-allocated
  * C-contiguous array.
  */
-class CContiguousLabelMatrix final : public ILabelMatrix {
+class CContiguousLabelMatrix final : public ICContiguousLabelMatrix {
 
     private:
 
@@ -145,3 +157,14 @@ class CContiguousLabelMatrix final : public ILabelMatrix {
                                                                   IStatistics& statistics) const override;
 
 };
+
+/**
+ * Creates and returns a new object of the type `ICContiguousLabelMatrix`.
+
+ * @param numRows   The number of rows in the label matrix
+ * @param numCols   The number of columns in the label matrix
+ * @param array     A pointer to a C-contiguous array of type `uint8` that stores the labels
+ * @return          An unique pointer to an object of type `ICContiguousLabelMatrix` that has been created
+ */
+std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(uint32 numRows, uint32 numCols,
+                                                                      const uint8* array);

@@ -94,3 +94,8 @@ std::unique_ptr<IInstanceSampling> CsrLabelMatrix::createInstanceSampling(const 
                                                                           IStatistics& statistics) const {
     return factory.create(*this, partition, statistics);
 }
+
+std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,
+                                                      uint32* colIndices) {
+    return std::make_unique<CsrLabelMatrix>(numRows, numCols, rowIndices, colIndices);
+}

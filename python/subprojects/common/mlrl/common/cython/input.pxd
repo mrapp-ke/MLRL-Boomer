@@ -69,6 +69,13 @@ cdef extern from "common/input/label_matrix.hpp" nogil:
 
         uint32 getNumCols()
 
+
+cdef extern from "common/input/label_matrix_row_wise.hpp" nogil:
+
+    cdef cppclass IRowWiseLabelMatrix(ILabelMatrix):
+
+        # Functions:
+
         float64 calculateLabelCardinality()
 
         unique_ptr[LabelVector] createLabelVector(uint32 row)
@@ -76,20 +83,21 @@ cdef extern from "common/input/label_matrix.hpp" nogil:
 
 cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
 
-    cdef cppclass CContiguousLabelMatrixImpl"CContiguousLabelMatrix"(ILabelMatrix):
+    cdef cppclass ICContiguousLabelMatrix(IRowWiseLabelMatrix):
+        pass
 
-        # Constructors:
 
-        CContiguousLabelMatrixImpl(uint32 numRows, uint32 numCols, const uint8* array)
+    unique_ptr[ICContiguousLabelMatrix] createCContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
 
 
 cdef extern from "common/input/label_matrix_csr.hpp" nogil:
 
-    cdef cppclass CsrLabelMatrixImpl"CsrLabelMatrix"(ILabelMatrix):
+    cdef cppclass ICsrLabelMatrix(IRowWiseLabelMatrix):
+        pass
 
-        # Constructors:
 
-        CsrLabelMatrixImpl(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
+    unique_ptr[ICsrLabelMatrix] createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,
+                                                     uint32* colIndices)
 
 
 cdef extern from "common/input/feature_matrix.hpp" nogil:
@@ -188,17 +196,30 @@ cdef extern from "common/input/nominal_feature_mask_mixed.hpp" nogil:
 
 cdef class LabelMatrix:
 
+    # Functions:
+
+    cdef ILabelMatrix* get_label_matrix_ptr(self)
+
+
+cdef class RowWiseLabelMatrix(LabelMatrix):
+
+    # Functions:
+
+    cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self)
+
+
+cdef class CContiguousLabelMatrix(RowWiseLabelMatrix):
+
     # Attributes:
 
-    cdef unique_ptr[ILabelMatrix] label_matrix_ptr
+    cdef unique_ptr[ICContiguousLabelMatrix] label_matrix_ptr
 
 
-cdef class CContiguousLabelMatrix(LabelMatrix):
-    pass
+cdef class CsrLabelMatrix(RowWiseLabelMatrix):
 
+    # Attributes:
 
-cdef class CsrLabelMatrix(LabelMatrix):
-    pass
+    cdef unique_ptr[ICsrLabelMatrix] label_matrix_ptr
 
 
 cdef class FeatureMatrix:

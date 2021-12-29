@@ -122,7 +122,7 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
 
         std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
                                                const IColumnWiseFeatureMatrix& featureMatrix,
-                                               const ILabelMatrix& labelMatrix, uint32 randomState,
+                                               const IRowWiseLabelMatrix& labelMatrix, uint32 randomState,
                                                IModelBuilder& modelBuilder) {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
