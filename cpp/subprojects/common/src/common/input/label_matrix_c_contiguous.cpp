@@ -93,3 +93,8 @@ std::unique_ptr<IInstanceSampling> CContiguousLabelMatrix::createInstanceSamplin
         const IInstanceSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const {
     return factory.create(*this, partition, statistics);
 }
+
+std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(uint32 numRows, uint32 numCols,
+                                                                      const uint8* array) {
+    return std::make_unique<CContiguousLabelMatrix>(numRows, numCols, array);
+}

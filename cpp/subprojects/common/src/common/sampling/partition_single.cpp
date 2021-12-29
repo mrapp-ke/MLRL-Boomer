@@ -23,7 +23,7 @@ uint32 SinglePartition::getNumElements() const {
 }
 
 std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(const IInstanceSamplingFactory& factory,
-                                                                           const ILabelMatrix& labelMatrix,
+                                                                           const IRowWiseLabelMatrix& labelMatrix,
                                                                            IStatistics& statistics) {
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
 }

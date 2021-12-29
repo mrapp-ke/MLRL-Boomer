@@ -5,7 +5,7 @@
 
 #include "common/input/nominal_feature_mask.hpp"
 #include "common/input/feature_matrix_column_wise.hpp"
-#include "common/input/label_matrix.hpp"
+#include "common/input/label_matrix_row_wise.hpp"
 #include "common/model/model_builder.hpp"
 #include "common/rule_induction/rule_induction.hpp"
 #include "common/sampling/label_sampling.hpp"
@@ -35,8 +35,8 @@ class IRuleModelAssemblage {
          *                              the information whether individual features are nominal or not
          * @param featureMatrix         A reference to an object of type `IColumnWiseFeatureMatrix` that provides
          *                              column-wise access to the feature values of individual training examples
-         * @param labelMatrix           A reference to an object of type `ILabelMatrix` that provides access to the
-         *                              labels of individual training examples
+         * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
+         *                              access to the labels of individual training examples
          * @param randomState           The seed to be used by the random number generators
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the induced rules should be
          *                              added to
@@ -45,7 +45,7 @@ class IRuleModelAssemblage {
          */
         virtual std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
                                                        const IColumnWiseFeatureMatrix& featureMatrix,
-                                                       const ILabelMatrix& labelMatrix, uint32 randomState,
+                                                       const IRowWiseLabelMatrix& labelMatrix, uint32 randomState,
                                                        IModelBuilder& modelBuilder) = 0;
 
 };

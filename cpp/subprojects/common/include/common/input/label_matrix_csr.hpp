@@ -3,16 +3,28 @@
  */
 #pragma once
 
+#include "common/input/label_matrix_row_wise.hpp"
 #include "common/data/view_csr_binary.hpp"
 #include "common/data/functions.hpp"
-#include "common/input/label_matrix.hpp"
 
+
+/**
+ * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
+ * are stored in a sparse matrix in the compressed sparse row (CSR) format.
+ */
+class ICsrLabelMatrix : public IRowWiseLabelMatrix {
+
+    public:
+
+        virtual ~ICsrLabelMatrix() { };
+
+};
 
 /**
  * Implements row-wise read-only access to the labels of individual training examples that are stored in a pre-allocated
  * sparse matrix in the compressed sparse row (CSR) format.
  */
-class CsrLabelMatrix final : public ILabelMatrix {
+class CsrLabelMatrix final : public ICsrLabelMatrix {
 
     private:
 
@@ -166,3 +178,18 @@ class CsrLabelMatrix final : public ILabelMatrix {
                                                                   IStatistics& statistics) const override;
 
 };
+
+/**
+ * Creates and returns a new object of the type `ICsrLabelMatrix`.
+ *
+ * @param numRows       The number of rows in the label matrix
+ * @param numCols       The number of columns in the label matrix
+ * @param rowIndices    A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
+ *                      of the first element in `colIndices` that corresponds to a certain row. The index at the last
+ *                      position is equal to `num_non_zero_values`
+ * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
+ *                      column-indices, the relevant labels correspond to
+ * @return              An unique pointer to an object of type `ICsrLabelMatrix` that has been created
+ */
+std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,
+                                                      uint32* colIndices);
