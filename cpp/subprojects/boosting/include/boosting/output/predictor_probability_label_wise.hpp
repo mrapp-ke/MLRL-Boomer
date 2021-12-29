@@ -59,40 +59,6 @@ namespace boosting {
     };
 
     /**
-     * An implementation of the type `ILabelWiseProbabilityPredictor` that allows to predict label-wise probabilities
-     * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
-     * that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
-     * into probabilities in [0, 1] according to a certain transformation function that is applied to each label
-     * individually.
-     */
-    class LabelWiseProbabilityPredictor final : public IProbabilityPredictor {
-
-        private:
-
-            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
-
-            uint32 numThreads_;
-
-        public:
-
-            /**
-             * @param probabilityFunctionPtr    An unique pointer to an object of type `IProbabilityFunction` that
-             *                                  should be used to transform predicted scores into probabilities
-             * @param numThreads                The number of CPU threads to be used to make predictions for different
-             *                                  query examples in parallel. Must be at least 1
-             */
-            LabelWiseProbabilityPredictor(std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
-                                          uint32 numThreads);
-
-            void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override;
-
-            void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override;
-
-    };
-
-    /**
      * Allows to create instances of the type `IProbabilityPredictor` that allow to predict label-wise probabilities
      * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
      * that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
