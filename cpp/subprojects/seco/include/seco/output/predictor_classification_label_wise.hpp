@@ -3,31 +3,19 @@
  */
 #pragma once
 
-#include "common/output/predictor_sparse.hpp"
+#include "common/output/predictor_classification.hpp"
 
 
 namespace seco {
 
     /**
-     * Defines an interface for all classes that allow to predict whether individual labels of given query examples are
-     * relevant or irrelevant using an existing rule-based model.
+     * An implementation of the type `IClassificationPredictor` that allows to predict whether individual labels of
+     * given query examples are relevant or irrelevant by processing rules of an existing rule-based model in the order
+     * they have been learner. If a rule covers an example, its prediction (1 if the label is relevant, 0 otherwise) is
+     * applied to each label individually, if none of the previous rules has already predicted for a particular example
+     * and label.
      */
-    class ILabelWiseClassificationPredictor : public ISparsePredictor<uint8> {
-
-        public:
-
-            virtual ~ILabelWiseClassificationPredictor() { };
-
-    };
-
-    /**
-     * An implementation of the type `ILabelWiseClassificationPredictor` that allows to predict whether individual
-     * labels of given query examples are relevant or irrelevant by processing rules of an existing rule-based model in
-     * the order they have been learner. If a rule covers an example, its prediction (1 if the label is relevant, 0
-     * otherwise) is applied to each label individually, if none of the previous rules has already predicted for a
-     * particular example and label.
-     */
-    class LabelWiseClassificationPredictor final : public ILabelWiseClassificationPredictor {
+    class LabelWiseClassificationPredictor final : public IClassificationPredictor {
 
         private:
 

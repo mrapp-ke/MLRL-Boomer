@@ -3,38 +3,11 @@
  */
 #pragma once
 
-#include "common/output/predictor_sparse.hpp"
+#include "common/output/predictor_classification.hpp"
 #include "common/measures/measure_similarity.hpp"
 
 
 namespace boosting {
-
-    /**
-     * Defines an interface for all classes that allow to predict known label vectors for given query examples by using
-     * an existing rule-based model.
-     */
-    class IExampleWiseClassificationPredictor : public ISparsePredictor<uint8> {
-
-        public:
-
-            virtual ~IExampleWiseClassificationPredictor() { };
-
-            /**
-             * Obtains predictions for different examples, based on predicted scores, and writes them to a given
-             * prediction matrix.
-             *
-             * @param scoreMatrix       A reference to an object of type `CContiguousConstView` that stores the
-             *                          predicted scores
-             * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
-             *                          written to. May contain arbitrary values
-             * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label
-             *                          vectors or a null pointer, if no such set is available
-             */
-            virtual void transform(const CContiguousConstView<float64>& scoreMatrix,
-                                   CContiguousView<uint8>& predictionMatrix,
-                                   const LabelVectorSet* labelVectors) const = 0;
-
-    };
 
     /**
      * An implementation of the type `IExampleWiseClassificationPredictor` that allows to predict known label vectors
@@ -42,7 +15,7 @@ namespace boosting {
      * the aggregated score vector to the known label vectors according to a certain distance measure. The label vector
      * that is closest to the aggregated score vector is finally predicted.
      */
-    class ExampleWiseClassificationPredictor final : public IExampleWiseClassificationPredictor {
+    class ExampleWiseClassificationPredictor final : public IClassificationPredictor {
 
         private:
 
@@ -63,8 +36,20 @@ namespace boosting {
             ExampleWiseClassificationPredictor(std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr,
                                                uint32 numThreads);
 
+            /**
+             * Obtains predictions for different examples, based on predicted scores, and writes them to a given
+             * prediction matrix.
+             *
+             * @param scoreMatrix       A reference to an object of type `CContiguousConstView` that stores the
+             *                          predicted scores
+             * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
+             *                          written to. May contain arbitrary values
+             * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label
+             *                          vectors or a null pointer, if no such set is available
+             */
+            // TODO Move to interface IClassificationPredictor
             void transform(const CContiguousConstView<float64>& scoreMatrix, CContiguousView<uint8>& predictionMatrix,
-                           const LabelVectorSet* labelVectors) const override;
+                           const LabelVectorSet* labelVectors) const;
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const RuleModel& model, const LabelVectorSet* labelVectors) const override;
