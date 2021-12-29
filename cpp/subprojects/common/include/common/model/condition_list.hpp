@@ -4,6 +4,8 @@
 #pragma once
 
 #include "common/model/condition.hpp"
+#include "common/model/body_conjunctive.hpp"
+#include <memory>
 #include <list>
 #include <array>
 
@@ -71,5 +73,12 @@ class ConditionList final {
          * Removes the last condition from the list.
          */
         void removeLast();
+
+        /**
+         * Creates and returns a new object of type `ConjunctiveBody` from the conditions that contained by this list.
+         *
+         * @return An unique pointer to an object of type `ConjunctiveBody` that has been created
+         */
+        std::unique_ptr<ConjunctiveBody> createConjunctiveBody() const;
 
 };
