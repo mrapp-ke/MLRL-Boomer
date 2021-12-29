@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/predictor.hpp"
+#include "common/output/predictor_probability.hpp"
 
 
 namespace boosting {
@@ -41,25 +41,13 @@ namespace boosting {
     };
 
     /**
-     * Defines an interface for all classes that allow to predict label-wise probabilities for given query examples,
-     * which estimate the chance of individual labels to be relevant, using an existing rule-based model.
-     */
-    class ILabelWiseProbabilityPredictor : public IPredictor<float64> {
-
-        public:
-
-            virtual ~ILabelWiseProbabilityPredictor() { };
-
-    };
-
-    /**
      * An implementation of the type `ILabelWiseProbabilityPredictor` that allows to predict label-wise probabilities
      * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
      * that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
      * into probabilities in [0, 1] according to a certain transformation function that is applied to each label
      * individually.
      */
-    class LabelWiseProbabilityPredictor final : public ILabelWiseProbabilityPredictor {
+    class LabelWiseProbabilityPredictor final : public IProbabilityPredictor {
 
         private:
 
