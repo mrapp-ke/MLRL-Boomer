@@ -15,7 +15,7 @@ source_files = [
     'src/boosting/losses/loss_label_wise_squared_hinge.cpp',
     'src/boosting/math/blas.cpp',
     'src/boosting/math/lapack.cpp',
-    'src/boosting/model/rule_list.cpp',
+    'src/boosting/model/rule_list_builder.cpp',
     'src/boosting/output/predictor_classification_example_wise.cpp',
     'src/boosting/output/predictor_classification_label_wise.cpp',
     'src/boosting/output/predictor_probability_label_wise.cpp',
