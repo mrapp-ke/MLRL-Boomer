@@ -41,14 +41,25 @@ namespace boosting {
     };
 
     /**
-     * Allows to predict probabilities for given query examples, which estimate the chance of individual labels to be
-     * relevant, using an existing rule-based model that has been learned using a boosting algorithm.
-     *
-     * For prediction, the scores that are provided by the individual rules, are summed up. The aggregated scores are
-     * then transformed into probabilities in [0, 1] according to a certain transformation function that is applied to
-     * the labels individually.
+     * Defines an interface for all classes that allow to predict probabilities for given query examples, which estimate
+     * the chance of individual labels to be relevant, using an existing rule-based model.
      */
-    class LabelWiseProbabilityPredictor : public IPredictor<float64> {
+    class ILabelWiseProbabilityPredictor : public IPredictor<float64> {
+
+        public:
+
+            virtual ~ILabelWiseProbabilityPredictor() { };
+
+    };
+
+    /**
+     * An implementation of the type `ILabelWiseProbabilityPredictor` that allows to predict probabilities for given
+     * query examples, which estimate the chance of individual labels to be relevant, by summing up the scores that are
+     * provided by individual rules of an existing rule-based models and transforming the aggregated scores into
+     * probabilities in [0, 1] according to a certain transformation function that is applied to each label
+     * individually.
+     */
+    class LabelWiseProbabilityPredictor final : public ILabelWiseProbabilityPredictor {
 
         private:
 
@@ -68,15 +79,9 @@ namespace boosting {
             LabelWiseProbabilityPredictor(std::unique_ptr<ILabelWiseTransformationFunction> transformationFunctionPtr,
                                           uint32 numThreads);
 
-            /**
-             * @see `IPredictor::predict`
-             */
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
                          const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 
-            /**
-             * @see `IPredictor::predict`
-             */
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
                          const RuleModel& model, const LabelVectorSet* labelVectors) const override;
 
