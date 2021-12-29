@@ -3,62 +3,17 @@
  */
 #pragma once
 
-#include "common/output/predictor.hpp"
+#include "common/output/predictor_regression.hpp"
 
 
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that allow predict label-wise regression scores for given query examples
-     * using an existing rule-based model.
+     * An implementation of the type `IRegressionPredictor` that allows to predict label-wise regression scores for
+     * given query examples by summing up the scores that are provided by the individual rules of an existing rule-based
+     * model for each label individually.
      */
-    class ILabelWiseRegressionPredictor : public IPredictor<float64> {
-
-        public:
-
-            virtual ~ILabelWiseRegressionPredictor() { };
-
-            /**
-             * Obtains predictions for all examples in a C-contiguous matrix, using a single rule, and writes them to a
-             * given prediction matrix.
-             *
-             * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the
-             *                          feature values of the examples
-             * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
-             *                          written to. May contain arbitrary values
-             * @param rule              A reference to an object of type `Rule` that should be used to obtain the
-             *                          predictions
-             * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label
-             *                          vectors or a null pointer, if no such set is available
-             */
-            virtual void predict(const CContiguousFeatureMatrix& featureMatrix,
-                                 CContiguousView<float64>& predictionMatrix, const Rule& rule,
-                                 const LabelVectorSet* labelVectors) const = 0;
-
-            /**
-             * Obtains predictions for all examples in a sparse CSR matrix, using a single rule, and writes them to a
-             * given prediction matrix.
-             *
-             * @param featureMatrix     A reference to an object of type `CsrFeatureMatrix` that stores the feature
-             *                          values of the examples
-             * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
-             *                          written to. May contain arbitrary values
-             * @param rule              A reference to an object of type `Rule` that should be used to obtain the
-             *                          predictions
-             * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label
-             *                          vectors or a null pointer, if no such set is available
-             */
-            virtual void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                                 const Rule& rule, const LabelVectorSet* labelVectors) const = 0;
-
-    };
-
-    /**
-     * An implementation of the type `ILabelWiseRegressionPredictor` that allows to predict label-wise regression scores
-     * for given query examples by summing up the scores that are provided by the individual rules of an existing
-     * rule-based model for each label individually.
-     */
-    class LabelWiseRegressionPredictor final : public ILabelWiseRegressionPredictor {
+    class LabelWiseRegressionPredictor final : public IRegressionPredictor {
 
         private:
 
