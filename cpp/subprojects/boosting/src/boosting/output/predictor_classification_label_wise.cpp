@@ -47,7 +47,7 @@ namespace boosting {
 
     LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(float64 threshold, uint32 numThreads)
         : threshold_(threshold), numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
@@ -151,7 +151,7 @@ namespace boosting {
     LabelWiseClassificationPredictorFactory::LabelWiseClassificationPredictorFactory(float64 threshold,
                                                                                      uint32 numThreads)
         : threshold_(threshold), numThreads_(numThreads) {
-
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
     std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
