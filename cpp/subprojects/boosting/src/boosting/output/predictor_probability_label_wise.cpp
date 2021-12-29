@@ -14,18 +14,18 @@ namespace boosting {
     static inline void applyTransformationFunction(CContiguousConstView<float64>::const_iterator originalIterator,
                                                    CContiguousView<float64>::iterator transformedIterator,
                                                    uint32 numElements,
-                                                   const ILabelWiseTransformationFunction& transformationFunction) {
+                                                   const IProbabilityFunction& probabilityFunction) {
         for (uint32 i = 0; i < numElements; i++) {
             float64 originalValue = originalIterator[i];
-            float64 transformedValue = transformationFunction.transform(originalValue);
+            float64 transformedValue = probabilityFunction.transform(originalValue);
             transformedIterator[i] = transformedValue;
         }
     }
 
     LabelWiseProbabilityPredictor::LabelWiseProbabilityPredictor(
-            std::unique_ptr<ILabelWiseTransformationFunction> transformationFunctionPtr, uint32 numThreads)
-        : transformationFunctionPtr_(std::move(transformationFunctionPtr)), numThreads_(numThreads) {
-        assertNotNull("transformationFunctionPtr", transformationFunctionPtr_.get());
+            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
+        : probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {
+        assertNotNull("probabilityFunctionPtr", probabilityFunctionPtr_.get());
         assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
@@ -37,10 +37,10 @@ namespace boosting {
         const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
         CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
         const RuleModel* modelPtr = &model;
-        const ILabelWiseTransformationFunction* transformationFunctionPtr = transformationFunctionPtr_.get();
+        const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-        firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(transformationFunctionPtr) \
+        firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(probabilityFunctionPtr) \
         schedule(dynamic) num_threads(numThreads_)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
@@ -51,7 +51,7 @@ namespace boosting {
             }
 
             applyTransformationFunction(&scoreVector[0], predictionMatrixPtr->row_begin(i), numLabels,
-                                        *transformationFunctionPtr);
+                                        *probabilityFunctionPtr);
             delete[] scoreVector;
         }
     }
@@ -65,11 +65,11 @@ namespace boosting {
         const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
         CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
         const RuleModel* modelPtr = &model;
-        const ILabelWiseTransformationFunction* transformationFunctionPtr = transformationFunctionPtr_.get();
+        const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(numFeatures) \
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-        firstprivate(transformationFunctionPtr) schedule(dynamic) num_threads(numThreads_)
+        firstprivate(probabilityFunctionPtr) schedule(dynamic) num_threads(numThreads_)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
             float32* tmpArray1 = new float32[numFeatures];
@@ -85,7 +85,7 @@ namespace boosting {
             }
 
             applyTransformationFunction(&scoreVector[0], predictionMatrixPtr->row_begin(i), numLabels,
-                                        *transformationFunctionPtr);
+                                        *probabilityFunctionPtr);
             delete[] scoreVector;
             delete[] tmpArray1;
             delete[] tmpArray2;
