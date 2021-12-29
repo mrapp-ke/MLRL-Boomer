@@ -3,31 +3,19 @@
  */
 #pragma once
 
-#include "common/output/predictor_sparse.hpp"
+#include "common/output/predictor_classification.hpp"
 
 
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that allow to predict whether individual labels of given query examples are
-     * relevant or irrelevant using an existing rule-based model.
+     * An implementation of the type `IClassificationPredictor` that allows to predict whether individual labels of
+     * given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
+     * rules of an existing rule-based model and transforming them into binary values according to a certain threshold
+     * that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
+     * otherwise).
      */
-    class ILabelWiseClassificationPredictor : public ISparsePredictor<uint8> {
-
-        public:
-
-            virtual ~ILabelWiseClassificationPredictor() { };
-
-    };
-
-    /**
-     * An implementation of the type `ILabelWiseClassificationPredictor` that allows to predict whether individual
-     * labels of given query examples are relevant or irrelevant by summing up the scores that are provided by the
-     * individual rules of an existing rule-based model and transforming them into binary values according to a certain
-     * threshold that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is
-     * relevant, 0 otherwise).
-     */
-    class LabelWiseClassificationPredictor final : public ILabelWiseClassificationPredictor {
+    class LabelWiseClassificationPredictor final : public IClassificationPredictor {
 
         private:
 
