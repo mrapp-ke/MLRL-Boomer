@@ -8,7 +8,7 @@ namespace boosting {
 
     LabelWiseRegressionPredictor::LabelWiseRegressionPredictor(uint32 numThreads)
         : numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     void LabelWiseRegressionPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
@@ -95,6 +95,15 @@ namespace boosting {
             delete[] tmpArray1;
             delete[] tmpArray2;
         }
+    }
+
+    LabelWiseRegressionPredictorFactory::LabelWiseRegressionPredictorFactory(uint32 numThreads)
+        : numThreads_(numThreads) {
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+    }
+
+    std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(const RuleModel& model) const {
+        return std::make_unique<LabelWiseRegressionPredictor>(numThreads_);
     }
 
 }
