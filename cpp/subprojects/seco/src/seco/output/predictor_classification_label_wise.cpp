@@ -148,7 +148,7 @@ namespace seco {
 
     LabelWiseClassificationPredictor::LabelWiseClassificationPredictor(uint32 numThreads)
         : numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     void LabelWiseClassificationPredictor::predict(const CContiguousFeatureMatrix& featureMatrix,
@@ -284,6 +284,16 @@ namespace seco {
         }
 
         return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
+    }
+
+    LabelWiseClassificationPredictorFactory::LabelWiseClassificationPredictorFactory(uint32 numThreads)
+        : numThreads_(numThreads) {
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+    }
+
+    std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
+            const RuleModel& model) const {
+        return std::make_unique<LabelWiseClassificationPredictor>(numThreads_);
     }
 
 }
