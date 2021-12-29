@@ -19,21 +19,20 @@ namespace boosting {
 
         private:
 
-            std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr_;
+            std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasureFactory`
-             *                                      that allows to create implementations of the similarity measure
-             *                                      that should be used to quantify the similarity between predictions
-             *                                      and known label vectors
+             * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasure` that
+             *                                      implements the similarity measure that should be used to quantify
+             *                                      the similarity between predictions and known label vectors
              * @param numThreads                    The number of CPU threads to be used to make predictions for
              *                                      different query examples in parallel. Must be at least 1
              */
-            ExampleWiseClassificationPredictor(std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr,
+            ExampleWiseClassificationPredictor(std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr,
                                                uint32 numThreads);
 
             /**
@@ -64,6 +63,37 @@ namespace boosting {
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
                 const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
                 const LabelVectorSet* labelVectors) const override;
+
+    };
+
+    /**
+     * Allows to create instances of the type `IClassificationPredictor` that allow to predict known label vectors for
+     * given query examples by summing up the scores that are provided by an existing rule-based model and comparing the
+     * aggregated score vector to the known label vectors according to a certain distance measure. The label vector that
+     * is closest to the aggregated score vector is finally predicted.
+     */
+    class ExampleWiseClassificationPredictorFactory : public IClassificationPredictorFactory {
+
+        private:
+
+            std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr_;
+
+            uint32 numThreads_;
+
+        public:
+
+            /**
+             * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasureFactory`
+             *                                      that allows to create implementations of the similarity measure
+             *                                      that should be used to quantify the similarity between predictions
+             *                                      and known label vectors
+             * @param numThreads                    The number of CPU threads to be used to make predictions for
+             *                                      different query examples in parallel. Must be at least 1
+             */
+            ExampleWiseClassificationPredictorFactory(
+                std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr, uint32 numThreads);
+
+            std::unique_ptr<IClassificationPredictor> create(const RuleModel& model) const override;
 
     };
 
