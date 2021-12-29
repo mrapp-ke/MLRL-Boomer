@@ -148,4 +148,15 @@ namespace boosting {
         return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
     }
 
+    LabelWiseClassificationPredictorFactory::LabelWiseClassificationPredictorFactory(float64 threshold,
+                                                                                     uint32 numThreads)
+        : threshold_(threshold), numThreads_(numThreads) {
+
+    }
+
+    std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
+            const RuleModel& model) const {
+        return std::make_unique<LabelWiseClassificationPredictor>(threshold_, numThreads_);
+    }
+
 }
