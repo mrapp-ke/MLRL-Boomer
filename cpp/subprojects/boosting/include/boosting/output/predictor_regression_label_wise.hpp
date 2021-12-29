@@ -9,8 +9,8 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that allow predict regression scores for given query examples using an
-     * existing rule-based model.
+     * Defines an interface for all classes that allow predict label-wise regression scores for given query examples
+     * using an existing rule-based model.
      */
     class ILabelWiseRegressionPredictor : public IPredictor<float64> {
 
@@ -54,9 +54,9 @@ namespace boosting {
     };
 
     /**
-     * An implementation of the type `ILabelWiseRegressionPredictor` that allows to predict regression scores for given
-     * query examples by summing up the scores that are provided by the individual rules of an existing rule-based model
-     * for each label individually.
+     * An implementation of the type `ILabelWiseRegressionPredictor` that allows to predict label-wise regression scores
+     * for given query examples by summing up the scores that are provided by the individual rules of an existing
+     * rule-based model for each label individually.
      */
     class LabelWiseRegressionPredictor final : public ILabelWiseRegressionPredictor {
 
