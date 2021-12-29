@@ -49,3 +49,22 @@ class IRegressionPredictor : public IPredictor<float64> {
                              const Rule& rule, const LabelVectorSet* labelVectors) const = 0;
 
 };
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IRegressionPredictor`.
+ */
+class IRegressionPredictorFactory {
+
+    public:
+
+        virtual ~IRegressionPredictorFactory() { };
+
+        /**
+         * Creates and returns a new object of the type `IRegressionPredictor`.
+         *
+         * @param model A reference to an object of type `RuleModel` that should be used to obtain the predictions
+         * @return      An unique pointer to an object of type `IRegressionPredictor` that has been created
+         */
+        virtual std::unique_ptr<IRegressionPredictor> create(const RuleModel& model) const = 0;
+
+};
