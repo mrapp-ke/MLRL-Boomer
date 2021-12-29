@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/model/body.hpp"
-#include "common/model/condition_list.hpp"
 
 
 /**
@@ -48,12 +47,6 @@ class ConjunctiveBody final : public IBody {
          * @param numNeq    The number of conditions that use the != operator
          */
         ConjunctiveBody(uint32 numLeq, uint32 numGr, uint32 numEq, uint32 numNeq);
-
-        /**
-         * @param conditionList A reference to an object of type `ConditionList` that provides access to the conditions,
-         *                      the body should contain
-         */
-        ConjunctiveBody(const ConditionList& conditionList);
 
         ~ConjunctiveBody() override;
 

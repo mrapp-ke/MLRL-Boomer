@@ -15,7 +15,7 @@ namespace seco {
     }
 
     void DecisionListBuilder::addRule(const ConditionList& conditions, const AbstractPrediction& prediction) {
-        modelPtr_->addRule(std::make_unique<ConjunctiveBody>(conditions), prediction.toHead());
+        modelPtr_->addRule(conditions.createConjunctiveBody(), prediction.toHead());
     }
 
     std::unique_ptr<RuleModel> DecisionListBuilder::build(uint32 numUsedRules) {

@@ -9,49 +9,6 @@ ConjunctiveBody::ConjunctiveBody(uint32 numLeq, uint32 numGr, uint32 numEq, uint
 
 }
 
-ConjunctiveBody::ConjunctiveBody(const ConditionList& conditionList)
-    : ConjunctiveBody(conditionList.getNumConditions(LEQ), conditionList.getNumConditions(GR),
-                      conditionList.getNumConditions(EQ), conditionList.getNumConditions(NEQ)) {
-    uint32 leqIndex = 0;
-    uint32 grIndex = 0;
-    uint32 eqIndex = 0;
-    uint32 neqIndex = 0;
-
-    for (auto it = conditionList.cbegin(); it != conditionList.cend(); it++) {
-        const Condition& condition = *it;
-        uint32 featureIndex = condition.featureIndex;
-        float32 threshold = condition.threshold;
-
-        switch (condition.comparator) {
-            case LEQ: {
-                leqFeatureIndices_[leqIndex] = featureIndex;
-                leqThresholds_[leqIndex] = threshold;
-                leqIndex++;
-                break;
-            }
-            case GR: {
-                grFeatureIndices_[grIndex] = featureIndex;
-                grThresholds_[grIndex] = threshold;
-                grIndex++;
-                break;
-            }
-            case EQ: {
-                eqFeatureIndices_[eqIndex] = featureIndex;
-                eqThresholds_[eqIndex] = threshold;
-                eqIndex++;
-                break;
-            }
-            case NEQ: {
-                neqFeatureIndices_[neqIndex] = featureIndex;
-                neqThresholds_[neqIndex] = threshold;
-                neqIndex++;
-                break;
-            }
-            default: { }
-        }
-    }
-}
-
 ConjunctiveBody::~ConjunctiveBody() {
     delete[] leqFeatureIndices_;
     delete[] leqThresholds_;
