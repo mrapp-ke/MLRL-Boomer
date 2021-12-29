@@ -74,10 +74,9 @@ namespace boosting {
     }
 
     ExampleWiseClassificationPredictor::ExampleWiseClassificationPredictor(
-            std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr, uint32 numThreads)
-        : similarityMeasureFactoryPtr_(std::move(similarityMeasureFactoryPtr)), numThreads_(numThreads) {
-        assertNotNull("similarityMeasureFactoryPtr", similarityMeasureFactoryPtr_.get());
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+            std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr, uint32 numThreads)
+        : similarityMeasurePtr_(std::move(similarityMeasurePtr)), numThreads_(numThreads) {
+
     }
 
     void ExampleWiseClassificationPredictor::transform(const CContiguousConstView<float64>& scoreMatrix,
@@ -87,9 +86,7 @@ namespace boosting {
         uint32 numLabels = predictionMatrix.getNumCols();
         const CContiguousConstView<float64>* scoreMatrixPtr = &scoreMatrix;
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
-        std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
-            similarityMeasureFactoryPtr_->createSimilarityMeasure();
-        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr.get();
+        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(scoreMatrixPtr) \
         firstprivate(predictionMatrixPtr) firstprivate(similarityMeasureRawPtr) firstprivate(labelVectors) \
@@ -110,9 +107,7 @@ namespace boosting {
         const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
         const RuleModel* modelPtr = &model;
-        std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
-            similarityMeasureFactoryPtr_->createSimilarityMeasure();
-        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr.get();
+        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
         firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(similarityMeasureRawPtr) \
@@ -136,9 +131,7 @@ namespace boosting {
         const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
         const RuleModel* modelPtr = &model;
-        std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
-            similarityMeasureFactoryPtr_->createSimilarityMeasure();
-        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr.get();
+        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
@@ -163,9 +156,7 @@ namespace boosting {
         const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
         BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
         const RuleModel* modelPtr = &model;
-        std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
-            similarityMeasureFactoryPtr_->createSimilarityMeasure();
-        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr.get();
+        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
         uint32 numNonZeroElements = 0;
 
         #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
@@ -192,9 +183,7 @@ namespace boosting {
         const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
         BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
         const RuleModel* modelPtr = &model;
-        std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
-            similarityMeasureFactoryPtr_->createSimilarityMeasure();
-        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr.get();
+        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
         uint32 numNonZeroElements = 0;
 
         #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
@@ -213,6 +202,20 @@ namespace boosting {
         }
 
         return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
+    }
+
+    ExampleWiseClassificationPredictorFactory::ExampleWiseClassificationPredictorFactory(
+            std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr, uint32 numThreads)
+        : similarityMeasureFactoryPtr_(std::move(similarityMeasureFactoryPtr)), numThreads_(numThreads) {
+        assertNotNull("similarityMeasureFactoryPtr", similarityMeasureFactoryPtr_.get());
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+    }
+
+    std::unique_ptr<IClassificationPredictor> ExampleWiseClassificationPredictorFactory::create(
+            const RuleModel& model) const {
+        std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
+            similarityMeasureFactoryPtr_->createSimilarityMeasure();
+        return std::make_unique<ExampleWiseClassificationPredictor>(std::move(similarityMeasurePtr), numThreads_);
     }
 
 }
