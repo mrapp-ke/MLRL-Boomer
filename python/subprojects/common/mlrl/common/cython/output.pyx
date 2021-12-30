@@ -23,8 +23,8 @@ cdef class ClassificationPredictorFactory:
     def create(self, RuleList model not None) -> BinaryPredictor:
         cdef BinaryPredictor predictor = BinaryPredictor.__new__(BinaryPredictor)
         predictor.num_labels = self.num_labels
-        predictor.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>self.predictor_factory_ptr.get().create(
-            dereference(model.model_ptr))
+        predictor.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>model.model_ptr.get().createClassificationPredictor(
+            dereference(self.predictor_factory_ptr.get()))
         return predictor
 
 
@@ -36,8 +36,8 @@ cdef class RegressionPredictorFactory:
     def create(self, RuleList model not None) -> NumericalPredictor:
         cdef NumericalPredictor predictor = NumericalPredictor.__new__(NumericalPredictor)
         predictor.num_labels = self.num_labels
-        predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>self.predictor_factory_ptr.get().create(
-            dereference(model.model_ptr))
+        predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>model.model_ptr.get().createRegressionPredictor(
+            dereference(self.predictor_factory_ptr.get()))
         return predictor
 
 
@@ -49,8 +49,8 @@ cdef class ProbabilityPredictorFactory:
     def create(self, RuleList model not None) -> NumericalPredictor:
         cdef NumericalPredictor predictor = NumericalPredictor.__new__(NumericalPredictor)
         predictor.num_labels = self.num_labels
-        predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>self.predictor_factory_ptr.get().create(
-            dereference(model.model_ptr))
+        predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>model.model_ptr.get().createProbabilityPredictor(
+            dereference(self.predictor_factory_ptr.get()))
         return predictor
 
 
