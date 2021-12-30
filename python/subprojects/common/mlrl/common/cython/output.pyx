@@ -20,8 +20,8 @@ cdef class ClassificationPredictorFactory:
     A wrapper for the pure virtual C++ class `IClassificationPredictorFactory`.
     """
 
-    def create(self, RuleModel model not None) -> AbstractBinaryPredictor:
-        cdef AbstractBinaryPredictor predictor = AbstractBinaryPredictor.__new__(AbstractBinaryPredictor)
+    def create(self, RuleModel model not None) -> BinaryPredictor:
+        cdef BinaryPredictor predictor = BinaryPredictor.__new__(BinaryPredictor)
         predictor.num_labels = self.num_labels
         predictor.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>self.predictor_factory_ptr.get().create(
             dereference(model.model_ptr))
@@ -33,8 +33,8 @@ cdef class RegressionPredictorFactory:
     A wrapper for the pure virtual C++ class `IRegressionPredictorFactory`.
     """
 
-    def create(self, RuleModel model not None) -> AbstractNumericalPredictor:
-        cdef AbstractNumericalPredictor predictor = AbstractNumericalPredictor.__new__(AbstractNumericalPredictor)
+    def create(self, RuleModel model not None) -> NumericalPredictor:
+        cdef NumericalPredictor predictor = NumericalPredictor.__new__(NumericalPredictor)
         predictor.num_labels = self.num_labels
         predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>self.predictor_factory_ptr.get().create(
             dereference(model.model_ptr))
@@ -46,8 +46,8 @@ cdef class ProbabilityPredictorFactory:
     A wrapper for the pure virtual C++ class `IProbabilityPredictorFactory`.
     """
 
-    def create(self, RuleModel model not None) -> AbstractNumericalPredictor:
-        cdef AbstractNumericalPredictor predictor = AbstractNumericalPredictor.__new__(AbstractNumericalPredictor)
+    def create(self, RuleModel model not None) -> NumericalPredictor:
+        cdef NumericalPredictor predictor = NumericalPredictor.__new__(NumericalPredictor)
         predictor.num_labels = self.num_labels
         predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>self.predictor_factory_ptr.get().create(
             dereference(model.model_ptr))
@@ -118,7 +118,7 @@ cdef class SparsePredictor(Predictor):
         pass
 
 
-cdef class AbstractNumericalPredictor(Predictor):
+cdef class NumericalPredictor(Predictor):
     """
     A base class for all classes that allow to predict numerical scores for given query examples.
     """
@@ -176,7 +176,7 @@ cdef inline object __create_csr_matrix(BinarySparsePredictionMatrix* prediction_
                        np.asarray(row_indices)), shape=(num_rows, num_cols))
 
 
-cdef class AbstractBinaryPredictor(SparsePredictor):
+cdef class BinaryPredictor(SparsePredictor):
     """
     A base class for all classes that allow to predict binary values for given query examples.
     """

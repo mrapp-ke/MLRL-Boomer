@@ -1,9 +1,9 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
 from mlrl.common.cython._measures cimport ISimilarityMeasureFactory
 from mlrl.common.cython.measures cimport SimilarityMeasureFactory
-from mlrl.common.cython.output cimport AbstractBinaryPredictor, AbstractNumericalPredictor, \
-    ProbabilityPredictorFactory, IProbabilityPredictorFactory, RegressionPredictorFactory, \
-    IRegressionPredictorFactory, ClassificationPredictorFactory, IClassificationPredictorFactory
+from mlrl.common.cython.output cimport BinaryPredictor, NumericalPredictor, ProbabilityPredictorFactory, \
+    IProbabilityPredictorFactory, RegressionPredictorFactory, IRegressionPredictorFactory, \
+    ClassificationPredictorFactory, IClassificationPredictorFactory
 
 from libcpp.memory cimport unique_ptr
 
