@@ -188,3 +188,10 @@ class RuleList final : public IRuleList {
             const IProbabilityPredictorFactory& factory) const override;
 
 };
+
+/**
+ * Creates and returns a new instance of the type `IRuleList`.
+ *
+ * @return An unique pointer to an object of type `IRuleList` that has been created
+ */
+std::unique_ptr<IRuleList> createRuleList();

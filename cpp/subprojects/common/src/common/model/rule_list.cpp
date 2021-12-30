@@ -110,3 +110,7 @@ std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
         const IProbabilityPredictorFactory& factory) const {
     return factory.create(*this);
 }
+
+std::unique_ptr<IRuleList> createRuleList() {
+    return std::make_unique<RuleList>();
+}
