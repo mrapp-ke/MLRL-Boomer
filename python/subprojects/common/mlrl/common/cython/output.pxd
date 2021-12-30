@@ -126,7 +126,7 @@ cdef class SparsePredictor(Predictor):
     pass
 
 
-cdef class AbstractNumericalPredictor(Predictor):
+cdef class NumericalPredictor(Predictor):
 
     # Attributes:
 
@@ -135,7 +135,7 @@ cdef class AbstractNumericalPredictor(Predictor):
     cdef unique_ptr[IPredictor[float64]] predictor_ptr
 
 
-cdef class AbstractBinaryPredictor(SparsePredictor):
+cdef class BinaryPredictor(SparsePredictor):
 
     # Attributes:
 
