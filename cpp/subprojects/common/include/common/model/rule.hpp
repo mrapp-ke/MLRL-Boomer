@@ -5,7 +5,6 @@
 
 #include "common/model/body.hpp"
 #include "common/model/head.hpp"
-#include <memory>
 
 
 /**
@@ -44,35 +43,5 @@ class IRule {
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                            IHead::CompleteHeadVisitor completeHeadVisitor,
                            IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
-
-};
-
-/**
- * A rule that consists of a body and a head.
- */
-class Rule final : public IRule {
-
-    private:
-
-        std::unique_ptr<IBody> bodyPtr_;
-
-        std::unique_ptr<IHead> headPtr_;
-
-    public:
-
-        /**
-         * @param bodyPtr   An unique pointer to an object of type `IBody` that represents the body of the rule
-         * @param headPtr   An unique pointer to an object of type `IHead` that represents the head of the rule
-         */
-        Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr);
-
-        const IBody& getBody() const override;
-
-        const IHead& getHead() const override;
-
-        void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                   IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                   IHead::CompleteHeadVisitor completeHeadVisitor,
-                   IHead::PartialHeadVisitor partialHeadVisitor) const override;
 
 };

@@ -20,6 +20,36 @@ class IRuleList : public IRuleModel {
 };
 
 /**
+ * An implementation of the type `IRule` that stores unique pointers to the body and head of a rule.
+ */
+class Rule final : public IRule {
+
+    private:
+
+        std::unique_ptr<IBody> bodyPtr_;
+
+        std::unique_ptr<IHead> headPtr_;
+
+    public:
+
+        /**
+         * @param bodyPtr   An unique pointer to an object of type `IBody` that represents the body of the rule
+         * @param headPtr   An unique pointer to an object of type `IHead` that represents the head of the rule
+         */
+        Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr);
+
+        const IBody& getBody() const override;
+
+        const IHead& getHead() const override;
+
+        void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
+                   IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                   IHead::CompleteHeadVisitor completeHeadVisitor,
+                   IHead::PartialHeadVisitor partialHeadVisitor) const override;
+
+};
+
+/**
  * An implementation of the type `IRuleList` that stores several rules in a single-linked list.
  */
 class RuleList final : public IRuleList {
