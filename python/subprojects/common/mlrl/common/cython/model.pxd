@@ -2,9 +2,7 @@ from mlrl.common.cython._types cimport uint32, float32, float64
 from mlrl.common.cython.output cimport IClassificationPredictor, IClassificationPredictorFactory, \
     IRegressionPredictor, IRegressionPredictorFactory, IProbabilityPredictor, IProbabilityPredictorFactory
 
-from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
-from libcpp.list cimport list as double_linked_list
 
 cimport numpy as npc
 
