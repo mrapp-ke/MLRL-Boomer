@@ -1,4 +1,7 @@
 #include "common/model/rule_list.hpp"
+#include "common/output/predictor_classification.hpp"
+#include "common/output/predictor_regression.hpp"
+#include "common/output/predictor_probability.hpp"
 
 
 RuleList::RuleConstIterator::RuleConstIterator(const std::forward_list<Rule>& list, uint32 index)
@@ -91,4 +94,19 @@ void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
         const Rule& rule = *it;
         rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeHeadVisitor, partialHeadVisitor);
     }
+}
+
+std::unique_ptr<IClassificationPredictor> RuleList::createClassificationPredictor(
+        const IClassificationPredictorFactory& factory) const {
+    return factory.create(*this);
+}
+
+std::unique_ptr<IRegressionPredictor> RuleList::createRegressionPredictor(
+        const IRegressionPredictorFactory& factory) const {
+    return factory.create(*this);
+}
+
+std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
+        const IProbabilityPredictorFactory& factory) const {
+    return factory.create(*this);
 }
