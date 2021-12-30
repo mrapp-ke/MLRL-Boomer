@@ -7,6 +7,14 @@
 #include <forward_list>
 #include <iterator>
 
+// Forward declarations
+class IClassificationPredictorFactory;
+class IClassificationPredictor;
+class IRegressionPredictorFactory;
+class IRegressionPredictor;
+class IProbabilityPredictorFactory;
+class IProbabilityPredictor;
+
 
 /**
  * A model that stores several rules in a list.
@@ -202,5 +210,38 @@ class RuleList final {
         void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                        IHead::CompleteHeadVisitor completeHeadVisitor,
                        IHead::PartialHeadVisitor partialHeadVisitor) const;
+
+        /**
+         * Creates and returns a new instance of the class `IClassificationPredictor`, based on the type of this
+         * rule-based model.
+         *
+         * @param factory   A reference to an object of type `IClassificationPredictorFactory` that should be used to
+         *                  create the instance
+         * @return          An unique pointer to an object of type `IClassificationPredictor` that has been created
+         */
+        std::unique_ptr<IClassificationPredictor> createClassificationPredictor(
+            const IClassificationPredictorFactory& factory) const;
+
+        /**
+         * Creates and returns a new instance of the class `IRegressionPredictor`, based on the type of this rule-based
+         * model.
+         *
+         * @param factory   A reference to an object of type `IRegressionPredictorFactory` that should be used to create
+         *                  the instance
+         * @return          An unique pointer to an object of type `IRegressionPredictor` that has been created
+         */
+        std::unique_ptr<IRegressionPredictor> createRegressionPredictor(
+            const IRegressionPredictorFactory& factory) const;
+
+        /**
+         * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this rule-based
+         * model.
+         *
+         * @param factory   A reference to an object of type `IProbabilityPredictorFactory` that should be used to
+         *                  create the instance
+         * @return          An unique pointer to an object of type `IProbabilityPredictor` that has been created
+         */
+        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+            const IProbabilityPredictorFactory& factory) const;
 
 };
