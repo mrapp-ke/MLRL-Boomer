@@ -185,7 +185,7 @@ cdef extern from "common/model/rule.hpp" nogil:
         const IHead& getHead()
 
 
-cdef extern from "common/model/rule_model.hpp" nogil:
+cdef extern from "common/model/rule_list.hpp" nogil:
 
     cdef cppclass UsedIterator"RuleModel::UsedIterator":
 
