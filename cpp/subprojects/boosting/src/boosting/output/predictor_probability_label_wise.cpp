@@ -85,7 +85,7 @@ namespace boosting {
                     float64* scoreVector = new float64[numLabels] {};
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                        const Rule& rule = *it;
+                        const RuleList::Rule& rule = *it;
                         applyRule(rule, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
                                   &scoreVector[0]);
                     }
@@ -116,7 +116,7 @@ namespace boosting {
                     uint32 n = 1;
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                        const Rule& rule = *it;
+                        const RuleList::Rule& rule = *it;
                         applyRuleCsr(rule, featureMatrixPtr->row_indices_cbegin(i),
                                      featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                                      featureMatrixPtr->row_values_cend(i), &scoreVector[0], &tmpArray1[0],

@@ -20,58 +20,60 @@ class IRuleList : public IRuleModel {
 };
 
 /**
- * An implementation of the type `IRule` that stores unique pointers to the body and head of a rule.
+ * An implementation of the type `IRuleList` that stores several rules in a single-linked list.
  */
-class Rule final {
-
-    private:
-
-        std::unique_ptr<IBody> bodyPtr_;
-
-        std::unique_ptr<IHead> headPtr_;
+class RuleList final : public IRuleList {
 
     public:
 
         /**
-         * @param bodyPtr   An unique pointer to an object of type `IBody` that represents the body of the rule
-         * @param headPtr   An unique pointer to an object of type `IHead` that represents the head of the rule
+         * An implementation of the type `IRule` that stores unique pointers to the body and head of a rule.
          */
-        Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr);
+        class Rule final {
 
-        /**
-         * Returns the body of the rule.
-         *
-         * @return A reference to an object of type `IBody` that represents the body of the rule
-         */
-        const IBody& getBody() const;
+            private:
 
-        /**
-         * Returns the head of the rule.
-         *
-         * @return A reference to an object of type `IHead` that represents the head of the rule
-         */
-        const IHead& getHead() const;
+                std::unique_ptr<IBody> bodyPtr_;
 
-        /**
-         * Invokes some of the given visitor functions, depending on which ones are able to handle the rule's particular
-         * type of body and head.
-         *
-         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
-         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
-         */
-        void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                   IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                   IHead::CompleteHeadVisitor completeHeadVisitor,
-                   IHead::PartialHeadVisitor partialHeadVisitor) const;
+                std::unique_ptr<IHead> headPtr_;
 
-};
+            public:
 
-/**
- * An implementation of the type `IRuleList` that stores several rules in a single-linked list.
- */
-class RuleList final : public IRuleList {
+                /**
+                 * @param bodyPtr   An unique pointer to an object of type `IBody` that represents the body of the rule
+                 * @param headPtr   An unique pointer to an object of type `IHead` that represents the head of the rule
+                 */
+                Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr);
+
+                /**
+                 * Returns the body of the rule.
+                 *
+                 * @return A reference to an object of type `IBody` that represents the body of the rule
+                 */
+                const IBody& getBody() const;
+
+                /**
+                 * Returns the head of the rule.
+                 *
+                 * @return A reference to an object of type `IHead` that represents the head of the rule
+                 */
+                const IHead& getHead() const;
+
+                /**
+                 * Invokes some of the given visitor functions, depending on which ones are able to handle the rule's
+                 * particular type of body and head.
+                 *
+                 * @param emptyBodyVisitor          The visitor function for handling objects of type `EmptyBody`
+                 * @param conjunctiveBodyVisitor    The visitor function for handling objects of type `ConjunctiveBody`
+                 * @param completeHeadVisitor       The visitor function for handling objects of type `CompleteHead`
+                 * @param partialHeadVisitor        The visitor function for handling objects of type `PartialHead`
+                 */
+                void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
+                           IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                           IHead::CompleteHeadVisitor completeHeadVisitor,
+                           IHead::PartialHeadVisitor partialHeadVisitor) const;
+
+        };
 
     private:
 
