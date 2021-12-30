@@ -63,9 +63,9 @@ class IRegressionPredictorFactory {
         /**
          * Creates and returns a new object of the type `IRegressionPredictor`.
          *
-         * @param model A reference to an object of type `RuleModel` that should be used to obtain the predictions
+         * @param model A reference to an object of type `RuleList` that should be used to obtain the predictions
          * @return      An unique pointer to an object of type `IRegressionPredictor` that has been created
          */
-        virtual std::unique_ptr<IRegressionPredictor> create(const RuleModel& model) const = 0;
+        virtual std::unique_ptr<IRegressionPredictor> create(const RuleList& model) const = 0;
 
 };

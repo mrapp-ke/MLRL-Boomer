@@ -1,69 +1,69 @@
 #include "common/model/rule_list.hpp"
 
 
-RuleModel::RuleConstIterator::RuleConstIterator(const std::forward_list<Rule>& list, uint32 index)
+RuleList::RuleConstIterator::RuleConstIterator(const std::forward_list<Rule>& list, uint32 index)
     : iterator_(list.cbegin()), index_(index) {
 
 }
 
-RuleModel::RuleConstIterator::reference RuleModel::RuleConstIterator::operator*() const {
+RuleList::RuleConstIterator::reference RuleList::RuleConstIterator::operator*() const {
     return *iterator_;
 }
 
-RuleModel::RuleConstIterator& RuleModel::RuleConstIterator::operator++() {
+RuleList::RuleConstIterator& RuleList::RuleConstIterator::operator++() {
     ++iterator_;
     ++index_;
     return *this;
 }
 
-RuleModel::RuleConstIterator& RuleModel::RuleConstIterator::operator++(int n) {
+RuleList::RuleConstIterator& RuleList::RuleConstIterator::operator++(int n) {
     iterator_++;
     index_++;
     return *this;
 }
 
-bool RuleModel::RuleConstIterator::operator!=(const RuleConstIterator& rhs) const {
+bool RuleList::RuleConstIterator::operator!=(const RuleConstIterator& rhs) const {
     return index_ != rhs.index_;
 }
 
-bool RuleModel::RuleConstIterator::operator==(const RuleConstIterator& rhs) const {
+bool RuleList::RuleConstIterator::operator==(const RuleConstIterator& rhs) const {
     return index_ == rhs.index_;
 }
 
-RuleModel::RuleModel()
+RuleList::RuleList()
     : it_(list_.begin()), numRules_(0), numUsedRules_(0) {
 
 }
 
-RuleModel::const_iterator RuleModel::cbegin() const {
+RuleList::const_iterator RuleList::cbegin() const {
     return list_.cbegin();
 }
 
-RuleModel::const_iterator RuleModel::cend() const {
+RuleList::const_iterator RuleList::cend() const {
     return list_.cend();
 }
 
-RuleModel::used_const_iterator RuleModel::used_cbegin() const {
+RuleList::used_const_iterator RuleList::used_cbegin() const {
     return RuleConstIterator(list_, 0);
 }
 
-RuleModel::used_const_iterator RuleModel::used_cend() const {
+RuleList::used_const_iterator RuleList::used_cend() const {
     return RuleConstIterator(list_, this->getNumUsedRules());
 }
 
-uint32 RuleModel::getNumRules() const {
+uint32 RuleList::getNumRules() const {
     return numRules_;
 }
 
-uint32 RuleModel::getNumUsedRules() const {
+uint32 RuleList::getNumUsedRules() const {
     return numUsedRules_ > 0 ? numUsedRules_ : numRules_;;
 }
 
-void RuleModel::setNumUsedRules(uint32 numUsedRules) {
+void RuleList::setNumUsedRules(uint32 numUsedRules) {
     numUsedRules_ = numUsedRules;
 }
 
-void RuleModel::addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) {
+void RuleList::addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) {
     if (numRules_ > 0) {
         it_ = list_.emplace_after(it_, std::move(bodyPtr), std::move(headPtr));
     } else {
@@ -74,7 +74,7 @@ void RuleModel::addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> h
     numRules_++;
 }
 
-void RuleModel::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+void RuleList::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                       IHead::CompleteHeadVisitor completeHeadVisitor,
                       IHead::PartialHeadVisitor partialHeadVisitor) const {
     for (auto it = list_.cbegin(); it != list_.cend(); it++) {
@@ -83,7 +83,7 @@ void RuleModel::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::Conjuncti
     }
 }
 
-void RuleModel::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
+void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
                           IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                           IHead::CompleteHeadVisitor completeHeadVisitor,
                           IHead::PartialHeadVisitor partialHeadVisitor) const {

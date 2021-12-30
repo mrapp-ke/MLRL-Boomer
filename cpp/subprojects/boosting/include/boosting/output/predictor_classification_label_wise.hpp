@@ -32,7 +32,7 @@ namespace boosting {
              */
             LabelWiseClassificationPredictorFactory(float64 threshold, uint32 numThreads);
 
-            std::unique_ptr<IClassificationPredictor> create(const RuleModel& model) const override;
+            std::unique_ptr<IClassificationPredictor> create(const RuleList& model) const override;
 
     };
 

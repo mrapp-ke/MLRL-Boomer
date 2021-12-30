@@ -11,7 +11,7 @@
 /**
  * A model that stores several rules in a list.
  */
-class RuleModel final {
+class RuleList final {
 
     private:
 
@@ -108,7 +108,7 @@ class RuleModel final {
 
     public:
 
-        RuleModel();
+        RuleList();
 
         /**
          * An iterator that provides read-only access to all rules.

@@ -46,7 +46,7 @@ namespace boosting {
         }
     }
 
-    static inline void applyRules(const RuleModel& model, CContiguousFeatureMatrix::const_iterator featureValuesBegin,
+    static inline void applyRules(const RuleList& model, CContiguousFeatureMatrix::const_iterator featureValuesBegin,
                                   CContiguousFeatureMatrix::const_iterator featureValuesEnd,
                                   CContiguousView<float64>::iterator scoreIterator) {
         for (auto it = model.used_cbegin(); it != model.used_cend(); it++) {
@@ -70,7 +70,7 @@ namespace boosting {
         }
     }
 
-    static inline void applyRulesCsr(const RuleModel& model, uint32 numFeatures,
+    static inline void applyRulesCsr(const RuleList& model, uint32 numFeatures,
                                      CsrFeatureMatrix::index_const_iterator featureIndicesBegin,
                                      CsrFeatureMatrix::index_const_iterator featureIndicesEnd,
                                      CsrFeatureMatrix::value_const_iterator featureValuesBegin,

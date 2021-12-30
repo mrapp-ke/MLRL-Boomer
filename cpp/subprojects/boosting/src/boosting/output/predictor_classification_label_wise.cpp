@@ -187,8 +187,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
-            const RuleModel& model) const {
-        return std::make_unique<LabelWiseClassificationPredictor<RuleModel>>(model, threshold_, numThreads_);
+            const RuleList& model) const {
+        return std::make_unique<LabelWiseClassificationPredictor<RuleList>>(model, threshold_, numThreads_);
     }
 
 }

@@ -6,7 +6,7 @@
 namespace seco {
 
     DecisionListBuilder::DecisionListBuilder()
-        : modelPtr_(std::make_unique<RuleModel>()){
+        : modelPtr_(std::make_unique<RuleList>()){
 
     }
 
@@ -18,7 +18,7 @@ namespace seco {
         modelPtr_->addRule(conditions.createConjunctiveBody(), prediction.toHead());
     }
 
-    std::unique_ptr<RuleModel> DecisionListBuilder::build(uint32 numUsedRules) {
+    std::unique_ptr<RuleList> DecisionListBuilder::build(uint32 numUsedRules) {
         if (defaultHeadPtr_.get() != nullptr) {
             modelPtr_->addRule(std::make_unique<EmptyBody>(), std::move(defaultHeadPtr_));
         }
