@@ -4,21 +4,23 @@
 #include "common/output/predictor_probability.hpp"
 
 
-Rule::Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr)
+RuleList::Rule::Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr)
     : bodyPtr_(std::move(bodyPtr)), headPtr_(std::move(headPtr)) {
 
 }
 
-const IBody& Rule::getBody() const {
+const IBody& RuleList::Rule::getBody() const {
     return *bodyPtr_;
 }
 
-const IHead& Rule::getHead() const {
+const IHead& RuleList::Rule::getHead() const {
     return *headPtr_;
 }
 
-void Rule::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                 IHead::CompleteHeadVisitor completeHeadVisitor, IHead::PartialHeadVisitor partialHeadVisitor) const {
+void RuleList::Rule::visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
+                           IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                           IHead::CompleteHeadVisitor completeHeadVisitor,
+                           IHead::PartialHeadVisitor partialHeadVisitor) const {
     bodyPtr_->visit(emptyBodyVisitor, conjunctiveBodyVisitor);
     headPtr_->visit(completeHeadVisitor, partialHeadVisitor);
 }

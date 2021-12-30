@@ -35,7 +35,8 @@ namespace boosting {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline void applyRule(const Rule& rule, CContiguousFeatureMatrix::const_iterator featureValuesBegin,
+    static inline void applyRule(const RuleList::Rule& rule,
+                                 CContiguousFeatureMatrix::const_iterator featureValuesBegin,
                                  CContiguousFeatureMatrix::const_iterator featureValuesEnd,
                                  CContiguousView<float64>::iterator scoreIterator) {
         const IBody& body = rule.getBody();
@@ -50,12 +51,13 @@ namespace boosting {
                                   CContiguousFeatureMatrix::const_iterator featureValuesEnd,
                                   CContiguousView<float64>::iterator scoreIterator) {
         for (auto it = model.used_cbegin(); it != model.used_cend(); it++) {
-            const Rule& rule = *it;
+            const RuleList::Rule& rule = *it;
             applyRule(rule, featureValuesBegin, featureValuesEnd, scoreIterator);
         }
     }
 
-    static inline void applyRuleCsr(const Rule& rule, CsrFeatureMatrix::index_const_iterator featureIndicesBegin,
+    static inline void applyRuleCsr(const RuleList::Rule& rule,
+                                    CsrFeatureMatrix::index_const_iterator featureIndicesBegin,
                                     CsrFeatureMatrix::index_const_iterator featureIndicesEnd,
                                     CsrFeatureMatrix::value_const_iterator featureValuesBegin,
                                     CsrFeatureMatrix::value_const_iterator featureValuesEnd,
@@ -81,7 +83,7 @@ namespace boosting {
         uint32 n = 1;
 
         for (auto it = model.used_cbegin(); it != model.used_cend(); it++) {
-            const Rule& rule = *it;
+            const RuleList::Rule& rule = *it;
             applyRuleCsr(rule, featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd,
                          scoreIterator, &tmpArray1[0], &tmpArray2[0], n);
             n++;

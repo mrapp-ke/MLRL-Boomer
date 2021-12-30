@@ -192,7 +192,7 @@ namespace seco {
                     BitVector mask(numLabels, true);
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                        const Rule& rule = *it;
+                        const RuleList::Rule& rule = *it;
                         const IBody& body = rule.getBody();
 
                         if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
@@ -222,7 +222,7 @@ namespace seco {
                     uint32 n = 1;
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                        const Rule& rule = *it;
+                        const RuleList::Rule& rule = *it;
                         const IBody& body = rule.getBody();
 
                         if (body.covers(featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
@@ -257,7 +257,7 @@ namespace seco {
                     BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                        const Rule& rule = *it;
+                        const RuleList::Rule& rule = *it;
                         const IBody& body = rule.getBody();
 
                         if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
@@ -293,7 +293,7 @@ namespace seco {
                     uint32 n = 1;
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                        const Rule& rule = *it;
+                        const RuleList::Rule& rule = *it;
                         const IBody& body = rule.getBody();
 
                         if (body.covers(featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
