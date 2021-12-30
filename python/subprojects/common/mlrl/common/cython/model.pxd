@@ -176,15 +176,6 @@ ctypedef void (*CompleteHeadVisitor)(const CompleteHeadImpl&)
 ctypedef void (*PartialHeadVisitor)(const PartialHeadImpl&)
 
 
-cdef extern from "common/model/rule.hpp" nogil:
-
-    cdef cppclass RuleImpl"Rule":
-
-        const IBody& getBody()
-
-        const IHead& getHead()
-
-
 cdef extern from "common/model/rule_model.hpp" nogil:
 
     cdef cppclass IRuleModel:
