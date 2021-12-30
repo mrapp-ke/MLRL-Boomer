@@ -9,9 +9,20 @@
 
 
 /**
- * An implementation of the type `IRuleModel` that stores several rules in a list.
+ * Defines an interface for all rule-based models that store several rules in a list.
  */
-class RuleList final : public IRuleModel {
+class IRuleList : public IRuleModel {
+
+    public:
+
+        virtual ~IRuleList() { };
+
+};
+
+/**
+ * An implementation of the type `IRuleList` that stores several rules in a single-linked list.
+ */
+class RuleList final : public IRuleList {
 
     private:
 
