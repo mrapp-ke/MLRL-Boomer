@@ -140,9 +140,9 @@ class RuleModelVisitor:
         pass
 
 
-cdef class RuleList:
+cdef class RuleModel:
     """
-    A wrapper for the C++ class `RuleList`.
+    A wrapper for the pure virtual C++ class `IRuleModel`.
     """
 
     def get_num_rules(self) -> int:
@@ -343,7 +343,7 @@ cdef class RuleModelSerializer:
                       np.asarray(<uint32[:num_elements]>head.indices_cbegin()))
         rule_state[1] = head_state
 
-    def serialize(self, RuleList model) -> object:
+    def serialize(self, RuleModel model) -> object:
         """
         Creates and returns a state, which may be serialized using Python's pickle mechanism, from the rules that are
         contained by a given rule-based model.
@@ -360,7 +360,7 @@ cdef class RuleModelSerializer:
         cdef uint32 num_used_rules = model.model_ptr.get().getNumUsedRules()
         return (SERIALIZATION_VERSION, (self.state, num_used_rules))
 
-    def deserialize(self, RuleList model, object state):
+    def deserialize(self, RuleModel model, object state):
         """
         Deserializes the rules that are contained by a given state and adds them to a rule-based model.
 
@@ -376,7 +376,7 @@ cdef class RuleModelSerializer:
         model_state = state[1]
         cdef list rule_list = model_state[0]
         cdef uint32 num_rules = len(rule_list)
-        cdef unique_ptr[RuleListImpl] rule_model_ptr = make_unique[RuleListImpl]()
+        cdef unique_ptr[IRuleList] rule_model_ptr = createRuleList()
         cdef object rule_state
         cdef uint32 i
 
@@ -386,7 +386,7 @@ cdef class RuleModelSerializer:
 
         cdef uint32 num_used_rules = model_state[1]
         rule_model_ptr.get().setNumUsedRules(num_used_rules)
-        model.model_ptr = move(rule_model_ptr)
+        model.model_ptr = <unique_ptr[IRuleModel]>move(rule_model_ptr)
 
 
 cdef class RuleModelVisitorWrapper:
@@ -431,7 +431,7 @@ cdef class RuleModelVisitorWrapper:
         cdef const float64[::1] scores = <float64[:num_elements]>head.scores_cbegin()
         self.visitor.visit_partial_head(PartialHead.__new__(PartialHead, indices, scores))
 
-    cdef visit(self, RuleList model):
+    cdef visit(self, RuleModel model):
         """
         Visits a specific model.
 
