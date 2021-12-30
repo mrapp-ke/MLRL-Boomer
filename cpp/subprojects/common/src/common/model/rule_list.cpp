@@ -1,4 +1,5 @@
-#include "common/model/rule_model.hpp"
+#include "common/model/rule_list.hpp"
+
 
 RuleModel::RuleConstIterator::RuleConstIterator(const std::forward_list<Rule>& list, uint32 index)
     : iterator_(list.cbegin()), index_(index) {

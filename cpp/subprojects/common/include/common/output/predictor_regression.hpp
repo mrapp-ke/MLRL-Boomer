@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/output/predictor.hpp"
-#include "common/model/rule_model.hpp"
+#include "common/model/rule_list.hpp"
 
 
 /**
