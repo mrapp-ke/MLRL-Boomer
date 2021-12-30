@@ -22,7 +22,7 @@ class IRuleList : public IRuleModel {
 /**
  * An implementation of the type `IRule` that stores unique pointers to the body and head of a rule.
  */
-class Rule final : public IRule {
+class Rule final {
 
     private:
 
@@ -38,14 +38,33 @@ class Rule final : public IRule {
          */
         Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr);
 
-        const IBody& getBody() const override;
+        /**
+         * Returns the body of the rule.
+         *
+         * @return A reference to an object of type `IBody` that represents the body of the rule
+         */
+        const IBody& getBody() const;
 
-        const IHead& getHead() const override;
+        /**
+         * Returns the head of the rule.
+         *
+         * @return A reference to an object of type `IHead` that represents the head of the rule
+         */
+        const IHead& getHead() const;
 
+        /**
+         * Invokes some of the given visitor functions, depending on which ones are able to handle the rule's particular
+         * type of body and head.
+         *
+         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
+         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
+         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         */
         void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                    IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                    IHead::CompleteHeadVisitor completeHeadVisitor,
-                   IHead::PartialHeadVisitor partialHeadVisitor) const override;
+                   IHead::PartialHeadVisitor partialHeadVisitor) const;
 
 };
 

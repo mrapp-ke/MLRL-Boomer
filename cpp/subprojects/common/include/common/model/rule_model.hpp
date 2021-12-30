@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "common/model/rule.hpp"
+#include "common/model/body.hpp"
+#include "common/model/head.hpp"
 #include <memory>
 
 // Forward declarations
