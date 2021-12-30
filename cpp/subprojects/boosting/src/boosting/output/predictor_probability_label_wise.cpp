@@ -38,10 +38,15 @@ namespace boosting {
      * that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
      * into probabilities in [0, 1] according to a certain transformation function that is applied to each label
      * individually.
+     *
+     * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
+    template<typename Model>
     class LabelWiseProbabilityPredictor final : public IProbabilityPredictor {
 
         private:
+
+            const Model& model_;
 
             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
@@ -50,24 +55,27 @@ namespace boosting {
         public:
 
             /**
+             * @param model                     A reference to an object of template type `Model` that should be used to
+             *                                  obtain predictions
              * @param probabilityFunctionPtr    An unique pointer to an object of type `IProbabilityFunction` that
              *                                  should be used to transform predicted scores into probabilities
              * @param numThreads                The number of CPU threads to be used to make predictions for different
              *                                  query examples in parallel. Must be at least 1
              */
-            LabelWiseProbabilityPredictor(std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
+            LabelWiseProbabilityPredictor(const Model& model,
+                                          std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                           uint32 numThreads)
-                : probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {
+                : model_(model), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {
 
             }
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                         const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
@@ -89,13 +97,13 @@ namespace boosting {
             }
 
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                         const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(numFeatures) \
@@ -139,7 +147,8 @@ namespace boosting {
 
     std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(const RuleModel& model) const {
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
-        return std::make_unique<LabelWiseProbabilityPredictor>(std::move(probabilityFunctionPtr), numThreads_);
+        return std::make_unique<LabelWiseProbabilityPredictor<RuleModel>>(model, std::move(probabilityFunctionPtr),
+                                                                          numThreads_);
     }
 
 }

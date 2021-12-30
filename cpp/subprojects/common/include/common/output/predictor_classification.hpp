@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/output/predictor_sparse.hpp"
+#include "common/model/rule_model.hpp"
 
 
 /**
