@@ -27,15 +27,13 @@ class ISparsePredictor : public IPredictor<T> {
          * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that stores the feature
          *                          values of the examples
          * @param numLabels         The number of labels to predict for
-         * @param model             A reference to an object of type `RuleModel` that should be used to obtain the
-         *                          predictions
          * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label vectors
          *                          or a null pointer, if no such set is available
          * @return                  An unique pointer to an object of type `BinarySparsePredictionMatrix` that stores
          *                          the predictions
          */
         virtual std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-            const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+            const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels,
             const LabelVectorSet* labelVectors) const = 0;
 
         /**
@@ -45,15 +43,13 @@ class ISparsePredictor : public IPredictor<T> {
          * @param featureMatrix     A reference to an object of type `CsrFeatureMatrix` that stores the feature values
          *                          of the examples
          * @param numLabels         The number of labels to predict for
-         * @param model             A reference to an object of type `RuleModel` that should be used to obtain the
-         *                          predictions
          * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label vectors
          *                          or a null pointer, if no such set is available
          * @return                  An unique pointer to an object of type `BinarySparsePredictionMatrix` that stores
          *                          predictions
          */
         virtual std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-            const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+            const CsrFeatureMatrix& featureMatrix, uint32 numLabels,
             const LabelVectorSet* labelVectors) const = 0;
 
 };

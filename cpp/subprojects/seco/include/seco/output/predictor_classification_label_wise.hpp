@@ -3,20 +3,19 @@
  */
 #pragma once
 
-#include "common/output/predictor_sparse.hpp"
+#include "common/output/predictor_classification.hpp"
 
 
 namespace seco {
 
     /**
-     * Allows to predict the labels of given query examples using an existing rule-based model that has been learned
-     * using a separate-and-conquer algorithm.
-     *
-     * For prediction, the rules are processed in the order they have been learned. If a rule covers an example, its
-     * prediction (1 if the label is relevant, 0 otherwise) is applied to the labels individually, if none of the
-     * previous rules has already predicted for that particular example and label.
+     * Allows to create instances of the class `IClassificationPredictor` that allow to predict whether individual
+     * labels of given query examples are relevant or irrelevant by processing rules of an existing rule-based model in
+     * the order they have been learned. If a rule covers an example, its prediction (1 if the label is relevant, 0
+     * otherwise) is applied to each label individually, if none of the previous rules has already predicted for a
+     * particular example and label.
      */
-    class LabelWiseClassificationPredictor : public ISparsePredictor<uint8> {
+    class LabelWiseClassificationPredictorFactory final : public IClassificationPredictorFactory {
 
         private:
 
@@ -28,33 +27,9 @@ namespace seco {
              * @param numThreads The number of CPU threads to be used to make predictions for different query examples
              *                   in parallel. Must be at least 1
              */
-            LabelWiseClassificationPredictor(uint32 numThreads);
+            LabelWiseClassificationPredictorFactory(uint32 numThreads);
 
-            /**
-             * @see `IPredictor::predict`
-             */
-            void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override;
-
-            /**
-             * @see `IPredictor::predict`
-             */
-            void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override;
-
-            /**
-             * @see `ISparsePredictor::predictSparse`
-             */
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
-                const LabelVectorSet* labelVectors) const override;
-
-            /**
-             * @see `ISparsePredictor::predictSparse`
-             */
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
-                const LabelVectorSet* labelVectors) const override;
+            std::unique_ptr<IClassificationPredictor> create(const RuleModel& model) const override;
 
     };
 
