@@ -1,4 +1,6 @@
 from mlrl.common.cython._types cimport uint32, float32, float64
+from mlrl.common.cython.output cimport IClassificationPredictor, IClassificationPredictorFactory, \
+    IRegressionPredictor, IRegressionPredictorFactory, IProbabilityPredictor, IProbabilityPredictorFactory
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
@@ -225,6 +227,13 @@ cdef extern from "common/model/rule_list.hpp" nogil:
 
         void visitUsed(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                        CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor)
+
+        unique_ptr[IClassificationPredictor] createClassificationPredictor(
+            const IClassificationPredictorFactory& factory) const
+
+        unique_ptr[IRegressionPredictor] createRegressionPredictor(const IRegressionPredictorFactory& factory) const
+
+        unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IProbabilityPredictorFactory& factory) const
 
 
 cdef extern from "common/model/model_builder.hpp" nogil:
