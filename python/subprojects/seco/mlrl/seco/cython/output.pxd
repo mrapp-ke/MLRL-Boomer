@@ -1,17 +1,18 @@
 from mlrl.common.cython._types cimport uint8, uint32
-from mlrl.common.cython.output cimport AbstractBinaryPredictor, ISparsePredictor
+from mlrl.common.cython.output cimport BinaryPredictor, ClassificationPredictorFactory, IClassificationPredictorFactory
 
 
 cdef extern from "seco/output/predictor_classification_label_wise.hpp" namespace "seco" nogil:
 
-    cdef cppclass LabelWiseClassificationPredictorImpl"seco::LabelWiseClassificationPredictor"(ISparsePredictor[uint8]):
+    cdef cppclass LabelWiseClassificationPredictorFactoryImpl"seco::LabelWiseClassificationPredictorFactory"(
+            IClassificationPredictorFactory):
 
         # Constructors:
 
-        LabelWiseClassificationPredictorImpl(uint32 numThreads) except +
+        LabelWiseClassificationPredictorFactoryImpl(uint32 numThreads) except +
 
 
-cdef class LabelWiseClassificationPredictor(AbstractBinaryPredictor):
+cdef class LabelWiseClassificationPredictorFactory(ClassificationPredictorFactory):
 
     # Attributes:
 

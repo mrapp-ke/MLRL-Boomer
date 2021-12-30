@@ -33,10 +33,10 @@ cdef extern from "common/output/predictor.hpp" nogil:
         # Functions:
 
         void predict(const CContiguousFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix,
-                     const RuleModelImpl& model, const LabelVectorSetImpl* labelVectors)
+                     const LabelVectorSetImpl* labelVectors)
 
         void predict(const CsrFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix,
-                     const RuleModelImpl& model, const LabelVectorSetImpl* labelVectors)
+                     const LabelVectorSetImpl* labelVectors)
 
 
 cdef extern from "common/output/predictor_sparse.hpp" nogil:
@@ -46,12 +46,76 @@ cdef extern from "common/output/predictor_sparse.hpp" nogil:
         # Functions:
 
         unique_ptr[BinarySparsePredictionMatrix] predictSparse(const CContiguousFeatureMatrixImpl& featureMatrix,
-                                                               uint32 numLabels, const RuleModelImpl& model,
-                                                               const LabelVectorSetImpl* labelVectors)
+                                                               uint32 numLabels, const LabelVectorSetImpl* labelVectors)
 
         unique_ptr[BinarySparsePredictionMatrix] predictSparse(const CsrFeatureMatrixImpl& featureMatrix,
-                                                               uint32 numLabels, const RuleModelImpl& model,
-                                                               const LabelVectorSetImpl* labelVectors)
+                                                               uint32 numLabels, const LabelVectorSetImpl* labelVectors)
+
+
+cdef extern from "common/output/predictor_classification.hpp" nogil:
+
+    cdef cppclass IClassificationPredictor(ISparsePredictor[uint8]):
+        pass
+
+
+    cdef cppclass IClassificationPredictorFactory:
+
+        # Functions:
+
+        unique_ptr[IClassificationPredictor] create(const RuleModelImpl& model) const
+
+
+cdef extern from "common/output/predictor_regression.hpp" nogil:
+
+    cdef cppclass IRegressionPredictor(IPredictor[float64]):
+        pass
+
+
+    cdef cppclass IRegressionPredictorFactory:
+
+        # Functions:
+
+        unique_ptr[IRegressionPredictor] create(const RuleModelImpl& model) const
+
+
+cdef extern from "common/output/predictor_probability.hpp" nogil:
+
+    cdef cppclass IProbabilityPredictor(IPredictor[float64]):
+        pass
+
+
+    cdef cppclass IProbabilityPredictorFactory:
+
+        # Functions:
+
+        unique_ptr[IProbabilityPredictor] create(const RuleModelImpl& model) const
+
+
+cdef class ClassificationPredictorFactory:
+
+    # Attributes:
+
+    cdef uint32 num_labels
+
+    cdef unique_ptr[IClassificationPredictorFactory] predictor_factory_ptr
+
+
+cdef class RegressionPredictorFactory:
+
+    # Attributes:
+
+    cdef uint32 num_labels
+
+    cdef unique_ptr[IRegressionPredictorFactory] predictor_factory_ptr
+
+
+cdef class ProbabilityPredictorFactory:
+
+    # Attributes:
+
+    cdef uint32 num_labels
+
+    cdef unique_ptr[IProbabilityPredictorFactory] predictor_factory_ptr
 
 
 cdef class Predictor:
@@ -62,7 +126,7 @@ cdef class SparsePredictor(Predictor):
     pass
 
 
-cdef class AbstractNumericalPredictor(Predictor):
+cdef class NumericalPredictor(Predictor):
 
     # Attributes:
 
@@ -71,7 +135,7 @@ cdef class AbstractNumericalPredictor(Predictor):
     cdef unique_ptr[IPredictor[float64]] predictor_ptr
 
 
-cdef class AbstractBinaryPredictor(SparsePredictor):
+cdef class BinaryPredictor(SparsePredictor):
 
     # Attributes:
 
