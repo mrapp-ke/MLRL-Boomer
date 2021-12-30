@@ -36,45 +36,6 @@ namespace boosting {
             }
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const Rule& rule, const LabelVectorSet* labelVectors) const override {
-                uint32 numExamples = featureMatrix.getNumRows();
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
-                CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
-                const Rule* rulePtr = &rule;
-
-                #pragma omp parallel for firstprivate(numExamples) firstprivate(rulePtr) \
-                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
-                num_threads(numThreads_)
-                for (int64 i = 0; i < numExamples; i++) {
-                    applyRule(*rulePtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
-                              predictionMatrixPtr->row_begin(i));
-                }
-            }
-
-            void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const Rule& rule, const LabelVectorSet* labelVectors) const override {
-                uint32 numExamples = featureMatrix.getNumRows();
-                uint32 numFeatures = featureMatrix.getNumCols();
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
-                CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
-                const Rule* rulePtr = &rule;
-
-                #pragma omp parallel for firstprivate(numExamples) firstprivate(rulePtr) \
-                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
-                num_threads(numThreads_)
-                for (int64 i = 0; i < numExamples; i++) {
-                    float32* tmpArray1 = new float32[numFeatures];
-                    uint32* tmpArray2 = new uint32[numFeatures] {};
-                    applyRuleCsr(*rulePtr, featureMatrixPtr->row_indices_cbegin(i),
-                                 featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                                 featureMatrixPtr->row_values_cend(i), predictionMatrixPtr->row_begin(i), &tmpArray1[0],
-                                 &tmpArray2[0], 1);
-                    delete[] tmpArray1;
-                    delete[] tmpArray2;
-                }
-            }
-
-            void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
                          const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
@@ -86,7 +47,7 @@ namespace boosting {
                 num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                        const Rule& rule = *it;
+                        const RuleList::Rule& rule = *it;
                         applyRule(rule, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
                                   predictionMatrixPtr->row_begin(i));
                     }
@@ -110,7 +71,7 @@ namespace boosting {
                     uint32 n = 1;
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                        const Rule& rule = *it;
+                        const RuleList::Rule& rule = *it;
                         applyRuleCsr(rule, featureMatrixPtr->row_indices_cbegin(i),
                                      featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                                      featureMatrixPtr->row_values_cend(i), predictionMatrixPtr->row_begin(i),
@@ -130,8 +91,8 @@ namespace boosting {
         assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
-    std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(const RuleModel& model) const {
-        return std::make_unique<LabelWiseRegressionPredictor<RuleModel>>(model, numThreads_);
+    std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(const RuleList& model) const {
+        return std::make_unique<LabelWiseRegressionPredictor<RuleList>>(model, numThreads_);
     }
 
 }

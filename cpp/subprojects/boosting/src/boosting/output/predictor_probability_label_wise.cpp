@@ -85,7 +85,7 @@ namespace boosting {
                     float64* scoreVector = new float64[numLabels] {};
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                        const Rule& rule = *it;
+                        const RuleList::Rule& rule = *it;
                         applyRule(rule, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
                                   &scoreVector[0]);
                     }
@@ -116,7 +116,7 @@ namespace boosting {
                     uint32 n = 1;
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                        const Rule& rule = *it;
+                        const RuleList::Rule& rule = *it;
                         applyRuleCsr(rule, featureMatrixPtr->row_indices_cbegin(i),
                                      featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                                      featureMatrixPtr->row_values_cend(i), &scoreVector[0], &tmpArray1[0],
@@ -145,10 +145,10 @@ namespace boosting {
         assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
-    std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(const RuleModel& model) const {
+    std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(const RuleList& model) const {
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
-        return std::make_unique<LabelWiseProbabilityPredictor<RuleModel>>(model, std::move(probabilityFunctionPtr),
-                                                                          numThreads_);
+        return std::make_unique<LabelWiseProbabilityPredictor<RuleList>>(model, std::move(probabilityFunctionPtr),
+                                                                         numThreads_);
     }
 
 }
