@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/model/rule.hpp"
+#include <memory>
 
 // Forward declarations
 class IClassificationPredictorFactory;
