@@ -29,7 +29,7 @@ class IRuleModelAssemblage {
         virtual ~IRuleModelAssemblage() { };
 
         /**
-         * Assembles and returns a `RuleList` that consists of several rules.
+         * Assembles and returns a rule-based model that consists of several rules.
          *
          * @param nominalFeatureMask    A reference to an object of type `INominalFeatureMask` that provides access to
          *                              the information whether individual features are nominal or not
@@ -40,13 +40,13 @@ class IRuleModelAssemblage {
          * @param randomState           The seed to be used by the random number generators
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the induced rules should be
          *                              added to
-         * @return                      An unique pointer to an object of type `RuleList` that consists of the rules
+         * @return                      An unique pointer to an object of type `IRuleModel` that consists of the rules
          *                              that have been induced
          */
-        virtual std::unique_ptr<RuleList> induceRules(const INominalFeatureMask& nominalFeatureMask,
-                                                      const IColumnWiseFeatureMatrix& featureMatrix,
-                                                      const IRowWiseLabelMatrix& labelMatrix, uint32 randomState,
-                                                      IModelBuilder& modelBuilder) = 0;
+        virtual std::unique_ptr<IRuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
+                                                        const IColumnWiseFeatureMatrix& featureMatrix,
+                                                        const IRowWiseLabelMatrix& labelMatrix, uint32 randomState,
+                                                        IModelBuilder& modelBuilder) = 0;
 
 };
 

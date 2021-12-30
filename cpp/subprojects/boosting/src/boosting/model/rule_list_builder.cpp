@@ -18,7 +18,7 @@ namespace boosting {
         modelPtr_->addRule(conditions.createConjunctiveBody(), prediction.toHead());
     }
 
-    std::unique_ptr<RuleList> RuleListBuilder::build(uint32 numUsedRules) {
+    std::unique_ptr<IRuleModel> RuleListBuilder::build(uint32 numUsedRules) {
         modelPtr_->setNumUsedRules(numUsedRules);
         return std::move(modelPtr_);
     }

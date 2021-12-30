@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/model/model_builder.hpp"
+#include "common/model/rule_list.hpp"
 
 
 namespace boosting {
@@ -34,7 +35,7 @@ namespace boosting {
             /**
              * @see `IModelBuilder::build`
              */
-            std::unique_ptr<RuleList> build(uint32 numUsedRules) override;
+            std::unique_ptr<IRuleModel> build(uint32 numUsedRules) override;
 
     };
 

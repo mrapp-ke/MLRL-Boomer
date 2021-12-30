@@ -187,32 +187,9 @@ cdef extern from "common/model/rule.hpp" nogil:
         const IHead& getHead()
 
 
-cdef extern from "common/model/rule_list.hpp" nogil:
+cdef extern from "common/model/rule_model.hpp" nogil:
 
-    cdef cppclass UsedIterator"RuleList::UsedIterator":
-
-        const RuleImpl& operator*()
-
-        UsedIterator& operator++()
-
-        UsedIterator& operator++(int n)
-
-        bool operator!=(const UsedIterator& rhs)
-
-
-    cdef cppclass RuleListImpl"RuleList":
-
-        ctypedef double_linked_list[RuleImpl].const_iterator const_iterator
-
-        ctypedef UsedIterator used_const_iterator
-
-        const_iterator cbegin()
-
-        const_iterator cend()
-
-        used_const_iterator used_cbegin()
-
-        used_const_iterator used_cend()
+    cdef cppclass IRuleModel:
 
         uint32 getNumRules()
 
@@ -234,6 +211,15 @@ cdef extern from "common/model/rule_list.hpp" nogil:
         unique_ptr[IRegressionPredictor] createRegressionPredictor(const IRegressionPredictorFactory& factory) const
 
         unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IProbabilityPredictorFactory& factory) const
+
+
+cdef extern from "common/model/rule_list.hpp" nogil:
+
+    cdef cppclass IRuleList(IRuleModel):
+        pass
+
+
+    unique_ptr[IRuleList] createRuleList()
 
 
 cdef extern from "common/model/model_builder.hpp" nogil:
@@ -348,11 +334,11 @@ cdef class PartialHead(Head):
     cdef readonly npc.ndarray scores
 
 
-cdef class RuleList:
+cdef class RuleModel:
 
     # Attributes:
 
-    cdef unique_ptr[RuleListImpl] model_ptr
+    cdef unique_ptr[IRuleModel] model_ptr
 
 
 cdef class ModelBuilder:
@@ -395,4 +381,4 @@ cdef class RuleModelVisitorWrapper:
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
 
-    cdef visit(self, RuleList model)
+    cdef visit(self, RuleModel model)

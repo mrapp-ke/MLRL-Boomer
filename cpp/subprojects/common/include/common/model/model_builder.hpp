@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/rule_refinement/prediction.hpp"
-#include "common/model/rule_list.hpp"
+#include "common/model/rule_model.hpp"
 #include "common/model/condition_list.hpp"
 
 
@@ -38,8 +38,8 @@ class IModelBuilder {
          * Builds and returns the model.
          *
          * @param numUsedRules  The number of used rules
-         * @return              An unique pointer to an object of type `RuleList` that has been built
+         * @return              An unique pointer to an object of type `IRuleModel` that has been built
          */
-        virtual std::unique_ptr<RuleList> build(uint32 numUsedRules) = 0;
+        virtual std::unique_ptr<IRuleModel> build(uint32 numUsedRules) = 0;
 
 };
