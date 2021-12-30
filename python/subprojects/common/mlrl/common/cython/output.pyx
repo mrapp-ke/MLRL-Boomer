@@ -59,13 +59,12 @@ cdef class Predictor:
     A wrapper for the pure virtual C++ class `IPredictor`.
     """
 
-    def predict_dense(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
-                LabelVectorSet label_vectors) -> np.ndarray:
+    def predict_dense(self, CContiguousFeatureMatrix feature_matrix not None,
+                      LabelVectorSet label_vectors) -> np.ndarray:
         """
         Obtains and returns dense predictions for given examples in a feature matrix that uses a C-contiguous array.
 
         :param feature_matrix:  A `CContiguousFeatureMatrix` that stores the examples to predict for
-        :param model:           The `RuleModel` to be used for making predictions
         :param label_vectors    A `LabelVectorSet` that stores all known label vectors or None, if no such set is
                                 available
         :return:                A `np.ndarray`, shape `(num_examples, num_labels)`, that stores the predictions for
@@ -73,14 +72,12 @@ cdef class Predictor:
         """
         pass
 
-    def predict_dense_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
-                          LabelVectorSet label_vectors) -> np.ndarray:
+    def predict_dense_csr(self, CsrFeatureMatrix feature_matrix not None, LabelVectorSet label_vectors) -> np.ndarray:
         """
         Obtains and returns dense predictions for given examples in a feature matrix that uses the compressed sparse row
         (CSR) format.
 
         :param feature_matrix:  A `CsrFeatureMatrix` that stores the examples to predict for
-        :param model:           The `RuleModel` to be used for making predictions
         :param label_vectors    A `LabelVectorSet` that stores all known label vectors or None, if no such set is
                                 available
         :return:                A `np.ndarray`, shape `(num_examples, num_labels)`, that stores the predictions for
@@ -94,13 +91,12 @@ cdef class SparsePredictor(Predictor):
     A wrapper for the pure virtual C++ class `ISparsePredictor`.
     """
 
-    def predict_sparse(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
+    def predict_sparse(self, CContiguousFeatureMatrix feature_matrix not None,
                        LabelVectorSet label_vectors) -> csr_matrix:
         """
         Obtains and returns sparse predictions for given examples in a feature matrix that uses a C-contiguous array.
 
         :param feature_matrix:  A `CContiguousFeatureMatrix` that stores the examples to predict for
-        :param model:           The `RuleModel` to be used for making predictions
         :param label_vectors    A `LabelVectorSet` that stores all known label vectors or None, if no such set is
                                 available
         :return:                A `scipy.sparse.csr_matrix`, shape `(num_examples, num_labels)`, that stores the
@@ -108,14 +104,12 @@ cdef class SparsePredictor(Predictor):
         """
         pass
 
-    def predict_sparse_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
-                           LabelVectorSet label_vectors) -> csr_matrix:
+    def predict_sparse_csr(self, CsrFeatureMatrix feature_matrix not None, LabelVectorSet label_vectors) -> csr_matrix:
         """
         Obtains and returns dense predictions for given examples in a feature matrix that uses the compressed sparse row
         (CSR) format.
 
         :param feature_matrix:  A `CsrFeatureMatrix` that stores the examples to predict for
-        :param model:           The `RuleModel` to be used for making predictions
         :param label_vectors    A `LabelVectorSet` that stores all known label vectors or None, if no such set is
                                 available
         :return:                A `scipy.sparse.csr_matrix`, shape `(num_examples, num_labels)`, that stores the
@@ -129,8 +123,7 @@ cdef class AbstractNumericalPredictor(Predictor):
     A base class for all classes that allow to predict numerical scores for given query examples.
     """
 
-    def predict(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
-                LabelVectorSet label_vectors):
+    def predict(self, CContiguousFeatureMatrix feature_matrix not None, LabelVectorSet label_vectors):
         cdef CContiguousFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
@@ -139,12 +132,10 @@ cdef class AbstractNumericalPredictor(Predictor):
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
-        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr),
-                                         dereference(model.model_ptr), label_vectors_ptr)
+        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
-    def predict_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
-                    LabelVectorSet label_vectors):
+    def predict_csr(self, CsrFeatureMatrix feature_matrix not None, LabelVectorSet label_vectors):
         cdef CsrFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
@@ -153,8 +144,7 @@ cdef class AbstractNumericalPredictor(Predictor):
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
-        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr),
-                                         dereference(model.model_ptr), label_vectors_ptr)
+        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
 
@@ -191,8 +181,7 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
     A base class for all classes that allow to predict binary values for given query examples.
     """
 
-    def predict_dense(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
-                      LabelVectorSet label_vectors):
+    def predict_dense(self, CContiguousFeatureMatrix feature_matrix not None, LabelVectorSet label_vectors):
         cdef CContiguousFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
@@ -202,12 +191,10 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
         cdef IPredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
-        predictor_ptr.predict(dereference(feature_matrix_ptr), dereference(view_ptr), dereference(model.model_ptr),
-                              label_vectors_ptr)
+        predictor_ptr.predict(dereference(feature_matrix_ptr), dereference(view_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
-    def predict_dense_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
-                          LabelVectorSet label_vectors):
+    def predict_dense_csr(self, CsrFeatureMatrix feature_matrix not None, LabelVectorSet label_vectors):
         cdef CsrFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
@@ -217,11 +204,10 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
         cdef IPredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
-        predictor_ptr.predict(dereference(feature_matrix_ptr), dereference(view_ptr), dereference(model.model_ptr),
-                              label_vectors_ptr)
+        predictor_ptr.predict(dereference(feature_matrix_ptr), dereference(view_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
-    def predict_sparse(self, CContiguousFeatureMatrix feature_matrix not None, RuleModel model not None,
+    def predict_sparse(self, CContiguousFeatureMatrix feature_matrix not None,
                        LabelVectorSet label_vectors) -> csr_matrix:
         cdef CContiguousFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_labels = self.num_labels
@@ -229,16 +215,15 @@ cdef class AbstractBinaryPredictor(SparsePredictor):
                                                         else label_vectors.label_vector_set_ptr.get()
         cdef ISparsePredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
         cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = predictor_ptr.predictSparse(
-            dereference(feature_matrix_ptr), num_labels, dereference(model.model_ptr), label_vectors_ptr)
+            dereference(feature_matrix_ptr), num_labels, label_vectors_ptr)
         return __create_csr_matrix(prediction_matrix_ptr.get())
 
-    def predict_sparse_csr(self, CsrFeatureMatrix feature_matrix not None, RuleModel model not None,
-                           LabelVectorSet label_vectors) -> csr_matrix:
+    def predict_sparse_csr(self, CsrFeatureMatrix feature_matrix not None, LabelVectorSet label_vectors) -> csr_matrix:
         cdef CsrFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_labels = self.num_labels
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
                                                         else label_vectors.label_vector_set_ptr.get()
         cdef ISparsePredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
         cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = predictor_ptr.predictSparse(
-            dereference(feature_matrix_ptr), num_labels, dereference(model.model_ptr), label_vectors_ptr)
+            dereference(feature_matrix_ptr), num_labels, label_vectors_ptr)
         return __create_csr_matrix(prediction_matrix_ptr.get())

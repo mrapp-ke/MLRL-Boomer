@@ -10,21 +10,28 @@ namespace boosting {
      * An implementation of the type `IRegressionPredictor` that allows to predict label-wise regression scores for
      * given query examples by summing up the scores that are provided by the individual rules of an existing rule-based
      * model for each label individually.
+     *
+     * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
+    template<typename Model>
     class LabelWiseRegressionPredictor final : public IRegressionPredictor {
 
         private:
+
+            const Model& model_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
-             *                   in parallel. Must be at least 1
+             * @param model         A reference to an object of template type `Model` that should be used to obtain
+             *                      predictions
+             * @param numThreads    The number of CPU threads to be used to make predictions for different query
+             *                      examples in parallel. Must be at least 1
              */
-            LabelWiseRegressionPredictor(uint32 numThreads)
-                : numThreads_(numThreads) {
+            LabelWiseRegressionPredictor(const Model& model, uint32 numThreads)
+                : model_(model), numThreads_(numThreads) {
 
             }
 
@@ -68,11 +75,11 @@ namespace boosting {
             }
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                         const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) \
                 firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
@@ -87,12 +94,12 @@ namespace boosting {
             }
 
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                         const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) \
                 firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
@@ -124,7 +131,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(const RuleModel& model) const {
-        return std::make_unique<LabelWiseRegressionPredictor>(numThreads_);
+        return std::make_unique<LabelWiseRegressionPredictor<RuleModel>>(model, numThreads_);
     }
 
 }

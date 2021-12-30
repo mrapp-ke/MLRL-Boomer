@@ -560,7 +560,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         label_vectors = self.label_vectors_
         model = self.model_
         predictor = predictor_factory.create(model)
-        return self.__predict(predictor, model, label_vectors, x)
+        return self.__predict(predictor, label_vectors, x)
 
     def _predict_proba(self, x):
         predictor_factory = self.probability_predictor_factory_
@@ -571,9 +571,9 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             label_vectors = self.label_vectors_
             model = self.model_
             predictor = predictor_factory.create(model)
-            return self.__predict(predictor, model, label_vectors, x)
+            return self.__predict(predictor, label_vectors, x)
 
-    def __predict(self, predictor, model, label_vectors: LabelVectorSet, x):
+    def __predict(self, predictor, label_vectors: LabelVectorSet, x):
         sparse_format = SparseFormat.CSR
         sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
@@ -592,17 +592,17 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             feature_matrix = CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
 
             if predict_sparse:
-                return predictor.predict_sparse_csr(feature_matrix, model, label_vectors)
+                return predictor.predict_sparse_csr(feature_matrix, label_vectors)
             else:
-                return predictor.predict_dense_csr(feature_matrix, model, label_vectors)
+                return predictor.predict_dense_csr(feature_matrix, label_vectors)
         else:
             log.debug('A dense matrix is used to store the feature values of the test examples')
             feature_matrix = CContiguousFeatureMatrix(x)
 
             if predict_sparse:
-                return predictor.predict_sparse(feature_matrix, model, label_vectors)
+                return predictor.predict_sparse(feature_matrix, label_vectors)
             else:
-                return predictor.predict_dense(feature_matrix, model, label_vectors)
+                return predictor.predict_dense(feature_matrix, label_vectors)
 
     @abstractmethod
     def _create_statistics_provider_factory(self,

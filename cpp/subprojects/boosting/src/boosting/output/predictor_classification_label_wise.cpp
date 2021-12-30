@@ -51,10 +51,15 @@ namespace boosting {
      * rules of an existing rule-based model and transforming them into binary values according to a certain threshold
      * that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
      * otherwise).
+     *
+     * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
+    template<typename Model>
     class LabelWiseClassificationPredictor final : public IClassificationPredictor {
 
         private:
+
+            const Model& model_;
 
             float64 threshold_;
 
@@ -63,22 +68,24 @@ namespace boosting {
         public:
 
             /**
+             * @param model         A reference to an object of template type `Model` that should be used to obtain
+             *                      predictions
              * @param threshold     The threshold to be used
              * @param numThreads    The number of CPU threads to be used to make predictions for different query
              *                      examples in parallel. Must be at least 1
              */
-            LabelWiseClassificationPredictor(float64 threshold, uint32 numThreads)
-                : threshold_(threshold), numThreads_(numThreads) {
+            LabelWiseClassificationPredictor(const Model& model, float64 threshold, uint32 numThreads)
+                : model_(model), threshold_(threshold), numThreads_(numThreads) {
 
             }
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                         const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(threshold) \
@@ -94,13 +101,13 @@ namespace boosting {
             }
 
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                         const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
@@ -117,13 +124,13 @@ namespace boosting {
             }
 
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                    const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+                    const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels,
                     const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
                 uint32 numNonZeroElements = 0;
 
@@ -142,14 +149,14 @@ namespace boosting {
             }
 
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                    const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+                    const CsrFeatureMatrix& featureMatrix, uint32 numLabels,
                     const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
                 uint32 numNonZeroElements = 0;
 
@@ -181,7 +188,7 @@ namespace boosting {
 
     std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
             const RuleModel& model) const {
-        return std::make_unique<LabelWiseClassificationPredictor>(threshold_, numThreads_);
+        return std::make_unique<LabelWiseClassificationPredictor<RuleModel>>(model, threshold_, numThreads_);
     }
 
 }

@@ -152,31 +152,38 @@ namespace seco {
      * they have been learned. If a rule covers an example, its prediction (1 if the label is relevant, 0 otherwise) is
      * applied to each label individually, if none of the previous rules has already predicted for a particular example
      * and label.
+     *
+     * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
+    template<typename Model>
     class LabelWiseClassificationPredictor final : public IClassificationPredictor {
 
         private:
+
+            const Model& model_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
-             *                   in parallel. Must be at least 1
+             * @param model         A reference to an object of template type `Model` that should be used to obtain
+             *                      predictions
+             * @param numThreads    The number of CPU threads to be used to make predictions for different query
+             *                      examples in parallel. Must be at least 1
              */
-            LabelWiseClassificationPredictor(uint32 numThreads)
-                : numThreads_(numThreads) {
+            LabelWiseClassificationPredictor(const Model& model, uint32 numThreads)
+                : model_(model), numThreads_(numThreads) {
 
             }
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                         const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
                 firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
@@ -197,13 +204,13 @@ namespace seco {
             }
 
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                         const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
                 firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
@@ -234,13 +241,13 @@ namespace seco {
             }
 
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                    const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+                    const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels,
                     const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 uint32 numNonZeroElements = 0;
 
                 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
@@ -265,14 +272,14 @@ namespace seco {
             }
 
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                    const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+                    const CsrFeatureMatrix& featureMatrix, uint32 numLabels,
                     const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 uint32 numNonZeroElements = 0;
 
                 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
@@ -316,7 +323,7 @@ namespace seco {
 
     std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
             const RuleModel& model) const {
-        return std::make_unique<LabelWiseClassificationPredictor>(numThreads_);
+        return std::make_unique<LabelWiseClassificationPredictor<RuleModel>>(model, numThreads_);
     }
 
 }

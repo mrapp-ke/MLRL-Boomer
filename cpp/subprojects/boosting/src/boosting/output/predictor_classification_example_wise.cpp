@@ -78,10 +78,15 @@ namespace boosting {
      * for given query examples by summing up the scores that are provided by an existing rule-based model and comparing
      * the aggregated score vector to the known label vectors according to a certain distance measure. The label vector
      * that is closest to the aggregated score vector is finally predicted.
+     *
+     * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
+    template<typename Model>
     class ExampleWiseClassificationPredictor final : public IClassificationPredictor {
 
         private:
+
+            const Model& model_;
 
             std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr_;
 
@@ -90,15 +95,18 @@ namespace boosting {
         public:
 
             /**
+             * @param model                         A reference to an object of template type `Model` that should be
+             *                                      used to obtain predictions
              * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasure` that
              *                                      implements the similarity measure that should be used to quantify
              *                                      the similarity between predictions and known label vectors
              * @param numThreads                    The number of CPU threads to be used to make predictions for
              *                                      different query examples in parallel. Must be at least 1
              */
-            ExampleWiseClassificationPredictor(std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr,
+            ExampleWiseClassificationPredictor(const Model& model,
+                                               std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr,
                                                uint32 numThreads)
-                : similarityMeasurePtr_(std::move(similarityMeasurePtr)), numThreads_(numThreads) {
+                : model_(model), similarityMeasurePtr_(std::move(similarityMeasurePtr)), numThreads_(numThreads) {
 
             }
 
@@ -136,12 +144,12 @@ namespace boosting {
             }
 
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                         const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
@@ -161,13 +169,13 @@ namespace boosting {
             }
 
             void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const RuleModel& model, const LabelVectorSet* labelVectors) const override {
+                         const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
@@ -189,13 +197,13 @@ namespace boosting {
             }
 
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                    const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+                    const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels,
                     const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
                 uint32 numNonZeroElements = 0;
 
@@ -219,14 +227,14 @@ namespace boosting {
             }
 
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                    const CsrFeatureMatrix& featureMatrix, uint32 numLabels, const RuleModel& model,
+                    const CsrFeatureMatrix& featureMatrix, uint32 numLabels,
                     const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
-                const RuleModel* modelPtr = &model;
+                const Model* modelPtr = &model_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
                 uint32 numNonZeroElements = 0;
 
@@ -264,7 +272,8 @@ namespace boosting {
             const RuleModel& model) const {
         std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
             similarityMeasureFactoryPtr_->createSimilarityMeasure();
-        return std::make_unique<ExampleWiseClassificationPredictor>(std::move(similarityMeasurePtr), numThreads_);
+        return std::make_unique<ExampleWiseClassificationPredictor<RuleModel>>(model, std::move(similarityMeasurePtr),
+                                                                               numThreads_);
     }
 
 }
