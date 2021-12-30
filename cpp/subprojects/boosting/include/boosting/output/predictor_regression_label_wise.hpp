@@ -27,7 +27,7 @@ namespace boosting {
              */
             LabelWiseRegressionPredictorFactory(uint32 numThreads);
 
-            std::unique_ptr<IRegressionPredictor> create(const RuleModel& model) const override;
+            std::unique_ptr<IRegressionPredictor> create(const RuleList& model) const override;
 
     };
 

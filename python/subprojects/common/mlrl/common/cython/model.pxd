@@ -1,8 +1,8 @@
 from mlrl.common.cython._types cimport uint32, float32, float64
+from mlrl.common.cython.output cimport IClassificationPredictor, IClassificationPredictorFactory, \
+    IRegressionPredictor, IRegressionPredictorFactory, IProbabilityPredictor, IProbabilityPredictorFactory
 
-from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
-from libcpp.list cimport list as double_linked_list
 
 cimport numpy as npc
 
@@ -176,41 +176,9 @@ ctypedef void (*CompleteHeadVisitor)(const CompleteHeadImpl&)
 ctypedef void (*PartialHeadVisitor)(const PartialHeadImpl&)
 
 
-cdef extern from "common/model/rule.hpp" nogil:
-
-    cdef cppclass RuleImpl"Rule":
-
-        const IBody& getBody()
-
-        const IHead& getHead()
-
-
 cdef extern from "common/model/rule_model.hpp" nogil:
 
-    cdef cppclass UsedIterator"RuleModel::UsedIterator":
-
-        const RuleImpl& operator*()
-
-        UsedIterator& operator++()
-
-        UsedIterator& operator++(int n)
-
-        bool operator!=(const UsedIterator& rhs)
-
-
-    cdef cppclass RuleModelImpl"RuleModel":
-
-        ctypedef double_linked_list[RuleImpl].const_iterator const_iterator
-
-        ctypedef UsedIterator used_const_iterator
-
-        const_iterator cbegin()
-
-        const_iterator cend()
-
-        used_const_iterator used_cbegin()
-
-        used_const_iterator used_cend()
+    cdef cppclass IRuleModel:
 
         uint32 getNumRules()
 
@@ -225,6 +193,22 @@ cdef extern from "common/model/rule_model.hpp" nogil:
 
         void visitUsed(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                        CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor)
+
+        unique_ptr[IClassificationPredictor] createClassificationPredictor(
+            const IClassificationPredictorFactory& factory) const
+
+        unique_ptr[IRegressionPredictor] createRegressionPredictor(const IRegressionPredictorFactory& factory) const
+
+        unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IProbabilityPredictorFactory& factory) const
+
+
+cdef extern from "common/model/rule_list.hpp" nogil:
+
+    cdef cppclass IRuleList(IRuleModel):
+        pass
+
+
+    unique_ptr[IRuleList] createRuleList()
 
 
 cdef extern from "common/model/model_builder.hpp" nogil:
@@ -343,7 +327,7 @@ cdef class RuleModel:
 
     # Attributes:
 
-    cdef unique_ptr[RuleModelImpl] model_ptr
+    cdef unique_ptr[IRuleModel] model_ptr
 
 
 cdef class ModelBuilder:

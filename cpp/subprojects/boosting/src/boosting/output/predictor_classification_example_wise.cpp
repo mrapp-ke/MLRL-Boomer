@@ -236,11 +236,11 @@ namespace boosting {
     }
 
     std::unique_ptr<IClassificationPredictor> ExampleWiseClassificationPredictorFactory::create(
-            const RuleModel& model) const {
+            const RuleList& model) const {
         std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
             similarityMeasureFactoryPtr_->createSimilarityMeasure();
-        return std::make_unique<ExampleWiseClassificationPredictor<RuleModel>>(model, std::move(similarityMeasurePtr),
-                                                                               numThreads_);
+        return std::make_unique<ExampleWiseClassificationPredictor<RuleList>>(model, std::move(similarityMeasurePtr),
+                                                                              numThreads_);
     }
 
 }
