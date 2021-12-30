@@ -187,7 +187,7 @@ cdef extern from "common/model/rule.hpp" nogil:
 
 cdef extern from "common/model/rule_list.hpp" nogil:
 
-    cdef cppclass UsedIterator"RuleModel::UsedIterator":
+    cdef cppclass UsedIterator"RuleList::UsedIterator":
 
         const RuleImpl& operator*()
 
@@ -198,7 +198,7 @@ cdef extern from "common/model/rule_list.hpp" nogil:
         bool operator!=(const UsedIterator& rhs)
 
 
-    cdef cppclass RuleModelImpl"RuleModel":
+    cdef cppclass RuleListImpl"RuleList":
 
         ctypedef double_linked_list[RuleImpl].const_iterator const_iterator
 
@@ -339,11 +339,11 @@ cdef class PartialHead(Head):
     cdef readonly npc.ndarray scores
 
 
-cdef class RuleModel:
+cdef class RuleList:
 
     # Attributes:
 
-    cdef unique_ptr[RuleModelImpl] model_ptr
+    cdef unique_ptr[RuleListImpl] model_ptr
 
 
 cdef class ModelBuilder:
@@ -386,4 +386,4 @@ cdef class RuleModelVisitorWrapper:
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
 
-    cdef visit(self, RuleModel model)
+    cdef visit(self, RuleList model)

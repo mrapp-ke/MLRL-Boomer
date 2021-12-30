@@ -35,7 +35,7 @@ static inline IStoppingCriterion::Result testStoppingCriteria(
 
 /**
  * Allows to sequentially induce several rules, starting with a default rule, that will be added to a resulting
- * `RuleModel`.
+ * rule-based model.
  */
 class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
 
@@ -120,10 +120,10 @@ class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
 
         }
 
-        std::unique_ptr<RuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
-                                               const IColumnWiseFeatureMatrix& featureMatrix,
-                                               const IRowWiseLabelMatrix& labelMatrix, uint32 randomState,
-                                               IModelBuilder& modelBuilder) {
+        std::unique_ptr<RuleList> induceRules(const INominalFeatureMask& nominalFeatureMask,
+                                              const IColumnWiseFeatureMatrix& featureMatrix,
+                                              const IRowWiseLabelMatrix& labelMatrix, uint32 randomState,
+                                              IModelBuilder& modelBuilder) {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 

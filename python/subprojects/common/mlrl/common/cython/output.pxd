@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
 from mlrl.common.cython._data cimport CContiguousView
 from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVectorSetImpl
-from mlrl.common.cython.model cimport RuleModelImpl
+from mlrl.common.cython.model cimport RuleListImpl
 
 from libcpp.memory cimport unique_ptr
 from libcpp.forward_list cimport forward_list
@@ -62,7 +62,7 @@ cdef extern from "common/output/predictor_classification.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[IClassificationPredictor] create(const RuleModelImpl& model) const
+        unique_ptr[IClassificationPredictor] create(const RuleListImpl& model) const
 
 
 cdef extern from "common/output/predictor_regression.hpp" nogil:
@@ -75,7 +75,7 @@ cdef extern from "common/output/predictor_regression.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[IRegressionPredictor] create(const RuleModelImpl& model) const
+        unique_ptr[IRegressionPredictor] create(const RuleListImpl& model) const
 
 
 cdef extern from "common/output/predictor_probability.hpp" nogil:
@@ -88,7 +88,7 @@ cdef extern from "common/output/predictor_probability.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[IProbabilityPredictor] create(const RuleModelImpl& model) const
+        unique_ptr[IProbabilityPredictor] create(const RuleListImpl& model) const
 
 
 cdef class ClassificationPredictorFactory:

@@ -31,9 +31,9 @@ class IClassificationPredictorFactory {
         /**
          * Creates and returns a new object of the type `IClassificationPredictor`.
          *
-         * @param model A reference to an object of type `RuleModel` that should be used to obtain the predictions
+         * @param model A reference to an object of type `RuleList` that should be used to obtain the predictions
          * @return      An unique pointer to an object of type `IClassificationPredictor` that has been created
          */
-        virtual std::unique_ptr<IClassificationPredictor> create(const RuleModel& model) const = 0;
+        virtual std::unique_ptr<IClassificationPredictor> create(const RuleList& model) const = 0;
 
 };

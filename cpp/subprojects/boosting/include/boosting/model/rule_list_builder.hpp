@@ -15,7 +15,7 @@ namespace boosting {
 
         private:
 
-            std::unique_ptr<RuleModel> modelPtr_;
+            std::unique_ptr<RuleList> modelPtr_;
 
         public:
 
@@ -34,7 +34,7 @@ namespace boosting {
             /**
              * @see `IModelBuilder::build`
              */
-            std::unique_ptr<RuleModel> build(uint32 numUsedRules) override;
+            std::unique_ptr<RuleList> build(uint32 numUsedRules) override;
 
     };
 

@@ -322,8 +322,8 @@ namespace seco {
     }
 
     std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
-            const RuleModel& model) const {
-        return std::make_unique<LabelWiseClassificationPredictor<RuleModel>>(model, numThreads_);
+            const RuleList& model) const {
+        return std::make_unique<LabelWiseClassificationPredictor<RuleList>>(model, numThreads_);
     }
 
 }

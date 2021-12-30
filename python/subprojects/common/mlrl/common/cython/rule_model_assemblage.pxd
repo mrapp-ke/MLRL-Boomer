@@ -1,6 +1,6 @@
 from mlrl.common.cython._types cimport uint32
 from mlrl.common.cython.input cimport INominalFeatureMask, IColumnWiseFeatureMatrix, IRowWiseLabelMatrix
-from mlrl.common.cython.model cimport IModelBuilder, RuleModelImpl
+from mlrl.common.cython.model cimport IModelBuilder, RuleListImpl
 
 from libcpp.memory cimport unique_ptr
 
@@ -11,10 +11,10 @@ cdef extern from "common/rule_induction/rule_model_assemblage.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[RuleModelImpl] induceRules(const INominalFeatureMask& nominalFeatureMask,
-                                              const IColumnWiseFeatureMatrix& featureMatrix,
-                                              const IRowWiseLabelMatrix& labelMatrix, uint32 randomState,
-                                              IModelBuilder& modelBuilder)
+        unique_ptr[RuleListImpl] induceRules(const INominalFeatureMask& nominalFeatureMask,
+                                             const IColumnWiseFeatureMatrix& featureMatrix,
+                                             const IRowWiseLabelMatrix& labelMatrix, uint32 randomState,
+                                             IModelBuilder& modelBuilder)
 
 
     cdef cppclass IRuleModelAssemblageFactory:

@@ -145,10 +145,10 @@ namespace boosting {
         assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
-    std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(const RuleModel& model) const {
+    std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(const RuleList& model) const {
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
-        return std::make_unique<LabelWiseProbabilityPredictor<RuleModel>>(model, std::move(probabilityFunctionPtr),
-                                                                          numThreads_);
+        return std::make_unique<LabelWiseProbabilityPredictor<RuleList>>(model, std::move(probabilityFunctionPtr),
+                                                                         numThreads_);
     }
 
 }

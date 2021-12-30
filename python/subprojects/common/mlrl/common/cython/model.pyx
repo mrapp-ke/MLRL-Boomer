@@ -98,7 +98,7 @@ cdef class PartialHead(Head):
 class RuleModelVisitor:
     """
     Defines the methods that must be implemented by a visitor that accesses the bodies and heads of the rules in a
-    `RuleModel` according to the visitor pattern.
+    rule-based model according to the visitor pattern.
     """
 
     @abstractmethod
@@ -140,9 +140,9 @@ class RuleModelVisitor:
         pass
 
 
-cdef class RuleModel:
+cdef class RuleList:
     """
-    A wrapper for the C++ class `RuleModel`.
+    A wrapper for the C++ class `RuleList`.
     """
 
     def get_num_rules(self) -> int:
@@ -306,7 +306,7 @@ cdef unique_ptr[IHead] __create_partial_head(const float64[::1] scores, const ui
 
 cdef class RuleModelSerializer:
     """
-    Allows to serialize and deserialize the rules that are contained by a `RuleModel`.
+    Allows to serialize and deserialize the rules that are contained by a rule-based model.
     """
 
     cdef __visit_empty_body(self, const EmptyBodyImpl& body):
@@ -343,10 +343,10 @@ cdef class RuleModelSerializer:
                       np.asarray(<uint32[:num_elements]>head.indices_cbegin()))
         rule_state[1] = head_state
 
-    def serialize(self, RuleModel model) -> object:
+    def serialize(self, RuleList model) -> object:
         """
         Creates and returns a state, which may be serialized using Python's pickle mechanism, from the rules that are
-        contained by a given `RuleModel`.
+        contained by a given rule-based model.
 
         :param model:   The model that contains the rules to be serialized
         :return:        The state that has been created
@@ -360,9 +360,9 @@ cdef class RuleModelSerializer:
         cdef uint32 num_used_rules = model.model_ptr.get().getNumUsedRules()
         return (SERIALIZATION_VERSION, (self.state, num_used_rules))
 
-    def deserialize(self, RuleModel model, object state):
+    def deserialize(self, RuleList model, object state):
         """
-        Deserializes the rules that are contained by a given state and adds them to a `RuleModel`.
+        Deserializes the rules that are contained by a given state and adds them to a rule-based model.
 
         :param model:   The model, the deserialized rules should be added to
         :param state:   A state that has previously been created via the function `serialize`
@@ -376,7 +376,7 @@ cdef class RuleModelSerializer:
         model_state = state[1]
         cdef list rule_list = model_state[0]
         cdef uint32 num_rules = len(rule_list)
-        cdef unique_ptr[RuleModelImpl] rule_model_ptr = make_unique[RuleModelImpl]()
+        cdef unique_ptr[RuleListImpl] rule_model_ptr = make_unique[RuleListImpl]()
         cdef object rule_state
         cdef uint32 i
 
@@ -391,7 +391,7 @@ cdef class RuleModelSerializer:
 
 cdef class RuleModelVisitorWrapper:
     """
-    Wraps a `RuleModelVisitor` and invokes its methods when visiting the bodies and heads of a `RuleModel`.
+    Wraps a `RuleModelVisitor` and invokes its methods when visiting the bodies and heads of a rule-based model.
     """
 
     def __cinit__(self, object visitor):
@@ -431,11 +431,11 @@ cdef class RuleModelVisitorWrapper:
         cdef const float64[::1] scores = <float64[:num_elements]>head.scores_cbegin()
         self.visitor.visit_partial_head(PartialHead.__new__(PartialHead, indices, scores))
 
-    cdef visit(self, RuleModel model):
+    cdef visit(self, RuleList model):
         """
         Visits a specific model.
 
-        :param model: The `RuleModel` to be visited
+        :param model: The rule-based model to be visited
         """
         model.model_ptr.get().visitUsed(
             wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),

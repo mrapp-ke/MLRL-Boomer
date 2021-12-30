@@ -5,7 +5,7 @@ from mlrl.common.cython._arrays cimport array_uint8, array_uint32, c_matrix_uint
 from mlrl.common.cython._data cimport CContiguousView
 from mlrl.common.cython.input cimport CContiguousFeatureMatrix, CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, \
     CsrFeatureMatrix, LabelVectorSet
-from mlrl.common.cython.model cimport RuleModel
+from mlrl.common.cython.model cimport RuleList
 
 from libcpp.memory cimport make_unique
 
@@ -20,7 +20,7 @@ cdef class ClassificationPredictorFactory:
     A wrapper for the pure virtual C++ class `IClassificationPredictorFactory`.
     """
 
-    def create(self, RuleModel model not None) -> BinaryPredictor:
+    def create(self, RuleList model not None) -> BinaryPredictor:
         cdef BinaryPredictor predictor = BinaryPredictor.__new__(BinaryPredictor)
         predictor.num_labels = self.num_labels
         predictor.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>self.predictor_factory_ptr.get().create(
@@ -33,7 +33,7 @@ cdef class RegressionPredictorFactory:
     A wrapper for the pure virtual C++ class `IRegressionPredictorFactory`.
     """
 
-    def create(self, RuleModel model not None) -> NumericalPredictor:
+    def create(self, RuleList model not None) -> NumericalPredictor:
         cdef NumericalPredictor predictor = NumericalPredictor.__new__(NumericalPredictor)
         predictor.num_labels = self.num_labels
         predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>self.predictor_factory_ptr.get().create(
@@ -46,7 +46,7 @@ cdef class ProbabilityPredictorFactory:
     A wrapper for the pure virtual C++ class `IProbabilityPredictorFactory`.
     """
 
-    def create(self, RuleModel model not None) -> NumericalPredictor:
+    def create(self, RuleList model not None) -> NumericalPredictor:
         cdef NumericalPredictor predictor = NumericalPredictor.__new__(NumericalPredictor)
         predictor.num_labels = self.num_labels
         predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>self.predictor_factory_ptr.get().create(
