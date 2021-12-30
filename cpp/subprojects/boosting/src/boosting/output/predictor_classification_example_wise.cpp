@@ -110,39 +110,6 @@ namespace boosting {
 
             }
 
-            /**
-             * Obtains predictions for different examples, based on predicted scores, and writes them to a given
-             * prediction matrix.
-             *
-             * @param scoreMatrix       A reference to an object of type `CContiguousConstView` that stores the
-             *                          predicted scores
-             * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
-             *                          written to. May contain arbitrary values
-             * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label
-             *                          vectors or a null pointer, if no such set is available
-             */
-            // TODO Move to interface IClassificationPredictor
-            void transform(const CContiguousConstView<float64>& scoreMatrix, CContiguousView<uint8>& predictionMatrix,
-                           const LabelVectorSet* labelVectors) const {
-                uint32 numExamples = scoreMatrix.getNumRows();
-                uint32 numLabels = predictionMatrix.getNumCols();
-                const CContiguousConstView<float64>* scoreMatrixPtr = &scoreMatrix;
-                CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
-                const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
-
-                #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) \
-                firstprivate(scoreMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(similarityMeasureRawPtr) \
-                firstprivate(labelVectors) \
-                schedule(dynamic) num_threads(numThreads_)
-                for (int64 i = 0; i < numExamples; i++) {
-                    const LabelVector* closestLabelVector = findClosestLabelVector(scoreMatrixPtr->row_cbegin(i),
-                                                                                   scoreMatrixPtr->row_cend(i),
-                                                                                   *similarityMeasureRawPtr,
-                                                                                   labelVectors);
-                    predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
-                }
-            }
-
             void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
                          const LabelVectorSet* labelVectors) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
