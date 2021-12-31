@@ -51,6 +51,6 @@ void PartialPrediction::apply(IStatistics& statistics, uint32 statisticIndex) co
     statistics.applyPrediction(statisticIndex, *this);
 }
 
-std::unique_ptr<IHead> PartialPrediction::toHead() const {
+std::unique_ptr<IHead> PartialPrediction::createHead() const {
     return std::make_unique<PartialHead>(*this);
 }

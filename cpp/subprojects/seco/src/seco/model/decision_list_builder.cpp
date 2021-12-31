@@ -11,11 +11,11 @@ namespace seco {
     }
 
     void DecisionListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
-        defaultHeadPtr_ = prediction.toHead();
+        defaultHeadPtr_ = prediction.createHead();
     }
 
     void DecisionListBuilder::addRule(const ConditionList& conditions, const AbstractPrediction& prediction) {
-        modelPtr_->addRule(conditions.createConjunctiveBody(), prediction.toHead());
+        modelPtr_->addRule(conditions.createConjunctiveBody(), prediction.createHead());
     }
 
     std::unique_ptr<IRuleModel> DecisionListBuilder::build(uint32 numUsedRules) {
