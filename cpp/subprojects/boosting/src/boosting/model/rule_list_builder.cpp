@@ -11,11 +11,11 @@ namespace boosting {
     }
 
     void RuleListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
-        modelPtr_->addRule(std::make_unique<EmptyBody>(), prediction.toHead());
+        modelPtr_->addRule(std::make_unique<EmptyBody>(), prediction.createHead());
     }
 
     void RuleListBuilder::addRule(const ConditionList& conditions, const AbstractPrediction& prediction) {
-        modelPtr_->addRule(conditions.createConjunctiveBody(), prediction.toHead());
+        modelPtr_->addRule(conditions.createConjunctiveBody(), prediction.createHead());
     }
 
     std::unique_ptr<IRuleModel> RuleListBuilder::build(uint32 numUsedRules) {

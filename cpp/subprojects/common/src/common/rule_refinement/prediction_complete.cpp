@@ -43,6 +43,6 @@ void CompletePrediction::apply(IStatistics& statistics, uint32 statisticIndex) c
     statistics.applyPrediction(statisticIndex, *this);
 }
 
-std::unique_ptr<IHead> CompletePrediction::toHead() const {
+std::unique_ptr<IHead> CompletePrediction::createHead() const {
     return std::make_unique<CompleteHead>(*this);
 }
