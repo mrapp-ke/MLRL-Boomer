@@ -31,9 +31,12 @@ dependencies = [
     seco_include
 ]
 
-# Cython compiler options
+# Cython compiler arguments
 cython_options = common_project.get_variable('cython_options')
 cython_args = common_project.get_variable('cython_args')
+
+# C++ compiler arguments
+cpp_args = common_project.get_variable('cpp_args')
 
 # Directory into which the extension modules and Python source files should be installed
 package_dir = 'mlrl' / meson.project_name()
@@ -47,5 +50,5 @@ add_project_arguments(cython_args, language : 'cython')
 foreach module_name : cython_module_names
     pyx_file = package_dir / cython_dir / module_name + '.pyx'
     python.extension_module(module_name, pyx_file, dependencies : dependencies, override_options : cython_options,
-                            install : true, install_dir : install_dir, install_rpath : rpath)
+                            cpp_args : cpp_args, install : true, install_dir : install_dir, install_rpath : rpath)
 endforeach
