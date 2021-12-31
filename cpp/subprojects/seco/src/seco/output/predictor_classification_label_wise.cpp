@@ -1,5 +1,6 @@
 #include "seco/output/predictor_classification_label_wise.hpp"
 #include "common/data/vector_bit.hpp"
+#include "common/iterator/index_iterator.hpp"
 #include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"

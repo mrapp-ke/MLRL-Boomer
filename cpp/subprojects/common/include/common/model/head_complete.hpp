@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "common/data/types.hpp"
 #include "common/model/head.hpp"
-#include "common/rule_refinement/prediction_complete.hpp"
 
 
 /**
@@ -24,12 +24,6 @@ class CompleteHead final : public IHead {
          * @param numElements The number of scores that are contained by the head.
          */
         CompleteHead(uint32 numElements);
-
-        /**
-         * @param prediction A reference to an object of type `CompletePrediction` that stores the scores to be
-         *                   contained by the head
-         */
-        CompleteHead(const CompletePrediction& prediction);
 
         ~CompleteHead() override;
 
