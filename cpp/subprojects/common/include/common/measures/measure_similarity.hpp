@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/data/view_c_contiguous.hpp"
-#include "common/output/label_vector.hpp"
+#include "common/input/label_vector.hpp"
 #include <memory>
 
 
