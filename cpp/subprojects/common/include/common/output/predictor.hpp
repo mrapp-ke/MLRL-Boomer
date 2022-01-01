@@ -5,7 +5,7 @@
 
 #include "common/input/feature_matrix_c_contiguous.hpp"
 #include "common/input/feature_matrix_csr.hpp"
-#include "common/input/label_vector_set.hpp"
+#include "common/output/label_vector_set.hpp"
 
 
 /**

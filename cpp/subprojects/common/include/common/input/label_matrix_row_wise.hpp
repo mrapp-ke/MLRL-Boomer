@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/input/label_matrix.hpp"
-#include "common/input/label_vector.hpp"
+#include "common/output/label_vector.hpp"
 #include <memory>
 
 // Forward declarations

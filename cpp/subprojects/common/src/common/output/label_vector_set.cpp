@@ -1,4 +1,4 @@
-#include "common/input/label_vector_set.hpp"
+#include "common/output/label_vector_set.hpp"
 
 
 LabelVectorSet::const_iterator LabelVectorSet::cbegin() const {
