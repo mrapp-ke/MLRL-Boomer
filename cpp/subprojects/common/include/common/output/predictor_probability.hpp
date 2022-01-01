@@ -31,7 +31,7 @@ class IProbabilityPredictorFactory {
         /**
          * Creates and returns a new object of the type `IProbabilityPredictor`.
          *
-         * @param model A reference to an object of type `RuleList` that should be used to obtain the predictions
+         * @param model A reference to an object of type `RuleList` that should be used to obtain predictions
          * @return      An unique pointer to an object of type `IProbabilityPredictor` that has been created
          */
         virtual std::unique_ptr<IProbabilityPredictor> create(const RuleList& model) const = 0;
