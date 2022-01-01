@@ -369,7 +369,7 @@ cdef class RuleModelSerializer:
         cdef uint32 num_used_rules = rule_model_ptr.getNumUsedRules()
         cdef IRuleList* rule_list_ptr = dynamic_cast[RuleListPtr](rule_model_ptr);
 
-        if rule_model_ptr != NULL:
+        if rule_list_ptr != NULL:
             rule_list_ptr.visit(
                 wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
                 wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
@@ -377,7 +377,7 @@ cdef class RuleModelSerializer:
                 wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
             return (SERIALIZATION_VERSION, (MODEL_TYPE_LIST, (self.state, num_used_rules)))
         else:
-            raise NotImplementedError('Serialization failed due to unsupported type of model')
+            raise NotImplementedError('Cannot serialize model due to unsupported model type')
 
     def deserialize(self, RuleModel model, object state):
         """
@@ -397,7 +397,7 @@ cdef class RuleModelSerializer:
         if model_state[0] == MODEL_TYPE_LIST:
             model.model_ptr = __deserialize_rule_list(model_state[1])
         else:
-            raise NotImplementedError('Deserialization failed due to unsupported type of model')
+            raise NotImplementedError('Cannot deserialize model due to unsupported model type')
 
 
 cdef class RuleModelVisitorWrapper:
@@ -448,8 +448,14 @@ cdef class RuleModelVisitorWrapper:
 
         :param model: The rule-based model to be visited
         """
-        model.model_ptr.get().visitUsed(
-            wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
-            wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
-            wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
-            wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
+        cdef IRuleModel* rule_model_ptr = model.model_ptr.get()
+        cdef IRuleList* rule_list_ptr = dynamic_cast[RuleListPtr](rule_model_ptr);
+
+        if rule_list_ptr != NULL:
+            rule_list_ptr.visitUsed(
+                wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
+                wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
+                wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
+                wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
+        else:
+            raise NotImplementedError('Cannot visit model due to to unsupported model type')

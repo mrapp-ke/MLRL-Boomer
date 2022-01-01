@@ -4,6 +4,8 @@
 #pragma once
 
 #include "common/model/rule_model.hpp"
+#include "common/model/body.hpp"
+#include "common/model/head.hpp"
 #include <forward_list>
 #include <iterator>
 
@@ -24,6 +26,35 @@ class IRuleList : public IRuleModel {
          * @param headPtr An unique pointer to an object of type `IHead` that should be used as the head of the rule
          */
         virtual void addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) = 0;
+
+        /**
+         * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
+         * of the rules that are contained in this model.
+         *
+         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
+         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
+         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         */
+        virtual void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
+                           IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                           IHead::CompleteHeadVisitor completeHeadVisitor,
+                           IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
+
+
+        /**
+         * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
+         * of the used rules that are contained in this model.
+         *
+         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
+         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
+         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         */
+        virtual void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
+                               IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                               IHead::CompleteHeadVisitor completeHeadVisitor,
+                               IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
 
 };
 
