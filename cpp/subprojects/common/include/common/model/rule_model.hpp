@@ -47,14 +47,6 @@ class IRuleModel {
         virtual void setNumUsedRules(uint32 numUsedRules) = 0;
 
         /**
-         * Creates a new rule from a given body and head and adds it to the model.
-         *
-         * @param bodyPtr An unique pointer to an object of type `IBody` that should be used as the body of the rule
-         * @param headPtr An unique pointer to an object of type `IHead` that should be used as the head of the rule
-         */
-        virtual void addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) = 0;
-
-        /**
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
          * of the rules that are contained in this model.
          *

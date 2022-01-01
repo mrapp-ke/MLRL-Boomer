@@ -9,13 +9,21 @@
 
 
 /**
- * Defines an interface for all rule-based models that store several rules in a list.
+ * Defines an interface for all rule-based models that store several rules in an ordered list.
  */
 class IRuleList : public IRuleModel {
 
     public:
 
         virtual ~IRuleList() { };
+
+        /**
+         * Creates a new rule from a given body and head and adds it to the end of the model.
+         *
+         * @param bodyPtr An unique pointer to an object of type `IBody` that should be used as the body of the rule
+         * @param headPtr An unique pointer to an object of type `IHead` that should be used as the head of the rule
+         */
+        virtual void addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) = 0;
 
 };
 

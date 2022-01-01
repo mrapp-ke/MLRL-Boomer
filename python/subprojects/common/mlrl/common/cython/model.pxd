@@ -186,8 +186,6 @@ cdef extern from "common/model/rule_model.hpp" nogil:
 
         void setNumUsedRules(uint32 numUsedRules)
 
-        void addRule(unique_ptr[IBody] bodyPtr, unique_ptr[IHead] headPtr)
-
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                    CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor)
 
@@ -205,7 +203,8 @@ cdef extern from "common/model/rule_model.hpp" nogil:
 cdef extern from "common/model/rule_list.hpp" nogil:
 
     cdef cppclass IRuleList(IRuleModel):
-        pass
+
+        void addRule(unique_ptr[IBody] bodyPtr, unique_ptr[IHead] headPtr)
 
 
     unique_ptr[IRuleList] createRuleList()
