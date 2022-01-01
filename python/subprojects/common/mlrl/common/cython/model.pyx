@@ -3,12 +3,15 @@
 """
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
+from libcpp.cast cimport dynamic_cast
 
 from abc import abstractmethod
 
 import numpy as np
 
-SERIALIZATION_VERSION = 1
+SERIALIZATION_VERSION = 2
+
+MODEL_TYPE_LIST = 0
 
 
 cdef class Body:
@@ -298,6 +301,22 @@ cdef unique_ptr[IHead] __create_partial_head(const float64[::1] scores, const ui
     return <unique_ptr[IHead]>move(head_ptr)
 
 
+cdef unique_ptr[IRuleModel] __deserialize_rule_list(object model_state):
+    cdef list rule_list = model_state[0]
+    cdef uint32 num_rules = len(rule_list)
+    cdef unique_ptr[IRuleList] rule_model_ptr = createRuleList()
+    cdef object rule_state
+    cdef uint32 i
+
+    for i in range(num_rules):
+        rule_state = rule_list[i]
+        rule_model_ptr.get().addRule(move(__create_body(rule_state[0])), move(__create_head(rule_state[1])))
+
+    cdef uint32 num_used_rules = model_state[1]
+    rule_model_ptr.get().setNumUsedRules(num_used_rules)
+    return <unique_ptr[IRuleModel]>move(rule_model_ptr)
+
+
 cdef class RuleModelSerializer:
     """
     Allows to serialize and deserialize the rules that are contained by a rule-based model.
@@ -346,13 +365,19 @@ cdef class RuleModelSerializer:
         :return:        The state that has been created
         """
         self.state = []
-        model.model_ptr.get().visit(
-            wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
-            wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
-            wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
-            wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
-        cdef uint32 num_used_rules = model.model_ptr.get().getNumUsedRules()
-        return (SERIALIZATION_VERSION, (self.state, num_used_rules))
+        cdef IRuleModel* rule_model_ptr = model.model_ptr.get()
+        cdef uint32 num_used_rules = rule_model_ptr.getNumUsedRules()
+        cdef IRuleList* rule_list_ptr = dynamic_cast[RuleListPtr](rule_model_ptr);
+
+        if rule_model_ptr != NULL:
+            rule_list_ptr.visit(
+                wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
+                wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
+                wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
+                wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
+            return (SERIALIZATION_VERSION, (MODEL_TYPE_LIST, (self.state, num_used_rules)))
+        else:
+            raise NotImplementedError('Serialization failed due to unsupported type of model')
 
     def deserialize(self, RuleModel model, object state):
         """
@@ -368,19 +393,11 @@ cdef class RuleModelSerializer:
                 'Version of the serialized model is ' + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
 
         model_state = state[1]
-        cdef list rule_list = model_state[0]
-        cdef uint32 num_rules = len(rule_list)
-        cdef unique_ptr[IRuleList] rule_model_ptr = createRuleList()
-        cdef object rule_state
-        cdef uint32 i
 
-        for i in range(num_rules):
-            rule_state = rule_list[i]
-            rule_model_ptr.get().addRule(move(__create_body(rule_state[0])), move(__create_head(rule_state[1])))
-
-        cdef uint32 num_used_rules = model_state[1]
-        rule_model_ptr.get().setNumUsedRules(num_used_rules)
-        model.model_ptr = <unique_ptr[IRuleModel]>move(rule_model_ptr)
+        if model_state[0] == MODEL_TYPE_LIST:
+            model.model_ptr = __deserialize_rule_list(model_state[1])
+        else:
+            raise NotImplementedError('Deserialization failed due to unsupported type of model')
 
 
 cdef class RuleModelVisitorWrapper:

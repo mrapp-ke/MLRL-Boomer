@@ -210,6 +210,9 @@ cdef extern from "common/model/rule_list.hpp" nogil:
     unique_ptr[IRuleList] createRuleList()
 
 
+ctypedef IRuleList* RuleListPtr
+
+
 cdef extern from "common/model/model_builder.hpp" nogil:
 
     cdef cppclass IModelBuilder:
