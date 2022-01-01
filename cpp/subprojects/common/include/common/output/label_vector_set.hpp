@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/input/label_vector.hpp"
+#include "common/output/label_vector.hpp"
 #include "common/data/functions.hpp"
 #include <unordered_map>
 #include <functional>
