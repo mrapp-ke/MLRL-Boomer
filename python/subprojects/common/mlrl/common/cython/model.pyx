@@ -1,7 +1,6 @@
 """
 @author Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from libcpp.algorithm cimport copy
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
@@ -230,41 +229,34 @@ cdef unique_ptr[IBody] __create_conjunctive_body(const float32[::1] leq_threshol
     cdef uint32 num_neq = neq_thresholds.shape[0]
     cdef unique_ptr[ConjunctiveBodyImpl] body_ptr = make_unique[ConjunctiveBodyImpl](num_leq, num_gr, num_eq, num_neq)
 
-    cdef const float32* thresholds_begin = &leq_thresholds[0]
-    cdef const float32* thresholds_end = &leq_thresholds[num_leq]
     cdef ConjunctiveBodyImpl.threshold_iterator threshold_iterator = body_ptr.get().leq_thresholds_begin()
-    copy(thresholds_begin, thresholds_end, threshold_iterator)
-    cdef const uint32* indices_begin = &leq_indices[0]
-    cdef const uint32* indices_end = &leq_indices[num_leq]
     cdef ConjunctiveBodyImpl.index_iterator index_iterator = body_ptr.get().leq_indices_begin()
-    copy(indices_begin, indices_end, index_iterator)
+    cdef uint32 i
 
-    thresholds_begin = &gr_thresholds[0]
-    thresholds_end = &gr_thresholds[num_gr]
+    for i in range(num_leq):
+        threshold_iterator[i] = leq_thresholds[i]
+        index_iterator[i] = leq_indices[i]
+
     threshold_iterator = body_ptr.get().gr_thresholds_begin()
-    copy(thresholds_begin, thresholds_end, threshold_iterator)
-    indices_begin = &gr_indices[0]
-    indices_end = &gr_indices[num_gr]
     index_iterator = body_ptr.get().gr_indices_begin()
-    copy(indices_begin, indices_end, index_iterator)
 
-    thresholds_begin = &eq_thresholds[0]
-    thresholds_end = &eq_thresholds[num_eq]
+    for i in range(num_gr):
+        threshold_iterator[i] = gr_thresholds[i]
+        index_iterator[i] = gr_indices[i]
+
     threshold_iterator = body_ptr.get().eq_thresholds_begin()
-    copy(thresholds_begin, thresholds_end, threshold_iterator)
-    indices_begin = &eq_indices[0]
-    indices_end = &eq_indices[num_eq]
     index_iterator = body_ptr.get().eq_indices_begin()
-    copy(indices_begin, indices_end, index_iterator)
 
-    thresholds_begin = &neq_thresholds[0]
-    thresholds_end = &neq_thresholds[num_neq]
+    for i in range(num_eq):
+        threshold_iterator[i] = eq_thresholds[i]
+        index_iterator[i] = eq_indices[i]
+
     threshold_iterator = body_ptr.get().neq_thresholds_begin()
-    copy(thresholds_begin, thresholds_end, threshold_iterator)
-    indices_begin = &neq_indices[0]
-    indices_end = &neq_indices[num_neq]
     index_iterator = body_ptr.get().neq_indices_begin()
-    copy(indices_begin, indices_end, index_iterator)
+
+    for i in range(num_neq):
+        threshold_iterator[i] = neq_thresholds[i]
+        index_iterator[i] = neq_indices[i]
 
     return <unique_ptr[IBody]>move(body_ptr)
 
@@ -283,24 +275,26 @@ cdef unique_ptr[IHead] __create_head(object state):
 cdef unique_ptr[IHead] __create_complete_head(const float64[::1] scores):
     cdef uint32 num_elements = scores.shape[0]
     cdef unique_ptr[CompleteHeadImpl] head_ptr = make_unique[CompleteHeadImpl](num_elements)
-    cdef const float64* scores_begin = &scores[0]
-    cdef const float64* scores_end = &scores[num_elements]
     cdef CompleteHeadImpl.score_iterator score_iterator = head_ptr.get().scores_begin()
-    copy(scores_begin, scores_end, score_iterator)
+    cdef uint32 i
+
+    for i in range(num_elements):
+        score_iterator[i] = scores[i]
+
     return <unique_ptr[IHead]>move(head_ptr)
 
 
 cdef unique_ptr[IHead] __create_partial_head(const float64[::1] scores, const uint32[::1] indices):
     cdef uint32 num_elements = scores.shape[0]
     cdef unique_ptr[PartialHeadImpl] head_ptr = make_unique[PartialHeadImpl](num_elements)
-    cdef const float64* scores_begin = &scores[0]
-    cdef const float64* scores_end = &scores[num_elements]
     cdef PartialHeadImpl.score_iterator score_iterator = head_ptr.get().scores_begin()
-    copy(scores_begin, scores_end, score_iterator)
-    cdef const uint32* indices_begin = &indices[0]
-    cdef const uint32* indices_end = &indices[num_elements]
     cdef PartialHeadImpl.index_iterator index_iterator = head_ptr.get().indices_begin()
-    copy(indices_begin, indices_end, index_iterator)
+    cdef uint32 i
+
+    for i in range(num_elements):
+        score_iterator[i] = scores[i]
+        index_iterator[i] = indices[i]
+
     return <unique_ptr[IHead]>move(head_ptr)
 
 
