@@ -186,12 +186,6 @@ cdef extern from "common/model/rule_model.hpp" nogil:
 
         void setNumUsedRules(uint32 numUsedRules)
 
-        void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                   CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor)
-
-        void visitUsed(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                       CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor)
-
         unique_ptr[IClassificationPredictor] createClassificationPredictor(
             const IClassificationPredictorFactory& factory) const
 
@@ -205,6 +199,12 @@ cdef extern from "common/model/rule_list.hpp" nogil:
     cdef cppclass IRuleList(IRuleModel):
 
         void addRule(unique_ptr[IBody] bodyPtr, unique_ptr[IHead] headPtr)
+
+        void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                   CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor)
+
+        void visitUsed(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                       CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor)
 
 
     unique_ptr[IRuleList] createRuleList()

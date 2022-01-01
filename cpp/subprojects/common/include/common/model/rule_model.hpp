@@ -3,8 +3,7 @@
  */
 #pragma once
 
-#include "common/model/body.hpp"
-#include "common/model/head.hpp"
+#include "common/data/types.hpp"
 #include <memory>
 
 // Forward declarations
@@ -45,35 +44,6 @@ class IRuleModel {
          * @param numUsedRules The number of used rules to be set or 0, if all rules are used
          */
         virtual void setNumUsedRules(uint32 numUsedRules) = 0;
-
-        /**
-         * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
-         * of the rules that are contained in this model.
-         *
-         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
-         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
-         */
-        virtual void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                           IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                           IHead::CompleteHeadVisitor completeHeadVisitor,
-                           IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
-
-
-        /**
-         * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
-         * of the used rules that are contained in this model.
-         *
-         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
-         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
-         */
-        virtual void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                               IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                               IHead::CompleteHeadVisitor completeHeadVisitor,
-                               IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IClassificationPredictor`, based on the type of this
