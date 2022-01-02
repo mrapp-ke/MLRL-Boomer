@@ -36,7 +36,8 @@ namespace boosting {
             ExampleWiseClassificationPredictorFactory(
                 std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr, uint32 numThreads);
 
-            std::unique_ptr<IClassificationPredictor> create(const RuleList& model) const override;
+            std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
+                                                             const LabelVectorSet* labelVectors) const override;
 
     };
 
