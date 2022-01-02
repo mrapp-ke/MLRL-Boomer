@@ -1,4 +1,8 @@
 #include "common/output/label_vector_set.hpp"
+#include "common/output/predictor_classification.hpp"
+#include "common/output/predictor_regression.hpp"
+#include "common/output/predictor_probability.hpp"
+#include "common/model/rule_list.hpp"
 
 
 LabelVectorSet::const_iterator LabelVectorSet::cbegin() const {
@@ -20,4 +24,19 @@ void LabelVectorSet::visit(LabelVectorVisitor visitor) const {
         const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
         visitor(*labelVectorPtr);
     }
+}
+
+std::unique_ptr<IClassificationPredictor> LabelVectorSet::createClassificationPredictor(
+        const IClassificationPredictorFactory& factory, const RuleList& model) const {
+    return factory.create(model, this);
+}
+
+std::unique_ptr<IRegressionPredictor> LabelVectorSet::createRegressionPredictor(
+        const IRegressionPredictorFactory& factory, const RuleList& model) const {
+    return factory.create(model, this);
+}
+
+std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
+        const IProbabilityPredictorFactory& factory, const RuleList& model) const {
+    return factory.create(model, this);
 }
