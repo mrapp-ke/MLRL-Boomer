@@ -42,13 +42,16 @@ cdef class NoLabelSpaceInfo(LabelSpaceInfo):
         return (NoLabelSpaceInfo, ())
 
 
-cdef class LabelVectorSet:
+cdef class LabelVectorSet(LabelSpaceInfo):
     """
     A wrapper for the pure virtual C++ class `ILabelVectorSet`.
     """
 
     def __cinit__(self):
         self.label_vector_set_ptr = createLabelVectorSet()
+
+    cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
+        return self.label_vector_set_ptr.get()
 
     @classmethod
     def create(cls, RowWiseLabelMatrix label_matrix):

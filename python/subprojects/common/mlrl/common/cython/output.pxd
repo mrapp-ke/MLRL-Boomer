@@ -151,7 +151,7 @@ cdef class NoLabelSpaceInfo(LabelSpaceInfo):
     cdef unique_ptr[INoLabelSpaceInfo] label_space_info_ptr
 
 
-cdef class LabelVectorSet:
+cdef class LabelVectorSet(LabelSpaceInfo):
 
     # Attributes:
 
