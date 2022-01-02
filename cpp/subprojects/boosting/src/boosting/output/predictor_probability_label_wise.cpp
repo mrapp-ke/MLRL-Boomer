@@ -69,8 +69,8 @@ namespace boosting {
 
             }
 
-            void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const LabelVectorSet* labelVectors) const override {
+            void predict(const CContiguousFeatureMatrix& featureMatrix,
+                         CContiguousView<float64>& predictionMatrix) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
@@ -96,8 +96,8 @@ namespace boosting {
                 }
             }
 
-            void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const LabelVectorSet* labelVectors) const override {
+            void predict(const CsrFeatureMatrix& featureMatrix,
+                         CContiguousView<float64>& predictionMatrix) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 uint32 numFeatures = featureMatrix.getNumCols();
@@ -145,7 +145,8 @@ namespace boosting {
         assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
-    std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(const RuleList& model) const {
+    std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(
+            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
         return std::make_unique<LabelWiseProbabilityPredictor<RuleList>>(model, std::move(probabilityFunctionPtr),
                                                                          numThreads_);

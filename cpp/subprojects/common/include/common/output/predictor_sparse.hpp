@@ -33,8 +33,7 @@ class ISparsePredictor : public IPredictor<T> {
          *                          the predictions
          */
         virtual std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-            const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels,
-            const LabelVectorSet* labelVectors) const = 0;
+            const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
         /**
          * Obtains and returns sparse predictions for all examples in a sparse CSR matrix, using a specific rule-based
@@ -49,7 +48,6 @@ class ISparsePredictor : public IPredictor<T> {
          *                          predictions
          */
         virtual std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-            const CsrFeatureMatrix& featureMatrix, uint32 numLabels,
-            const LabelVectorSet* labelVectors) const = 0;
+            const CsrFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
 };

@@ -1,6 +1,7 @@
 from mlrl.common.cython._types cimport uint32, float32, float64
 from mlrl.common.cython.output cimport IClassificationPredictor, IClassificationPredictorFactory, \
-    IRegressionPredictor, IRegressionPredictorFactory, IProbabilityPredictor, IProbabilityPredictorFactory
+    IRegressionPredictor, IRegressionPredictorFactory, IProbabilityPredictor, IProbabilityPredictorFactory, \
+    ILabelSpaceInfo
 
 from libcpp.memory cimport unique_ptr
 
@@ -187,11 +188,13 @@ cdef extern from "common/model/rule_model.hpp" nogil:
         void setNumUsedRules(uint32 numUsedRules)
 
         unique_ptr[IClassificationPredictor] createClassificationPredictor(
-            const IClassificationPredictorFactory& factory) const
+            const IClassificationPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const
 
-        unique_ptr[IRegressionPredictor] createRegressionPredictor(const IRegressionPredictorFactory& factory) const
+        unique_ptr[IRegressionPredictor] createRegressionPredictor(const IRegressionPredictorFactory& factory,
+                                                                   const ILabelSpaceInfo& labelSpaceInfo) const
 
-        unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IProbabilityPredictorFactory& factory) const
+        unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IProbabilityPredictorFactory& factory,
+                                                                     const ILabelSpaceInfo& labelSpaceInfo) const
 
 
 cdef extern from "common/model/rule_list.hpp" nogil:

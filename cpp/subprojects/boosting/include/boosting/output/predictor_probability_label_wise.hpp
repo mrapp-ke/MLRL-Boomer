@@ -85,7 +85,8 @@ namespace boosting {
             LabelWiseProbabilityPredictorFactory(
                     std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads);
 
-            std::unique_ptr<IProbabilityPredictor> create(const RuleList& model) const override;
+            std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
+                                                          const LabelVectorSet* labelVectorSet) const override;
 
     };
 

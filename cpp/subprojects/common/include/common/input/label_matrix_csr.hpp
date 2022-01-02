@@ -5,6 +5,7 @@
 
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/data/view_csr_binary.hpp"
+#include "common/data/view_vector.hpp"
 #include "common/data/functions.hpp"
 
 
