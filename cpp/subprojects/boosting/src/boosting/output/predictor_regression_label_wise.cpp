@@ -92,7 +92,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(
-            const RuleList& model, const LabelVectorSet* labelVectors) const {
+            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
         return std::make_unique<LabelWiseRegressionPredictor<RuleList>>(model, numThreads_);
     }
 

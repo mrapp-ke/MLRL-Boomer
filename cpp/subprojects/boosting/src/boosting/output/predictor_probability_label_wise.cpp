@@ -146,7 +146,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(
-            const RuleList& model, const LabelVectorSet* labelVectors) const {
+            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
         return std::make_unique<LabelWiseProbabilityPredictor<RuleList>>(model, std::move(probabilityFunctionPtr),
                                                                          numThreads_);
