@@ -91,7 +91,8 @@ namespace boosting {
         assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
-    std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(const RuleList& model) const {
+    std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(
+            const RuleList& model, const LabelVectorSet* labelVectors) const {
         return std::make_unique<LabelWiseRegressionPredictor<RuleList>>(model, numThreads_);
     }
 

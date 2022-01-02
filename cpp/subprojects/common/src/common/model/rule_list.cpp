@@ -119,17 +119,17 @@ void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
 
 std::unique_ptr<IClassificationPredictor> RuleList::createClassificationPredictor(
         const IClassificationPredictorFactory& factory) const {
-    return factory.create(*this);
+    return factory.create(*this, nullptr);
 }
 
 std::unique_ptr<IRegressionPredictor> RuleList::createRegressionPredictor(
         const IRegressionPredictorFactory& factory) const {
-    return factory.create(*this);
+    return factory.create(*this, nullptr);
 }
 
 std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
         const IProbabilityPredictorFactory& factory) const {
-    return factory.create(*this);
+    return factory.create(*this, nullptr);
 }
 
 std::unique_ptr<IRuleList> createRuleList() {

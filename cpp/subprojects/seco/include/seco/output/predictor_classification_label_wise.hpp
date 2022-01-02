@@ -29,7 +29,8 @@ namespace seco {
              */
             LabelWiseClassificationPredictorFactory(uint32 numThreads);
 
-            std::unique_ptr<IClassificationPredictor> create(const RuleList& model) const override;
+            std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
+                                                             const LabelVectorSet* labelVectors) const override;
 
     };
 
