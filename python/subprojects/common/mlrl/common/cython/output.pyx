@@ -147,11 +147,11 @@ cdef class ClassificationPredictorFactory:
     A wrapper for the pure virtual C++ class `IClassificationPredictorFactory`.
     """
 
-    def create(self, RuleModel model not None) -> BinaryPredictor:
+    def create(self, RuleModel model not None, LabelSpaceInfo label_space_info not None) -> BinaryPredictor:
         cdef BinaryPredictor predictor = BinaryPredictor.__new__(BinaryPredictor)
         predictor.num_labels = self.num_labels
         predictor.predictor_ptr = <unique_ptr[ISparsePredictor[uint8]]>model.model_ptr.get().createClassificationPredictor(
-            dereference(self.predictor_factory_ptr.get()))
+            dereference(self.predictor_factory_ptr.get()), dereference(label_space_info.get_label_space_info_ptr()))
         return predictor
 
 
@@ -160,11 +160,11 @@ cdef class RegressionPredictorFactory:
     A wrapper for the pure virtual C++ class `IRegressionPredictorFactory`.
     """
 
-    def create(self, RuleModel model not None) -> NumericalPredictor:
+    def create(self, RuleModel model not None, LabelSpaceInfo label_space_info not None) -> NumericalPredictor:
         cdef NumericalPredictor predictor = NumericalPredictor.__new__(NumericalPredictor)
         predictor.num_labels = self.num_labels
         predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>model.model_ptr.get().createRegressionPredictor(
-            dereference(self.predictor_factory_ptr.get()))
+            dereference(self.predictor_factory_ptr.get()), dereference(label_space_info.get_label_space_info_ptr()))
         return predictor
 
 
@@ -173,11 +173,11 @@ cdef class ProbabilityPredictorFactory:
     A wrapper for the pure virtual C++ class `IProbabilityPredictorFactory`.
     """
 
-    def create(self, RuleModel model not None) -> NumericalPredictor:
+    def create(self, RuleModel model not None, LabelSpaceInfo label_space_info not None) -> NumericalPredictor:
         cdef NumericalPredictor predictor = NumericalPredictor.__new__(NumericalPredictor)
         predictor.num_labels = self.num_labels
         predictor.predictor_ptr = <unique_ptr[IPredictor[float64]]>model.model_ptr.get().createProbabilityPredictor(
-            dereference(self.predictor_factory_ptr.get()))
+            dereference(self.predictor_factory_ptr.get()), dereference(label_space_info.get_label_space_info_ptr()))
         return predictor
 
 
