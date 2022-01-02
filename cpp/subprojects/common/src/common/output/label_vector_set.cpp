@@ -40,3 +40,7 @@ std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredicto
         const IProbabilityPredictorFactory& factory, const RuleList& model) const {
     return factory.create(model, this);
 }
+
+std::unique_ptr<ILabelVectorSet> createLabelVectorSet() {
+    return std::make_unique<LabelVectorSet>();
+}
