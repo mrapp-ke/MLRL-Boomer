@@ -86,7 +86,7 @@ namespace boosting {
                     std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads);
 
             std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
-                                                          const LabelVectorSet* labelVectors) const override;
+                                                          const LabelVectorSet* labelVectorSet) const override;
 
     };
 

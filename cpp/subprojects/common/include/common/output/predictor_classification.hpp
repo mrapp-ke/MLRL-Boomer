@@ -32,12 +32,14 @@ class IClassificationPredictorFactory {
         /**
          * Creates and returns a new object of the type `IClassificationPredictor`.
          *
-         * @param model         A reference to an object of type `RuleList` that should be used to obtain predictions
-         * @param labelVectors  A pointer to an object of type `LabelVectorSet` that stores all known label vectors
-         *                      or a null pointer, if no such set is available
-         * @return              An unique pointer to an object of type `IClassificationPredictor` that has been created
+         * @param model             A reference to an object of type `RuleList` that should be used to obtain
+         *                          predictions
+         * @param labelVectorSet    A pointer to an object of type `LabelVectorSet` that stores all known label vectors
+         *                          or a null pointer, if no such set is available
+         * @return                  An unique pointer to an object of type `IClassificationPredictor` that has been
+         *                          created
          */
         virtual std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
-                                                                 const LabelVectorSet* labelVectors) const = 0;
+                                                                 const LabelVectorSet* labelVectorSet) const = 0;
 
 };

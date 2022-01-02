@@ -88,7 +88,7 @@ namespace boosting {
 
             const Model& model_;
 
-            const LabelVectorSet* labelVectors_;
+            const LabelVectorSet* labelVectorSet_;
 
             std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr_;
 
@@ -99,19 +99,18 @@ namespace boosting {
             /**
              * @param model                         A reference to an object of template type `Model` that should be
              *                                      used to obtain predictions
-             * @param labelVectors                  A pointer to an object of type `LabelVectorSet` that stores all
-             *                                      known label vectors or a null pointer, if not such object is
-             *                                      available
+             * @param labelVectorSet                A pointer to an object of type `LabelVectorSet` that stores all
+             *                                      known label vectors or a null pointer, if no such set is available
              * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasure` that
              *                                      implements the similarity measure that should be used to quantify
              *                                      the similarity between predictions and known label vectors
              * @param numThreads                    The number of CPU threads to be used to make predictions for
              *                                      different query examples in parallel. Must be at least 1
              */
-            ExampleWiseClassificationPredictor(const Model& model, const LabelVectorSet* labelVectors,
+            ExampleWiseClassificationPredictor(const Model& model, const LabelVectorSet* labelVectorSet,
                                                std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr,
                                                uint32 numThreads)
-                : model_(model), labelVectors_(labelVectors), similarityMeasurePtr_(std::move(similarityMeasurePtr)),
+                : model_(model), labelVectorSet_(labelVectorSet), similarityMeasurePtr_(std::move(similarityMeasurePtr)),
                   numThreads_(numThreads) {
 
             }
@@ -123,7 +122,7 @@ namespace boosting {
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
                 const Model* modelPtr = &model_;
-                const LabelVectorSet* labelVectorSetPtr = labelVectors_;
+                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
@@ -150,7 +149,7 @@ namespace boosting {
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
                 const Model* modelPtr = &model_;
-                const LabelVectorSet* labelVectorSetPtr = labelVectors_;
+                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
@@ -178,7 +177,7 @@ namespace boosting {
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
                 const Model* modelPtr = &model_;
-                const LabelVectorSet* labelVectorSetPtr = labelVectors_;
+                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
                 uint32 numNonZeroElements = 0;
 
@@ -210,7 +209,7 @@ namespace boosting {
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
                 const Model* modelPtr = &model_;
-                const LabelVectorSet* labelVectorSetPtr = labelVectors_;
+                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
                 uint32 numNonZeroElements = 0;
 
@@ -245,10 +244,10 @@ namespace boosting {
     }
 
     std::unique_ptr<IClassificationPredictor> ExampleWiseClassificationPredictorFactory::create(
-            const RuleList& model, const LabelVectorSet* labelVectors) const {
+            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
         std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
             similarityMeasureFactoryPtr_->createSimilarityMeasure();
-        return std::make_unique<ExampleWiseClassificationPredictor<RuleList>>(model, labelVectors,
+        return std::make_unique<ExampleWiseClassificationPredictor<RuleList>>(model, labelVectorSet,
                                                                               std::move(similarityMeasurePtr),
                                                                               numThreads_);
     }
