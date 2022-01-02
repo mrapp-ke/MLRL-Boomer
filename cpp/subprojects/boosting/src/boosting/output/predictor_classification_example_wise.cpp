@@ -88,6 +88,8 @@ namespace boosting {
 
             const Model& model_;
 
+            const LabelVectorSet* labelVectors_;
+
             std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr_;
 
             uint32 numThreads_;
@@ -97,16 +99,20 @@ namespace boosting {
             /**
              * @param model                         A reference to an object of template type `Model` that should be
              *                                      used to obtain predictions
+             * @param labelVectors                  A pointer to an object of type `LabelVectorSet` that stores all
+             *                                      known label vectors or a null pointer, if not such object is
+             *                                      available
              * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasure` that
              *                                      implements the similarity measure that should be used to quantify
              *                                      the similarity between predictions and known label vectors
              * @param numThreads                    The number of CPU threads to be used to make predictions for
              *                                      different query examples in parallel. Must be at least 1
              */
-            ExampleWiseClassificationPredictor(const Model& model,
+            ExampleWiseClassificationPredictor(const Model& model, const LabelVectorSet* labelVectors,
                                                std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr,
                                                uint32 numThreads)
-                : model_(model), similarityMeasurePtr_(std::move(similarityMeasurePtr)), numThreads_(numThreads) {
+                : model_(model), labelVectors_(labelVectors), similarityMeasurePtr_(std::move(similarityMeasurePtr)),
+                  numThreads_(numThreads) {
 
             }
 
@@ -117,11 +123,12 @@ namespace boosting {
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
                 const Model* modelPtr = &model_;
+                const LabelVectorSet* labelVectorSetPtr = labelVectors_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
                 firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(similarityMeasureRawPtr) \
-                firstprivate(labelVectors) schedule(dynamic) num_threads(numThreads_)
+                firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float64* scoreVector = new float64[numLabels] {};
                     applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
@@ -129,7 +136,7 @@ namespace boosting {
                     const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0],
                                                                                    &scoreVector[numLabels],
                                                                                    *similarityMeasureRawPtr,
-                                                                                   labelVectors);
+                                                                                   labelVectorSetPtr);
                     predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
                     delete[] scoreVector;
                 }
@@ -143,11 +150,12 @@ namespace boosting {
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
                 const Model* modelPtr = &model_;
+                const LabelVectorSet* labelVectorSetPtr = labelVectors_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
                 firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-                firstprivate(similarityMeasureRawPtr) firstprivate(labelVectors) schedule(dynamic) \
+                firstprivate(similarityMeasureRawPtr) firstprivate(labelVectorSetPtr) schedule(dynamic) \
                 num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float64* scoreVector = new float64[numLabels] {};
@@ -157,7 +165,7 @@ namespace boosting {
                     const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0],
                                                                                    &scoreVector[numLabels],
                                                                                    *similarityMeasureRawPtr,
-                                                                                   labelVectors);
+                                                                                   labelVectorSetPtr);
                     predictLabelVector(predictionMatrixPtr->row_begin(i), numLabels, closestLabelVector);
                     delete[] scoreVector;
                 }
@@ -171,13 +179,14 @@ namespace boosting {
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
                 const Model* modelPtr = &model_;
+                const LabelVectorSet* labelVectorSetPtr = labelVectors_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
                 uint32 numNonZeroElements = 0;
 
                 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
                 firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-                firstprivate(predictionMatrixPtr) firstprivate(similarityMeasureRawPtr) firstprivate(labelVectors) \
-                schedule(dynamic) num_threads(numThreads_)
+                firstprivate(predictionMatrixPtr) firstprivate(similarityMeasureRawPtr) \
+                firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float64* scoreVector = new float64[numLabels] {};
                     applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
@@ -185,7 +194,7 @@ namespace boosting {
                     const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0],
                                                                                    &scoreVector[numLabels],
                                                                                    *similarityMeasureRawPtr,
-                                                                                   labelVectors);
+                                                                                   labelVectorSetPtr);
                     numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
                     delete[] scoreVector;
                 }
@@ -202,13 +211,14 @@ namespace boosting {
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
                 const Model* modelPtr = &model_;
+                const LabelVectorSet* labelVectorSetPtr = labelVectors_;
                 const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
                 uint32 numNonZeroElements = 0;
 
                 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
                 firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) \
                 firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(similarityMeasureRawPtr) \
-                firstprivate(labelVectors) schedule(dynamic) num_threads(numThreads_)
+                firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float64* scoreVector = new float64[numLabels] {};
                     applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -217,7 +227,7 @@ namespace boosting {
                     const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0],
                                                                                    &scoreVector[numLabels],
                                                                                    *similarityMeasureRawPtr,
-                                                                                   labelVectors);
+                                                                                   labelVectorSetPtr);
                     numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
                     delete[] scoreVector;
                 }
@@ -239,7 +249,8 @@ namespace boosting {
             const RuleList& model, const LabelVectorSet* labelVectors) const {
         std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
             similarityMeasureFactoryPtr_->createSimilarityMeasure();
-        return std::make_unique<ExampleWiseClassificationPredictor<RuleList>>(model, std::move(similarityMeasurePtr),
+        return std::make_unique<ExampleWiseClassificationPredictor<RuleList>>(model, labelVectors,
+                                                                              std::move(similarityMeasurePtr),
                                                                               numThreads_);
     }
 
