@@ -116,8 +116,8 @@ namespace boosting {
 
             }
 
-            void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const LabelVectorSet* labelVectors) const override {
+            void predict(const CContiguousFeatureMatrix& featureMatrix,
+                         CContiguousView<uint8>& predictionMatrix) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numLabels = predictionMatrix.getNumCols();
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
@@ -142,8 +142,8 @@ namespace boosting {
                 }
             }
 
-            void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<uint8>& predictionMatrix,
-                         const LabelVectorSet* labelVectors) const override {
+            void predict(const CsrFeatureMatrix& featureMatrix,
+                         CContiguousView<uint8>& predictionMatrix) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 uint32 numLabels = predictionMatrix.getNumCols();
@@ -171,9 +171,8 @@ namespace boosting {
                 }
             }
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                    const CContiguousFeatureMatrix& featureMatrix, uint32 numLabels,
-                    const LabelVectorSet* labelVectors) const override {
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CContiguousFeatureMatrix& featureMatrix,
+                                                                        uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
@@ -199,12 +198,12 @@ namespace boosting {
                     delete[] scoreVector;
                 }
 
-                return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels, numNonZeroElements);
+                return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels,
+                                                                      numNonZeroElements);
             }
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                    const CsrFeatureMatrix& featureMatrix, uint32 numLabels,
-                    const LabelVectorSet* labelVectors) const override {
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CsrFeatureMatrix& featureMatrix,
+                                                                        uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);

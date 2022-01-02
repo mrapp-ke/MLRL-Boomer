@@ -35,8 +35,8 @@ namespace boosting {
 
             }
 
-            void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const LabelVectorSet* labelVectors) const override {
+            void predict(const CContiguousFeatureMatrix& featureMatrix,
+                         CContiguousView<float64>& predictionMatrix) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
@@ -54,8 +54,8 @@ namespace boosting {
                 }
             }
 
-            void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const LabelVectorSet* labelVectors) const override {
+            void predict(const CsrFeatureMatrix& featureMatrix,
+                         CContiguousView<float64>& predictionMatrix) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;

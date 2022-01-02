@@ -5,7 +5,6 @@
 
 #include "common/input/feature_matrix_c_contiguous.hpp"
 #include "common/input/feature_matrix_csr.hpp"
-#include "common/output/label_vector_set.hpp"
 
 
 /**
@@ -29,11 +28,9 @@ class IPredictor {
          *                          values of the examples
          * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
          *                          written to. May contain arbitrary values
-         * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label vectors
-         *                          or a null pointer, if no such set is available
          */
-        virtual void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<T>& predictionMatrix,
-                             const LabelVectorSet* labelVectors) const = 0;
+        virtual void predict(const CContiguousFeatureMatrix& featureMatrix,
+                             CContiguousView<T>& predictionMatrix) const = 0;
 
         /**
          * Obtains predictions for all examples in a sparse CSR matrix, using a specific rule-based model, and writes
@@ -43,10 +40,7 @@ class IPredictor {
          *                          of the examples
          * @param predictionMatrix  A reference to an object of type `CContiguousView`, the predictions should be
          *                          written to. May contain arbitrary values
-         * @param labelVectors      A pointer to an object of type `LabelVectorSet` that stores all known label vectors
-         *                          or a null pointer, if no such set is available
          */
-        virtual void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<T>& predictionMatrix,
-                             const LabelVectorSet* labelVectors) const = 0;
+        virtual void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<T>& predictionMatrix) const = 0;
 
 };
