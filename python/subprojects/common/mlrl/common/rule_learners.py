@@ -25,11 +25,10 @@ from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, Instan
     LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory
 from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import LabelVectorSet
-from mlrl.common.cython.output import SparsePredictor, ClassificationPredictorFactory, ProbabilityPredictorFactory
+from mlrl.common.cython.output import SparsePredictor, ClassificationPredictorFactory, ProbabilityPredictorFactory, \
+    LabelSpaceInfo, NoLabelSpaceInfo
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, RandomBiPartitionSamplingFactory, \
-    LabelWiseStratifiedBiPartitionSamplingFactory, \
-    ExampleWiseStratifiedBiPartitionSamplingFactory
+    LabelWiseStratifiedBiPartitionSamplingFactory, ExampleWiseStratifiedBiPartitionSamplingFactory
 from mlrl.common.cython.post_processing import PostProcessorFactory
 from mlrl.common.cython.pruning import PruningFactory, IrepFactory
 from mlrl.common.cython.rule_induction import RuleInductionFactory
@@ -487,7 +486,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         self.predictor_factory_ = self._create_predictor_factory(feature_characteristics, label_characteristics)
         self.probability_predictor_factory_ = self._create_probability_predictor_factory(feature_characteristics,
                                                                                          label_characteristics)
-        self.label_vectors_ = self._create_label_vector_set(label_matrix)
+        self.label_space_info_ = self._create_label_space_info(label_matrix)
 
         # Create a mask that provides access to the information whether individual features are nominal or not...
         num_features = feature_matrix.get_num_cols()
@@ -557,10 +556,10 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def _predict(self, x):
         predictor_factory = self.predictor_factory_
-        label_vectors = self.label_vectors_
+        label_space_info = self.label_space_info_
         model = self.model_
-        predictor = predictor_factory.create(model, label_vectors)
-        return self.__predict(predictor, label_vectors, x)
+        predictor = predictor_factory.create(model, label_space_info)
+        return self.__predict(predictor, x)
 
     def _predict_proba(self, x):
         predictor_factory = self.probability_predictor_factory_
@@ -568,12 +567,12 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         if predictor_factory is None:
             return super()._predict_proba(x)
         else:
-            label_vectors = self.label_vectors_
+            label_space_info = self.label_space_info_
             model = self.model_
-            predictor = predictor_factory.create(model, label_vectors)
-            return self.__predict(predictor, label_vectors, x)
+            predictor = predictor_factory.create(model, label_space_info)
+            return self.__predict(predictor, x)
 
-    def __predict(self, predictor, label_vectors: LabelVectorSet, x):
+    def __predict(self, predictor, x):
         sparse_format = SparseFormat.CSR
         sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
@@ -592,17 +591,17 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             feature_matrix = CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
 
             if predict_sparse:
-                return predictor.predict_sparse_csr(feature_matrix, label_vectors)
+                return predictor.predict_sparse_csr(feature_matrix)
             else:
-                return predictor.predict_dense_csr(feature_matrix, label_vectors)
+                return predictor.predict_dense_csr(feature_matrix)
         else:
             log.debug('A dense matrix is used to store the feature values of the test examples')
             feature_matrix = CContiguousFeatureMatrix(x)
 
             if predict_sparse:
-                return predictor.predict_sparse(feature_matrix, label_vectors)
+                return predictor.predict_sparse(feature_matrix)
             else:
-                return predictor.predict_dense(feature_matrix, label_vectors)
+                return predictor.predict_dense(feature_matrix)
 
     @abstractmethod
     def _create_statistics_provider_factory(self,
@@ -797,11 +796,11 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         """
         return None
 
-    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> Optional[LabelVectorSet]:
+    def _create_label_space_info(self, label_matrix: LabelMatrix) -> LabelSpaceInfo:
         """
         Must be implemented by subclasses in order to create a `LabelVectorSet` that stores all known label vectors.
 
         :param label_matrix:    The label matrix that provides access to the labels of the training examples
-        :return:                The `LabelVectorSet` that has been created or None, if no such set should be used
+        :return:                The `LabelVectorSet` that has been created
         """
-        return None
+        return NoLabelSpaceInfo()

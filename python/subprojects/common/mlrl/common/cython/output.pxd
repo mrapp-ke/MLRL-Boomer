@@ -87,11 +87,9 @@ cdef extern from "common/output/predictor.hpp" nogil:
 
         # Functions:
 
-        void predict(const CContiguousFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix,
-                     const LabelVectorSetImpl* labelVectors)
+        void predict(const CContiguousFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix)
 
-        void predict(const CsrFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix,
-                     const LabelVectorSetImpl* labelVectors)
+        void predict(const CsrFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix)
 
 
 cdef extern from "common/output/predictor_sparse.hpp" nogil:
@@ -101,10 +99,10 @@ cdef extern from "common/output/predictor_sparse.hpp" nogil:
         # Functions:
 
         unique_ptr[BinarySparsePredictionMatrix] predictSparse(const CContiguousFeatureMatrixImpl& featureMatrix,
-                                                               uint32 numLabels, const LabelVectorSetImpl* labelVectors)
+                                                               uint32 numLabels)
 
         unique_ptr[BinarySparsePredictionMatrix] predictSparse(const CsrFeatureMatrixImpl& featureMatrix,
-                                                               uint32 numLabels, const LabelVectorSetImpl* labelVectors)
+                                                               uint32 numLabels)
 
 
 cdef extern from "common/output/predictor_classification.hpp" nogil:
