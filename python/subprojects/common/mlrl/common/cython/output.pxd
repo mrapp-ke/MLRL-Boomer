@@ -6,18 +6,40 @@ from libcpp.memory cimport unique_ptr
 from libcpp.forward_list cimport forward_list
 
 
+cdef extern from "common/output/label_space_info.hpp" nogil:
+
+    cdef cppclass ILabelSpaceInfo:
+        pass
+
+
+cdef extern from "common/output/label_space_info_no.hpp" nogil:
+
+    cdef cppclass INoLabelSpaceInfo(ILabelSpaceInfo):
+        pass
+
+
+    unique_ptr[INoLabelSpaceInfo] createNoLabelSpaceInfo()
+
+
 ctypedef void (*LabelVectorVisitor)(const LabelVector&)
 
 
 cdef extern from "common/output/label_vector_set.hpp" nogil:
 
-    cdef cppclass LabelVectorSetImpl"LabelVectorSet":
+    cdef cppclass ILabelVectorSet(ILabelSpaceInfo):
 
         # Functions:
 
         void addLabelVector(unique_ptr[LabelVector] labelVectorPtr)
 
         void visit(LabelVectorVisitor)
+
+
+    unique_ptr[ILabelVectorSet] createLabelVectorSet()
+
+
+    cdef cppclass LabelVectorSetImpl"LabelVectorSet"(ILabelVectorSet):
+        pass
 
 
 cdef extern from *:
@@ -115,11 +137,25 @@ cdef extern from "common/output/predictor_probability.hpp" nogil:
         pass
 
 
+cdef class LabelSpaceInfo:
+
+    # Functions:
+
+    cdef ILabelSpaceInfo* get_label_space_info_ptr(self)
+
+
+cdef class NoLabelSpaceInfo(LabelSpaceInfo):
+
+    # Attributes:
+
+    cdef unique_ptr[INoLabelSpaceInfo] label_space_info_ptr
+
+
 cdef class LabelVectorSet:
 
     # Attributes:
 
-    cdef unique_ptr[LabelVectorSetImpl] label_vector_set_ptr
+    cdef unique_ptr[ILabelVectorSet] label_vector_set_ptr
 
 
 cdef class LabelVectorSetSerializer:

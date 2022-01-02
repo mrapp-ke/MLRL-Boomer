@@ -18,20 +18,41 @@ import numpy as np
 SERIALIZATION_VERSION = 1
 
 
-cdef class LabelVectorSet:
+cdef class LabelSpaceInfo:
     """
-    A wrapper for the C++ class `LabelVectorSet`.
+    A wrapper for the pure virtual C++ class `ILabelSpaceInfo`.
+    """
+
+    cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
+        pass
+
+
+cdef class NoLabelSpaceInfo(LabelSpaceInfo):
+    """
+    A wrapper for the pure virtual C++ class `INoLabelSpaceInfo`.
     """
 
     def __cinit__(self):
-        self.label_vector_set_ptr = make_unique[LabelVectorSetImpl]()
+        self.label_space_info_ptr = createNoLabelSpaceInfo()
+
+    cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
+        return self.label_space_info_ptr.get()
+
+
+cdef class LabelVectorSet:
+    """
+    A wrapper for the pure virtual C++ class `ILabelVectorSet`.
+    """
+
+    def __cinit__(self):
+        self.label_vector_set_ptr = createLabelVectorSet()
 
     @classmethod
     def create(cls, RowWiseLabelMatrix label_matrix):
         cdef IRowWiseLabelMatrix* label_matrix_ptr = label_matrix.get_row_wise_label_matrix_ptr()
         cdef uint32 num_rows = label_matrix_ptr.getNumRows()
         cdef uint32 num_cols = label_matrix_ptr.getNumCols()
-        cdef unique_ptr[LabelVectorSetImpl] label_vector_set_ptr = make_unique[LabelVectorSetImpl]()
+        cdef unique_ptr[ILabelVectorSet] label_vector_set_ptr = createLabelVectorSet()
         cdef unique_ptr[LabelVector] label_vector_ptr
         cdef uint32 i
 
@@ -92,7 +113,7 @@ cdef class LabelVectorSetSerializer:
         :return:                    The state that has been created
         """
         self.state = []
-        cdef LabelVectorSetImpl* label_vector_set_ptr = label_vector_set.label_vector_set_ptr.get()
+        cdef ILabelVectorSet* label_vector_set_ptr = label_vector_set.label_vector_set_ptr.get()
         label_vector_set_ptr.visit(wrapLabelVectorVisitor(<void*>self,
                                                           <LabelVectorCythonVisitor>self.__visit_label_vector))
         return (SERIALIZATION_VERSION, self.state)
@@ -112,7 +133,7 @@ cdef class LabelVectorSetSerializer:
 
         cdef list label_vector_list = state[1]
         cdef uint32 num_label_vectors = len(label_vector_list)
-        cdef LabelVectorSetImpl* label_vector_set_ptr = label_vector_set.label_vector_set_ptr.get()
+        cdef ILabelVectorSet* label_vector_set_ptr = label_vector_set.label_vector_set_ptr.get()
         cdef list label_vector_state
         cdef uint32 i
 
@@ -237,7 +258,7 @@ cdef class NumericalPredictor(Predictor):
         cdef unique_ptr[CContiguousView[float64]] view_ptr = make_unique[CContiguousView[float64]](
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
-                                                        else label_vectors.label_vector_set_ptr.get()
+                                                        else <LabelVectorSetImpl*>label_vectors.label_vector_set_ptr.get()
         self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
@@ -249,7 +270,7 @@ cdef class NumericalPredictor(Predictor):
         cdef unique_ptr[CContiguousView[float64]] view_ptr = make_unique[CContiguousView[float64]](
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
-                                                        else label_vectors.label_vector_set_ptr.get()
+                                                        else <LabelVectorSetImpl*>label_vectors.label_vector_set_ptr.get()
         self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
 
@@ -295,7 +316,7 @@ cdef class BinaryPredictor(SparsePredictor):
         cdef unique_ptr[CContiguousView[uint8]] view_ptr = make_unique[CContiguousView[uint8]](
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
-                                                        else label_vectors.label_vector_set_ptr.get()
+                                                        else <LabelVectorSetImpl*>label_vectors.label_vector_set_ptr.get()
         cdef IPredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
         predictor_ptr.predict(dereference(feature_matrix_ptr), dereference(view_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
@@ -308,7 +329,7 @@ cdef class BinaryPredictor(SparsePredictor):
         cdef unique_ptr[CContiguousView[uint8]] view_ptr = make_unique[CContiguousView[uint8]](
             num_examples, num_labels, &prediction_matrix[0, 0])
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
-                                                        else label_vectors.label_vector_set_ptr.get()
+                                                        else <LabelVectorSetImpl*>label_vectors.label_vector_set_ptr.get()
         cdef IPredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
         predictor_ptr.predict(dereference(feature_matrix_ptr), dereference(view_ptr), label_vectors_ptr)
         return np.asarray(prediction_matrix)
@@ -318,7 +339,7 @@ cdef class BinaryPredictor(SparsePredictor):
         cdef CContiguousFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_labels = self.num_labels
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
-                                                        else label_vectors.label_vector_set_ptr.get()
+                                                        else <LabelVectorSetImpl*>label_vectors.label_vector_set_ptr.get()
         cdef ISparsePredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
         cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = predictor_ptr.predictSparse(
             dereference(feature_matrix_ptr), num_labels, label_vectors_ptr)
@@ -328,7 +349,7 @@ cdef class BinaryPredictor(SparsePredictor):
         cdef CsrFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_labels = self.num_labels
         cdef LabelVectorSetImpl* label_vectors_ptr = <LabelVectorSetImpl*>NULL if label_vectors is None \
-                                                        else label_vectors.label_vector_set_ptr.get()
+                                                        else <LabelVectorSetImpl*>label_vectors.label_vector_set_ptr.get()
         cdef ISparsePredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
         cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = predictor_ptr.predictSparse(
             dereference(feature_matrix_ptr), num_labels, label_vectors_ptr)
