@@ -3,17 +3,48 @@
  */
 #pragma once
 
+#include "common/output/label_space_info.hpp"
 #include "common/input/label_vector.hpp"
 #include "common/data/functions.hpp"
 #include <unordered_map>
 #include <functional>
 #include <memory>
 
+/**
+ * Defines an interface for all classes that provide access to a set of unique label vectors.
+ */
+class ILabelVectorSet : public ILabelSpaceInfo {
+
+    public:
+
+        virtual ~ILabelVectorSet() { };
+
+        /**
+         * A visitor function for handling objects of the type `LabelVector`.
+         */
+        typedef std::function<void(const LabelVector&)> LabelVectorVisitor;
+
+        /**
+         * Adds a label vector to the set.
+         *
+         * @param labelVectorPtr An unique pointer to an object of type `LabelVector`
+         */
+        virtual void addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) = 0;
+
+        /**
+         * Invokes the given visitor function for each label vector that has been added to the set.
+         *
+         * @param visitor The visitor function for handling objects of the type `LabelVector`
+         */
+        virtual void visit(LabelVectorVisitor visitor) const = 0;
+
+};
 
 /**
- * A set that stores unique label vectors, as well as their frequency.
+ * An implementation of the type `ILabelVectorSet` that stores a set of unique label vectors, as well as their
+ * frequency.
  */
-class LabelVectorSet final {
+class LabelVectorSet final : public ILabelVectorSet {
 
     private:
 
@@ -48,11 +79,6 @@ class LabelVectorSet final {
     public:
 
         /**
-         * A visitor function for handling objects of the type `LabelVector`.
-         */
-        typedef std::function<void(const LabelVector&)> LabelVectorVisitor;
-
-        /**
          * An iterator that provides read-only access to the label vectors, as well as their frequency.
          */
         typedef Map::const_iterator const_iterator;
@@ -71,18 +97,17 @@ class LabelVectorSet final {
          */
         const_iterator cend() const;
 
-        /**
-         * Adds a label vector to the set.
-         *
-         * @param labelVectorPtr An unique pointer to an object of type `LabelVector`
-         */
-        void addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr);
+        void addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) override;
 
-        /**
-         * Invokes the given visitor function for each label vector that has been added to the set.
-         *
-         * @param visitor The visitor function for handling objects of the type `LabelVector`
-         */
-        void visit(LabelVectorVisitor visitor) const;
+        void visit(LabelVectorVisitor visitor) const override;
+
+        std::unique_ptr<IClassificationPredictor> createClassificationPredictor(
+            const IClassificationPredictorFactory& factory, const RuleList& model) const override;
+
+        std::unique_ptr<IRegressionPredictor> createRegressionPredictor(
+            const IRegressionPredictorFactory& factory, const RuleList& model) const override;
+
+        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+            const IProbabilityPredictorFactory& factory, const RuleList& model) const override;
 
 };
