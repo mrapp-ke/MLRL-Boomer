@@ -1,9 +1,43 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
 from mlrl.common.cython._data cimport CContiguousView
-from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVectorSetImpl
+from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVector
 
 from libcpp.memory cimport unique_ptr
 from libcpp.forward_list cimport forward_list
+
+
+ctypedef void (*LabelVectorVisitor)(const LabelVector&)
+
+
+cdef extern from "common/output/label_vector_set.hpp" nogil:
+
+    cdef cppclass LabelVectorSetImpl"LabelVectorSet":
+
+        # Functions:
+
+        void addLabelVector(unique_ptr[LabelVector] labelVectorPtr)
+
+        void visit(LabelVectorVisitor)
+
+
+cdef extern from *:
+    """
+    #include "common/output/label_vector_set.hpp"
+
+
+    typedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&);
+
+    static inline LabelVectorSet::LabelVectorVisitor wrapLabelVectorVisitor(
+            void* self, LabelVectorCythonVisitor visitor) {
+        return [=](const LabelVector& labelVector) {
+            visitor(self, labelVector);
+        };
+    }
+    """
+
+    ctypedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&)
+
+    LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
 
 
 cdef extern from "common/output/prediction_matrix_sparse_binary.hpp" nogil:
@@ -79,6 +113,24 @@ cdef extern from "common/output/predictor_probability.hpp" nogil:
 
     cdef cppclass IProbabilityPredictorFactory:
         pass
+
+
+cdef class LabelVectorSet:
+
+    # Attributes:
+
+    cdef unique_ptr[LabelVectorSetImpl] label_vector_set_ptr
+
+
+cdef class LabelVectorSetSerializer:
+
+    # Attributes:
+
+    cdef list state
+
+    # Functions:
+
+    cdef __visit_label_vector(self, const LabelVector& label_vector)
 
 
 cdef class ClassificationPredictorFactory:

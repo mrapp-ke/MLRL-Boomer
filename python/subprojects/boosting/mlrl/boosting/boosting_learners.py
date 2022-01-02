@@ -25,11 +25,12 @@ from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatist
     DenseConvertibleExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
-from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
+from mlrl.common.cython.input import LabelMatrix
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
 from mlrl.common.cython.output import ClassificationPredictorFactory, ProbabilityPredictorFactory
+from mlrl.common.cython.output import LabelVectorSet
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
 from mlrl.common.cython.post_processing import PostProcessorFactory
 from mlrl.common.cython.pruning import PruningFactory
