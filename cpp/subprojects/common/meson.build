@@ -45,6 +45,7 @@ source_files = [
     'src/common/model/head_complete.cpp',
     'src/common/model/head_partial.cpp',
     'src/common/model/rule_list.cpp',
+    'src/common/output/label_space_info_no.cpp',
     'src/common/output/label_vector_set.cpp',
     'src/common/output/prediction_matrix_sparse_binary.cpp',
     'src/common/post_processing/post_processor_no.cpp',
