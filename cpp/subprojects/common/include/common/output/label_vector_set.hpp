@@ -111,3 +111,10 @@ class LabelVectorSet final : public ILabelVectorSet {
             const IProbabilityPredictorFactory& factory, const RuleList& model) const override;
 
 };
+
+/**
+ * Creates and returns a new object of the type `ILabelVectorSet`.
+ *
+ * @return An unique pointer to an object of type `ILabelVectorSet` that has been created
+ */
+std::unique_ptr<ILabelVectorSet> createLabelVectorSet();
