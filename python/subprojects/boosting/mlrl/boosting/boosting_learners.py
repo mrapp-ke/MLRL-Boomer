@@ -25,11 +25,12 @@ from mlrl.boosting.cython.statistics_example_wise import DenseExampleWiseStatist
     DenseConvertibleExampleWiseStatisticsProviderFactory
 from mlrl.boosting.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
 from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
-from mlrl.common.cython.input import LabelMatrix, LabelVectorSet
+from mlrl.common.cython.input import LabelMatrix
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory
 from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import ClassificationPredictorFactory, ProbabilityPredictorFactory
+from mlrl.common.cython.output import ClassificationPredictorFactory, ProbabilityPredictorFactory, LabelSpaceInfo, \
+    NoLabelSpaceInfo, LabelVectorSet
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
 from mlrl.common.cython.post_processing import PostProcessorFactory
 from mlrl.common.cython.pruning import PruningFactory
@@ -547,12 +548,12 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                                                       label_characteristics)
         return None
 
-    def _create_label_vector_set(self, label_matrix: LabelMatrix) -> Optional[LabelVectorSet]:
+    def _create_label_space_info(self, label_matrix: LabelMatrix) -> LabelSpaceInfo:
         predictor = self.__get_preferred_predictor()
 
         if predictor == PREDICTOR_EXAMPLE_WISE:
             return LabelVectorSet.create(label_matrix)
-        return None
+        return NoLabelSpaceInfo()
 
     def __get_preferred_predictor(self) -> str:
         predictor = self.predictor

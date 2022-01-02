@@ -1,9 +1,65 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
 from mlrl.common.cython._data cimport CContiguousView
-from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVectorSetImpl
+from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVector
 
 from libcpp.memory cimport unique_ptr
 from libcpp.forward_list cimport forward_list
+
+
+cdef extern from "common/output/label_space_info.hpp" nogil:
+
+    cdef cppclass ILabelSpaceInfo:
+        pass
+
+
+cdef extern from "common/output/label_space_info_no.hpp" nogil:
+
+    cdef cppclass INoLabelSpaceInfo(ILabelSpaceInfo):
+        pass
+
+
+    unique_ptr[INoLabelSpaceInfo] createNoLabelSpaceInfo()
+
+
+ctypedef void (*LabelVectorVisitor)(const LabelVector&)
+
+
+cdef extern from "common/output/label_vector_set.hpp" nogil:
+
+    cdef cppclass ILabelVectorSet(ILabelSpaceInfo):
+
+        # Functions:
+
+        void addLabelVector(unique_ptr[LabelVector] labelVectorPtr)
+
+        void visit(LabelVectorVisitor)
+
+
+    unique_ptr[ILabelVectorSet] createLabelVectorSet()
+
+
+    cdef cppclass LabelVectorSetImpl"LabelVectorSet"(ILabelVectorSet):
+        pass
+
+
+cdef extern from *:
+    """
+    #include "common/output/label_vector_set.hpp"
+
+
+    typedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&);
+
+    static inline LabelVectorSet::LabelVectorVisitor wrapLabelVectorVisitor(
+            void* self, LabelVectorCythonVisitor visitor) {
+        return [=](const LabelVector& labelVector) {
+            visitor(self, labelVector);
+        };
+    }
+    """
+
+    ctypedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&)
+
+    LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
 
 
 cdef extern from "common/output/prediction_matrix_sparse_binary.hpp" nogil:
@@ -31,11 +87,9 @@ cdef extern from "common/output/predictor.hpp" nogil:
 
         # Functions:
 
-        void predict(const CContiguousFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix,
-                     const LabelVectorSetImpl* labelVectors)
+        void predict(const CContiguousFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix)
 
-        void predict(const CsrFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix,
-                     const LabelVectorSetImpl* labelVectors)
+        void predict(const CsrFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix)
 
 
 cdef extern from "common/output/predictor_sparse.hpp" nogil:
@@ -45,10 +99,10 @@ cdef extern from "common/output/predictor_sparse.hpp" nogil:
         # Functions:
 
         unique_ptr[BinarySparsePredictionMatrix] predictSparse(const CContiguousFeatureMatrixImpl& featureMatrix,
-                                                               uint32 numLabels, const LabelVectorSetImpl* labelVectors)
+                                                               uint32 numLabels)
 
         unique_ptr[BinarySparsePredictionMatrix] predictSparse(const CsrFeatureMatrixImpl& featureMatrix,
-                                                               uint32 numLabels, const LabelVectorSetImpl* labelVectors)
+                                                               uint32 numLabels)
 
 
 cdef extern from "common/output/predictor_classification.hpp" nogil:
@@ -79,6 +133,38 @@ cdef extern from "common/output/predictor_probability.hpp" nogil:
 
     cdef cppclass IProbabilityPredictorFactory:
         pass
+
+
+cdef class LabelSpaceInfo:
+
+    # Functions:
+
+    cdef ILabelSpaceInfo* get_label_space_info_ptr(self)
+
+
+cdef class NoLabelSpaceInfo(LabelSpaceInfo):
+
+    # Attributes:
+
+    cdef unique_ptr[INoLabelSpaceInfo] label_space_info_ptr
+
+
+cdef class LabelVectorSet(LabelSpaceInfo):
+
+    # Attributes:
+
+    cdef unique_ptr[ILabelVectorSet] label_vector_set_ptr
+
+
+cdef class LabelVectorSetSerializer:
+
+    # Attributes:
+
+    cdef list state
+
+    # Functions:
+
+    cdef __visit_label_vector(self, const LabelVector& label_vector)
 
 
 cdef class ClassificationPredictorFactory:

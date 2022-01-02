@@ -35,8 +35,8 @@ namespace boosting {
 
             }
 
-            void predict(const CContiguousFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const LabelVectorSet* labelVectors) const override {
+            void predict(const CContiguousFeatureMatrix& featureMatrix,
+                         CContiguousView<float64>& predictionMatrix) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
@@ -54,8 +54,8 @@ namespace boosting {
                 }
             }
 
-            void predict(const CsrFeatureMatrix& featureMatrix, CContiguousView<float64>& predictionMatrix,
-                         const LabelVectorSet* labelVectors) const override {
+            void predict(const CsrFeatureMatrix& featureMatrix,
+                         CContiguousView<float64>& predictionMatrix) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
@@ -91,7 +91,8 @@ namespace boosting {
         assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     }
 
-    std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(const RuleList& model) const {
+    std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(
+            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
         return std::make_unique<LabelWiseRegressionPredictor<RuleList>>(model, numThreads_);
     }
 
