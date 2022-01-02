@@ -559,7 +559,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         predictor_factory = self.predictor_factory_
         label_vectors = self.label_vectors_
         model = self.model_
-        predictor = predictor_factory.create(model)
+        predictor = predictor_factory.create(model, label_vectors)
         return self.__predict(predictor, label_vectors, x)
 
     def _predict_proba(self, x):
@@ -570,7 +570,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         else:
             label_vectors = self.label_vectors_
             model = self.model_
-            predictor = predictor_factory.create(model)
+            predictor = predictor_factory.create(model, label_vectors)
             return self.__predict(predictor, label_vectors, x)
 
     def __predict(self, predictor, label_vectors: LabelVectorSet, x):

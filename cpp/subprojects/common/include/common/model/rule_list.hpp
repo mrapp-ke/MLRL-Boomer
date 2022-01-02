@@ -269,13 +269,13 @@ class RuleList final : public IRuleList {
                        IHead::PartialHeadVisitor partialHeadVisitor) const override;
 
         std::unique_ptr<IClassificationPredictor> createClassificationPredictor(
-            const IClassificationPredictorFactory& factory) const override;
+            const IClassificationPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const override;
 
         std::unique_ptr<IRegressionPredictor> createRegressionPredictor(
-            const IRegressionPredictorFactory& factory) const override;
+            const IRegressionPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const override;
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-            const IProbabilityPredictorFactory& factory) const override;
+            const IProbabilityPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const override;
 
 };
 
