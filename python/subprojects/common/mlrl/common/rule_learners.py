@@ -20,12 +20,12 @@ from mlrl.common.cython.input import EqualNominalFeatureMask, MixedNominalFeatur
 from mlrl.common.cython.input import FeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
-from mlrl.common.cython.input import LabelVectorSet
 from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
     InstanceSamplingWithoutReplacementFactory, \
     LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
 from mlrl.common.cython.label_sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory
 from mlrl.common.cython.model import ModelBuilder
+from mlrl.common.cython.output import LabelVectorSet
 from mlrl.common.cython.output import SparsePredictor, ClassificationPredictorFactory, ProbabilityPredictorFactory
 from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, RandomBiPartitionSamplingFactory, \
     LabelWiseStratifiedBiPartitionSamplingFactory, \
