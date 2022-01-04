@@ -12,7 +12,7 @@
  * @tparam T The type of the predictions that are stored by the matrix
  */
 template<typename T>
-class DensePredictionMatrix final : public CContiguousConstView<T> {
+class DensePredictionMatrix final : public CContiguousView<T> {
 
     private:
 
@@ -23,9 +23,8 @@ class DensePredictionMatrix final : public CContiguousConstView<T> {
         /**
          * @param numRows   The number of rows in the matrix
          * @param numCols   The number of columns in the matrix
-         * @param array     An array of template type `T`, shape `(numRows * numCols)`, that stores the predictions
          */
-        DensePredictionMatrix(uint32 numRows, uint32 numCols, T* array);
+        DensePredictionMatrix(uint32 numRows, uint32 numCols);
 
         ~DensePredictionMatrix();
 
