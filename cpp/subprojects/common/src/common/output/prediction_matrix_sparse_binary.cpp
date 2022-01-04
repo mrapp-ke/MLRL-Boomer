@@ -2,24 +2,11 @@
 #include <cstdlib>
 
 
-BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix, uint32 numCols,
-                                                           uint32 numNonZeroElements)
-    : rowIndices_((uint32*) malloc((lilMatrix.getNumRows() + 1) * sizeof(uint32))),
-      colIndices_((uint32*) malloc(numNonZeroElements * sizeof(uint32))),
-      view_(BinaryCsrConstView(lilMatrix.getNumRows(), numCols, rowIndices_, colIndices_)) {
-    uint32 numRows = lilMatrix.getNumRows();
-    uint32 n = 0;
+BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,
+                                                           uint32* colIndices)
+    : rowIndices_(rowIndices), colIndices_(colIndices),
+      view_(BinaryCsrConstView(numRows, numCols, rowIndices_, colIndices_)) {
 
-    for (uint32 i = 0; i < numRows; i++) {
-        rowIndices_[i] = n;
-
-        for (auto it = lilMatrix.row_cbegin(i); it != lilMatrix.row_cend(i); it++) {
-            colIndices_[n] = *it;
-            n++;
-        }
-    }
-
-    rowIndices_[numRows] = n;
 }
 
 BinarySparsePredictionMatrix::~BinarySparsePredictionMatrix() {
@@ -65,4 +52,25 @@ uint32* BinarySparsePredictionMatrix::releaseColIndices() {
     uint32* ptr = colIndices_;
     colIndices_ = nullptr;
     return ptr;
+}
+
+std::unique_ptr<BinarySparsePredictionMatrix> createBinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix,
+                                                                                 uint32 numCols,
+                                                                                 uint32 numNonZeroElements) {
+    uint32 numRows = lilMatrix.getNumRows();
+    uint32* rowIndices = (uint32*) malloc((numRows + 1) * sizeof(uint32));
+    uint32* colIndices = (uint32*) malloc(numNonZeroElements * sizeof(uint32));
+    uint32 n = 0;
+
+    for (uint32 i = 0; i < numRows; i++) {
+        rowIndices[i] = n;
+
+        for (auto it = lilMatrix.row_cbegin(i); it != lilMatrix.row_cend(i); it++) {
+            colIndices[n] = *it;
+            n++;
+        }
+    }
+
+    rowIndices[numRows] = n;
+    return std::make_unique<BinarySparsePredictionMatrix>(numRows, numCols, rowIndices, colIndices);
 }
