@@ -1,8 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython._arrays cimport ndarray_uint32, c_matrix_uint8, c_matrix_float64
-from mlrl.common.cython._data cimport CContiguousView
+from mlrl.common.cython._arrays cimport array_uint32, c_matrix_uint8, c_matrix_float64
 from mlrl.common.cython.input cimport CContiguousFeatureMatrix, CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, \
     CsrFeatureMatrix, RowWiseLabelMatrix, IRowWiseLabelMatrix
 from mlrl.common.cython.model cimport RuleModel
@@ -250,20 +249,20 @@ cdef class NumericalPredictor(Predictor):
         cdef CContiguousFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
-        cdef float64[:, ::1] prediction_matrix = c_matrix_float64(num_examples, num_labels)
-        cdef unique_ptr[CContiguousView[float64]] view_ptr = make_unique[CContiguousView[float64]](
-            num_examples, num_labels, &prediction_matrix[0, 0])
-        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr))
+        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict(
+            dereference(feature_matrix_ptr), num_labels)
+        cdef float64* array = prediction_matrix_ptr.get().release()
+        cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_examples, num_labels)
         return np.asarray(prediction_matrix)
 
     def predict_csr(self, CsrFeatureMatrix feature_matrix not None):
         cdef CsrFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
-        cdef float64[:, ::1] prediction_matrix = c_matrix_float64(num_examples, num_labels)
-        cdef unique_ptr[CContiguousView[float64]] view_ptr = make_unique[CContiguousView[float64]](
-            num_examples, num_labels, &prediction_matrix[0, 0])
-        self.predictor_ptr.get().predict(dereference(feature_matrix_ptr), dereference(view_ptr))
+        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict(
+            dereference(feature_matrix_ptr), num_labels)
+        cdef float64* array = prediction_matrix_ptr.get().release()
+        cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_examples, num_labels)
         return np.asarray(prediction_matrix)
 
 
@@ -274,8 +273,8 @@ cdef inline object __create_csr_matrix(BinarySparsePredictionMatrix* prediction_
     cdef uint32* row_indices = prediction_matrix.releaseRowIndices()
     cdef uint32* col_indices = prediction_matrix.releaseColIndices()
     data = np.ones(shape=(num_non_zero_elements), dtype=np.uint8) if num_non_zero_elements > 0 else np.asarray([])
-    indices = ndarray_uint32(col_indices, num_non_zero_elements) if num_non_zero_elements > 0 else np.asarray([])
-    indptr = ndarray_uint32(row_indices, num_rows + 1)
+    indices = np.asarray(array_uint32(col_indices, num_non_zero_elements) if num_non_zero_elements > 0 else [])
+    indptr = np.asarray(array_uint32(row_indices, num_rows + 1))
     return csr_matrix((data, indices, indptr), shape=(num_rows, num_cols))
 
 
@@ -288,22 +287,22 @@ cdef class BinaryPredictor(SparsePredictor):
         cdef CContiguousFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
-        cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(num_examples, num_labels)
-        cdef unique_ptr[CContiguousView[uint8]] view_ptr = make_unique[CContiguousView[uint8]](
-            num_examples, num_labels, &prediction_matrix[0, 0])
         cdef IPredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
-        predictor_ptr.predict(dereference(feature_matrix_ptr), dereference(view_ptr))
+        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = predictor_ptr.predict(
+            dereference(feature_matrix_ptr), num_labels)
+        cdef uint8* array = prediction_matrix_ptr.get().release()
+        cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(array, num_examples, num_labels)
         return np.asarray(prediction_matrix)
 
     def predict_dense_csr(self, CsrFeatureMatrix feature_matrix not None):
         cdef CsrFeatureMatrixImpl* feature_matrix_ptr = feature_matrix.feature_matrix_ptr.get()
         cdef uint32 num_examples = feature_matrix_ptr.getNumRows()
         cdef uint32 num_labels = self.num_labels
-        cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(num_examples, num_labels)
-        cdef unique_ptr[CContiguousView[uint8]] view_ptr = make_unique[CContiguousView[uint8]](
-            num_examples, num_labels, &prediction_matrix[0, 0])
         cdef IPredictor[uint8]* predictor_ptr = self.predictor_ptr.get()
-        predictor_ptr.predict(dereference(feature_matrix_ptr), dereference(view_ptr))
+        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = predictor_ptr.predict(
+            dereference(feature_matrix_ptr), num_labels)
+        cdef uint8* array = prediction_matrix_ptr.get().release()
+        cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(array, num_examples, num_labels)
         return np.asarray(prediction_matrix)
 
     def predict_sparse(self, CContiguousFeatureMatrix feature_matrix not None) -> csr_matrix:

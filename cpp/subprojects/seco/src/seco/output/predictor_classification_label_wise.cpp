@@ -178,16 +178,17 @@ namespace seco {
 
             }
 
-            void predict(const CContiguousFeatureMatrix& featureMatrix,
-                         CContiguousView<uint8>& predictionMatrix) const override {
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CContiguousFeatureMatrix& featureMatrix,
+                                                                  uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
-                uint32 numLabels = predictionMatrix.getNumCols();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
-                CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
+                CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
+                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
                 num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     BitVector mask(numLabels, true);
@@ -198,23 +199,26 @@ namespace seco {
 
                         if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
                             const IHead& head = rule.getHead();
-                            applyHead(head, *predictionMatrixPtr, mask, i);
+                            applyHead(head, *predictionMatrixRawPtr, mask, i);
                         }
                     }
                 }
+
+                return predictionMatrixPtr;
             }
 
-            void predict(const CsrFeatureMatrix& featureMatrix,
-                         CContiguousView<uint8>& predictionMatrix) const override {
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrFeatureMatrix& featureMatrix,
+                                                                  uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
-                uint32 numLabels = predictionMatrix.getNumCols();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
-                CContiguousView<uint8>* predictionMatrixPtr = &predictionMatrix;
+                CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-                firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+                firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
                 schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     BitVector mask(numLabels, true);
@@ -230,7 +234,7 @@ namespace seco {
                                         featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                         &tmpArray1[0], &tmpArray2[0], n)) {
                             const IHead& head = rule.getHead();
-                            applyHead(head, *predictionMatrixPtr, mask, i);
+                            applyHead(head, *predictionMatrixRawPtr, mask, i);
                         }
 
                         n++;
@@ -239,6 +243,8 @@ namespace seco {
                     delete[] tmpArray1;
                     delete[] tmpArray2;
                 }
+
+                return predictionMatrixPtr;
             }
 
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CContiguousFeatureMatrix& featureMatrix,
