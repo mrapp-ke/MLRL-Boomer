@@ -12,9 +12,9 @@
  * A sparse matrix that provides read-only access to binary predictions that are stored in the compressed sparse row
  * (CSR) format.
  *
- * The matrix maintains two arrays, referred to as `rowIndices_` and `colIndices_`. The latter stores a column-index for
+ * The matrix maintains two arrays, referred to as `rowIndices` and `colIndices`. The latter stores a column-index for
  * each of the `numNonZeroValues` non-zero elements in the matrix. The former stores `numRows + 1` row-indices that
- * specify the first element in `colIndices_` that correspond to a certain row. The index at the last position is equal
+ * specify the first element in `colIndices` that correspond to a certain row. The index at the last position is equal
  * to the number of non-zero values in the matrix.
  */
 class BinarySparsePredictionMatrix final : public BinaryCsrConstView {
@@ -41,18 +41,18 @@ class BinarySparsePredictionMatrix final : public BinaryCsrConstView {
         ~BinarySparsePredictionMatrix();
 
         /**
-         * Releases the ownership of the array `rowIndices_`. The caller is responsible for freeing the memory that is
+         * Releases the ownership of the array `rowIndices`. The caller is responsible for freeing the memory that is
          * occupied by the array.
          *
-         * @return A pointer to the array `rowIndices_`
+         * @return A pointer to the array `rowIndices`
          */
         uint32* releaseRowIndices();
 
         /**
-         * Releases the ownership of the array `colIndices_`. The caller is responsible for freeing the memory that is
+         * Releases the ownership of the array `colIndices`. The caller is responsible for freeing the memory that is
          * occupied by the array.
          *
-         * @return A pointer to the array `colIndices_`
+         * @return A pointer to the array `colIndices`
          */
         uint32* releaseColIndices();
 
