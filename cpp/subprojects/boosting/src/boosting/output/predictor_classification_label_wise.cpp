@@ -127,9 +127,9 @@ namespace boosting {
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CContiguousFeatureMatrix& featureMatrix,
                                                                         uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
-                std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
+                BinaryLilMatrix lilMatrix(numExamples);
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
-                BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
+                BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                 const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
                 uint32 numNonZeroElements = 0;
@@ -146,17 +146,16 @@ namespace boosting {
                     delete[] scoreVector;
                 }
 
-                return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels,
-                                                                      numNonZeroElements);
+                return std::make_unique<BinarySparsePredictionMatrix>(lilMatrix, numLabels, numNonZeroElements);
             }
 
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CsrFeatureMatrix& featureMatrix,
                                                                         uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
-                std::unique_ptr<BinaryLilMatrix> lilMatrixPtr = std::make_unique<BinaryLilMatrix>(numExamples);
+                BinaryLilMatrix lilMatrix(numExamples);
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
-                BinaryLilMatrix* predictionMatrixPtr = lilMatrixPtr.get();
+                BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                 const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
                 uint32 numNonZeroElements = 0;
@@ -175,8 +174,7 @@ namespace boosting {
                     delete[] scoreVector;
                 }
 
-                return std::make_unique<BinarySparsePredictionMatrix>(std::move(lilMatrixPtr), numLabels,
-                                                                      numNonZeroElements);
+                return std::make_unique<BinarySparsePredictionMatrix>(lilMatrix, numLabels, numNonZeroElements);
             }
 
     };

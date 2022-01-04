@@ -3,7 +3,6 @@ from mlrl.common.cython._data cimport CContiguousView
 from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVector
 
 from libcpp.memory cimport unique_ptr
-from libcpp.forward_list cimport forward_list
 
 
 cdef extern from "common/output/label_space_info.hpp" nogil:
@@ -66,19 +65,17 @@ cdef extern from "common/output/prediction_matrix_sparse_binary.hpp" nogil:
 
     cdef cppclass BinarySparsePredictionMatrix:
 
-        ctypedef forward_list[uint32].const_iterator const_iterator
-
         # Functions:
 
-        const_iterator row_cbegin(uint32 row)
+        uint32 getNumRows() const
 
-        const_iterator row_cend(uint32 row)
+        uint32 getNumCols() const
 
-        uint32 getNumRows()
+        uint32 getNumNonZeroElements() const
 
-        uint32 getNumCols()
+        uint32* releaseRowIndices()
 
-        uint32 getNumNonZeroElements()
+        uint32* releaseColIndices()
 
 
 cdef extern from "common/output/predictor.hpp" nogil:
