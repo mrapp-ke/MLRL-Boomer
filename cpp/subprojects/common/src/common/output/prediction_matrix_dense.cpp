@@ -4,19 +4,19 @@
 
 template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols, T* array)
-    : CContiguousConstView<T>(numRows, numCols, array), matrix_(array) {
+    : CContiguousConstView<T>(numRows, numCols, array), array_(array) {
 
 }
 
 template<typename T>
 DensePredictionMatrix<T>::~DensePredictionMatrix() {
-    free(matrix_);
+    free(array_);
 }
 
 template<typename T>
 T* DensePredictionMatrix<T>::release() {
-    T* ptr = matrix_;
-    matrix_ = nullptr;
+    T* ptr = array_;
+    array_ = nullptr;
     return ptr;
 }
 

@@ -16,7 +16,7 @@ class DensePredictionMatrix final : public CContiguousConstView<T> {
 
     private:
 
-        T* matrix_;
+        T* array_;
 
     public:
 
