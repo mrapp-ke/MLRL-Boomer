@@ -1,9 +1,9 @@
-"""
-@author: Michael Rapp (michael.rapp.ml@gmail.com)
-"""
 from mlrl.common.cython._types cimport uint8, uint32, float64
 
 from cython.view cimport array as cvarray
+
+import numpy as np
+cimport numpy as npc
 
 DEF MODE_C_CONTIGUOUS = 'c'
 DEF FORMAT_UINT8 = 'B'
@@ -63,3 +63,18 @@ cdef inline cvarray c_matrix_float64(uint32 num_rows, uint32 num_cols):
     cdef int itemsize = sizeof(float64)
     cdef cvarray array = cvarray(shape, itemsize, FORMAT_FLOAT64, MODE_C_CONTIGUOUS)
     return array
+
+
+cdef inline npc.ndarray ndarray_uint32(uint32* array, uint32 num_elements):
+    """
+    Creates and returns a new numpy array of type `uint32`, shape `(num_elements)`, that takes ownership of a
+    pre-allocated C array.
+
+    :param array:           A pointer to an array of type `uint32`
+    :param num_elements:    The number of elements in the array
+    :return:                The numpy array that has been created
+    """
+    cdef cvarray view = <uint32[:num_elements]>array
+    view.free_data = True
+    cdef npc.ndarray ndarray = np.asarray(view)
+    return ndarray

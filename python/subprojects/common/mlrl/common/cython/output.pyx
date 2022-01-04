@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython._arrays cimport array_uint8, array_uint32, c_matrix_uint8, c_matrix_float64
+from mlrl.common.cython._arrays cimport ndarray_uint32, c_matrix_uint8, c_matrix_float64
 from mlrl.common.cython._data cimport CContiguousView
 from mlrl.common.cython.input cimport CContiguousFeatureMatrix, CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, \
     CsrFeatureMatrix, RowWiseLabelMatrix, IRowWiseLabelMatrix
@@ -10,7 +10,7 @@ from mlrl.common.cython.model cimport RuleModel
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
-from cython.operator cimport dereference, postincrement
+from cython.operator cimport dereference
 
 from scipy.sparse import csr_matrix
 import numpy as np
@@ -271,28 +271,12 @@ cdef inline object __create_csr_matrix(BinarySparsePredictionMatrix* prediction_
     cdef uint32 num_rows = prediction_matrix.getNumRows()
     cdef uint32 num_cols = prediction_matrix.getNumCols()
     cdef uint32 num_non_zero_elements = prediction_matrix.getNumNonZeroElements()
-    cdef uint8[::1] data = array_uint8(num_non_zero_elements) if num_non_zero_elements > 0 else None
-    cdef uint32[::1] col_indices = array_uint32(num_non_zero_elements) if num_non_zero_elements > 0 else None
-    cdef uint32[::1] row_indices = array_uint32(num_rows + 1)
-    cdef BinarySparsePredictionMatrix.const_iterator it
-    cdef BinarySparsePredictionMatrix.const_iterator end
-    cdef uint32 row_index
-    cdef uint32 i = 0
-
-    for row_index in range(num_rows):
-        it = prediction_matrix.row_cbegin(row_index)
-        end = prediction_matrix.row_cend(row_index)
-        row_indices[row_index] = i
-
-        while it != end:
-            col_indices[i] = dereference(it)
-            data[i] = 1
-            i += 1
-            postincrement(it)
-
-    row_indices[num_rows] = i
-    return csr_matrix((np.asarray([] if data is None else data), np.asarray([] if col_indices is None else col_indices),
-                       np.asarray(row_indices)), shape=(num_rows, num_cols))
+    cdef uint32* row_indices = prediction_matrix.releaseRowIndices()
+    cdef uint32* col_indices = prediction_matrix.releaseColIndices()
+    data = np.ones(shape=(num_non_zero_elements), dtype=np.uint8) if num_non_zero_elements > 0 else np.asarray([])
+    indices = ndarray_uint32(col_indices, num_non_zero_elements) if num_non_zero_elements > 0 else np.asarray([])
+    indptr = ndarray_uint32(row_indices, num_rows + 1)
+    return csr_matrix((data, indices, indptr), shape=(num_rows, num_cols))
 
 
 cdef class BinaryPredictor(SparsePredictor):

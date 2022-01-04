@@ -4,53 +4,81 @@
 #pragma once
 
 #include "common/data/matrix_lil_binary.hpp"
+#include "common/data/view_csr_binary.hpp"
 #include <memory>
 
 
 /**
- * A sparse matrix that provides read-only access to binary predictions.
+ * A sparse matrix that provides read-only access to binary predictions that are stored in the compressed sparse row
+ * (CSR) format.
+ *
+ * The matrix maintains two arrays, referred to as `rowIndices_` and `colIndices_`. The latter stores a column index for
+ * each of the `numNonZeroValues` non-zero elements in the matrix. The former stores `numRows + 1` row indices that
+ * specify the first element in `colIndices_` that correspond to a certain row. The index at the last position is equal
+ * to the number of non-zero values in the matrix.
  */
 class BinarySparsePredictionMatrix final {
 
     private:
 
-        std::unique_ptr<BinaryLilMatrix> matrixPtr_;
+        uint32* rowIndices_;
 
-        uint32 numCols_;
+        uint32* colIndices_;
 
-        uint32 numNonZeroElements_;
+        BinaryCsrConstView view_;
 
     public:
 
         /**
-         * @param matrixPtr             An unique pointer to an object of type `BinaryLilMatrix` that stores the
-         *                              predictions
+         * @param lilMatrix             A reference to an object of type `BinaryLilMatrix` that stores the predictions
          * @param numCols               The number of columns in the matrix
          * @param numNonZeroElements    The number of non-zero elements in the matrix
          */
-        BinarySparsePredictionMatrix(std::unique_ptr<BinaryLilMatrix> matrixPtr, uint32 numCols,
-                                     uint32 numNonZeroElements);
+        BinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix, uint32 numCols, uint32 numNonZeroElements);
+
+        ~BinarySparsePredictionMatrix();
 
         /**
-         * An iterator that provides read-only access to the elements at a row.
+         * An iterator that provides read-only access to the indices in the matrix.
          */
-        typedef typename BinaryLilMatrix::const_iterator const_iterator;
+        typedef BinaryCsrConstView::index_const_iterator index_const_iterator;
 
         /**
-         * Returns a `const_iterator` to the beginning of a specific row.
+         * An iterator that provides read-only access to the values in the matrix.
+         */
+        typedef BinaryCsrConstView::value_const_iterator value_const_iterator;
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the indices at a specific row.
          *
          * @param row   The row
-         * @return      A `const_iterator` to the beginning
+         * @return      An `index_const_iterator` to the beginning of the indices
          */
-        const_iterator row_cbegin(uint32 row) const;
+        index_const_iterator row_indices_cbegin(uint32 row) const;
 
         /**
-         * Returns a `const_iterator` to the end of a specific row.
+         * Returns an `index_const_iterator` to the end of the indices at a specific row.
          *
          * @param row   The row
-         * @return      A `const_iterator` to the end
+         * @return      An `index_const_iterator` to the end of the indices
          */
-        const_iterator row_cend(uint32 row) const;
+        index_const_iterator row_indices_cend(uint32 row) const;
+
+        /**
+         * Returns a `value_const_iterator` to the beginning of the values at a specific row.
+         *
+         * @param row   The row
+         * @return      A `value_const_iterator` to the beginning of the values
+         */
+        value_const_iterator row_values_cbegin(uint32 row) const;
+
+        /**
+         * Returns a `value_const_iterator` to the end of the values at a specific row.
+         *
+         * @param row   The row
+         * @return      A `value_const_iterator` to the end of the values
+         */
+        value_const_iterator row_values_cend(uint32 row) const;
 
         /**
          * Returns the number of rows in the matrix.
@@ -72,5 +100,21 @@ class BinarySparsePredictionMatrix final {
          * @return The number of non-zero elements
          */
         uint32 getNumNonZeroElements() const;
+
+        /**
+         * Releases the ownership of the array `rowIndices_`. The caller is responsible for freeing the memory that is
+         * occupied by the array.
+         *
+         * @return A pointer to the array `rowIndices_`
+         */
+        uint32* releaseRowIndices();
+
+        /**
+         * Releases the ownership of the array `colIndices_`. The caller is responsible for freeing the memory that is
+         * occupied by the array.
+         *
+         * @return A pointer to the array `colIndices_`
+         */
+        uint32* releaseColIndices();
 
 };
