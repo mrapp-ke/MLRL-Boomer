@@ -3,8 +3,9 @@
 
 
 template<typename T>
-DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols, T* array)
-    : CContiguousConstView<T>(numRows, numCols, array), array_(array) {
+DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols)
+    : CContiguousView<T>(numRows, numCols, (T*) malloc(numRows * numCols * sizeof(T))),
+      array_(CContiguousView<T>::array_) {
 
 }
 
