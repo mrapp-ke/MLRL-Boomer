@@ -267,7 +267,7 @@ namespace seco {
                     }
                 }
 
-                return std::make_unique<BinarySparsePredictionMatrix>(lilMatrix, numLabels, numNonZeroElements);
+                return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
             }
 
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CsrFeatureMatrix& featureMatrix,
@@ -308,7 +308,7 @@ namespace seco {
                     delete[] tmpArray2;
                 }
 
-                return std::make_unique<BinarySparsePredictionMatrix>(lilMatrix, numLabels, numNonZeroElements);
+                return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
             }
 
     };

@@ -197,7 +197,7 @@ namespace boosting {
                     delete[] scoreVector;
                 }
 
-                return std::make_unique<BinarySparsePredictionMatrix>(lilMatrix, numLabels, numNonZeroElements);
+                return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
             }
 
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CsrFeatureMatrix& featureMatrix,
@@ -229,7 +229,7 @@ namespace boosting {
                     delete[] scoreVector;
                 }
 
-                return std::make_unique<BinarySparsePredictionMatrix>(lilMatrix, numLabels, numNonZeroElements);
+                return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
             }
 
     };
