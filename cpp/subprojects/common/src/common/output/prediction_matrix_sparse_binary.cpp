@@ -4,42 +4,13 @@
 
 BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,
                                                            uint32* colIndices)
-    : rowIndices_(rowIndices), colIndices_(colIndices),
-      view_(BinaryCsrConstView(numRows, numCols, rowIndices_, colIndices_)) {
+    : BinaryCsrConstView(numRows, numCols, rowIndices, colIndices), rowIndices_(rowIndices), colIndices_(colIndices) {
 
 }
 
 BinarySparsePredictionMatrix::~BinarySparsePredictionMatrix() {
     free(rowIndices_);
     free(colIndices_);
-}
-
-BinarySparsePredictionMatrix::index_const_iterator BinarySparsePredictionMatrix::row_indices_cbegin(uint32 row) const {
-    return view_.row_indices_cbegin(row);
-}
-
-BinarySparsePredictionMatrix::index_const_iterator BinarySparsePredictionMatrix::row_indices_cend(uint32 row) const {
-    return view_.row_indices_cend(row);
-}
-
-BinarySparsePredictionMatrix::value_const_iterator BinarySparsePredictionMatrix::row_values_cbegin(uint32 row) const {
-    return view_.row_values_cbegin(row);
-}
-
-BinarySparsePredictionMatrix::value_const_iterator BinarySparsePredictionMatrix::row_values_cend(uint32 row) const {
-    return view_.row_values_cend(row);
-}
-
-uint32 BinarySparsePredictionMatrix::getNumRows() const {
-    return view_.getNumRows();
-}
-
-uint32 BinarySparsePredictionMatrix::getNumCols() const {
-    return view_.getNumCols();
-}
-
-uint32 BinarySparsePredictionMatrix::getNumNonZeroElements() const {
-    return view_.getNumNonZeroElements();
 }
 
 uint32* BinarySparsePredictionMatrix::releaseRowIndices() {

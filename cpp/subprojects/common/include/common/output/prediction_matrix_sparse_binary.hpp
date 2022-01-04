@@ -17,15 +17,13 @@
  * specify the first element in `colIndices_` that correspond to a certain row. The index at the last position is equal
  * to the number of non-zero values in the matrix.
  */
-class BinarySparsePredictionMatrix final {
+class BinarySparsePredictionMatrix final : public BinaryCsrConstView {
 
     private:
 
         uint32* rowIndices_;
 
         uint32* colIndices_;
-
-        BinaryCsrConstView view_;
 
     public:
 
@@ -41,69 +39,6 @@ class BinarySparsePredictionMatrix final {
         BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices);
 
         ~BinarySparsePredictionMatrix();
-
-        /**
-         * An iterator that provides read-only access to the indices in the matrix.
-         */
-        typedef BinaryCsrConstView::index_const_iterator index_const_iterator;
-
-        /**
-         * An iterator that provides read-only access to the values in the matrix.
-         */
-        typedef BinaryCsrConstView::value_const_iterator value_const_iterator;
-
-        /**
-         * Returns an `index_const_iterator` to the beginning of the indices at a specific row.
-         *
-         * @param row   The row
-         * @return      An `index_const_iterator` to the beginning of the indices
-         */
-        index_const_iterator row_indices_cbegin(uint32 row) const;
-
-        /**
-         * Returns an `index_const_iterator` to the end of the indices at a specific row.
-         *
-         * @param row   The row
-         * @return      An `index_const_iterator` to the end of the indices
-         */
-        index_const_iterator row_indices_cend(uint32 row) const;
-
-        /**
-         * Returns a `value_const_iterator` to the beginning of the values at a specific row.
-         *
-         * @param row   The row
-         * @return      A `value_const_iterator` to the beginning of the values
-         */
-        value_const_iterator row_values_cbegin(uint32 row) const;
-
-        /**
-         * Returns a `value_const_iterator` to the end of the values at a specific row.
-         *
-         * @param row   The row
-         * @return      A `value_const_iterator` to the end of the values
-         */
-        value_const_iterator row_values_cend(uint32 row) const;
-
-        /**
-         * Returns the number of rows in the matrix.
-         *
-         * @return The number of rows
-         */
-        uint32 getNumRows() const;
-
-        /**
-         * Returns the number of columns in the matrix.
-         *
-         * @return The number of columns
-         */
-        uint32 getNumCols() const;
-
-        /**
-         * Returns the number of non-zero elements in the matrix.
-         *
-         * @return The number of non-zero elements
-         */
-        uint32 getNumNonZeroElements() const;
 
         /**
          * Releases the ownership of the array `rowIndices_`. The caller is responsible for freeing the memory that is
