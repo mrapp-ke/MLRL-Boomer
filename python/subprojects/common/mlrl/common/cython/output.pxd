@@ -1,9 +1,7 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
-from mlrl.common.cython._data cimport CContiguousView
 from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVector
 
 from libcpp.memory cimport unique_ptr
-from libcpp.forward_list cimport forward_list
 
 
 cdef extern from "common/output/label_space_info.hpp" nogil:
@@ -62,23 +60,34 @@ cdef extern from *:
     LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
 
 
+cdef extern from "common/output/prediction_matrix_dense.hpp" nogil:
+
+    cdef cppclass DensePredictionMatrix[T]:
+
+        # Functions:
+
+        uint32 getNumRows() const
+
+        uint32 getNumCols() const
+
+        T* release()
+
+
 cdef extern from "common/output/prediction_matrix_sparse_binary.hpp" nogil:
 
     cdef cppclass BinarySparsePredictionMatrix:
 
-        ctypedef forward_list[uint32].const_iterator const_iterator
-
         # Functions:
 
-        const_iterator row_cbegin(uint32 row)
+        uint32 getNumRows() const
 
-        const_iterator row_cend(uint32 row)
+        uint32 getNumCols() const
 
-        uint32 getNumRows()
+        uint32 getNumNonZeroElements() const
 
-        uint32 getNumCols()
+        uint32* releaseRowIndices()
 
-        uint32 getNumNonZeroElements()
+        uint32* releaseColIndices()
 
 
 cdef extern from "common/output/predictor.hpp" nogil:
@@ -87,9 +96,10 @@ cdef extern from "common/output/predictor.hpp" nogil:
 
         # Functions:
 
-        void predict(const CContiguousFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix)
+        unique_ptr[DensePredictionMatrix[T]] predict(const CContiguousFeatureMatrixImpl& featureMatrix,
+                                                     uint32 numLabels)
 
-        void predict(const CsrFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix)
+        unique_ptr[DensePredictionMatrix[T]] predict(const CsrFeatureMatrixImpl& featureMatrix, uint32 numLabels)
 
 
 cdef extern from "common/output/predictor_sparse.hpp" nogil:
