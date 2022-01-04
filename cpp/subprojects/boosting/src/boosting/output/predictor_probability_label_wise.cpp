@@ -69,18 +69,19 @@ namespace boosting {
 
             }
 
-            void predict(const CContiguousFeatureMatrix& featureMatrix,
-                         CContiguousView<float64>& predictionMatrix) const override {
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(const CContiguousFeatureMatrix& featureMatrix,
+                                                                    uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
-                uint32 numLabels = predictionMatrix.getNumCols();
+                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                    std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
-                CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
+                CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
                 const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(probabilityFunctionPtr) \
-                schedule(dynamic) num_threads(numThreads_)
+                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+                firstprivate(probabilityFunctionPtr) schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float64* scoreVector = new float64[numLabels] {};
 
@@ -90,24 +91,27 @@ namespace boosting {
                                   &scoreVector[0]);
                     }
 
-                    applyTransformationFunction(&scoreVector[0], predictionMatrixPtr->row_begin(i), numLabels,
+                    applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_begin(i), numLabels,
                                                 *probabilityFunctionPtr);
                     delete[] scoreVector;
                 }
+
+                return predictionMatrixPtr;
             }
 
-            void predict(const CsrFeatureMatrix& featureMatrix,
-                         CContiguousView<float64>& predictionMatrix) const override {
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(const CsrFeatureMatrix& featureMatrix,
+                                                                    uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
-                uint32 numLabels = predictionMatrix.getNumCols();
                 uint32 numFeatures = featureMatrix.getNumCols();
+                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                    std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
-                CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
+                CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
                 const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(numFeatures) \
-                firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+                firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
                 firstprivate(probabilityFunctionPtr) schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float64* scoreVector = new float64[numLabels] {};
@@ -124,12 +128,14 @@ namespace boosting {
                         n++;
                     }
 
-                    applyTransformationFunction(&scoreVector[0], predictionMatrixPtr->row_begin(i), numLabels,
+                    applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_begin(i), numLabels,
                                                 *probabilityFunctionPtr);
                     delete[] scoreVector;
                     delete[] tmpArray1;
                     delete[] tmpArray2;
                 }
+
+                return predictionMatrixPtr;
             }
 
     };

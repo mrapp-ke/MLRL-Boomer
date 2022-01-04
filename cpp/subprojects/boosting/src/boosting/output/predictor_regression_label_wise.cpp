@@ -35,35 +35,41 @@ namespace boosting {
 
             }
 
-            void predict(const CContiguousFeatureMatrix& featureMatrix,
-                         CContiguousView<float64>& predictionMatrix) const override {
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(const CContiguousFeatureMatrix& featureMatrix,
+                                                                    uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                    std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
                 const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
-                CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
+                CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) \
-                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
+                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
                 num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                         const RuleList::Rule& rule = *it;
                         applyRule(rule, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
-                                  predictionMatrixPtr->row_begin(i));
+                                  predictionMatrixRawPtr->row_begin(i));
                     }
                 }
+
+                return predictionMatrixPtr;
             }
 
-            void predict(const CsrFeatureMatrix& featureMatrix,
-                         CContiguousView<float64>& predictionMatrix) const override {
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(const CsrFeatureMatrix& featureMatrix,
+                                                                    uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
+                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                    std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
                 const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
-                CContiguousView<float64>* predictionMatrixPtr = &predictionMatrix;
+                CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
 
                 #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) \
-                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
+                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
                 num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float32* tmpArray1 = new float32[numFeatures];
@@ -74,7 +80,7 @@ namespace boosting {
                         const RuleList::Rule& rule = *it;
                         applyRuleCsr(rule, featureMatrixPtr->row_indices_cbegin(i),
                                      featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                                     featureMatrixPtr->row_values_cend(i), predictionMatrixPtr->row_begin(i),
+                                     featureMatrixPtr->row_values_cend(i), predictionMatrixRawPtr->row_begin(i),
                                      &tmpArray1[0], &tmpArray2[0], n);
                         n++;
                     }
@@ -82,6 +88,8 @@ namespace boosting {
                     delete[] tmpArray1;
                     delete[] tmpArray2;
                 }
+
+                return predictionMatrixPtr;
             }
 
     };

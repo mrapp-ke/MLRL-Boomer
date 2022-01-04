@@ -1,5 +1,4 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
-from mlrl.common.cython._data cimport CContiguousView
 from mlrl.common.cython.input cimport CContiguousFeatureMatrixImpl, CsrFeatureMatrixImpl, LabelVector
 
 from libcpp.memory cimport unique_ptr
@@ -61,6 +60,19 @@ cdef extern from *:
     LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
 
 
+cdef extern from "common/output/prediction_matrix_dense.hpp" nogil:
+
+    cdef cppclass DensePredictionMatrix[T]:
+
+        # Functions:
+
+        uint32 getNumRows() const
+
+        uint32 getNumCols() const
+
+        T* release()
+
+
 cdef extern from "common/output/prediction_matrix_sparse_binary.hpp" nogil:
 
     cdef cppclass BinarySparsePredictionMatrix:
@@ -84,9 +96,10 @@ cdef extern from "common/output/predictor.hpp" nogil:
 
         # Functions:
 
-        void predict(const CContiguousFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix)
+        unique_ptr[DensePredictionMatrix[T]] predict(const CContiguousFeatureMatrixImpl& featureMatrix,
+                                                     uint32 numLabels)
 
-        void predict(const CsrFeatureMatrixImpl& featureMatrix, CContiguousView[T]& predictionMatrix)
+        unique_ptr[DensePredictionMatrix[T]] predict(const CsrFeatureMatrixImpl& featureMatrix, uint32 numLabels)
 
 
 cdef extern from "common/output/predictor_sparse.hpp" nogil:
