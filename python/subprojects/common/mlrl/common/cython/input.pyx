@@ -192,7 +192,16 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
         return True
 
 
-cdef class CContiguousFeatureMatrix:
+cdef class RowWiseFeatureMatrix(FeatureMatrix):
+    """
+    A wrapper for the pure virtual C++ class `IRowWiseFeatureMatrix`.
+    """
+
+    cdef IRowWiseFeatureMatrix* get_row_wise_feature_matrix_ptr(self):
+        pass
+
+
+cdef class CContiguousFeatureMatrix(RowWiseFeatureMatrix):
     """
     A wrapper for the C++ class `CContiguousFeatureMatrix`.
     """
@@ -206,32 +215,11 @@ cdef class CContiguousFeatureMatrix:
         cdef uint32 num_features = array.shape[1]
         self.feature_matrix_ptr = make_unique[CContiguousFeatureMatrixImpl](num_examples, num_features, &array[0, 0])
 
-    def get_num_rows(self) -> int:
-        """
-        Returns the number of rows in the matrix.
-
-        :return The number of rows
-        """
-        return self.feature_matrix_ptr.get().getNumRows()
-
-    def get_num_cols(self) -> int:
-        """
-        Returns the number of columns in the matrix.
-
-        :return The number of columns
-        """
-        return self.feature_matrix_ptr.get().getNumCols()
-
-    def is_sparse(self) -> bool:
-        """
-        Returns whether the feature matrix is sparse or not.
-
-        :return: True, if the feature matrix is sparse, False otherwise
-        """
-        return False
+    cdef IRowWiseFeatureMatrix* get_row_wise_feature_matrix_ptr(self):
+        return self.feature_matrix_ptr.get()
 
 
-cdef class CsrFeatureMatrix:
+cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
     """
     A wrapper for the C++ class `CsrFeatureMatrix`.
     """
@@ -252,29 +240,8 @@ cdef class CsrFeatureMatrix:
         self.feature_matrix_ptr = make_unique[CsrFeatureMatrixImpl](num_examples, num_features, &data[0],
                                                                     &row_indices[0], &col_indices[0])
 
-    def get_num_rows(self) -> int:
-        """
-        Returns the number of rows in the matrix.
-
-        :return The number of rows
-        """
-        return self.feature_matrix_ptr.get().getNumRows()
-
-    def get_num_cols(self) -> int:
-        """
-        Returns the number of columns in the matrix.
-
-        :return The number of columns
-        """
-        return self.feature_matrix_ptr.get().getNumCols()
-
-    def is_sparse(self) -> bool:
-        """
-        Returns whether the feature matrix is sparse or not.
-
-        :return: True, if the feature matrix is sparse, False otherwise
-        """
-        return False
+    cdef IRowWiseFeatureMatrix* get_row_wise_feature_matrix_ptr(self):
+        return self.feature_matrix_ptr.get()
 
     def is_sparse(self) -> bool:
         return True
