@@ -6,6 +6,7 @@ cython_module_names = [
     'feature_matrix',
     'label_matrix',
     'label_space_info',
+    'learner',
     'nominal_feature_mask',
     'rule_model'
 ]
