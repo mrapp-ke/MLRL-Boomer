@@ -124,8 +124,21 @@ std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo() con
 std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const {
-    // TODO Implement
-    return nullptr;
+    std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr = this->createLabelSpaceInfo();
+    std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
+        this->createRuleModelAssemblageFactory();
+    std::unique_ptr<IModelBuilder> modelBuilderPtr = this->createModelBuilder();
+    std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories;
+    this->createStoppingCriterionFactories(stoppingCriterionFactories);
+    std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr = ruleModelAssemblageFactoryPtr->create(
+        this->createStatisticsProviderFactory(), this->createThresholdsFactory(), this->createRuleInductionFactory(),
+        this->createLabelSamplingFactory(), this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(),
+        this->createPartitionSamplingFactory(), this->createPruningFactory(), this->createPostProcessorFactory(),
+        stoppingCriterionFactories, this->useDefaultRule());
+    std::unique_ptr<IRuleModel> ruleModelPtr = ruleModelAssemblagePtr->induceRules(
+        nominalFeatureMask, featureMatrix, labelMatrix, randomState, *modelBuilderPtr);
+    return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), std::move(ruleModelPtr),
+                                            std::move(labelSpaceInfoPtr));
 }
 
 std::unique_ptr<DensePredictionMatrix<uint8>> AbstractRuleLearner::predictLabels(
