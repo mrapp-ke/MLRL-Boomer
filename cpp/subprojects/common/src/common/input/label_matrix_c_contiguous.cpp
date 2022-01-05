@@ -31,6 +31,10 @@ uint32 CContiguousLabelMatrix::getNumCols() const {
     return view_.getNumCols();
 }
 
+bool CContiguousLabelMatrix::isSparse() const {
+    return false;
+}
+
 float64 CContiguousLabelMatrix::calculateLabelCardinality() const {
     uint32 numRows = this->getNumRows();
     uint32 numCols = this->getNumCols();
