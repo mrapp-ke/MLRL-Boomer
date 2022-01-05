@@ -178,7 +178,7 @@ class AbstractRuleLearner {
 
         /**
          * Must be implemented by subclasses in order to create the `IClassificationPredictorFactory` to be used by the
-         * rule learner to predict labels.
+         * rule learner for predicting labels.
          *
          * @return An unique pointer to an object of type `IClassificationPredictorFactory` that has been created
          */
@@ -186,7 +186,7 @@ class AbstractRuleLearner {
 
         /**
          * May be overridden by subclasses in order to create the `IRegressionPredictorFactory` to be used by the rule
-         * learner to predict regression scores.
+         * learner for predicting regression scores.
          *
          * @return An unique pointer to an object of type `IRegressionPredictorFactory` that has been created or a null
          *         pointer, if the rule learner does not support to predict regression scores
@@ -195,7 +195,7 @@ class AbstractRuleLearner {
 
         /**
          * May be overridden by subclasses in order to create the `IProbabilityPredictorFactory` to be used by the rule
-         * learner to predict probability estimates.
+         * learner for predicting probability estimates.
          *
          * @return An unique pointer to an object of type `IProbabilityPredictorFactory` that has been created or a null
          *         pointer, if the rule learner does not support to predict probability estimates
