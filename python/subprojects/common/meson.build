@@ -3,7 +3,7 @@ project('common', 'cython', 'cpp')
 # Source files
 cython_dir = 'cython'
 cython_module_names = [
-
+    'nominal_feature_mask'
 ]
 
 # Dependencies
