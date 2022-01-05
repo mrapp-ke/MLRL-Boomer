@@ -52,6 +52,68 @@ class TrainingResult final : public ITrainingResult {
 
 };
 
+std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory() const {
+    // TODO Implement
+    return nullptr;
+}
+
+std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory() const {
+    // TODO Implement
+    return nullptr;
+}
+
+std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
+    // TODO Implement
+    return nullptr;
+}
+
+std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory() const {
+    // TODO Implement
+    return nullptr;
+}
+
+std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
+    // TODO Implement
+    return nullptr;
+}
+
+std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSamplingFactory() const {
+    // TODO Implement
+    return nullptr;
+}
+
+std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionSamplingFactory() const {
+    // TODO Implement
+    return nullptr;
+}
+
+std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() const {
+    // TODO Implement
+    return nullptr;
+}
+
+std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {
+    // TODO Implement
+    return nullptr;
+}
+
+bool AbstractRuleLearner::useDefaultRule() const {
+    return true;
+}
+
+void AbstractRuleLearner::createStoppingCriterionFactories(
+        std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const {
+    // TODO Implement
+}
+
+std::unique_ptr<IRegressionPredictorFactory> AbstractRuleLearner::createRegressionPredictorFactory() const {
+    return nullptr;
+}
+
+std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabilityPredictorFactory() const {
+    return nullptr;
+}
+
 std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const {
