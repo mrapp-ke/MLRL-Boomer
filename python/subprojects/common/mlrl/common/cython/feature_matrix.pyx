@@ -33,7 +33,7 @@ cdef class FeatureMatrix:
 
         :return: True, if the feature matrix is sparse, False otherwise
         """
-        return False
+        return self.get_feature_matrix_ptr().isSparse()
 
 
 cdef class ColumnWiseFeatureMatrix(FeatureMatrix):
@@ -93,9 +93,6 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
     cdef IColumnWiseFeatureMatrix* get_column_wise_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()
 
-    def is_sparse(self) -> bool:
-        return True
-
 
 cdef class RowWiseFeatureMatrix(FeatureMatrix):
     """
@@ -153,6 +150,3 @@ cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
 
     cdef IRowWiseFeatureMatrix* get_row_wise_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()
-
-    def is_sparse(self) -> bool:
-        return True

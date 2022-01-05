@@ -1,5 +1,6 @@
 from mlrl.common.cython._types cimport uint32, float32
 
+from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 
@@ -9,9 +10,11 @@ cdef extern from "common/input/feature_matrix.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumRows()
+        uint32 getNumRows() const
 
-        uint32 getNumCols()
+        uint32 getNumCols() const
+
+        bool isSparse() const
 
 
 cdef extern from "common/input/feature_matrix_column_wise.hpp" nogil:

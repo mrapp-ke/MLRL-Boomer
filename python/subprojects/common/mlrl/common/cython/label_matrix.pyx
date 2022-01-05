@@ -33,7 +33,7 @@ cdef class LabelMatrix:
 
         :return: True, if the label matrix is sparse, False otherwise
         """
-        return False
+        return self.get_label_matrix_ptr().isSparse()
 
 
 cdef class RowWiseLabelMatrix(LabelMatrix):
@@ -92,6 +92,3 @@ cdef class CsrLabelMatrix(RowWiseLabelMatrix):
 
     cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self):
         return self.label_matrix_ptr.get()
-
-    def is_sparse(self) -> bool:
-        return True
