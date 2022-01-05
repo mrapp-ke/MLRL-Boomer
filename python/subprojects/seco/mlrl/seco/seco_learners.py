@@ -5,36 +5,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides scikit-learn implementations of separate-and-conquer algorithms.
 """
-from typing import Dict, Set, Optional, List
+from typing import Dict, Set
 
-from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
-from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
-from mlrl.common.cython.label_sampling import LabelSamplingFactory
-from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import ClassificationPredictorFactory
-from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
-from mlrl.common.cython.pruning import PruningFactory
-from mlrl.common.cython.rule_induction import RuleInductionFactory, TopDownRuleInductionFactory
-from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory, SequentialRuleModelAssemblageFactory
-from mlrl.common.cython.statistics import StatisticsProviderFactory
-from mlrl.common.cython.stopping import StoppingCriterionFactory
-from mlrl.common.cython.thresholds import ThresholdsFactory
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
-from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy, FeatureCharacteristics, LabelCharacteristics
-from mlrl.common.rule_learners import create_pruning_factory, create_feature_sampling_factory, \
-    create_label_sampling_factory, create_instance_sampling_factory, create_partition_sampling_factory, \
-    create_stopping_criterion_factories, create_num_threads, create_thresholds_factory, parse_param_and_options, \
-    parse_param
-from mlrl.seco.cython.heuristics import HeuristicFactory, AccuracyFactory, PrecisionFactory, RecallFactory, \
-    LaplaceFactory, WraFactory, FMeasureFactory, MEstimateFactory
-from mlrl.seco.cython.lift_functions import LiftFunctionFactory, PeakLiftFunctionFactory
-from mlrl.seco.cython.model import DecisionListBuilder
-from mlrl.seco.cython.output import LabelWiseClassificationPredictorFactory
-from mlrl.seco.cython.rule_evaluation_label_wise import LabelWiseMajorityRuleEvaluationFactory, \
-    LabelWisePartialRuleEvaluationFactory, LabelWiseSingleLabelRuleEvaluationFactory
-from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
-from mlrl.seco.cython.stopping import CoverageStoppingCriterionFactory
+from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from sklearn.base import ClassifierMixin
 
 HEAD_TYPE_PARTIAL = 'partial'
@@ -209,112 +184,3 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         if int(self.random_state) != 1:
             name += '_random_state=' + str(self.random_state)
         return name
-
-    def _create_statistics_provider_factory(self, feature_characteristics: FeatureCharacteristics,
-                                            label_characteristics: LabelCharacteristics) -> StatisticsProviderFactory:
-        heuristic_factory = self.__create_heuristic_factory(self.heuristic, 'heuristic')
-        pruning_heuristic_factory = self.__create_heuristic_factory(self.pruning_heuristic, 'pruning_heuristic')
-        head_type = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
-        default_rule_evaluation_factory = LabelWiseMajorityRuleEvaluationFactory()
-        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(head_type, heuristic_factory,
-                                                                                label_characteristics)
-        pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(head_type, pruning_heuristic_factory,
-                                                                                label_characteristics)
-        return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, regular_rule_evaluation_factory,
-                                                       pruning_rule_evaluation_factory)
-
-    def _create_thresholds_factory(self, feature_characteristics: FeatureCharacteristics,
-                                   label_characteristics: LabelCharacteristics) -> ThresholdsFactory:
-        num_threads = create_num_threads(self.parallel_statistic_update, 'parallel_statistic_update')
-        return create_thresholds_factory(self.feature_binning, num_threads)
-
-    def _create_rule_induction_factory(self, feature_characteristics: FeatureCharacteristics,
-                                       label_characteristics: LabelCharacteristics) -> RuleInductionFactory:
-        num_threads = create_num_threads(self.parallel_rule_refinement, 'parallel_rule_refinement')
-        return TopDownRuleInductionFactory(int(self.min_coverage), int(self.max_conditions),
-                                           int(self.max_head_refinements), False, num_threads)
-
-    def _create_rule_model_assemblage_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> RuleModelAssemblageFactory:
-        return SequentialRuleModelAssemblageFactory()
-
-    def _create_label_sampling_factory(self, feature_characteristics: FeatureCharacteristics,
-                                       label_characteristics: LabelCharacteristics) -> Optional[LabelSamplingFactory]:
-        return create_label_sampling_factory(self.label_sampling)
-
-    def _create_instance_sampling_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> Optional[InstanceSamplingFactory]:
-        return create_instance_sampling_factory(self.instance_sampling)
-
-    def _create_feature_sampling_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> Optional[FeatureSamplingFactory]:
-        return create_feature_sampling_factory(self.feature_sampling)
-
-    def _create_partition_sampling_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> Optional[PartitionSamplingFactory]:
-        return create_partition_sampling_factory(self.holdout)
-
-    def _create_pruning_factory(self, feature_characteristics: FeatureCharacteristics,
-                                label_characteristics: LabelCharacteristics) -> Optional[PruningFactory]:
-        return create_pruning_factory(self.pruning, self.instance_sampling)
-
-    def _create_stopping_criterion_factories(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> List[StoppingCriterionFactory]:
-        stopping_criterion_factories = create_stopping_criterion_factories(int(self.max_rules), int(self.time_limit))
-        stopping_criterion_factories.append(CoverageStoppingCriterionFactory(0))
-        return stopping_criterion_factories
-
-    @staticmethod
-    def __create_heuristic_factory(heuristic: str, parameter_name: str) -> HeuristicFactory:
-        value, options = parse_param_and_options(parameter_name, heuristic, HEURISTIC_VALUES)
-
-        if value == HEURISTIC_ACCURACY:
-            return AccuracyFactory()
-        elif value == HEURISTIC_PRECISION:
-            return PrecisionFactory()
-        elif value == HEURISTIC_RECALL:
-            return RecallFactory()
-        elif value == HEURISTIC_LAPLACE:
-            return LaplaceFactory()
-        elif value == HEURISTIC_WRA:
-            return WraFactory()
-        elif value == HEURISTIC_F_MEASURE:
-            beta = options.get_float(ARGUMENT_BETA, 0.25)
-            return FMeasureFactory(beta)
-        elif value == HEURISTIC_M_ESTIMATE:
-            m = options.get_float(ARGUMENT_M, 22.466)
-            return MEstimateFactory(m)
-
-    def __create_lift_function_factory(self, label_characteristics: LabelCharacteristics) -> LiftFunctionFactory:
-        value, options = parse_param_and_options('lift_function', self.lift_function, LIFT_FUNCTION_VALUES)
-
-        if value == LIFT_FUNCTION_PEAK:
-            peak_label = options.get_int(ARGUMENT_PEAK_LABEL,
-                                         max(round(label_characteristics.get_label_cardinality()), 1))
-            max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.08)
-            curvature = options.get_float(ARGUMENT_CURVATURE, 1.0)
-            return PeakLiftFunctionFactory(num_labels=label_characteristics.get_num_labels(), peak_label=peak_label,
-                                           max_lift=max_lift, curvature=curvature)
-
-    def __create_rule_evaluation_factory(self, head_type: str, heuristic_factory: HeuristicFactory,
-                                         label_characteristics: LabelCharacteristics):
-        if head_type == HEAD_TYPE_SINGLE:
-            return LabelWiseSingleLabelRuleEvaluationFactory(heuristic_factory)
-        else:
-            return LabelWisePartialRuleEvaluationFactory(heuristic_factory,
-                                                         self.__create_lift_function_factory(label_characteristics))
-
-    def _create_model_builder(self, feature_characteristics: FeatureCharacteristics,
-                              label_characteristics: LabelCharacteristics) -> ModelBuilder:
-        return DecisionListBuilder()
-
-    def _create_predictor(self, feature_characteristics: FeatureCharacteristics,
-                          label_characteristics: LabelCharacteristics) -> ClassificationPredictorFactory:
-        num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
-        return LabelWiseClassificationPredictorFactory(num_labels=label_characteristics.get_num_labels(),
-                                                       num_threads=num_threads)
