@@ -150,6 +150,13 @@ class AbstractRuleLearner {
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const;
 
         /**
+         * Returns whether the rule learner is able to predict regression scores or not.
+         *
+         * @return True, if the rule learner is able to predict regression scores, false otherwise
+         */
+        bool canPredictScores() const;
+
+        /**
          * Obtains and returns regression scores for given query examples. If the prediction of regression scores is not
          * supported by the rule learner, an exception is thrown.
          *
@@ -180,6 +187,13 @@ class AbstractRuleLearner {
         std::unique_ptr<DensePredictionMatrix<float64>> predictScores(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const;
+
+        /**
+         * Returns whether the rule learner is able to predict probabilities or not.
+         *
+         * @return True, if the rule learner is able to predict probabilities, false otherwise
+         */
+        bool canPredictProbabilities() const;
 
         /**
          * Obtains and returns probability estimates for given query examples. If the prediction of probabilities is not

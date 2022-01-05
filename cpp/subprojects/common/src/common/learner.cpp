@@ -85,6 +85,11 @@ std::unique_ptr<BinarySparsePredictionMatrix> AbstractRuleLearner::predictSparse
     return nullptr;
 }
 
+bool AbstractRuleLearner::canPredictScores() const {
+    // TODO Implement
+    return false;
+}
+
 std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictScores(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->predictScores(featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getLabelSpaceInfo(),
@@ -96,6 +101,11 @@ std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictScor
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
     // TODO Implement
     return nullptr;
+}
+
+bool AbstractRuleLearner::canPredictProbabilities() const {
+    // TODO Implement
+    return false;
 }
 
 std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictProbabilities(
