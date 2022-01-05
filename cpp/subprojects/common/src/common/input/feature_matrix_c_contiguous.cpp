@@ -27,6 +27,10 @@ uint32 CContiguousFeatureMatrix::getNumCols() const {
     return view_.getNumCols();
 }
 
+bool CContiguousFeatureMatrix::isSparse() const {
+    return false;
+}
+
 std::unique_ptr<DensePredictionMatrix<uint8>> CContiguousFeatureMatrix::predictLabels(
         const IClassificationPredictor& predictor, uint32 numLabels) const {
     return predictor.predict(*this, numLabels);

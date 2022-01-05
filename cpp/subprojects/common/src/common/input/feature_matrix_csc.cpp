@@ -38,6 +38,10 @@ class CscFeatureMatrix final : public ICscFeatureMatrix {
             return view_.getNumCols();
         }
 
+        bool isSparse() const override {
+            return true;
+        }
+
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
             CscConstView<const float32>::index_const_iterator indexIterator = view_.column_indices_cbegin(featureIndex);
             CscConstView<const float32>::index_const_iterator indicesEnd = view_.column_indices_cend(featureIndex);
