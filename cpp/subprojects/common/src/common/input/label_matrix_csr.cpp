@@ -45,6 +45,10 @@ uint32 CsrLabelMatrix::getNumCols() const {
     return view_.getNumCols();
 }
 
+bool CsrLabelMatrix::isSparse() const {
+    return true;
+}
+
 float64 CsrLabelMatrix::calculateLabelCardinality() const {
     uint32 numRows = this->getNumRows();
     float64 labelCardinality = 0;

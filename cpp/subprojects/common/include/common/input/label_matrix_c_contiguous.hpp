@@ -139,6 +139,8 @@ class CContiguousLabelMatrix final : public ICContiguousLabelMatrix {
 
         uint32 getNumCols() const override;
 
+        bool isSparse() const override;
+
         float64 calculateLabelCardinality() const override;
 
         std::unique_ptr<LabelVector> createLabelVector(uint32 row) const override;

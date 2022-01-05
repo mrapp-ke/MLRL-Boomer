@@ -29,4 +29,11 @@ class ILabelMatrix {
          */
         virtual uint32 getNumCols() const = 0;
 
+        /**
+         * Returns whether the label matrix is sparse or not.
+         *
+         * @return True, if the label matrix is sparse, false otherwise
+         */
+        virtual bool isSparse() const = 0;
+
 };
