@@ -15,7 +15,7 @@ class ICContiguousFeatureMatrix : public IRowWiseFeatureMatrix {
 
     public:
 
-        virtual ~ICContiguousFeatureMatrix() { };
+        virtual ~ICContiguousFeatureMatrix() override { };
 
 };
 

@@ -26,7 +26,7 @@ class IRowWiseLabelMatrix : public ILabelMatrix {
 
     public:
 
-        virtual ~IRowWiseLabelMatrix() { };
+        virtual ~IRowWiseLabelMatrix() override { };
 
         /**
          * Calculates and returns the label cardinality, i.e., the average number of relevant labels per example.

@@ -106,7 +106,7 @@ namespace boosting {
 
         public:
 
-            virtual ~ILabelWiseLossFactory() { };
+            virtual ~ILabelWiseLossFactory() override { };
 
             /**
              * Creates and returns a new object of type `ILabelWiseLoss`.

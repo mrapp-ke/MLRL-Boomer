@@ -15,7 +15,7 @@ class IEqualNominalFeatureMask : public INominalFeatureMask {
 
     public:
 
-        virtual ~IEqualNominalFeatureMask() { };
+        virtual ~IEqualNominalFeatureMask() override { };
 
 };
 

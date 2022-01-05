@@ -17,7 +17,7 @@ class ICsrLabelMatrix : public IRowWiseLabelMatrix {
 
     public:
 
-        virtual ~ICsrLabelMatrix() { };
+        virtual ~ICsrLabelMatrix() override { };
 
 };
 

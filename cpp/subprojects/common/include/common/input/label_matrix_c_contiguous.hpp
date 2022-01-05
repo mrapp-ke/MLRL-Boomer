@@ -17,7 +17,7 @@ class ICContiguousLabelMatrix : public IRowWiseLabelMatrix {
 
     public:
 
-        virtual ~ICContiguousLabelMatrix() { };
+        virtual ~ICContiguousLabelMatrix() override { };
 
 };
 
