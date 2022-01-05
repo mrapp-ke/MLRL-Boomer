@@ -15,7 +15,7 @@ class ICsrFeatureMatrix : public IRowWiseFeatureMatrix {
 
     public:
 
-        virtual ~ICsrFeatureMatrix() { };
+        virtual ~ICsrFeatureMatrix() override { };
 
 };
 

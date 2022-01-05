@@ -13,7 +13,7 @@ class INoLabelSpaceInfo : public ILabelSpaceInfo {
 
     public:
 
-        virtual ~INoLabelSpaceInfo() { };
+        virtual ~INoLabelSpaceInfo() override { };
 
 };
 

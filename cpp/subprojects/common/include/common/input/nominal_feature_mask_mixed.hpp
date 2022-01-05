@@ -15,7 +15,7 @@ class IMixedNominalFeatureMask : public INominalFeatureMask {
 
     public:
 
-        virtual ~IMixedNominalFeatureMask() { };
+        virtual ~IMixedNominalFeatureMask() override { };
 
         /**
          * Sets whether the feature at a specific index is nominal or not.

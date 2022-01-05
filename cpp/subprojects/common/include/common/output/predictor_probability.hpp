@@ -16,7 +16,7 @@ class IProbabilityPredictor : public IPredictor<float64> {
 
     public:
 
-        virtual ~IProbabilityPredictor() { };
+        virtual ~IProbabilityPredictor() override { };
 
 };
 

@@ -17,7 +17,7 @@ class IRuleList : public IRuleModel {
 
     public:
 
-        virtual ~IRuleList() { };
+        virtual ~IRuleList() override { };
 
         /**
          * Creates a new rule from a given body and head and adds it to the end of the model.

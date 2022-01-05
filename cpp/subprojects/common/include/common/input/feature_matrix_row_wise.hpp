@@ -21,7 +21,7 @@ class IRowWiseFeatureMatrix : public IFeatureMatrix {
 
     public:
 
-        virtual ~IRowWiseFeatureMatrix() { };
+        virtual ~IRowWiseFeatureMatrix() override { };
 
         /**
          * Obtains and returns dense predictions for all examples in this feature matrix, using a specific
