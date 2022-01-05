@@ -202,6 +202,14 @@ class AbstractRuleLearner {
          */
         virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory() const;
 
+        /**
+         * May be overridden by subclasses in order to create the `ILabelSpaceInfo` to be used by the rule learner as a
+         * basis for for making predictions.
+         *
+         * @return An unique pointer to an object of type `ILabelSpaceInfo` that has been created
+         */
+        virtual std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo() const;
+
     public:
 
         virtual ~AbstractRuleLearner() { };

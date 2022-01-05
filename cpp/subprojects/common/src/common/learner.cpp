@@ -1,4 +1,5 @@
 #include "common/learner.hpp"
+#include "common/output/label_space_info_no.hpp"
 #include <stdexcept>
 #include <string>
 
@@ -114,6 +115,10 @@ std::unique_ptr<IRegressionPredictorFactory> AbstractRuleLearner::createRegressi
 
 std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabilityPredictorFactory() const {
     return nullptr;
+}
+
+std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo() const {
+    return createNoLabelSpaceInfo();
 }
 
 std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
