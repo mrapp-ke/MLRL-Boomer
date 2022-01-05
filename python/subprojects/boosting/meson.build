@@ -3,7 +3,7 @@ project('boosting', 'cython', 'cpp')
 # Source files
 cython_dir = 'cython'
 cython_module_names = [
-
+    'learner',
 ]
 
 # Dependencies
