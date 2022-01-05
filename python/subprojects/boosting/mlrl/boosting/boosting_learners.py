@@ -7,6 +7,8 @@ Provides scikit-learn implementations of boosting algorithms.
 """
 from typing import Dict, Set
 
+from mlrl.boosting.cython.learner import BoostingRuleLearner as BoostingRuleLearnerWrapper
+from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
@@ -244,3 +246,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if int(self.random_state) != 1:
             name += '_random_state=' + str(self.random_state)
         return name
+
+    def _create_learner(self) -> RuleLearnerWrapper:
+        return BoostingRuleLearnerWrapper()

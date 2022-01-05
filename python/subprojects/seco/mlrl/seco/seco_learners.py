@@ -7,9 +7,11 @@ Provides scikit-learn implementations of separate-and-conquer algorithms.
 """
 from typing import Dict, Set
 
+from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
+from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper
 from sklearn.base import ClassifierMixin
 
 HEAD_TYPE_PARTIAL = 'partial'
@@ -184,3 +186,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         if int(self.random_state) != 1:
             name += '_random_state=' + str(self.random_state)
         return name
+
+    def _create_learner(self) -> RuleLearnerWrapper:
+        return SeCoRuleLearnerWrapper()

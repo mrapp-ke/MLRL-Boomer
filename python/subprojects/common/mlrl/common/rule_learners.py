@@ -5,16 +5,25 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides base classes for implementing single- or multi-label rule learning algorithms.
 """
+import logging as log
+from abc import abstractmethod
 from enum import Enum
 from typing import Dict, Set
 
 import numpy as np
-from mlrl.common.data_types import DTYPE_UINT32
+from mlrl.common.arrays import enforce_dense
+from mlrl.common.cython.feature_matrix import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
+    CContiguousFeatureMatrix
+from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
+from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
+from mlrl.common.cython.nominal_feature_mask import EqualNominalFeatureMask, MixedNominalFeatureMask
+from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.common.options import BooleanOption
 from mlrl.common.options import Options
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
+from sklearn.utils import check_array
 
 AUTOMATIC = 'auto'
 
@@ -218,9 +227,107 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         self.prediction_format = prediction_format
 
     def _fit(self, x, y):
-        # TODO
-        pass
+        # Validate feature matrix and convert it to the preferred format...
+        x_sparse_format = SparseFormat.CSC
+        x_sparse_policy = create_sparse_policy('feature_format', self.feature_format)
+        x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy,
+                                                 dtype=DTYPE_FLOAT32)
+        x = self._validate_data((x if x_enforce_sparse else enforce_dense(x, order='F', dtype=DTYPE_FLOAT32)),
+                                accept_sparse=(x_sparse_format.value if x_enforce_sparse else False),
+                                dtype=DTYPE_FLOAT32, force_all_finite='allow-nan')
+
+        if issparse(x):
+            log.debug('A sparse matrix is used to store the feature values of the training examples')
+            x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
+            x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
+            x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
+            feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
+        else:
+            log.debug('A dense matrix is used to store the feature values of the training examples')
+            feature_matrix = FortranContiguousFeatureMatrix(x)
+
+        # Validate label matrix and convert it to the preferred format...
+        y_sparse_format = SparseFormat.CSR
+
+        # Check if predictions should be sparse...
+        prediction_sparse_policy = create_sparse_policy('prediction_format', self.prediction_format)
+        self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
+                prediction_sparse_policy == SparsePolicy.FORCE_SPARSE or
+                is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=True))
+
+        y_sparse_policy = create_sparse_policy('label_format', self.label_format)
+        y_enforce_sparse = should_enforce_sparse(y, sparse_format=y_sparse_format, policy=y_sparse_policy,
+                                                 dtype=DTYPE_UINT8, sparse_values=False)
+        y = check_array((y if y_enforce_sparse else enforce_dense(y, order='C', dtype=DTYPE_UINT8)),
+                        accept_sparse=(y_sparse_format.value if y_enforce_sparse else False), ensure_2d=False,
+                        dtype=DTYPE_UINT8)
+
+        if issparse(y):
+            log.debug('A sparse matrix is used to store the labels of the training examples')
+            y_row_indices = np.ascontiguousarray(y.indptr, dtype=DTYPE_UINT32)
+            y_col_indices = np.ascontiguousarray(y.indices, dtype=DTYPE_UINT32)
+            label_matrix = CsrLabelMatrix(y.shape[0], y.shape[1], y_row_indices, y_col_indices)
+        else:
+            log.debug('A dense matrix is used to store the labels of the training examples')
+            label_matrix = CContiguousLabelMatrix(y)
+
+        # Create a mask that provides access to the information whether individual features are nominal or not...
+        num_features = feature_matrix.get_num_cols()
+
+        if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
+            nominal_feature_mask = EqualNominalFeatureMask(False)
+        elif len(self.nominal_attribute_indices) == num_features:
+            nominal_feature_mask = EqualNominalFeatureMask(True)
+        else:
+            nominal_feature_mask = MixedNominalFeatureMask(num_features, self.nominal_attribute_indices)
+
+        # Induce rules...
+        learner = self._create_learner()
+        training_result = learner.fit(nominal_feature_mask, feature_matrix, label_matrix, self.random_state)
+        self.num_labels_ = training_result.num_labels
+        self.label_space_info_ = training_result.label_space_info
+        return training_result.rule_model
 
     def _predict(self, x):
-        # TODO
+        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        learner = self._create_learner()
+
+        if self.sparse_predictions_:
+            log.debug('A sparse matrix is used to store the predicted labels')
+            return learner.predict_sparse_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+        else:
+            log.debug('A dense matrix is used to store the predicted labels')
+            return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+
+    def _predict_proba(self, x):
+        learner = self._create_learner()
+
+        if learner.can_predict_probabilities():
+            feature_matrix = self.__create_row_wise_feature_matrix(x)
+            log.debug('A dense matrix is used to store the predicted probability estimates')
+            return learner.predict_probabilities(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+        else:
+            super()._predict_proba(x)
+
+    def __create_row_wise_feature_matrix(self, x):
+        sparse_format = SparseFormat.CSR
+        sparse_policy = create_sparse_policy('feature_format', self.feature_format)
+        enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
+                                               dtype=DTYPE_FLOAT32)
+        x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C', dtype=DTYPE_FLOAT32), reset=False,
+                                accept_sparse=(sparse_format.value if enforce_sparse else False), dtype=DTYPE_FLOAT32,
+                                force_all_finite='allow-nan')
+
+        if issparse(x):
+            log.debug('A sparse matrix is used to store the feature values of the query examples')
+            x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
+            x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
+            x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
+            return CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
+        else:
+            log.debug('A dense matrix is used to store the feature values of the query examples')
+            return CContiguousFeatureMatrix(x)
+
+    @abstractmethod
+    def _create_learner(self) -> RuleLearnerWrapper:
         pass
