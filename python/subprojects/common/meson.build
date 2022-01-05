@@ -3,6 +3,7 @@ project('common', 'cython', 'cpp')
 # Source files
 cython_dir = 'cython'
 cython_module_names = [
+    'label_matrix',
     'label_space_info',
     'nominal_feature_mask'
 ]

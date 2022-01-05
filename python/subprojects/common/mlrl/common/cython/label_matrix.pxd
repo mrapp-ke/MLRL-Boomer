@@ -1,0 +1,70 @@
+from mlrl.common.cython._types cimport uint8, uint32, float64
+
+from libcpp.memory cimport unique_ptr
+
+
+cdef extern from "common/input/label_matrix.hpp" nogil:
+
+    cdef cppclass ILabelMatrix:
+
+        # Functions:
+
+        uint32 getNumRows()
+
+        uint32 getNumCols()
+
+
+cdef extern from "common/input/label_matrix_row_wise.hpp" nogil:
+
+    cdef cppclass IRowWiseLabelMatrix(ILabelMatrix):
+
+        # Functions:
+
+        float64 calculateLabelCardinality() const
+
+
+cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
+
+    cdef cppclass ICContiguousLabelMatrix(IRowWiseLabelMatrix):
+        pass
+
+
+    unique_ptr[ICContiguousLabelMatrix] createCContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
+
+
+cdef extern from "common/input/label_matrix_csr.hpp" nogil:
+
+    cdef cppclass ICsrLabelMatrix(IRowWiseLabelMatrix):
+        pass
+
+
+    unique_ptr[ICsrLabelMatrix] createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,
+                                                     uint32* colIndices)
+
+
+cdef class LabelMatrix:
+
+    # Functions:
+
+    cdef ILabelMatrix* get_label_matrix_ptr(self)
+
+
+cdef class RowWiseLabelMatrix(LabelMatrix):
+
+    # Functions:
+
+    cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self)
+
+
+cdef class CContiguousLabelMatrix(RowWiseLabelMatrix):
+
+    # Attributes:
+
+    cdef unique_ptr[ICContiguousLabelMatrix] label_matrix_ptr
+
+
+cdef class CsrLabelMatrix(RowWiseLabelMatrix):
+
+    # Attributes:
+
+    cdef unique_ptr[ICsrLabelMatrix] label_matrix_ptr
