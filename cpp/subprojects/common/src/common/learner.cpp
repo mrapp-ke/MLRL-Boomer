@@ -1,5 +1,6 @@
 #include "common/learner.hpp"
 #include "common/output/label_space_info_no.hpp"
+#include "common/rule_induction/rule_model_assemblage_sequential.hpp"
 #include <stdexcept>
 #include <string>
 
@@ -56,8 +57,7 @@ class TrainingResult final : public ITrainingResult {
 };
 
 std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory() const {
-    // TODO Implement
-    return nullptr;
+    return std::make_unique<SequentialRuleModelAssemblageFactory>();
 }
 
 std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory() const {
