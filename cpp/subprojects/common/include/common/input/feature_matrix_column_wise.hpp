@@ -15,7 +15,7 @@ class IColumnWiseFeatureMatrix : public IFeatureMatrix {
 
     public:
 
-        virtual ~IColumnWiseFeatureMatrix() { };
+        virtual ~IColumnWiseFeatureMatrix() override { };
 
         /**
          * Fetches a feature vector that stores the indices of the training examples, as well as their feature values,

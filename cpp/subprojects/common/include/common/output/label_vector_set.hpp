@@ -17,7 +17,7 @@ class ILabelVectorSet : public ILabelSpaceInfo {
 
     public:
 
-        virtual ~ILabelVectorSet() { };
+        virtual ~ILabelVectorSet() override { };
 
         /**
          * A visitor function for handling objects of the type `LabelVector`.

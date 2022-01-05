@@ -55,7 +55,7 @@ namespace boosting {
 
         public:
 
-            virtual ~IExampleWiseLossFactory() { };
+            virtual ~IExampleWiseLossFactory() override { };
 
             /**
              * Creates and returns a new object of type `IExampleWiseLoss`.

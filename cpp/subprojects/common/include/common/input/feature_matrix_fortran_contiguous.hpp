@@ -14,7 +14,7 @@ class IFortranContiguousFeatureMatrix : public IColumnWiseFeatureMatrix {
 
     public:
 
-        virtual ~IFortranContiguousFeatureMatrix() { };
+        virtual ~IFortranContiguousFeatureMatrix() override { };
 
 };
 
