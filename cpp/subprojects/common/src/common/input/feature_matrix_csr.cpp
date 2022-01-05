@@ -36,6 +36,10 @@ uint32 CsrFeatureMatrix::getNumCols() const {
     return view_.getNumCols();
 }
 
+bool CsrFeatureMatrix::isSparse() const {
+    return true;
+}
+
 std::unique_ptr<DensePredictionMatrix<uint8>> CsrFeatureMatrix::predictLabels(
         const IClassificationPredictor& predictor, uint32 numLabels) const {
     return predictor.predict(*this, numLabels);

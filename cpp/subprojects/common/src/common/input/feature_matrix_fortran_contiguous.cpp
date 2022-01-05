@@ -32,6 +32,10 @@ class FortranContiguousFeatureMatrix final : public IFortranContiguousFeatureMat
             return view_.getNumCols();
         }
 
+        bool isSparse() const override {
+            return false;
+        }
+
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
             FortranContiguousConstView<const float32>::const_iterator columnIterator =
                 view_.column_cbegin(featureIndex);

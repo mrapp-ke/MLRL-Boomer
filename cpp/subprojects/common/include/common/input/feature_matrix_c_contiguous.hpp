@@ -64,6 +64,8 @@ class CContiguousFeatureMatrix final : public ICContiguousFeatureMatrix {
 
         uint32 getNumCols() const override;
 
+        bool isSparse() const override;
+
         std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(const IClassificationPredictor& predictor,
                                                                     uint32 numLabels) const override;
 
