@@ -5,6 +5,7 @@ from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
 from mlrl.common.cython.nominal_feature_mask cimport INominalFeatureMask
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 
+from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 
@@ -60,6 +61,8 @@ cdef extern from "common/learner.hpp" nogil:
                                                                      const IRuleModel& ruleModel,
                                                                      const ILabelSpaceInfo& labelSpaceInfo,
                                                                      uint32 numLabels) const
+
+        bool canPredictProbabilities() const
 
         unique_ptr[DensePredictionMatrix[float64]] predictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
                                                                         const IRuleModel& ruleModel,
