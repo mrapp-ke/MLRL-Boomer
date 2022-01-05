@@ -7,10 +7,13 @@
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/input/nominal_feature_mask.hpp"
-#include "common/model/rule_model.hpp"
 #include "common/output/label_space_info.hpp"
 #include "common/output/prediction_matrix_dense.hpp"
 #include "common/output/prediction_matrix_sparse_binary.hpp"
+#include "common/output/predictor_classification.hpp"
+#include "common/output/predictor_regression.hpp"
+#include "common/output/predictor_probability.hpp"
+#include "common/rule_induction/rule_model_assemblage.hpp"
 
 
 /**
@@ -67,6 +70,137 @@ class ITrainingResult {
  * An abstract base class for all rule learners.
  */
 class AbstractRuleLearner {
+
+    protected:
+
+        /**
+         * May be overridden by subclasses in order to create the `IRuleModelAssemblageFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been created
+         */
+        virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create the `IThresholdsFactory` to be used by the rule learner.
+         *
+         * @return An unique pointer to an object of type `IThresholdsFactory` that has been created
+         */
+        virtual std::unique_ptr<IThresholdsFactory> createThresholdsFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create the `IRuleInductionFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `IRuleInductionFactory` that has been created
+         */
+        virtual std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create the `ILabelSamplingFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `ILabelSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create the `IInstanceSamplingFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create the `IFeatureSamplingFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `IFeatureSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create the `IPartitionSamplingFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `IPartitionSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create the `IPruningFactory` to be used by the rule learner.
+         *
+         * @return An unique pointer to an object of type `IPruningFactory` that has been created
+         */
+        virtual std::unique_ptr<IPruningFactory> createPruningFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create the `IPostProcessorFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `IPostProcessorFactory` that has been created
+         */
+        virtual std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to specify whether a default rule should be induced by the rule
+         * learner or not.
+         *
+         * @return True, if a default rule should be induced, false otherwise
+         */
+        virtual bool useDefaultRule() const;
+
+        /**
+         * May be overridden by subclasses in order create objects of the type `IStoppingCriterionFactory` to be used by
+         * the rule learner.
+         *
+         * @param stoppingCriterionFactories    A `std::forward_list` that stores unique pointers to objects of type
+         *                                      `IStoppingCriterionFactory` that are used by the rule learner
+         */
+        virtual void createStoppingCriterionFactories(
+            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const;
+
+        /**
+         * Must be implemented by subclasses in order to create the `IStatisticsProviderFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `IStatisticsProviderFactory` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory() const = 0;
+
+        /**
+         * Must be implemented by subclasses in order to create `IModelBuilder` to be used by the rule learner.
+         *
+         * @return An unique pointer to an object of type `IModelBuilder` that has been created
+         */
+        virtual std::unique_ptr<IModelBuilder> createModelBuilder() const = 0;
+
+        /**
+         * Must be implemented by subclasses in order to create the `IClassificationPredictorFactory` to be used by the
+         * rule learner to predict labels.
+         *
+         * @return An unique pointer to an object of type `IClassificationPredictorFactory` that has been created
+         */
+        virtual std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const = 0;
+
+        /**
+         * May be overridden by subclasses in order to create the `IRegressionPredictorFactory` to be used by the rule
+         * learner to predict regression scores.
+         *
+         * @return An unique pointer to an object of type `IRegressionPredictorFactory` that has been created or a null
+         *         pointer, if the rule learner does not support to predict regression scores
+         */
+        virtual std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create the `IProbabilityPredictorFactory` to be used by the rule
+         * learner to predict probability estimates.
+         *
+         * @return An unique pointer to an object of type `IProbabilityPredictorFactory` that has been created or a null
+         *         pointer, if the rule learner does not support to predict probability estimates
+         */
+        virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory() const;
 
     public:
 
