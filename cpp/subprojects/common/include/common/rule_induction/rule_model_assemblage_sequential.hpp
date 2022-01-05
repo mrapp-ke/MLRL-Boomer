@@ -23,7 +23,7 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::unique_ptr<IPruningFactory> pruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories,
+            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories,
             bool useDefaultRule) const override;
 
 };

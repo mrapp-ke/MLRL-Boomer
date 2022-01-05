@@ -88,9 +88,10 @@ class IRuleModelAssemblageFactory {
          * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
          *                                      allows to create the implementation to be used for post-processing the
          *                                      predictions of rules
-         * @param stoppingCriterionFactories    A list that stores unique pointers to objects of type
-         *                                      `IStoppingCriterionFactory` that allow to create the implementations to
-         *                                      be used to decide whether additional rules should be induced or not
+         * @param stoppingCriterionFactories    A reference to a `std::forward_list` that stores unique pointers to
+         *                                      objects of type `IStoppingCriterionFactory` that allow to create the
+         *                                      implementations to be used to decide whether additional rules should be
+         *                                      induced or not
          * @param useDefaultRule                True, if a default rule should be used, false otherwise
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
@@ -103,7 +104,7 @@ class IRuleModelAssemblageFactory {
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::unique_ptr<IPruningFactory> pruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories,
+            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories,
             bool useDefaultRule) const = 0;
 
 };
