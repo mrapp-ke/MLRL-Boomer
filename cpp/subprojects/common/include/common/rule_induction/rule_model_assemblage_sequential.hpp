@@ -14,16 +14,16 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
     public:
 
         std::unique_ptr<IRuleModelAssemblage> create(
-            std::shared_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-            std::shared_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-            std::shared_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
-            std::shared_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
-            std::shared_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
-            std::shared_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-            std::shared_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-            std::shared_ptr<IPruningFactory> pruningFactoryPtr,
-            std::shared_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-            const std::forward_list<std::shared_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories,
+            std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+            std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
+            std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
+            std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
+            std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
+            std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
+            std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
+            std::unique_ptr<IPruningFactory> pruningFactoryPtr,
+            std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
+            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories,
             bool useDefaultRule) const override;
 
 };
