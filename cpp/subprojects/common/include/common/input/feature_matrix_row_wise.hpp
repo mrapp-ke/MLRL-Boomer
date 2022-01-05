@@ -7,8 +7,7 @@
 #include <memory>
 
 // Forward declarations
-class DensePredictionMatrix<uint8>;
-class DensePredictionMatrix<float64>;
+template<typename T> class DensePredictionMatrix;
 class BinarySparsePredictionMatrix;
 class IClassificationPredictor;
 class IRegressionPredictor;
