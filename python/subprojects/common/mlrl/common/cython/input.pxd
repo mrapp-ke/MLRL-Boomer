@@ -210,14 +210,21 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
     cdef unique_ptr[ICscFeatureMatrix] feature_matrix_ptr
 
 
-cdef class CContiguousFeatureMatrix:
+cdef class RowWiseFeatureMatrix(FeatureMatrix):
+
+    # Functions:
+
+    cdef IRowWiseFeatureMatrix* get_row_wise_feature_matrix_ptr(self)
+
+
+cdef class CContiguousFeatureMatrix(RowWiseFeatureMatrix):
 
     # Attributes:
 
     cdef unique_ptr[CContiguousFeatureMatrixImpl] feature_matrix_ptr
 
 
-cdef class CsrFeatureMatrix:
+cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
 
     # Attributes:
 
