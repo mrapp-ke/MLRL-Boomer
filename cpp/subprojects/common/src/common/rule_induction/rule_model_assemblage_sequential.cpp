@@ -209,7 +209,7 @@ std::unique_ptr<IRuleModelAssemblage> SequentialRuleModelAssemblageFactory::crea
         std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
         std::unique_ptr<IPruningFactory> pruningFactoryPtr,
         std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-        std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories,
+        std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories,
         bool useDefaultRule) const {
     std::unique_ptr<SequentialRuleModelAssemblage> rule_model_assemblage_ptr =
         std::make_unique<SequentialRuleModelAssemblage>(std::move(statisticsProviderFactoryPtr),
