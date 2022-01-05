@@ -1,3 +1,6 @@
+"""
+@author: Michael Rapp (michael.rapp.ml@gmail.com)
+"""
 from mlrl.common.cython._types cimport uint8, uint32, float64
 
 from cython.view cimport array as cvarray
