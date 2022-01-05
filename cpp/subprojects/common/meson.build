@@ -93,7 +93,8 @@ source_files = [
     'src/common/thresholds/coverage_set.cpp',
     'src/common/thresholds/thresholds_approximate.cpp',
     'src/common/thresholds/thresholds_exact.cpp',
-    'src/common/algorithm_builder.cpp'
+    'src/common/algorithm_builder.cpp',
+    'src/common/learner.cpp'
 ]
 
 # Directory containing public headers
