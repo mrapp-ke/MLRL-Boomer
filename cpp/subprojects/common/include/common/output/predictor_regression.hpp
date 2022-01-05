@@ -16,7 +16,7 @@ class IRegressionPredictor : public IPredictor<float64> {
 
     public:
 
-        virtual ~IRegressionPredictor() { };
+        virtual ~IRegressionPredictor() override { };
 
 };
 

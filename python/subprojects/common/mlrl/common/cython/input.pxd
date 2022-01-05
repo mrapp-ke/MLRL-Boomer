@@ -83,21 +83,6 @@ cdef extern from "common/input/feature_matrix_column_wise.hpp" nogil:
         pass
 
 
-cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
-
-    cdef cppclass CContiguousFeatureMatrixImpl"CContiguousFeatureMatrix":
-
-        # Constructors:
-
-        CContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array)
-
-        # Functions:
-
-        uint32 getNumRows()
-
-        uint32 getNumCols()
-
-
 cdef extern from "common/input/feature_matrix_fortran_contiguous.hpp" nogil:
 
     cdef cppclass IFortranContiguousFeatureMatrix(IColumnWiseFeatureMatrix):
@@ -118,19 +103,28 @@ cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
                                                          uint32* rowIndices, uint32* colIndices)
 
 
+cdef extern from "common/input/feature_matrix_row_wise.hpp" nogil:
+
+    cdef cppclass IRowWiseFeatureMatrix(IFeatureMatrix):
+        pass
+
+
+cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
+
+    cdef cppclass CContiguousFeatureMatrixImpl"CContiguousFeatureMatrix"(IRowWiseFeatureMatrix):
+
+        # Constructors:
+
+        CContiguousFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* array)
+
+
 cdef extern from "common/input/feature_matrix_csr.hpp" nogil:
 
-    cdef cppclass CsrFeatureMatrixImpl"CsrFeatureMatrix":
+    cdef cppclass CsrFeatureMatrixImpl"CsrFeatureMatrix"(IRowWiseFeatureMatrix):
 
         # Constructors:
 
         CsrFeatureMatrixImpl(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32 colIndices)
-
-        # Functions:
-
-        uint32 getNumRows()
-
-        uint32 getNumCols()
 
 
 cdef extern from "common/input/nominal_feature_mask.hpp" nogil:
@@ -216,14 +210,21 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
     cdef unique_ptr[ICscFeatureMatrix] feature_matrix_ptr
 
 
-cdef class CContiguousFeatureMatrix:
+cdef class RowWiseFeatureMatrix(FeatureMatrix):
+
+    # Functions:
+
+    cdef IRowWiseFeatureMatrix* get_row_wise_feature_matrix_ptr(self)
+
+
+cdef class CContiguousFeatureMatrix(RowWiseFeatureMatrix):
 
     # Attributes:
 
     cdef unique_ptr[CContiguousFeatureMatrixImpl] feature_matrix_ptr
 
 
-cdef class CsrFeatureMatrix:
+cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
 
     # Attributes:
 

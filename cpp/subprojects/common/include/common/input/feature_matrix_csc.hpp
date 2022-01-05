@@ -14,7 +14,7 @@ class ICscFeatureMatrix : public IColumnWiseFeatureMatrix {
 
     public:
 
-        virtual ~ICscFeatureMatrix() { };
+        virtual ~ICscFeatureMatrix() override { };
 
 };
 

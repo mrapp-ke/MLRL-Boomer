@@ -16,7 +16,7 @@ class IClassificationPredictor : public ISparsePredictor<uint8> {
 
     public:
 
-        virtual ~IClassificationPredictor() { };
+        virtual ~IClassificationPredictor() override { };
 
 };
 
