@@ -85,7 +85,8 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
 
 std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory() const {
     // TODO Implement
-    return nullptr;
+    uint32 numThreads = 1;
+    return std::make_unique<ExactThresholdsFactory>(numThreads);
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
