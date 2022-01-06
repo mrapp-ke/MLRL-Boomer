@@ -45,18 +45,14 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[ILabelSpaceInfo]& getLabelSpaceInfo()
 
 
-    cdef cppclass AbstractRuleLearnerConfigImpl"AbstractRuleLearner::Config":
+    cdef cppclass IRuleLearnerConfig"IRuleLearner::IConfig":
 
         # Functions:
 
         TopDownRuleInductionConfigImpl& useTopDownRuleInduction()
 
 
-    cdef cppclass AbstractRuleLearner:
-
-        # Constructors:
-
-        AbstractRuleLearner(AbstractRuleLearnerConfigImpl config)
+    cdef cppclass IRuleLearner:
 
         # Functions:
 
@@ -97,4 +93,4 @@ cdef class RuleLearner:
 
     # Functions:
 
-    cdef AbstractRuleLearner* get_rule_learner_ptr(self)
+    cdef IRuleLearner* get_rule_learner_ptr(self)

@@ -8,8 +8,8 @@
 
 namespace boosting {
 
-    BoostingRuleLearner::BoostingRuleLearner(Config config)
-        : AbstractRuleLearner(config) {
+    BoostingRuleLearner::BoostingRuleLearner(std::unique_ptr<Config> configPtr)
+        : AbstractRuleLearner(std::move(configPtr)) {
 
     }
 

@@ -34,10 +34,10 @@ cdef class TrainingResult:
 
 cdef class RuleLearner:
     """
-    A wrapper for the C++ class `AbstractRuleLearner`.
+    A wrapper for the pure virtual C++ class `IRuleLearner`.
     """
 
-    cdef AbstractRuleLearner* get_rule_learner_ptr(self):
+    cdef IRuleLearner* get_rule_learner_ptr(self):
         pass
 
     def fit(self, NominalFeatureMask nominal_feature_mask not None, ColumnWiseFeatureMatrix feature_matrix not None,

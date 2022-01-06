@@ -33,9 +33,9 @@ namespace boosting {
         public:
 
             /**
-             * @param config The configuration that should be used by the rule learner
+             * @param configPtr An unique pointer to the configuration that should be used by the rule learner
              */
-            BoostingRuleLearner(Config config);
+            BoostingRuleLearner(std::unique_ptr<Config> configPtr);
 
     };
 
