@@ -9,16 +9,39 @@
 namespace boosting {
 
     /**
+     * Defines an interface for all rule learners that make use of gradient boosting.
+     */
+    class IBoostingRuleLearner : public IRuleLearner {
+
+        public:
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner that makes use of gradient
+             * boosting.
+             */
+            class IConfig : public IRuleLearner::IConfig {
+
+                public:
+
+                    virtual ~IConfig() override { };
+
+            };
+
+            virtual ~IBoostingRuleLearner() override { };
+
+    };
+
+    /**
      * A rule learner that makes use of gradient boosting.
      */
-    class BoostingRuleLearner final : public AbstractRuleLearner {
+    class BoostingRuleLearner final : public AbstractRuleLearner, public IBoostingRuleLearner {
 
         public:
 
             /**
              * Allows to configure a rule learner that makes use of gradient boosting.
              */
-            class Config : public AbstractRuleLearner::Config {
+            class Config : public AbstractRuleLearner::Config, public IBoostingRuleLearner::IConfig {
 
             };
 
