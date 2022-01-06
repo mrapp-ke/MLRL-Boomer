@@ -4,7 +4,7 @@
 #include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include "omp.h"
 
 

@@ -1,6 +1,6 @@
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "common/binning/binning.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include <limits>
 
 

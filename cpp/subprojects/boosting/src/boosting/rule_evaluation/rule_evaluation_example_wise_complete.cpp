@@ -1,7 +1,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_complete.hpp"
 #include "boosting/math/math.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include "rule_evaluation_example_wise_complete_common.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 

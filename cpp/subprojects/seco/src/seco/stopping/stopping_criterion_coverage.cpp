@@ -1,6 +1,6 @@
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 #include "seco/statistics/statistics.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 
 
 namespace seco {

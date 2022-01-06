@@ -1,7 +1,7 @@
 #include "common/sampling/label_sampling_without_replacement.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/iterator/index_iterator.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include "index_sampling.hpp"
 
 
