@@ -69,6 +69,10 @@ AbstractRuleLearner::Config::Config()
 
 }
 
+const IRuleInductionConfig& AbstractRuleLearner::Config::getRuleInductionConfig() const {
+    return *ruleInductionConfigPtr_;
+}
+
 TopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
     std::unique_ptr<TopDownRuleInductionConfig> ptr = std::make_unique<TopDownRuleInductionConfig>();
     TopDownRuleInductionConfig& ref = *ptr;
@@ -76,7 +80,7 @@ TopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction
     return ref;
 }
 
-AbstractRuleLearner::AbstractRuleLearner(std::unique_ptr<AbstractRuleLearner::Config> configPtr)
+AbstractRuleLearner::AbstractRuleLearner(std::unique_ptr<IRuleLearner::IConfig> configPtr)
     : configPtr_(std::move(configPtr)) {
 
 }
@@ -92,7 +96,7 @@ std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
-    const IRuleInductionConfig* ruleInductionConfig = this->configPtr_->ruleInductionConfigPtr_.get();
+    const IRuleInductionConfig* ruleInductionConfig = &this->configPtr_->getRuleInductionConfig();
 
     if (auto* config = dynamic_cast<const TopDownRuleInductionConfig*>(ruleInductionConfig)) {
         return std::make_unique<TopDownRuleInductionFactory>(

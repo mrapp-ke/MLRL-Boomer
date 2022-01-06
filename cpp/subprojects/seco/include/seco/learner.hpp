@@ -11,7 +11,7 @@ namespace seco {
     /**
      * Defines an interface for all rule learners that make use of the separate-and-conquer (SeCo) paradigm.
      */
-    class ISeCoRuleLearner : public IRuleLearner {
+    class ISeCoRuleLearner : virtual public IRuleLearner {
 
         public:
 
@@ -19,7 +19,7 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner that makes use of the
              * separate-and-conquer (SeCo) paradigm.
              */
-            class IConfig : public IRuleLearner::IConfig {
+            class IConfig : virtual public IRuleLearner::IConfig {
 
                 public:
 
@@ -32,34 +32,19 @@ namespace seco {
     };
 
     /**
-     * A rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
+     * Creates and returns a new object of type `ISeCoRuleLearner::IConfig`.
+     *
+     * @return An unique pointer to an object of type `ISeCoRuleLearner::IConfig` that has been created
      */
-    class SeCoRuleLearner final : public AbstractRuleLearner, public ISeCoRuleLearner {
+    std::unique_ptr<ISeCoRuleLearner::IConfig> createSeCoRuleLearnerConfig();
 
-        public:
-
-            /**
-             * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
-             */
-            class Config : public AbstractRuleLearner::Config, public ISeCoRuleLearner::IConfig {
-
-            };
-
-        protected:
-
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory() const override;
-
-            std::unique_ptr<IModelBuilder> createModelBuilder() const override;
-
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
-
-        public:
-
-            /**
-             * @param configPtr An unique pointer to the configuration that should be used by the rule learner
-             */
-            SeCoRuleLearner(std::unique_ptr<Config> configPtr);
-
-    };
+    /**
+     * Creates and returns a new object of type `ISeCoRuleLearner`.
+     *
+     * @param configPtr An unique pointer to an object of type `ISeCoRuleLearner::IConfig` that specifies the
+     *                  configuration that should be used by the rule learner.
+     * @return          An unique pointer to an object of type `ISeCoRuleLearner` that has been created
+     */
+    std::unique_ptr<ISeCoRuleLearner> createSeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr);
 
 }

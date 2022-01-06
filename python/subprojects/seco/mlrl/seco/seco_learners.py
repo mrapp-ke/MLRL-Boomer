@@ -11,7 +11,7 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper
+from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
 
 HEAD_TYPE_PARTIAL = 'partial'
@@ -188,4 +188,5 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         return name
 
     def _create_learner(self) -> RuleLearnerWrapper:
-        return SeCoRuleLearnerWrapper()
+        config = SeCoRuleLearnerConfig()
+        return SeCoRuleLearnerWrapper(config)
