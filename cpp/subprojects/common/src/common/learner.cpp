@@ -9,6 +9,7 @@
 #include "common/sampling/partition_sampling_no.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/thresholds/thresholds_exact.hpp"
+#include "common/util/threads.hpp"
 #include <stdexcept>
 #include <string>
 
@@ -101,7 +102,7 @@ std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionF
     if (auto* config = dynamic_cast<const TopDownRuleInductionConfig*>(ruleInductionConfig)) {
         return std::make_unique<TopDownRuleInductionFactory>(
             config->getMinCoverage(), config->getMaxConditions(), config->getMaxHeadRefinements(),
-            config->getRecalculatePredictions(), config->getNumThreads());
+            config->getRecalculatePredictions(), getNumThreads(config->getNumThreads()));
     }
 
     throw std::runtime_error("Failed to configure the algorithm for the induction of individual rules");

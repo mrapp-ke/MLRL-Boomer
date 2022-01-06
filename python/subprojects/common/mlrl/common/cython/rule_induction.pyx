@@ -62,7 +62,8 @@ cdef class TopDownRuleInductionConfig:
         """
         Sets the number of CPU threads to be used to search for potential refinements of rules in parallel.
 
-        :param num_threads: The number of CPU threads to be used. Must be at least 1
+        :param num_threads: The number of CPU threads to be used. Must be at least 1 or 0, if the number of threads
+                            should be chosen automatically
         :return:            A `TopDownRuleInductionConfig` that allows further configuration of the algorithm for the
                             induction of individual rules
         """
