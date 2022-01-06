@@ -9,16 +9,39 @@
 namespace seco {
 
     /**
+     * Defines an interface for all rule learners that make use of the separate-and-conquer (SeCo) paradigm.
+     */
+    class ISeCoRuleLearner : public IRuleLearner {
+
+        public:
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner that makes use of the
+             * separate-and-conquer (SeCo) paradigm.
+             */
+            class IConfig : public IRuleLearner::IConfig {
+
+                public:
+
+                    virtual ~IConfig() override { };
+
+            };
+
+            virtual ~ISeCoRuleLearner() override { };
+
+    };
+
+    /**
      * A rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
      */
-    class SeCoRuleLearner final : public AbstractRuleLearner {
+    class SeCoRuleLearner final : public AbstractRuleLearner, public ISeCoRuleLearner {
 
         public:
 
             /**
              * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
              */
-            class Config : public AbstractRuleLearner::Config {
+            class Config : public AbstractRuleLearner::Config, public ISeCoRuleLearner::IConfig {
 
             };
 
