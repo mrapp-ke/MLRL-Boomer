@@ -32,9 +32,9 @@ class TopDownRuleInductionFactory final : public IRuleInductionFactory {
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
          *                                  least 1 or 0, if the number of conditions should not be restricted
-         * @param maxHeadRefinements        The maximum number of times, the head of a rule may be refinement after a
-         *                                  new condition has been added to its body. Must be at least 1 or 0, if the
-         *                                  number of refinements should not be restricted
+         * @param maxHeadRefinements        The maximum number of times, the head of a rule may be refined after a new
+         *                                  condition has been added to its body. Must be at least 1 or 0, if the number
+         *                                  of refinements should not be restricted
          * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
          *                                  examples, if some of the examples have zero weights, false otherwise
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
