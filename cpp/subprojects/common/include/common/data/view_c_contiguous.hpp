@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/data/view_two_dimensional.hpp"
 
 
 /**
@@ -12,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class CContiguousConstView {
+class CContiguousConstView : public ITwoDimensionalView {
 
     protected:
 
@@ -62,19 +62,9 @@ class CContiguousConstView {
          */
         const_iterator row_cend(uint32 row) const;
 
-        /**
-         * Returns the number of rows in the view.
-         *
-         * @return The number of rows
-         */
-        uint32 getNumRows() const;
+        uint32 getNumRows() const override final;
 
-        /**
-         * Returns the number of columns in the view.
-         *
-         * @return The number of columns
-         */
-        uint32 getNumCols() const;
+        uint32 getNumCols() const override final;
 
 };
 
