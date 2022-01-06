@@ -73,6 +73,7 @@ clean_cython:
 clean_compile: clean_cpp clean_cython
 
 clean_install:
+	@echo Removing shared libraries and extension modules from source tree...
 	$(call delete_files_recursively,${PYTHON_PACKAGE_DIR},*.so*)
 	$(call delete_files_recursively,${PYTHON_PACKAGE_DIR},*.dylib)
 	$(call delete_files_recursively,${PYTHON_PACKAGE_DIR},*.dll)
