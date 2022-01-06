@@ -296,7 +296,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * An unique pointer to an object of type `IRuleLearner::IConfig` that specifies the configuration that is used
          * by the rule learner.
          */
-        std::unique_ptr<IRuleLearner::IConfig> configPtr_;
+        const std::unique_ptr<IRuleLearner::IConfig> configPtr_;
 
         /**
          * May be overridden by subclasses in order to create the `IRuleModelAssemblageFactory` to be used by the rule
