@@ -3,7 +3,7 @@
 #include "common/sampling/partition_sampling.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/data/arrays.hpp"
-#include "common/util/math.hpp"
+#include "common/math/math.hpp"
 
 
 CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)

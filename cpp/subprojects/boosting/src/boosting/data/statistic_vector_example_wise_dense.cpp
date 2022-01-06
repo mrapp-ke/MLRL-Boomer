@@ -1,6 +1,6 @@
 #include "boosting/data/statistic_vector_example_wise_dense.hpp"
+#include "boosting/math/math.hpp"
 #include "boosting/data/arrays.hpp"
-#include "boosting/util/math.hpp"
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 

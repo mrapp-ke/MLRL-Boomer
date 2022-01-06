@@ -2,7 +2,7 @@
 #include "common/statistics/statistics_provider_factory.hpp"
 #include "common/sampling/partition_sampling.hpp"
 #include "common/sampling/instance_sampling.hpp"
-#include "common/util/math.hpp"
+#include "common/math/math.hpp"
 
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)

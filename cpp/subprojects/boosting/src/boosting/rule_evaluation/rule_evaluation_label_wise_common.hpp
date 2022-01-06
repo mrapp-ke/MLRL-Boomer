@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/util/math.hpp"
+#include "common/math/math.hpp"
 
 
 namespace boosting {
