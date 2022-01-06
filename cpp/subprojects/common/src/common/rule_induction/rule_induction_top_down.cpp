@@ -1,7 +1,6 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_refinement/score_processor.hpp"
 #include "common/indices/index_vector_complete.hpp"
-#include "common/util/threads.hpp"
 #include "common/util/validation.hpp"
 #include "omp.h"
 #include <unordered_map>
@@ -257,5 +256,5 @@ TopDownRuleInductionFactory::TopDownRuleInductionFactory(uint32 minCoverage, uin
 
 std::unique_ptr<IRuleInduction> TopDownRuleInductionFactory::create() const {
     return std::make_unique<TopDownRuleInduction>(minCoverage_, maxConditions_, maxHeadRefinements_,
-                                                  recalculatePredictions_, getNumThreads(numThreads_));
+                                                  recalculatePredictions_, numThreads_);
 }
