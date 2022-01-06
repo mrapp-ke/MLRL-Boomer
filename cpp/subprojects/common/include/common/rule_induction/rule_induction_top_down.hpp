@@ -104,14 +104,15 @@ class TopDownRuleInductionConfig : public IRuleInductionConfig {
         /**
          * Returns the number of CPU threads to be used to search for potential refinements of rules in parallel.
          *
-         * @return The number of CPU threads to be used
+         * @return The number of CPU threads to be used or 0, if all available CPU cores should be used
          */
         uint32 getNumThreads() const;
 
         /**
          * Sets the number of CPU threads to be used to search for potential refinements of rules in parallel.
          *
-         * @param numThreads    The number of CPU threads to be used. Must be at least 1
+         * @param numThreads    The number of CPU threads to be used. Must be at least 1 or 0, if all available CPU
+         *                      cores should be used
          * @return              A reference to an object of type `TopDownRuleInduction` that allows further
          *                      configuration of the algorithm for the induction of individual rules
          */
@@ -151,7 +152,8 @@ class TopDownRuleInductionFactory final : public IRuleInductionFactory {
          * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
          *                                  examples, if some of the examples have zero weights, false otherwise
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
-         *                                  a rule in parallel. Must be at least 1
+         *                                  a rule in parallel. Must be at least 1 or 0, if all available CPU cores
+         *                                  should be used
          */
         // TODO Check if it is better to pass a config here and store it as a member variable!? This probably allows to get rid of the config's getter methods when defined as a friend class
         TopDownRuleInductionFactory(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
