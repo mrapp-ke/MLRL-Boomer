@@ -8,8 +8,6 @@
 
 /**
  * Defines an interface for all one-dimensional views.
- *
- * @tparam T The type of the values
  */
 class IOneDimensionalView {
 
