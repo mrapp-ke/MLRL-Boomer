@@ -6,7 +6,7 @@ namespace seco {
     /**
      * An implementation of the type `IHeuristic` that implements a Laplace-corrected variant of the "Precision" metric.
      */
-    class Laplace final : public IHeuristic {
+    class Laplace final : virtual public IHeuristic {
 
         public:
 

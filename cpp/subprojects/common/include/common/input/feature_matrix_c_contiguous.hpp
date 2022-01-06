@@ -11,7 +11,7 @@
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of individual
  * examples that are stored in a C-contiguous array.
  */
-class ICContiguousFeatureMatrix : public IRowWiseFeatureMatrix {
+class ICContiguousFeatureMatrix : virtual public IRowWiseFeatureMatrix {
 
     public:
 
@@ -23,7 +23,7 @@ class ICContiguousFeatureMatrix : public IRowWiseFeatureMatrix {
  * An implementation of the type `ICContiguousFeatureMatrix` that provides row-wise read-only access to the feature
  * values of individual examples that are stored in a C-contiguous array.
  */
-class CContiguousFeatureMatrix final : public ICContiguousFeatureMatrix {
+class CContiguousFeatureMatrix final : virtual public ICContiguousFeatureMatrix {
 
     private:
 

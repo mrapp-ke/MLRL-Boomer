@@ -11,7 +11,7 @@
  * search, where new conditions are added iteratively to the (initially empty) body of a rule. At each iteration, the
  * refinement that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
  */
-class TopDownRuleInductionFactory final : public IRuleInductionFactory {
+class TopDownRuleInductionFactory final : virtual public IRuleInductionFactory {
 
     private:
 

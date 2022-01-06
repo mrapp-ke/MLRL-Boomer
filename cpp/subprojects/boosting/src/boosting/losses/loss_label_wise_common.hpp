@@ -8,7 +8,7 @@ namespace boosting {
      * An implementation of the type `ILabelWiseLoss` that relies on an "update function" and an "evaluation function"
      * for updating the gradients and Hessians and evaluation the predictions for an individual label, respectively.
      */
-    class LabelWiseLoss final : public ILabelWiseLoss {
+    class LabelWiseLoss final : virtual public ILabelWiseLoss {
 
         public:
 

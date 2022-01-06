@@ -11,7 +11,7 @@
  * Defines an interface for all classes that allow to check whether individual features are nominal or not in cases
  * where different types of features, i.e., nominal and numerical/ordinal ones, are available.
  */
-class IMixedNominalFeatureMask : public INominalFeatureMask {
+class IMixedNominalFeatureMask : virtual public INominalFeatureMask {
 
     public:
 

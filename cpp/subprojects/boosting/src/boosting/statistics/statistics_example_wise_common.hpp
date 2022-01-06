@@ -46,7 +46,7 @@ namespace boosting {
              *           the subset
              */
             template<typename T>
-            class StatisticsSubset final : public IStatisticsSubset {
+            class StatisticsSubset final : virtual public IStatisticsSubset {
 
                 private:
 

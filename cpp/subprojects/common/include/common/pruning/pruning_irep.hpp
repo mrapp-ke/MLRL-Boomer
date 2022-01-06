@@ -12,7 +12,7 @@
  * conditions, depending on which of the resulting rules comes with the greatest improvement in terms of quality as
  * measured on the prune set.
  */
-class IrepFactory final : public IPruningFactory {
+class IrepFactory final : virtual public IPruningFactory {
 
     public:
 

@@ -19,7 +19,7 @@ namespace seco {
      * optimize a heuristic that is applied using label-wise averaging and taking a specific lift function, which
      * affects the quality score of rules, depending on how many labels they predict, into account.
      */
-    class LabelWiseCompleteRuleEvaluation final : public IRuleEvaluation {
+    class LabelWiseCompleteRuleEvaluation final : virtual public IRuleEvaluation {
 
         private:
 
@@ -86,7 +86,7 @@ namespace seco {
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class LabelWisePartialRuleEvaluation final : public IRuleEvaluation {
+    class LabelWisePartialRuleEvaluation final : virtual public IRuleEvaluation {
 
         private:
 

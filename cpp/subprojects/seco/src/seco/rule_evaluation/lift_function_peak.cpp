@@ -9,7 +9,7 @@ namespace seco {
      * A lift function that monotonously increases until a certain number of labels, where the maximum lift is reached,
      * and monotonously decreases afterwards.
      */
-    class PeakLiftFunction final : public ILiftFunction {
+    class PeakLiftFunction final : virtual public ILiftFunction {
 
         private:
 

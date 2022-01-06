@@ -12,7 +12,7 @@ namespace seco {
      * Allows to create instances of the type `IHeuristic` that implement a Laplace-corrected variant of the "Precision"
      * metric.
      */
-    class LaplaceFactory final : public IHeuristicFactory {
+    class LaplaceFactory final : virtual public IHeuristicFactory {
 
         public:
 

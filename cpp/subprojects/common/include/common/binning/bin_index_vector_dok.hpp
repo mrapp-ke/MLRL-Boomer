@@ -11,7 +11,7 @@
  * Stores the indices of the bins, individual examples have been assigned to, using the dictionaries of keys (DOK)
  * format.
  */
-class DokBinIndexVector final : public IBinIndexVector {
+class DokBinIndexVector final : virtual public IBinIndexVector {
 
     private:
 

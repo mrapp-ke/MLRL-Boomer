@@ -10,7 +10,7 @@ namespace boosting {
      * Assigns labels to bins, based on the corresponding gradients and Hessians, in a way such that each bin contains
      * labels for which the predicted score is expected to belong to the same value range.
      */
-    class EqualWidthLabelBinning final : public ILabelBinning {
+    class EqualWidthLabelBinning final : virtual public ILabelBinning {
 
         private:
 

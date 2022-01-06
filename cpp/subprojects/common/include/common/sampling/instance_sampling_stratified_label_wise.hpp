@@ -12,7 +12,7 @@
  * of the available training examples, such that for each label the proportion of relevant and irrelevant examples is
  * maintained.
  */
-class LabelWiseStratifiedSamplingFactory final : public IInstanceSamplingFactory {
+class LabelWiseStratifiedSamplingFactory final : virtual public IInstanceSamplingFactory {
 
     private:
 

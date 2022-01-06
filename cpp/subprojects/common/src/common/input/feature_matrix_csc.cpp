@@ -6,7 +6,7 @@
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
  * individual examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
  */
-class CscFeatureMatrix final : public ICscFeatureMatrix {
+class CscFeatureMatrix final : virtual public ICscFeatureMatrix {
 
     private:
 

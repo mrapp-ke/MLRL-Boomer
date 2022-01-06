@@ -9,7 +9,7 @@
 /**
  * An one-dimensional vector that provides random access to a fixed number of equal weights.
  */
-class EqualWeightVector final : public IWeightVector {
+class EqualWeightVector final : virtual public IWeightVector {
 
     private:
 

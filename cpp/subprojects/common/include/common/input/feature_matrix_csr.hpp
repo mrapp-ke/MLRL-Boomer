@@ -11,7 +11,7 @@
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of individual
  * examples that are stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
-class ICsrFeatureMatrix : public IRowWiseFeatureMatrix {
+class ICsrFeatureMatrix : virtual public IRowWiseFeatureMatrix {
 
     public:
 
@@ -23,7 +23,7 @@ class ICsrFeatureMatrix : public IRowWiseFeatureMatrix {
  * An implementation of the type `ICsrFeatureMatrix` that provides row-wise read-only access to the feature values of
  * individual examples that are stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
-class CsrFeatureMatrix final : public ICsrFeatureMatrix {
+class CsrFeatureMatrix final : virtual public ICsrFeatureMatrix {
 
     private:
 

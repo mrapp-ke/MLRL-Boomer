@@ -11,7 +11,7 @@ namespace boosting {
     /**
      * Allows to create instances of the class `EqualWidthLabelBinning`.
      */
-    class EqualWidthLabelBinningFactory final : public ILabelBinningFactory {
+    class EqualWidthLabelBinningFactory final : virtual public ILabelBinningFactory {
 
         private:
 

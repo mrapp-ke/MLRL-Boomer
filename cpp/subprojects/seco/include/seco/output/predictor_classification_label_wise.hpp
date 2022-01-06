@@ -15,7 +15,7 @@ namespace seco {
      * otherwise) is applied to each label individually, if none of the previous rules has already predicted for a
      * particular example and label.
      */
-    class LabelWiseClassificationPredictorFactory final : public IClassificationPredictorFactory {
+    class LabelWiseClassificationPredictorFactory final : virtual public IClassificationPredictorFactory {
 
         private:
 

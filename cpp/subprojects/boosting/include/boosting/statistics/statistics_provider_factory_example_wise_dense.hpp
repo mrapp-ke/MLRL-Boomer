@@ -16,7 +16,7 @@ namespace boosting {
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
      * `IExampleWiseStatistics`, which uses dense data structures to store the statistics.
      */
-    class DenseExampleWiseStatisticsProviderFactory: public IStatisticsProviderFactory {
+    class DenseExampleWiseStatisticsProviderFactory final : virtual public IStatisticsProviderFactory {
 
         private:
 
@@ -81,7 +81,7 @@ namespace boosting {
      * `IExampleWiseStatistics`, which uses dense data structures to store the statistics and can be converted into an
      * object of type `ILabelWiseStatistics`.
      */
-    class DenseConvertibleExampleWiseStatisticsProviderFactory: public IStatisticsProviderFactory {
+    class DenseConvertibleExampleWiseStatisticsProviderFactory final : virtual public IStatisticsProviderFactory {
 
         private:
 

@@ -13,7 +13,7 @@ namespace seco {
      * Allows to build models that store several rules in the order they have been added, except for the default rule, which
      * is always located at the end.
      */
-    class DecisionListBuilder final : public IModelBuilder {
+    class DecisionListBuilder final : virtual public IModelBuilder {
 
         private:
 

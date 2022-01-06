@@ -8,7 +8,7 @@
  * Allows to randomly split the training examples into two mutually exclusive sets that may be used as a training set
  * and a holdout set.
  */
-class RandomBiPartitionSampling final : public IPartitionSampling {
+class RandomBiPartitionSampling final : virtual public IPartitionSampling {
 
     private:
 

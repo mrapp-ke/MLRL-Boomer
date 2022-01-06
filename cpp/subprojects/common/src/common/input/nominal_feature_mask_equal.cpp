@@ -4,7 +4,7 @@
 /**
  * An implementation of the type `IEqualNominalFeatureMask` that stores whether all features are nominal or not.
  */
-class EqualNominalFeatureMask : public IEqualNominalFeatureMask {
+class EqualNominalFeatureMask final : virtual public IEqualNominalFeatureMask {
 
     private:
 

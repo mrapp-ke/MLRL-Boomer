@@ -12,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class VectorConstView : public IOneDimensionalView {
+class VectorConstView : virtual public IOneDimensionalView {
 
     protected:
 

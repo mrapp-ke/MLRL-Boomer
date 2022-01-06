@@ -12,7 +12,7 @@ namespace boosting {
     /**
      * Allows to create instances of the class `LabelWiseCompleteBinnedRuleEvaluationFactory`.
      */
-    class LabelWiseCompleteBinnedRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
+    class LabelWiseCompleteBinnedRuleEvaluationFactory final : virtual public ILabelWiseRuleEvaluationFactory {
 
         private:
 

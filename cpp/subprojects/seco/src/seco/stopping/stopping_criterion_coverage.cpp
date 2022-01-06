@@ -10,7 +10,7 @@ namespace seco {
      * weights of the uncovered labels, as provided by an object of type `ICoverageStatistics`, is smaller than or equal
      * to a certain threshold.
      */
-    class CoverageStoppingCriterion final : public IStoppingCriterion {
+    class CoverageStoppingCriterion final : virtual public IStoppingCriterion {
 
         private:
 

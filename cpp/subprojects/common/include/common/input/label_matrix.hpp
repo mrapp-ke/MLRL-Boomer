@@ -9,7 +9,7 @@
 /**
  * Defines an interface for all label matrices.
  */
-class ILabelMatrix : public ITwoDimensionalView {
+class ILabelMatrix : virtual public ITwoDimensionalView {
 
     public:
 

@@ -15,7 +15,7 @@ namespace boosting {
      * that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
      * otherwise).
      */
-    class LabelWiseClassificationPredictorFactory final : public IClassificationPredictorFactory {
+    class LabelWiseClassificationPredictorFactory final : virtual public IClassificationPredictorFactory {
 
         private:
 

@@ -31,7 +31,7 @@ static inline void sampleInternally(BiPartition& partition, BitWeightVector& wei
  * @tparam WeightVector The type of the weight vector that is used to store the weights
  */
 template<typename Partition, typename WeightVector>
-class NoInstanceSampling final : public IInstanceSampling {
+class NoInstanceSampling final : virtual public IInstanceSampling {
 
     private:
 

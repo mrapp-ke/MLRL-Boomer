@@ -10,7 +10,7 @@
  * Allows to create objects of the type `IPartitionSampling` that randomly split the training examples into two mutually
  * exclusive sets that may be used as a training set and a holdout set.
  */
-class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
+class RandomBiPartitionSamplingFactory final : virtual public IPartitionSamplingFactory {
 
     private:
 

@@ -12,7 +12,7 @@ namespace boosting {
      * Allows to create instances of the type `IPostProcessor` that post-process the predictions of rules by shrinking
      * their weights by a constant shrinkage parameter.
      */
-    class ConstantShrinkageFactory final : public IPostProcessorFactory {
+    class ConstantShrinkageFactory final : virtual public IPostProcessorFactory {
 
         private:
 

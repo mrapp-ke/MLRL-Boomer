@@ -12,7 +12,7 @@
  * Defines an interface for all classes that allow to predict whether individual labels of given query examples are
  * relevant or irrelevant using an existing rule-based model.
  */
-class IClassificationPredictor : public ISparsePredictor<uint8> {
+class IClassificationPredictor : virtual public ISparsePredictor<uint8> {
 
     public:
 
