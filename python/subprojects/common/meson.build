@@ -8,6 +8,7 @@ cython_module_names = [
     'label_space_info',
     'learner',
     'nominal_feature_mask',
+    'rule_induction',
     'rule_model'
 ]
 

@@ -18,3 +18,10 @@ cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
         TopDownRuleInductionConfigImpl& setRecalculatePredictions(bool recalculatePredictions)
 
         TopDownRuleInductionConfigImpl& setNumThreads(uint32 numThreads)
+
+
+cdef class TopDownRuleInductionConfig:
+
+    # Attributes:
+
+    cdef TopDownRuleInductionConfigImpl* config_ptr
