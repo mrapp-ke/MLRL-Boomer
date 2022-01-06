@@ -192,15 +192,67 @@ class TopDownRuleInduction : public IRuleInduction {
 
 };
 
+// TODO Use all available CPU cores by default
+TopDownRuleInductionConfig::TopDownRuleInductionConfig()
+    : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(0), recalculatePredictions_(true), numThreads_(1) {
+
+}
+
+uint32 TopDownRuleInductionConfig::getMinCoverage() const {
+    return minCoverage_;
+}
+
+TopDownRuleInductionConfig& TopDownRuleInductionConfig::setMinCoverage(uint32 minCoverage) {
+    assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
+    minCoverage_ = minCoverage;
+    return *this;
+}
+
+uint32 TopDownRuleInductionConfig::getMaxConditions() const {
+    return maxConditions_;
+}
+
+TopDownRuleInductionConfig& TopDownRuleInductionConfig::setMaxConditions(uint32 maxConditions) {
+    if (maxConditions != 0) { assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 1); }
+    maxConditions_ = maxConditions;
+    return *this;
+}
+
+uint32 TopDownRuleInductionConfig::getMaxHeadRefinements() const {
+    return maxHeadRefinements_;
+}
+
+TopDownRuleInductionConfig& TopDownRuleInductionConfig::setMaxHeadRefinements(uint32 maxHeadRefinements) {
+    if (maxHeadRefinements != 0) { assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1); }
+    maxHeadRefinements_ = maxHeadRefinements;
+    return *this;
+}
+
+bool TopDownRuleInductionConfig::getRecalculatePredictions() const {
+    return recalculatePredictions_;
+}
+
+TopDownRuleInductionConfig& TopDownRuleInductionConfig::setRecalculatePredictions(bool recalculatePredictions) {
+    recalculatePredictions_ = recalculatePredictions;
+    return *this;
+}
+
+uint32 TopDownRuleInductionConfig::getNumThreads() const {
+    return numThreads_;
+}
+
+TopDownRuleInductionConfig& TopDownRuleInductionConfig::setNumThreads(uint32 numThreads) {
+    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+    numThreads_ = numThreads;
+    return *this;
+}
+
 TopDownRuleInductionFactory::TopDownRuleInductionFactory(uint32 minCoverage, uint32 maxConditions,
                                                          uint32 maxHeadRefinements, bool recalculatePredictions,
                                                          uint32 numThreads)
     : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
       recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
-    assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
-    if (maxConditions != 0) { assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 1); }
-    if (maxHeadRefinements != 0) { assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1); }
-    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
 }
 
 std::unique_ptr<IRuleInduction> TopDownRuleInductionFactory::create() const {
