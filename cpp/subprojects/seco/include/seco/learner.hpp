@@ -9,7 +9,7 @@
 namespace seco {
 
     /**
-     * A rule learner that relies on the separate-and-conquer (SeCo) paradigm.
+     * A rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
      */
     class SeCoRuleLearner final : public AbstractRuleLearner {
 
