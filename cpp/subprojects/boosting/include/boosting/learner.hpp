@@ -13,6 +13,15 @@ namespace boosting {
      */
     class BoostingRuleLearner final : public AbstractRuleLearner {
 
+        public:
+
+            /**
+             * Allows to configure a rule learner that makes use of gradient boosting.
+             */
+            class Config : public AbstractRuleLearner::Config {
+
+            };
+
         protected:
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory() const override;
