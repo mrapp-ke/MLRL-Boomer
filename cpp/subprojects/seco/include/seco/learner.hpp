@@ -33,9 +33,9 @@ namespace seco {
         public:
 
             /**
-             * @param config The configuration that should be used by the rule learner
+             * @param configPtr An unique pointer to the configuration that should be used by the rule learner
              */
-            SeCoRuleLearner(Config config);
+            SeCoRuleLearner(std::unique_ptr<Config> configPtr);
 
     };
 

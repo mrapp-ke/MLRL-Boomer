@@ -10,7 +10,7 @@ cdef class BoostingRuleLearner(RuleLearner):
     """
 
     def __cinit__(self):
-        self.rule_learner_ptr = make_unique[BoostingRuleLearnerImpl](BoostingRuleLearnerConfigImpl())
+        self.rule_learner_ptr = make_unique[BoostingRuleLearnerImpl](make_unique[BoostingRuleLearnerConfigImpl]())
 
-    cdef AbstractRuleLearner* get_rule_learner_ptr(self):
+    cdef IRuleLearner* get_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()

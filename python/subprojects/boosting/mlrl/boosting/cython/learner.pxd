@@ -1,22 +1,22 @@
-from mlrl.common.cython.learner cimport AbstractRuleLearner, RuleLearner, AbstractRuleLearnerConfigImpl
+from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner
 
 from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
-    cdef cppclass BoostingRuleLearnerConfigImpl"boosting::BoostingRuleLearner::Config"(AbstractRuleLearnerConfigImpl):
+    cdef cppclass BoostingRuleLearnerConfigImpl"boosting::BoostingRuleLearner::Config"(IRuleLearnerConfig):
 
         # Constructors:
 
         BoostingRuleLearnerConfigImpl()
 
 
-    cdef cppclass BoostingRuleLearnerImpl"boosting::BoostingRuleLearner"(AbstractRuleLearner):
+    cdef cppclass BoostingRuleLearnerImpl"boosting::BoostingRuleLearner"(IRuleLearner):
 
         # Constructors:
 
-        BoostingRuleLearnerImpl(BoostingRuleLearnerConfigImpl config)
+        BoostingRuleLearnerImpl(unique_ptr[BoostingRuleLearnerConfigImpl] configPtr)
 
 
 cdef class BoostingRuleLearner(RuleLearner):

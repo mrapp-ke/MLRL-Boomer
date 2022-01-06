@@ -3,8 +3,8 @@
 
 namespace seco {
 
-    SeCoRuleLearner::SeCoRuleLearner(Config config)
-        : AbstractRuleLearner(config) {
+    SeCoRuleLearner::SeCoRuleLearner(std::unique_ptr<Config> configPtr)
+        : AbstractRuleLearner(std::move(configPtr)) {
 
     }
 
