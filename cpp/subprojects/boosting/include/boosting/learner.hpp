@@ -9,7 +9,7 @@
 namespace boosting {
 
     /**
-     * A rule learner that relies on gradient boosting.
+     * A rule learner that makes use of gradient boosting.
      */
     class BoostingRuleLearner final : public AbstractRuleLearner {
 
