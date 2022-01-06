@@ -1,6 +1,7 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_refinement/score_processor.hpp"
 #include "common/indices/index_vector_complete.hpp"
+#include "common/util/threads.hpp"
 #include "common/validation.hpp"
 #include "omp.h"
 #include <unordered_map>
@@ -192,9 +193,8 @@ class TopDownRuleInduction : public IRuleInduction {
 
 };
 
-// TODO Use all available CPU cores by default
 TopDownRuleInductionConfig::TopDownRuleInductionConfig()
-    : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(0), recalculatePredictions_(true), numThreads_(1) {
+    : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(0), recalculatePredictions_(true), numThreads_(0) {
 
 }
 
@@ -242,7 +242,7 @@ uint32 TopDownRuleInductionConfig::getNumThreads() const {
 }
 
 TopDownRuleInductionConfig& TopDownRuleInductionConfig::setNumThreads(uint32 numThreads) {
-    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+    if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
     numThreads_ = numThreads;
     return *this;
 }
@@ -257,5 +257,5 @@ TopDownRuleInductionFactory::TopDownRuleInductionFactory(uint32 minCoverage, uin
 
 std::unique_ptr<IRuleInduction> TopDownRuleInductionFactory::create() const {
     return std::make_unique<TopDownRuleInduction>(minCoverage_, maxConditions_, maxHeadRefinements_,
-                                                  recalculatePredictions_, numThreads_);
+                                                  recalculatePredictions_, getNumThreads(numThreads_));
 }
