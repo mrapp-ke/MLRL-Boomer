@@ -102,6 +102,11 @@ class AbstractRuleLearner {
     protected:
 
         /**
+         * The configuration that is used by the rule learner.
+         */
+        Config config_;
+
+        /**
          * May be overridden by subclasses in order to create the `IRuleModelAssemblageFactory` to be used by the rule
          * learner.
          *
@@ -239,6 +244,11 @@ class AbstractRuleLearner {
         virtual std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo() const;
 
     public:
+
+        /**
+         * @param config The configuration that should be used by the rule learner
+         */
+        AbstractRuleLearner(Config config);
 
         virtual ~AbstractRuleLearner() { };
 

@@ -3,6 +3,11 @@
 
 namespace boosting {
 
+    BoostingRuleLearner::BoostingRuleLearner(Config config)
+        : AbstractRuleLearner(config) {
+
+    }
+
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory() const {
         // TODO Implement
         return nullptr;

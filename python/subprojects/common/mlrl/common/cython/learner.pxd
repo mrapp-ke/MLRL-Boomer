@@ -3,6 +3,7 @@ from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWis
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
 from mlrl.common.cython.nominal_feature_mask cimport INominalFeatureMask
+from mlrl.common.cython.rule_induction cimport TopDownRuleInductionConfigImpl
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 
 from libcpp cimport bool
@@ -44,7 +45,18 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[ILabelSpaceInfo]& getLabelSpaceInfo()
 
 
+    cdef cppclass AbstractRuleLearnerConfigImpl"AbstractRuleLearner::Config":
+
+        # Functions:
+
+        TopDownRuleInductionConfigImpl& useTopDownRuleInduction()
+
+
     cdef cppclass AbstractRuleLearner:
+
+        # Constructors:
+
+        AbstractRuleLearner(AbstractRuleLearnerConfigImpl config)
 
         # Functions:
 
@@ -83,6 +95,6 @@ cdef class TrainingResult:
 
 cdef class RuleLearner:
 
-    # Attributes:
+    # Functions:
 
-    cdef unique_ptr[AbstractRuleLearner] rule_learner_ptr
+    cdef AbstractRuleLearner* get_rule_learner_ptr(self)
