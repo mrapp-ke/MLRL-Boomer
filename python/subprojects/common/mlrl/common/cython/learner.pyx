@@ -37,6 +37,9 @@ cdef class RuleLearner:
     A wrapper for the C++ class `AbstractRuleLearner`.
     """
 
+    cdef AbstractRuleLearner* get_rule_learner_ptr(self):
+        pass
+
     def fit(self, NominalFeatureMask nominal_feature_mask not None, ColumnWiseFeatureMatrix feature_matrix not None,
             RowWiseLabelMatrix label_matrix not None, uint32 random_state) -> TrainingResult:
         """
@@ -52,7 +55,7 @@ cdef class RuleLearner:
         :return:                        The `TrainingResult` that provides access to the result of fitting the rule
                                         learner to the training data
         """
-        cdef unique_ptr[ITrainingResult] training_result_ptr = self.rule_learner_ptr.get().fit(
+        cdef unique_ptr[ITrainingResult] training_result_ptr = self.get_rule_learner_ptr().fit(
             dereference(nominal_feature_mask.get_nominal_feature_mask_ptr()),
             dereference(feature_matrix.get_column_wise_feature_matrix_ptr()),
             dereference(label_matrix.get_row_wise_label_matrix_ptr()), random_state)
@@ -76,7 +79,7 @@ cdef class RuleLearner:
         :return:                    A `numpy.ndarray` of type `uint8`, shape `(num_examples, num_labels)`, that stores
                                     the predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = self.rule_learner_ptr.get().predictLabels(
+        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = self.get_rule_learner_ptr().predictLabels(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
             dereference(rule_model.get_rule_model_ptr()),
             dereference(label_space_info.get_label_space_info_ptr()),
@@ -99,7 +102,7 @@ cdef class RuleLearner:
         :return:                    A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that
                                     stores the predictions
         """
-        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = self.rule_learner_ptr.get().predictSparseLabels(
+        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = self.get_rule_learner_ptr().predictSparseLabels(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
             dereference(rule_model.get_rule_model_ptr()),
             dereference(label_space_info.get_label_space_info_ptr()),
@@ -119,7 +122,7 @@ cdef class RuleLearner:
 
         :return: True, if the rule learner is able to predict probability estimates, False otherwise
         """
-        return self.rule_learner_ptr.get().canPredictProbabilities()
+        return self.get_rule_learner_ptr().canPredictProbabilities()
 
     def predict_probabilities(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
                               LabelSpaceInfo label_space_info not None, uint32 num_labels) -> np.ndarray:
@@ -134,7 +137,7 @@ cdef class RuleLearner:
         :return:                    A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that
                                     stores the predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.rule_learner_ptr.get().predictProbabilities(
+        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.get_rule_learner_ptr().predictProbabilities(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
             dereference(rule_model.get_rule_model_ptr()),
             dereference(label_space_info.get_label_space_info_ptr()),

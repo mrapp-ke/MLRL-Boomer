@@ -56,6 +56,21 @@ class TrainingResult final : public ITrainingResult {
 
 };
 
+AbstractRuleLearner::Config::Config()
+    : ruleInductionConfig_(TopDownRuleInductionConfig()) {
+
+}
+
+TopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
+    ruleInductionConfig_ = TopDownRuleInductionConfig();
+    return (TopDownRuleInductionConfig&) ruleInductionConfig_;
+}
+
+AbstractRuleLearner::AbstractRuleLearner(AbstractRuleLearner::Config config)
+    : config_(config) {
+
+}
+
 std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory() const {
     return std::make_unique<SequentialRuleModelAssemblageFactory>();
 }
@@ -66,8 +81,15 @@ std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
-    // TODO Implement
-    return nullptr;
+    const IRuleInductionConfig& ruleInductionConfig = this->config_.ruleInductionConfig_;
+
+    if (auto* config = dynamic_cast<const TopDownRuleInductionConfig*>(&ruleInductionConfig)) {
+        return std::make_unique<TopDownRuleInductionFactory>(
+            config->getMinCoverage(), config->getMaxConditions(), config->getMaxHeadRefinements(),
+            config->getRecalculatePredictions(), config->getNumThreads());
+    }
+
+    throw std::runtime_error("Failed to configure the algorithm for the induction of individual rules");
 }
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory() const {

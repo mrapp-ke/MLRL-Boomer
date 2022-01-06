@@ -30,6 +30,13 @@ namespace seco {
 
             std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
 
+        public:
+
+            /**
+             * @param config The configuration that should be used by the rule learner
+             */
+            SeCoRuleLearner(Config config);
+
     };
 
 }

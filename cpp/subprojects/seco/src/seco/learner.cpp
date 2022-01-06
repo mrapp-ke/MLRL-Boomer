@@ -3,6 +3,11 @@
 
 namespace seco {
 
+    SeCoRuleLearner::SeCoRuleLearner(Config config)
+        : AbstractRuleLearner(config) {
+
+    }
+
     std::unique_ptr<IStatisticsProviderFactory> SeCoRuleLearner::createStatisticsProviderFactory() const {
         // TODO Implement
         return nullptr;
