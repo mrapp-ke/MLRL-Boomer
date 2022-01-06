@@ -1,5 +1,5 @@
 #include "boosting/losses/loss_label_wise.hpp"
-#include "common/math/math.hpp"
+#include "common/util/math.hpp"
 
 
 namespace boosting {

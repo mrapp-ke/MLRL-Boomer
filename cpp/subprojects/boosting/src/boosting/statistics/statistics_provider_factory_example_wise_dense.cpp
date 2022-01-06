@@ -7,7 +7,7 @@
 #include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/statistic_vector_example_wise_dense.hpp"
 #include "boosting/data/statistic_view_example_wise_dense.hpp"
-#include "boosting/math/math.hpp"
+#include "boosting/util/math.hpp"
 #include "common/util/validation.hpp"
 #include "statistics_example_wise_common.hpp"
 #include "statistics_label_wise_dense.hpp"
