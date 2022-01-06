@@ -15,7 +15,7 @@
 
 
 /**
- * Defines an interface for all classes that implement an algorithm for inducing individual rules.
+ * Defines an interface for all classes that implement an algorithm for the induction of individual rules.
  */
 class IRuleInduction {
 
