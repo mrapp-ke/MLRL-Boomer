@@ -89,6 +89,13 @@ cdef class TrainingResult:
     cdef readonly LabelSpaceInfo label_space_info
 
 
+cdef class RuleLearnerConfig:
+
+    # Functions:
+
+    cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self)
+
+
 cdef class RuleLearner:
 
     # Functions:

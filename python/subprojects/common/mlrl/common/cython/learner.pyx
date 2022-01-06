@@ -6,6 +6,7 @@ from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseF
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
 from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
+from mlrl.common.cython.rule_induction cimport TopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
 
 from libcpp.utility cimport move
@@ -30,6 +31,27 @@ cdef class TrainingResult:
         self.num_labels = num_labels
         self.rule_model = rule_model
         self.label_space_info = label_space_info
+
+cdef class RuleLearnerConfig:
+    """
+    A wrapper for the pure virtual C++ class `IRuleLearner::IConfig`.
+    """
+
+    cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
+        pass
+
+    def use_top_down_rule_induction(self):
+        """
+        Configures the algorithm to use a top-down greedy search for the induction of individual rules.
+
+        :return: A `TopDownRuleInductionConfig` that allows further configuration of the algorithm for the induction of
+                 individual rules
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        cdef TopDownRuleInductionConfigImpl* config_ptr = &rule_learner_config_ptr.useTopDownRuleInduction()
+        cdef TopDownRuleInductionConfig config = TopDownRuleInductionConfig.__new__(TopDownRuleInductionConfig)
+        config.config_ptr = config_ptr
+        return config
 
 
 cdef class RuleLearner:
