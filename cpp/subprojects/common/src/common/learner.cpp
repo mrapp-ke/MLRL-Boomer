@@ -1,6 +1,14 @@
 #include "common/learner.hpp"
 #include "common/output/label_space_info_no.hpp"
+#include "common/post_processing/post_processor_no.hpp"
+#include "common/pruning/pruning_no.hpp"
 #include "common/rule_induction/rule_model_assemblage_sequential.hpp"
+#include "common/sampling/feature_sampling_no.hpp"
+#include "common/sampling/instance_sampling_no.hpp"
+#include "common/sampling/label_sampling_no.hpp"
+#include "common/sampling/partition_sampling_no.hpp"
+#include "common/stopping/stopping_criterion_size.hpp"
+#include "common/thresholds/thresholds_exact.hpp"
 #include <stdexcept>
 #include <string>
 
@@ -94,32 +102,32 @@ std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionF
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory() const {
     // TODO Implement
-    return nullptr;
+    return std::make_unique<NoLabelSamplingFactory>();
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
     // TODO Implement
-    return nullptr;
+    return std::make_unique<NoInstanceSamplingFactory>();
 }
 
 std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSamplingFactory() const {
     // TODO Implement
-    return nullptr;
+    return std::make_unique<NoFeatureSamplingFactory>();
 }
 
 std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionSamplingFactory() const {
     // TODO Implement
-    return nullptr;
+    return std::make_unique<NoPartitionSamplingFactory>();
 }
 
 std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() const {
     // TODO Implement
-    return nullptr;
+    return std::make_unique<NoPruningFactory>();
 }
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {
     // TODO Implement
-    return nullptr;
+    return std::make_unique<NoPostProcessorFactory>();
 }
 
 bool AbstractRuleLearner::useDefaultRule() const {
@@ -129,6 +137,8 @@ bool AbstractRuleLearner::useDefaultRule() const {
 void AbstractRuleLearner::createStoppingCriterionFactories(
         std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const {
     // TODO Implement
+    uint32 maxRules = 10;
+    stoppingCriterionFactories.push_front(std::make_unique<SizeStoppingCriterionFactory>(maxRules));
 }
 
 std::unique_ptr<IRegressionPredictorFactory> AbstractRuleLearner::createRegressionPredictorFactory() const {
