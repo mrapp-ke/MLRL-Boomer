@@ -79,6 +79,18 @@ class IRuleLearner {
          */
         class IConfig {
 
+            friend class AbstractRuleLearner;
+
+            private:
+
+                /**
+                 * Returns the configuration of the algorithm for the induction of individual rules.
+                 *
+                 * @return A reference to an object of type `IRuleInductionConfig` that specifies the configuration of
+                 *         the algorithm for the induction of individual rules
+                 */
+                virtual const IRuleInductionConfig& getRuleInductionConfig() const = 0;
+
             public:
 
                 virtual ~IConfig() { };
@@ -255,20 +267,20 @@ class IRuleLearner {
 /**
  * An abstract base class for all rule learners.
  */
-class AbstractRuleLearner : public IRuleLearner {
+class AbstractRuleLearner : virtual public IRuleLearner {
 
     public:
 
         /**
          * Allows to configure a rule learner.
          */
-        class Config : public IRuleLearner::IConfig {
-
-            friend class AbstractRuleLearner;
+        class Config : virtual public IRuleLearner::IConfig {
 
             private:
 
                 std::unique_ptr<IRuleInductionConfig> ruleInductionConfigPtr_;
+
+                const IRuleInductionConfig& getRuleInductionConfig() const override;
 
             public:
 
@@ -281,9 +293,10 @@ class AbstractRuleLearner : public IRuleLearner {
     protected:
 
         /**
-         * An unique pointer to the configuration that is used by the rule learner.
+         * An unique pointer to an object of type `IRuleLearner::IConfig` that specifies the configuration that is used
+         * by the rule learner.
          */
-        std::unique_ptr<Config> configPtr_;
+        std::unique_ptr<IRuleLearner::IConfig> configPtr_;
 
         /**
          * May be overridden by subclasses in order to create the `IRuleModelAssemblageFactory` to be used by the rule
@@ -425,9 +438,10 @@ class AbstractRuleLearner : public IRuleLearner {
     public:
 
         /**
-         * @param configPtr An unique pointer to the configuration that should be used by the rule learner
+         * @param configPtr An unique pointer to an object of type `IRuleLearner::IConfig` that specifies the
+         *                  configuration that should be used by the rule learner
          */
-        AbstractRuleLearner(std::unique_ptr<Config> configPtr);
+        AbstractRuleLearner(std::unique_ptr<IRuleLearner::IConfig> configPtr);
 
         std::unique_ptr<ITrainingResult> fit(
             const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,

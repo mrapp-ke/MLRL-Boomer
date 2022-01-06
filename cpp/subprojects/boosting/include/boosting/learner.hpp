@@ -11,7 +11,7 @@ namespace boosting {
     /**
      * Defines an interface for all rule learners that make use of gradient boosting.
      */
-    class IBoostingRuleLearner : public IRuleLearner {
+    class IBoostingRuleLearner : virtual public IRuleLearner {
 
         public:
 
@@ -19,7 +19,7 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner that makes use of gradient
              * boosting.
              */
-            class IConfig : public IRuleLearner::IConfig {
+            class IConfig : virtual public IRuleLearner::IConfig {
 
                 public:
 
@@ -32,34 +32,20 @@ namespace boosting {
     };
 
     /**
-     * A rule learner that makes use of gradient boosting.
+     * Creates and returns a new object of type `IBoostingRuleLearner::IConfig`.
+     *
+     * @return An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that has been created
      */
-    class BoostingRuleLearner final : public AbstractRuleLearner, public IBoostingRuleLearner {
+    std::unique_ptr<IBoostingRuleLearner::IConfig> createBoostingRuleLearnerConfig();
 
-        public:
-
-            /**
-             * Allows to configure a rule learner that makes use of gradient boosting.
-             */
-            class Config : public AbstractRuleLearner::Config, public IBoostingRuleLearner::IConfig {
-
-            };
-
-        protected:
-
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory() const override;
-
-            std::unique_ptr<IModelBuilder> createModelBuilder() const override;
-
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
-
-        public:
-
-            /**
-             * @param configPtr An unique pointer to the configuration that should be used by the rule learner
-             */
-            BoostingRuleLearner(std::unique_ptr<Config> configPtr);
-
-    };
+    /**
+     * Creates and returns a new object of type `IBoostingRuleLearner`.
+     *
+     * @param configPtr An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that specifies the
+     *                  configuration that should be used by the rule learner.
+     * @return          An unique pointer to an object of type `IBoostingRuleLearner` that has been created
+     */
+    std::unique_ptr<IBoostingRuleLearner> createBoostingRuleLearner(
+        std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr);
 
 }
