@@ -13,6 +13,7 @@
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
+#include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_induction/rule_model_assemblage.hpp"
 
 
@@ -70,6 +71,33 @@ class ITrainingResult {
  * An abstract base class for all rule learners.
  */
 class AbstractRuleLearner {
+
+    public:
+
+        /**
+         * Allows to configure a rule learner.
+         */
+        class Config {
+
+            friend class AbstractRuleLearner;
+
+            private:
+
+                IRuleInductionConfig ruleInductionConfig_;
+
+            public:
+
+                Config();
+
+                /**
+                 * Configures the algorithm to use a top-down greedy search for the induction of individual rules.
+                 *
+                 * @return A reference to an object of type `TopDownRuleInduction` that allows further configuration of
+                 *         the algorithm for the induction of individual rules.
+                 */
+                TopDownRuleInductionConfig& useTopDownRuleInduction();
+
+        };
 
     protected:
 
