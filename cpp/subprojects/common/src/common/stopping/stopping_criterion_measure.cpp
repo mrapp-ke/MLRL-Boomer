@@ -1,6 +1,6 @@
 #include "common/stopping/stopping_criterion_measure.hpp"
 #include "common/sampling/partition_bi.hpp"
-#include "common/util/math.hpp"
+#include "common/math/math.hpp"
 #include "common/util/validation.hpp"
 #include <limits>
 

@@ -1,6 +1,6 @@
 #include "common/rule_refinement/rule_refinement_exact.hpp"
 #include "common/rule_refinement/score_processor.hpp"
-#include "common/util/math.hpp"
+#include "common/math/math.hpp"
 #include "rule_refinement_common.hpp"
 
 
