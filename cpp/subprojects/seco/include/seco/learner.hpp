@@ -13,6 +13,15 @@ namespace seco {
      */
     class SeCoRuleLearner final : public AbstractRuleLearner {
 
+        public:
+
+            /**
+             * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
+             */
+            class Config : public AbstractRuleLearner::Config {
+
+            };
+
         protected:
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory() const override;
