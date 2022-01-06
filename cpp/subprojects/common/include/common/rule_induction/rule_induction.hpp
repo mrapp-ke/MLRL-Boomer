@@ -62,6 +62,18 @@ class IRuleInduction {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules.
+ */
+// TODO Should this class provide a (private) method for creating a IRuleInductionFactory to avoid type checks!?
+class IRuleInductionConfig {
+
+    public:
+
+        virtual ~IRuleInductionConfig() { };
+
+};
+
+/**
  * Defines an interface for all factories that allow to create instances of the type `IRuleInduction`.
  */
 class IRuleInductionFactory {
