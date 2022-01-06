@@ -1,5 +1,5 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_complete_binned.hpp"
-#include "boosting/math/math.hpp"
+#include "boosting/util/math.hpp"
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "common/data/arrays.hpp"
 #include "common/util/validation.hpp"
