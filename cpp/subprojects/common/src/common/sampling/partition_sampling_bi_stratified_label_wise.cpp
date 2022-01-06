@@ -13,7 +13,7 @@
  *                     training examples
  */
 template<typename LabelMatrix>
-class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
+class LabelWiseStratifiedBiPartitionSampling final : virtual public IPartitionSampling {
 
     private:
 

@@ -14,7 +14,7 @@ namespace seco {
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class LabelWiseSingleLabelRuleEvaluation final : public IRuleEvaluation {
+    class LabelWiseSingleLabelRuleEvaluation final : virtual public IRuleEvaluation {
 
         private:
 

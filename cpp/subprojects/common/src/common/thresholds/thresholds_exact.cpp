@@ -273,7 +273,7 @@ class ExactThresholds final : public AbstractThresholds {
         /**
          * Provides access to a subset of the thresholds that are stored by an instance of the class `ExactThresholds`.
          */
-        class ThresholdsSubset final : public IThresholdsSubset {
+        class ThresholdsSubset final : virtual public IThresholdsSubset {
 
             private:
 
@@ -281,7 +281,7 @@ class ExactThresholds final : public AbstractThresholds {
              * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved from
              * the cache. Otherwise, they are fetched from the feature matrix.
              */
-            class Callback final : public IRuleRefinementCallback<FeatureVector, IWeightVector> {
+            class Callback final : virtual public IRuleRefinementCallback<FeatureVector, IWeightVector> {
 
                 private:
 

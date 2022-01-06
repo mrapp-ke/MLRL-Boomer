@@ -18,7 +18,7 @@ namespace seco {
      *                               as corresponding quality scores, of rules
      */
     template<typename RuleEvaluationFactory>
-    class ILabelWiseStatistics : public ICoverageStatistics {
+    class ILabelWiseStatistics : virtual public ICoverageStatistics {
 
         public:
 

@@ -9,7 +9,7 @@
 /**
  * Defines an interface for all feature matrices.
  */
-class IFeatureMatrix : public ITwoDimensionalView {
+class IFeatureMatrix : virtual public ITwoDimensionalView {
 
     public:
 

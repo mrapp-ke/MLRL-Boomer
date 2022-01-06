@@ -9,7 +9,7 @@
 /**
  * A factory that allows to create instances of the class `SequentialRuleModelAssemblage`.
  */
-class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
+class SequentialRuleModelAssemblageFactory final : virtual public IRuleModelAssemblageFactory {
 
     public:
 

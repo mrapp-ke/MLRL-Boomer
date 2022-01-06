@@ -22,7 +22,7 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a non-decomposable loss function
      * using C-contiguous arrays.
      */
-    class DenseExampleWiseStatisticMatrix : public DenseExampleWiseStatisticView {
+    class DenseExampleWiseStatisticMatrix final : public DenseExampleWiseStatisticView {
 
         public:
 

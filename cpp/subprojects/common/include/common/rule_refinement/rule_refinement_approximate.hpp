@@ -25,7 +25,7 @@ typedef BitVector BinWeightVector;
  *           allowed to predict
  */
 template<typename T>
-class ApproximateRuleRefinement final : public IRuleRefinement {
+class ApproximateRuleRefinement final : virtual public IRuleRefinement {
 
     private:
 

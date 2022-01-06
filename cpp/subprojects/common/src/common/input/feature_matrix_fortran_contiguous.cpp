@@ -6,7 +6,7 @@
  * An implementation of the type `IFortranContiguousFeatureMatrix` that provides column-wise read-only access to the
  * feature values of individual examples that are stored in a pre-allocated Fortran-contiguous array.
  */
-class FortranContiguousFeatureMatrix final : public IFortranContiguousFeatureMatrix {
+class FortranContiguousFeatureMatrix final : virtual public IFortranContiguousFeatureMatrix {
 
     private:
 

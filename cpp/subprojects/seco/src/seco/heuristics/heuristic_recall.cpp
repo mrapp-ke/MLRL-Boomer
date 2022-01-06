@@ -8,7 +8,7 @@ namespace seco {
      * An implementation of the type `IHeuristic` that measures the fraction of uncovered labels among all labels for
      * which the rule's prediction is (or would be) correct.
      */
-    class Recall final : public IHeuristic {
+    class Recall final : virtual public IHeuristic {
 
         public:
 

@@ -8,7 +8,7 @@
 /**
  * Allows to select a subset of the available labels without replacement.
  */
-class LabelSamplingWithoutReplacement final : public ILabelSampling {
+class LabelSamplingWithoutReplacement final : virtual public ILabelSampling {
 
     private:
 

@@ -13,7 +13,7 @@
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
  * are stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
-class ICsrLabelMatrix : public IRowWiseLabelMatrix {
+class ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
 
     public:
 
@@ -25,7 +25,7 @@ class ICsrLabelMatrix : public IRowWiseLabelMatrix {
  * Implements row-wise read-only access to the labels of individual training examples that are stored in a pre-allocated
  * sparse matrix in the compressed sparse row (CSR) format.
  */
-class CsrLabelMatrix final : public ICsrLabelMatrix {
+class CsrLabelMatrix final : virtual public ICsrLabelMatrix {
 
     private:
 

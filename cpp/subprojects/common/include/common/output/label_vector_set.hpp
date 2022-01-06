@@ -13,7 +13,7 @@
 /**
  * Defines an interface for all classes that provide access to a set of unique label vectors.
  */
-class ILabelVectorSet : public ILabelSpaceInfo {
+class ILabelVectorSet : virtual public ILabelSpaceInfo {
 
     public:
 
@@ -44,7 +44,7 @@ class ILabelVectorSet : public ILabelSpaceInfo {
  * An implementation of the type `ILabelVectorSet` that stores a set of unique label vectors, as well as their
  * frequency.
  */
-class LabelVectorSet final : public ILabelVectorSet {
+class LabelVectorSet final : virtual public ILabelVectorSet {
 
     private:
 

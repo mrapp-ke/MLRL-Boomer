@@ -23,7 +23,7 @@ static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const I
  * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
  * finding the minimum value.
  */
-class MinAggregationFunction final : public IAggregationFunction {
+class MinAggregationFunction final : virtual public IAggregationFunction {
 
     public:
 
@@ -49,7 +49,7 @@ class MinAggregationFunction final : public IAggregationFunction {
  * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
  * finding the maximum value.
  */
-class MaxAggregationFunction final : public IAggregationFunction {
+class MaxAggregationFunction final : virtual public IAggregationFunction {
 
     public:
 
@@ -75,7 +75,7 @@ class MaxAggregationFunction final : public IAggregationFunction {
  * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
  * calculating the arithmetic mean.
  */
-class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
+class ArithmeticMeanAggregationFunction final : virtual public IAggregationFunction {
 
     public:
 
@@ -98,7 +98,7 @@ class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
  * An implementation of the type `IStoppingCriterion` that stops the induction of rules as soon as the quality of a
  * model's predictions for the examples in a holdout set do not improve according a certain measure.
  */
-class MeasureStoppingCriterion final : public IStoppingCriterion {
+class MeasureStoppingCriterion final : virtual public IStoppingCriterion {
 
     private:
 

@@ -9,7 +9,7 @@
 /**
  * A factory that allows to create instances of the type `ExactThresholds`.
  */
-class ExactThresholdsFactory final : public IThresholdsFactory {
+class ExactThresholdsFactory final : virtual public IThresholdsFactory {
 
     private:
 

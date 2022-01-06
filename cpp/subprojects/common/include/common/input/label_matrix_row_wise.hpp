@@ -22,7 +22,7 @@ class BiPartition;
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
  */
-class IRowWiseLabelMatrix : public ILabelMatrix {
+class IRowWiseLabelMatrix : virtual public ILabelMatrix {
 
     public:
 

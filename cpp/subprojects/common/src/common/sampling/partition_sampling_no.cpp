@@ -6,7 +6,7 @@
  * An implementation of the class `IPartitionSampling` that does not split the training examples, but includes all of
  * them in the training set.
  */
-class NoPartitionSampling final : public IPartitionSampling {
+class NoPartitionSampling final : virtual public IPartitionSampling {
 
     private:
 

@@ -13,7 +13,7 @@ namespace boosting {
      * for given query examples by summing up the scores that are provided by the individual rules of an existing
      * rule-based model for each label individually.
      */
-    class LabelWiseRegressionPredictorFactory final : public IRegressionPredictorFactory {
+    class LabelWiseRegressionPredictorFactory final : virtual public IRegressionPredictorFactory {
 
         private:
 

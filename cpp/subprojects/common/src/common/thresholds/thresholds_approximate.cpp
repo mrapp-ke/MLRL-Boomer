@@ -153,7 +153,7 @@ class ApproximateThresholds final : public AbstractThresholds {
          * Provides access to a subset of the thresholds that are stored by an instance of the class
          * `ApproximateThresholds`.
          */
-        class ThresholdsSubset final : public IThresholdsSubset {
+        class ThresholdsSubset final : virtual public IThresholdsSubset {
 
             private:
 
@@ -162,7 +162,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IRuleRefinementCallback<ThresholdVector, BinWeightVector> {
+                class Callback final : virtual public IRuleRefinementCallback<ThresholdVector, BinWeightVector> {
 
                     private:
 

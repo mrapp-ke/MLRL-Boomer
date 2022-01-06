@@ -10,7 +10,7 @@
  * Allows to create instances of the type `IFeatureBinning` that assign nominal feature values to bins, such that each
  * bin contains one of the available values.
  */
-class NominalFeatureBinningFactory final : public IFeatureBinningFactory {
+class NominalFeatureBinningFactory final : virtual public IFeatureBinningFactory {
 
     public:
 

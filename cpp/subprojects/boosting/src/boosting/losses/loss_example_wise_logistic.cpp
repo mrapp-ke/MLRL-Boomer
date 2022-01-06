@@ -210,7 +210,7 @@ namespace boosting {
      * An implementation of the type `IExampleWiseLoss` that implements a multi-label variant of the logistic loss that
      * is applied example-wise.
      */
-    class ExampleWiseLogisticLoss final : public IExampleWiseLoss {
+    class ExampleWiseLogisticLoss final : virtual public IExampleWiseLoss {
 
         public:
 

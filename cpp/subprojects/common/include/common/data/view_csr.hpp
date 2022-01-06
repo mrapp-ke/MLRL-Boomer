@@ -13,7 +13,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class CsrConstView : public ITwoDimensionalView {
+class CsrConstView : virtual public ITwoDimensionalView {
 
     protected:
 

@@ -12,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class CContiguousConstView : public ITwoDimensionalView {
+class CContiguousConstView : virtual public ITwoDimensionalView {
 
     protected:
 

@@ -50,7 +50,7 @@ namespace boosting {
      * Allows to create instances of the type `IProbabilityFunction` that transform the score that is predicted for an
      * individual label into a probability by applying the logistic sigmoid function.
      */
-    class LogisticFunctionFactory final : public IProbabilityFunctionFactory {
+    class LogisticFunctionFactory final : virtual public IProbabilityFunctionFactory {
 
         public:
 
@@ -65,7 +65,7 @@ namespace boosting {
      * into probabilities in [0, 1] according to a certain transformation function that is applied to each label
      * individually.
      */
-    class LabelWiseProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
+    class LabelWiseProbabilityPredictorFactory final : virtual public IProbabilityPredictorFactory {
 
         private:
 

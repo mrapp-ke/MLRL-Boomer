@@ -11,7 +11,7 @@
 /**
  * A factory that allows to create instances of the type `ApproximateThresholds`.
  */
-class ApproximateThresholdsFactory final : public IThresholdsFactory {
+class ApproximateThresholdsFactory final : virtual public IThresholdsFactory {
 
     private:
 

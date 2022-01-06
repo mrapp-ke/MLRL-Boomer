@@ -13,7 +13,7 @@
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
  * are stored in a C-contiguous array.
  */
-class ICContiguousLabelMatrix : public IRowWiseLabelMatrix {
+class ICContiguousLabelMatrix : virtual public IRowWiseLabelMatrix {
 
     public:
 
@@ -25,7 +25,7 @@ class ICContiguousLabelMatrix : public IRowWiseLabelMatrix {
  * Implements random read-only access to the labels of individual training examples that are stored in a pre-allocated
  * C-contiguous array.
  */
-class CContiguousLabelMatrix final : public ICContiguousLabelMatrix {
+class CContiguousLabelMatrix final : virtual public ICContiguousLabelMatrix {
 
     private:
 

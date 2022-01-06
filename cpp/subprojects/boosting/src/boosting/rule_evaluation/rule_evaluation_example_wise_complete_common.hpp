@@ -78,7 +78,7 @@ namespace boosting {
      *                          be calculated
      */
     template<typename StatisticVector, typename T>
-    class AbstractExampleWiseRuleEvaluation : public IRuleEvaluation<StatisticVector> {
+    class AbstractExampleWiseRuleEvaluation : virtual public IRuleEvaluation<StatisticVector> {
 
         protected:
 

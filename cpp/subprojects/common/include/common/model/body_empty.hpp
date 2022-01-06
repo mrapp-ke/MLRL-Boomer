@@ -9,7 +9,7 @@
 /**
  * An empty body that does not contain any conditions and therefore covers any examples.
  */
-class EmptyBody final : public IBody {
+class EmptyBody final : virtual public IBody {
 
     public:
 

@@ -82,7 +82,7 @@ namespace boosting {
      * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
     template<typename Model>
-    class ExampleWiseClassificationPredictor final : public IClassificationPredictor {
+    class ExampleWiseClassificationPredictor final : virtual public IClassificationPredictor {
 
         private:
 

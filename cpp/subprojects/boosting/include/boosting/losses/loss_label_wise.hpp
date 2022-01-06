@@ -15,7 +15,7 @@ namespace boosting {
     /**
      * Defines an interface for all (decomposable) loss functions that are applied label-wise.
      */
-    class ILabelWiseLoss : public IEvaluationMeasure, public ISimilarityMeasure {
+    class ILabelWiseLoss : virtual public IEvaluationMeasure, virtual public ISimilarityMeasure {
 
         public:
 
@@ -102,7 +102,7 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type `ILabelWiseLoss`.
      */
-    class ILabelWiseLossFactory : public IEvaluationMeasureFactory, public ISimilarityMeasureFactory {
+    class ILabelWiseLossFactory : virtual public IEvaluationMeasureFactory, virtual public ISimilarityMeasureFactory {
 
         public:
 

@@ -11,7 +11,7 @@
  * Implements row-wise read-only access to binary values that are stored in a pre-allocated matrix in the compressed
  * sparse row (CSR) format.
  */
-class BinaryCsrConstView : public ITwoDimensionalView {
+class BinaryCsrConstView : virtual public ITwoDimensionalView {
 
     protected:
 

@@ -10,7 +10,7 @@ namespace seco {
      * An implementation of the type `IHeuristic` that allows to trade off between the heuristics "Precision" and "WRA",
      * where the "m" parameter allows to control the trade-off between both heuristics.
      */
-    class MEstimate final : public IHeuristic {
+    class MEstimate final : virtual public IHeuristic {
 
         private:
 

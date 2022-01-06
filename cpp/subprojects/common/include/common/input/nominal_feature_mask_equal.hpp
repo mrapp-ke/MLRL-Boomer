@@ -11,7 +11,7 @@
  * Defines an interface for all classes that allow to check whether individual features are nominal or not in cases
  * where all features are of the same type, i.e., where all features are either nominal or numerical/ordinal.
  */
-class IEqualNominalFeatureMask : public INominalFeatureMask {
+class IEqualNominalFeatureMask : virtual public INominalFeatureMask {
 
     public:
 

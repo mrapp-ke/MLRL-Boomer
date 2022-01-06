@@ -9,7 +9,7 @@
 /**
  * Allows to select a subset of the available features without replacement.
  */
-class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
+class FeatureSamplingWithoutReplacement final : virtual public IFeatureSampling {
 
     private:
 

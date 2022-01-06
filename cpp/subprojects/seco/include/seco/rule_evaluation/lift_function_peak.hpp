@@ -13,7 +13,7 @@ namespace seco {
      * Allows to create instances of the type `ILiftFunction` that monotonously increase until a certain number of
      * labels, where the maximum lift is reached, and monotonously decrease afterwards.
      */
-    class PeakLiftFunctionFactory final : public ILiftFunctionFactory {
+    class PeakLiftFunctionFactory final : virtual public ILiftFunctionFactory {
 
         private:
 

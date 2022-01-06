@@ -10,7 +10,7 @@
  * Allows to create instances of the type `IPostProcessor` that do not perform any post-processing, but retain the
  * original predictions of rules.
  */
-class NoPostProcessorFactory final : public IPostProcessorFactory {
+class NoPostProcessorFactory final : virtual public IPostProcessorFactory {
 
     public:
 

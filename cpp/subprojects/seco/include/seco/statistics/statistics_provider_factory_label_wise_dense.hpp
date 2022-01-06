@@ -14,7 +14,7 @@ namespace seco {
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
      * `ILabelWiseStatistics`, which uses dense data structures to store the statistics.
      */
-    class DenseLabelWiseStatisticsProviderFactory : public IStatisticsProviderFactory {
+    class DenseLabelWiseStatisticsProviderFactory final : virtual public IStatisticsProviderFactory {
 
         private:
 
