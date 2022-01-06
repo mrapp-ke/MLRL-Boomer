@@ -5,7 +5,7 @@
 #include "common/sampling/instance_sampling_no.hpp"
 #include "common/sampling/label_sampling_no.hpp"
 #include "common/sampling/partition_sampling_no.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 
 
 AlgorithmBuilder::AlgorithmBuilder(std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,

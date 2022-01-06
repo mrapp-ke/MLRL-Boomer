@@ -3,7 +3,7 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/sampling/weight_sampling.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 
 
 static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize, BitWeightVector& weightVector,

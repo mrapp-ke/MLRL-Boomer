@@ -3,7 +3,7 @@
 #include "common/binning/bin_index_vector_dok.hpp"
 #include "common/binning/binning.hpp"
 #include "common/math/math.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 
 
 static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float32 binRatio, uint32 minBins,

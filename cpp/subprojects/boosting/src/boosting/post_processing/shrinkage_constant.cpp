@@ -1,5 +1,5 @@
 #include "boosting/post_processing/shrinkage_constant.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 
 
 namespace boosting {

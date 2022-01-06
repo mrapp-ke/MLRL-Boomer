@@ -1,5 +1,5 @@
 #include "boosting/output/predictor_regression_label_wise.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
