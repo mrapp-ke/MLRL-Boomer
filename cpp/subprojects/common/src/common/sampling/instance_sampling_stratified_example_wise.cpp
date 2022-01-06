@@ -2,7 +2,7 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/sampling/stratified_sampling_example_wise.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 
 
 /**

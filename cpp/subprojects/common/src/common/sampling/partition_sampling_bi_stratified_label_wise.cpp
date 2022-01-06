@@ -1,7 +1,7 @@
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
 #include "common/sampling/stratified_sampling_label_wise.hpp"
 #include "common/iterator/index_iterator.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 
 
 /**

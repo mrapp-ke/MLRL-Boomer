@@ -4,7 +4,7 @@
 #endif
 
 #include "boosting/statistics/statistics_provider_factory_label_wise_dense.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include "statistics_label_wise_dense.hpp"
 #include "statistics_provider_label_wise.hpp"
 #include "omp.h"

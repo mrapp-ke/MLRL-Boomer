@@ -1,6 +1,6 @@
 #include "common/thresholds/thresholds_exact.hpp"
 #include "common/rule_refinement/rule_refinement_exact.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
 #include <cmath>

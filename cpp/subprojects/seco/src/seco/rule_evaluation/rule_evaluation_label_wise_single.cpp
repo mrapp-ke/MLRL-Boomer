@@ -1,7 +1,7 @@
 #include "seco/rule_evaluation/rule_evaluation_label_wise_single.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
 

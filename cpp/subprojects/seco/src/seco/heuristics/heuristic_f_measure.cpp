@@ -1,5 +1,5 @@
 #include "seco/heuristics/heuristic_f_measure.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include "heuristic_common.hpp"
 #include <cmath>
 

@@ -2,7 +2,7 @@
 #include "common/data/vector_sparse_array.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 #include <algorithm>
 
