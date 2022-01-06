@@ -37,7 +37,10 @@ class TopDownRuleInductionConfig : public IRuleInductionConfig {
         /**
          * Sets the minimum number of training examples that must be covered by a rule.
          *
-         * @param minCoverage The minimum number of training examples that must be covered by a rule. Must be at least 1
+         * @param minCoverage   The minimum number of training examples that must be covered by a rule. Must be at least
+         *                      1
+         * @return              A reference to an object of type `TopDownRuleInduction` that allows further
+         *                      configuration of the algorithm for the induction of individual rules
          */
         TopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage);
 
@@ -54,6 +57,8 @@ class TopDownRuleInductionConfig : public IRuleInductionConfig {
          *
          * @param maxConditions The maximum number of conditions to be included in a rule's body. Must be at least 1 or
          *                      0, if the number of conditions should not be restricted
+         * @return              A reference to an object of type `TopDownRuleInduction` that allows further
+         *                      configuration of the algorithm for the induction of individual rules
          */
         TopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions);
 
@@ -72,6 +77,8 @@ class TopDownRuleInductionConfig : public IRuleInductionConfig {
          *
          * @param maxHeadRefinement The maximum number of times, the head of a rule may be refined. Must be at least 1
          *                          or 0, if the number of refinements should not be restricted
+         * @return                  A reference to an object of type `TopDownRuleInduction` that allows further
+         *                          configuration of the algorithm for the induction of individual rules
          */
         TopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements);
 
@@ -87,8 +94,10 @@ class TopDownRuleInductionConfig : public IRuleInductionConfig {
          * Sets whether the predictions of rules should be recalculated on all training examples, if some of the
          * examples have zero weights, or not.
          *
-         * @param recalculatePredictions True, if the predictions of rules should be recalculated on all training
-         *                               examples, false otherwise
+         * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
+         *                                  examples, false otherwise
+         * @return                          A reference to an object of type `TopDownRuleInduction` that allows further
+         *                                  configuration of the algorithm for the induction of individual rules
          */
         TopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions);
 
@@ -102,7 +111,9 @@ class TopDownRuleInductionConfig : public IRuleInductionConfig {
         /**
          * Sets the number of CPU threads to be used to search for potential refinements of rules in parallel.
          *
-         * @param numThreads The number of CPU threads to be used. Must be at least 1
+         * @param numThreads    The number of CPU threads to be used. Must be at least 1
+         * @return              A reference to an object of type `TopDownRuleInduction` that allows further
+         *                      configuration of the algorithm for the induction of individual rules
          */
         TopDownRuleInductionConfig& setNumThreads(uint32 numThreads);
 
