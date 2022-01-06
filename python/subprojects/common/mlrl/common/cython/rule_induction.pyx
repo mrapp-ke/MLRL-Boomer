@@ -1,6 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from mlrl.common.cython.validation import assert_greater_or_equal
 
 
 cdef class TopDownRuleInductionConfig:
@@ -17,6 +18,7 @@ cdef class TopDownRuleInductionConfig:
         :return:                A `TopDownRuleInductionConfig` that allows further configuration of the algorithm for
                                 the induction of individual rules
         """
+        assert_greater_or_equal('min_coverage', min_coverage, 1)
         self.config_ptr.setMinCoverage(min_coverage)
         return self
 
@@ -29,6 +31,8 @@ cdef class TopDownRuleInductionConfig:
         :return:                A `TopDownRuleInductionConfig` that allows further configuration of the algorithm for
                                 the induction of individual rules
         """
+        if max_conditions != 0:
+            assert_greater_or_equal('max_conditions', max_conditions, 1)
         self.config_ptr.setMaxConditions(max_conditions)
         return self
 
@@ -42,6 +46,8 @@ cdef class TopDownRuleInductionConfig:
         :return:                        A `TopDownRuleInductionConfig` that allows further configuration of the
                                         algorithm for the induction of individual rules
         """
+        if max_head_refinements != 0:
+            assert_greater_or_equal('max_head_refinements', max_head_refinements, 1)
         self.config_ptr.setMaxHeadRefinements(max_head_refinements)
         return self
 
@@ -67,5 +73,7 @@ cdef class TopDownRuleInductionConfig:
         :return:            A `TopDownRuleInductionConfig` that allows further configuration of the algorithm for the
                             induction of individual rules
         """
+        if num_threads != 0:
+            assert_greater_or_equal('num_threads', num_threads, 1)
         self.config_ptr.setNumThreads(num_threads)
         return self
