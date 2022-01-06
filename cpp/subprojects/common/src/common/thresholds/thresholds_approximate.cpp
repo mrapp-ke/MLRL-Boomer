@@ -1,7 +1,7 @@
 #include "common/thresholds/thresholds_approximate.hpp"
 #include "common/binning/feature_binning_nominal.hpp"
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
-#include "common/validation.hpp"
+#include "common/util/validation.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
 

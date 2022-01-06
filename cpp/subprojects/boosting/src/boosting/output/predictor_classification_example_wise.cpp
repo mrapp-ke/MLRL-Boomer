@@ -1,6 +1,6 @@
 #include "boosting/output/predictor_classification_example_wise.hpp"
-#include "common/validation.hpp"
 #include "common/data/arrays.hpp"
+#include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
