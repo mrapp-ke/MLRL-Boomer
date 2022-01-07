@@ -108,7 +108,7 @@ class BinaryCsrConstView : virtual public ITwoDimensionalView {
  * Implements row-wise read and write access to binary values that are stored in a pre-allocated matrix in the
  * compressed sparse row (CSR) format.
  */
-class BinaryCsrView final : public BinaryCsrConstView {
+class BinaryCsrView : public BinaryCsrConstView {
 
     public:
 

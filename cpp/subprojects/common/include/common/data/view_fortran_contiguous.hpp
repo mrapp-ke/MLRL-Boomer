@@ -75,7 +75,7 @@ class FortranContiguousConstView : virtual public ITwoDimensionalView {
  * @tparam T The type of the values
  */
 template<typename T>
-class FortranContiguousView final : public FortranContiguousConstView<T> {
+class FortranContiguousView : public FortranContiguousConstView<T> {
 
     public:
 

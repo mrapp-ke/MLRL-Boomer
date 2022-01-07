@@ -108,7 +108,7 @@ class BinaryCscConstView : virtual public ITwoDimensionalView {
  * Implements column-wise read and write access to binary values that are stored in a pre-allocated matrix in the
  * compressed sparse column (CSC) format.
  */
-class BinaryCscView final : public BinaryCscConstView {
+class BinaryCscView : public BinaryCscConstView {
 
     public:
 

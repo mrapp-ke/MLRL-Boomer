@@ -121,7 +121,7 @@ class CscConstView : virtual public ITwoDimensionalView {
  * @tparam T The type of the values
  */
 template<typename T>
-class CscView final : public CscConstView<T> {
+class CscView : public CscConstView<T> {
 
     public:
 
