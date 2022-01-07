@@ -7,9 +7,11 @@ namespace seco {
 
     template<typename LabelMatrix>
     static inline void addInternally(ConfusionMatrix* confusionMatrices, uint32 numElements, uint32 exampleIndex,
-                                     const LabelMatrix& labelMatrix, const BinarySparseArrayVector& majorityLabelVector,
+                                     const LabelMatrix& labelMatrix,
+                                     const VectorConstView<uint32>& majorityLabelIndices,
                                      const DenseWeightMatrix& weightMatrix, float64 weight) {
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.cbegin(), majorityLabelVector.cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
+                                                             majorityLabelIndices.cend());
         typename DenseWeightMatrix::value_const_iterator weightIterator = weightMatrix.row_values_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
 
@@ -32,9 +34,10 @@ namespace seco {
     template<typename LabelMatrix>
     static inline void addToSubsetInternally(ConfusionMatrix* confusionMatrices, uint32 numElements,
                                              uint32 exampleIndex, const LabelMatrix& labelMatrix,
-                                             const BinarySparseArrayVector& majorityLabelVector,
+                                             const VectorConstView<uint32>& majorityLabelIndices,
                                              const DenseWeightMatrix& weightMatrix, float64 weight) {
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.cbegin(), majorityLabelVector.cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
+                                                             majorityLabelIndices.cend());
         typename DenseWeightMatrix::value_const_iterator weightIterator = weightMatrix.row_values_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
 
@@ -106,42 +109,43 @@ namespace seco {
     }
 
     void DenseConfusionMatrixVector::add(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                                         const BinarySparseArrayVector& majorityLabelVector,
+                                         const VectorConstView<uint32>& majorityLabelIndices,
                                          const DenseWeightMatrix& weightMatrix, float64 weight) {
         addInternally<CContiguousConstView<const uint8>>(array_, numElements_, exampleIndex, labelMatrix,
-                                                         majorityLabelVector, weightMatrix, weight);
+                                                         majorityLabelIndices, weightMatrix, weight);
     }
 
     void DenseConfusionMatrixVector::add(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                         const BinarySparseArrayVector& majorityLabelVector,
+                                         const VectorConstView<uint32>& majorityLabelIndices,
                                          const DenseWeightMatrix& weightMatrix, float64 weight) {
-        addInternally<BinaryCsrConstView>(array_, numElements_, exampleIndex, labelMatrix, majorityLabelVector,
+        addInternally<BinaryCsrConstView>(array_, numElements_, exampleIndex, labelMatrix, majorityLabelIndices,
                                           weightMatrix, weight);
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex,
                                                  const CContiguousConstView<const uint8>& labelMatrix,
-                                                 const BinarySparseArrayVector& majorityLabelVector,
+                                                 const VectorConstView<uint32>& majorityLabelIndices,
                                                  const DenseWeightMatrix& weightMatrix,
                                                  const CompleteIndexVector& indices, float64 weight) {
         addToSubsetInternally<CContiguousConstView<const uint8>>(array_, numElements_, exampleIndex, labelMatrix,
-                                                                 majorityLabelVector, weightMatrix, weight);
+                                                                 majorityLabelIndices, weightMatrix, weight);
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                                 const BinarySparseArrayVector& majorityLabelVector,
+                                                 const VectorConstView<uint32>& majorityLabelIndices,
                                                  const DenseWeightMatrix& weightMatrix,
                                                  const CompleteIndexVector& indices, float64 weight) {
-        addToSubsetInternally<BinaryCsrConstView>(array_, numElements_, exampleIndex, labelMatrix, majorityLabelVector,
+        addToSubsetInternally<BinaryCsrConstView>(array_, numElements_, exampleIndex, labelMatrix, majorityLabelIndices,
                                                   weightMatrix, weight);
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex,
                                                  const CContiguousConstView<const uint8>& labelMatrix,
-                                                 const BinarySparseArrayVector& majorityLabelVector,
+                                                 const VectorConstView<uint32>& majorityLabelIndices,
                                                  const DenseWeightMatrix& weightMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.cbegin(), majorityLabelVector.cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
+                                                             majorityLabelIndices.cend());
         typename DenseWeightMatrix::value_const_iterator weightIterator = weightMatrix.row_values_cbegin(exampleIndex);
         CContiguousConstView<const uint8>::value_const_iterator labelIterator =
             labelMatrix.row_values_cbegin(exampleIndex);
@@ -166,10 +170,11 @@ namespace seco {
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                                 const BinarySparseArrayVector& majorityLabelVector,
+                                                 const VectorConstView<uint32>& majorityLabelIndices,
                                                  const DenseWeightMatrix& weightMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.cbegin(), majorityLabelVector.cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
+                                                             majorityLabelIndices.cend());
         typename DenseWeightMatrix::value_const_iterator weightIterator = weightMatrix.row_values_cbegin(exampleIndex);
         BinaryCsrConstView::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();

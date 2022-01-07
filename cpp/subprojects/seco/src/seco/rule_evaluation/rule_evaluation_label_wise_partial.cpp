@@ -48,7 +48,7 @@ namespace seco {
             }
 
             const IScoreVector& calculatePrediction(
-                    const BinarySparseArrayVector& majorityLabelVector,
+                    const VectorConstView<uint32>& majorityLabelIndices,
                     const DenseConfusionMatrixVector& confusionMatricesTotal,
                     const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = scoreVector_.getNumElements();
@@ -56,8 +56,8 @@ namespace seco {
                     scoreVector_.indices_cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelVector.cbegin(),
-                                                                  majorityLabelVector.cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
+                                                                  majorityLabelIndices.cend());
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 float64 sumOfQualityScores = 0;
                 uint32 previousIndex = 0;
@@ -122,15 +122,15 @@ namespace seco {
             }
 
             const IScoreVector& calculatePrediction(
-                    const BinarySparseArrayVector& majorityLabelVector,
+                    const VectorConstView<uint32>& majorityLabelIndices,
                     const DenseConfusionMatrixVector& confusionMatricesTotal,
                     const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelVector.cbegin(),
-                                                                  majorityLabelVector.cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
+                                                                  majorityLabelIndices.cend());
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 PartialIndexVector::iterator predictedIndexIterator = indexVector_.begin();
                 SparseArrayVector<float64>::iterator sortedIterator = sortedVector_.begin();
