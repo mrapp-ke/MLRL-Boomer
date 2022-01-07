@@ -120,7 +120,7 @@ class CsrConstView : virtual public ITwoDimensionalView {
  * @tparam T The type of the values
  */
 template<typename T>
-class CsrView final : public CsrConstView<T> {
+class CsrView : public CsrConstView<T> {
 
     public:
 
