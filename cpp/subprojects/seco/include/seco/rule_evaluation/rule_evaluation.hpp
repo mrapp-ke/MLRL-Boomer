@@ -24,8 +24,9 @@ namespace seco {
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on label-wise
              * confusion matrices.
              *
-             * @param majorityLabelVector       A reference to an object of type `BinarySparseArrayVector` that stores
-             *                                  the predictions of the default rule
+             * @param majorityLabelIndices      A reference to an object of type `VectorConstView` that stores the
+             *                                  indices of the labels that are relevant to the majority of the training
+             *                                  examples
              * @param confusionMatricesTotal    A reference to an object of type `DenseConfusionMatrixVector` that
              *                                  stores confusion matrices that take into account all examples
              * @param confusionMatricesCovered  A reference to an object of type `DenseConfusionMatrixVector` that
@@ -35,7 +36,7 @@ namespace seco {
              *                                  predicted scores, as well as an overall quality score
              */
             virtual const IScoreVector& calculatePrediction(
-                const BinarySparseArrayVector& majorityLabelVector,
+                const VectorConstView<uint32>& majorityLabelIndices,
                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                 const DenseConfusionMatrixVector& confusionMatricesCovered) = 0;
 

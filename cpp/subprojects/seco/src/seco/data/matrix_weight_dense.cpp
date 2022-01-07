@@ -14,14 +14,15 @@ namespace seco {
         return sumOfUncoveredWeights_;
     }
 
-    void DenseWeightMatrix::updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,
+    void DenseWeightMatrix::updateRow(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
                                       VectorView<float64>::const_iterator predictionBegin,
                                       VectorView<float64>::const_iterator predictionEnd,
                                       CompleteIndexVector::const_iterator indicesBegin,
                                       CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
         value_iterator weightIterator = this->row_values_begin(row);
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.cbegin(), majorityLabelVector.cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
+                                                             majorityLabelIndices.cend());
 
         for (uint32 i = 0; i < numCols; i++) {
             bool predictedLabel = predictionBegin[i];
@@ -40,14 +41,15 @@ namespace seco {
         }
     }
 
-    void DenseWeightMatrix::updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,
+    void DenseWeightMatrix::updateRow(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
                                       VectorView<float64>::const_iterator predictionBegin,
                                       VectorView<float64>::const_iterator predictionEnd,
                                       PartialIndexVector::const_iterator indicesBegin,
                                       PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
         value_iterator weightIterator = this->row_values_begin(row);
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.cbegin(), majorityLabelVector.cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
+                                                             majorityLabelIndices.cend());
         uint32 previousIndex = 0;
 
         for (uint32 i = 0; i < numPredictions; i++) {
