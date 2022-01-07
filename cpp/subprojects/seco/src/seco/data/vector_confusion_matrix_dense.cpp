@@ -11,7 +11,7 @@ namespace seco {
                                      const DenseWeightMatrix& weightMatrix, float64 weight) {
         auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                              majorityLabelVector.indices_cend());
-        typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
+        typename DenseWeightMatrix::value_const_iterator weightIterator = weightMatrix.row_values_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -37,7 +37,7 @@ namespace seco {
                                              const DenseWeightMatrix& weightMatrix, float64 weight) {
         auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                              majorityLabelVector.indices_cend());
-        typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
+        typename DenseWeightMatrix::value_const_iterator weightIterator = weightMatrix.row_values_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -143,7 +143,7 @@ namespace seco {
                                                  const PartialIndexVector& indices, float64 weight) {
         auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                              majorityLabelVector.indices_cend());
-        typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
+        typename DenseWeightMatrix::value_const_iterator weightIterator = weightMatrix.row_values_cbegin(exampleIndex);
         CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
@@ -171,7 +171,7 @@ namespace seco {
                                                  const PartialIndexVector& indices, float64 weight) {
         auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                              majorityLabelVector.indices_cend());
-        typename DenseWeightMatrix::const_iterator weightIterator = weightMatrix.row_cbegin(exampleIndex);
+        typename DenseWeightMatrix::value_const_iterator weightIterator = weightMatrix.row_values_cbegin(exampleIndex);
         CsrLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();

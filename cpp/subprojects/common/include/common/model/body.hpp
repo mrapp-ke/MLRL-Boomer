@@ -39,8 +39,8 @@ class IBody {
          * @param end   An iterator to the end of the example's feature values
          * @return      True, if the example is covered, false otherwise
          */
-        virtual bool covers(CContiguousFeatureMatrix::const_iterator begin,
-                            CContiguousFeatureMatrix::const_iterator end) const = 0;
+        virtual bool covers(CContiguousFeatureMatrix::value_const_iterator begin,
+                            CContiguousFeatureMatrix::value_const_iterator end) const = 0;
 
         /**
          * Returns whether an individual example, which is stored in a CSR sparse matrix, is covered by the body or not.

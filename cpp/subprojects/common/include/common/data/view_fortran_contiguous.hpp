@@ -44,23 +44,23 @@ class FortranContiguousConstView : virtual public ITwoDimensionalView {
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        typedef const T* const_iterator;
+        typedef const T* value_const_iterator;
 
         /**
-         * Returns a `const_iterator` to the beginning of a specific column.
+         * Returns a `value_const_iterator` to the beginning of a specific column.
          *
          * @param col   The column
-         * @return      A `const_iterator` to the beginning
+         * @return      A `value_const_iterator` to the beginning
          */
-        const_iterator column_cbegin(uint32 col) const;
+        value_const_iterator column_values_cbegin(uint32 col) const;
 
         /**
-         * Returns a `const_iterator` to the end of a specific column.
+         * Returns a `value_const_iterator` to the end of a specific column.
          *
          * @param col   The column
-         * @return      A `const_iterator` to the end
+         * @return      A `value_const_iterator` to the end
          */
-        const_iterator column_cend(uint32 col) const;
+        value_const_iterator column_values_cend(uint32 col) const;
 
         uint32 getNumRows() const override final;
 
@@ -90,22 +90,22 @@ class FortranContiguousView : public FortranContiguousConstView<T> {
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        typedef T* iterator;
+        typedef T* value_iterator;
 
         /**
-         * Returns an `iterator` to the beginning of a specific column.
+         * Returns a `value_iterator` to the beginning of a specific column.
          *
          * @param col   The column
-         * @return      An `iterator` to the beginning
+         * @return      A `value_iterator` to the beginning
          */
-        iterator column_begin(uint32 col);
+        value_iterator column_values_begin(uint32 col);
 
         /**
-         * Returns an `iterator` to the end of a specific column.
+         * Returns a `value_iterator` to the end of a specific column.
          *
          * @param col   The column
-         * @return      An `iterator` to the end
+         * @return      A `value_iterator` to the end
          */
-        iterator column_end(uint32 col);
+        value_iterator column_values_end(uint32 col);
 
 };

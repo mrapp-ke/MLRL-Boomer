@@ -13,8 +13,8 @@ class EmptyBody final : virtual public IBody {
 
     public:
 
-        bool covers(CContiguousFeatureMatrix::const_iterator begin,
-                    CContiguousFeatureMatrix::const_iterator end) const override;
+        bool covers(CContiguousFeatureMatrix::value_const_iterator begin,
+                    CContiguousFeatureMatrix::value_const_iterator end) const override;
 
         bool covers(CsrFeatureMatrix::index_const_iterator indicesBegin,
                     CsrFeatureMatrix::index_const_iterator indicesEnd,

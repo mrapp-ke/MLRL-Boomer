@@ -21,8 +21,8 @@ namespace boosting {
 
     };
 
-    static inline void applyTransformationFunction(CContiguousConstView<float64>::const_iterator originalIterator,
-                                                   CContiguousView<float64>::iterator transformedIterator,
+    static inline void applyTransformationFunction(CContiguousConstView<float64>::value_const_iterator originalIterator,
+                                                   CContiguousView<float64>::value_iterator transformedIterator,
                                                    uint32 numElements,
                                                    const IProbabilityFunction& probabilityFunction) {
         for (uint32 i = 0; i < numElements; i++) {
@@ -87,11 +87,11 @@ namespace boosting {
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                         const RuleList::Rule& rule = *it;
-                        applyRule(rule, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
+                        applyRule(rule, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                   &scoreVector[0]);
                     }
 
-                    applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_begin(i), numLabels,
+                    applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels,
                                                 *probabilityFunctionPtr);
                     delete[] scoreVector;
                 }
@@ -128,7 +128,7 @@ namespace boosting {
                         n++;
                     }
 
-                    applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_begin(i), numLabels,
+                    applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels,
                                                 *probabilityFunctionPtr);
                     delete[] scoreVector;
                     delete[] tmpArray1;

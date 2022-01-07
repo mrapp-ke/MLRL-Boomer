@@ -34,7 +34,7 @@ namespace boosting {
         return closestLabelVector;
     }
 
-    static inline void predictLabelVector(CContiguousView<uint8>::iterator predictionIterator, uint32 numElements,
+    static inline void predictLabelVector(CContiguousView<uint8>::value_iterator predictionIterator, uint32 numElements,
                                           const LabelVector* labelVector) {
         setArrayToZeros(predictionIterator, numElements);
 
@@ -132,13 +132,13 @@ namespace boosting {
                 num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float64* scoreVector = new float64[numLabels] {};
-                    applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
+                    applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                &scoreVector[0]);
                     const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0],
                                                                                    &scoreVector[numLabels],
                                                                                    *similarityMeasureRawPtr,
                                                                                    labelVectorSetPtr);
-                    predictLabelVector(predictionMatrixRawPtr->row_begin(i), numLabels, closestLabelVector);
+                    predictLabelVector(predictionMatrixRawPtr->row_values_begin(i), numLabels, closestLabelVector);
                     delete[] scoreVector;
                 }
 
@@ -170,7 +170,7 @@ namespace boosting {
                                                                                    &scoreVector[numLabels],
                                                                                    *similarityMeasureRawPtr,
                                                                                    labelVectorSetPtr);
-                    predictLabelVector(predictionMatrixRawPtr->row_begin(i), numLabels, closestLabelVector);
+                    predictLabelVector(predictionMatrixRawPtr->row_values_begin(i), numLabels, closestLabelVector);
                     delete[] scoreVector;
                 }
 
@@ -194,7 +194,7 @@ namespace boosting {
                 firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float64* scoreVector = new float64[numLabels] {};
-                    applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
+                    applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                &scoreVector[0]);
                     const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0],
                                                                                    &scoreVector[numLabels],
