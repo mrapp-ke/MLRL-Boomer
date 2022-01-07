@@ -6,11 +6,7 @@
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
  * individual examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
  */
-class CscFeatureMatrix final : virtual public ICscFeatureMatrix {
-
-    private:
-
-        CscConstView<const float32> view_;
+class CscFeatureMatrix final : public CscConstView<const float32>, virtual public ICscFeatureMatrix {
 
     public:
 
@@ -26,22 +22,14 @@ class CscFeatureMatrix final : virtual public ICscFeatureMatrix {
          *                      The index at the last position is equal to `num_non_zero_values`
          */
         CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32* colIndices)
-            : view_(CscConstView<const float32>(numRows, numCols, data, rowIndices, colIndices)) {
+            : CscConstView<const float32>(numRows, numCols, data, rowIndices, colIndices) {
 
-        }
-
-        uint32 getNumRows() const override {
-            return view_.getNumRows();
-        }
-
-        uint32 getNumCols() const override {
-            return view_.getNumCols();
         }
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
-            CscConstView<const float32>::index_const_iterator indexIterator = view_.column_indices_cbegin(featureIndex);
-            CscConstView<const float32>::index_const_iterator indicesEnd = view_.column_indices_cend(featureIndex);
-            CscConstView<const float32>::value_const_iterator valueIterator = view_.column_values_cbegin(featureIndex);
+            CscConstView<const float32>::index_const_iterator indexIterator = this->column_indices_cbegin(featureIndex);
+            CscConstView<const float32>::index_const_iterator indicesEnd = this->column_indices_cend(featureIndex);
+            CscConstView<const float32>::value_const_iterator valueIterator = this->column_values_cbegin(featureIndex);
             uint32 numElements = indicesEnd - indexIterator;
             featureVectorPtr = std::make_unique<FeatureVector>(numElements);
             FeatureVector::iterator vectorIterator = featureVectorPtr->begin();
