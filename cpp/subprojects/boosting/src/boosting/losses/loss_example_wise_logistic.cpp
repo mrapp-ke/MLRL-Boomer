@@ -214,70 +214,72 @@ namespace boosting {
 
         public:
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex,
+                                                   const CContiguousConstView<const uint8>& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
-                updateLabelWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
-                                                                            statisticView);
+                updateLabelWiseStatisticsInternally<CContiguousConstView<const uint8>>(exampleIndex, labelMatrix,
+                                                                                       scoreMatrix, statisticView);
             }
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex,
+                                                   const CContiguousConstView<const uint8>& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
-                updateLabelWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
-                                                                            statisticView);
+                updateLabelWiseStatisticsInternally<CContiguousConstView<const uint8>>(exampleIndex, labelMatrix,
+                                                                                       scoreMatrix, statisticView);
             }
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                                                    const CContiguousConstView<float64>& scoreMatrix,
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
-                updateLabelWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
-                                                                    statisticView);
+                updateLabelWiseStatisticsInternally<BinaryCsrConstView>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                        statisticView);
             }
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                                                    const CContiguousConstView<float64> scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
-                updateLabelWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
-                                                                    statisticView);
+                updateLabelWiseStatisticsInternally<BinaryCsrConstView>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                        statisticView);
             }
 
-            void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+            void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                                              const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override {
-                updateExampleWiseStatisticsInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
-                                                                              statisticView);
+                updateExampleWiseStatisticsInternally<CContiguousConstView<const uint8>>(exampleIndex, labelMatrix,
+                                                                                         scoreMatrix, statisticView);
             }
 
-            void updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+            void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                                              const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override {
-                updateExampleWiseStatisticsInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix,
-                                                                      statisticView);
+                updateExampleWiseStatisticsInternally<BinaryCsrConstView>(exampleIndex, labelMatrix, scoreMatrix,
+                                                                          statisticView);
             }
 
             /**
              * @see `IEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+            float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override {
-                return evaluateInternally<CContiguousLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix);
+                return evaluateInternally<CContiguousConstView<const uint8>>(exampleIndex, labelMatrix, scoreMatrix);
             }
 
             /**
              * @see `IEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+            float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override {
-                return evaluateInternally<CsrLabelMatrix>(exampleIndex, labelMatrix, scoreMatrix);
+                return evaluateInternally<BinaryCsrConstView>(exampleIndex, labelMatrix, scoreMatrix);
             }
 
             /**

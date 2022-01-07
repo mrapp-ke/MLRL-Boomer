@@ -22,13 +22,14 @@ namespace boosting {
              * Updates the statistics of the example at a specific index.
              *
              * @param exampleIndex  The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides random
-             *                      access to the labels of the training examples
+             * @param labelMatrix   A reference to an object of type `CContiguousConstView` that provides random access
+             *                      to the labels of the training examples
              * @param scoreMatrix   A reference to an object of type `CContiguousConstView` that stores the currently
              *                      predicted scores
              * @param statisticView A reference to an object of type `DenseExampleWiseStatisticView` to be updated
              */
-            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+            virtual void updateExampleWiseStatistics(uint32 exampleIndex,
+                                                     const CContiguousConstView<const uint8>& labelMatrix,
                                                      const CContiguousConstView<float64>& scoreMatrix,
                                                      DenseExampleWiseStatisticView& statisticView) const = 0;
 
@@ -36,13 +37,13 @@ namespace boosting {
              * Updates the statistics of the example at a specific index.
              *
              * @param exampleIndex  The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` that provides row-wise access to
-             *                      the labels of the training examples
+             * @param labelMatrix   A reference to an object of type `BinaryCsrConstView` that provides row-wise access
+             *                      to the labels of the training examples
              * @param scoreMatrix   A reference to an object of type `CContiguousConstView` that stores the currently
              *                      predicted scores
              * @param statisticView A reference to an object of type `DenseExampleWiseStatisticView` to be updated
              */
-            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                                                      const CContiguousConstView<float64>& scoreMatrix,
                                                      DenseExampleWiseStatisticView& statisticView) const = 0;
 
