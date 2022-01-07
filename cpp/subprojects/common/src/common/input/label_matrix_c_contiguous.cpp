@@ -6,29 +6,13 @@
 
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
-    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.view_.row_values_cbegin(row)) {
+    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.row_values_cbegin(row)) {
 
 }
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
-    : view_(CContiguousConstView<const uint8>(numRows, numCols, array)) {
+    : CContiguousConstView<const uint8>(numRows, numCols, array) {
 
-}
-
-CContiguousLabelMatrix::value_const_iterator CContiguousLabelMatrix::row_values_cbegin(uint32 row) const {
-    return view_.row_values_cbegin(row);
-}
-
-CContiguousLabelMatrix::value_const_iterator CContiguousLabelMatrix::row_values_cend(uint32 row) const {
-    return view_.row_values_cend(row);
-}
-
-uint32 CContiguousLabelMatrix::getNumRows() const {
-    return view_.getNumRows();
-}
-
-uint32 CContiguousLabelMatrix::getNumCols() const {
-    return view_.getNumCols();
 }
 
 float64 CContiguousLabelMatrix::calculateLabelCardinality() const {
