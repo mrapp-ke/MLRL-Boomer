@@ -16,8 +16,8 @@ namespace boosting {
     }
 
     template<typename T>
-    void NumericDenseMatrix<T>::addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
-                                                   typename DenseVector<T>::const_iterator end,
+    void NumericDenseMatrix<T>::addToRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
+                                                   typename VectorConstView<T>::const_iterator end,
                                                    CompleteIndexVector::const_iterator indicesBegin,
                                                    CompleteIndexVector::const_iterator indicesEnd) {
         typename NumericDenseMatrix<T>::value_iterator iterator = this->row_values_begin(row);
@@ -29,8 +29,8 @@ namespace boosting {
     }
 
     template<typename T>
-    void NumericDenseMatrix<T>::addToRowFromSubset(uint32 row, typename DenseVector<T>::const_iterator begin,
-                                                   typename DenseVector<T>::const_iterator end,
+    void NumericDenseMatrix<T>::addToRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
+                                                   typename VectorConstView<T>::const_iterator end,
                                                    PartialIndexVector::const_iterator indicesBegin,
                                                    PartialIndexVector::const_iterator indicesEnd) {
         typename NumericDenseMatrix<T>::value_iterator iterator = this->row_values_begin(row);
