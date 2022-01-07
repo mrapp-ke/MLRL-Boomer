@@ -40,7 +40,7 @@ namespace boosting {
 
         if (labelVector != nullptr) {
             uint32 numIndices = labelVector->getNumElements();
-            LabelVector::index_const_iterator indexIterator = labelVector->indices_cbegin();
+            LabelVector::const_iterator indexIterator = labelVector->cbegin();
 
             for (uint32 i = 0; i < numIndices; i++) {
                 uint32 labelIndex = indexIterator[i];
@@ -54,7 +54,7 @@ namespace boosting {
 
         if (labelVector != nullptr) {
             uint32 numIndices = labelVector->getNumElements();
-            LabelVector::index_const_iterator indexIterator = labelVector->indices_cbegin();
+            LabelVector::const_iterator indexIterator = labelVector->cbegin();
 
             if (numIndices > 0) {
                 uint32 labelIndex = indexIterator[0];

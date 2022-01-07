@@ -53,7 +53,7 @@ namespace seco {
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr =
             std::make_unique<BinarySparseArrayVector>(numLabels);
-        BinarySparseArrayVector::index_iterator majorityIterator = majorityLabelVectorPtr->indices_begin();
+        BinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
         float64 threshold = numExamples / 2.0;
         float64 sumOfUncoveredWeights = 0;
         uint32 n = 0;
@@ -88,7 +88,7 @@ namespace seco {
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr =
             std::make_unique<BinarySparseArrayVector>(numLabels, true);
-        BinarySparseArrayVector::index_iterator majorityIterator = majorityLabelVectorPtr->indices_begin();
+        BinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
 
         for (uint32 i = 0; i < numExamples; i++) {
             BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(i);

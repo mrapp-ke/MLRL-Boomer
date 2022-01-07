@@ -43,7 +43,7 @@ CContiguousLabelMatrix::view_type CContiguousLabelMatrix::createView(uint32 row)
 std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 row) const {
     uint32 numCols = this->getNumCols();
     std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numCols);
-    LabelVector::index_iterator iterator = labelVectorPtr->indices_begin();
+    LabelVector::iterator iterator = labelVectorPtr->begin();
     value_const_iterator labelIterator = this->row_values_cbegin(row);
     uint32 n = 0;
 
