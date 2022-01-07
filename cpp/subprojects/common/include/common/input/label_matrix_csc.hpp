@@ -18,15 +18,7 @@
  * or a `CsrLabelMatrix`, which provides row-wise access to the labels of the training examples. These constructors
  * expect the indices of the examples to be considered when copying the existing label matrix to be provided.
  */
-class CscLabelMatrix final {
-
-    private:
-
-        uint32* rowIndices_;
-
-        uint32* colIndices_;
-
-        BinaryCscConstView view_;
+class CscLabelMatrix final : public BinaryCscConstView {
 
     public:
 
@@ -71,68 +63,5 @@ class CscLabelMatrix final {
                        PartialIndexVector::const_iterator indicesEnd);
 
         ~CscLabelMatrix();
-
-        /**
-         * An iterator that provides read-only access to the indices of the relevant labels.
-         */
-        typedef BinaryCscConstView::index_const_iterator index_const_iterator;
-
-        /**
-         * An iterator that provides read-only access to the values in the label matrix.
-         */
-        typedef BinaryCscConstView::value_const_iterator value_const_iterator;
-
-        /**
-         * Returns an `index_const_iterator` to the beginning of the indices at a specific column.
-         *
-         * @param col   The column
-         * @return      An `index_const_iterator` to the beginning of the indices
-         */
-        index_const_iterator column_indices_cbegin(uint32 col) const;
-
-        /**
-         * Returns an `index_const_iterator` to the end of the indices at a specific column.
-         *
-         * @param col   The column
-         * @return      An `index_const_iterator` to the end of the indices
-         */
-        index_const_iterator column_indices_cend(uint32 col) const;
-
-        /**
-         * Returns a `value_const_iterator` to the beginning of the values at a specific column.
-         *
-         * @param col   The column
-         * @return      A `value_const_iterator` to the beginning of the values
-         */
-        value_const_iterator column_values_cbegin(uint32 col) const;
-
-        /**
-         * Returns a `value_const_iterator` to the end of the values at a specific column.
-         *
-         * @param col   The column
-         * @return      A `value_const_iterator` to the end of the values
-         */
-        value_const_iterator column_values_cend(uint32 col) const;
-
-        /**
-         * Returns the number of rows in the label matrix.
-         *
-         * @return The number of rows
-         */
-        uint32 getNumRows() const;
-
-        /**
-         * Returns the number of columns in the label matrix.
-         *
-         * @return The number of columns
-         */
-        uint32 getNumCols() const;
-
-        /**
-         * Returns the number of relevant labels.
-         *
-         * @return The number of relevant labels
-         */
-        uint32 getNumNonZeroElements() const;
 
 };
