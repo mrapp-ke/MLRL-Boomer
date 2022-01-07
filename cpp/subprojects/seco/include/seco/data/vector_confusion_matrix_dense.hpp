@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/input/label_matrix_c_contiguous.hpp"
-#include "common/input/label_matrix_csr.hpp"
+#include "common/data/view_c_contiguous.hpp"
+#include "common/data/view_csr_binary.hpp"
 #include "seco/data/confusion_matrix.hpp"
 #include "seco/data/matrix_weight_dense.hpp"
 
@@ -105,15 +105,15 @@ namespace seco {
              * confusion matrix elements to be added are multiplied by a specific weight.
              *
              * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `CContiguousLabelMatrix` that provides
-             *                              random access to the labels of the training examples
+             * @param labelMatrix           A reference to an object of type `CContiguousConstView` that provides random
+             *                              access to the labels of the training examples
              * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
              *                              predictions of the default rule
              * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
              *                              of individual examples and labels
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
-            void add(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+            void add(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                      const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                      float64 weight);
 
@@ -122,7 +122,7 @@ namespace seco {
              * confusion matrix elements to be added are multiplied by a specific weight.
              *
              * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `CsrLabelMatrix` that provides row-wise
+             * @param labelMatrix           A reference to an object of type `BinaryCsrConstView` that provides row-wise
              *                              access to the labels of the training examples
              * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
              *                              predictions of the default rule
@@ -130,7 +130,7 @@ namespace seco {
              *                              of individual examples and labels
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
-            void add(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+            void add(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                      const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                      float64 weight);
 
@@ -140,26 +140,7 @@ namespace seco {
              * specific weight.
              *
              * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `CContiguousLabelMatrix` that provides
-             *                              random access to the labels of the training examples
-             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
-             *                              predictions of the default rule
-             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
-             *                              of individual examples and labels
-             * @param indices               A reference to a `CompleteIndexVector' that provides access to the indices
-             * @param weight                The weight, the confusion matrix elements should be multiplied by
-             */
-            void addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
-                             const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
-                             const CompleteIndexVector& indices, float64 weight);
-
-            /**
-             * Adds certain confusion matrix elements in another vector, whose positions are given as a
-             * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
-             * specific weight.
-             *
-             * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `CsrLabelMatrix` that provides row-wise
+             * @param labelMatrix           A reference to an object of type `CContiguousConstView` that provides random
              *                              access to the labels of the training examples
              * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
              *                              predictions of the default rule
@@ -168,7 +149,7 @@ namespace seco {
              * @param indices               A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
-            void addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+            void addToSubset(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                              const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                              const CompleteIndexVector& indices, float64 weight);
 
@@ -178,8 +159,27 @@ namespace seco {
              * specific weight.
              *
              * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `CContiguousLabelMatrix` that provides
-             *                              random access to the labels of the training examples
+             * @param labelMatrix           A reference to an object of type `BinaryCsrConstView` that provides row-wise
+             *                              access to the labels of the training examples
+             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
+             *                              predictions of the default rule
+             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
+             *                              of individual examples and labels
+             * @param indices               A reference to a `CompleteIndexVector' that provides access to the indices
+             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             */
+            void addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+                             const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
+                             const CompleteIndexVector& indices, float64 weight);
+
+            /**
+             * Adds certain confusion matrix elements in another vector, whose positions are given as a
+             * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
+             * specific weight.
+             *
+             * @param exampleIndex          The index of the example
+             * @param labelMatrix           A reference to an object of type `CContiguousConstView` that provides random
+             *                              access to the labels of the training examples
              * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
              *                              predictions of the default rule
              * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
@@ -187,7 +187,7 @@ namespace seco {
              * @param indices               A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
-            void addToSubset(uint32 exampleIndex, const CContiguousLabelMatrix& labelMatrix,
+            void addToSubset(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                              const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                              const PartialIndexVector& indices, float64 weight);
 
@@ -197,7 +197,7 @@ namespace seco {
              * specific weight.
              *
              * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `CsrLabelMatrix` that provides row-wise
+             * @param labelMatrix           A reference to an object of type `BinaryCsrConstView` that provides row-wise
              *                              access to the labels of the training examples
              * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
              *                              predictions of the default rule
@@ -206,7 +206,7 @@ namespace seco {
              * @param indices               A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
-            void addToSubset(uint32 exampleIndex, const CsrLabelMatrix& labelMatrix,
+            void addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                              const BinarySparseArrayVector& majorityLabelVector, const DenseWeightMatrix& weightMatrix,
                              const PartialIndexVector& indices, float64 weight);
 
