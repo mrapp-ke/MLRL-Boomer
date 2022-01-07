@@ -13,13 +13,13 @@ class EmptyBody final : virtual public IBody {
 
     public:
 
-        bool covers(CContiguousFeatureMatrix::value_const_iterator begin,
-                    CContiguousFeatureMatrix::value_const_iterator end) const override;
+        bool covers(CContiguousConstView<const float32>::value_const_iterator begin,
+                    CContiguousConstView<const float32>::value_const_iterator end) const override;
 
-        bool covers(CsrFeatureMatrix::index_const_iterator indicesBegin,
-                    CsrFeatureMatrix::index_const_iterator indicesEnd,
-                    CsrFeatureMatrix::value_const_iterator valuesBegin,
-                    CsrFeatureMatrix::value_const_iterator valuesEnd, float32* tmpArray1, uint32* tmpArray2,
+        bool covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
+                    CsrConstView<const float32>::index_const_iterator indicesEnd,
+                    CsrConstView<const float32>::value_const_iterator valuesBegin,
+                    CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1, uint32* tmpArray2,
                     uint32 n) const override;
 
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const override;

@@ -164,8 +164,8 @@ ConjunctiveBody::index_const_iterator ConjunctiveBody::neq_indices_cend() const 
     return &neqFeatureIndices_[numLeq_];
 }
 
-bool ConjunctiveBody::covers(CContiguousFeatureMatrix::value_const_iterator begin,
-                             CContiguousFeatureMatrix::value_const_iterator end) const {
+bool ConjunctiveBody::covers(CContiguousConstView<const float32>::value_const_iterator begin,
+                             CContiguousConstView<const float32>::value_const_iterator end) const {
     // Test conditions using the <= operator...
     for (uint32 i = 0; i < numLeq_; i++) {
         uint32 featureIndex = leqFeatureIndices_[i];
@@ -209,11 +209,11 @@ bool ConjunctiveBody::covers(CContiguousFeatureMatrix::value_const_iterator begi
     return true;
 }
 
-bool ConjunctiveBody::covers(CsrFeatureMatrix::index_const_iterator indicesBegin,
-                             CsrFeatureMatrix::index_const_iterator indicesEnd,
-                             CsrFeatureMatrix::value_const_iterator valuesBegin,
-                             CsrFeatureMatrix::value_const_iterator valuesEnd, float32* tmpArray1, uint32* tmpArray2,
-                             uint32 n) const {
+bool ConjunctiveBody::covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
+                             CsrConstView<const float32>::index_const_iterator indicesEnd,
+                             CsrConstView<const float32>::value_const_iterator valuesBegin,
+                             CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1,
+                             uint32* tmpArray2, uint32 n) const {
     // Copy non-zero feature values to the temporary arrays...
     auto valueIterator = valuesBegin;
 
