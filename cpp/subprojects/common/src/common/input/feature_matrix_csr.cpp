@@ -8,32 +8,8 @@
 
 CsrFeatureMatrix::CsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices,
                                    uint32* colIndices)
-    : view_(CsrConstView<const float32>(numRows, numCols, data, rowIndices, colIndices)) {
+    : CsrConstView<const float32>(numRows, numCols, data, rowIndices, colIndices) {
 
-}
-
-CsrFeatureMatrix::value_const_iterator CsrFeatureMatrix::row_values_cbegin(uint32 row) const {
-    return view_.row_values_cbegin(row);
-}
-
-CsrFeatureMatrix::value_const_iterator CsrFeatureMatrix::row_values_cend(uint32 row) const {
-    return view_.row_values_cend(row);
-}
-
-CsrFeatureMatrix::index_const_iterator CsrFeatureMatrix::row_indices_cbegin(uint32 row) const {
-    return view_.row_indices_cbegin(row);
-}
-
-CsrFeatureMatrix::index_const_iterator CsrFeatureMatrix::row_indices_cend(uint32 row) const {
-    return view_.row_indices_cend(row);
-}
-
-uint32 CsrFeatureMatrix::getNumRows() const {
-    return view_.getNumRows();
-}
-
-uint32 CsrFeatureMatrix::getNumCols() const {
-    return view_.getNumCols();
 }
 
 std::unique_ptr<DensePredictionMatrix<uint8>> CsrFeatureMatrix::predictLabels(
