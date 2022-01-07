@@ -48,8 +48,8 @@ namespace seco {
              * @param indicesEnd            An iterator to the end of the label indices
              */
             void updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,
-                           DenseVector<float64>::const_iterator predictionBegin,
-                           DenseVector<float64>::const_iterator predictionEnd,
+                           VectorView<float64>::const_iterator predictionBegin,
+                           VectorView<float64>::const_iterator predictionEnd,
                            CompleteIndexVector::const_iterator indicesBegin,
                            CompleteIndexVector::const_iterator indicesEnd);
 
@@ -65,8 +65,8 @@ namespace seco {
              * @param indicesEnd            An iterator to the end of the label indices
              */
             void updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,
-                           DenseVector<float64>::const_iterator predictionBegin,
-                           DenseVector<float64>::const_iterator predictionEnd,
+                           VectorView<float64>::const_iterator predictionBegin,
+                           VectorView<float64>::const_iterator predictionEnd,
                            PartialIndexVector::const_iterator indicesBegin,
                            PartialIndexVector::const_iterator indicesEnd);
 
