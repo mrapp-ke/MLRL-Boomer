@@ -24,8 +24,8 @@ namespace seco {
              * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on label-wise
              * confusion matrices.
              *
-             * @param majorityLabelVector       A reference to an object of type `DenseVector` that stores the
-             *                                  predictions of the default rule
+             * @param majorityLabelVector       A reference to an object of type `BinarySparseArrayVector` that stores
+             *                                  the predictions of the default rule
              * @param confusionMatricesTotal    A reference to an object of type `DenseConfusionMatrixVector` that
              *                                  stores confusion matrices that take into account all examples
              * @param confusionMatricesCovered  A reference to an object of type `DenseConfusionMatrixVector` that
