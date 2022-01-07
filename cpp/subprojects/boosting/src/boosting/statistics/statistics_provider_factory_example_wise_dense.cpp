@@ -177,7 +177,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
-            const CContiguousLabelMatrix& labelMatrix) const {
+            const CContiguousConstView<const uint8>& labelMatrix) const {
         std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>> statisticsPtr =
             createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_,
                              numThreads_, labelMatrix);
@@ -186,7 +186,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
-            const CsrLabelMatrix& labelMatrix) const {
+            const BinaryCsrConstView& labelMatrix) const {
         std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>> statisticsPtr =
             createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_,
                              numThreads_, labelMatrix);
@@ -214,7 +214,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(
-            const CContiguousLabelMatrix& labelMatrix) const {
+            const CContiguousConstView<const uint8>& labelMatrix) const {
         std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>> statisticsPtr =
             createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_,
                              numThreads_, labelMatrix);
@@ -224,7 +224,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(
-            const CsrLabelMatrix& labelMatrix) const {
+            const BinaryCsrConstView& labelMatrix) const {
         std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>> statisticsPtr =
             createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_,
                              numThreads_, labelMatrix);
