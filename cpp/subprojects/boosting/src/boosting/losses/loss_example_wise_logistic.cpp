@@ -285,7 +285,7 @@ namespace boosting {
             /**
              * @see `ISimilarityMeasure::measureSimilarity`
              */
-            float64 measureSimilarity(const LabelVector& labelVector,
+            float64 measureSimilarity(const VectorConstView<uint32>& relevantLabelIndices,
                                       CContiguousView<float64>::value_const_iterator scoresBegin,
                                       CContiguousView<float64>::value_const_iterator scoresEnd) const override {
                 // The example-wise logistic loss calculates as
@@ -295,7 +295,8 @@ namespace boosting {
                 // numerical stability (see, e.g., section "Log-sum-exp for computing the log-distribution" in
                 // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
                 uint32 numLabels = scoresEnd - scoresBegin;
-                auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
+                auto labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(),
+                                                                  relevantLabelIndices.cend());
                 float64 max = 0;
 
                 // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value
@@ -314,7 +315,8 @@ namespace boosting {
 
                 // Calculate the example-wise loss as `max + log(exp(0 - max) + exp(x_1 - max) + ...)`...
                 float64 sumExp = std::exp(0 - max);
-                labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
+                labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(),
+                                                             relevantLabelIndices.cend());
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     float64 predictedScore = scoresBegin[i];
