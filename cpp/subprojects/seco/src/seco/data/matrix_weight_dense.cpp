@@ -20,7 +20,7 @@ namespace seco {
                                       CompleteIndexVector::const_iterator indicesBegin,
                                       CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
-        iterator weightIterator = this->row_begin(row);
+        value_iterator weightIterator = this->row_values_begin(row);
         auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                              majorityLabelVector.indices_cend());
 
@@ -47,7 +47,7 @@ namespace seco {
                                       PartialIndexVector::const_iterator indicesBegin,
                                       PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
-        iterator weightIterator = this->row_begin(row);
+        value_iterator weightIterator = this->row_values_begin(row);
         auto majorityIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
                                                              majorityLabelVector.indices_cend());
         uint32 previousIndex = 0;

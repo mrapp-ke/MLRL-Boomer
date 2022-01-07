@@ -29,7 +29,7 @@ namespace boosting {
         // `exp(x_1 - max) / (exp(x_1 - max) + exp(x_2 - max) + ...)`, where `max = max(x_1, x_2, ...)`. To be able to
         // exploit this equivalence for the calculation of gradients and Hessians, they are calculated as products of
         // fractions of the above form.
-        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousConstView<float64>::value_const_iterator scoreIterator = scoreMatrix.row_values_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
         uint32 numLabels = labelMatrix.getNumCols();
@@ -83,7 +83,7 @@ namespace boosting {
         // `exp(x_1 - max) / (exp(x_1 - max) + exp(x_2 - max) + ...)`, where `max = max(x_1, x_2, ...)`. To be able to
         // exploit this equivalence for the calculation of gradients and Hessians, they are calculated as products of
         // fractions of the above form.
-        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousConstView<float64>::value_const_iterator scoreIterator = scoreMatrix.row_values_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         DenseExampleWiseStatisticView::gradient_iterator gradientIterator =
             statisticView.gradients_row_begin(exampleIndex);
@@ -173,7 +173,7 @@ namespace boosting {
         // `max = max(x_1, x_2, ...)`, to increase numerical stability (see, e.g., section "Log-sum-exp for computing
         // the log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
         uint32 numLabels = labelMatrix.getNumCols();
-        CContiguousConstView<float64>::const_iterator scoreIterator = scoreMatrix.row_cbegin(exampleIndex);
+        CContiguousConstView<float64>::value_const_iterator scoreIterator = scoreMatrix.row_values_cbegin(exampleIndex);
         typename LabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
         float64 max = 0;
 
@@ -284,8 +284,8 @@ namespace boosting {
              * @see `ISimilarityMeasure::measureSimilarity`
              */
             float64 measureSimilarity(const LabelVector& labelVector,
-                                      CContiguousView<float64>::const_iterator scoresBegin,
-                                      CContiguousView<float64>::const_iterator scoresEnd) const override {
+                                      CContiguousView<float64>::value_const_iterator scoresBegin,
+                                      CContiguousView<float64>::value_const_iterator scoresEnd) const override {
                 // The example-wise logistic loss calculates as
                 // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2)
                 // + ...)`. In the following, we exploit the identity `log(exp(x_1) + exp(x_2) + ...) =

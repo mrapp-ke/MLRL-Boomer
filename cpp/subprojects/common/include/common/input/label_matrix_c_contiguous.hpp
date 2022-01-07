@@ -109,7 +109,7 @@ class CContiguousLabelMatrix final : virtual public ICContiguousLabelMatrix {
         /**
          * An iterator that provides read-only access to the values in the label matrix.
          */
-        typedef CContiguousConstView<const uint8>::const_iterator value_const_iterator;
+        typedef CContiguousConstView<const uint8>::value_const_iterator value_const_iterator;
 
         /**
          * Returns a `value_const_iterator` to the beginning of a specific row.

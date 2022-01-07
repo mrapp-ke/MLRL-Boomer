@@ -7,8 +7,8 @@
 
 namespace boosting {
 
-    static inline void applyThreshold(CContiguousConstView<float64>::const_iterator originalIterator,
-                                      CContiguousView<uint8>::iterator transformedIterator, uint32 numElements,
+    static inline void applyThreshold(CContiguousConstView<float64>::value_const_iterator originalIterator,
+                                      CContiguousView<uint8>::value_iterator transformedIterator, uint32 numElements,
                                       float64 threshold) {
         for (uint32 i = 0; i < numElements; i++) {
             float64 originalValue = originalIterator[i];
@@ -17,7 +17,7 @@ namespace boosting {
         }
     }
 
-    static inline uint32 applyThreshold(CContiguousConstView<float64>::const_iterator originalIterator,
+    static inline uint32 applyThreshold(CContiguousConstView<float64>::value_const_iterator originalIterator,
                                         BinaryLilMatrix::Row& row, uint32 numElements, float64 threshold) {
         uint32 numNonZeroElements = 0;
         uint32 i = 0;
@@ -95,9 +95,9 @@ namespace boosting {
                 schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float64* scoreVector = new float64[numLabels] {};
-                    applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
+                    applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                &scoreVector[0]);
-                    applyThreshold(&scoreVector[0], predictionMatrixRawPtr->row_begin(i), numLabels, threshold);
+                    applyThreshold(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels, threshold);
                     delete[] scoreVector;
                 }
 
@@ -123,7 +123,7 @@ namespace boosting {
                     applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                                   featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                                   featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                    applyThreshold(&scoreVector[0], predictionMatrixRawPtr->row_begin(i), numLabels, threshold);
+                    applyThreshold(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels, threshold);
                     delete[] scoreVector;
                 }
 
@@ -145,7 +145,7 @@ namespace boosting {
                 firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
                     float64* scoreVector = new float64[numLabels] {};
-                    applyRules(*modelPtr, featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i),
+                    applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                &scoreVector[0]);
                     numNonZeroElements += applyThreshold(&scoreVector[0], predictionMatrixPtr->getRow(i), numLabels,
                                                          threshold);

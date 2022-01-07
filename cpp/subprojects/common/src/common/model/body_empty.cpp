@@ -1,8 +1,8 @@
 #include "common/model/body_empty.hpp"
 
 
-bool EmptyBody::covers(CContiguousFeatureMatrix::const_iterator begin,
-                       CContiguousFeatureMatrix::const_iterator end) const {
+bool EmptyBody::covers(CContiguousFeatureMatrix::value_const_iterator begin,
+                       CContiguousFeatureMatrix::value_const_iterator end) const {
     return true;
 }
 
