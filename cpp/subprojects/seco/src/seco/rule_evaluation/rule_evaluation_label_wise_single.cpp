@@ -64,8 +64,8 @@ namespace seco {
                     }
                 }
 
-                auto labelIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                                  majorityLabelVector.indices_cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelVector.cbegin(),
+                                                                  majorityLabelVector.cend());
                 std::advance(labelIterator, bestIndex);
                 scoreVector_.scores_begin()[0] = (float64) !(*labelIterator);
                 indexVector_.begin()[0] = bestIndex;

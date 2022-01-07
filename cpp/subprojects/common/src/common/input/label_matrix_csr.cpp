@@ -40,7 +40,7 @@ std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const
     index_const_iterator indicesEnd = this->row_indices_cend(row);
     uint32 numElements = indicesEnd - indexIterator;
     std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numElements);
-    LabelVector::index_iterator iterator = labelVectorPtr->indices_begin();
+    LabelVector::iterator iterator = labelVectorPtr->begin();
     copyArray(indexIterator, iterator, numElements);
     return labelVectorPtr;
 }
