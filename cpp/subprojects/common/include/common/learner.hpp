@@ -344,6 +344,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory() const;
 
         /**
+         * May be overridden by subclasses in order to create the `IFeatureBinningFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `IFeatureBinningFactory` that has been created or a null
+         *         pointer, if no `IFeatureBinningFactory` should be used
+         */
+        virtual std::unique_ptr<IFeatureBinningFactory> createFeatureBinningFactory() const;
+
+        /**
          * May be overridden by subclasses in order to create the `IThresholdsFactory` to be used by the rule learner.
          *
          * @return An unique pointer to an object of type `IThresholdsFactory` that has been created

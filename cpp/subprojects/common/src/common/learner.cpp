@@ -8,6 +8,7 @@
 #include "common/sampling/label_sampling_no.hpp"
 #include "common/sampling/partition_sampling_no.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
+#include "common/thresholds/thresholds_approximate.hpp"
 #include "common/thresholds/thresholds_exact.hpp"
 #include "common/util/threads.hpp"
 #include <stdexcept>
@@ -108,22 +109,45 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
     return std::make_unique<SequentialRuleModelAssemblageFactory>();
 }
 
+std::unique_ptr<IFeatureBinningFactory> AbstractRuleLearner::createFeatureBinningFactory() const {
+    const IFeatureBinningConfig* featureBinningConfig = this->configPtr_->getFeatureBinningConfig();
+
+    if (featureBinningConfig == nullptr) {
+        return nullptr;
+    } else {
+        if (auto* config = dynamic_cast<const EqualWidthFeatureBinningConfig*>(featureBinningConfig)) {
+            return std::make_unique<EqualWidthFeatureBinningFactory>(config->getBinRatio(), config->getMinBins(),
+                                                                     config->getMaxBins());
+        } else if (auto* config = dynamic_cast<const EqualFrequencyFeatureBinningConfig*>(featureBinningConfig)) {
+            return std::make_unique<EqualFrequencyFeatureBinningFactory>(config->getBinRatio(), config->getMinBins(),
+                                                                         config->getMaxBins());
+        }
+
+        throw std::runtime_error("Failed to create IFeatureBinningFactory");
+    }
+}
+
 std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory() const {
-    // TODO Implement
-    uint32 numThreads = 1;
-    return std::make_unique<ExactThresholdsFactory>(numThreads);
+    uint32 numThreads = 1; // TODO Use correct number of threads
+    std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr = this->createFeatureBinningFactory();
+
+    if (featureBinningFactoryPtr == nullptr) {
+        return std::make_unique<ExactThresholdsFactory>(numThreads);
+    } else {
+        return std::make_unique<ApproximateThresholdsFactory>(std::move(featureBinningFactoryPtr), numThreads);
+    }
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
-    const IRuleInductionConfig* ruleInductionConfig = &this->configPtr_->getRuleInductionConfig();
+    const IRuleInductionConfig& ruleInductionConfig = this->configPtr_->getRuleInductionConfig();
 
-    if (auto* config = dynamic_cast<const TopDownRuleInductionConfig*>(ruleInductionConfig)) {
+    if (auto* config = dynamic_cast<const TopDownRuleInductionConfig*>(&ruleInductionConfig)) {
         return std::make_unique<TopDownRuleInductionFactory>(
             config->getMinCoverage(), config->getMaxConditions(), config->getMaxHeadRefinements(),
             config->getRecalculatePredictions(), getNumThreads(config->getNumThreads()));
     }
 
-    throw std::runtime_error("Failed to configure the algorithm for the induction of individual rules");
+    throw std::runtime_error("Failed to create IRuleInductionFactory");
 }
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory() const {
