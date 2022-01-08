@@ -27,7 +27,9 @@ namespace seco {
              */
             CoverageStoppingCriterionFactory(float64 threshold);
 
-            std::unique_ptr<IStoppingCriterion> create() const override;
+            std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override;
+
+            std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override;
 
     };
 

@@ -22,7 +22,7 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
 
         }
 
-        Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override {
+        Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
 
             if (numRules < maxRules_) {
@@ -42,6 +42,10 @@ SizeStoppingCriterionFactory::SizeStoppingCriterionFactory(uint32 maxRules)
     assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
 }
 
-std::unique_ptr<IStoppingCriterion> SizeStoppingCriterionFactory::create() const {
+std::unique_ptr<IStoppingCriterion> SizeStoppingCriterionFactory::create(const SinglePartition& partition) const {
+    return std::make_unique<SizeStoppingCriterion>(maxRules_);
+}
+
+std::unique_ptr<IStoppingCriterion> SizeStoppingCriterionFactory::create(BiPartition& partition) const {
     return std::make_unique<SizeStoppingCriterion>(maxRules_);
 }
