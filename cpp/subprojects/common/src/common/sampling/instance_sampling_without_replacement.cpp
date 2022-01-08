@@ -60,10 +60,25 @@ class InstanceSamplingWithoutReplacement final : public IInstanceSampling {
 
 };
 
-InstanceSamplingWithoutReplacementFactory::InstanceSamplingWithoutReplacementFactory(float32 sampleSize)
-    : sampleSize_(sampleSize) {
+InstanceSamplingWithoutReplacementConfig::InstanceSamplingWithoutReplacementConfig()
+    : sampleSize_(0.66) {
+
+}
+
+float32 InstanceSamplingWithoutReplacementConfig::getSampleSize() const {
+    return sampleSize_;
+}
+
+InstanceSamplingWithoutReplacementConfig& InstanceSamplingWithoutReplacementConfig::setSampleSize(float32 sampleSize) {
     assertGreater<float32>("sampleSize", sampleSize, 0);
     assertLess<float32>("sampleSize", sampleSize, 1);
+    sampleSize_ = sampleSize;
+    return *this;
+}
+
+InstanceSamplingWithoutReplacementFactory::InstanceSamplingWithoutReplacementFactory(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
 }
 
 std::unique_ptr<IInstanceSampling> InstanceSamplingWithoutReplacementFactory::create(
