@@ -29,7 +29,7 @@ class IFeatureSampling {
 };
 
 /**
- * Defines an interface for all classes that allow to configure the strategy for sampling features.
+ * Defines an interface for all classes that allow to configure a strategy for sampling features.
  */
 class IFeatureSamplingConfig {
 
