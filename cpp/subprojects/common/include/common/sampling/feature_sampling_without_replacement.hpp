@@ -29,7 +29,7 @@ class FeatureSamplingWithoutReplacementConfig : public IFeatureSamplingConfig {
         /**
          * Sets the fraction of features that should be included in a sample.
          *
-         * @param sampleSize    The fraction of features that should be included in sample, e.g., a value of 0.6
+         * @param sampleSize    The fraction of features that should be included in a sample, e.g., a value of 0.6
          *                      corresponds to 60 % of the available features. Must be in (0, 1) or 0, if the default
          *                      sample size `floor(log2(numFeatures - 1) + 1)` should be used
          * @return              A reference to an object of type `FeatureSamplingWithoutReplacementConfig` that allows
