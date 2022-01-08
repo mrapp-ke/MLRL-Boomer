@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_provider_factory.hpp"
+#include "common/statistics/statistics_provider.hpp"
 #include "seco/statistics/statistics_label_wise.hpp"
 
 
