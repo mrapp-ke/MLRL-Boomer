@@ -35,6 +35,16 @@ class IInstanceSampling {
 
 };
 
+/**
+ * Defines an interface for all classes that allow to configure a strategy for sampling instances.
+ */
+class IInstanceSamplingConfig {
+
+    public:
+
+        virtual ~IInstanceSamplingConfig() { };
+
+};
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IInstanceSampling`.
