@@ -2,15 +2,14 @@
 
 
 static inline IStoppingCriterion::Result testStoppingCriteria(
-        std::forward_list<std::unique_ptr<IStoppingCriterion>>& stoppingCriteria, const IPartition& partition,
-        const IStatistics& statistics, uint32 numRules) {
+        std::forward_list<std::unique_ptr<IStoppingCriterion>>& stoppingCriteria, const IStatistics& statistics,
+        uint32 numRules) {
     IStoppingCriterion::Result result;
     result.action = IStoppingCriterion::Action::CONTINUE;
 
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::unique_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
-        IStoppingCriterion::Result stoppingCriterionResult = stoppingCriterionPtr->test(partition, statistics,
-                                                                                        numRules);
+        IStoppingCriterion::Result stoppingCriterionResult = stoppingCriterionPtr->test(statistics, numRules);
         IStoppingCriterion::Action action = stoppingCriterionResult.action;
 
         switch (action) {
@@ -166,8 +165,8 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr_->create();
             IStoppingCriterion::Result stoppingCriterionResult;
 
-            while (stoppingCriterionResult = testStoppingCriteria(stoppingCriteria, partition,
-                                                                  statisticsProviderPtr->get(), numRules),
+            while (stoppingCriterionResult = testStoppingCriteria(stoppingCriteria, statisticsProviderPtr->get(),
+                                                                  numRules),
                    stoppingCriterionResult.action != IStoppingCriterion::Action::FORCE_STOP) {
                 if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
                     numUsedRules = stoppingCriterionResult.numRules;
