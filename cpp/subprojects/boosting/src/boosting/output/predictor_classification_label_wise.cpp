@@ -80,12 +80,12 @@ namespace boosting {
 
             }
 
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CContiguousFeatureMatrix& featureMatrix,
-                                                                  uint32 numLabels) const override {
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(
+                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
@@ -104,13 +104,13 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrFeatureMatrix& featureMatrix,
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrConstView<const float32>& featureMatrix,
                                                                   uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
@@ -130,11 +130,11 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CContiguousFeatureMatrix& featureMatrix,
-                                                                        uint32 numLabels) const override {
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 BinaryLilMatrix lilMatrix(numExamples);
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                 const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
@@ -155,12 +155,12 @@ namespace boosting {
                 return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
             }
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CsrFeatureMatrix& featureMatrix,
-                                                                        uint32 numLabels) const override {
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                    const CsrConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 BinaryLilMatrix lilMatrix(numExamples);
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                 const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
