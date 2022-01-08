@@ -29,6 +29,17 @@ class ILabelSampling {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure a strategy for sampling labels.
+ */
+class ILabelSamplingConfig {
+
+    public:
+
+        virtual ~ILabelSamplingConfig() { };
+
+};
+
+/**
  * Defines an interface for all factories that allow to create objects of type `ILabelSampling`.
  */
 class ILabelSamplingFactory {
