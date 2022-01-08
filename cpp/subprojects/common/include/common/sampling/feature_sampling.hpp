@@ -29,6 +29,17 @@ class IFeatureSampling {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure the strategy for sampling features.
+ */
+class IFeatureSamplingConfig {
+
+    public:
+
+        virtual ~IFeatureSamplingConfig() { };
+
+};
+
+/**
  * Defines an interface for all factories that allow to create instances of the type `IFeatureSampling`.
  */
 class IFeatureSamplingFactory {
