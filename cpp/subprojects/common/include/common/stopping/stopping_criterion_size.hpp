@@ -23,6 +23,6 @@ class SizeStoppingCriterionFactory final : public IStoppingCriterionFactory {
          */
         SizeStoppingCriterionFactory(uint32 maxRules);
 
-        std::unique_ptr<IStoppingCriterion> create() const override;
+        std::unique_ptr<IStoppingCriterion> create(const IPartition& partition) const override;
 
 };

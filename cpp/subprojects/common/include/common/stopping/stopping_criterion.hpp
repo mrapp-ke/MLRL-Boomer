@@ -74,8 +74,10 @@ class IStoppingCriterionFactory {
         /**
          * Creates and returns a new object of type `IStoppingCriterion`.
          *
-         * @return An unique pointer to an object of type `IStoppingCriterion` that has been created
+         * @param partition     A reference to an object of type `IPartition` that provides access to the indices of the
+         *                      training examples that belong to the training set and the holdout set, respectively
+         * @return              An unique pointer to an object of type `IStoppingCriterion` that has been created
          */
-        virtual std::unique_ptr<IStoppingCriterion> create() const = 0;
+        virtual std::unique_ptr<IStoppingCriterion> create(const IPartition& partition) const = 0;
 
 };
