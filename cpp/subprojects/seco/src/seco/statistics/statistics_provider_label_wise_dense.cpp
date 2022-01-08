@@ -1,4 +1,4 @@
-#include "seco/statistics/statistics_provider_factory_label_wise_dense.hpp"
+#include "seco/statistics/statistics_provider_label_wise_dense.hpp"
 #include "seco/data/matrix_weight_dense.hpp"
 #include "seco/data/vector_confusion_matrix_dense.hpp"
 #include "common/util/validation.hpp"

@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "common/thresholds/thresholds_factory.hpp"
+#include "common/thresholds/thresholds.hpp"
 #include "common/binning/feature_binning.hpp"
 
 
