@@ -34,9 +34,24 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
 
 };
 
+LabelSamplingWithoutReplacementConfig::LabelSamplingWithoutReplacementConfig()
+    : numSamples_(1) {
+
+}
+
+uint32 LabelSamplingWithoutReplacementConfig::getNumSamples() const {
+    return numSamples_;
+}
+
+LabelSamplingWithoutReplacementConfig& LabelSamplingWithoutReplacementConfig::setNumSamples(uint32 numSamples) {
+    assertGreaterOrEqual<uint32>("numSamples", numSamples, 1);
+    numSamples_ = numSamples;
+    return *this;
+}
+
 LabelSamplingWithoutReplacementFactory::LabelSamplingWithoutReplacementFactory(uint32 numSamples)
     : numSamples_(numSamples) {
-    assertGreaterOrEqual<uint32>("numSamples", numSamples, 1);
+
 }
 
 std::unique_ptr<ILabelSampling> LabelSamplingWithoutReplacementFactory::create(uint32 numLabels) const {
