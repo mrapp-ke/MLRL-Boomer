@@ -43,10 +43,26 @@ class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
 
 };
 
-LabelWiseStratifiedBiPartitionSamplingFactory::LabelWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize)
-    : holdoutSetSize_(holdoutSetSize) {
+LabelWiseStratifiedPartitionSamplingConfig::LabelWiseStratifiedPartitionSamplingConfig()
+    : holdoutSetSize_(0.33) {
+
+}
+
+float32 LabelWiseStratifiedPartitionSamplingConfig::getHoldoutSetSize() const {
+    return holdoutSetSize_;
+}
+
+LabelWiseStratifiedPartitionSamplingConfig& LabelWiseStratifiedPartitionSamplingConfig::setHoldoutSetSize(
+        float32 holdoutSetSize) {
     assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
     assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
+    holdoutSetSize_ = holdoutSetSize;
+    return *this;
+}
+
+LabelWiseStratifiedBiPartitionSamplingFactory::LabelWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize)
+    : holdoutSetSize_(holdoutSetSize) {
+
 }
 
 std::unique_ptr<IPartitionSampling> LabelWiseStratifiedBiPartitionSamplingFactory::create(
