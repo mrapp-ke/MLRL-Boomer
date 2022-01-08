@@ -6,11 +6,8 @@
  * An implementation of the type `IFortranContiguousFeatureMatrix` that provides column-wise read-only access to the
  * feature values of individual examples that are stored in a pre-allocated Fortran-contiguous array.
  */
-class FortranContiguousFeatureMatrix final : public IFortranContiguousFeatureMatrix {
-
-    private:
-
-        FortranContiguousConstView<const float32> view_;
+class FortranContiguousFeatureMatrix final : public FortranContiguousConstView<const float32>,
+                                             virtual public IFortranContiguousFeatureMatrix {
 
     public:
 
@@ -20,21 +17,13 @@ class FortranContiguousFeatureMatrix final : public IFortranContiguousFeatureMat
          * @param array     A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
          */
         FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array)
-            : view_(FortranContiguousConstView<const float32>(numRows, numCols, array)) {
+            : FortranContiguousConstView<const float32>(numRows, numCols, array) {
 
-        }
-
-        uint32 getNumRows() const override {
-            return view_.getNumRows();
-        }
-
-        uint32 getNumCols() const override {
-            return view_.getNumCols();
         }
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
-            FortranContiguousConstView<const float32>::const_iterator columnIterator =
-                view_.column_cbegin(featureIndex);
+            FortranContiguousConstView<const float32>::value_const_iterator columnIterator =
+                this->column_values_cbegin(featureIndex);
             uint32 numElements = this->getNumRows();
             featureVectorPtr = std::make_unique<FeatureVector>(numElements);
             FeatureVector::iterator vectorIterator = featureVectorPtr->begin();

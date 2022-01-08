@@ -47,12 +47,13 @@ namespace seco {
     };
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
-            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const CContiguousLabelMatrix& labelMatrix) {
+            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
+            const CContiguousConstView<const uint8>& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr =
             std::make_unique<BinarySparseArrayVector>(numLabels);
-        BinarySparseArrayVector::index_iterator majorityIterator = majorityLabelVectorPtr->indices_begin();
+        BinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
         float64 threshold = numExamples / 2.0;
         float64 sumOfUncoveredWeights = 0;
         uint32 n = 0;
@@ -77,21 +78,20 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         std::unique_ptr<DenseWeightMatrix> weightMatrixPtr =
             std::make_unique<DenseWeightMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
-        return std::make_unique<DenseLabelWiseStatistics<CContiguousLabelMatrix>>(ruleEvaluationFactory, labelMatrix,
-                                                                                  std::move(weightMatrixPtr),
-                                                                                  std::move(majorityLabelVectorPtr));
+        return std::make_unique<DenseLabelWiseStatistics<CContiguousConstView<const uint8>>>(
+            ruleEvaluationFactory, labelMatrix,  std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
-            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const CsrLabelMatrix& labelMatrix) {
+            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrConstView& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr =
             std::make_unique<BinarySparseArrayVector>(numLabels, true);
-        BinarySparseArrayVector::index_iterator majorityIterator = majorityLabelVectorPtr->indices_begin();
+        BinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
 
         for (uint32 i = 0; i < numExamples; i++) {
-            CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(i);
+            BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(i);
             uint32 numElements = labelMatrix.row_indices_cend(i) - indexIterator;
 
             for (uint32 j = 0; j < numElements; j++) {
@@ -119,9 +119,9 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         std::unique_ptr<DenseWeightMatrix> weightMatrixPtr =
             std::make_unique<DenseWeightMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
-        return std::make_unique<DenseLabelWiseStatistics<CsrLabelMatrix>>(ruleEvaluationFactory, labelMatrix,
-                                                                          std::move(weightMatrixPtr),
-                                                                          std::move(majorityLabelVectorPtr));
+        return std::make_unique<DenseLabelWiseStatistics<BinaryCsrConstView>>(ruleEvaluationFactory, labelMatrix,
+                                                                              std::move(weightMatrixPtr),
+                                                                              std::move(majorityLabelVectorPtr));
     }
 
 
@@ -138,7 +138,7 @@ namespace seco {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-            const CContiguousLabelMatrix& labelMatrix) const {
+            const CContiguousConstView<const uint8>& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr =
             createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(
@@ -146,7 +146,7 @@ namespace seco {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-            const CsrLabelMatrix& labelMatrix) const {
+            const BinaryCsrConstView& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr =
             createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(

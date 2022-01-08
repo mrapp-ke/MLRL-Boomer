@@ -7,42 +7,14 @@
 
 
 CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
-    : VectorConstView<const uint32>(labelMatrix.view_.row_indices_cend(row) - labelMatrix.view_.row_indices_cbegin(row),
-                                    labelMatrix.view_.row_indices_cbegin(row)) {
+    : VectorConstView<const uint32>(labelMatrix.row_indices_cend(row) - labelMatrix.row_indices_cbegin(row),
+                                    labelMatrix.row_indices_cbegin(row)) {
 
 }
 
 CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
-    : view_(BinaryCsrConstView(numRows, numCols, rowIndices, colIndices)) {
+    : BinaryCsrConstView(numRows, numCols, rowIndices, colIndices) {
 
-}
-
-CsrLabelMatrix::index_const_iterator CsrLabelMatrix::row_indices_cbegin(uint32 row) const {
-    return view_.row_indices_cbegin(row);
-}
-
-CsrLabelMatrix::index_const_iterator CsrLabelMatrix::row_indices_cend(uint32 row) const {
-    return view_.row_indices_cend(row);
-}
-
-CsrLabelMatrix::value_const_iterator CsrLabelMatrix::row_values_cbegin(uint32 row) const {
-    return view_.row_values_cbegin(row);
-}
-
-CsrLabelMatrix::value_const_iterator CsrLabelMatrix::row_values_cend(uint32 row) const {
-    return view_.row_values_cend(row);
-}
-
-uint32 CsrLabelMatrix::getNumNonZeroElements() const {
-    return view_.getNumNonZeroElements();
-}
-
-uint32 CsrLabelMatrix::getNumRows() const {
-    return view_.getNumRows();
-}
-
-uint32 CsrLabelMatrix::getNumCols() const {
-    return view_.getNumCols();
 }
 
 float64 CsrLabelMatrix::calculateLabelCardinality() const {
@@ -68,7 +40,7 @@ std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const
     index_const_iterator indicesEnd = this->row_indices_cend(row);
     uint32 numElements = indicesEnd - indexIterator;
     std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numElements);
-    LabelVector::index_iterator iterator = labelVectorPtr->indices_begin();
+    LabelVector::iterator iterator = labelVectorPtr->begin();
     copyArray(indexIterator, iterator, numElements);
     return labelVectorPtr;
 }

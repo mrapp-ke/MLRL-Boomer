@@ -13,7 +13,7 @@
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
  * are stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
-class ICsrLabelMatrix : public IRowWiseLabelMatrix {
+class ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
 
     public:
 
@@ -25,11 +25,7 @@ class ICsrLabelMatrix : public IRowWiseLabelMatrix {
  * Implements row-wise read-only access to the labels of individual training examples that are stored in a pre-allocated
  * sparse matrix in the compressed sparse row (CSR) format.
  */
-class CsrLabelMatrix final : public ICsrLabelMatrix {
-
-    private:
-
-        BinaryCsrConstView view_;
+class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabelMatrix {
 
     public:
 
@@ -100,65 +96,12 @@ class CsrLabelMatrix final : public ICsrLabelMatrix {
         typedef const View view_type;
 
         /**
-         * An iterator that provides read-only access to the indices of the relevant labels.
-         */
-        typedef BinaryCsrConstView::index_const_iterator index_const_iterator;
-
-        /**
-         * An iterator that provides read-only access to the values in the label matrix.
-         */
-        typedef BinaryCsrConstView::value_const_iterator value_const_iterator;
-
-        /**
-         * Returns an `index_const_iterator` to the beginning of the indices at a specific row.
-         *
-         * @param row   The row
-         * @return      An `index_const_iterator` to the beginning of the indices
-         */
-        index_const_iterator row_indices_cbegin(uint32 row) const;
-
-        /**
-         * Returns an `index_const_iterator` to the end of the indices at a specific row.
-         *
-         * @param row   The row
-         * @return      An `index_const_iterator` to the end of the indices
-         */
-        index_const_iterator row_indices_cend(uint32 row) const;
-
-        /**
-         * Returns a `value_const_iterator` to the beginning of the values at a specific row.
-         *
-         * @param row   The row
-         * @return      A `value_const_iterator` to the beginning of the values
-         */
-        value_const_iterator row_values_cbegin(uint32 row) const;
-
-        /**
-         * Returns a `value_const_iterator` to the end of the values at a specific row.
-         *
-         * @param row   The row
-         * @return      A `value_const_iterator` to the end of the values
-         */
-        value_const_iterator row_values_cend(uint32 row) const;
-
-        /**
-         * Returns the number of relevant labels.
-         *
-         * @return The number of relevant labels
-         */
-        uint32 getNumNonZeroElements() const;
-
-        /**
          * Creates and returns a view that provides access to the values at a specific row of the label matrix.
          *
          * @param row   The row
          * @return      An object of type `view_type` that has been created
          */
         view_type createView(uint32 row) const;
-
-        uint32 getNumRows() const override;
-
-        uint32 getNumCols() const override;
 
         float64 calculateLabelCardinality() const override;
 

@@ -54,7 +54,7 @@ class LabelVectorSet final : public ILabelVectorSet {
         struct Hash {
 
             inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
-                return hashArray(v->indices_cbegin(), v->getNumElements());
+                return hashArray(v->cbegin(), v->getNumElements());
             }
 
         };
@@ -66,8 +66,7 @@ class LabelVectorSet final : public ILabelVectorSet {
 
             inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
                                    const std::unique_ptr<LabelVector>& rhs) const {
-                return compareArrays(lhs->indices_cbegin(), lhs->getNumElements(), rhs->indices_cbegin(),
-                                     rhs->getNumElements());
+                return compareArrays(lhs->cbegin(), lhs->getNumElements(), rhs->cbegin(), rhs->getNumElements());
             }
 
         };

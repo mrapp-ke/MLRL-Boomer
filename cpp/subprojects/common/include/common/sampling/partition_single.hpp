@@ -11,7 +11,7 @@
  * An implementation of the class `IPartition` that provides random access to the indices of elements that are included
  * in a single set.
  */
-class SinglePartition : public IPartition {
+class SinglePartition final : public IPartition {
 
     private:
 
