@@ -1,7 +1,7 @@
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "common/thresholds/thresholds_factory.hpp" nogil:
+cdef extern from "common/thresholds/thresholds.hpp" nogil:
 
     cdef cppclass IThresholdsFactory:
         pass
