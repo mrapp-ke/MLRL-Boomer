@@ -7,6 +7,38 @@
 
 
 /**
+ * Allows to configure a strategy for selecting a subset of the available training examples without replacement.
+ */
+class InstanceSamplingWithoutReplacementConfig : public IInstanceSamplingConfig {
+
+    private:
+
+        float32 sampleSize_;
+
+    public:
+
+        InstanceSamplingWithoutReplacementConfig();
+
+        /**
+         * Returns the fraction of examples that are included in a sample.
+         *
+         * @return The fraction of examples that are included in a sample
+         */
+        float32 getSampleSize() const;
+
+        /**
+         * Sets the fraction of examples that should be included in a sample.
+         *
+         * @param sampleSize    The fraction of examples that should be included in a sample, e.g., a value of 0.6
+         *                      corresponds to 60 % of the available training examples. Must be in (0, 1)
+         * @return              A reference to an object of type `InstanceSamplingWithoutReplacementConfig` that allows
+         *                      further configuration of the strategy for sampling instances
+         */
+        InstanceSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize);
+
+};
+
+/**
  * Allows to create instances of the type `IInstanceSampling` that allow to select a subset of the available training
  * examples without replacement.
  */
