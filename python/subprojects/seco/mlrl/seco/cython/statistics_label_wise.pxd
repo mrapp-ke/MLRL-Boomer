@@ -4,7 +4,7 @@ from mlrl.seco.cython.rule_evaluation_label_wise cimport ILabelWiseRuleEvaluatio
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "seco/statistics/statistics_provider_factory_label_wise_dense.hpp" namespace "seco" nogil:
+cdef extern from "seco/statistics/statistics_provider_label_wise_dense.hpp" namespace "seco" nogil:
 
     cdef cppclass DenseLabelWiseStatisticsProviderFactoryImpl"seco::DenseLabelWiseStatisticsProviderFactory"(
             IStatisticsProviderFactory):

@@ -7,7 +7,7 @@ from mlrl.boosting.cython.rule_evaluation_label_wise cimport ILabelWiseRuleEvalu
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "boosting/statistics/statistics_provider_factory_example_wise_dense.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/statistics/statistics_provider_example_wise_dense.hpp" namespace "boosting" nogil:
 
     cdef cppclass DenseExampleWiseStatisticsProviderFactoryImpl"boosting::DenseExampleWiseStatisticsProviderFactory"(
             IStatisticsProviderFactory):
