@@ -49,8 +49,6 @@ class IStoppingCriterion {
         /**
          * Checks whether additional rules should be induced or not.
          *
-         * @param partition     A reference to an object of type `IPartition` that provides access to the indices of the
-         *                      training examples that belong to the training set and the holdout set, respectively
          * @param statistics    A reference to an object of type `IStatistics` that will serve as the basis for learning
          *                      the next rule
          * @param numRules      The number of rules induced so far
@@ -59,7 +57,7 @@ class IStoppingCriterion {
          *                      potential point for stopping while continuing to induce rules (`STORE_STOP`), or if the
          *                      induction of rules should be forced to be stopped (`FORCE_STOP`)
          */
-        virtual Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) = 0;
+        virtual Result test(const IStatistics& statistics, uint32 numRules) = 0;
 
 };
 

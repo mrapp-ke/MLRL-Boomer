@@ -31,7 +31,7 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
 
         }
 
-        Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override {
+        Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
 
             if (timerStarted_) {

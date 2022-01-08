@@ -180,7 +180,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
             offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
         }
 
-        Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override {
+        Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
             result.action = CONTINUE;
 

@@ -26,7 +26,7 @@ namespace seco {
 
             }
 
-            Result test(const IPartition& partition, const IStatistics& statistics, uint32 numRules) override {
+            Result test(const IStatistics& statistics, uint32 numRules) override {
                 Result result;
                 const ICoverageStatistics& coverageStatistics = static_cast<const ICoverageStatistics&>(statistics);
 
