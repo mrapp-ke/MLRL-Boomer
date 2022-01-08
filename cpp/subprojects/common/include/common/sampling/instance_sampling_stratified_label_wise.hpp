@@ -33,7 +33,7 @@ class LabelWiseStratifiedInstanceSamplingConfig : public IInstanceSamplingConfig
          *
          * @param sampleSize    The fraction of examples that should be included in a sample, e.g., a value of 0.6
          *                      corresponds to 60 % of the available training examples. Must be in (0, 1)
-         * @return              A reference to an object of type `InstanceSamplingWithReplacementConfig` that allows
+         * @return              A reference to an object of type `LabelWiseStratifiedInstanceSamplingConfig` that allows
          *                      further configuration of the strategy for sampling instances
          */
         LabelWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize);
