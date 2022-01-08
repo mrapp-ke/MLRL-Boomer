@@ -17,7 +17,7 @@ class IProbabilityPredictor;
 /**
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of examples.
  */
-class IRowWiseFeatureMatrix : public IFeatureMatrix {
+class IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
 
     public:
 

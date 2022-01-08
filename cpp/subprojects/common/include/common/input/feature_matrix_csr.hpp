@@ -11,7 +11,7 @@
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of individual
  * examples that are stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
-class ICsrFeatureMatrix : public IRowWiseFeatureMatrix {
+class ICsrFeatureMatrix : virtual public IRowWiseFeatureMatrix {
 
     public:
 
@@ -23,11 +23,7 @@ class ICsrFeatureMatrix : public IRowWiseFeatureMatrix {
  * An implementation of the type `ICsrFeatureMatrix` that provides row-wise read-only access to the feature values of
  * individual examples that are stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
-class CsrFeatureMatrix final : public ICsrFeatureMatrix {
-
-    private:
-
-        CsrConstView<const float32> view_;
+class CsrFeatureMatrix final : public CsrConstView<const float32>, virtual public ICsrFeatureMatrix {
 
     public:
 
@@ -43,52 +39,6 @@ class CsrFeatureMatrix final : public ICsrFeatureMatrix {
          *                      column-indices, the values in `data` correspond to
          */
         CsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32* colIndices);
-
-        /**
-         * An iterator that provides read-only access to the values in the feature matrix.
-         */
-        typedef const float32* value_const_iterator;
-
-        /**
-         * An iterator that provides read-only access to the indices in the feature matrix.
-         */
-        typedef const uint32* index_const_iterator;
-
-        /**
-         * Returns a `value_const_iterator` to the beginning of the values at a specific row.
-         *
-         * @param row   The row
-         * @return      A `value_const_iterator` to the beginning of the values
-         */
-        value_const_iterator row_values_cbegin(uint32 row) const;
-
-        /**
-         * Returns a `value_const_iterator` to the end of the values at a specific row.
-         *
-         * @param row   The row
-         * @return      A `value_const_iterator` to the end of the values
-         */
-        value_const_iterator row_values_cend(uint32 row) const;
-
-        /**
-         * Returns an `index_const_iterator` to the beginning of the indices at a specific row.
-         *
-         * @param row   The row
-         * @return      An `index_const_iterator` to the beginning of the indices
-         */
-        index_const_iterator row_indices_cbegin(uint32 row) const;
-
-        /**
-         * Returns an `index_const_iterator` to the end of the indices at a specific row.
-         *
-         * @param row   The row
-         * @return      An `index_const_iterator` to the end of the indices
-         */
-        index_const_iterator row_indices_cend(uint32 row) const;
-
-        uint32 getNumRows() const override;
-
-        uint32 getNumCols() const override;
 
         bool isSparse() const override;
 

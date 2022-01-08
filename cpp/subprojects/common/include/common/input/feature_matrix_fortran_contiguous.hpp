@@ -10,7 +10,7 @@
  * Defines an interface for all feature matrices that provide column-wise access to the feature values of individual
  * examples that are stored in a Fortran-contiguous array.
  */
-class IFortranContiguousFeatureMatrix : public IColumnWiseFeatureMatrix {
+class IFortranContiguousFeatureMatrix : virtual public IColumnWiseFeatureMatrix {
 
     public:
 

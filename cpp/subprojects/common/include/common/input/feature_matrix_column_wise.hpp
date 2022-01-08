@@ -11,7 +11,7 @@
 /**
  * Defines an interface for all feature matrices that provide column-wise access to the feature values of examples.
  */
-class IColumnWiseFeatureMatrix : public IFeatureMatrix {
+class IColumnWiseFeatureMatrix : virtual public IFeatureMatrix {
 
     public:
 
