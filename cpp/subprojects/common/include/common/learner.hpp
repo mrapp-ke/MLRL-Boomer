@@ -3,6 +3,8 @@
  */
 #pragma once
 
+#include "common/binning/feature_binning_equal_frequency.hpp"
+#include "common/binning/feature_binning_equal_width.hpp"
 #include "common/input/feature_matrix_column_wise.hpp"
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
@@ -91,17 +93,44 @@ class IRuleLearner {
                  */
                 virtual const IRuleInductionConfig& getRuleInductionConfig() const = 0;
 
+                /**
+                 * Returns the configuration of the method for the assignment of numerical feature values to bins.
+                 *
+                 * @return A pointer to an object of type `IFeatureBinningConfig` that specifies the configuration of
+                 *         the method for the assignment of numerical feature values to bins or a null pointer, if no
+                 *         such method should be used
+                 */
+                virtual const IFeatureBinningConfig* getFeatureBinningConfig() const = 0;
+
             public:
 
                 virtual ~IConfig() { };
 
                 /**
-                 * Configures the algorithm to use a top-down greedy search for the induction of individual rules.
+                 * Configures the rule learner to use a top-down greedy search for the induction of individual rules.
                  *
-                 * @return A reference to an object of type `TopDownRuleInduction` that allows further configuration of
-                 *         the algorithm for the induction of individual rules.
+                 * @return A reference to an object of type `TopDownRuleInductionConfig` that allows further
+                 *         configuration of the algorithm for the induction of individual rules
                  */
                 virtual TopDownRuleInductionConfig& useTopDownRuleInduction() = 0;
+
+                /**
+                 * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
+                 * such that each bin contains values from equally sized value ranges.
+                 *
+                 * @return A reference to an object of type `EqualWidthFeatureBinningConfig` that allows further
+                 *         configuration of the method for the assignment of numerical feature values to bins
+                 */
+                virtual EqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() = 0;
+
+                /**
+                 * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
+                 * such that each bin contains approximately the same number of values.
+                 *
+                 * @return A reference to an object of type `EqualFrequencyFeatureBinningConfig` that allows further
+                 *         configuration of the method for the assignment of numerical feature values to bins
+                 */
+                virtual EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() = 0;
 
         };
 
@@ -280,13 +309,21 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IRuleInductionConfig> ruleInductionConfigPtr_;
 
+                std::unique_ptr<IFeatureBinningConfig> featureBinningConfigPtr_;
+
                 const IRuleInductionConfig& getRuleInductionConfig() const override;
+
+                const IFeatureBinningConfig* getFeatureBinningConfig() const override;
 
             public:
 
                 Config();
 
                 TopDownRuleInductionConfig& useTopDownRuleInduction() override;
+
+                EqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
+
+                EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
 
         };
 

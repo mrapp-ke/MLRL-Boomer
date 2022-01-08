@@ -74,10 +74,28 @@ const IRuleInductionConfig& AbstractRuleLearner::Config::getRuleInductionConfig(
     return *ruleInductionConfigPtr_;
 }
 
+const IFeatureBinningConfig* AbstractRuleLearner::Config::getFeatureBinningConfig() const {
+    return featureBinningConfigPtr_.get();
+}
+
 TopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
     std::unique_ptr<TopDownRuleInductionConfig> ptr = std::make_unique<TopDownRuleInductionConfig>();
     TopDownRuleInductionConfig& ref = *ptr;
     ruleInductionConfigPtr_ = std::move(ptr);
+    return ref;
+}
+
+EqualWidthFeatureBinningConfig& AbstractRuleLearner::Config::useEqualWidthFeatureBinning() {
+    std::unique_ptr<EqualWidthFeatureBinningConfig> ptr = std::make_unique<EqualWidthFeatureBinningConfig>();
+    EqualWidthFeatureBinningConfig& ref = *ptr;
+    featureBinningConfigPtr_ = std::move(ptr);
+    return ref;
+}
+
+EqualFrequencyFeatureBinningConfig& AbstractRuleLearner::Config::useEqualFrequencyFeatureBinning() {
+    std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr = std::make_unique<EqualFrequencyFeatureBinningConfig>();
+    EqualFrequencyFeatureBinningConfig& ref = *ptr;
+    featureBinningConfigPtr_ = std::move(ptr);
     return ref;
 }
 
