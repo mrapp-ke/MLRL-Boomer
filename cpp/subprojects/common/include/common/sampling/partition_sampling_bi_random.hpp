@@ -30,11 +30,11 @@ class RandomPartitionSamplingConfig : public IPartitionSamplingConfig {
         /**
          * Sets the fraction of examples that should be included in the holdout set.
          *
-         * @param sampleSize    The fraction of examples that should be included in the holdout set, e.g. a value of 0.6
-         *                      corresponds to 60 % of the available examples. Must be in (0, 1)
-         * @return              A reference to an object of type `RandomPartitionSamplingConfig` that allows further
-         *                      configuration of the strategy for partitioning the available training examples into a
-         *                      training set and a holdout set
+         * @param holdoutSetSize    The fraction of examples that should be included in the holdout set, e.g. a value of
+         *                          0.6 corresponds to 60 % of the available examples. Must be in (0, 1)
+         * @return                  A reference to an object of type `RandomPartitionSamplingConfig` that allows further
+         *                          configuration of the strategy for partitioning the available training examples into
+         *                          a training set and a holdout set
          */
         RandomPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize);
 
