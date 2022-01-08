@@ -1,5 +1,6 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/instance_sampling.hpp"
+#include "common/stopping/stopping_criterion.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 #include "common/rule_refinement/refinement.hpp"
 #include "common/rule_refinement/prediction.hpp"
@@ -84,6 +85,10 @@ const BitVector& BiPartition::getSecondSet() {
     }
 
     return *secondSet_;
+}
+
+std::unique_ptr<IStoppingCriterion> BiPartition::createStoppingCriterion(const IStoppingCriterionFactory& factory) {
+    return factory.create(*this);
 }
 
 std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(const IInstanceSamplingFactory& factory,
