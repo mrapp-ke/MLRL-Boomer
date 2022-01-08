@@ -40,10 +40,25 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
 
 };
 
-FeatureSamplingWithoutReplacementFactory::FeatureSamplingWithoutReplacementFactory(float32 sampleSize)
-    : sampleSize_(sampleSize) {
+FeatureSamplingWithoutReplacementConfig::FeatureSamplingWithoutReplacementConfig()
+    : sampleSize_(0) {
+
+}
+
+float32 FeatureSamplingWithoutReplacementConfig::getSampleSize() const {
+    return sampleSize_;
+}
+
+FeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfig::setSampleSize(float32 sampleSize) {
     assertGreaterOrEqual<float32>("sampleSize", sampleSize, 0);
     assertLess<float32>("sampleSize", sampleSize, 1);
+    sampleSize_ = sampleSize;
+    return *this;
+}
+
+FeatureSamplingWithoutReplacementFactory::FeatureSamplingWithoutReplacementFactory(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
 }
 
 std::unique_ptr<IFeatureSampling> FeatureSamplingWithoutReplacementFactory::create(uint32 numFeatures) const {
