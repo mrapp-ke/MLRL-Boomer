@@ -52,10 +52,26 @@ class ExampleWiseStratifiedSampling final : public IInstanceSampling {
 
 };
 
-ExampleWiseStratifiedSamplingFactory::ExampleWiseStratifiedSamplingFactory(float32 sampleSize)
-    : sampleSize_(sampleSize) {
+ExampleWiseStratifiedInstanceSamplingConfig::ExampleWiseStratifiedInstanceSamplingConfig()
+    : sampleSize_(0.66) {
+
+}
+
+float32 ExampleWiseStratifiedInstanceSamplingConfig::getSampleSize() const {
+    return sampleSize_;
+}
+
+ExampleWiseStratifiedInstanceSamplingConfig& ExampleWiseStratifiedInstanceSamplingConfig::setSampleSize(
+        float32 sampleSize) {
     assertGreater<float32>("sampleSize", sampleSize, 0);
     assertLess<float32>("sampleSize", sampleSize, 1);
+    sampleSize_ = sampleSize;
+    return *this;
+}
+
+ExampleWiseStratifiedSamplingFactory::ExampleWiseStratifiedSamplingFactory(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
 }
 
 std::unique_ptr<IInstanceSampling> ExampleWiseStratifiedSamplingFactory::create(
