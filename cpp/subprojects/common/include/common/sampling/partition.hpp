@@ -7,6 +7,8 @@
 #include <memory>
 
 // Forward declarations
+class IStoppingCriterion;
+class IStoppingCriterionFactory;
 class IInstanceSampling;
 class IInstanceSamplingFactory;
 class IRowWiseLabelMatrix;
@@ -28,8 +30,17 @@ class IPartition {
         virtual ~IPartition() { };
 
         /**
-         * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this partition
-         * matrix.
+         * Creates and returns a new instance of the class `IStoppingCriterion`, based on the type of this partition.
+         *
+         * @param factory   A reference to an object of type `IStoppingCriterionFactory` that should be used to create
+         *                  the instance
+         * @return          An unique pointer to an object of type `IStoppingCriterion` that has been created
+         */
+        virtual std::unique_ptr<IStoppingCriterion> createStoppingCriterion(
+            const IStoppingCriterionFactory& factory) = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this partition.
          *
          * @param factory       A reference to an object of type `IInstanceSamplingFactory` that should be used to
          *                      create the instance
