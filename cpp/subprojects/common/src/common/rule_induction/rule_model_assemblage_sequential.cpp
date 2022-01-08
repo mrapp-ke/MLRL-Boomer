@@ -2,15 +2,14 @@
 
 
 static inline IStoppingCriterion::Result testStoppingCriteria(
-        std::forward_list<std::unique_ptr<IStoppingCriterion>>& stoppingCriteria, const IPartition& partition,
-        const IStatistics& statistics, uint32 numRules) {
+        std::forward_list<std::unique_ptr<IStoppingCriterion>>& stoppingCriteria, const IStatistics& statistics,
+        uint32 numRules) {
     IStoppingCriterion::Result result;
     result.action = IStoppingCriterion::Action::CONTINUE;
 
     for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
         std::unique_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
-        IStoppingCriterion::Result stoppingCriterionResult = stoppingCriterionPtr->test(partition, statistics,
-                                                                                        numRules);
+        IStoppingCriterion::Result stoppingCriterionResult = stoppingCriterionPtr->test(statistics, numRules);
         IStoppingCriterion::Action action = stoppingCriterionResult.action;
 
         switch (action) {
@@ -127,12 +126,18 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
+            // Partition training data...
+            std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrix.createPartitionSampling(
+                *partitionSamplingFactoryPtr_);
+            RNG rng(randomState);
+            IPartition& partition = partitionSamplingPtr->partition(rng);
+
             // Initialize stopping criteria...
             std::forward_list<std::unique_ptr<IStoppingCriterion>> stoppingCriteria;
 
             for (auto it = stoppingCriterionFactories_.cbegin(); it != stoppingCriterionFactories_.cend(); it++) {
                 std::shared_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr = *it;
-                stoppingCriteria.push_front(stoppingCriterionFactoryPtr->create());
+                stoppingCriteria.push_front(partition.createStoppingCriterion(*stoppingCriterionFactoryPtr));
             }
 
             // Induce default rule...
@@ -152,10 +157,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                                                                                        *statisticsProviderPtr);
             uint32 numFeatures = thresholdsPtr->getNumFeatures();
             uint32 numLabels = thresholdsPtr->getNumLabels();
-            std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrix.createPartitionSampling(
-                *partitionSamplingFactoryPtr_);
-            RNG rng(randomState);
-            IPartition& partition = partitionSamplingPtr->partition(rng);
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr = partition.createInstanceSampling(
                 *instanceSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr_->create(numFeatures);
@@ -164,8 +165,8 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr_->create();
             IStoppingCriterion::Result stoppingCriterionResult;
 
-            while (stoppingCriterionResult = testStoppingCriteria(stoppingCriteria, partition,
-                                                                  statisticsProviderPtr->get(), numRules),
+            while (stoppingCriterionResult = testStoppingCriteria(stoppingCriteria, statisticsProviderPtr->get(),
+                                                                  numRules),
                    stoppingCriterionResult.action != IStoppingCriterion::Action::FORCE_STOP) {
                 if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
                     numUsedRules = stoppingCriterionResult.numRules;

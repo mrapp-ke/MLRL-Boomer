@@ -139,6 +139,8 @@ class BiPartition final : public IPartition {
          */
         uint32 getNumElements() const;
 
+        std::unique_ptr<IStoppingCriterion> createStoppingCriterion(const IStoppingCriterionFactory& factory) override;
+
         std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
                                                                   const IRowWiseLabelMatrix& labelMatrix,
                                                                   IStatistics& statistics) override;
