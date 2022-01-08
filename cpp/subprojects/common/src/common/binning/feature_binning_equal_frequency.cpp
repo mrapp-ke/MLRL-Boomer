@@ -149,13 +149,46 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 
 };
 
+EqualFrequencyFeatureBinningConfig::EqualFrequencyFeatureBinningConfig()
+    : binRatio_(0.33), minBins_(2), maxBins_(0) {
+
+}
+
+float32 EqualFrequencyFeatureBinningConfig::getBinRatio() const {
+    return binRatio_;
+}
+
+EqualFrequencyFeatureBinningConfig& EqualFrequencyFeatureBinningConfig::setBinRatio(float32 binRatio) {
+    assertGreater<float32>("binRatio", binRatio, 0);
+    assertLess<float32>("binRatio", binRatio, 1);
+    binRatio_ = binRatio;
+    return *this;
+}
+
+uint32 EqualFrequencyFeatureBinningConfig::getMinBins() const {
+    return minBins_;
+}
+
+EqualFrequencyFeatureBinningConfig& EqualFrequencyFeatureBinningConfig::setMinBins(uint32 minBins) {
+    assertGreaterOrEqual<uint32>("minBins", minBins, 2);
+    minBins_ = minBins;
+    return *this;
+}
+
+uint32 EqualFrequencyFeatureBinningConfig::getMaxBins() const {
+    return maxBins_;
+}
+
+EqualFrequencyFeatureBinningConfig& EqualFrequencyFeatureBinningConfig::setMaxBins(uint32 maxBins) {
+    if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_); }
+    maxBins_ = maxBins;
+    return *this;
+}
+
 EqualFrequencyFeatureBinningFactory::EqualFrequencyFeatureBinningFactory(float32 binRatio, uint32 minBins,
                                                                          uint32 maxBins)
     : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-    assertGreater<float32>("binRatio", binRatio, 0);
-    assertLess<float32>("binRatio", binRatio, 1);
-    assertGreaterOrEqual<uint32>("minBins", minBins, 2);
-    if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins); }
+
 }
 
 std::unique_ptr<IFeatureBinning> EqualFrequencyFeatureBinningFactory::create() const {

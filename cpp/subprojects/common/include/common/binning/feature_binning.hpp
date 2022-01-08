@@ -54,6 +54,17 @@ class IFeatureBinning {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure a method that assigns feature values to bins.
+ */
+class IFeatureBinningConfig {
+
+    public:
+
+        virtual ~IFeatureBinningConfig() { };
+
+};
+
+/**
  * Defines an interface for all factories that allow to create instances of the type `IFeatureBinning`.
  */
 class IFeatureBinningFactory {
