@@ -42,6 +42,10 @@ SizeStoppingCriterionFactory::SizeStoppingCriterionFactory(uint32 maxRules)
     assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
 }
 
-std::unique_ptr<IStoppingCriterion> SizeStoppingCriterionFactory::create(const IPartition& partition) const {
+std::unique_ptr<IStoppingCriterion> SizeStoppingCriterionFactory::create(const SinglePartition& partition) const {
+    return std::make_unique<SizeStoppingCriterion>(maxRules_);
+}
+
+std::unique_ptr<IStoppingCriterion> SizeStoppingCriterionFactory::create(BiPartition& partition) const {
     return std::make_unique<SizeStoppingCriterion>(maxRules_);
 }

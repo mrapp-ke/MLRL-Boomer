@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "common/sampling/partition.hpp"
+#include "common/sampling/partition_bi.hpp"
+#include "common/sampling/partition_single.hpp"
 #include "common/statistics/statistics.hpp"
 
 
@@ -74,10 +75,20 @@ class IStoppingCriterionFactory {
         /**
          * Creates and returns a new object of type `IStoppingCriterion`.
          *
-         * @param partition     A reference to an object of type `IPartition` that provides access to the indices of the
-         *                      training examples that belong to the training set and the holdout set, respectively
+         * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
+         *                      of the training examples that belong to the training set and the holdout set,
+         *                      respectively
          * @return              An unique pointer to an object of type `IStoppingCriterion` that has been created
          */
-        virtual std::unique_ptr<IStoppingCriterion> create(const IPartition& partition) const = 0;
+        virtual std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStoppingCriterion`.
+         *
+         * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
+         *                      the training examples that belong to the training set and the holdout set, respectively
+         * @return              An unique pointer to an object of type `IStoppingCriterion` that has been created
+         */
+        virtual std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const = 0;
 
 };

@@ -230,7 +230,14 @@ MeasureStoppingCriterionFactory::MeasureStoppingCriterionFactory(
     assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
 }
 
-std::unique_ptr<IStoppingCriterion> MeasureStoppingCriterionFactory::create(const IPartition& partition) const {
+std::unique_ptr<IStoppingCriterion> MeasureStoppingCriterionFactory::create(const SinglePartition& partition) const {
+    std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
+    return std::make_unique<MeasureStoppingCriterion>(std::move(aggregationFunctionPtr), minRules_, updateInterval_,
+                                                      stopInterval_, numPast_, numCurrent_, minImprovement_,
+                                                      forceStop_);
+}
+
+std::unique_ptr<IStoppingCriterion> MeasureStoppingCriterionFactory::create(BiPartition& partition) const {
     std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
     return std::make_unique<MeasureStoppingCriterion>(std::move(aggregationFunctionPtr), minRules_, updateInterval_,
                                                       stopInterval_, numPast_, numCurrent_, minImprovement_,

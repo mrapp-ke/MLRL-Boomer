@@ -47,7 +47,12 @@ namespace seco {
         assertGreaterOrEqual<float64>("threshold", threshold, 0);
     }
 
-    std::unique_ptr<IStoppingCriterion> CoverageStoppingCriterionFactory::create(const IPartition& partition) const {
+    std::unique_ptr<IStoppingCriterion> CoverageStoppingCriterionFactory::create(
+            const SinglePartition& partition) const {
+        return std::make_unique<CoverageStoppingCriterion>(threshold_);
+    }
+
+    std::unique_ptr<IStoppingCriterion> CoverageStoppingCriterionFactory::create(BiPartition& partition) const {
         return std::make_unique<CoverageStoppingCriterion>(threshold_);
     }
 

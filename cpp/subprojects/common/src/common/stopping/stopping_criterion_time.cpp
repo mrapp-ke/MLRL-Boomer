@@ -60,6 +60,10 @@ TimeStoppingCriterionFactory::TimeStoppingCriterionFactory(uint32 timeLimit)
     assertGreaterOrEqual<uint32>("timeLimit", timeLimit, 1);
 }
 
-std::unique_ptr<IStoppingCriterion> TimeStoppingCriterionFactory::create(const IPartition& partition) const {
+std::unique_ptr<IStoppingCriterion> TimeStoppingCriterionFactory::create(const SinglePartition& partition) const {
+    return std::make_unique<TimeStoppingCriterion>(timeLimit_);
+}
+
+std::unique_ptr<IStoppingCriterion> TimeStoppingCriterionFactory::create(BiPartition& partition) const {
     return std::make_unique<TimeStoppingCriterion>(timeLimit_);
 }

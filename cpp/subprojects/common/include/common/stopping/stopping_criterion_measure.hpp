@@ -143,6 +143,8 @@ class MeasureStoppingCriterionFactory final : public IStoppingCriterionFactory {
                                         uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
                                         uint32 numCurrent, float64 minImprovement, bool forceStop);
 
-        std::unique_ptr<IStoppingCriterion> create(const IPartition& partition) const override;
+        std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override;
+
+        std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override;
 
 };
