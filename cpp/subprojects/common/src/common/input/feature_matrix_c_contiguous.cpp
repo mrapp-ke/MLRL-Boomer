@@ -7,24 +7,8 @@
 
 
 CContiguousFeatureMatrix::CContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array)
-    : view_(CContiguousConstView<const float32>(numRows, numCols, array)) {
+    : CContiguousConstView<const float32>(numRows, numCols, array) {
 
-}
-
-CContiguousFeatureMatrix::const_iterator CContiguousFeatureMatrix::row_cbegin(uint32 row) const {
-    return view_.row_cbegin(row);
-}
-
-CContiguousFeatureMatrix::const_iterator CContiguousFeatureMatrix::row_cend(uint32 row) const {
-    return view_.row_cend(row);
-}
-
-uint32 CContiguousFeatureMatrix::getNumRows() const {
-    return view_.getNumRows();
-}
-
-uint32 CContiguousFeatureMatrix::getNumCols() const {
-    return view_.getNumCols();
 }
 
 bool CContiguousFeatureMatrix::isSparse() const {

@@ -14,7 +14,7 @@ namespace seco {
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
      * `ILabelWiseStatistics`, which uses dense data structures to store the statistics.
      */
-    class DenseLabelWiseStatisticsProviderFactory : public IStatisticsProviderFactory {
+    class DenseLabelWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
 
         private:
 
@@ -48,12 +48,13 @@ namespace seco {
             /**
              * @see `IStatisticsProviderFactory::create`
              */
-            std::unique_ptr<IStatisticsProvider> create(const CContiguousLabelMatrix& labelMatrix) const override;
+            std::unique_ptr<IStatisticsProvider> create(
+                const CContiguousConstView<const uint8>& labelMatrix) const override;
 
             /**
              * @see `IStatisticsProviderFactory::create`
              */
-            std::unique_ptr<IStatisticsProvider> create(const CsrLabelMatrix& labelMatrix) const override;
+            std::unique_ptr<IStatisticsProvider> create(const BinaryCsrConstView& labelMatrix) const override;
 
     };
 

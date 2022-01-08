@@ -95,7 +95,7 @@ class ArithmeticMeanAggregationFunctionFactory final : public IAggregationFuncti
  * scores from the second buffer, is greater than a certain `minImprovement`, the rule induction is continued,
  * otherwise it is stopped.
  */
-class MeasureStoppingCriterionFactory : public IStoppingCriterionFactory {
+class MeasureStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
     private:
 

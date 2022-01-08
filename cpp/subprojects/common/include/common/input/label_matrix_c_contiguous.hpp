@@ -13,7 +13,7 @@
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
  * are stored in a C-contiguous array.
  */
-class ICContiguousLabelMatrix : public IRowWiseLabelMatrix {
+class ICContiguousLabelMatrix : virtual public IRowWiseLabelMatrix {
 
     public:
 
@@ -25,11 +25,7 @@ class ICContiguousLabelMatrix : public IRowWiseLabelMatrix {
  * Implements random read-only access to the labels of individual training examples that are stored in a pre-allocated
  * C-contiguous array.
  */
-class CContiguousLabelMatrix final : public ICContiguousLabelMatrix {
-
-    private:
-
-        CContiguousConstView<const uint8> view_;
+class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, virtual public ICContiguousLabelMatrix {
 
     public:
 
@@ -107,37 +103,12 @@ class CContiguousLabelMatrix final : public ICContiguousLabelMatrix {
         typedef const View view_type;
 
         /**
-         * An iterator that provides read-only access to the values in the label matrix.
-         */
-        typedef CContiguousConstView<const uint8>::const_iterator value_const_iterator;
-
-        /**
-         * Returns a `value_const_iterator` to the beginning of a specific row.
-         *
-         * @param row   The row
-         * @return      A `value_const_iterator` to the beginning of the given row
-         */
-        value_const_iterator row_values_cbegin(uint32 row) const;
-
-        /**
-         * Returns a `value_const_iterator` to the end of a specific row.
-         *
-         * @param row   The row
-         * @return      A `value_const_iterator` to the end of the given row
-         */
-        value_const_iterator row_values_cend(uint32 row) const;
-
-        /**
          * Creates and returns a view that provides access to the values at a specific row of the label matrix.
          *
          * @param row   The row
          * @return      An object of type `view_type` that has been created
          */
         view_type createView(uint32 row) const;
-
-        uint32 getNumRows() const override;
-
-        uint32 getNumCols() const override;
 
         bool isSparse() const override;
 

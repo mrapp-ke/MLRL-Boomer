@@ -10,7 +10,7 @@
  * An implementation of the type `IRuleInduction` that allows to induce classification rules by using a top-down greedy
  * search.
  */
-class TopDownRuleInduction : public IRuleInduction {
+class TopDownRuleInduction final : public IRuleInduction {
 
     private:
 

@@ -12,7 +12,7 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<typename T>
-class DenseVector final : public VectorView<T> {
+class DenseVector : public VectorView<T> {
 
     private:
 
