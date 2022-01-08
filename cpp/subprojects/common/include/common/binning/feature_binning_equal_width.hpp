@@ -8,7 +8,7 @@
 
 
 /**
- * Allows to configure a method that assigns numerical feature values to bins, such that each bins contains values from
+ * Allows to configure a method that assigns numerical feature values to bins, such that each bin contains values from
  * equally sized value ranges.
  */
 class EqualWidthFeatureBinningConfig : public IFeatureBinningConfig {
