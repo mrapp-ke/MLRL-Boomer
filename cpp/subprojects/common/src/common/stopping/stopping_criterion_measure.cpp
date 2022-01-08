@@ -5,20 +5,6 @@
 #include <limits>
 
 
-static inline float64 evaluateOnHoldoutSet(const BiPartition& partition, const IStatistics& statistics) {
-    uint32 numHoldoutExamples = partition.getNumSecond();
-    BiPartition::const_iterator iterator = partition.second_cbegin();
-    float64 mean = 0;
-
-    for (uint32 i = 0; i < numHoldoutExamples; i++) {
-        uint32 exampleIndex = iterator[i];
-        float64 score = statistics.evaluatePrediction(exampleIndex);
-        mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
-    }
-
-    return mean;
-}
-
 /**
  * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
  * finding the minimum value.
@@ -94,15 +80,49 @@ class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
 
 };
 
+static inline float64 evaluate(const SinglePartition& partition, const IStatistics& statistics) {
+    uint32 numExamples = partition.getNumElements();
+    SinglePartition::const_iterator iterator = partition.cbegin();
+    float64 mean = 0;
+
+    for (uint32 i = 0; i < numExamples; i++) {
+        uint32 exampleIndex = iterator[i];
+        float64 score = statistics.evaluatePrediction(exampleIndex);
+        mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
+    }
+
+    return mean;
+}
+
+static inline float64 evaluate(const BiPartition& partition, const IStatistics& statistics) {
+    uint32 numHoldoutExamples = partition.getNumSecond();
+    BiPartition::const_iterator iterator = partition.second_cbegin();
+    float64 mean = 0;
+
+    for (uint32 i = 0; i < numHoldoutExamples; i++) {
+        uint32 exampleIndex = iterator[i];
+        float64 score = statistics.evaluatePrediction(exampleIndex);
+        mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
+    }
+
+    return mean;
+}
+
 /**
  * An implementation of the type `IStoppingCriterion` that stops the induction of rules as soon as the quality of a
  * model's predictions for the examples in a holdout set do not improve according a certain measure.
+ *
+ * @tparam Partition The type of the object that provides access to the indices of the examples that are included in the
+ *                   training set
  */
+template<typename Partition>
 class MeasureStoppingCriterion final : public IStoppingCriterion {
 
     private:
 
         std::unique_ptr<IAggregationFunction> aggregationFunctionPtr_;
+
+        Partition partition_;
 
         uint32 updateInterval_;
 
@@ -148,12 +168,13 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
          *                                  stopping criterion is met, false, if the time of stopping should only be
          *                                  stored
          */
-        MeasureStoppingCriterion(std::unique_ptr<IAggregationFunction> aggregationFunctionPtr, uint32 minRules,
-                                 uint32 updateInterval, uint32 stopInterval, uint32 numPast, uint32 numCurrent,
-                                 float64 minImprovement, bool forceStop)
-            : aggregationFunctionPtr_(std::move(aggregationFunctionPtr)), updateInterval_(updateInterval),
-              stopInterval_(stopInterval), minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
-              recentBuffer_(RingBuffer<float64>(numCurrent)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
+        MeasureStoppingCriterion(std::unique_ptr<IAggregationFunction> aggregationFunctionPtr, Partition& partition,
+                                 uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
+                                 uint32 numCurrent, float64 minImprovement, bool forceStop)
+            : aggregationFunctionPtr_(std::move(aggregationFunctionPtr)), partition_(partition),
+              updateInterval_(updateInterval), stopInterval_(stopInterval), minImprovement_(minImprovement),
+              pastBuffer_(RingBuffer<float64>(numPast)), recentBuffer_(RingBuffer<float64>(numCurrent)),
+              stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
               bestScore_(std::numeric_limits<float64>::infinity()), stopped_(false) {
             uint32 bufferInterval = (numPast * updateInterval) + (numCurrent * updateInterval);
             offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
@@ -164,8 +185,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
             result.action = CONTINUE;
 
             if (!stopped_ && numRules > offset_ && numRules % updateInterval_ == 0) {
-                const BiPartition& biPartition = static_cast<const BiPartition&>(partition);
-                float64 currentScore = evaluateOnHoldoutSet(biPartition, statistics);
+                float64 currentScore = evaluate(partition_, statistics);
 
                 if (pastBuffer_.isFull()) {
                     if (currentScore < bestScore_) {
@@ -232,14 +252,15 @@ MeasureStoppingCriterionFactory::MeasureStoppingCriterionFactory(
 
 std::unique_ptr<IStoppingCriterion> MeasureStoppingCriterionFactory::create(const SinglePartition& partition) const {
     std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
-    return std::make_unique<MeasureStoppingCriterion>(std::move(aggregationFunctionPtr), minRules_, updateInterval_,
-                                                      stopInterval_, numPast_, numCurrent_, minImprovement_,
-                                                      forceStop_);
+    return std::make_unique<MeasureStoppingCriterion<const SinglePartition>>(std::move(aggregationFunctionPtr),
+                                                                             partition, minRules_, updateInterval_,
+                                                                             stopInterval_, numPast_, numCurrent_,
+                                                                             minImprovement_, forceStop_);
 }
 
 std::unique_ptr<IStoppingCriterion> MeasureStoppingCriterionFactory::create(BiPartition& partition) const {
     std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
-    return std::make_unique<MeasureStoppingCriterion>(std::move(aggregationFunctionPtr), minRules_, updateInterval_,
-                                                      stopInterval_, numPast_, numCurrent_, minImprovement_,
-                                                      forceStop_);
+    return std::make_unique<MeasureStoppingCriterion<BiPartition>>(std::move(aggregationFunctionPtr), partition,
+                                                                   minRules_, updateInterval_, stopInterval_, numPast_,
+                                                                   numCurrent_, minImprovement_, forceStop_);
 }
