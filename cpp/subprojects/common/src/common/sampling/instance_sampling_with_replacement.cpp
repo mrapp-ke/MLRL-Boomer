@@ -64,7 +64,7 @@ static inline void sampleInternally(BiPartition& partition, float32 sampleSize, 
  *                   training set
  */
 template<typename Partition>
-class InstanceSamplingWithReplacement final : virtual public IInstanceSampling {
+class InstanceSamplingWithReplacement final : public IInstanceSampling {
 
     private:
 

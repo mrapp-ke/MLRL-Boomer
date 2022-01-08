@@ -12,7 +12,7 @@ namespace boosting {
      * Allows to create instances of the type `IExampleWiseLoss` that implement a multi-label variant of the logistic
      * loss that is applied example-wise.
      */
-    class ExampleWiseLogisticLossFactory final : virtual public IExampleWiseLossFactory {
+    class ExampleWiseLogisticLossFactory final : public IExampleWiseLossFactory {
 
         public:
 

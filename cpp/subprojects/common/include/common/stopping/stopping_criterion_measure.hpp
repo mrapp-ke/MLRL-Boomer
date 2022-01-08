@@ -50,7 +50,7 @@ class IAggregationFunctionFactory {
  * Allows to create instances of the type `IAggregationFunction` that aggregate the values that are stored in a buffer
  * by finding the minimum value.
  */
-class MinAggregationFunctionFactory final : virtual public IAggregationFunctionFactory {
+class MinAggregationFunctionFactory final : public IAggregationFunctionFactory {
 
     public:
 
@@ -62,7 +62,7 @@ class MinAggregationFunctionFactory final : virtual public IAggregationFunctionF
  * Allows to create instances of the type `IAggregationFunction` that aggregate the values that are stored in a buffer
  * by finding the maximum value.
  */
-class MaxAggregationFunctionFactory final : virtual public IAggregationFunctionFactory {
+class MaxAggregationFunctionFactory final : public IAggregationFunctionFactory {
 
     public:
 
@@ -74,7 +74,7 @@ class MaxAggregationFunctionFactory final : virtual public IAggregationFunctionF
  * Allows to create instances of the type `IAggregationFunction` that aggregate the values that are stored in a buffer
  * by calculating the arithmetic mean.
  */
-class ArithmeticMeanAggregationFunctionFactory final : virtual public IAggregationFunctionFactory {
+class ArithmeticMeanAggregationFunctionFactory final : public IAggregationFunctionFactory {
 
     public:
 
@@ -95,7 +95,7 @@ class ArithmeticMeanAggregationFunctionFactory final : virtual public IAggregati
  * scores from the second buffer, is greater than a certain `minImprovement`, the rule induction is continued,
  * otherwise it is stopped.
  */
-class MeasureStoppingCriterionFactory final : virtual public IStoppingCriterionFactory {
+class MeasureStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
     private:
 

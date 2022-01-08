@@ -157,7 +157,7 @@ namespace seco {
      * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
     template<typename Model>
-    class LabelWiseClassificationPredictor final : virtual public IClassificationPredictor {
+    class LabelWiseClassificationPredictor final : public IClassificationPredictor {
 
         private:
 

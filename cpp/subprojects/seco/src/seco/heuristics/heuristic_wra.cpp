@@ -8,7 +8,7 @@ namespace seco {
      * An implementation of the type `IHeuristic` that calculates as `1 - wra`, where `wra` corresponds to the "Weighted
      * Relative Accuracy" metric.
      */
-    class Wra final : virtual public IHeuristic {
+    class Wra final : public IHeuristic {
 
         public:
 

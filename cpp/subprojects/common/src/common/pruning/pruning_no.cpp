@@ -4,7 +4,7 @@
 /**
  * An implementation of the class `IPruning` that does not actually perform any pruning.
  */
-class NoPruning final : virtual public IPruning {
+class NoPruning final : public IPruning {
 
     public:
 

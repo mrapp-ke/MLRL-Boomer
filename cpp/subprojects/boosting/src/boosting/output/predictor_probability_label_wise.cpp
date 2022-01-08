@@ -11,7 +11,7 @@ namespace boosting {
      * Allows to transform the score that is predicted for an individual label into a probability by applying the
      * logistic sigmoid function.
      */
-    class LogisticFunction final : virtual public IProbabilityFunction {
+    class LogisticFunction final : public IProbabilityFunction {
 
         public:
 
@@ -42,7 +42,7 @@ namespace boosting {
      * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
     template<typename Model>
-    class LabelWiseProbabilityPredictor final : virtual public IProbabilityPredictor {
+    class LabelWiseProbabilityPredictor final : public IProbabilityPredictor {
 
         private:
 

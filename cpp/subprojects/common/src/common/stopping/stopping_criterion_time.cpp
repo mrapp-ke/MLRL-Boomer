@@ -6,7 +6,7 @@
 /**
  * An implementation of the type `IStoppingCriterion` that ensures that a certain time limit is not exceeded.
  */
-class TimeStoppingCriterion final : virtual public IStoppingCriterion {
+class TimeStoppingCriterion final : public IStoppingCriterion {
 
     private:
 

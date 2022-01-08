@@ -8,7 +8,7 @@
 /**
  * An implementation of the type `INoLabelSpaceInfo` that does not provide any information about the label space.
  */
-class NoLabelSpaceInfo final : virtual public INoLabelSpaceInfo {
+class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
 
     public:
 

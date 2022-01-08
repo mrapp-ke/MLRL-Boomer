@@ -5,7 +5,7 @@
 /**
  * An implementation of the class `ILabelSampling` that does not perform any sampling, but includes all labels.
  */
-class NoLabelSampling final : virtual public ILabelSampling {
+class NoLabelSampling final : public ILabelSampling {
 
     private:
 

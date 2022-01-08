@@ -9,7 +9,7 @@
 /**
  * Allows to create objects of the class `ILabelSampling` that do not perform any sampling, but include all labels.
  */
-class NoLabelSamplingFactory final : virtual public ILabelSamplingFactory {
+class NoLabelSamplingFactory final : public ILabelSamplingFactory {
 
     public:
 

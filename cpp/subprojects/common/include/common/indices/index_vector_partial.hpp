@@ -10,7 +10,7 @@
 /**
  * Provides random access to a fixed number of indices stored in a C-contiguous array.
  */
-class PartialIndexVector final : virtual public IIndexVector {
+class PartialIndexVector final : public IIndexVector {
 
     private:
 

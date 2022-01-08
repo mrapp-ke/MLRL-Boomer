@@ -5,7 +5,7 @@
 /**
  * An implementation of the class `IFeatureSampling` that does not perform any sampling, but includes all features.
  */
-class NoFeatureSampling final : virtual public IFeatureSampling {
+class NoFeatureSampling final : public IFeatureSampling {
 
     private:
 

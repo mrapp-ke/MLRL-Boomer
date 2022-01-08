@@ -6,7 +6,7 @@
  * An implementation of the type `IMixedNominalFeatureMask` that uses a `BitVector` to store whether individual features
  * are nominal or not.
  */
-class BitNominalFeatureMask final : virtual public IMixedNominalFeatureMask {
+class BitNominalFeatureMask final : public IMixedNominalFeatureMask {
 
     private:
 

@@ -12,7 +12,7 @@
  * Defines an interface for all classes that allow predict label-wise regression scores for given query examples using
  * an existing rule-based model.
  */
-class IRegressionPredictor : virtual public IPredictor<float64> {
+class IRegressionPredictor : public IPredictor<float64> {
 
     public:
 

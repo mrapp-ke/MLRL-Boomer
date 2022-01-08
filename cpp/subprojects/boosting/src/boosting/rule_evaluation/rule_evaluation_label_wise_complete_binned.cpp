@@ -44,8 +44,7 @@ namespace boosting {
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class DenseLabelWiseCompleteBinnedRuleEvaluation final :
-            virtual public IRuleEvaluation<DenseLabelWiseStatisticVector> {
+    class DenseLabelWiseCompleteBinnedRuleEvaluation final : public IRuleEvaluation<DenseLabelWiseStatisticVector> {
 
         private:
 

@@ -134,7 +134,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
  * An abstract base class for all classes that provide access to thresholds that may be used by the first condition of a
  * rule that currently has an empty body and therefore covers the entire instance space.
  */
-class AbstractThresholds : virtual public IThresholds {
+class AbstractThresholds : public IThresholds {
 
     protected:
 

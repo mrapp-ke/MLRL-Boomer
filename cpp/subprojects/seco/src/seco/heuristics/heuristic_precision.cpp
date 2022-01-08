@@ -8,7 +8,7 @@ namespace seco {
      * An implementation of the type `IHeuristic` that measures the fraction of incorrectly predicted labels among all
      * labels that are covered by a rule.
      */
-    class Precision final : virtual public IHeuristic {
+    class Precision final : public IHeuristic {
 
         public:
 

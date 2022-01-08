@@ -10,7 +10,7 @@
  * Allows to create objects of the type `IPartitionSampling` that do not split the training examples, but include all of
  * them in the training set.
  */
-class NoPartitionSamplingFactory final : virtual public IPartitionSamplingFactory {
+class NoPartitionSamplingFactory final : public IPartitionSamplingFactory {
 
     public:
 

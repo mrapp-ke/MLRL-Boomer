@@ -13,7 +13,7 @@
 /**
  * Defines an interface for all rule-based models that store several rules in an ordered list.
  */
-class IRuleList : virtual public IRuleModel {
+class IRuleList : public IRuleModel {
 
     public:
 
@@ -61,7 +61,7 @@ class IRuleList : virtual public IRuleModel {
 /**
  * An implementation of the type `IRuleList` that stores several rules in a single-linked list.
  */
-class RuleList final : virtual public IRuleList {
+class RuleList final : public IRuleList {
 
     public:
 

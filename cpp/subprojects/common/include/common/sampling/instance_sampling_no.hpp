@@ -10,7 +10,7 @@
  * Allows to create instances of the type `IInstanceSampling` that do not perform any sampling, but assign equal weights
  * to all examples.
  */
-class NoInstanceSamplingFactory final : virtual public IInstanceSamplingFactory {
+class NoInstanceSamplingFactory final : public IInstanceSamplingFactory {
 
     public:
 

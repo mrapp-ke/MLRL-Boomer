@@ -10,7 +10,7 @@
 /**
  * An one-dimensional vector that provides random access to a fixed number of binary weights stored in a `BitVector`.
  */
-class BitWeightVector final : virtual public IWeightVector {
+class BitWeightVector final : public IWeightVector {
 
     private:
 

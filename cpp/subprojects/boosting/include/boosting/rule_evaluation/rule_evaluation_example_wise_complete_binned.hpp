@@ -14,7 +14,7 @@ namespace boosting {
     /**
      * Allows to create instances of the class `ExampleWiseCompleteBinnedRuleEvaluationFactory`.
      */
-    class ExampleWiseCompleteBinnedRuleEvaluationFactory final : virtual public IExampleWiseRuleEvaluationFactory {
+    class ExampleWiseCompleteBinnedRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
 
         private:
 

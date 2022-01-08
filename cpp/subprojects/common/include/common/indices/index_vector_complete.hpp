@@ -10,7 +10,7 @@
 /**
  * Provides random access to all indices within a continuous range [0, numIndices).
  */
-class CompleteIndexVector final : virtual public IIndexVector {
+class CompleteIndexVector final : public IIndexVector {
 
     private:
 

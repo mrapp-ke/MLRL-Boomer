@@ -10,7 +10,7 @@
  * Allows to create instances of the type `IInstanceSampling` that allow to select a subset of the available training
  * examples with replacement.
  */
-class InstanceSamplingWithReplacementFactory final : virtual public IInstanceSamplingFactory {
+class InstanceSamplingWithReplacementFactory final : public IInstanceSamplingFactory {
 
     private:
 

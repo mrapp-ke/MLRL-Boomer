@@ -12,7 +12,7 @@
  * Defines an interface for all classes that allow to predict label-wise probabilities for given query examples,
  * which estimate the chance of individual labels to be relevant, using an existing rule-based model.
  */
-class IProbabilityPredictor : virtual public IPredictor<float64> {
+class IProbabilityPredictor : public IPredictor<float64> {
 
     public:
 

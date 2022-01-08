@@ -9,7 +9,7 @@
 /**
  * Allows to create instances of the type `IPruning` that do not actually perform any pruning.
  */
-class NoPruningFactory final : virtual public IPruningFactory {
+class NoPruningFactory final : public IPruningFactory {
 
     public:
 

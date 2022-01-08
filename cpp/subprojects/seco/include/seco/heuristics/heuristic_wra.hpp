@@ -13,7 +13,7 @@ namespace seco {
      * Allows to create instances of the type `IHeuristic` that calculate as `1 - wra`, where `wra` corresponds to the
      * "Weighted Relative Accuracy" metric.
      */
-    class WraFactory final : virtual public IHeuristicFactory {
+    class WraFactory final : public IHeuristicFactory {
 
         public:
 

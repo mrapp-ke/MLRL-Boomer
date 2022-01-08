@@ -11,7 +11,7 @@
  * Allows to create instances of the type `IFeatureBinning` that assign numerical feature values to bins, such that each
  * bin contains values from equally sized value ranges.
  */
-class EqualWidthFeatureBinningFactory final : virtual public IFeatureBinningFactory {
+class EqualWidthFeatureBinningFactory final : public IFeatureBinningFactory {
 
     private:
 

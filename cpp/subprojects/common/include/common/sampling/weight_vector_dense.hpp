@@ -13,7 +13,7 @@
  * @tparam T The type of the weights
  */
 template<typename T>
-class DenseWeightVector final : virtual public IWeightVector {
+class DenseWeightVector final : public IWeightVector {
 
     private:
 

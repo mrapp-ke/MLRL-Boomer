@@ -14,7 +14,7 @@ namespace seco {
      *                               as corresponding quality scores, of rules
      */
     template<typename RuleEvaluationFactory>
-    class LabelWiseStatisticsProvider final : virtual public IStatisticsProvider {
+    class LabelWiseStatisticsProvider final : public IStatisticsProvider {
 
         private:
 
