@@ -47,10 +47,25 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
 
 };
 
-RandomBiPartitionSamplingFactory::RandomBiPartitionSamplingFactory(float32 holdoutSetSize)
-    : holdoutSetSize_(holdoutSetSize) {
+RandomPartitionSamplingConfig::RandomPartitionSamplingConfig()
+    : holdoutSetSize_(0.33) {
+
+}
+
+float32 RandomPartitionSamplingConfig::getHoldoutSetSize() const {
+    return holdoutSetSize_;
+}
+
+RandomPartitionSamplingConfig& RandomPartitionSamplingConfig::setHoldoutSetSize(float32 holdoutSetSize) {
     assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
     assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
+    holdoutSetSize_ = holdoutSetSize;
+    return *this;
+}
+
+RandomBiPartitionSamplingFactory::RandomBiPartitionSamplingFactory(float32 holdoutSetSize)
+    : holdoutSetSize_(holdoutSetSize) {
+
 }
 
 std::unique_ptr<IPartitionSampling> RandomBiPartitionSamplingFactory::create(
