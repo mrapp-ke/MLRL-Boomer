@@ -175,12 +175,45 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
 
 };
 
-EqualWidthFeatureBinningFactory::EqualWidthFeatureBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
-    : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
+EqualWidthFeatureBinningConfig::EqualWidthFeatureBinningConfig()
+    : binRatio_(0.33), minBins_(2), maxBins_(0) {
+
+}
+
+float32 EqualWidthFeatureBinningConfig::getBinRatio() const {
+    return binRatio_;
+}
+
+EqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setBinRatio(float32 binRatio) {
     assertGreater<float32>("binRatio", binRatio, 0);
     assertLess<float32>("binRatio", binRatio, 1);
+    binRatio_ = binRatio;
+    return *this;
+}
+
+uint32 EqualWidthFeatureBinningConfig::getMinBins() const {
+    return minBins_;
+}
+
+EqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMinBins(uint32 minBins) {
     assertGreaterOrEqual<uint32>("minBins", minBins, 2);
-    if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins); }
+    minBins_ = minBins;
+    return *this;
+}
+
+uint32 EqualWidthFeatureBinningConfig::getMaxBins() const {
+    return maxBins_;
+}
+
+EqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint32 maxBins) {
+    if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_); }
+    maxBins_ = maxBins;
+    return *this;
+}
+
+EqualWidthFeatureBinningFactory::EqualWidthFeatureBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
+    : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
+
 }
 
 std::unique_ptr<IFeatureBinning> EqualWidthFeatureBinningFactory::create() const {
