@@ -138,7 +138,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
             for (auto it = stoppingCriterionFactories_.cbegin(); it != stoppingCriterionFactories_.cend(); it++) {
                 std::shared_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr = *it;
-                stoppingCriteria.push_front(stoppingCriterionFactoryPtr->create(partition));
+                stoppingCriteria.push_front(partition.createStoppingCriterion(*stoppingCriterionFactoryPtr));
             }
 
             // Induce default rule...
