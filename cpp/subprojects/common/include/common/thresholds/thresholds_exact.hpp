@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/thresholds/thresholds_factory.hpp"
+#include "common/thresholds/thresholds.hpp"
 
 
 /**
