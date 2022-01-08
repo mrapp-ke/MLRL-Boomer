@@ -15,7 +15,7 @@
  *                          contained by the training set
  */
 template<typename LabelMatrix, typename IndexIterator>
-class LabelWiseStratifiedSampling final : virtual public IInstanceSampling {
+class LabelWiseStratifiedSampling final : public IInstanceSampling {
 
     private:
 

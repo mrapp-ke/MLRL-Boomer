@@ -10,7 +10,7 @@
  * Allows to create instances of the type `IStoppingCriterion` that ensure that the number of induced rules does not
  * exceed a certain maximum.
  */
-class SizeStoppingCriterionFactory final : virtual public IStoppingCriterionFactory {
+class SizeStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
     private:
 

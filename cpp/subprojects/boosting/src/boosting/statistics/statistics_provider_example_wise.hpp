@@ -20,7 +20,7 @@ namespace boosting {
      *                                          rules
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
-    class ExampleWiseStatisticsProvider final : virtual public IStatisticsProvider {
+    class ExampleWiseStatisticsProvider final : public IStatisticsProvider {
 
         private:
 
@@ -86,7 +86,7 @@ namespace boosting {
      *                                          rules
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
-    class ConvertibleExampleWiseStatisticsProvider final : virtual public IStatisticsProvider {
+    class ConvertibleExampleWiseStatisticsProvider final : public IStatisticsProvider {
 
         private:
 

@@ -15,7 +15,7 @@ namespace seco {
      * heuristic is equivalent to "Precision". As m approaches infinity, the isometrics of this heuristic become
      * equivalent to those of "WRA".
      */
-    class MEstimateFactory final : virtual public IHeuristicFactory {
+    class MEstimateFactory final : public IHeuristicFactory {
 
         private:
 

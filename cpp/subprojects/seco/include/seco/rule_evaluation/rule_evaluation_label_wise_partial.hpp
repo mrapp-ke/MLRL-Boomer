@@ -14,7 +14,7 @@ namespace seco {
     /**
      * Allows to create instances of the class `LabelWisePartialRuleEvaluation`.
      */
-    class LabelWisePartialRuleEvaluationFactory final : virtual public ILabelWiseRuleEvaluationFactory {
+    class LabelWisePartialRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
 
         private:
 

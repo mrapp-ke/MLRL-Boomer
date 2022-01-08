@@ -12,7 +12,7 @@ namespace boosting {
     /**
      * Allows to build models that store several rules in the order they have been added.
      */
-    class RuleListBuilder final : virtual public IModelBuilder {
+    class RuleListBuilder final : public IModelBuilder {
 
         private:
 

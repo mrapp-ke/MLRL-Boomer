@@ -10,7 +10,7 @@
  * Allows to create objects of type `ILabelSampling` that select a random subset of the available features without
  * replacement.
  */
-class LabelSamplingWithoutReplacementFactory final : virtual public ILabelSamplingFactory {
+class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactory {
 
     private:
 

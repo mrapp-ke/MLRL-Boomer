@@ -30,7 +30,7 @@ namespace seco {
      */
     template<typename LabelMatrix, typename WeightMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory>
-    class AbstractLabelWiseStatistics : virtual public ILabelWiseStatistics<RuleEvaluationFactory> {
+    class AbstractLabelWiseStatistics : public ILabelWiseStatistics<RuleEvaluationFactory> {
 
         private:
 
@@ -42,7 +42,7 @@ namespace seco {
              *           the subset
              */
             template<typename T>
-            class StatisticsSubset final : virtual public IStatisticsSubset {
+            class StatisticsSubset final : public IStatisticsSubset {
 
                 private:
 

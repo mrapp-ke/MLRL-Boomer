@@ -15,7 +15,7 @@ namespace boosting {
      * aggregated score vector to the known label vectors according to a certain distance measure. The label vector that
      * is closest to the aggregated score vector is finally predicted.
      */
-    class ExampleWiseClassificationPredictorFactory final : virtual public IClassificationPredictorFactory {
+    class ExampleWiseClassificationPredictorFactory final : public IClassificationPredictorFactory {
 
         private:
 

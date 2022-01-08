@@ -12,7 +12,7 @@ namespace boosting {
     /**
      * Defines an interface for all (non-decomposable) loss functions that are applied example-wise.
      */
-    class IExampleWiseLoss : virtual public ILabelWiseLoss {
+    class IExampleWiseLoss : public ILabelWiseLoss {
 
         public:
 
@@ -52,7 +52,7 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type `IExampleWiseLoss`.
      */
-    class IExampleWiseLossFactory : virtual public ILabelWiseLossFactory {
+    class IExampleWiseLossFactory : public ILabelWiseLossFactory {
 
         public:
 

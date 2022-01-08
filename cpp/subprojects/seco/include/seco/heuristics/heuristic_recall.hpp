@@ -14,7 +14,7 @@ namespace seco {
      * labels for which a rule's prediction is (or would be) correct, i.e., for which the ground truth is equal to the
      * rule's prediction.
      */
-    class RecallFactory final : virtual public IHeuristicFactory {
+    class RecallFactory final : public IHeuristicFactory {
 
         public:
 

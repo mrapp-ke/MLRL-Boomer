@@ -9,7 +9,7 @@ namespace boosting {
      * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the squared hinge
      * loss that is applied label-wise.
      */
-    class LabelWiseSquaredHingeLossFactory final : virtual public ILabelWiseLossFactory {
+    class LabelWiseSquaredHingeLossFactory final : public ILabelWiseLossFactory {
 
         public:
 

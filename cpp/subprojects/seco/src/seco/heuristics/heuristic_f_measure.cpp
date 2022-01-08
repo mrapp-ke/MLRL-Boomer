@@ -10,7 +10,7 @@ namespace seco {
      * An implementation of the type `IHeuristic` that calculates as the (weighted) harmonic mean between the heuristics
      * "Precision" and "Recall", where the parameter "beta" allows to trade off between both heuristics.
      */
-    class FMeasure final : virtual public IHeuristic {
+    class FMeasure final : public IHeuristic {
 
         private:
 

@@ -10,7 +10,7 @@
  * Allows to create instances of the type `IFeatureSampling` that select a random subset of the available features
  * without replacement.
  */
-class FeatureSamplingWithoutReplacementFactory final : virtual public IFeatureSamplingFactory {
+class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFactory {
 
     private:
 

@@ -14,7 +14,7 @@
  * @tparam T The type of the values that are stored by the prediction matrix
  */
 template<typename T>
-class ISparsePredictor : virtual public IPredictor<T> {
+class ISparsePredictor : public IPredictor<T> {
 
     public:
 

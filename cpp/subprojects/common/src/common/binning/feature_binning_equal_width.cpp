@@ -66,7 +66,7 @@ static inline uint32 getBinIndex(float32 value, float32 min, float32 width, uint
  * An implementation of the type `IFeatureBinning` that assigns numerical feature values to bins, such that each bin
  * contains values from equally sized value ranges.
  */
-class EqualWidthFeatureBinning final : virtual public IFeatureBinning {
+class EqualWidthFeatureBinning final : public IFeatureBinning {
 
     private:
 

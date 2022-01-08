@@ -9,7 +9,7 @@
 /**
  * Defines an interface for all classes that do not provide any information about the label space.
  */
-class INoLabelSpaceInfo : virtual public ILabelSpaceInfo {
+class INoLabelSpaceInfo : public ILabelSpaceInfo {
 
     public:
 

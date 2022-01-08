@@ -18,7 +18,7 @@ namespace seco {
      * provided in the paper "Roc 'n' Rule Learning — Towards a Better Understanding of Covering Algorithms", Fürnkranz,
      * Flach 2005 (see https://link.springer.com/content/pdf/10.1007/s10994-005-5011-x.pdf).
      */
-    class PrecisionFactory final : virtual public IHeuristicFactory {
+    class PrecisionFactory final : public IHeuristicFactory {
 
         public:
 

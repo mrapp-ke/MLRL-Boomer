@@ -12,7 +12,7 @@ namespace boosting {
      * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the logistic loss
      * that is applied label-wise.
      */
-    class LabelWiseLogisticLossFactory final : virtual public ILabelWiseLossFactory {
+    class LabelWiseLogisticLossFactory final : public ILabelWiseLossFactory {
 
         public:
 

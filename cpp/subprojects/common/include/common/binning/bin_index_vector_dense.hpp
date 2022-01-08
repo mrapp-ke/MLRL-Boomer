@@ -10,7 +10,7 @@
 /**
  * Stores the indices of the bins, individual examples have been assigned to, using a C-contiguous array.
  */
-class DenseBinIndexVector final : virtual public IBinIndexVector {
+class DenseBinIndexVector final : public IBinIndexVector {
 
     private:
 

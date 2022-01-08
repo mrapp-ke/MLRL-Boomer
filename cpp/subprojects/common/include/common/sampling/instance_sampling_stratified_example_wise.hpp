@@ -11,7 +11,7 @@
  * Allows to create instances of the type `IInstanceSampling` that implement stratified sampling, where distinct label
  * vectors are treated as individual classes.
  */
-class ExampleWiseStratifiedSamplingFactory final : virtual public IInstanceSamplingFactory {
+class ExampleWiseStratifiedSamplingFactory final : public IInstanceSamplingFactory {
 
     private:
 

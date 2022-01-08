@@ -12,7 +12,7 @@ namespace seco {
     /**
      * Allows to create instances of the class `LabelWiseMajorityRuleEvaluation`.
      */
-    class LabelWiseMajorityRuleEvaluationFactory final : virtual public ILabelWiseRuleEvaluationFactory {
+    class LabelWiseMajorityRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
 
         public:
 

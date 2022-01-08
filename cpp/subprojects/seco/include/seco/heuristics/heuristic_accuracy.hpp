@@ -16,7 +16,7 @@ namespace seco {
      * This heuristic is used in the pruning phase of IREP ("Incremental Reduced Error Pruning", Fürnkranz, Widmer 1994,
      * see https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.43.7813&rep=rep1&type=pdf).
      */
-    class AccuracyFactory final : virtual public IHeuristicFactory {
+    class AccuracyFactory final : public IHeuristicFactory {
 
         public:
 

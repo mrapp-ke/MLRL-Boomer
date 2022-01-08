@@ -11,7 +11,7 @@
  * into two mutually exclusive sets that may be used as a training set and a holdout set, such that for each label the
  * proportion of relevant and irrelevant examples is maintained.
  */
-class LabelWiseStratifiedBiPartitionSamplingFactory final : virtual public IPartitionSamplingFactory {
+class LabelWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
 
     private:
 

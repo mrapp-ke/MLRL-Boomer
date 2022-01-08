@@ -11,7 +11,7 @@
  * are treated as individual classes, to split the training examples into two mutually exclusive sets that may be used
  * as a training set and a holdout set.
  */
-class ExampleWiseStratifiedBiPartitionSamplingFactory final : virtual public IPartitionSamplingFactory {
+class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
 
     private:
 

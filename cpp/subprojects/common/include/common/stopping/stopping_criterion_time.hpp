@@ -9,7 +9,7 @@
 /**
  * Allows to create instances of the type `IStoppingCriterion` that ensure that a certain time limit is not exceeded.
  */
-class TimeStoppingCriterionFactory final : virtual public IStoppingCriterionFactory {
+class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
     private:
 
