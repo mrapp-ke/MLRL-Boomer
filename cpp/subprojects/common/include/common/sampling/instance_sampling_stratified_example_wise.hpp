@@ -8,6 +8,39 @@
 
 
 /**
+ * Allows to configure a strategy for selecting a subset of the available training examples using stratification, where
+ * distinct label vectors are treated as individual classes.
+ */
+class ExampleWiseStratifiedInstanceSamplingConfig : public IInstanceSamplingConfig {
+
+    private:
+
+        float32 sampleSize_;
+
+    public:
+
+        ExampleWiseStratifiedInstanceSamplingConfig();
+
+        /**
+         * Returns the fraction of examples that are included in a sample.
+         *
+         * @return The fraction of examples that are included in a sample
+         */
+        float32 getSampleSize() const;
+
+        /**
+         * Sets the fraction of examples that should be included in a sample.
+         *
+         * @param sampleSize    The fraction of examples that should be included in a sample, e.g., a value of 0.6
+         *                      corresponds to 60 % of the available training examples. Must be in (0, 1)
+         * @return              A reference to an object of type `ExampleWiseStratifiedInstanceSamplingConfig` that
+         *                      allows further configuration of the strategy for sampling instances
+         */
+        ExampleWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize);
+
+};
+
+/**
  * Allows to create instances of the type `IInstanceSampling` that implement stratified sampling, where distinct label
  * vectors are treated as individual classes.
  */
