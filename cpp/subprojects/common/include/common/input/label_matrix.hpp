@@ -3,30 +3,16 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/data/view_two_dimensional.hpp"
 
 
 /**
  * Defines an interface for all label matrices.
  */
-class ILabelMatrix {
+class ILabelMatrix : virtual public ITwoDimensionalView {
 
     public:
 
-        virtual ~ILabelMatrix() { };
-
-        /**
-         * Returns the number of available examples.
-         *
-         * @return The number of examples
-         */
-        virtual uint32 getNumRows() const = 0;
-
-        /**
-         * Returns the number of available labels.
-         *
-         * @return The number of labels
-         */
-        virtual uint32 getNumCols() const = 0;
+        virtual ~ILabelMatrix() override { };
 
 };

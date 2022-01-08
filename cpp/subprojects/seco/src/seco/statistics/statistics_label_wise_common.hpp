@@ -11,8 +11,8 @@ namespace seco {
     template<typename Prediction, typename WeightMatrix>
     static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                           WeightMatrix& weightMatrix,
-                                                          const BinarySparseArrayVector& majorityLabelVector) {
-        weightMatrix.updateRow(statisticIndex, majorityLabelVector, prediction.scores_cbegin(),
+                                                          const VectorConstView<uint32>& majorityLabelIndices) {
+        weightMatrix.updateRow(statisticIndex, majorityLabelIndices, prediction.scores_cbegin(),
                                prediction.scores_cend(), prediction.indices_cbegin(), prediction.indices_cend());
     }
 

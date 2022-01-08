@@ -3,30 +3,16 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/data/view_two_dimensional.hpp"
 
 
 /**
  * Defines an interface for all feature matrices.
  */
-class IFeatureMatrix {
+class IFeatureMatrix : virtual public ITwoDimensionalView {
 
     public:
 
-        virtual ~IFeatureMatrix() { };
-
-        /**
-         * Returns the number of available examples.
-         *
-         * @return The number of examples
-         */
-        virtual uint32 getNumRows() const = 0;
-
-        /**
-         * Returns the number of available features.
-         *
-         * @return The number of features
-         */
-        virtual uint32 getNumCols() const = 0;
+        virtual ~IFeatureMatrix() override { };
 
 };

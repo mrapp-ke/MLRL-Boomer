@@ -82,7 +82,7 @@ cdef class LabelVectorSet(LabelSpaceInfo):
 cdef inline unique_ptr[LabelVector] __create_label_vector(list state):
     cdef uint32 num_elements = len(state)
     cdef unique_ptr[LabelVector] label_vector_ptr = make_unique[LabelVector](num_elements)
-    cdef LabelVector.index_iterator iterator = label_vector_ptr.get().indices_begin()
+    cdef LabelVector.iterator iterator = label_vector_ptr.get().begin()
     cdef uint32 i, label_index
 
     for i in range(num_elements):
@@ -100,7 +100,7 @@ cdef class LabelVectorSetSerializer:
     cdef __visit_label_vector(self, const LabelVector& label_vector):
         cdef list label_vector_state = []
         cdef uint32 num_elements = label_vector.getNumElements()
-        cdef LabelVector.index_const_iterator iterator = label_vector.indices_cbegin()
+        cdef LabelVector.const_iterator iterator = label_vector.cbegin()
         cdef uint32 i, label_index
 
         for i in range(num_elements):

@@ -40,16 +40,16 @@ namespace seco {
              * Updates the weights at a specific row of this matrix, given the predictions for certain labels.
              *
              * @param row                   The row
-             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
-             *                              prediction of the default rule
+             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
+             *                              of the labels that are relevant to the majority of the training examples
              * @param predictionBegin       An iterator to the beginning of the predictions
              * @param predictionEnd         An iterator to the end of the predictions
              * @param indicesBegin          An iterator to the beginning of the label indices
              * @param indicesEnd            An iterator to the end of the label indices
              */
-            void updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,
-                           DenseVector<float64>::const_iterator predictionBegin,
-                           DenseVector<float64>::const_iterator predictionEnd,
+            void updateRow(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+                           VectorView<float64>::const_iterator predictionBegin,
+                           VectorView<float64>::const_iterator predictionEnd,
                            CompleteIndexVector::const_iterator indicesBegin,
                            CompleteIndexVector::const_iterator indicesEnd);
 
@@ -57,16 +57,16 @@ namespace seco {
              * Updates the weights at a specific row of this matrix, given the predictions for certain labels.
              *
              * @param row                   The row
-             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
-             *                              prediction of the default rule
+             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
+             *                              of the labels that are relevant to the majority of the training examples
              * @param predictionBegin       An iterator to the beginning of the predictions
              * @param predictionEnd         An iterator to the end of the predictions
              * @param indicesBegin          An iterator to the beginning of the label indices
              * @param indicesEnd            An iterator to the end of the label indices
              */
-            void updateRow(uint32 row, const BinarySparseArrayVector& majorityLabelVector,
-                           DenseVector<float64>::const_iterator predictionBegin,
-                           DenseVector<float64>::const_iterator predictionEnd,
+            void updateRow(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+                           VectorView<float64>::const_iterator predictionBegin,
+                           VectorView<float64>::const_iterator predictionEnd,
                            PartialIndexVector::const_iterator indicesBegin,
                            PartialIndexVector::const_iterator indicesEnd);
 

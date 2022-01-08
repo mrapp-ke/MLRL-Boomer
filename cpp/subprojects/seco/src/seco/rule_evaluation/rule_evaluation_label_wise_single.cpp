@@ -42,7 +42,7 @@ namespace seco {
             }
 
             const IScoreVector& calculatePrediction(
-                    const BinarySparseArrayVector& majorityLabelVector,
+                    const VectorConstView<uint32>& majorityLabelIndices,
                     const DenseConfusionMatrixVector& confusionMatricesTotal,
                     const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
@@ -64,8 +64,8 @@ namespace seco {
                     }
                 }
 
-                auto labelIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                                  majorityLabelVector.indices_cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
+                                                                  majorityLabelIndices.cend());
                 std::advance(labelIterator, bestIndex);
                 scoreVector_.scores_begin()[0] = (float64) !(*labelIterator);
                 indexVector_.begin()[0] = bestIndex;

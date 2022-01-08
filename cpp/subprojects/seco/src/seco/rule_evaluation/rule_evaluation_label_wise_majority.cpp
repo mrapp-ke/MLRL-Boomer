@@ -29,13 +29,13 @@ namespace seco {
             }
 
             const IScoreVector& calculatePrediction(
-                    const BinarySparseArrayVector& majorityLabelVector,
+                    const VectorConstView<uint32>& majorityLabelIndices,
                     const DenseConfusionMatrixVector& confusionMatricesTotal,
                     const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 typename DenseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelVector.indices_cbegin(),
-                                                                  majorityLabelVector.indices_cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
+                                                                  majorityLabelIndices.cend());
                 uint32 numElements = scoreVector_.getNumElements();
                 uint32 previousIndex = 0;
 

@@ -10,8 +10,8 @@
 
 namespace seco {
 
-    static inline void applyCompleteHead(const CompleteHead& head, CContiguousView<uint8>::iterator begin,
-                                         CContiguousView<uint8>::iterator end, BitVector& mask) {
+    static inline void applyCompleteHead(const CompleteHead& head, CContiguousView<uint8>::value_iterator begin,
+                                         CContiguousView<uint8>::value_iterator end, BitVector& mask) {
         CompleteHead::score_const_iterator iterator = head.scores_cbegin();
         uint32 numElements = head.getNumElements();
 
@@ -24,8 +24,8 @@ namespace seco {
         }
     }
 
-    static inline void applyPartialHead(const PartialHead& head, CContiguousView<uint8>::iterator begin,
-                                        CContiguousView<uint8>::iterator end, BitVector& mask) {
+    static inline void applyPartialHead(const PartialHead& head, CContiguousView<uint8>::value_iterator begin,
+                                        CContiguousView<uint8>::value_iterator end, BitVector& mask) {
         PartialHead::score_const_iterator scoreIterator = head.scores_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
@@ -44,10 +44,10 @@ namespace seco {
     static inline void applyHead(const IHead& head, CContiguousView<uint8>& predictionMatrix, BitVector& mask,
                                  uint32 row) {
         auto completeHeadVisitor = [&, row](const CompleteHead& head) {
-            applyCompleteHead(head, predictionMatrix.row_begin(row), predictionMatrix.row_end(row), mask);
+            applyCompleteHead(head, predictionMatrix.row_values_begin(row), predictionMatrix.row_values_end(row), mask);
         };
         auto partialHeadVisitor = [&, row](const PartialHead& head) {
-            applyPartialHead(head, predictionMatrix.row_begin(row), predictionMatrix.row_end(row), mask);
+            applyPartialHead(head, predictionMatrix.row_values_begin(row), predictionMatrix.row_values_end(row), mask);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
@@ -197,7 +197,7 @@ namespace seco {
                         const RuleList::Rule& rule = *it;
                         const IBody& body = rule.getBody();
 
-                        if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
+                        if (body.covers(featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i))) {
                             const IHead& head = rule.getHead();
                             applyHead(head, *predictionMatrixRawPtr, mask, i);
                         }
@@ -266,7 +266,7 @@ namespace seco {
                         const RuleList::Rule& rule = *it;
                         const IBody& body = rule.getBody();
 
-                        if (body.covers(featureMatrixPtr->row_cbegin(i), featureMatrixPtr->row_cend(i))) {
+                        if (body.covers(featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i))) {
                             const IHead& head = rule.getHead();
                             numNonZeroElements += applyHead(head, row);
                         }

@@ -37,7 +37,7 @@ static inline IStoppingCriterion::Result testStoppingCriteria(
  * Allows to sequentially induce several rules, starting with a default rule, that will be added to a resulting
  * rule-based model.
  */
-class SequentialRuleModelAssemblage : public IRuleModelAssemblage {
+class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
     private:
 
