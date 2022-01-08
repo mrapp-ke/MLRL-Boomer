@@ -53,10 +53,26 @@ class LabelWiseStratifiedSampling final : public IInstanceSampling {
 
 };
 
-LabelWiseStratifiedSamplingFactory::LabelWiseStratifiedSamplingFactory(float32 sampleSize)
-    : sampleSize_(sampleSize) {
+LabelWiseStratifiedInstanceSamplingConfig::LabelWiseStratifiedInstanceSamplingConfig()
+    : sampleSize_(0.66) {
+
+}
+
+float32 LabelWiseStratifiedInstanceSamplingConfig::getSampleSize() const {
+    return sampleSize_;
+}
+
+LabelWiseStratifiedInstanceSamplingConfig& LabelWiseStratifiedInstanceSamplingConfig::setSampleSize(
+        float32 sampleSize) {
     assertGreater<float32>("sampleSize", sampleSize, 0);
     assertLess<float32>("sampleSize", sampleSize, 1);
+    sampleSize_ = sampleSize;
+    return *this;
+}
+
+LabelWiseStratifiedSamplingFactory::LabelWiseStratifiedSamplingFactory(float32 sampleSize)
+    : sampleSize_(sampleSize) {
+
 }
 
 std::unique_ptr<IInstanceSampling> LabelWiseStratifiedSamplingFactory::create(const CContiguousLabelMatrix& labelMatrix,
