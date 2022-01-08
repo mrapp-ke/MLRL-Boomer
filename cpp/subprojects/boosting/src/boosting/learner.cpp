@@ -3,7 +3,7 @@
 #include "boosting/model/rule_list_builder.hpp"
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp"
-#include "boosting/statistics/statistics_provider_factory_label_wise_dense.hpp"
+#include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
 
 
 namespace boosting {
