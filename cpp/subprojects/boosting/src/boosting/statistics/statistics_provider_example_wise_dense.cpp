@@ -3,7 +3,7 @@
     #pragma warning( disable : 4250 )
 #endif
 
-#include "boosting/statistics/statistics_provider_factory_example_wise_dense.hpp"
+#include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/statistic_vector_example_wise_dense.hpp"
 #include "boosting/data/statistic_view_example_wise_dense.hpp"

@@ -12,9 +12,9 @@
 #include "common/sampling/instance_sampling.hpp"
 #include "common/sampling/feature_sampling.hpp"
 #include "common/sampling/partition_sampling.hpp"
-#include "common/statistics/statistics_provider_factory.hpp"
+#include "common/statistics/statistics_provider.hpp"
 #include "common/stopping/stopping_criterion.hpp"
-#include "common/thresholds/thresholds_factory.hpp"
+#include "common/thresholds/thresholds.hpp"
 #include <forward_list>
 
 
