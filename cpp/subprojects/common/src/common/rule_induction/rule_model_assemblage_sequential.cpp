@@ -127,12 +127,18 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
+            // Partition training data...
+            std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrix.createPartitionSampling(
+                *partitionSamplingFactoryPtr_);
+            RNG rng(randomState);
+            IPartition& partition = partitionSamplingPtr->partition(rng);
+
             // Initialize stopping criteria...
             std::forward_list<std::unique_ptr<IStoppingCriterion>> stoppingCriteria;
 
             for (auto it = stoppingCriterionFactories_.cbegin(); it != stoppingCriterionFactories_.cend(); it++) {
                 std::shared_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr = *it;
-                stoppingCriteria.push_front(stoppingCriterionFactoryPtr->create());
+                stoppingCriteria.push_front(stoppingCriterionFactoryPtr->create(partition));
             }
 
             // Induce default rule...
@@ -152,10 +158,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                                                                                        *statisticsProviderPtr);
             uint32 numFeatures = thresholdsPtr->getNumFeatures();
             uint32 numLabels = thresholdsPtr->getNumLabels();
-            std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrix.createPartitionSampling(
-                *partitionSamplingFactoryPtr_);
-            RNG rng(randomState);
-            IPartition& partition = partitionSamplingPtr->partition(rng);
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr = partition.createInstanceSampling(
                 *instanceSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr_->create(numFeatures);

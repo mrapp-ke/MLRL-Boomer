@@ -22,6 +22,6 @@ class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
          */
         TimeStoppingCriterionFactory(uint32 timeLimit);
 
-        std::unique_ptr<IStoppingCriterion> create() const override;
+        std::unique_ptr<IStoppingCriterion> create(const IPartition& partition) const override;
 
 };
