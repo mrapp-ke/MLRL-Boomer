@@ -17,6 +17,7 @@
 #include "common/output/predictor_probability.hpp"
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_induction/rule_model_assemblage.hpp"
+#include "common/sampling/feature_sampling_without_replacement.hpp"
 
 
 /**
@@ -102,6 +103,14 @@ class IRuleLearner {
                  */
                 virtual const IFeatureBinningConfig* getFeatureBinningConfig() const = 0;
 
+                /**
+                 * Returns the configuration of the method for sampling features.
+                 *
+                 * @return A pointer to an object of type `IFeatureSamplingConfig` that specifies the configuration of
+                 *         the method for sampling features or a null pointer, if no such method should be used
+                 */
+                virtual const IFeatureSamplingConfig* getFeatureSamplingConfig() const = 0;
+
             public:
 
                 virtual ~IConfig() { };
@@ -131,6 +140,15 @@ class IRuleLearner {
                  *         configuration of the method for the assignment of numerical feature values to bins
                  */
                 virtual EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() = 0;
+
+                /**
+                 * Configures the rule learner to sample from the available features with replacement whenever a rule
+                 * should be refined.
+                 *
+                 * @return A reference to an object of type `FeatureSamplingWithoutReplacementConfig` that allows
+                 *         further configuration of the method for sampling features
+                 */
+                virtual FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() = 0;
 
         };
 
@@ -311,9 +329,13 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IFeatureBinningConfig> featureBinningConfigPtr_;
 
+                std::unique_ptr<IFeatureSamplingConfig> featureSamplingConfigPtr_;
+
                 const IRuleInductionConfig& getRuleInductionConfig() const override;
 
                 const IFeatureBinningConfig* getFeatureBinningConfig() const override;
+
+                const IFeatureSamplingConfig* getFeatureSamplingConfig() const override;
 
             public:
 
@@ -324,6 +346,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 EqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
 
                 EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
+
+                FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
 
         };
 
