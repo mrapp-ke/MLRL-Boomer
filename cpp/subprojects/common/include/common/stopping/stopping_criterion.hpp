@@ -62,6 +62,18 @@ class IStoppingCriterion {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure a stopping criterion that allows to decide whether
+ * additional rules should be induced or not.
+ */
+class IStoppingCriterionConfig {
+
+    public:
+
+        virtual ~IStoppingCriterionConfig() { };
+
+};
+
+/**
  * Defines an interface for all factories that allow to create instances of the type `IStoppingCriterion`.
  */
 class IStoppingCriterionFactory {
