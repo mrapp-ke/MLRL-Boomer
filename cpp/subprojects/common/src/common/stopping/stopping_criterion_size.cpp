@@ -37,9 +37,24 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
 
 };
 
+SizeStoppingCriterionConfig::SizeStoppingCriterionConfig()
+    : maxRules_(1000) {
+
+}
+
+uint32 SizeStoppingCriterionConfig::getMaxRules() const {
+    return maxRules_;
+}
+
+SizeStoppingCriterionConfig& SizeStoppingCriterionConfig::setMaxRules(uint32 maxRules) {
+    assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
+    maxRules_ = maxRules;
+    return *this;
+}
+
 SizeStoppingCriterionFactory::SizeStoppingCriterionFactory(uint32 maxRules)
     : maxRules_(maxRules) {
-    assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
+
 }
 
 std::unique_ptr<IStoppingCriterion> SizeStoppingCriterionFactory::create(const SinglePartition& partition) const {
