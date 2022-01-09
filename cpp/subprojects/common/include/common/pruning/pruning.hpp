@@ -45,6 +45,17 @@ class IPruning {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure a strategy for pruning classification rules.
+ */
+class IPruningConfig {
+
+    public:
+
+        virtual ~IPruningConfig() { };
+
+};
+
+/**
  * Defines an interface for all factories that allow to create instances of the type `IPruning`.
  */
 class IPruningFactory {
