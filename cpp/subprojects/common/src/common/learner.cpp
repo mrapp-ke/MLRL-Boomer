@@ -95,6 +95,10 @@ const IPartitionSamplingConfig* AbstractRuleLearner::Config::getPartitionSamplin
     return partitionSamplingConfigPtr_.get();
 }
 
+const IPruningConfig* AbstractRuleLearner::Config::getPruningConfig() const {
+    return pruningConfigPtr_.get();
+}
+
 TopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
     std::unique_ptr<TopDownRuleInductionConfig> ptr = std::make_unique<TopDownRuleInductionConfig>();
     TopDownRuleInductionConfig& ref = *ptr;
@@ -184,6 +188,13 @@ ExampleWiseStratifiedBiPartitionSamplingConfig& AbstractRuleLearner::Config::use
         std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
     ExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
     partitionSamplingConfigPtr_ = std::move(ptr);
+    return ref;
+}
+
+IrepConfig& AbstractRuleLearner::Config::useIrepPruning() {
+    std::unique_ptr<IrepConfig> ptr = std::make_unique<IrepConfig>();
+    IrepConfig& ref = *ptr;
+    pruningConfigPtr_ = std::move(ptr);
     return ref;
 }
 
@@ -309,8 +320,17 @@ std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionS
 }
 
 std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() const {
-    // TODO Implement
-    return std::make_unique<NoPruningFactory>();
+    const IPruningConfig* pruningConfig = this->configPtr_->getPruningConfig();
+
+    if (pruningConfig == nullptr) {
+        return std::make_unique<NoPruningFactory>();
+    } else {
+        if (dynamic_cast<const IrepConfig*>(pruningConfig)) {
+            return std::make_unique<IrepFactory>();
+        }
+
+        throw std::runtime_error("Failed to create IPruningFactory");
+    }
 }
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {

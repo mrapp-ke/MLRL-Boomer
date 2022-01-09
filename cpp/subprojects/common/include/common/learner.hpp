@@ -15,6 +15,7 @@
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
+#include "common/pruning/pruning_irep.hpp"
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_induction/rule_model_assemblage.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"
@@ -145,6 +146,14 @@ class IRuleLearner {
                  */
                 virtual const IPartitionSamplingConfig* getPartitionSamplingConfig() const = 0;
 
+                /**
+                 * Returns the configuration of the method for pruning classification rules.
+                 *
+                 * @return A pointer to an object of type `IPruningConfig` that specifies the configuration of the
+                 *         method for pruning classification rules or a null pointer, if no such method should be used
+                 */
+                virtual const IPruningConfig* getPruningConfig() const = 0;
+
             public:
 
                 virtual ~IConfig() { };
@@ -261,6 +270,15 @@ class IRuleLearner {
                  *         training and a holdout set
                  */
                 virtual ExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() = 0;
+
+                /**
+                 * Configures the rule learner to prune classification rules by following the ideas of "incremental
+                 * reduced error pruning" (IREP).
+                 *
+                 * @return A reference to an object of type `IrepConfig` that allows further configuration of the method
+                 *         for pruning classification rules
+                 */
+                virtual IrepConfig& useIrepPruning() = 0;
 
         };
 
@@ -449,6 +467,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IPartitionSamplingConfig> partitionSamplingConfigPtr_;
 
+                std::unique_ptr<IPruningConfig> pruningConfigPtr_;
+
                 const IRuleInductionConfig& getRuleInductionConfig() const override;
 
                 const IFeatureBinningConfig* getFeatureBinningConfig() const override;
@@ -460,6 +480,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 const IFeatureSamplingConfig* getFeatureSamplingConfig() const override;
 
                 const IPartitionSamplingConfig* getPartitionSamplingConfig() const override;
+
+                const IPruningConfig* getPruningConfig() const override;
 
             public:
 
@@ -488,6 +510,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 LabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
 
                 ExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
+
+                IrepConfig& useIrepPruning() override;
 
         };
 
