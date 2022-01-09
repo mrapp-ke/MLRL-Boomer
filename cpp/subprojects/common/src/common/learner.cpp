@@ -179,13 +179,13 @@ std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingF
 
     if (labelSamplingConfig == nullptr) {
         return std::make_unique<NoLabelSamplingFactory>();
-
+    } else {
         if (auto* config = dynamic_cast<const LabelSamplingWithoutReplacementConfig*>(labelSamplingConfig)) {
             return std::make_unique<LabelSamplingWithoutReplacementFactory>(config->getNumSamples());
         }
-    }
 
-    throw std::runtime_error("Failed to create ILabelSamplingFactory");
+        throw std::runtime_error("Failed to create ILabelSamplingFactory");
+    }
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
