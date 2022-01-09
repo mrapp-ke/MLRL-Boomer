@@ -237,10 +237,10 @@ std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSam
             return std::make_unique<InstanceSamplingWithoutReplacementFactory>(config->getSampleSize());
         } else if (auto* config =
                        dynamic_cast<const LabelWiseStratifiedInstanceSamplingConfig*>(instanceSamplingConfig)) {
-            return std::make_unique<LabelWiseStratifiedSamplingFactory>(config->getSampleSize());
+            return std::make_unique<LabelWiseStratifiedInstanceSamplingFactory>(config->getSampleSize());
         } else if (auto* config =
                        dynamic_cast<const ExampleWiseStratifiedInstanceSamplingConfig*>(instanceSamplingConfig)) {
-            return std::make_unique<ExampleWiseStratifiedSamplingFactory>(config->getSampleSize());
+            return std::make_unique<ExampleWiseStratifiedInstanceSamplingFactory>(config->getSampleSize());
         }
 
         throw std::runtime_error("Failed to create IInstanceSamplingFactory");

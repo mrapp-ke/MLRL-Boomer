@@ -45,7 +45,7 @@ class LabelWiseStratifiedInstanceSamplingConfig : public IInstanceSamplingConfig
  * of the available training examples, such that for each label the proportion of relevant and irrelevant examples is
  * maintained.
  */
-class LabelWiseStratifiedSamplingFactory final : public IInstanceSamplingFactory {
+class LabelWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplingFactory {
 
     private:
 
@@ -57,7 +57,7 @@ class LabelWiseStratifiedSamplingFactory final : public IInstanceSamplingFactory
          * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
          *                   60 % of the available examples). Must be in (0, 1]
          */
-        LabelWiseStratifiedSamplingFactory(float32 sampleSize);
+        LabelWiseStratifiedInstanceSamplingFactory(float32 sampleSize);
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
                                                   const SinglePartition& partition,
