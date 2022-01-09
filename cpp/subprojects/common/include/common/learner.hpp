@@ -18,6 +18,10 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_induction/rule_model_assemblage.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"
+#include "common/sampling/instance_sampling_stratified_example_wise.hpp"
+#include "common/sampling/instance_sampling_stratified_label_wise.hpp"
+#include "common/sampling/instance_sampling_with_replacement.hpp"
+#include "common/sampling/instance_sampling_without_replacement.hpp"
 #include "common/sampling/label_sampling_without_replacement.hpp"
 
 
@@ -113,6 +117,14 @@ class IRuleLearner {
                 virtual const ILabelSamplingConfig* getLabelSamplingConfig() const = 0;
 
                 /**
+                 * Returns the configuration of the method for sampling instances.
+                 *
+                 * @return A pointer to an object of type `IInstanceSamplingConfig` that specifies the configuration of
+                 *         the method for sampling instances or a null pointer, if no such method should be used
+                 */
+                virtual const IInstanceSamplingConfig* getInstanceSamplingConfig() const = 0;
+
+                /**
                  * Returns the configuration of the method for sampling features.
                  *
                  * @return A pointer to an object of type `IFeatureSamplingConfig` that specifies the configuration of
@@ -158,6 +170,44 @@ class IRuleLearner {
                  *         configuration of the method for sampling labels
                  */
                 virtual LabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() = 0;
+
+                /**
+                 * Configures the rule learner to sample from the available training examples with replacement whenever
+                 * a new rule should be learned.
+                 *
+                 * @return A reference to an object of type `InstanceSamplingWithReplacementConfig` that allows further
+                 *         configuration of the method for sampling instances
+                 */
+                virtual InstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() = 0;
+
+                /**
+                 * Configures the rule learner to sample from the available training examples without replacement
+                 * whenever a new rule should be learned.
+                 *
+                 * @return A reference to an object of type `InstanceSamplingWithoutReplacementConfig` that allows
+                 *         further configuration of the method for sampling instances
+                 */
+                virtual InstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() = 0;
+
+                /**
+                 * Configures the rule learner to sample from the available training examples using stratification, such
+                 * that for each label the proportion of relevant and irrelevant examples is maintained, whenever a new
+                 * rule should be learned.
+                 *
+                 * @return A reference to an object of type `LabelWiseStratifiedInstanceSamplingConfig` that allows
+                 *         further configuration of the method for sampling instances
+                 */
+                virtual LabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() = 0;
+
+                /**
+                 * Configures the rule learner to sample from the available training examples using stratification,
+                 * where distinct label vectors are treated as individual classes, whenever a new rule should be
+                 * learned.
+                 *
+                 * @return A reference to an object of type `ExampleWiseStratifiedInstanceSamplingConfig` that allows
+                 *         further configuration of the method for sampling instances
+                 */
+                virtual ExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() = 0;
 
                 /**
                  * Configures the rule learner to sample from the available features with replacement whenever a rule
@@ -349,6 +399,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<ILabelSamplingConfig> labelSamplingConfigPtr_;
 
+                std::unique_ptr<IInstanceSamplingConfig> instanceSamplingConfigPtr_;
+
                 std::unique_ptr<IFeatureSamplingConfig> featureSamplingConfigPtr_;
 
                 const IRuleInductionConfig& getRuleInductionConfig() const override;
@@ -356,6 +408,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 const IFeatureBinningConfig* getFeatureBinningConfig() const override;
 
                 const ILabelSamplingConfig* getLabelSamplingConfig() const override;
+
+                const IInstanceSamplingConfig* getInstanceSamplingConfig() const override;
 
                 const IFeatureSamplingConfig* getFeatureSamplingConfig() const override;
 
@@ -370,6 +424,14 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
 
                 LabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
+
+                InstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() override;
+
+                InstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() override;
+
+                LabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() override;
+
+                ExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
 
                 FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
 
