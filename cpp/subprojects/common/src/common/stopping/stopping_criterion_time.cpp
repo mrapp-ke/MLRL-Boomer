@@ -55,9 +55,24 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
 
 };
 
+TimeStoppingCriterionConfig::TimeStoppingCriterionConfig()
+    : timeLimit_(3600) {
+
+}
+
+uint32 TimeStoppingCriterionConfig::getTimeLimit() const {
+    return timeLimit_;
+}
+
+TimeStoppingCriterionConfig& TimeStoppingCriterionConfig::setTimeLimit(uint32 timeLimit) {
+    assertGreaterOrEqual<uint32>("timeLimit", timeLimit, 1);
+    timeLimit_ = timeLimit;
+    return *this;
+}
+
 TimeStoppingCriterionFactory::TimeStoppingCriterionFactory(uint32 timeLimit)
     : timeLimit_(timeLimit) {
-    assertGreaterOrEqual<uint32>("timeLimit", timeLimit, 1);
+
 }
 
 std::unique_ptr<IStoppingCriterion> TimeStoppingCriterionFactory::create(const SinglePartition& partition) const {
