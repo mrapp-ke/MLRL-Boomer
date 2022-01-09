@@ -18,6 +18,7 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_induction/rule_model_assemblage.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"
+#include "common/sampling/label_sampling_without_replacement.hpp"
 
 
 /**
@@ -104,6 +105,14 @@ class IRuleLearner {
                 virtual const IFeatureBinningConfig* getFeatureBinningConfig() const = 0;
 
                 /**
+                 * Returns the configuration of the method for sampling labels.
+                 *
+                 * @return A pointer to an object of type `ILabelSamplingConfig` that specifies the configuration of the
+                 *         method for sampling labels or a null pointer, if no such method should be used
+                 */
+                virtual const ILabelSamplingConfig* getLabelSamplingConfig() const = 0;
+
+                /**
                  * Returns the configuration of the method for sampling features.
                  *
                  * @return A pointer to an object of type `IFeatureSamplingConfig` that specifies the configuration of
@@ -140,6 +149,15 @@ class IRuleLearner {
                  *         configuration of the method for the assignment of numerical feature values to bins
                  */
                 virtual EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() = 0;
+
+                /**
+                 * Configures the rule learner to sample from the available labels with replacement whenever a new rule
+                 * should be learned.
+                 *
+                 * @return A reference to an object of type `LabelSamplingWithoutReplacementConfig` that allows further
+                 *         configuration of the method for sampling labels
+                 */
+                virtual LabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() = 0;
 
                 /**
                  * Configures the rule learner to sample from the available features with replacement whenever a rule
@@ -329,11 +347,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IFeatureBinningConfig> featureBinningConfigPtr_;
 
+                std::unique_ptr<ILabelSamplingConfig> labelSamplingConfigPtr_;
+
                 std::unique_ptr<IFeatureSamplingConfig> featureSamplingConfigPtr_;
 
                 const IRuleInductionConfig& getRuleInductionConfig() const override;
 
                 const IFeatureBinningConfig* getFeatureBinningConfig() const override;
+
+                const ILabelSamplingConfig* getLabelSamplingConfig() const override;
 
                 const IFeatureSamplingConfig* getFeatureSamplingConfig() const override;
 
@@ -346,6 +368,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 EqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
 
                 EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
+
+                LabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
 
                 FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
 

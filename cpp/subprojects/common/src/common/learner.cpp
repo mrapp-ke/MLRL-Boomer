@@ -79,6 +79,10 @@ const IFeatureBinningConfig* AbstractRuleLearner::Config::getFeatureBinningConfi
     return featureBinningConfigPtr_.get();
 }
 
+const ILabelSamplingConfig* AbstractRuleLearner::Config::getLabelSamplingConfig() const {
+    return labelSamplingConfigPtr_.get();
+}
+
 const IFeatureSamplingConfig* AbstractRuleLearner::Config::getFeatureSamplingConfig() const {
     return featureSamplingConfigPtr_.get();
 }
@@ -101,6 +105,14 @@ EqualFrequencyFeatureBinningConfig& AbstractRuleLearner::Config::useEqualFrequen
     std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr = std::make_unique<EqualFrequencyFeatureBinningConfig>();
     EqualFrequencyFeatureBinningConfig& ref = *ptr;
     featureBinningConfigPtr_ = std::move(ptr);
+    return ref;
+}
+
+LabelSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useLabelSamplingWithoutReplacement() {
+    std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
+        std::make_unique<LabelSamplingWithoutReplacementConfig>();
+    LabelSamplingWithoutReplacementConfig& ref = *ptr;
+    labelSamplingConfigPtr_ = std::move(ptr);
     return ref;
 }
 
@@ -163,8 +175,17 @@ std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionF
 }
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory() const {
-    // TODO Implement
-    return std::make_unique<NoLabelSamplingFactory>();
+    const ILabelSamplingConfig* labelSamplingConfig = this->configPtr_->getLabelSamplingConfig();
+
+    if (labelSamplingConfig == nullptr) {
+        return std::make_unique<NoLabelSamplingFactory>();
+
+        if (auto* config = dynamic_cast<const LabelSamplingWithoutReplacementConfig*>(labelSamplingConfig)) {
+            return std::make_unique<LabelSamplingWithoutReplacementFactory>(config->getNumSamples());
+        }
+    }
+
+    throw std::runtime_error("Failed to create ILabelSamplingFactory");
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
