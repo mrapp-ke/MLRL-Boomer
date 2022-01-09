@@ -23,6 +23,9 @@
 #include "common/sampling/instance_sampling_with_replacement.hpp"
 #include "common/sampling/instance_sampling_without_replacement.hpp"
 #include "common/sampling/label_sampling_without_replacement.hpp"
+#include "common/sampling/partition_sampling_bi_random.hpp"
+#include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
+#include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
 
 
 /**
@@ -132,6 +135,16 @@ class IRuleLearner {
                  */
                 virtual const IFeatureSamplingConfig* getFeatureSamplingConfig() const = 0;
 
+                /**
+                 * Returns the configuration of the method for partitioning the available training examples into a
+                 * training set and a holdout set.
+                 *
+                 * @return A pointer to an object of type `IPartitionSamplingConfig` that specifies the configuration of
+                 *         the method for partitioning the available training examples into a training set and a holdout
+                 *         set or a null pointer, if no such method should be used
+                 */
+                virtual const IPartitionSamplingConfig* getPartitionSamplingConfig() const = 0;
+
             public:
 
                 virtual ~IConfig() { };
@@ -217,6 +230,37 @@ class IRuleLearner {
                  *         further configuration of the method for sampling features
                  */
                 virtual FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() = 0;
+
+                /**
+                 * Configures the rule learner to partition the available training examples into a training set and a
+                 * holdout set by randomly splitting the training examples into two mutually exclusive sets.
+                 *
+                 * @return A reference to an object of type `RandomBiPartitionSamplingConfig` that allows further
+                 *         configuration of the method for partitioning the available training examples into a training
+                 *         set and a holdout set
+                 */
+                virtual RandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() = 0;
+
+                /**
+                 * Configures the rule learner to partition the available training examples into a training set and a
+                 * holdout set using stratification, such that for each label the proportion of relevant and irrelevant
+                 * examples is maintained.
+                 *
+                 * @return A reference to an object of type `LabelWiseStratifiedBiPartitionSamplingConfig` that allows
+                 *         further configuration of the method for partitioning the available training examples into a
+                 *         training and a holdout set
+                 */
+                virtual LabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() = 0;
+
+                /**
+                 * Configures the rule learner to partition the available training examples into a training set and a
+                 * holdout set using stratification, where distinct label vectors are treated as individual classes
+                 *
+                 * @return A reference to an object of type `ExampleWiseStratifiedBiPartitionSamplingConfig` that allows
+                 *         further configuration of the method for partitioning the available training examples into a
+                 *         training and a holdout set
+                 */
+                virtual ExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() = 0;
 
         };
 
@@ -403,6 +447,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IFeatureSamplingConfig> featureSamplingConfigPtr_;
 
+                std::unique_ptr<IPartitionSamplingConfig> partitionSamplingConfigPtr_;
+
                 const IRuleInductionConfig& getRuleInductionConfig() const override;
 
                 const IFeatureBinningConfig* getFeatureBinningConfig() const override;
@@ -412,6 +458,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 const IInstanceSamplingConfig* getInstanceSamplingConfig() const override;
 
                 const IFeatureSamplingConfig* getFeatureSamplingConfig() const override;
+
+                const IPartitionSamplingConfig* getPartitionSamplingConfig() const override;
 
             public:
 
@@ -434,6 +482,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 ExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
 
                 FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
+
+                RandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
+
+                LabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
+
+                ExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
 
         };
 
