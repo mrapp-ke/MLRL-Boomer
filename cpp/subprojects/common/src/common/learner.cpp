@@ -314,7 +314,6 @@ std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() con
 }
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {
-    // TODO Implement
     return std::make_unique<NoPostProcessorFactory>();
 }
 
