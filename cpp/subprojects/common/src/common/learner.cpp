@@ -79,6 +79,10 @@ const IFeatureBinningConfig* AbstractRuleLearner::Config::getFeatureBinningConfi
     return featureBinningConfigPtr_.get();
 }
 
+const IFeatureSamplingConfig* AbstractRuleLearner::Config::getFeatureSamplingConfig() const {
+    return featureSamplingConfigPtr_.get();
+}
+
 TopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
     std::unique_ptr<TopDownRuleInductionConfig> ptr = std::make_unique<TopDownRuleInductionConfig>();
     TopDownRuleInductionConfig& ref = *ptr;
@@ -97,6 +101,14 @@ EqualFrequencyFeatureBinningConfig& AbstractRuleLearner::Config::useEqualFrequen
     std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr = std::make_unique<EqualFrequencyFeatureBinningConfig>();
     EqualFrequencyFeatureBinningConfig& ref = *ptr;
     featureBinningConfigPtr_ = std::move(ptr);
+    return ref;
+}
+
+FeatureSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useFeatureSamplingWithoutReplacement() {
+    std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
+        std::make_unique<FeatureSamplingWithoutReplacementConfig>();
+    FeatureSamplingWithoutReplacementConfig& ref = *ptr;
+    featureSamplingConfigPtr_ = std::move(ptr);
     return ref;
 }
 
@@ -161,8 +173,17 @@ std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSam
 }
 
 std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSamplingFactory() const {
-    // TODO Implement
-    return std::make_unique<NoFeatureSamplingFactory>();
+    const IFeatureSamplingConfig* featureSamplingConfig = this->configPtr_->getFeatureSamplingConfig();
+
+    if (featureSamplingConfig == nullptr) {
+        return std::make_unique<NoFeatureSamplingFactory>();
+    } else {
+        if (auto* config = dynamic_cast<const FeatureSamplingWithoutReplacementConfig*>(featureSamplingConfig)) {
+            return std::make_unique<FeatureSamplingWithoutReplacementFactory>(config->getSampleSize());
+        }
+
+        throw std::runtime_error("Failed to create IFeatureSamplingFactory");
+    }
 }
 
 std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionSamplingFactory() const {
