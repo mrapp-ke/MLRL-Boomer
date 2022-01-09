@@ -221,6 +221,92 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
 };
 
+MeasureStoppingCriterionConfig::MeasureStoppingCriterionConfig()
+    : aggregationFunction_(MeasureStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN), minRules_(100),
+      updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005), forceStop_(true) {
+
+}
+
+MeasureStoppingCriterionConfig::AggregationFunction MeasureStoppingCriterionConfig::getAggregationFunction() const {
+    return aggregationFunction_;
+}
+
+MeasureStoppingCriterionConfig& MeasureStoppingCriterionConfig::setAggregationFunction(
+        MeasureStoppingCriterionConfig::AggregationFunction aggregationFunction) {
+    aggregationFunction_ = aggregationFunction;
+    return *this;
+}
+
+uint32 MeasureStoppingCriterionConfig::getMinRules() const {
+    return minRules_;
+}
+
+MeasureStoppingCriterionConfig& MeasureStoppingCriterionConfig::setMinRules(uint32 minRules) {
+    assertGreaterOrEqual<uint32>("minRules", minRules, 1);
+    minRules_ = minRules;
+    return *this;
+}
+
+uint32 MeasureStoppingCriterionConfig::getUpdateInterval() const {
+    return updateInterval_;
+}
+
+MeasureStoppingCriterionConfig& MeasureStoppingCriterionConfig::setUpdateInterval(uint32 updateInterval) {
+    assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
+    updateInterval_ = updateInterval;
+    return *this;
+}
+
+uint32 MeasureStoppingCriterionConfig::getStopInterval() const {
+    return stopInterval_;
+}
+
+MeasureStoppingCriterionConfig& MeasureStoppingCriterionConfig::setStopInterval(uint32 stopInterval) {
+    assertMultiple<uint32>("stopInterval", stopInterval, updateInterval_);
+    stopInterval_ = stopInterval;
+    return *this;
+}
+
+uint32 MeasureStoppingCriterionConfig::getNumPast() const {
+    return numPast_;
+}
+
+MeasureStoppingCriterionConfig& MeasureStoppingCriterionConfig::setNumPast(uint32 numPast) {
+    assertGreaterOrEqual<uint32>("numPast", numPast, 1);
+    numPast_ = numPast;
+    return *this;
+}
+
+uint32 MeasureStoppingCriterionConfig::getNumCurrent() const {
+    return numCurrent_;
+}
+
+MeasureStoppingCriterionConfig& MeasureStoppingCriterionConfig::setNumCurrent(uint32 numCurrent) {
+    assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
+    numCurrent_ = numCurrent;
+    return *this;
+}
+
+float64 MeasureStoppingCriterionConfig::getMinImprovement() const {
+    return minImprovement_;
+}
+
+MeasureStoppingCriterionConfig& MeasureStoppingCriterionConfig::setMinImprovement(float64 minImprovement) {
+    assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
+    assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
+    minImprovement_ = minImprovement;
+    return *this;
+}
+
+bool MeasureStoppingCriterionConfig::getForceStop() const{
+    return forceStop_;
+}
+
+MeasureStoppingCriterionConfig& MeasureStoppingCriterionConfig::setForceStop(bool forceStop) {
+    forceStop_ = forceStop;
+    return *this;
+}
+
 std::unique_ptr<IAggregationFunction> MinAggregationFunctionFactory::create() const {
     return std::make_unique<MinAggregationFunction>();
 }
@@ -240,14 +326,7 @@ MeasureStoppingCriterionFactory::MeasureStoppingCriterionFactory(
     : aggregationFunctionFactoryPtr_(std::move(aggregationFunctionFactoryPtr)), minRules_(minRules),
       updateInterval_(updateInterval), stopInterval_(stopInterval), numPast_(numPast), numCurrent_(numCurrent),
       minImprovement_(minImprovement), forceStop_(forceStop) {
-    assertNotNull("aggregationFunctionFactoryPtr", aggregationFunctionFactoryPtr_.get());
-    assertGreaterOrEqual<uint32>("minRules", minRules, 1);
-    assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
-    assertMultiple<uint32>("stopInterval", stopInterval, updateInterval);
-    assertGreaterOrEqual<uint32>("numPast", numPast, 1);
-    assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
-    assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
-    assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
+
 }
 
 std::unique_ptr<IStoppingCriterion> MeasureStoppingCriterionFactory::create(const SinglePartition& partition) const {
