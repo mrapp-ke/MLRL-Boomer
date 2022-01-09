@@ -8,9 +8,9 @@
 
 /**
  * Allows to configure a strategy for partitioning the available training examples into a training set and a holdout set
- * using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
+ * using stratification, where distinct label vectors are treated as individual classes.
  */
-class ExampleWiseStratifiedPartitionSamplingConfig : public IPartitionSamplingConfig {
+class ExampleWiseStratifiedBiPartitionSamplingConfig : public IPartitionSamplingConfig {
 
     private:
 
@@ -18,7 +18,7 @@ class ExampleWiseStratifiedPartitionSamplingConfig : public IPartitionSamplingCo
 
     public:
 
-        ExampleWiseStratifiedPartitionSamplingConfig();
+        ExampleWiseStratifiedBiPartitionSamplingConfig();
 
         /**
          * Returns the fraction of examples that are included in the holdout set.
@@ -32,11 +32,11 @@ class ExampleWiseStratifiedPartitionSamplingConfig : public IPartitionSamplingCo
          *
          * @param holdoutSetSize    The fraction of examples that should be included in the holdout set, e.g. a value of
          *                          0.6 corresponds to 60 % of the available examples. Must be in (0, 1)
-         * @return                  A reference to an object of type `ExampleWiseStratifiedPartitionSamplingConfig` that
-         *                          allows further configuration of the strategy for partitioning the available training
-         *                          examples into a training set and a holdout set
+         * @return                  A reference to an object of type `ExampleWiseStratifiedBiPartitionSamplingConfig`
+         *                          that allows further configuration of the strategy for partitioning the available
+         *                          training examples into a training set and a holdout set
          */
-        ExampleWiseStratifiedPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize);
+        ExampleWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize);
 
 };
 

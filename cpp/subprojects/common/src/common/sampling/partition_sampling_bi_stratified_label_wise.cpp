@@ -43,16 +43,16 @@ class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
 
 };
 
-LabelWiseStratifiedPartitionSamplingConfig::LabelWiseStratifiedPartitionSamplingConfig()
+LabelWiseStratifiedBiPartitionSamplingConfig::LabelWiseStratifiedBiPartitionSamplingConfig()
     : holdoutSetSize_(0.33) {
 
 }
 
-float32 LabelWiseStratifiedPartitionSamplingConfig::getHoldoutSetSize() const {
+float32 LabelWiseStratifiedBiPartitionSamplingConfig::getHoldoutSetSize() const {
     return holdoutSetSize_;
 }
 
-LabelWiseStratifiedPartitionSamplingConfig& LabelWiseStratifiedPartitionSamplingConfig::setHoldoutSetSize(
+LabelWiseStratifiedBiPartitionSamplingConfig& LabelWiseStratifiedBiPartitionSamplingConfig::setHoldoutSetSize(
         float32 holdoutSetSize) {
     assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
     assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);

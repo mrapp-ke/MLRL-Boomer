@@ -42,16 +42,16 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
 
 };
 
-ExampleWiseStratifiedPartitionSamplingConfig::ExampleWiseStratifiedPartitionSamplingConfig()
+ExampleWiseStratifiedBiPartitionSamplingConfig::ExampleWiseStratifiedBiPartitionSamplingConfig()
     : holdoutSetSize_(0.33) {
 
 }
 
-float32 ExampleWiseStratifiedPartitionSamplingConfig::getHoldoutSetSize() const {
+float32 ExampleWiseStratifiedBiPartitionSamplingConfig::getHoldoutSetSize() const {
     return holdoutSetSize_;
 }
 
-ExampleWiseStratifiedPartitionSamplingConfig& ExampleWiseStratifiedPartitionSamplingConfig::setHoldoutSetSize(
+ExampleWiseStratifiedBiPartitionSamplingConfig& ExampleWiseStratifiedBiPartitionSamplingConfig::setHoldoutSetSize(
         float32 holdoutSetSize) {
     assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
     assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);

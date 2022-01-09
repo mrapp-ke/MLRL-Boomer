@@ -47,16 +47,16 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
 
 };
 
-RandomPartitionSamplingConfig::RandomPartitionSamplingConfig()
+RandomBiPartitionSamplingConfig::RandomBiPartitionSamplingConfig()
     : holdoutSetSize_(0.33) {
 
 }
 
-float32 RandomPartitionSamplingConfig::getHoldoutSetSize() const {
+float32 RandomBiPartitionSamplingConfig::getHoldoutSetSize() const {
     return holdoutSetSize_;
 }
 
-RandomPartitionSamplingConfig& RandomPartitionSamplingConfig::setHoldoutSetSize(float32 holdoutSetSize) {
+RandomBiPartitionSamplingConfig& RandomBiPartitionSamplingConfig::setHoldoutSetSize(float32 holdoutSetSize) {
     assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
     assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
     holdoutSetSize_ = holdoutSetSize;
