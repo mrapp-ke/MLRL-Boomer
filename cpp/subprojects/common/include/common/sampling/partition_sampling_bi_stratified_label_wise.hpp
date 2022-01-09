@@ -10,7 +10,7 @@
  * Allows to configure a strategy for partitioning the available training examples into a training set and a holdout set
  * using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
  */
-class LabelWiseStratifiedPartitionSamplingConfig : public IPartitionSamplingConfig {
+class LabelWiseStratifiedBiPartitionSamplingConfig : public IPartitionSamplingConfig {
 
     private:
 
@@ -18,7 +18,7 @@ class LabelWiseStratifiedPartitionSamplingConfig : public IPartitionSamplingConf
 
     public:
 
-        LabelWiseStratifiedPartitionSamplingConfig();
+        LabelWiseStratifiedBiPartitionSamplingConfig();
 
         /**
          * Returns the fraction of examples that are included in the holdout set.
@@ -32,11 +32,11 @@ class LabelWiseStratifiedPartitionSamplingConfig : public IPartitionSamplingConf
          *
          * @param holdoutSetSize    The fraction of examples that should be included in the holdout set, e.g. a value of
          *                          0.6 corresponds to 60 % of the available examples. Must be in (0, 1)
-         * @return                  A reference to an object of type `LabelWiseStratifiedPartitionSamplingConfig` that
+         * @return                  A reference to an object of type `LabelWiseStratifiedBiPartitionSamplingConfig` that
          *                          allows further configuration of the strategy for partitioning the available training
          *                          examples into a training set and a holdout set
          */
-        LabelWiseStratifiedPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize);
+        LabelWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize);
 
 };
 
