@@ -245,7 +245,6 @@ std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSam
 
         throw std::runtime_error("Failed to create IInstanceSamplingFactory");
     }
-    // TODO Implement
 }
 
 std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSamplingFactory() const {
