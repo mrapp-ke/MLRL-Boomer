@@ -25,6 +25,18 @@ class IPostProcessor {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure a method that post-processes the predictions of rules
+ * once they have been learned.
+ */
+class IPostProcessorConfig {
+
+    public:
+
+        virtual ~IPostProcessorConfig() { };
+
+};
+
+/**
  * Defines an interface for all factories that allow to create instances of the type `IPostProcessor`.
  */
 class IPostProcessorFactory {
