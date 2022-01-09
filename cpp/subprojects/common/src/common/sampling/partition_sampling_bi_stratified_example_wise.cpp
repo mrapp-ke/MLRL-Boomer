@@ -42,10 +42,26 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
 
 };
 
-ExampleWiseStratifiedBiPartitionSamplingFactory::ExampleWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize)
-    : holdoutSetSize_(holdoutSetSize) {
+ExampleWiseStratifiedPartitionSamplingConfig::ExampleWiseStratifiedPartitionSamplingConfig()
+    : holdoutSetSize_(0.33) {
+
+}
+
+float32 ExampleWiseStratifiedPartitionSamplingConfig::getHoldoutSetSize() const {
+    return holdoutSetSize_;
+}
+
+ExampleWiseStratifiedPartitionSamplingConfig& ExampleWiseStratifiedPartitionSamplingConfig::setHoldoutSetSize(
+        float32 holdoutSetSize) {
     assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
     assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
+    holdoutSetSize_ = holdoutSetSize;
+    return *this;
+}
+
+ExampleWiseStratifiedBiPartitionSamplingFactory::ExampleWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize)
+    : holdoutSetSize_(holdoutSetSize) {
+
 }
 
 std::unique_ptr<IPartitionSampling> ExampleWiseStratifiedBiPartitionSamplingFactory::create(
