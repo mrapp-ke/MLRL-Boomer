@@ -243,9 +243,7 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
 std::unique_ptr<IFeatureBinningFactory> AbstractRuleLearner::createFeatureBinningFactory() const {
     const IFeatureBinningConfig* featureBinningConfig = this->configPtr_->getFeatureBinningConfig();
 
-    if (featureBinningConfig == nullptr) {
-        return nullptr;
-    } else {
+    if (featureBinningConfig) {
         if (auto* config = dynamic_cast<const EqualWidthFeatureBinningConfig*>(featureBinningConfig)) {
             return std::make_unique<EqualWidthFeatureBinningFactory>(config->getBinRatio(), config->getMinBins(),
                                                                      config->getMaxBins());
@@ -256,17 +254,19 @@ std::unique_ptr<IFeatureBinningFactory> AbstractRuleLearner::createFeatureBinnin
 
         throw std::runtime_error("Failed to create IFeatureBinningFactory");
     }
+
+    return nullptr;
 }
 
 std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory() const {
     uint32 numThreads = 1; // TODO Use correct number of threads
     std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr = this->createFeatureBinningFactory();
 
-    if (featureBinningFactoryPtr == nullptr) {
-        return std::make_unique<ExactThresholdsFactory>(numThreads);
-    } else {
+    if (featureBinningFactoryPtr) {
         return std::make_unique<ApproximateThresholdsFactory>(std::move(featureBinningFactoryPtr), numThreads);
     }
+
+    return std::make_unique<ExactThresholdsFactory>(numThreads);
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
@@ -284,23 +284,21 @@ std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionF
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory() const {
     const ILabelSamplingConfig* labelSamplingConfig = this->configPtr_->getLabelSamplingConfig();
 
-    if (labelSamplingConfig == nullptr) {
-        return std::make_unique<NoLabelSamplingFactory>();
-    } else {
+    if (labelSamplingConfig) {
         if (auto* config = dynamic_cast<const LabelSamplingWithoutReplacementConfig*>(labelSamplingConfig)) {
             return std::make_unique<LabelSamplingWithoutReplacementFactory>(config->getNumSamples());
         }
 
         throw std::runtime_error("Failed to create ILabelSamplingFactory");
     }
+
+    return std::make_unique<NoLabelSamplingFactory>();
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
     const IInstanceSamplingConfig* instanceSamplingConfig = this->configPtr_->getInstanceSamplingConfig();
 
-    if (instanceSamplingConfig == nullptr) {
-        return std::make_unique<NoInstanceSamplingFactory>();
-    } else {
+    if (instanceSamplingConfig) {
         if (auto* config = dynamic_cast<const InstanceSamplingWithReplacementConfig*>(instanceSamplingConfig)) {
             return std::make_unique<InstanceSamplingWithReplacementFactory>(config->getSampleSize());
         } else if (auto* config =
@@ -316,28 +314,28 @@ std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSam
 
         throw std::runtime_error("Failed to create IInstanceSamplingFactory");
     }
+
+    return std::make_unique<NoInstanceSamplingFactory>();
 }
 
 std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSamplingFactory() const {
     const IFeatureSamplingConfig* featureSamplingConfig = this->configPtr_->getFeatureSamplingConfig();
 
-    if (featureSamplingConfig == nullptr) {
-        return std::make_unique<NoFeatureSamplingFactory>();
-    } else {
+    if (featureSamplingConfig) {
         if (auto* config = dynamic_cast<const FeatureSamplingWithoutReplacementConfig*>(featureSamplingConfig)) {
             return std::make_unique<FeatureSamplingWithoutReplacementFactory>(config->getSampleSize());
         }
 
         throw std::runtime_error("Failed to create IFeatureSamplingFactory");
     }
+
+    return std::make_unique<NoFeatureSamplingFactory>();
 }
 
 std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionSamplingFactory() const {
     const IPartitionSamplingConfig* partitionSamplingConfig = this->configPtr_->getPartitionSamplingConfig();
 
-    if (partitionSamplingConfig == nullptr) {
-        return std::make_unique<NoPartitionSamplingFactory>();
-    } else {
+    if (partitionSamplingConfig) {
         if (auto* config = dynamic_cast<const RandomBiPartitionSamplingConfig*>(partitionSamplingConfig)) {
             return std::make_unique<RandomBiPartitionSamplingFactory>(config->getHoldoutSetSize());
         } else if (auto* config =
@@ -350,20 +348,22 @@ std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionS
 
         throw std::runtime_error("Failed to create IPartitionSamplingFactory");
     }
+
+    return std::make_unique<NoPartitionSamplingFactory>();
 }
 
 std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() const {
     const IPruningConfig* pruningConfig = this->configPtr_->getPruningConfig();
 
-    if (pruningConfig == nullptr) {
-        return std::make_unique<NoPruningFactory>();
-    } else {
+    if (pruningConfig) {
         if (dynamic_cast<const IrepConfig*>(pruningConfig)) {
             return std::make_unique<IrepFactory>();
         }
 
         throw std::runtime_error("Failed to create IPruningFactory");
     }
+
+    return std::make_unique<NoPruningFactory>();
 }
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {
@@ -377,53 +377,53 @@ bool AbstractRuleLearner::useDefaultRule() const {
 std::unique_ptr<SizeStoppingCriterionFactory> AbstractRuleLearner::createSizeStoppingCriterionFactory() const {
     const SizeStoppingCriterionConfig* config = this->configPtr_->getSizeStoppingCriterionConfig();
 
-    if (config == nullptr) {
-        return nullptr;
-    } else {
+    if (config) {
         return std::make_unique<SizeStoppingCriterionFactory>(config->getMaxRules());
     }
+
+    return nullptr;
 }
 
 std::unique_ptr<TimeStoppingCriterionFactory> AbstractRuleLearner::createTimeStoppingCriterionFactory() const {
     const TimeStoppingCriterionConfig* config = this->configPtr_->getTimeStoppingCriterionConfig();
 
-    if (config == nullptr) {
-        return nullptr;
-    } else {
+    if (config) {
         return std::make_unique<TimeStoppingCriterionFactory>(config->getTimeLimit());
     }
+
+    return nullptr;
 }
 
 std::unique_ptr<MeasureStoppingCriterionFactory> AbstractRuleLearner::createMeasureStoppingCriterionFactory() const {
     const MeasureStoppingCriterionConfig* config = this->configPtr_->getMeasureStoppingCriterionConfig();
 
-    if (config == nullptr) {
-        return nullptr;
-    } else {
+    if (config) {
         return std::make_unique<MeasureStoppingCriterionFactory>(
             createAggregationFunctionFactory(config->getAggregationFunction()), config->getMinRules(),
             config->getUpdateInterval(), config->getStopInterval(), config->getNumPast(), config->getNumCurrent(),
             config->getMinImprovement(), config->getForceStop());
     }
+
+    return nullptr;
 }
 
 void AbstractRuleLearner::createStoppingCriterionFactories(
         std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const {
     std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory = this->createSizeStoppingCriterionFactory();
 
-    if (stoppingCriterionFactory != nullptr) {
+    if (stoppingCriterionFactory) {
         stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
     }
 
     stoppingCriterionFactory = this->createTimeStoppingCriterionFactory();
 
-    if (stoppingCriterionFactory != nullptr) {
+    if (stoppingCriterionFactory) {
         stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
     }
 
     stoppingCriterionFactory = this->createMeasureStoppingCriterionFactory();
 
-    if (stoppingCriterionFactory != nullptr) {
+    if (stoppingCriterionFactory) {
         stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
     }
 }
@@ -505,7 +505,7 @@ std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictScor
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
     std::unique_ptr<IRegressionPredictorFactory> predictorFactoryPtr = this->createRegressionPredictorFactory();
 
-    if (predictorFactoryPtr != nullptr) {
+    if (predictorFactoryPtr) {
         std::unique_ptr<IRegressionPredictor> predictorPtr =
             ruleModel.createRegressionPredictor(*predictorFactoryPtr, labelSpaceInfo);
         return featureMatrix.predictScores(*predictorPtr, numLabels);
@@ -529,7 +529,7 @@ std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictProb
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
     std::unique_ptr<IProbabilityPredictorFactory> predictorFactoryPtr = this->createProbabilityPredictorFactory();
 
-    if (predictorFactoryPtr != nullptr) {
+    if (predictorFactoryPtr) {
         std::unique_ptr<IProbabilityPredictor> predictorPtr =
             ruleModel.createProbabilityPredictor(*predictorFactoryPtr, labelSpaceInfo);
         return featureMatrix.predictProbabilities(*predictorPtr, numLabels);
