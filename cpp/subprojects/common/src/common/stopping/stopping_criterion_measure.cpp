@@ -343,3 +343,15 @@ std::unique_ptr<IStoppingCriterion> MeasureStoppingCriterionFactory::create(BiPa
                                                                    minRules_, updateInterval_, stopInterval_, numPast_,
                                                                    numCurrent_, minImprovement_, forceStop_);
 }
+
+std::unique_ptr<IAggregationFunctionFactory> createAggregationFunctionFactory(
+    MeasureStoppingCriterionConfig::AggregationFunction aggregationFunction) {
+    switch (aggregationFunction) {
+        case MeasureStoppingCriterionConfig::AggregationFunction::MIN:
+            return std::make_unique<MinAggregationFunctionFactory>();
+        case MeasureStoppingCriterionConfig::AggregationFunction::MAX:
+            return std::make_unique<MaxAggregationFunctionFactory>();
+        default:
+            return std::make_unique<ArithmeticMeanAggregationFunctionFactory>();
+    }
+}
