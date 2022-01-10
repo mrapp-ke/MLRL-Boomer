@@ -191,7 +191,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             ThresholdVector* thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
                             IBinIndexVector* binIndices = cacheIterator->second.binIndicesPtr.get();
 
-                            if (thresholdVector == nullptr) {
+                            if (!thresholdVector) {
                                 // Fetch feature vector...
                                 std::unique_ptr<FeatureVector> featureVectorPtr;
                                 const IColumnWiseFeatureMatrix& featureMatrix =

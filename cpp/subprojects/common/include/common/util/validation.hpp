@@ -96,7 +96,7 @@ static inline constexpr void assertMultiple(const std::string& name, const T val
  */
 template<typename T>
 static inline constexpr void assertNotNull(const std::string& name, const T* ptr) {
-    if (ptr == nullptr) {
+    if (!ptr) {
         throw std::invalid_argument("Invalid value given for parameter \"" + name + "\": Must not be null");
     }
 }

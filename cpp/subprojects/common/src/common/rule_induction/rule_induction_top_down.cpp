@@ -156,11 +156,7 @@ class TopDownRuleInduction final : public IRuleInduction {
                 }
             }
 
-            if (bestHead == nullptr) {
-                // No rule could be induced, because no useful condition could be found. This might be the case, if all
-                // examples have the same values for the considered features.
-                return false;
-            } else {
+            if (bestHead) {
                 if (instanceSamplingUsed) {
                     // Prune rule...
                     IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
@@ -172,8 +168,7 @@ class TopDownRuleInduction final : public IRuleInduction {
                     // Re-calculate the scores in the head based on the entire training data...
                     if (recalculatePredictions_) {
                         const ICoverageState& coverageState =
-                            coverageStatePtr.get() != nullptr ? *coverageStatePtr
-                                                              : thresholdsSubsetPtr->getCoverageState();
+                            coverageStatePtr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
                         partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *bestRefinementPtr);
                     }
                 }
@@ -187,6 +182,10 @@ class TopDownRuleInduction final : public IRuleInduction {
                 // Add the induced rule to the model...
                 modelBuilder.addRule(conditions, *bestHead);
                 return true;
+            } else {
+                // No rule could be induced, because no useful condition could be found. This might be the case, if all
+                // examples have the same values for the considered features.
+                return false;
             }
         }
 

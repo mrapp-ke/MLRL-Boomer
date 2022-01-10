@@ -155,7 +155,7 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
                 // Adjust bin indices...
                 DokBinIndexVector* dokBinIndices = dynamic_cast<DokBinIndexVector*>(&binIndices);
 
-                if (dokBinIndices != nullptr) {
+                if (dokBinIndices) {
                     for (auto it = dokBinIndices->begin(); it != dokBinIndices->end(); it++) {
                         uint32 binIndex = it->second;
                         it->second = mapping[binIndex];
