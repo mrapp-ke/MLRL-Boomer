@@ -1,10 +1,22 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
+from mlrl.common.cython.feature_binning cimport EqualWidthFeatureBinningConfigImpl, \
+    EqualFrequencyFeatureBinningConfigImpl
 from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
+from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplacementConfigImpl
+from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceSamplingConfigImpl, \
+    LabelWiseStratifiedInstanceSamplingConfigImpl, InstanceSamplingWithReplacementConfigImpl, \
+    InstanceSamplingWithoutReplacementConfigImpl
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
+from mlrl.common.cython.label_sampling cimport LabelSamplingWithoutReplacementConfigImpl
 from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
 from mlrl.common.cython.nominal_feature_mask cimport INominalFeatureMask
+from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfigImpl, \
+    LabelWiseStratifiedBiPartitionSamplingConfigImpl, RandomBiPartitionSamplingConfigImpl
+from mlrl.common.cython.pruning cimport IrepConfigImpl
 from mlrl.common.cython.rule_induction cimport TopDownRuleInductionConfigImpl
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
+from mlrl.common.cython.stopping_criterion cimport SizeStoppingCriterionConfigImpl, TimeStoppingCriterionConfigImpl, \
+    MeasureStoppingCriterionConfigImpl
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
@@ -50,6 +62,36 @@ cdef extern from "common/learner.hpp" nogil:
         # Functions:
 
         TopDownRuleInductionConfigImpl& useTopDownRuleInduction()
+
+        EqualWidthFeatureBinningConfigImpl& useEqualWidthFeatureBinning()
+
+        EqualFrequencyFeatureBinningConfigImpl& useEqualFrequencyFeatureBinning()
+
+        LabelSamplingWithoutReplacementConfigImpl& useLabelSamplingWithoutReplacement()
+
+        ExampleWiseStratifiedInstanceSamplingConfigImpl& useExampleWiseStratifiedInstanceSampling()
+
+        LabelWiseStratifiedInstanceSamplingConfigImpl& useLabelWiseStratifiedInstanceSampling()
+
+        InstanceSamplingWithReplacementConfigImpl& useInstanceSamplingWithReplacement()
+
+        InstanceSamplingWithoutReplacementConfigImpl& useInstanceSamplingWithoutReplacement()
+
+        FeatureSamplingWithoutReplacementConfigImpl& useFeatureSamplingWithoutReplacement()
+
+        ExampleWiseStratifiedBiPartitionSamplingConfigImpl& useExampleWiseStratifiedBiPartitionSampling()
+
+        LabelWiseStratifiedBiPartitionSamplingConfigImpl& useLabelWiseStratifiedBiPartitionSampling()
+
+        RandomBiPartitionSamplingConfigImpl& useRandomBiPartitionSampling()
+
+        IrepConfigImpl& useIrepPruning()
+
+        SizeStoppingCriterionConfigImpl& addSizeStoppingCriterion();
+
+        TimeStoppingCriterionConfigImpl& addTimeStoppingCriterion();
+
+        MeasureStoppingCriterionConfigImpl& addMeasureStoppingCriterion();
 
 
     cdef cppclass IRuleLearner:
