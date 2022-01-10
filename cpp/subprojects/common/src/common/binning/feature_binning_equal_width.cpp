@@ -185,8 +185,8 @@ float32 EqualWidthFeatureBinningConfig::getBinRatio() const {
 }
 
 EqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setBinRatio(float32 binRatio) {
-    assertGreater<float32>('bin_ratio', binRatio, 0);
-    assertLess<float32>('bin_ratio', binRatio, 1);
+    assertGreater<float32>("bin_ratio", binRatio, 0);
+    assertLess<float32>("bin_ratio", binRatio, 1);
     binRatio_ = binRatio;
     return *this;
 }
@@ -196,7 +196,7 @@ uint32 EqualWidthFeatureBinningConfig::getMinBins() const {
 }
 
 EqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMinBins(uint32 minBins) {
-    assertGreaterOrEqual<uint32>('min_bins', minBins, 2);
+    assertGreaterOrEqual<uint32>("min_bins", minBins, 2);
     minBins_ = minBins;
     return *this;
 }
@@ -206,7 +206,7 @@ uint32 EqualWidthFeatureBinningConfig::getMaxBins() const {
 }
 
 EqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint32 maxBins) {
-    if (maxBins != 0) { assertGreaterOrEqual<uint32>('max_bins', maxBins, minBins_); }
+    if (maxBins != 0) { assertGreaterOrEqual<uint32>("max_bins", maxBins, minBins_); }
     maxBins_ = maxBins;
     return *this;
 }
