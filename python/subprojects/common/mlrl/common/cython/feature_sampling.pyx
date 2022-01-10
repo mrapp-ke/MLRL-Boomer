@@ -1,4 +1,4 @@
-from mlrl.common.cython.validation import assert_greater_or_equal, assert_less
+from mlrl.common.cython._validation import assert_greater_or_equal, assert_less
 
 
 cdef class FeatureSamplingWithoutReplacementConfig:

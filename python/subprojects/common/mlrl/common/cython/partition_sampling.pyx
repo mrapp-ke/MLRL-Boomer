@@ -1,4 +1,4 @@
-from mlrl.common.cython.validation import assert_greater, assert_less
+from mlrl.common.cython._validation import assert_greater, assert_less
 
 
 cdef class ExampleWiseStratifiedBiPartitionSamplingConfig:
