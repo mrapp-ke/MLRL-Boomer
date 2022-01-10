@@ -103,7 +103,7 @@ class MeasureStoppingCriterionConfig final : public IStoppingCriterionConfig {
          * Specifies different types of aggregation functions that allow to aggregate the values that are stored in a
          * buffer.
          */
-        enum AggregationFunction {
+        enum AggregationFunction : uint32 {
 
             /**
              * An aggregation function that finds the minimum value in a buffer.
@@ -177,7 +177,7 @@ class MeasureStoppingCriterionConfig final : public IStoppingCriterionConfig {
          * Sets the minimum number of rules that must have been learned until the induction of rules might be stopped.
          *
          * @param minRules  The minimum number of rules that must have been learned until the induction of rules might
-         *                  be stopped
+         *                  be stopped. Must be at least 1
          * @return          A reference to an object of type `MeasureStoppingCriterionConfig` that allows further
          *                  configuration of the stopping criterion
          */
