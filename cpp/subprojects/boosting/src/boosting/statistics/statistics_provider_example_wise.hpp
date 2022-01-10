@@ -132,7 +132,7 @@ namespace boosting {
                 IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>* exampleWiseStatistics =
                     exampleWiseStatisticsPtr_.get();
 
-                if (exampleWiseStatistics != nullptr) {
+                if (exampleWiseStatistics) {
                     return *exampleWiseStatistics;
                 } else {
                     return *labelWiseStatisticsPtr_;
@@ -146,7 +146,7 @@ namespace boosting {
                 IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>* exampleWiseStatistics =
                     exampleWiseStatisticsPtr_.get();
 
-                if (exampleWiseStatistics != nullptr) {
+                if (exampleWiseStatistics) {
                     labelWiseStatisticsPtr_ = exampleWiseStatistics->toLabelWiseStatistics(
                         regularRuleEvaluationFactory_, numThreads_);
                     exampleWiseStatisticsPtr_.reset();
@@ -162,7 +162,7 @@ namespace boosting {
                 IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>* exampleWiseStatistics =
                     exampleWiseStatisticsPtr_.get();
 
-                if (exampleWiseStatistics != nullptr) {
+                if (exampleWiseStatistics) {
                     labelWiseStatisticsPtr_ = exampleWiseStatistics->toLabelWiseStatistics(
                         pruningRuleEvaluationFactory_, numThreads_);
                     exampleWiseStatisticsPtr_.reset();

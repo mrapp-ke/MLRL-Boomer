@@ -72,7 +72,7 @@ uint32 BiPartition::getNumElements() const {
 }
 
 const BitVector& BiPartition::getFirstSet() {
-    if (firstSet_ == nullptr) {
+    if (!firstSet_) {
         firstSet_ = createBitVector(this->first_cbegin(), this->getNumFirst());
     }
 
@@ -80,7 +80,7 @@ const BitVector& BiPartition::getFirstSet() {
 }
 
 const BitVector& BiPartition::getSecondSet() {
-    if (secondSet_ == nullptr) {
+    if (!secondSet_) {
         secondSet_ = createBitVector(this->second_cbegin(), this->getNumSecond());
     }
 
