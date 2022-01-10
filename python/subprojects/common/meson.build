@@ -15,7 +15,8 @@ cython_module_names = [
     'partition_sampling',
     'pruning',
     'rule_induction',
-    'rule_model'
+    'rule_model',
+    'stopping_criterion'
 ]
 
 # Dependencies
