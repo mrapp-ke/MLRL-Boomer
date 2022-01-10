@@ -1,4 +1,4 @@
-from mlrl.common.cython.validation import assert_at_least, assert_greater_or_equal, assert_less_or_equal, \
+from mlrl.common.cython._validation import assert_at_least, assert_greater_or_equal, assert_less_or_equal, \
     assert_multiple, assert_not_none
 
 
