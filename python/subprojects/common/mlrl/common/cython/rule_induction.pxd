@@ -9,15 +9,15 @@ cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
 
         # Functions:
 
-        TopDownRuleInductionConfigImpl& setMinCoverage(uint32 minCoverage)
+        TopDownRuleInductionConfigImpl& setMinCoverage(uint32 minCoverage) except +
 
-        TopDownRuleInductionConfigImpl& setMaxConditions(uint32 maxConditions)
+        TopDownRuleInductionConfigImpl& setMaxConditions(uint32 maxConditions) except +
 
-        TopDownRuleInductionConfigImpl& setMaxHeadRefinements(uint32 maxHeadRefinements)
+        TopDownRuleInductionConfigImpl& setMaxHeadRefinements(uint32 maxHeadRefinements) except +
 
-        TopDownRuleInductionConfigImpl& setRecalculatePredictions(bool recalculatePredictions)
+        TopDownRuleInductionConfigImpl& setRecalculatePredictions(bool recalculatePredictions) except +
 
-        TopDownRuleInductionConfigImpl& setNumThreads(uint32 numThreads)
+        TopDownRuleInductionConfigImpl& setNumThreads(uint32 numThreads) except +
 
 
 cdef class TopDownRuleInductionConfig:
