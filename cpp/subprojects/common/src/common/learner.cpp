@@ -99,6 +99,18 @@ const IPruningConfig* AbstractRuleLearner::Config::getPruningConfig() const {
     return pruningConfigPtr_.get();
 }
 
+const SizeStoppingCriterionConfig* AbstractRuleLearner::Config::getSizeStoppingCriterionConfig() const {
+    return sizeStoppingCriterionConfigPtr_.get();
+}
+
+const TimeStoppingCriterionConfig* AbstractRuleLearner::Config::getTimeStoppingCriterionConfig() const {
+    return timeStoppingCriterionConfigPtr_.get();
+}
+
+const MeasureStoppingCriterionConfig* AbstractRuleLearner::Config::getMeasureStoppingCriterionConfig() const {
+    return measureStoppingCriterionConfigPtr_.get();
+}
+
 TopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
     std::unique_ptr<TopDownRuleInductionConfig> ptr = std::make_unique<TopDownRuleInductionConfig>();
     TopDownRuleInductionConfig& ref = *ptr;
@@ -195,6 +207,27 @@ IrepConfig& AbstractRuleLearner::Config::useIrepPruning() {
     std::unique_ptr<IrepConfig> ptr = std::make_unique<IrepConfig>();
     IrepConfig& ref = *ptr;
     pruningConfigPtr_ = std::move(ptr);
+    return ref;
+}
+
+SizeStoppingCriterionConfig& AbstractRuleLearner::Config::addSizeStoppingCriterion() {
+    std::unique_ptr<SizeStoppingCriterionConfig> ptr = std::make_unique<SizeStoppingCriterionConfig>();
+    SizeStoppingCriterionConfig& ref = *ptr;
+    sizeStoppingCriterionConfigPtr_ = std::move(ptr);
+    return ref;
+}
+
+TimeStoppingCriterionConfig& AbstractRuleLearner::Config::addTimeStoppingCriterion() {
+    std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
+    TimeStoppingCriterionConfig& ref = *ptr;
+    timeStoppingCriterionConfigPtr_ = std::move(ptr);
+    return ref;
+}
+
+MeasureStoppingCriterionConfig& AbstractRuleLearner::Config::addMeasureStoppingCriterion() {
+    std::unique_ptr<MeasureStoppingCriterionConfig> ptr = std::make_unique<MeasureStoppingCriterionConfig>();
+    MeasureStoppingCriterionConfig& ref = *ptr;
+    measureStoppingCriterionConfigPtr_ = std::move(ptr);
     return ref;
 }
 
@@ -341,11 +374,58 @@ bool AbstractRuleLearner::useDefaultRule() const {
     return true;
 }
 
+std::unique_ptr<SizeStoppingCriterionFactory> AbstractRuleLearner::createSizeStoppingCriterionFactory() const {
+    const SizeStoppingCriterionConfig* config = this->configPtr_->getSizeStoppingCriterionConfig();
+
+    if (config == nullptr) {
+        return nullptr;
+    } else {
+        return std::make_unique<SizeStoppingCriterionFactory>(config->getMaxRules());
+    }
+}
+
+std::unique_ptr<TimeStoppingCriterionFactory> AbstractRuleLearner::createTimeStoppingCriterionFactory() const {
+    const TimeStoppingCriterionConfig* config = this->configPtr_->getTimeStoppingCriterionConfig();
+
+    if (config == nullptr) {
+        return nullptr;
+    } else {
+        return std::make_unique<TimeStoppingCriterionFactory>(config->getTimeLimit());
+    }
+}
+
+std::unique_ptr<MeasureStoppingCriterionFactory> AbstractRuleLearner::createMeasureStoppingCriterionFactory() const {
+    const MeasureStoppingCriterionConfig* config = this->configPtr_->getMeasureStoppingCriterionConfig();
+
+    if (config == nullptr) {
+        return nullptr;
+    } else {
+        return std::make_unique<MeasureStoppingCriterionFactory>(
+            createAggregationFunctionFactory(config->getAggregationFunction()), config->getMinRules(),
+            config->getUpdateInterval(), config->getStopInterval(), config->getNumPast(), config->getNumCurrent(),
+            config->getMinImprovement(), config->getForceStop());
+    }
+}
+
 void AbstractRuleLearner::createStoppingCriterionFactories(
         std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const {
-    // TODO Implement
-    uint32 maxRules = 10;
-    stoppingCriterionFactories.push_front(std::make_unique<SizeStoppingCriterionFactory>(maxRules));
+    std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory = this->createSizeStoppingCriterionFactory();
+
+    if (stoppingCriterionFactory != nullptr) {
+        stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
+    }
+
+    stoppingCriterionFactory = this->createTimeStoppingCriterionFactory();
+
+    if (stoppingCriterionFactory != nullptr) {
+        stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
+    }
+
+    stoppingCriterionFactory = this->createMeasureStoppingCriterionFactory();
+
+    if (stoppingCriterionFactory != nullptr) {
+        stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
+    }
 }
 
 std::unique_ptr<IRegressionPredictorFactory> AbstractRuleLearner::createRegressionPredictorFactory() const {

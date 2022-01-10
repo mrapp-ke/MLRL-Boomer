@@ -27,6 +27,9 @@
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
+#include "common/stopping/stopping_criterion_measure.hpp"
+#include "common/stopping/stopping_criterion_size.hpp"
+#include "common/stopping/stopping_criterion_time.hpp"
 
 
 /**
@@ -154,6 +157,36 @@ class IRuleLearner {
                  */
                 virtual const IPruningConfig* getPruningConfig() const = 0;
 
+                /**
+                 * Returns the configuration of the stopping criterion that ensures that the number of rules does not
+                 * exceed a certain maximum.
+                 *
+                 * @return A pointer to an object of type `SizeStoppingCriterionConfig` that specifies the configuration
+                 *         of the stopping criterion that ensures that the number of rules does not exceed a certain
+                 *         maximum or a null pointer, if no such stopping criterion should be used
+                 */
+                virtual const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const = 0;
+
+                /**
+                 * Returns the configuration of the stopping criterion that ensures that a certain time limit is not
+                 * exceeded.
+                 *
+                 * @return A pointer to an object of type `TimeStoppingCriterionConfig` that specifies the configuration
+                 *         of the stopping criterion that ensures that a certain time limit is not exceeded or a null
+                 *         pointer, if no such stopping criterion should be used
+                 */
+                virtual const TimeStoppingCriterionConfig* getTimeStoppingCriterionConfig() const = 0;
+
+                /**
+                 * Returns the configuration of the stopping criterion that stops the induction of rules as soon as a
+                 * model's quality does not improve.
+                 *
+                 * @return A pointer to an object of type `MeasureStoppingCriterionConfig` that specifies the
+                 *         configuration of the stopping criterion that stops the induction of rules as soon as a
+                 *         model's quality does not improve
+                 */
+                virtual const MeasureStoppingCriterionConfig* getMeasureStoppingCriterionConfig() const = 0;
+
             public:
 
                 virtual ~IConfig() { };
@@ -279,6 +312,33 @@ class IRuleLearner {
                  *         for pruning classification rules
                  */
                 virtual IrepConfig& useIrepPruning() = 0;
+
+                /**
+                 * Adds a stopping criterion to the rule learner that ensures that the number of induced rules does not
+                 * exceed a certain minimum.
+                 *
+                 * @return A reference to an object of type `SizeStoppingCriterionConfig` that allows further
+                 *         configuration of the stopping criterion
+                 */
+                virtual SizeStoppingCriterionConfig& addSizeStoppingCriterion() = 0;
+
+                /**
+                 * Adds a stopping criterion to the rule learner that ensures that a certain time limit is not exceeded.
+                 *
+                 * @return A reference to an object of type `TimeStoppingCriterionConfig` that allows further
+                 *         configuration of the stopping criterion
+                 */
+                virtual TimeStoppingCriterionConfig& addTimeStoppingCriterion() = 0;
+
+                /**
+                 * Adds a stopping criterion to the rule learner that ensures that a stops the induction of rules as
+                 * soon as the quality of a model's predictions for the examples in a holdout set do not improve
+                 * according to a certain measure.
+                 *
+                 * @return A reference to an object of the type `MeasureStoppingCriterionConfig` that allows further
+                 *         configuration of the stopping criterion
+                 */
+                virtual MeasureStoppingCriterionConfig& addMeasureStoppingCriterion() = 0;
 
         };
 
@@ -469,6 +529,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IPruningConfig> pruningConfigPtr_;
 
+                std::unique_ptr<SizeStoppingCriterionConfig> sizeStoppingCriterionConfigPtr_;
+
+                std::unique_ptr<TimeStoppingCriterionConfig> timeStoppingCriterionConfigPtr_;
+
+                std::unique_ptr<MeasureStoppingCriterionConfig> measureStoppingCriterionConfigPtr_;
+
                 const IRuleInductionConfig& getRuleInductionConfig() const override;
 
                 const IFeatureBinningConfig* getFeatureBinningConfig() const override;
@@ -482,6 +548,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 const IPartitionSamplingConfig* getPartitionSamplingConfig() const override;
 
                 const IPruningConfig* getPruningConfig() const override;
+
+                const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const override;
+
+                const TimeStoppingCriterionConfig* getTimeStoppingCriterionConfig() const override;
+
+                const MeasureStoppingCriterionConfig* getMeasureStoppingCriterionConfig() const override;
 
             public:
 
@@ -512,6 +584,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 ExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
 
                 IrepConfig& useIrepPruning() override;
+
+                SizeStoppingCriterionConfig& addSizeStoppingCriterion() override;
+
+                TimeStoppingCriterionConfig& addTimeStoppingCriterion() override;
+
+                MeasureStoppingCriterionConfig& addMeasureStoppingCriterion() override;
 
         };
 
@@ -609,6 +687,33 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * @return True, if a default rule should be induced, false otherwise
          */
         virtual bool useDefaultRule() const;
+
+        /**
+         * May be overridden by subclasses in order to create  `SizeStoppingCriterionFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `SizeStoppingCriterionFactory` that has been created or a null
+         *         pointer, if no `SizeStoppingCriterionFactory` should be used
+         */
+        std::unique_ptr<SizeStoppingCriterionFactory> createSizeStoppingCriterionFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create  `TimeStoppingCriterionFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `TimeStoppingCriterionFactory` that has been created or a null
+         *         pointer, if no `TimeStoppingCriterionFactory` should be used
+         */
+        std::unique_ptr<TimeStoppingCriterionFactory> createTimeStoppingCriterionFactory() const;
+
+        /**
+         * May be overridden by subclasses in order to create  `MeasureStoppingCriterionFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `MeasureStoppingCriterionFactory` that has been created or a
+         *         null pointer, if no `MeasureStoppingCriterionFactory` should be used
+         */
+        std::unique_ptr<MeasureStoppingCriterionFactory> createMeasureStoppingCriterionFactory() const;
 
         /**
          * May be overridden by subclasses in order create objects of the type `IStoppingCriterionFactory` to be used by
