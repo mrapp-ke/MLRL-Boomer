@@ -106,7 +106,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
     // Create a new vector that will contain the filtered elements, if necessary...
     FeatureVector* filteredVector = cacheEntry.vectorPtr.get();
 
-    if (filteredVector == nullptr) {
+    if (!filteredVector) {
         cacheEntry.vectorPtr = std::make_unique<FeatureVector>(numElements);
         filteredVector = cacheEntry.vectorPtr.get();
     }
@@ -228,11 +228,11 @@ static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEnt
     uint32 maxElements = vector.getNumElements();
     FeatureVector* filteredVector = cacheEntry.vectorPtr.get();
 
-    if (filteredVector == nullptr) {
+    if (filteredVector) {
+        filteredVector->clearMissingIndices();
+    } else {
         cacheEntry.vectorPtr = std::make_unique<FeatureVector>(maxElements);
         filteredVector = cacheEntry.vectorPtr.get();
-    } else {
-        filteredVector->clearMissingIndices();
     }
 
     // Filter the missing indices...
@@ -307,11 +307,11 @@ class ExactThresholds final : public AbstractThresholds {
                         FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                         FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
-                        if (featureVector == nullptr) {
+                        if (!featureVector) {
                             auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                             featureVector = cacheIterator->second.get();
 
-                            if (featureVector == nullptr) {
+                            if (!featureVector) {
                                 thresholdsSubset_.thresholds_.featureMatrix_.fetchFeatureVector(featureIndex_,
                                                                                                 cacheIterator->second);
                                 cacheIterator->second->sortByValues();
@@ -353,7 +353,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 // If the `FilteredCacheEntry` in the cache does not refer to a `FeatureVector`, add an empty
                 // `unique_ptr` to the cache...
-                if (featureVector == nullptr) {
+                if (!featureVector) {
                     thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
                 }
 
@@ -395,7 +395,7 @@ class ExactThresholds final : public AbstractThresholds {
                     FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                     FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
-                    if (featureVector == nullptr) {
+                    if (!featureVector) {
                         auto cacheIterator = thresholds_.cache_.find(featureIndex);
                         featureVector = cacheIterator->second.get();
                     }
@@ -427,7 +427,7 @@ class ExactThresholds final : public AbstractThresholds {
                     FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                     FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
-                    if (featureVector == nullptr) {
+                    if (!featureVector) {
                         auto cacheIterator = thresholds_.cache_.emplace(featureIndex,
                                                                         std::unique_ptr<FeatureVector>()).first;
                         featureVector = cacheIterator->second.get();

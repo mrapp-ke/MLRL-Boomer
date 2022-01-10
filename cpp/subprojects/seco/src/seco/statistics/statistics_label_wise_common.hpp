@@ -93,7 +93,7 @@ namespace seco {
                      */
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
-                        if (totalCoverableSumVector_ == nullptr) {
+                        if (!totalCoverableSumVector_) {
                             totalCoverableSumVector_ = new ConfusionMatrixVector(*totalSumVector_);
                             totalSumVector_ = totalCoverableSumVector_;
                         }
@@ -119,7 +119,7 @@ namespace seco {
                      */
                     void resetSubset() override {
                         // Allocate a vector for storing the accumulated confusion matrices, if necessary...
-                        if (accumulatedSumVector_ == nullptr) {
+                        if (!accumulatedSumVector_) {
                             uint32 numPredictions = labelIndices_.getNumElements();
                             accumulatedSumVector_ = new ConfusionMatrixVector(numPredictions, true);
                         }

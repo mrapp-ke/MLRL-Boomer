@@ -102,7 +102,7 @@ namespace boosting {
                      */
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
-                        if (totalCoverableSumVector_ == nullptr) {
+                        if (!totalCoverableSumVector_) {
                             totalCoverableSumVector_ = new StatisticVector(*totalSumVector_);
                             totalSumVector_ = totalCoverableSumVector_;
                         }
@@ -127,7 +127,7 @@ namespace boosting {
                      */
                     void resetSubset() override {
                         // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
-                        if (accumulatedSumVector_ == nullptr) {
+                        if (!accumulatedSumVector_) {
                             uint32 numPredictions = labelIndices_.getNumElements();
                             accumulatedSumVector_ = new StatisticVector(numPredictions, true);
                         }
