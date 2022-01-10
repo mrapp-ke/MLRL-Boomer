@@ -13,7 +13,7 @@ namespace boosting {
                                                             const LabelVectorSet* labelVectorSet) {
         const LabelVector* closestLabelVector = nullptr;
 
-        if (labelVectorSet != nullptr) {
+        if (labelVectorSet) {
             float64 bestScore = 0;
             uint32 bestCount = 0;
 
@@ -23,7 +23,7 @@ namespace boosting {
                 uint32 count = entry.second;
                 float64 score = measure.measureSimilarity(*labelVectorPtr, scoresBegin, scoresEnd);
 
-                if (closestLabelVector == nullptr || score < bestScore || (score == bestScore && count > bestCount)) {
+                if (!closestLabelVector || score < bestScore || (score == bestScore && count > bestCount)) {
                     closestLabelVector = labelVectorPtr.get();
                     bestScore = score;
                     bestCount = count;
@@ -38,7 +38,7 @@ namespace boosting {
                                           const LabelVector* labelVector) {
         setArrayToZeros(predictionIterator, numElements);
 
-        if (labelVector != nullptr) {
+        if (labelVector) {
             uint32 numIndices = labelVector->getNumElements();
             LabelVector::const_iterator indexIterator = labelVector->cbegin();
 
@@ -52,7 +52,7 @@ namespace boosting {
     static inline uint32 predictLabelVector(BinaryLilMatrix::Row& row, const LabelVector* labelVector) {
         uint32 numNonZeroElements = 0;
 
-        if (labelVector != nullptr) {
+        if (labelVector) {
             uint32 numIndices = labelVector->getNumElements();
             LabelVector::const_iterator indexIterator = labelVector->cbegin();
 

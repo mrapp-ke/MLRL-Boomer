@@ -19,7 +19,7 @@ namespace seco {
     }
 
     std::unique_ptr<IRuleModel> DecisionListBuilder::build(uint32 numUsedRules) {
-        if (defaultHeadPtr_.get() != nullptr) {
+        if (defaultHeadPtr_) {
             modelPtr_->addRule(std::make_unique<EmptyBody>(), std::move(defaultHeadPtr_));
         }
 
