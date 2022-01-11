@@ -10,6 +10,14 @@
 namespace seco {
 
     /**
+     * Allows to configure a heuristic that measures the fraction of uncovered labels among all labels for which a
+     * rule's prediction is (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
+     */
+    class RecallConfig final : public IHeuristicConfig {
+
+    };
+
+    /**
      * Allows to create instances of the type `IHeuristic` that measure the fraction of uncovered labels among all
      * labels for which a rule's prediction is (or would be) correct, i.e., for which the ground truth is equal to the
      * rule's prediction.
