@@ -4,6 +4,13 @@
 #pragma once
 
 #include "common/learner.hpp"
+#include "seco/heuristics/heuristic_accuracy.hpp"
+#include "seco/heuristics/heuristic_f_measure.hpp"
+#include "seco/heuristics/heuristic_laplace.hpp"
+#include "seco/heuristics/heuristic_m_estimate.hpp"
+#include "seco/heuristics/heuristic_precision.hpp"
+#include "seco/heuristics/heuristic_recall.hpp"
+#include "seco/heuristics/heuristic_wra.hpp"
 
 
 namespace seco {
@@ -23,9 +30,75 @@ namespace seco {
 
                 friend class SeCoRuleLearner;
 
+                private:
+
+                    /**
+                     * Returns the configuration of the heuristic for learning rules.
+                     *
+                     * @return A reference to an object of type `IHeuristic` that specifies the configuration of the
+                     *         heuristic for learning rules
+                     */
+                    virtual const IHeuristicConfig& getHeuristicConfig() const = 0;
+
                 public:
 
                     virtual ~IConfig() override { };
+
+                    /**
+                     * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
+                     *
+                     * @return A reference to an object of type `AccuracyConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual AccuracyConfig& useAccuracyHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
+                     *
+                     * @return A reference to an object of type `FMeasureConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual FMeasureConfig& useFMeasureHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Laplace" heuristic for learning rules.
+                     *
+                     * @return A reference to an object of type `LaplaceConfig` that allows further configuration of the
+                     *         heuristic
+                     */
+                    virtual LaplaceConfig& useLaplaceHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
+                     *
+                     * @return A reference to an object of type `MEstimateConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual MEstimateConfig& useMEstimateHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Precision" heuristic for learning rules.
+                     *
+                     * @return A reference to an object of type `PrecisionConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual PrecisionConfig& usePrecisionHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Recall" heuristic for learning rules.
+                     *
+                     * @return A reference to an object of type `RecallConfig` that allows further configuration of the
+                     *         heuristic
+                     */
+                    virtual RecallConfig& useRecallHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules
+                     *
+                     * @return A reference to an object of type `WraConfig` that allows further configuration of the
+                     *         heuristic
+                     */
+                    virtual WraConfig& useWraHeuristic() = 0;
 
             };
 
@@ -45,9 +118,29 @@ namespace seco {
              */
             class Config : public AbstractRuleLearner::Config, virtual public ISeCoRuleLearner::IConfig {
 
+                private:
+
+                    std::unique_ptr<IHeuristicConfig> heuristicConfigPtr_;
+
+                    const IHeuristicConfig& getHeuristicConfig() const override;
+
                 public:
 
                     Config();
+
+                    AccuracyConfig& useAccuracyHeuristic() override;
+
+                    FMeasureConfig& useFMeasureHeuristic() override;
+
+                    LaplaceConfig& useLaplaceHeuristic() override;
+
+                    MEstimateConfig& useMEstimateHeuristic() override;
+
+                    PrecisionConfig& usePrecisionHeuristic() override;
+
+                    RecallConfig& useRecallHeuristic() override;
+
+                    WraConfig& useWraHeuristic() override;
 
             };
 
