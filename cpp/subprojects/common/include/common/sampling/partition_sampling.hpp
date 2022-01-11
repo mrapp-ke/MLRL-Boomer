@@ -11,8 +11,8 @@
 
 
 /**
- * Defines an interface for all classes that implement a strategy for partitioning the available training examples into
- * a training set and a holdout set.
+ * Defines an interface for all classes that implement a method for partitioning the available training examples into a
+ * training set and a holdout set.
  */
 class IPartitionSampling {
 
@@ -32,7 +32,7 @@ class IPartitionSampling {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a strategy for partitioning the available training
+ * Defines an interface for all classes that allow to configure a method for partitioning the available training
  * examples into a training set and a holdout set.
  */
 class IPartitionSamplingConfig {
