@@ -16,7 +16,7 @@ class SinglePartition;
 
 
 /**
- * Defines an interface for all classes that implement a strategy for sampling training examples.
+ * Defines an interface for all classes that implement a method for sampling training examples.
  */
 class IInstanceSampling {
 
@@ -36,7 +36,7 @@ class IInstanceSampling {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a strategy for sampling instances.
+ * Defines an interface for all classes that allow to configure a method for sampling instances.
  */
 class IInstanceSamplingConfig {
 
