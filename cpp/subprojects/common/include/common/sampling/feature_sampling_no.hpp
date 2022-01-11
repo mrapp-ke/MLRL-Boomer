@@ -7,6 +7,13 @@
 
 
 /**
+ * Allows to configure a method for sampling features that does not perform any sampling, but includes all features.
+ */
+class NoFeatureSamplingConfig final : public IFeatureSamplingConfig {
+
+};
+
+/**
  * Allows to create instances of the type `IFeatureSampling` that do not perform any sampling, but include all features.
  */
 class NoFeatureSamplingFactory final : public IFeatureSamplingFactory {
