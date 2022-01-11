@@ -7,6 +7,14 @@
 
 
 /**
+ * Allows to configure a method for partitioning the available training examples into a training set and a holdout set
+ * that does not split the training examples, but includes all of them in the training set.
+ */
+class NoPartitionSamplingConfig final : public IPartitionSamplingConfig {
+
+};
+
+/**
  * Allows to create objects of the type `IPartitionSampling` that do not split the training examples, but include all of
  * them in the training set.
  */
