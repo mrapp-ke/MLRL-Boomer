@@ -7,7 +7,7 @@
 
 
 /**
- * Allows to configure a strategy for sampling labels without replacement.
+ * Allows to configure a method for sampling labels without replacement.
  */
 class LabelSamplingWithoutReplacementConfig : public ILabelSamplingConfig {
 
@@ -31,7 +31,7 @@ class LabelSamplingWithoutReplacementConfig : public ILabelSamplingConfig {
          *
          * @param numSamples    The number of labels that should be included in a sample. Must be at least 1
          * @return              A reference to an object of type `LabelSamplingWithoutReplacementConfig` that allows
-         *                      further configuration of the strategy for sampling labels
+         *                      further configuration of the method for sampling labels
          */
         LabelSamplingWithoutReplacementConfig& setNumSamples(uint32 numSamples);
 
