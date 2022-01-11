@@ -37,6 +37,17 @@ namespace seco {
     };
 
     /**
+     * Defines an interface for all classes that allow to configure a lift function.
+     */
+    class ILiftFunctionConfig {
+    
+        public:
+
+            virtual ~ILiftFunctionConfig() { };
+
+    };
+
+    /**
      * Defines an interface for all factories that allow to create instances of the type `ILiftFunction`.
      */
     class ILiftFunctionFactory {
