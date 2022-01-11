@@ -108,17 +108,17 @@ class MeasureStoppingCriterionConfig final : public IStoppingCriterionConfig {
             /**
              * An aggregation function that finds the minimum value in a buffer.
              */
-            MIN,
+            MIN = 0,
 
             /**
              * An aggregation function that finds the maximum value in a buffer.
              */
-            MAX,
+            MAX = 1,
 
             /**
              * An aggregation function that calculates the arithmetic mean of the values in a buffer.
              */
-            ARITHMETIC_MEAN
+            ARITHMETIC_MEAN = 2
 
         };
 

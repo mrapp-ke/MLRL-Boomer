@@ -29,11 +29,11 @@ cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
 
     cpdef enum AggregationFunctionImpl"MeasureStoppingCriterionConfig::AggregationFunction":
 
-        MIN_"MeasureStoppingCriterionConfig::AggregationFunction::MIN",
+        MIN_"MeasureStoppingCriterionConfig::AggregationFunction::MIN" = 0,
 
-        MAX_"MeasureStoppingCriterionConfig::AggregationFunction::MAX",
+        MAX_"MeasureStoppingCriterionConfig::AggregationFunction::MAX" = 1,
 
-        ARITHMETIC_MEAN_"MeasureStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN"
+        ARITHMETIC_MEAN_"MeasureStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN" = 2
 
 
     cdef cppclass MeasureStoppingCriterionConfigImpl"MeasureStoppingCriterionConfig":
