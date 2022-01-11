@@ -7,6 +7,14 @@
 
 
 /**
+ * Allows to configure a method for sampling training examples that does not perform any sampling, but assigns equal
+ * weights to all examples.
+ */
+class NoInstanceSamplingConfig final : public IInstanceSamplingConfig {
+
+};
+
+/**
  * Allows to create instances of the type `IInstanceSampling` that do not perform any sampling, but assign equal weights
  * to all examples.
  */
