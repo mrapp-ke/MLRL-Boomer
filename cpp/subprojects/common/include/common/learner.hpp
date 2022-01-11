@@ -118,44 +118,44 @@ class IRuleLearner {
                 /**
                  * Returns the configuration of the method for sampling labels.
                  *
-                 * @return A pointer to an object of type `ILabelSamplingConfig` that specifies the configuration of the
-                 *         method for sampling labels or a null pointer, if no such method should be used
+                 * @return A reference to an object of type `ILabelSamplingConfig` that specifies the configuration of
+                 *         the method for sampling labels
                  */
-                virtual const ILabelSamplingConfig* getLabelSamplingConfig() const = 0;
+                virtual const ILabelSamplingConfig& getLabelSamplingConfig() const = 0;
 
                 /**
                  * Returns the configuration of the method for sampling instances.
                  *
-                 * @return A pointer to an object of type `IInstanceSamplingConfig` that specifies the configuration of
-                 *         the method for sampling instances or a null pointer, if no such method should be used
+                 * @return A reference to an object of type `IInstanceSamplingConfig` that specifies the configuration
+                 *         of the method for sampling instances
                  */
-                virtual const IInstanceSamplingConfig* getInstanceSamplingConfig() const = 0;
+                virtual const IInstanceSamplingConfig& getInstanceSamplingConfig() const = 0;
 
                 /**
                  * Returns the configuration of the method for sampling features.
                  *
-                 * @return A pointer to an object of type `IFeatureSamplingConfig` that specifies the configuration of
-                 *         the method for sampling features or a null pointer, if no such method should be used
+                 * @return A reference to an object of type `IFeatureSamplingConfig` that specifies the configuration of
+                 *         the method for sampling features
                  */
-                virtual const IFeatureSamplingConfig* getFeatureSamplingConfig() const = 0;
+                virtual const IFeatureSamplingConfig& getFeatureSamplingConfig() const = 0;
 
                 /**
                  * Returns the configuration of the method for partitioning the available training examples into a
                  * training set and a holdout set.
                  *
-                 * @return A pointer to an object of type `IPartitionSamplingConfig` that specifies the configuration of
-                 *         the method for partitioning the available training examples into a training set and a holdout
-                 *         set or a null pointer, if no such method should be used
+                 * @return A reference to an object of type `IPartitionSamplingConfig` that specifies the configuration
+                 *         of the method for partitioning the available training examples into a training set and a
+                 *         holdout set
                  */
-                virtual const IPartitionSamplingConfig* getPartitionSamplingConfig() const = 0;
+                virtual const IPartitionSamplingConfig& getPartitionSamplingConfig() const = 0;
 
                 /**
                  * Returns the configuration of the method for pruning classification rules.
                  *
-                 * @return A pointer to an object of type `IPruningConfig` that specifies the configuration of the
-                 *         method for pruning classification rules or a null pointer, if no such method should be used
+                 * @return A reference to an object of type `IPruningConfig` that specifies the configuration of the
+                 *         method for pruning classification rules
                  */
-                virtual const IPruningConfig* getPruningConfig() const = 0;
+                virtual const IPruningConfig& getPruningConfig() const = 0;
 
                 /**
                  * Returns the configuration of the stopping criterion that ensures that the number of rules does not
@@ -539,15 +539,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 const IFeatureBinningConfig* getFeatureBinningConfig() const override;
 
-                const ILabelSamplingConfig* getLabelSamplingConfig() const override;
+                const ILabelSamplingConfig& getLabelSamplingConfig() const override;
 
-                const IInstanceSamplingConfig* getInstanceSamplingConfig() const override;
+                const IInstanceSamplingConfig& getInstanceSamplingConfig() const override;
 
-                const IFeatureSamplingConfig* getFeatureSamplingConfig() const override;
+                const IFeatureSamplingConfig& getFeatureSamplingConfig() const override;
 
-                const IPartitionSamplingConfig* getPartitionSamplingConfig() const override;
+                const IPartitionSamplingConfig& getPartitionSamplingConfig() const override;
 
-                const IPruningConfig* getPruningConfig() const override;
+                const IPruningConfig& getPruningConfig() const override;
 
                 const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const override;
 

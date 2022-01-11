@@ -67,7 +67,12 @@ class TrainingResult final : public ITrainingResult {
 };
 
 AbstractRuleLearner::Config::Config()
-    : ruleInductionConfigPtr_(std::make_unique<TopDownRuleInductionConfig>()) {
+    : ruleInductionConfigPtr_(std::make_unique<TopDownRuleInductionConfig>()),
+      labelSamplingConfigPtr_(std::make_unique<NoLabelSamplingConfig>()),
+      instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
+      featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
+      partitionSamplingConfigPtr_(std::make_unique<NoPartitionSamplingConfig>()),
+      pruningConfigPtr_(std::make_unique<NoPruningConfig>()) {
 
 }
 
@@ -79,24 +84,24 @@ const IFeatureBinningConfig* AbstractRuleLearner::Config::getFeatureBinningConfi
     return featureBinningConfigPtr_.get();
 }
 
-const ILabelSamplingConfig* AbstractRuleLearner::Config::getLabelSamplingConfig() const {
-    return labelSamplingConfigPtr_.get();
+const ILabelSamplingConfig& AbstractRuleLearner::Config::getLabelSamplingConfig() const {
+    return *labelSamplingConfigPtr_;
 }
 
-const IInstanceSamplingConfig* AbstractRuleLearner::Config::getInstanceSamplingConfig() const {
-    return instanceSamplingConfigPtr_.get();
+const IInstanceSamplingConfig& AbstractRuleLearner::Config::getInstanceSamplingConfig() const {
+    return *instanceSamplingConfigPtr_;
 }
 
-const IFeatureSamplingConfig* AbstractRuleLearner::Config::getFeatureSamplingConfig() const {
-    return featureSamplingConfigPtr_.get();
+const IFeatureSamplingConfig& AbstractRuleLearner::Config::getFeatureSamplingConfig() const {
+    return *featureSamplingConfigPtr_;
 }
 
-const IPartitionSamplingConfig* AbstractRuleLearner::Config::getPartitionSamplingConfig() const {
-    return partitionSamplingConfigPtr_.get();
+const IPartitionSamplingConfig& AbstractRuleLearner::Config::getPartitionSamplingConfig() const {
+    return *partitionSamplingConfigPtr_;
 }
 
-const IPruningConfig* AbstractRuleLearner::Config::getPruningConfig() const {
-    return pruningConfigPtr_.get();
+const IPruningConfig& AbstractRuleLearner::Config::getPruningConfig() const {
+    return *pruningConfigPtr_;
 }
 
 const SizeStoppingCriterionConfig* AbstractRuleLearner::Config::getSizeStoppingCriterionConfig() const {
@@ -241,13 +246,13 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
 }
 
 std::unique_ptr<IFeatureBinningFactory> AbstractRuleLearner::createFeatureBinningFactory() const {
-    const IFeatureBinningConfig* featureBinningConfig = this->configPtr_->getFeatureBinningConfig();
+    const IFeatureBinningConfig* baseConfig = this->configPtr_->getFeatureBinningConfig();
 
-    if (featureBinningConfig) {
-        if (auto* config = dynamic_cast<const EqualWidthFeatureBinningConfig*>(featureBinningConfig)) {
+    if (baseConfig) {
+        if (auto* config = dynamic_cast<const EqualWidthFeatureBinningConfig*>(baseConfig)) {
             return std::make_unique<EqualWidthFeatureBinningFactory>(config->getBinRatio(), config->getMinBins(),
                                                                      config->getMaxBins());
-        } else if (auto* config = dynamic_cast<const EqualFrequencyFeatureBinningConfig*>(featureBinningConfig)) {
+        } else if (auto* config = dynamic_cast<const EqualFrequencyFeatureBinningConfig*>(baseConfig)) {
             return std::make_unique<EqualFrequencyFeatureBinningFactory>(config->getBinRatio(), config->getMinBins(),
                                                                          config->getMaxBins());
         }
@@ -270,9 +275,9 @@ std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
-    const IRuleInductionConfig& ruleInductionConfig = this->configPtr_->getRuleInductionConfig();
+    const IRuleInductionConfig* baseConfig = &this->configPtr_->getRuleInductionConfig();
 
-    if (auto* config = dynamic_cast<const TopDownRuleInductionConfig*>(&ruleInductionConfig)) {
+    if (auto* config = dynamic_cast<const TopDownRuleInductionConfig*>(baseConfig)) {
         return std::make_unique<TopDownRuleInductionFactory>(
             config->getMinCoverage(), config->getMaxConditions(), config->getMaxHeadRefinements(),
             config->getRecalculatePredictions(), getNumThreads(config->getNumThreads()));
@@ -282,88 +287,74 @@ std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionF
 }
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory() const {
-    const ILabelSamplingConfig* labelSamplingConfig = this->configPtr_->getLabelSamplingConfig();
+    const ILabelSamplingConfig* baseConfig = &this->configPtr_->getLabelSamplingConfig();
 
-    if (labelSamplingConfig) {
-        if (auto* config = dynamic_cast<const LabelSamplingWithoutReplacementConfig*>(labelSamplingConfig)) {
-            return std::make_unique<LabelSamplingWithoutReplacementFactory>(config->getNumSamples());
-        }
-
-        throw std::runtime_error("Failed to create ILabelSamplingFactory");
+    if (dynamic_cast<const NoLabelSamplingConfig*>(baseConfig)) {
+        return std::make_unique<NoLabelSamplingFactory>();
+    } else if (auto* config = dynamic_cast<const LabelSamplingWithoutReplacementConfig*>(baseConfig)) {
+        return std::make_unique<LabelSamplingWithoutReplacementFactory>(config->getNumSamples());
     }
 
-    return std::make_unique<NoLabelSamplingFactory>();
+    throw std::runtime_error("Failed to create ILabelSamplingFactory");
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
-    const IInstanceSamplingConfig* instanceSamplingConfig = this->configPtr_->getInstanceSamplingConfig();
+    const IInstanceSamplingConfig* baseConfig = &this->configPtr_->getInstanceSamplingConfig();
 
-    if (instanceSamplingConfig) {
-        if (auto* config = dynamic_cast<const InstanceSamplingWithReplacementConfig*>(instanceSamplingConfig)) {
-            return std::make_unique<InstanceSamplingWithReplacementFactory>(config->getSampleSize());
-        } else if (auto* config =
-                       dynamic_cast<const InstanceSamplingWithoutReplacementConfig*>(instanceSamplingConfig)) {
-            return std::make_unique<InstanceSamplingWithoutReplacementFactory>(config->getSampleSize());
-        } else if (auto* config =
-                       dynamic_cast<const LabelWiseStratifiedInstanceSamplingConfig*>(instanceSamplingConfig)) {
-            return std::make_unique<LabelWiseStratifiedInstanceSamplingFactory>(config->getSampleSize());
-        } else if (auto* config =
-                       dynamic_cast<const ExampleWiseStratifiedInstanceSamplingConfig*>(instanceSamplingConfig)) {
-            return std::make_unique<ExampleWiseStratifiedInstanceSamplingFactory>(config->getSampleSize());
-        }
-
-        throw std::runtime_error("Failed to create IInstanceSamplingFactory");
+    if (dynamic_cast<const NoInstanceSamplingConfig*>(baseConfig)) {
+        return std::make_unique<NoInstanceSamplingFactory>();
+    } else if (auto* config = dynamic_cast<const InstanceSamplingWithReplacementConfig*>(baseConfig)) {
+        return std::make_unique<InstanceSamplingWithReplacementFactory>(config->getSampleSize());
+    } else if (auto* config = dynamic_cast<const InstanceSamplingWithoutReplacementConfig*>(baseConfig)) {
+        return std::make_unique<InstanceSamplingWithoutReplacementFactory>(config->getSampleSize());
+    } else if (auto* config = dynamic_cast<const LabelWiseStratifiedInstanceSamplingConfig*>(baseConfig)) {
+        return std::make_unique<LabelWiseStratifiedInstanceSamplingFactory>(config->getSampleSize());
+    } else if (auto* config = dynamic_cast<const ExampleWiseStratifiedInstanceSamplingConfig*>(baseConfig)) {
+        return std::make_unique<ExampleWiseStratifiedInstanceSamplingFactory>(config->getSampleSize());
     }
 
-    return std::make_unique<NoInstanceSamplingFactory>();
+    throw std::runtime_error("Failed to create IInstanceSamplingFactory");
+
 }
 
 std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSamplingFactory() const {
-    const IFeatureSamplingConfig* featureSamplingConfig = this->configPtr_->getFeatureSamplingConfig();
+    const IFeatureSamplingConfig* baseConfig = &this->configPtr_->getFeatureSamplingConfig();
 
-    if (featureSamplingConfig) {
-        if (auto* config = dynamic_cast<const FeatureSamplingWithoutReplacementConfig*>(featureSamplingConfig)) {
-            return std::make_unique<FeatureSamplingWithoutReplacementFactory>(config->getSampleSize());
-        }
-
-        throw std::runtime_error("Failed to create IFeatureSamplingFactory");
+    if (dynamic_cast<const NoFeatureSamplingConfig*>(baseConfig)) {
+        return std::make_unique<NoFeatureSamplingFactory>();
+    } else if (auto* config = dynamic_cast<const FeatureSamplingWithoutReplacementConfig*>(baseConfig)) {
+        return std::make_unique<FeatureSamplingWithoutReplacementFactory>(config->getSampleSize());
     }
 
-    return std::make_unique<NoFeatureSamplingFactory>();
+    throw std::runtime_error("Failed to create IFeatureSamplingFactory");
 }
 
 std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionSamplingFactory() const {
-    const IPartitionSamplingConfig* partitionSamplingConfig = this->configPtr_->getPartitionSamplingConfig();
+    const IPartitionSamplingConfig* baseConfig = &this->configPtr_->getPartitionSamplingConfig();
 
-    if (partitionSamplingConfig) {
-        if (auto* config = dynamic_cast<const RandomBiPartitionSamplingConfig*>(partitionSamplingConfig)) {
-            return std::make_unique<RandomBiPartitionSamplingFactory>(config->getHoldoutSetSize());
-        } else if (auto* config =
-                       dynamic_cast<const LabelWiseStratifiedBiPartitionSamplingConfig*>(partitionSamplingConfig)) {
-            return std::make_unique<LabelWiseStratifiedBiPartitionSamplingFactory>(config->getHoldoutSetSize());
-        } else if (auto* config =
-                       dynamic_cast<const ExampleWiseStratifiedBiPartitionSamplingConfig*>(partitionSamplingConfig)) {
-            return std::make_unique<ExampleWiseStratifiedBiPartitionSamplingFactory>(config->getHoldoutSetSize());
-        }
-
-        throw std::runtime_error("Failed to create IPartitionSamplingFactory");
+    if (dynamic_cast<const NoPartitionSamplingConfig*>(baseConfig)) {
+        return std::make_unique<NoPartitionSamplingFactory>();
+    } else if (auto* config = dynamic_cast<const RandomBiPartitionSamplingConfig*>(baseConfig)) {
+        return std::make_unique<RandomBiPartitionSamplingFactory>(config->getHoldoutSetSize());
+    } else if (auto* config = dynamic_cast<const LabelWiseStratifiedBiPartitionSamplingConfig*>(baseConfig)) {
+        return std::make_unique<LabelWiseStratifiedBiPartitionSamplingFactory>(config->getHoldoutSetSize());
+    } else if (auto* config = dynamic_cast<const ExampleWiseStratifiedBiPartitionSamplingConfig*>(baseConfig)) {
+        return std::make_unique<ExampleWiseStratifiedBiPartitionSamplingFactory>(config->getHoldoutSetSize());
     }
 
-    return std::make_unique<NoPartitionSamplingFactory>();
+    throw std::runtime_error("Failed to create IPartitionSamplingFactory");
 }
 
 std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() const {
-    const IPruningConfig* pruningConfig = this->configPtr_->getPruningConfig();
+    const IPruningConfig* baseConfig = &this->configPtr_->getPruningConfig();
 
-    if (pruningConfig) {
-        if (dynamic_cast<const IrepConfig*>(pruningConfig)) {
-            return std::make_unique<IrepFactory>();
-        }
-
-        throw std::runtime_error("Failed to create IPruningFactory");
+    if (dynamic_cast<const NoPruningConfig*>(baseConfig)) {
+        return std::make_unique<NoPruningFactory>();
+    } else if (dynamic_cast<const IrepConfig*>(baseConfig)) {
+        return std::make_unique<IrepFactory>();
     }
 
-    return std::make_unique<NoPruningFactory>();
+    throw std::runtime_error("Failed to create IPruningFactory");
 }
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {
