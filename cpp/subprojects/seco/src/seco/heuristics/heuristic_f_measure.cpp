@@ -51,6 +51,20 @@ namespace seco {
 
     };
 
+    FMeasureConfig::FMeasureConfig()
+        : beta_(0.25) {
+
+    }
+
+    float64 FMeasureConfig::getBeta() const {
+        return beta_;
+    }
+
+    FMeasureConfig& FMeasureConfig::setBeta(float64 beta) {
+        beta_ = beta;
+        return *this;
+    }
+
     FMeasureFactory::FMeasureFactory(float64 beta)
         : beta_(beta) {
         assertGreaterOrEqual<float64>("beta", beta, 0);
