@@ -40,7 +40,7 @@ namespace seco {
      * Defines an interface for all classes that allow to configure a lift function.
      */
     class ILiftFunctionConfig {
-    
+
         public:
 
             virtual ~ILiftFunctionConfig() { };
