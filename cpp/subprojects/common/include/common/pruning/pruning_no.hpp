@@ -7,6 +7,13 @@
 
 
 /**
+ * Allows to configure a method for pruning classification rules that does not actually perform any pruning.
+ */
+class NoPruningConfig final : public IPruningConfig {
+
+};
+
+/**
  * Allows to create instances of the type `IPruning` that do not actually perform any pruning.
  */
 class NoPruningFactory final : public IPruningFactory {
