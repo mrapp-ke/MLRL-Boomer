@@ -1,5 +1,6 @@
 #include "seco/learner.hpp"
 #include "seco/model/decision_list_builder.hpp"
+#include "seco/output/predictor_classification_label_wise.hpp"
 
 
 namespace seco {
@@ -126,8 +127,8 @@ namespace seco {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory() const {
-        // TODO Implement
-        return nullptr;
+        uint32 numThreads = 1;  // TODO Use correct number of threads
+        return std::make_unique<LabelWiseClassificationPredictorFactory>(numThreads);
     }
 
     SeCoRuleLearner::SeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr)
