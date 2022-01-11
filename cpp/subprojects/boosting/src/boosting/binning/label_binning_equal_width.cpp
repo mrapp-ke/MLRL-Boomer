@@ -32,10 +32,7 @@ namespace boosting {
              */
             EqualWidthLabelBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
                 : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-                assertGreater<float32>("binRatio", binRatio, 0.0);
-                assertLess<float32>("binRatio", binRatio, 1.0);
-                assertGreaterOrEqual<uint32>("minBins", minBins, 1);
-                if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins); }
+
             }
 
             uint32 getMaxBins(uint32 numLabels) const override {
@@ -131,6 +128,42 @@ namespace boosting {
             }
 
     };
+
+    EqualWidthLabelBinningConfig::EqualWidthLabelBinningConfig()
+        : binRatio_(0.04), minBins_(1), maxBins_(0) {
+
+    }
+
+    float32 EqualWidthLabelBinningConfig::getBinRatio() const {
+        return binRatio_;
+    }
+
+    EqualWidthLabelBinningConfig& EqualWidthLabelBinningConfig::setBinRatio(float32 binRatio) {
+        assertGreater<float32>("binRatio", binRatio, 0);
+        assertLess<float32>("binRatio", binRatio, 1);
+        binRatio_ = binRatio;
+        return *this;
+    }
+
+    uint32 EqualWidthLabelBinningConfig::getMinBins() const {
+        return minBins_;
+    }
+
+    EqualWidthLabelBinningConfig& EqualWidthLabelBinningConfig::setMinBins(uint32 minBins) {
+        assertGreaterOrEqual<uint32>("minBins", minBins, 1);
+        minBins_ = minBins;
+        return *this;
+    }
+
+    uint32 EqualWidthLabelBinningConfig::getMaxBins() const {
+        return maxBins_;
+    }
+
+    EqualWidthLabelBinningConfig& EqualWidthLabelBinningConfig::setMaxBins(uint32 maxBins) {
+        if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_); }
+        maxBins_ = maxBins;
+        return *this;
+    }
 
     EqualWidthLabelBinningFactory::EqualWidthLabelBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
         : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
