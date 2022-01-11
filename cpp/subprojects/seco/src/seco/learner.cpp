@@ -1,4 +1,5 @@
 #include "seco/learner.hpp"
+#include "seco/model/decision_list_builder.hpp"
 
 
 namespace seco {
@@ -121,8 +122,7 @@ namespace seco {
     }
 
     std::unique_ptr<IModelBuilder> SeCoRuleLearner::createModelBuilder() const {
-        // TODO Implement
-        return nullptr;
+        return std::make_unique<DecisionListBuilder>();
     }
 
     std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory() const {
