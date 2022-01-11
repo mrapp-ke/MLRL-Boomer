@@ -361,6 +361,7 @@ std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorF
     return std::make_unique<NoPostProcessorFactory>();
 }
 
+// TODO Should be part of the configuration of the rule model assemblage
 bool AbstractRuleLearner::useDefaultRule() const {
     return true;
 }
