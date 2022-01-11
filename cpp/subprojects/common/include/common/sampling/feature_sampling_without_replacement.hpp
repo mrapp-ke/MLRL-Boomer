@@ -7,7 +7,7 @@
 
 
 /**
- * Allows to configure a strategy for sampling features without replacement.
+ * Allows to configure a method for sampling features without replacement.
  */
 class FeatureSamplingWithoutReplacementConfig : public IFeatureSamplingConfig {
 
@@ -33,7 +33,7 @@ class FeatureSamplingWithoutReplacementConfig : public IFeatureSamplingConfig {
          *                      corresponds to 60 % of the available features. Must be in (0, 1) or 0, if the default
          *                      sample size `floor(log2(numFeatures - 1) + 1)` should be used
          * @return              A reference to an object of type `FeatureSamplingWithoutReplacementConfig` that allows
-         *                      further configuration of the strategy for sampling features
+         *                      further configuration of the method for sampling features
          */
         FeatureSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize);
 

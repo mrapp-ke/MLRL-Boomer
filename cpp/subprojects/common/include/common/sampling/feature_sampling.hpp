@@ -9,7 +9,7 @@
 
 
 /**
- * Defines an interface for all classes that implement a strategy for sampling features.
+ * Defines an interface for all classes that implement a method for sampling features.
  */
 class IFeatureSampling {
 
@@ -29,7 +29,7 @@ class IFeatureSampling {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a strategy for sampling features.
+ * Defines an interface for all classes that allow to configure a method for sampling features.
  */
 class IFeatureSamplingConfig {
 
