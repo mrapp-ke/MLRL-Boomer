@@ -4,12 +4,17 @@
 namespace seco {
 
     SeCoRuleLearner::Config::Config()
-        : heuristicConfigPtr_(std::make_unique<FMeasureConfig>()) {
+        : heuristicConfigPtr_(std::make_unique<FMeasureConfig>()),
+          pruningHeuristicConfigPtr_(std::make_unique<AccuracyConfig>()) {
 
     }
 
     const IHeuristicConfig& SeCoRuleLearner::Config::getHeuristicConfig() const {
         return *heuristicConfigPtr_;
+    }
+
+    const IHeuristicConfig& SeCoRuleLearner::Config::getPruningHeuristicConfig() const {
+        return *pruningHeuristicConfigPtr_;
     }
 
     AccuracyConfig& SeCoRuleLearner::Config::useAccuracyHeuristic() {
@@ -58,6 +63,55 @@ namespace seco {
         std::unique_ptr<WraConfig> ptr = std::make_unique<WraConfig>();
         WraConfig& ref = *ptr;
         heuristicConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    AccuracyConfig& SeCoRuleLearner::Config::useAccuracyPruningHeuristic() {
+        std::unique_ptr<AccuracyConfig> ptr = std::make_unique<AccuracyConfig>();
+        AccuracyConfig& ref = *ptr;
+        pruningHeuristicConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    FMeasureConfig& SeCoRuleLearner::Config::useFMeasurePruningHeuristic() {
+        std::unique_ptr<FMeasureConfig> ptr = std::make_unique<FMeasureConfig>();
+        FMeasureConfig& ref = *ptr;
+        pruningHeuristicConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    LaplaceConfig& SeCoRuleLearner::Config::useLaplacePruningHeuristic() {
+        std::unique_ptr<LaplaceConfig> ptr = std::make_unique<LaplaceConfig>();
+        LaplaceConfig& ref = *ptr;
+        pruningHeuristicConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    MEstimateConfig& SeCoRuleLearner::Config::useMEstimatePruningHeuristic() {
+        std::unique_ptr<MEstimateConfig> ptr = std::make_unique<MEstimateConfig>();
+        MEstimateConfig& ref = *ptr;
+        pruningHeuristicConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    PrecisionConfig& SeCoRuleLearner::Config::usePrecisionPruningHeuristic() {
+        std::unique_ptr<PrecisionConfig> ptr = std::make_unique<PrecisionConfig>();
+        PrecisionConfig& ref = *ptr;
+        pruningHeuristicConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    RecallConfig& SeCoRuleLearner::Config::useRecallPruningHeuristic() {
+        std::unique_ptr<RecallConfig> ptr = std::make_unique<RecallConfig>();
+        RecallConfig& ref = *ptr;
+        pruningHeuristicConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    WraConfig& SeCoRuleLearner::Config::useWraPruningHeuristic() {
+        std::unique_ptr<WraConfig> ptr = std::make_unique<WraConfig>();
+        WraConfig& ref = *ptr;
+        pruningHeuristicConfigPtr_ = std::move(ptr);
         return ref;
     }
 

@@ -40,6 +40,14 @@ namespace seco {
                      */
                     virtual const IHeuristicConfig& getHeuristicConfig() const = 0;
 
+                    /**
+                     * Returns the configuration of the heuristic for pruning rules.
+                     *
+                     * @return A reference to an object of type `IHeuristic` that specifies the configuration of the
+                     *         heuristic for pruning rules
+                     */
+                    virtual const IHeuristicConfig& getPruningHeuristicConfig() const = 0;
+
                 public:
 
                     virtual ~IConfig() override { };
@@ -93,12 +101,68 @@ namespace seco {
                     virtual RecallConfig& useRecallHeuristic() = 0;
 
                     /**
-                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules
+                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
                      *
                      * @return A reference to an object of type `WraConfig` that allows further configuration of the
                      *         heuristic
                      */
                     virtual WraConfig& useWraHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
+                     *
+                     * @return A reference to an object of type `AccuracyConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual AccuracyConfig& useAccuracyPruningHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
+                     *
+                     * @return A reference to an object of type `FMeasureConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual FMeasureConfig& useFMeasurePruningHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Laplace" heuristic for pruning rules.
+                     *
+                     * @return A reference to an object of type `LaplaceConfig` that allows further configuration of the
+                     *         heuristic
+                     */
+                    virtual LaplaceConfig& useLaplacePruningHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
+                     *
+                     * @return A reference to an object of type `MEstimateConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual MEstimateConfig& useMEstimatePruningHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Precision" heuristic for pruning rules.
+                     *
+                     * @return A reference to an object of type `PrecisionConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual PrecisionConfig& usePrecisionPruningHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Recall" heuristic for pruning rules.
+                     *
+                     * @return A reference to an object of type `RecallConfig` that allows further configuration of the
+                     *         heuristic
+                     */
+                    virtual RecallConfig& useRecallPruningHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
+                     *
+                     * @return A reference to an object of type `WraConfig` that allows further configuration of the
+                     *         heuristic
+                     */
+                    virtual WraConfig& useWraPruningHeuristic() = 0;
 
             };
 
@@ -122,7 +186,11 @@ namespace seco {
 
                     std::unique_ptr<IHeuristicConfig> heuristicConfigPtr_;
 
+                    std::unique_ptr<IHeuristicConfig> pruningHeuristicConfigPtr_;
+
                     const IHeuristicConfig& getHeuristicConfig() const override;
+
+                    const IHeuristicConfig& getPruningHeuristicConfig() const override;
 
                 public:
 
@@ -141,6 +209,20 @@ namespace seco {
                     RecallConfig& useRecallHeuristic() override;
 
                     WraConfig& useWraHeuristic() override;
+
+                    AccuracyConfig& useAccuracyPruningHeuristic() override;
+
+                    FMeasureConfig& useFMeasurePruningHeuristic() override;
+
+                    LaplaceConfig& useLaplacePruningHeuristic() override;
+
+                    MEstimateConfig& useMEstimatePruningHeuristic() override;
+
+                    PrecisionConfig& usePrecisionPruningHeuristic() override;
+
+                    RecallConfig& useRecallPruningHeuristic() override;
+
+                    WraConfig& useWraPruningHeuristic() override;
 
             };
 
