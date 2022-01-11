@@ -112,6 +112,17 @@ namespace boosting {
     };
 
     /**
+     * Defines an interface for all classes that allow to configure a method that assings labels to bins.
+     */
+    class ILabelBinningConfig {
+
+        public:
+
+            virtual ~ILabelBinningConfig() { };
+
+    };
+
+    /**
      * Defines an interface for all factories that allows to create instances of the type `ILabelBinning`.
      */
     class ILabelBinningFactory {
