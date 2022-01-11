@@ -21,6 +21,8 @@ namespace seco {
              */
             class IConfig : virtual public IRuleLearner::IConfig {
 
+                friend class SeCoRuleLearner;
+
                 public:
 
                     virtual ~IConfig() override { };
@@ -28,6 +30,42 @@ namespace seco {
             };
 
             virtual ~ISeCoRuleLearner() override { };
+
+    };
+
+    /**
+     * An implementation of the type `ISeCoRuleLearner`.
+     */
+    class SeCoRuleLearner final : public AbstractRuleLearner, virtual public ISeCoRuleLearner {
+
+        public:
+
+            /**
+             * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
+             */
+            class Config : public AbstractRuleLearner::Config, virtual public ISeCoRuleLearner::IConfig {
+
+                public:
+
+                    Config();
+
+            };
+
+        protected:
+
+            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory() const override;
+
+            std::unique_ptr<IModelBuilder> createModelBuilder() const override;
+
+            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
+
+        public:
+
+            /**
+             * @param configPtr An unique pointer to an object of type `ISeCoRuleLearner::IConfig` that specifies the
+             *                  configuration that should be used by the rule learner
+             */
+            SeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr);
 
     };
 
