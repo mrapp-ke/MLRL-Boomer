@@ -9,6 +9,13 @@
 namespace seco {
 
     /**
+     * Allows to configure a heuristic that implements a Laplace-corrected variant of the "Precision" metric.
+     */
+    class LaplaceConfig final : public IHeuristicConfig {
+
+    };
+
+    /**
      * Allows to create instances of the type `IHeuristic` that implement a Laplace-corrected variant of the "Precision"
      * metric.
      */
