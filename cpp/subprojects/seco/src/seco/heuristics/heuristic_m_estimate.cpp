@@ -52,9 +52,24 @@ namespace seco {
 
     };
 
+    MEstimateConfig::MEstimateConfig()
+        : m_(22.466) {
+
+    }
+
+    float64 MEstimateConfig::getM() const {
+        return m_;
+    }
+
+    MEstimateConfig& MEstimateConfig::setM(float64 m) {
+        assertGreaterOrEqual<float64>("m", m, 0);
+        m_ = m;
+        return *this;
+    }
+
     MEstimateFactory::MEstimateFactory(float64 m)
         : m_(m) {
-        assertGreaterOrEqual<float64>("m", m, 0);
+
     }
 
     std::unique_ptr<IHeuristic> MEstimateFactory::create() const {
