@@ -9,7 +9,7 @@
 
 
 /**
- * Defines an interface for all classes that implement a strategy for sampling labels.
+ * Defines an interface for all classes that implement a method for sampling labels.
  */
 class ILabelSampling {
 
@@ -29,7 +29,7 @@ class ILabelSampling {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a strategy for sampling labels.
+ * Defines an interface for all classes that allow to configure a method for sampling labels.
  */
 class ILabelSamplingConfig {
 
