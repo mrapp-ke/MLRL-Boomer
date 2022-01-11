@@ -83,6 +83,17 @@ namespace seco {
     };
 
     /**
+     * Defines an interface for all classes that allow to configure a heuristic.
+     */
+    class IHeuristicConfig {
+
+        public:
+
+            virtual ~IHeuristicConfig() { };
+
+    };
+
+    /**
      * Defines an interface for all factories that allow to create instances of the type `IHeuristic`.
      */
     class IHeuristicFactory {
