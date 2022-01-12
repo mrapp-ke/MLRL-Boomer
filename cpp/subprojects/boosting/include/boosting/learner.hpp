@@ -55,7 +55,7 @@ namespace boosting {
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * logistic loss that is applied example-wise.
                      *
-                     * @return A reference to an object of type `ExampleWiseLogisticLossConfig` that allow further
+                     * @return A reference to an object of type `ExampleWiseLogisticLossConfig` that allows further
                      *         configuration of the loss function
                      */
                     virtual ExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() = 0;
@@ -64,7 +64,7 @@ namespace boosting {
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * logistic loss that is applied label-wise.
                      *
-                     * @return A reference to an object of type `LabelWiseLogisticLossConfig` that allow further
+                     * @return A reference to an object of type `LabelWiseLogisticLossConfig` that allows further
                      *         configuration of the loss function
                      */
                     virtual LabelWiseLogisticLossConfig& useLabelWiseLogisticLoss() = 0;
@@ -73,7 +73,7 @@ namespace boosting {
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * squared error loss that is applied label-wise.
                      *
-                     * @return A reference to an object of type `LabelWiseSquaredErrorLossConfig` that allow further
+                     * @return A reference to an object of type `LabelWiseSquaredErrorLossConfig` that allows further
                      *         configuration of the loss function
                      */
                     virtual LabelWiseSquaredErrorLossConfig& useLabelWiseSquaredErrorLoss() = 0;
@@ -82,7 +82,7 @@ namespace boosting {
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * squared hinge loss that is applied label-wise.
                      *
-                     * @return A reference to an object of type `LabelWiseSquaredHingeLossConfig` that allow further
+                     * @return A reference to an object of type `LabelWiseSquaredHingeLossConfig` that allows further
                      *         configuration of the loss function
                      */
                     virtual LabelWiseSquaredHingeLossConfig& useLabelWiseSquaredHingeLoss() = 0;
