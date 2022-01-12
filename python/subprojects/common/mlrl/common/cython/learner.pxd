@@ -63,11 +63,17 @@ cdef extern from "common/learner.hpp" nogil:
 
         TopDownRuleInductionConfigImpl& useTopDownRuleInduction()
 
+        void useNoFeatureBinning()
+
         EqualWidthFeatureBinningConfigImpl& useEqualWidthFeatureBinning()
 
         EqualFrequencyFeatureBinningConfigImpl& useEqualFrequencyFeatureBinning()
 
+        void useNoLabelSampling()
+
         LabelSamplingWithoutReplacementConfigImpl& useLabelSamplingWithoutReplacement()
+
+        void useNoInstanceSampling()
 
         ExampleWiseStratifiedInstanceSamplingConfigImpl& useExampleWiseStratifiedInstanceSampling()
 
@@ -77,13 +83,19 @@ cdef extern from "common/learner.hpp" nogil:
 
         InstanceSamplingWithoutReplacementConfigImpl& useInstanceSamplingWithoutReplacement()
 
+        void useNoFeatureSampling()
+
         FeatureSamplingWithoutReplacementConfigImpl& useFeatureSamplingWithoutReplacement()
+
+        void useNoPartitionSampling()
 
         ExampleWiseStratifiedBiPartitionSamplingConfigImpl& useExampleWiseStratifiedBiPartitionSampling()
 
         LabelWiseStratifiedBiPartitionSamplingConfigImpl& useLabelWiseStratifiedBiPartitionSampling()
 
         RandomBiPartitionSamplingConfigImpl& useRandomBiPartitionSampling()
+
+        void useNoPruning()
 
         IrepConfigImpl& useIrepPruning()
 

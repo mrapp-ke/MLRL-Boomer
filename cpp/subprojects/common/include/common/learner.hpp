@@ -200,6 +200,12 @@ class IRuleLearner {
                 virtual TopDownRuleInductionConfig& useTopDownRuleInduction() = 0;
 
                 /**
+                 * Configures the rule learner to not use any method for the assignment of numerical feature values to
+                 * bins.
+                 */
+                virtual void useNoFeatureBinning() = 0;
+
+                /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
                  * such that each bin contains values from equally sized value ranges.
                  *
@@ -218,6 +224,12 @@ class IRuleLearner {
                 virtual EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() = 0;
 
                 /**
+                 * Configures the rule learner to not sample from the available labels whenever a new rule should be
+                 * learned.
+                 */
+                virtual void useNoLabelSampling() = 0;
+
+                /**
                  * Configures the rule learner to sample from the available labels with replacement whenever a new rule
                  * should be learned.
                  *
@@ -225,6 +237,12 @@ class IRuleLearner {
                  *         configuration of the method for sampling labels
                  */
                 virtual LabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() = 0;
+
+                /**
+                 * Configures the rule learner to not sample from the available training examples whenever a new rule
+                 * should be learned.
+                 */
+                virtual void useNoInstanceSampling() = 0;
 
                 /**
                  * Configures the rule learner to sample from the available training examples with replacement whenever
@@ -265,6 +283,12 @@ class IRuleLearner {
                 virtual ExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() = 0;
 
                 /**
+                 * Configures the rule learner to not sample from the available features whenever a rule should be
+                 * refined.
+                 */
+                virtual void useNoFeatureSampling() = 0;
+
+                /**
                  * Configures the rule learner to sample from the available features with replacement whenever a rule
                  * should be refined.
                  *
@@ -272,6 +296,12 @@ class IRuleLearner {
                  *         further configuration of the method for sampling features
                  */
                 virtual FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() = 0;
+
+                /**
+                 * Configures the rule learner to not partition the available training examples into a training set and
+                 * a holdout set.
+                 */
+                virtual void useNoPartitionSampling() = 0;
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
@@ -303,6 +333,11 @@ class IRuleLearner {
                  *         training and a holdout set
                  */
                 virtual ExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() = 0;
+
+                /**
+                 * Configures the rule learner to not prune classification rules.
+                 */
+                virtual void useNoPruning() = 0;
 
                 /**
                  * Configures the rule learner to prune classification rules by following the ideas of "incremental
@@ -561,11 +596,17 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 TopDownRuleInductionConfig& useTopDownRuleInduction() override;
 
+                void useNoFeatureBinning() override;
+
                 EqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
 
                 EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
 
+                void useNoLabelSampling() override;
+
                 LabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
+
+                void useNoInstanceSampling() override;
 
                 InstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() override;
 
@@ -575,13 +616,19 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 ExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
 
+                void useNoFeatureSampling() override;
+
                 FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
+
+                void useNoPartitionSampling() override;
 
                 RandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
 
                 LabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
 
                 ExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
+
+                void useNoPruning() override;
 
                 IrepConfig& useIrepPruning() override;
 

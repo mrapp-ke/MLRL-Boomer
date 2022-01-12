@@ -65,6 +65,12 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
+    def use_no_feature_binning(self):
+        """
+        Configures the rule learner to not use any method for the assignment of numerical feature values to bins.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoFeatureBinning()
 
     def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
         """
@@ -94,6 +100,13 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
+    def use_no_label_sampling(self):
+        """
+        Configures the rule learner to not sample from the available labels whenever a new rule should be learned.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoLabelSampling()
+
     def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
         """
         Configures the rule learner to sample from the available labels with replacement whenever a new rule should be
@@ -108,7 +121,15 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
-    def instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
+    def use_no_instance_sampling(self):
+        """
+        Configures the rule learner to not sample from the available training examples whenever a new rule should be
+        learned.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoInstanceSampling()
+
+    def use_instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
         """
         Configures the rule learner to sample from the available training examples with replacement whenever a new rule
         should be learned.
@@ -165,6 +186,13 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
+    def use_no_feature_sampling(self):
+        """
+        Configures the rule learner to not sample from the available features whenever a rule should be refined.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoFeatureSampling()
+
     def use_feature_sampling_without_replacement(self) -> FeatureSamplingWithoutReplacementConfig:
         """
         Configures the rule learner to sample from the available features with replacement whenever a rule should be
@@ -178,6 +206,14 @@ cdef class RuleLearnerConfig:
         cdef FeatureSamplingWithoutReplacementConfig config = FeatureSamplingWithoutReplacementConfig.__new__(FeatureSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config
+
+    def use_no_partition_sampling(self):
+        """
+        Configures the rule learner to not partition the available training examples into a training set and a holdout
+        set.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoPartitionSampling()
 
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
         """
@@ -220,6 +256,13 @@ cdef class RuleLearnerConfig:
         cdef ExampleWiseStratifiedBiPartitionSamplingConfig config = ExampleWiseStratifiedBiPartitionSamplingConfig.__new__(ExampleWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
         return config
+
+    def use_no_pruning(self):
+        """
+        Configures the rule learner to not prune classification rules.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoPruning()
 
     def use_irep_pruning(self) -> IrepConfig:
         """

@@ -123,6 +123,10 @@ TopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction
     return ref;
 }
 
+void AbstractRuleLearner::Config::useNoFeatureBinning() {
+    featureBinningConfigPtr_ = nullptr;
+}
+
 EqualWidthFeatureBinningConfig& AbstractRuleLearner::Config::useEqualWidthFeatureBinning() {
     std::unique_ptr<EqualWidthFeatureBinningConfig> ptr = std::make_unique<EqualWidthFeatureBinningConfig>();
     EqualWidthFeatureBinningConfig& ref = *ptr;
@@ -137,12 +141,20 @@ EqualFrequencyFeatureBinningConfig& AbstractRuleLearner::Config::useEqualFrequen
     return ref;
 }
 
+void AbstractRuleLearner::Config::useNoLabelSampling() {
+    labelSamplingConfigPtr_ = std::make_unique<NoLabelSamplingConfig>();
+}
+
 LabelSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useLabelSamplingWithoutReplacement() {
     std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
         std::make_unique<LabelSamplingWithoutReplacementConfig>();
     LabelSamplingWithoutReplacementConfig& ref = *ptr;
     labelSamplingConfigPtr_ = std::move(ptr);
     return ref;
+}
+
+void AbstractRuleLearner::Config::useNoInstanceSampling() {
+    instanceSamplingConfigPtr_ = std::make_unique<NoInstanceSamplingConfig>();
 }
 
 InstanceSamplingWithReplacementConfig& AbstractRuleLearner::Config::useInstanceSamplingWithReplacement() {
@@ -177,12 +189,20 @@ ExampleWiseStratifiedInstanceSamplingConfig& AbstractRuleLearner::Config::useExa
     return ref;
 }
 
+void AbstractRuleLearner::Config::useNoFeatureSampling() {
+    featureSamplingConfigPtr_ = std::make_unique<NoFeatureSamplingConfig>();
+}
+
 FeatureSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useFeatureSamplingWithoutReplacement() {
     std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
         std::make_unique<FeatureSamplingWithoutReplacementConfig>();
     FeatureSamplingWithoutReplacementConfig& ref = *ptr;
     featureSamplingConfigPtr_ = std::move(ptr);
     return ref;
+}
+
+void AbstractRuleLearner::Config::useNoPartitionSampling() {
+    partitionSamplingConfigPtr_ = std::make_unique<NoPartitionSamplingConfig>();
 }
 
 RandomBiPartitionSamplingConfig& AbstractRuleLearner::Config::useRandomBiPartitionSampling() {
@@ -206,6 +226,10 @@ ExampleWiseStratifiedBiPartitionSamplingConfig& AbstractRuleLearner::Config::use
     ExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
     partitionSamplingConfigPtr_ = std::move(ptr);
     return ref;
+}
+
+void AbstractRuleLearner::Config::useNoPruning() {
+    pruningConfigPtr_ = std::make_unique<NoPruningConfig>();
 }
 
 IrepConfig& AbstractRuleLearner::Config::useIrepPruning() {
