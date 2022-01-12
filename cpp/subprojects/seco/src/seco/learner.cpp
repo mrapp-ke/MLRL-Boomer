@@ -5,11 +5,10 @@
 
 namespace seco {
 
-    SeCoRuleLearner::Config::Config()
-        : heuristicConfigPtr_(std::make_unique<FMeasureConfig>()),
-          pruningHeuristicConfigPtr_(std::make_unique<AccuracyConfig>()),
-          liftFunctionConfigPtr_(std::make_unique<PeakLiftFunctionConfig>()) {
-
+    SeCoRuleLearner::Config::Config() {
+        this->useFMeasureHeuristic();
+        this->useAccuracyPruningHeuristic();
+        this->usePeakLiftFunction();
     }
 
     const IHeuristicConfig& SeCoRuleLearner::Config::getHeuristicConfig() const {
