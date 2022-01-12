@@ -6,6 +6,14 @@
 namespace boosting {
 
     /**
+     * Allows to configure a loss function that implements a multi-label variant of the squared hinge loss that is
+     * applied label-wise.
+     */
+    class LabelWiseSquaredHingeLossConfig final : public ILossConfig {
+
+    };
+
+    /**
      * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the squared hinge
      * loss that is applied label-wise.
      */
