@@ -66,14 +66,13 @@ class TrainingResult final : public ITrainingResult {
 
 };
 
-AbstractRuleLearner::Config::Config()
-    : ruleInductionConfigPtr_(std::make_unique<TopDownRuleInductionConfig>()),
-      labelSamplingConfigPtr_(std::make_unique<NoLabelSamplingConfig>()),
-      instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
-      featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
-      partitionSamplingConfigPtr_(std::make_unique<NoPartitionSamplingConfig>()),
-      pruningConfigPtr_(std::make_unique<NoPruningConfig>()) {
-
+AbstractRuleLearner::Config::Config() {
+    this->useTopDownRuleInduction();
+    this->useNoLabelSampling();
+    this->useNoInstanceSampling();
+    this->useNoFeatureSampling();
+    this->useNoPartitionSampling();
+    this->useNoPruning();
 }
 
 const IRuleInductionConfig& AbstractRuleLearner::Config::getRuleInductionConfig() const {
