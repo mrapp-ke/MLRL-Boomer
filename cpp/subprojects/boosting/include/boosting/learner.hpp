@@ -40,6 +40,11 @@ namespace boosting {
                     virtual ~IConfig() override { };
 
                     /**
+                     * Configures the algorithm to not use any method for the assignment of labels to bins.
+                     */
+                    virtual void useNoLabelBinning() = 0;
+
+                    /**
                      * Configures the algorithm to use a method for the assignment of labels to bins in a way such that
                      * each bin contains labels for which the predicted score is expected to belong to the same value
                      * range.
@@ -76,6 +81,8 @@ namespace boosting {
                 public:
 
                     Config();
+
+                    void useNoLabelBinning() override;
 
                     EqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
 
