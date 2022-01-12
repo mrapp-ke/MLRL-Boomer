@@ -54,9 +54,9 @@ namespace seco {
             uint32 getPeakLabel() const;
 
             /**
-             * Sets the index of the label for which the lift is maximal.
+             * Sets the index of the label for which the lift should be maximal.
              *
-             * @param peakLabel The index of the label for which the lift is maximal.  Must be at least 0
+             * @param peakLabel The index of the label for which the lift should be maximal.  Must be at least 0
              * @return          A reference to an object of type `PeakLiftFunctionConfig` that allows further
              *                  configuration of the lift function
              */
