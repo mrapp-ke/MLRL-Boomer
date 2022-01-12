@@ -9,6 +9,14 @@
 namespace boosting {
 
     /**
+     * Allows to configure a loss function that implements a multi-label variant of the logistic loss that is applied
+     * label-wise.
+     */
+    class LabelWiseLogisticLossConfig final : public ILossConfig {
+
+    };
+
+    /**
      * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the logistic loss
      * that is applied label-wise.
      */
