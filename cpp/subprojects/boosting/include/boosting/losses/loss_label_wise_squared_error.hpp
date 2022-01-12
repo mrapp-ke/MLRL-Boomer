@@ -12,7 +12,7 @@ namespace boosting {
      * Allows to configure a loss function that implements a multi-label variant of the squared error loss that is
      * applied label-wise.
      */
-    class LabelWiseSquaredErrorLossConfig final : ILossConfig {
+    class LabelWiseSquaredErrorLossConfig final : public ILossConfig {
 
     };
 
