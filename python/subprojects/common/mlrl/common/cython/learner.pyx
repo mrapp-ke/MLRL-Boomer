@@ -277,41 +277,41 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
-    def add_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
+    def use_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
         """
-        Adds a stopping criterion to the rule learner that ensures that the number of induced rules does not exceed a
-        certain minimum.
+        Configures the rule learner to use a stopping criterion that ensures that the number of induced rules does not
+        exceed a certain minimum.
 
         :return: A `SizeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef SizeStoppingCriterionConfigImpl* config_ptr = &rule_learner_config_ptr.addSizeStoppingCriterion()
+        cdef SizeStoppingCriterionConfigImpl* config_ptr = &rule_learner_config_ptr.useSizeStoppingCriterion()
         cdef SizeStoppingCriterionConfig config = SizeStoppingCriterionConfig.__new__(SizeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
-    def add_time_stopping_criterion(self) -> TimeStoppingCriterionConfig:
+    def use_time_stopping_criterion(self) -> TimeStoppingCriterionConfig:
         """
-        Adds a stopping criterion to the rule learner that ensures that a certain time limit is not exceeded.
+        Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not exceeded.
 
         :return: A `TimeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef TimeStoppingCriterionConfigImpl* config_ptr = &rule_learner_config_ptr.addTimeStoppingCriterion()
+        cdef TimeStoppingCriterionConfigImpl* config_ptr = &rule_learner_config_ptr.useTimeStoppingCriterion()
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
-    def add_measure_stopping_criterion(self) -> MeasureStoppingCriterionConfig:
+    def use_measure_stopping_criterion(self) -> MeasureStoppingCriterionConfig:
         """
-        Adds a stopping criterion to the rule learner that ensures that a stops the induction of rules as soon as the
-        quality of a model's predictions for the examples in a holdout set do not improve according to a certain
-        measure.
+        Configures the rule learner to use a stopping criterion to the rule learner that ensures that a stops the
+        induction of rules as soon as the quality of a model's predictions for the examples in a holdout set do not
+        improve according to a certain measure.
 
         :return: A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef MeasureStoppingCriterionConfigImpl* config_ptr = &rule_learner_config_ptr.addMeasureStoppingCriterion()
+        cdef MeasureStoppingCriterionConfigImpl* config_ptr = &rule_learner_config_ptr.useMeasureStoppingCriterion()
         cdef MeasureStoppingCriterionConfig config = MeasureStoppingCriterionConfig.__new__(MeasureStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config

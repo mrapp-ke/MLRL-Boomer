@@ -349,31 +349,32 @@ class IRuleLearner {
                 virtual IrepConfig& useIrepPruning() = 0;
 
                 /**
-                 * Adds a stopping criterion to the rule learner that ensures that the number of induced rules does not
-                 * exceed a certain minimum.
+                 * Configures the rule learner to use a stopping criterion that ensures that the number of induced rules
+                 * does not exceed a certain minimum.
                  *
                  * @return A reference to an object of type `SizeStoppingCriterionConfig` that allows further
                  *         configuration of the stopping criterion
                  */
-                virtual SizeStoppingCriterionConfig& addSizeStoppingCriterion() = 0;
+                virtual SizeStoppingCriterionConfig& useSizeStoppingCriterion() = 0;
 
                 /**
-                 * Adds a stopping criterion to the rule learner that ensures that a certain time limit is not exceeded.
+                 * Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not
+                 * exceeded.
                  *
                  * @return A reference to an object of type `TimeStoppingCriterionConfig` that allows further
                  *         configuration of the stopping criterion
                  */
-                virtual TimeStoppingCriterionConfig& addTimeStoppingCriterion() = 0;
+                virtual TimeStoppingCriterionConfig& useTimeStoppingCriterion() = 0;
 
                 /**
-                 * Adds a stopping criterion to the rule learner that ensures that a stops the induction of rules as
-                 * soon as the quality of a model's predictions for the examples in a holdout set do not improve
-                 * according to a certain measure.
+                 * Configures the rule learner to use a stopping criterion that ensures that a stops the induction of
+                 * rules as soon as the quality of a model's predictions for the examples in a holdout set do not
+                 * improve according to a certain measure.
                  *
                  * @return A reference to an object of the type `MeasureStoppingCriterionConfig` that allows further
                  *         configuration of the stopping criterion
                  */
-                virtual MeasureStoppingCriterionConfig& addMeasureStoppingCriterion() = 0;
+                virtual MeasureStoppingCriterionConfig& useMeasureStoppingCriterion() = 0;
 
         };
 
@@ -632,11 +633,11 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 IrepConfig& useIrepPruning() override;
 
-                SizeStoppingCriterionConfig& addSizeStoppingCriterion() override;
+                SizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
-                TimeStoppingCriterionConfig& addTimeStoppingCriterion() override;
+                TimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
 
-                MeasureStoppingCriterionConfig& addMeasureStoppingCriterion() override;
+                MeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
 
         };
 
