@@ -20,4 +20,15 @@ namespace boosting {
 
     };
 
+    /**
+     * Defines an interface for all classes that allow to configure a loss function.
+     */
+    class ILossConfig {
+
+        public:
+
+            virtual ~ILossConfig() { };
+
+    };
+
 };
