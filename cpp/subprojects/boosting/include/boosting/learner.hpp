@@ -5,6 +5,10 @@
 
 #include "common/learner.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
+#include "boosting/losses/loss_example_wise_logistic.hpp"
+#include "boosting/losses/loss_label_wise_logistic.hpp"
+#include "boosting/losses/loss_label_wise_squared_error.hpp"
+#include "boosting/losses/loss_label_wise_squared_hinge.hpp"
 
 
 namespace boosting {
@@ -27,6 +31,14 @@ namespace boosting {
                 private:
 
                     /**
+                     * Returns the configuration of the loss function.
+                     *
+                     * @return A reference to an object of type `ILossConfig` that specifies the configuration of the
+                     *         loss function
+                     */
+                    virtual const ILossConfig& getLossConfig() const = 0;
+
+                    /**
                      * Returns the configuration of the method for the assignment of labels to bins.
                      *
                      * @return A pointer to an object of type `ILabelBinningConfig` that specifies the configuration of
@@ -38,6 +50,42 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override { };
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * logistic loss that is applied example-wise.
+                     *
+                     * @return A reference to an object of type `ExampleWiseLogisticLossConfig` that allow further
+                     *         configuration of the loss function
+                     */
+                    virtual ExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() = 0;
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * logistic loss that is applied label-wise.
+                     *
+                     * @return A reference to an object of type `LabelWiseLogisticLossConfig` that allow further
+                     *         configuration of the loss function
+                     */
+                    virtual LabelWiseLogisticLossConfig& useLabelWiseLogisticLoss() = 0;
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * squared error loss that is applied label-wise.
+                     *
+                     * @return A reference to an object of type `LabelWiseSquaredErrorLossConfig` that allow further
+                     *         configuration of the loss function
+                     */
+                    virtual LabelWiseSquaredErrorLossConfig& useLabelWiseSquaredErrorLoss() = 0;
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * squared hinge loss that is applied label-wise.
+                     *
+                     * @return A reference to an object of type `LabelWiseSquaredHingeLossConfig` that allow further
+                     *         configuration of the loss function
+                     */
+                    virtual LabelWiseSquaredHingeLossConfig& useLabelWiseSquaredHingeLoss() = 0;
 
                     /**
                      * Configures the algorithm to not use any method for the assignment of labels to bins.
@@ -74,13 +122,25 @@ namespace boosting {
 
                 private:
 
+                    std::unique_ptr<ILossConfig> lossConfigPtr_;
+
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
+
+                    const ILossConfig& getLossConfig() const override;
 
                     const ILabelBinningConfig* getLabelBinningConfig() const override;
 
                 public:
 
                     Config();
+
+                    ExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() override;
+
+                    LabelWiseLogisticLossConfig& useLabelWiseLogisticLoss() override;
+
+                    LabelWiseSquaredErrorLossConfig& useLabelWiseSquaredErrorLoss() override;
+
+                    LabelWiseSquaredHingeLossConfig& useLabelWiseSquaredHingeLoss() override;
 
                     void useNoLabelBinning() override;
 
