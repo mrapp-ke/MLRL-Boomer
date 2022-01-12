@@ -11,6 +11,7 @@
 #include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/heuristics/heuristic_recall.hpp"
 #include "seco/heuristics/heuristic_wra.hpp"
+#include "seco/rule_evaluation/lift_function_peak.hpp"
 
 
 namespace seco {
@@ -35,18 +36,28 @@ namespace seco {
                     /**
                      * Returns the configuration of the heuristic for learning rules.
                      *
-                     * @return A reference to an object of type `IHeuristic` that specifies the configuration of the
-                     *         heuristic for learning rules
+                     * @return A reference to an object of type `IHeuristicConfig` that specifies the configuration of
+                     *         the heuristic for learning rules
                      */
                     virtual const IHeuristicConfig& getHeuristicConfig() const = 0;
 
                     /**
                      * Returns the configuration of the heuristic for pruning rules.
                      *
-                     * @return A reference to an object of type `IHeuristic` that specifies the configuration of the
-                     *         heuristic for pruning rules
+                     * @return A reference to an object of type `IHeuristicConfig` that specifies the configuration of
+                     *         the heuristic for pruning rules
                      */
                     virtual const IHeuristicConfig& getPruningHeuristicConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the lift function that affects the quality of rules, depending on
+                     * the number of labels for which they predict.
+                     *
+                     * @return A reference to an object of type `ILiftFunctionConfig` that specifies the configuration
+                     *         of the lift function that affects the quality of rules, depending on the number of labels
+                     *         for which they predict
+                     */
+                    virtual const ILiftFunctionConfig& getLiftFunctionConfig() const = 0;
 
                 public:
 
@@ -164,6 +175,15 @@ namespace seco {
                      */
                     virtual WraConfig& useWraPruningHeuristic() = 0;
 
+                    /**
+                     * Configures the rule learner to use a lift function that monotonously increases until a certain
+                     * number of labels, where the maximum lift is reached, and monotonously decreases afterwards.
+                     *
+                     * @return A reference to an object of type `PeakLiftFunctionConfig` that allows further
+                     *         configuration of the lift function
+                     */
+                    virtual PeakLiftFunctionConfig& usePeakLiftFunction() = 0;
+
             };
 
             virtual ~ISeCoRuleLearner() override { };
@@ -188,9 +208,13 @@ namespace seco {
 
                     std::unique_ptr<IHeuristicConfig> pruningHeuristicConfigPtr_;
 
+                    std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
+
                     const IHeuristicConfig& getHeuristicConfig() const override;
 
                     const IHeuristicConfig& getPruningHeuristicConfig() const override;
+
+                    const ILiftFunctionConfig& getLiftFunctionConfig() const override;
 
                 public:
 
@@ -223,6 +247,8 @@ namespace seco {
                     RecallConfig& useRecallPruningHeuristic() override;
 
                     WraConfig& useWraPruningHeuristic() override;
+
+                    PeakLiftFunctionConfig& usePeakLiftFunction() override;
 
             };
 

@@ -7,7 +7,8 @@ namespace seco {
 
     SeCoRuleLearner::Config::Config()
         : heuristicConfigPtr_(std::make_unique<FMeasureConfig>()),
-          pruningHeuristicConfigPtr_(std::make_unique<AccuracyConfig>()) {
+          pruningHeuristicConfigPtr_(std::make_unique<AccuracyConfig>()),
+          liftFunctionConfigPtr_(std::make_unique<PeakLiftFunctionConfig>()) {
 
     }
 
@@ -17,6 +18,10 @@ namespace seco {
 
     const IHeuristicConfig& SeCoRuleLearner::Config::getPruningHeuristicConfig() const {
         return *pruningHeuristicConfigPtr_;
+    }
+
+    const ILiftFunctionConfig& SeCoRuleLearner::Config::getLiftFunctionConfig() const {
+        return *liftFunctionConfigPtr_;
     }
 
     AccuracyConfig& SeCoRuleLearner::Config::useAccuracyHeuristic() {
@@ -114,6 +119,13 @@ namespace seco {
         std::unique_ptr<WraConfig> ptr = std::make_unique<WraConfig>();
         WraConfig& ref = *ptr;
         pruningHeuristicConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    PeakLiftFunctionConfig& SeCoRuleLearner::Config::usePeakLiftFunction() {
+        std::unique_ptr<PeakLiftFunctionConfig> ptr = std::make_unique<PeakLiftFunctionConfig>();
+        PeakLiftFunctionConfig& ref = *ptr;
+        liftFunctionConfigPtr_ = std::move(ptr);
         return ref;
     }
 
