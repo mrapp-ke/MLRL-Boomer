@@ -34,10 +34,20 @@ namespace boosting {
 
     };
 
-    ConstantShrinkageFactory::ConstantShrinkageFactory(float64 shrinkage)
-        : shrinkage_(shrinkage) {
+    float64 ConstantShrinkageConfig::getShrinkage() const {
+        return shrinkage_;
+    }
+
+    ConstantShrinkageConfig& ConstantShrinkageConfig::setShrinkage(float64 shrinkage) {
         assertGreater<float64>("shrinkage", shrinkage, 0);
         assertLess<float64>("shrinkage", shrinkage, 1);
+        shrinkage_ = shrinkage;
+        return *this;
+    }
+
+    ConstantShrinkageFactory::ConstantShrinkageFactory(float64 shrinkage)
+        : shrinkage_(shrinkage) {
+
     }
 
     std::unique_ptr<IPostProcessor> ConstantShrinkageFactory::create() const {
