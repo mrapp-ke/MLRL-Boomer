@@ -11,7 +11,8 @@
 namespace seco {
 
     /**
-     * An abstract base class for all lift functions.
+     * An abstract base class for all lift functions that affect the quality of rules, depending on the number of labels
+     * for which they predict.
      */
     class ILiftFunction {
 
