@@ -3,11 +3,10 @@
  */
 #pragma once
 
+#include "boosting/losses/loss.hpp"
+#include "boosting/data/statistic_view_label_wise_dense.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "common/measures/measure_evaluation.hpp"
-#include "common/measures/measure_similarity.hpp"
-#include "boosting/data/statistic_view_label_wise_dense.hpp"
 
 
 namespace boosting {
@@ -15,7 +14,7 @@ namespace boosting {
     /**
      * Defines an interface for all (decomposable) loss functions that are applied label-wise.
      */
-    class ILabelWiseLoss : public IEvaluationMeasure, public ISimilarityMeasure {
+    class ILabelWiseLoss : public ILoss {
 
         public:
 
