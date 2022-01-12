@@ -13,7 +13,11 @@ namespace boosting {
     }
 
     BoostingRuleLearner::Config::Config() {
+        this->useNoLabelBinning();
+    }
 
+    void BoostingRuleLearner::Config::useNoLabelBinning() {
+        labelBinningConfigPtr_ = nullptr;
     }
 
     EqualWidthLabelBinningConfig& BoostingRuleLearner::Config::useEqualWidthLabelBinning() {
