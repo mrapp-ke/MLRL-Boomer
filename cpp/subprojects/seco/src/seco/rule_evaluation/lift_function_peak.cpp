@@ -56,14 +56,55 @@ namespace seco {
 
     };
 
+    PeakLiftFunctionConfig::PeakLiftFunctionConfig()
+        : numLabels_(10), peakLabel_(2), maxLift_(1.08), curvature_(1.0) {
+
+    }
+
+    uint32 PeakLiftFunctionConfig::getNumLabels() const {
+        return numLabels_;
+    }
+
+    PeakLiftFunctionConfig& PeakLiftFunctionConfig::setNumLabels(uint32 numLabels) {
+        assertGreater<uint32>("numLabels", numLabels, 0);
+        numLabels_ = numLabels;
+        return *this;
+    }
+
+    uint32 PeakLiftFunctionConfig::getPeakLabel() const {
+        return peakLabel_;
+    }
+
+    PeakLiftFunctionConfig& PeakLiftFunctionConfig::setPeakLabel(uint32 peakLabel) {
+        assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 0);
+        peakLabel_ = peakLabel;
+        return *this;
+    }
+
+    float64 PeakLiftFunctionConfig::getMaxLift() const {
+        return maxLift_;
+    }
+
+    PeakLiftFunctionConfig& PeakLiftFunctionConfig::setMaxLift(float64 maxLift) {
+        assertGreaterOrEqual<float64>("maxLift", maxLift, 1);
+        maxLift_ = maxLift;
+        return *this;
+    }
+
+    float64 PeakLiftFunctionConfig::getCurvature() const {
+        return curvature_;
+    }
+
+    PeakLiftFunctionConfig& PeakLiftFunctionConfig::setCurvature(float64 curvature) {
+        assertGreater<float64>("curvature", curvature, 0);
+        curvature_ = curvature;
+        return *this;
+    }
+
     PeakLiftFunctionFactory::PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float64 maxLift,
                                                      float64 curvature)
         : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature) {
-        assertGreater<uint32>("numLabels", numLabels, 0);
-        assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 0);
-        assertLessOrEqual<uint32>("peakLabel", peakLabel, numLabels);
-        assertGreaterOrEqual<float64>("maxLift", maxLift, 1);
-        assertGreater<float64>("curvature", curvature, 0);
+
     }
 
     std::unique_ptr<ILiftFunction> PeakLiftFunctionFactory::create() const {
