@@ -16,7 +16,7 @@ cdef class ExampleWiseStratifiedInstanceSamplingConfig:
         :param sample_size: The fraction of examples that should be included in a sample, e.g., a value of 0.6
                             corresponds to 60 % of the available training examples. Must be in (0, 1)
         :return:            An `ExampleWiseStratifiedInstanceSamplingConfig` that allows further configuration of the
-                            strategy for sampling instances
+                            method for sampling instances
         """
         assert_greater('sample_size', sample_size, 0)
         assert_less('sample_size', sample_size, 1)
@@ -36,7 +36,7 @@ cdef class LabelWiseStratifiedInstanceSamplingConfig:
         :param sample_size: The fraction of examples that should be included in a sample, e.g., a value of 0.6
                             corresponds to 60 % of the available training examples. Must be in (0, 1)
         :return:            A `LabelWiseStratifiedInstanceSamplingConfig` that allows further configuration of the
-                            strategy for sampling instances
+                            method for sampling instances
         """
         assert_greater('sample_size', sample_size, 0)
         assert_less('sample_size', sample_size, 1)
@@ -55,7 +55,7 @@ cdef class InstanceSamplingWithReplacementConfig:
 
         :param sample_size: The fraction of examples that should be included in a sample, e.g., a value of 0.6
                             corresponds to 60 % of the available training examples. Must be in (0, 1)
-        :return:            An `InstanceSamplingWithReplacementConfig` that allows further configuration of the strategy
+        :return:            An `InstanceSamplingWithReplacementConfig` that allows further configuration of the method
                             for sampling instances
         """
         assert_greater('sample_size', sample_size, 0)
@@ -76,7 +76,7 @@ cdef class InstanceSamplingWithoutReplacementConfig:
         :param sample_size: The fraction of examples that should be included in a sample, e.g., a value of 0.6
                             corresponds to 60 % of the available training examples. Must be in (0, 1)
         :return:            An `InstanceSamplingWithoutReplacementConfig` that allows further configuration of the
-                            strategy for sampling instances
+                            method for sampling instances
         """
         assert_greater('sample_size', sample_size, 0)
         assert_less('sample_size', sample_size, 1)

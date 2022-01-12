@@ -13,7 +13,7 @@ cdef class ExampleWiseStratifiedBiPartitionSamplingConfig:
         :param holdout_set_size:    The fraction of examples that should be included in the holdout set, e.g., a value
                                     of 0.6 corresponds to 60 % of the available examples. Must be in (0, 1)
         :return:                    An `ExampleWiseStratifiedBiPartitionSamplingConfig` that allows further
-                                    configuration of the strategy for partitioning the available training examples into
+                                    configuration of the method for partitioning the available training examples into
                                     a training set and a holdout set
         """
         assert_greater('holdout_set_size', holdout_set_size, 0)

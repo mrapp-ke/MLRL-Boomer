@@ -14,7 +14,7 @@ cdef class LabelSamplingWithoutReplacementConfig:
         Sets the number of labels that should be included in a sample.
 
         :param num_samples: The number of labels that should be included in a sample. Must be at least 1
-        :return:            A `LabelSamplingWithoutReplacementConfig` that allows further configuration of the strategy
+        :return:            A `LabelSamplingWithoutReplacementConfig` that allows further configuration of the method
                             for sampling labels
         """
         assert_greater_or_equal('num_samples', num_samples, 1)
