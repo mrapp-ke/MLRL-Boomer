@@ -50,6 +50,18 @@ namespace boosting {
     };
 
     /**
+     * Defines an interface for all classes that allow to configure a (non-decomposable) loss function that is applied
+     * example-wise.
+     */
+    class IExampleWiseLossConfig {
+
+        public:
+
+            virtual ~IExampleWiseLossConfig() { };
+
+    };
+
+    /**
      * Defines an interface for all factories that allow to create instances of the type `IExampleWiseLoss`.
      */
     class IExampleWiseLossFactory : public ILabelWiseLossFactory {
