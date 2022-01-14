@@ -277,6 +277,14 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
+    def use_no_size_stopping_criterion(self):
+        """
+        Configures the rule learner to not use a stopping criterion that ensures that the number of induced rules does
+        not exceed a certain maximum.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoSizeStoppingCriterion()
+
     def use_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
         """
         Configures the rule learner to use a stopping criterion that ensures that the number of induced rules does not
@@ -290,6 +298,14 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
+    def use_no_time_stopping_criterion(self):
+        """
+        Configures the rule learner to not use a stopping criterion that ensures that are certain time limit is not
+        exceeded.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoTimeStoppingCriterion()
+
     def use_time_stopping_criterion(self) -> TimeStoppingCriterionConfig:
         """
         Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not exceeded.
@@ -301,6 +317,15 @@ cdef class RuleLearnerConfig:
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
+
+    def use_no_measure_stopping_criterion(self):
+        """
+        Configures the rule learner to not use a stopping criterion that stops the induction of rules as soon as the
+        quality of a model's predictions for the examples in a holdout set do not improve according to a certain
+        measure.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoMeasureStoppingCriterion()
 
     def use_measure_stopping_criterion(self) -> MeasureStoppingCriterionConfig:
         """

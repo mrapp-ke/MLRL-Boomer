@@ -238,6 +238,10 @@ IrepConfig& AbstractRuleLearner::Config::useIrepPruning() {
     return ref;
 }
 
+void AbstractRuleLearner::Config::useNoSizeStoppingCriterion() {
+    sizeStoppingCriterionConfigPtr_ = nullptr;
+}
+
 SizeStoppingCriterionConfig& AbstractRuleLearner::Config::useSizeStoppingCriterion() {
     std::unique_ptr<SizeStoppingCriterionConfig> ptr = std::make_unique<SizeStoppingCriterionConfig>();
     SizeStoppingCriterionConfig& ref = *ptr;
@@ -245,11 +249,19 @@ SizeStoppingCriterionConfig& AbstractRuleLearner::Config::useSizeStoppingCriteri
     return ref;
 }
 
+void AbstractRuleLearner::Config::useNoTimeStoppingCriterion() {
+    timeStoppingCriterionConfigPtr_ = nullptr;
+}
+
 TimeStoppingCriterionConfig& AbstractRuleLearner::Config::useTimeStoppingCriterion() {
     std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
     TimeStoppingCriterionConfig& ref = *ptr;
     timeStoppingCriterionConfigPtr_ = std::move(ptr);
     return ref;
+}
+
+void AbstractRuleLearner::Config::useNoMeasureStoppingCriterion() {
+    measureStoppingCriterionConfigPtr_ = nullptr;
 }
 
 MeasureStoppingCriterionConfig& AbstractRuleLearner::Config::useMeasureStoppingCriterion() {

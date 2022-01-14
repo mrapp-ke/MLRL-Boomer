@@ -349,6 +349,12 @@ class IRuleLearner {
                 virtual IrepConfig& useIrepPruning() = 0;
 
                 /**
+                 * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
+                 * rules does not exceed a certain maximum.
+                 */
+                virtual void useNoSizeStoppingCriterion() = 0;
+
+                /**
                  * Configures the rule learner to use a stopping criterion that ensures that the number of induced rules
                  * does not exceed a certain maximum.
                  *
@@ -358,6 +364,12 @@ class IRuleLearner {
                 virtual SizeStoppingCriterionConfig& useSizeStoppingCriterion() = 0;
 
                 /**
+                 * Configures the rule learner to not use a stopping criterion that ensures that are certain time limit
+                 * is not exceeded.
+                 */
+                virtual void useNoTimeStoppingCriterion() = 0;
+
+                /**
                  * Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not
                  * exceeded.
                  *
@@ -365,6 +377,13 @@ class IRuleLearner {
                  *         configuration of the stopping criterion
                  */
                 virtual TimeStoppingCriterionConfig& useTimeStoppingCriterion() = 0;
+
+                /**
+                 * Configures the rule learner to not use a stopping criterion that stops the induction of rules as soon
+                 * as the quality of a model's predictions for the examples in a holdout set do not improve according to
+                 * a certain measure.
+                 */
+                virtual void useNoMeasureStoppingCriterion() = 0;
 
                 /**
                  * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as
@@ -633,9 +652,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 IrepConfig& useIrepPruning() override;
 
+                void useNoSizeStoppingCriterion() override;
+
                 SizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
+                void useNoTimeStoppingCriterion() override;
+
                 TimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
+
+                void useNoMeasureStoppingCriterion() override;
 
                 MeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
 
