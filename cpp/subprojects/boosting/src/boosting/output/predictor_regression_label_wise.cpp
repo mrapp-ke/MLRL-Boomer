@@ -94,9 +94,24 @@ namespace boosting {
 
     };
 
+    LabelWiseRegressionPredictorConfig::LabelWiseRegressionPredictorConfig()
+        : numThreads_(0) {
+
+    }
+
+    uint32 LabelWiseRegressionPredictorConfig::getNumThreads() const {
+        return numThreads_;
+    }
+
+    LabelWiseRegressionPredictorConfig& LabelWiseRegressionPredictorConfig::setNumThreads(uint32 numThreads) {
+        if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
+        numThreads_ = numThreads;
+        return *this;
+    }
+
     LabelWiseRegressionPredictorFactory::LabelWiseRegressionPredictorFactory(uint32 numThreads)
         : numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(
