@@ -37,8 +37,8 @@ namespace boosting {
              *
              * @param numThreads    The number of CPU threads that should be used. Must be at least 1 or 0, if the
              *                      number of CPU threads should be chosen automatically
-             * @return              A reference to an object of type `ExampleWiseClassificationPredictorConfig` that
-             *                      allows further configuration of the predictor
+             * @return              A reference to an object of type `LabelWiseRegressionPredictorConfig` that allows
+             *                      further configuration of the predictor
              */
             LabelWiseRegressionPredictorConfig& setNumThreads(uint32 numThreads);
 
