@@ -185,10 +185,34 @@ namespace boosting {
 
     };
 
+    LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig()
+        : threshold_(0.0), numThreads_(0) {
+
+    }
+
+    float64 LabelWiseClassificationPredictorConfig::getThreshold() const {
+        return threshold_;
+    }
+
+    LabelWiseClassificationPredictorConfig& LabelWiseClassificationPredictorConfig::setThreshold(float64 threshold) {
+        threshold_ = threshold;
+        return *this;
+    }
+
+    uint32 LabelWiseClassificationPredictorConfig:: getNumThreads() const {
+        return numThreads_;
+    }
+
+    LabelWiseClassificationPredictorConfig& LabelWiseClassificationPredictorConfig::setNumThreads(uint32 numThreads) {
+        if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
+        numThreads_ = numThreads;
+        return *this;
+    }
+
     LabelWiseClassificationPredictorFactory::LabelWiseClassificationPredictorFactory(float64 threshold,
                                                                                      uint32 numThreads)
         : threshold_(threshold), numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
