@@ -241,11 +241,26 @@ namespace boosting {
 
     };
 
+    ExampleWiseClassificationPredictorConfig::ExampleWiseClassificationPredictorConfig()
+        : numThreads_(0) {
+
+    }
+
+    uint32 ExampleWiseClassificationPredictorConfig::getNumThreads() const {
+        return numThreads_;
+    }
+
+    ExampleWiseClassificationPredictorConfig& ExampleWiseClassificationPredictorConfig::setNumThreads(
+            uint32 numThreads) {
+        if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
+        numThreads_ = numThreads;
+        return *this;
+    }
+
     ExampleWiseClassificationPredictorFactory::ExampleWiseClassificationPredictorFactory(
             std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr, uint32 numThreads)
         : similarityMeasureFactoryPtr_(std::move(similarityMeasureFactoryPtr)), numThreads_(numThreads) {
-        assertNotNull("similarityMeasureFactoryPtr", similarityMeasureFactoryPtr_.get());
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     std::unique_ptr<IClassificationPredictor> ExampleWiseClassificationPredictorFactory::create(
