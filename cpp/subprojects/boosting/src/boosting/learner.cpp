@@ -84,6 +84,18 @@ namespace boosting {
 
     }
 
+    std::unique_ptr<IPostProcessorFactory> BoostingRuleLearner::createPostProcessorFactory() const {
+        const IPostProcessorConfig* baseConfig = &configPtr_->getPostProcessorConfig();
+
+        if (dynamic_cast<const NoPostProcessorConfig*>(baseConfig)) {
+            return std::make_unique<NoPostProcessorFactory>();
+        } else if (auto* config = dynamic_cast<const ConstantShrinkageConfig*>(baseConfig)) {
+            return std::make_unique<ConstantShrinkageFactory>(config->getShrinkage());
+        }
+
+        throw std::runtime_error("Failed to create IPostProcessorFactory");
+    }
+
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory() const {
         // TODO Implement
         float64 l1RegularizationWeight = 0;
