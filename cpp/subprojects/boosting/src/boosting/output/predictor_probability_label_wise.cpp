@@ -144,11 +144,35 @@ namespace boosting {
         return std::make_unique<LogisticFunction>();
     }
 
+    LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig()
+        : probabilityFunction_(ProbabilityFunction::LOGISTIC), numThreads_(0) {
+
+    }
+
+    LabelWiseProbabilityPredictorConfig::ProbabilityFunction LabelWiseProbabilityPredictorConfig::getProbabilityFunction() const {
+        return probabilityFunction_;
+    }
+
+    LabelWiseProbabilityPredictorConfig& LabelWiseProbabilityPredictorConfig::setProbabilityFunction(
+            LabelWiseProbabilityPredictorConfig::ProbabilityFunction probabilityFunction) {
+        probabilityFunction_ = probabilityFunction;
+        return *this;
+    }
+
+    uint32 LabelWiseProbabilityPredictorConfig::getNumThreads() const {
+        return numThreads_;
+    }
+
+    LabelWiseProbabilityPredictorConfig& LabelWiseProbabilityPredictorConfig::setNumThreads(uint32 numThreads) {
+        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+        numThreads_ = numThreads;
+        return *this;
+    }
+
     LabelWiseProbabilityPredictorFactory::LabelWiseProbabilityPredictorFactory(
             std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
         : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
-        assertNotNull("probabilityFunctionFactoryPtr", probabilityFunctionFactoryPtr_.get());
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(

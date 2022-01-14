@@ -59,6 +59,83 @@ namespace boosting {
     };
 
     /**
+     * Allows to configure a predictor that predicts label-wise probabilities for given query examples, which estimate
+     * the chance of individual labels to be relevant, by summing up the scores that are provided by individual rules of
+     * an existing rule-based models and transforming the aggregated scores into probabilities in [0, 1] according to a
+     * certain transformation function that is applied to each label individually.
+     */
+    class LabelWiseProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
+
+        public:
+
+            /**
+             * Specifies different types of transformation functions that allow to transform the score that is predicted
+             * for an individual label into a probability.
+             */
+            enum ProbabilityFunction : uint8 {
+
+                /**
+                 * A transformation function that transforms the score that is predicted for an individual label into a
+                 * probability by applying the logistic sigmoid function.
+                 */
+                LOGISTIC = 0
+
+            };
+
+        private:
+
+            ProbabilityFunction probabilityFunction_;
+
+            uint32 numThreads_;
+
+        public:
+
+            LabelWiseProbabilityPredictorConfig();
+
+            /**
+             * Returns the type of the transformation function that is used to transform predicted scores into
+             * probabilities.
+             *
+             * @return A value of the enum `ProbabilityFunction` that specifies the type of the transformation function
+             *         that is used to transform predicted scores into probabilities
+             */
+            ProbabilityFunction getProbabilityFunction() const;
+
+            /**
+             * Sets the type of the transformation function that should be used to transform predicted scores into
+             * probabilities.
+             *
+             * @param probabilityFunction   A value of the enum `ProbabilityFunction` that specifies the type of the
+             *                              transformation function that should be used to transform predicted scores
+             *                              into probabilities
+             * @return                      A reference to an object of type `LabelWiseProbabilityPredictorConfig` that
+             *                              allows further configuration of the predictor
+             */
+            LabelWiseProbabilityPredictorConfig& setProbabilityFunction(ProbabilityFunction probabilityFunction);
+
+            /**
+             * Returns the number of CPU threads that are used to make predictions for different query examples in
+             * parallel.
+             *
+             * @return The number of CPU threads that are used to make predictions for different query examples in
+             *         parallel
+             */
+            uint32 getNumThreads() const;
+
+            /**
+             * Sets the number of CPU threads that should be used to make predictions for different query examples in
+             * parallel.
+             *
+             * @param numThreads    The number of CPU threads that should be used. Must be at least 1 or 0, if the
+             *                      number of CPU threads should be chosen automatically
+             * @return              A reference to an object of type `LabelWiseProbabilityPredictorConfig` that
+             *                      allows further configuration of the predictor
+             */
+            LabelWiseProbabilityPredictorConfig& setNumThreads(uint32 numThreads);
+
+    };
+
+    /**
      * Allows to create instances of the type `IProbabilityPredictor` that allow to predict label-wise probabilities
      * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
      * that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
