@@ -5,7 +5,8 @@ cython_dir = 'cython'
 cython_module_names = [
     'label_binning',
     'learner',
-    'loss'
+    'loss',
+    'post_processor'
 ]
 
 # Dependencies
