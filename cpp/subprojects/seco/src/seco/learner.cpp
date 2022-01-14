@@ -6,6 +6,9 @@
 namespace seco {
 
     SeCoRuleLearner::Config::Config() {
+        this->useSizeStoppingCriterion().setMaxRules(500);
+        this->useLabelWiseStratifiedInstanceSampling();
+        this->useIrepPruning();
         this->useFMeasureHeuristic();
         this->useAccuracyPruningHeuristic();
         this->usePeakLiftFunction();

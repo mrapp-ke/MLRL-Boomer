@@ -9,6 +9,8 @@
 namespace boosting {
 
     BoostingRuleLearner::Config::Config() {
+        this->useSizeStoppingCriterion().setMaxRules(1000);
+        this->useFeatureSamplingWithoutReplacement();
         this->useLabelWiseLogisticLoss();
         this->useNoLabelBinning();
     }
