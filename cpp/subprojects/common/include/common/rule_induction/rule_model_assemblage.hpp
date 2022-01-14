@@ -51,6 +51,18 @@ class IRuleModelAssemblage {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure an algorithm for the induction of several rules that
+ * will be added to a rule-based model.
+ */
+class IRuleModelAssemblageConfig {
+
+    public:
+
+        virtual ~IRuleModelAssemblageConfig() { };
+
+};
+
+/**
  * Defines an interface for all factories that allow to create instances of the type `IRuleModelAssemblage`.
  */
 class IRuleModelAssemblageFactory {
