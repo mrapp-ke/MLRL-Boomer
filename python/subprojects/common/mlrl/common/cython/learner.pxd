@@ -99,9 +99,15 @@ cdef extern from "common/learner.hpp" nogil:
 
         IrepConfigImpl& useIrepPruning()
 
+        void useNoSizeStoppingCriterion()
+
         SizeStoppingCriterionConfigImpl& useSizeStoppingCriterion();
 
+        void useNoTimeStoppingCriterion()
+
         TimeStoppingCriterionConfigImpl& useTimeStoppingCriterion();
+
+        void useNoMeasureStoppingCriterion()
 
         MeasureStoppingCriterionConfigImpl& useMeasureStoppingCriterion();
 
