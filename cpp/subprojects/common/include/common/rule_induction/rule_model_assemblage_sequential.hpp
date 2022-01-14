@@ -7,7 +7,8 @@
 
 
 /**
- * A factory that allows to create instances of the class `SequentialRuleModelAssemblage`.
+ * A factory that allows to create instances of the class `IRuleModelAssemblage` that allow to sequentially induce
+ * several rules, optionally starting with a default rule, that will be added to a resulting rule-based model.
  */
 class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
 
