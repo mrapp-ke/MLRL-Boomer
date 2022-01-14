@@ -9,14 +9,26 @@
 
 
 /**
- * Defines an interface for all classes that allow to predict label-wise probabilities for given query examples,
- * which estimate the chance of individual labels to be relevant, using an existing rule-based model.
+ * Defines an interface for all predictors that predict label-wise probabilities for given query examples, estimating
+ * the chance of individual labels to be relevant, using an existing rule-based model.
  */
 class IProbabilityPredictor : public IPredictor<float64> {
 
     public:
 
         virtual ~IProbabilityPredictor() override { };
+
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a predictor that predicts label-wise probabilities for
+ * given query examples.
+ */
+class IProbabilityPredictorConfig {
+
+    public:
+
+        virtual ~IProbabilityPredictorConfig() { };
 
 };
 
