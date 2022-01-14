@@ -319,9 +319,24 @@ namespace seco {
 
     };
 
+    LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig()
+        : numThreads_(0) {
+
+    }
+
+    uint32 LabelWiseClassificationPredictorConfig::getNumThreads() const {
+        return numThreads_;
+    }
+
+    LabelWiseClassificationPredictorConfig& LabelWiseClassificationPredictorConfig::setNumThreads(uint32 numThreads) {
+        if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
+        numThreads_ = numThreads;
+        return *this;
+    }
+
     LabelWiseClassificationPredictorFactory::LabelWiseClassificationPredictorFactory(uint32 numThreads)
         : numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
