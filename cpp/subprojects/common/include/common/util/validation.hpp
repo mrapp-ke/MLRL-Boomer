@@ -94,6 +94,7 @@ static inline constexpr void assertMultiple(const std::string& name, const T val
  * @param name  The name of the parameter, the pointer corresponds to
  * @param ptr   The pointer
  */
+// TODO Check if this function is still used
 template<typename T>
 static inline constexpr void assertNotNull(const std::string& name, const T* ptr) {
     if (!ptr) {
