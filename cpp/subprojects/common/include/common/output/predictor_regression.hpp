@@ -9,14 +9,26 @@
 
 
 /**
- * Defines an interface for all classes that allow predict label-wise regression scores for given query examples using
- * an existing rule-based model.
+ * Defines an interface for all predictors that predict label-wise regression scores for given query examples using an
+ * existing rule-based model.
  */
 class IRegressionPredictor : public IPredictor<float64> {
 
     public:
 
         virtual ~IRegressionPredictor() override { };
+
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a predictor that predicts label-wise regression scores
+ * for given query examples.
+ */
+class IRegressionPredictorConfig {
+
+    public:
+
+        virtual ~IRegressionPredictorConfig() { };
 
 };
 
