@@ -9,6 +9,7 @@
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/losses/loss_label_wise_squared_error.hpp"
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
+#include "boosting/post_processing/shrinkage_constant.hpp"
 
 
 namespace boosting {
@@ -31,6 +32,15 @@ namespace boosting {
                 private:
 
                     /**
+                     * Returns the configuration of the method that post-processes the predictions of rules once they
+                     * have been learned.
+                     *
+                     * @return A reference to an object of type `IPostProcessorConfig` that specifies the configuration
+                     *         of the method that post-processes the predictions of rules once they have been learned
+                     */
+                    virtual const IPostProcessorConfig& getPostProcessorConfig() const = 0;
+
+                    /**
                      * Returns the configuration of the loss function.
                      *
                      * @return A reference to an object of type `ILossConfig` that specifies the configuration of the
@@ -50,6 +60,20 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override { };
+
+                    /**
+                     * Configures the rule learner to not use any post processor.
+                     */
+                    virtual void useNoPostProcessor() = 0;
+
+                    /**
+                     * Configures the rule learner to use a post processor that shrinks the weights of rules by a
+                     * constant "shrinkage" parameter.
+                     *
+                     * @return A reference to an object of type `ConstantShrinkageConfig` that allows further
+                     *         configuration of the loss function
+                     */
+                    virtual ConstantShrinkageConfig& useConstantShrinkagePostProcessor() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -122,9 +146,13 @@ namespace boosting {
 
                 private:
 
+                    std::unique_ptr<IPostProcessorConfig> postProcessorConfigPtr_;
+
                     std::unique_ptr<ILossConfig> lossConfigPtr_;
 
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
+
+                    const IPostProcessorConfig& getPostProcessorConfig() const override;
 
                     const ILossConfig& getLossConfig() const override;
 
@@ -133,6 +161,10 @@ namespace boosting {
                 public:
 
                     Config();
+
+                    void useNoPostProcessor() override;
+
+                    ConstantShrinkageConfig& useConstantShrinkagePostProcessor() override;
 
                     ExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() override;
 

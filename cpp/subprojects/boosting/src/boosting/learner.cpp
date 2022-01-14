@@ -4,6 +4,7 @@
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
+#include "common/post_processing/post_processor_no.hpp"
 
 
 namespace boosting {
@@ -11,8 +12,13 @@ namespace boosting {
     BoostingRuleLearner::Config::Config() {
         this->useSizeStoppingCriterion().setMaxRules(1000);
         this->useFeatureSamplingWithoutReplacement();
+        this->useConstantShrinkagePostProcessor().setShrinkage(0.3);
         this->useLabelWiseLogisticLoss();
         this->useNoLabelBinning();
+    }
+
+    const IPostProcessorConfig& BoostingRuleLearner::Config::getPostProcessorConfig() const {
+        return *postProcessorConfigPtr_;
     }
 
     const ILabelBinningConfig* BoostingRuleLearner::Config::getLabelBinningConfig() const {
@@ -21,6 +27,17 @@ namespace boosting {
 
     const ILossConfig& BoostingRuleLearner::Config::getLossConfig() const {
         return *lossConfigPtr_;
+    }
+
+    void BoostingRuleLearner::Config::useNoPostProcessor() {
+        postProcessorConfigPtr_ = std::make_unique<NoPostProcessorConfig>();
+    }
+
+    ConstantShrinkageConfig& BoostingRuleLearner::Config::useConstantShrinkagePostProcessor() {
+        std::unique_ptr<ConstantShrinkageConfig> ptr = std::make_unique<ConstantShrinkageConfig>();
+        ConstantShrinkageConfig& ref = *ptr;
+        postProcessorConfigPtr_ = std::move(ptr);
+        return ref;
     }
 
     ExampleWiseLogisticLossConfig& BoostingRuleLearner::Config::useExampleWiseLogisticLoss() {

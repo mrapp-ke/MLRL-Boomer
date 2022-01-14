@@ -2,6 +2,7 @@ from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLe
 from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfigImpl
 from mlrl.boosting.cython.loss cimport ExampleWiseLogisticLossConfigImpl, LabelWiseLogisticLossConfigImpl, \
     LabelWiseSquaredErrorLossConfigImpl, LabelWiseSquaredHingeLossConfigImpl
+from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfigImpl
 
 from libcpp.memory cimport unique_ptr
 
@@ -11,6 +12,10 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
     cdef cppclass IBoostingRuleLearnerConfig"boosting::IBoostingRuleLearner::IConfig"(IRuleLearnerConfig):
 
         # Functions:
+
+        void useNoPostProcessor()
+
+        ConstantShrinkageConfigImpl& useConstantShrinkagePostProcessor()
 
         ExampleWiseLogisticLossConfigImpl& useExampleWiseLogisticLoss()
 
