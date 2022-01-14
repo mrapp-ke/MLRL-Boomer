@@ -2,7 +2,6 @@
 #include "common/output/label_space_info_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/pruning/pruning_no.hpp"
-#include "common/rule_induction/rule_model_assemblage_sequential.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
 #include "common/sampling/instance_sampling_no.hpp"
 #include "common/sampling/label_sampling_no.hpp"
@@ -67,12 +66,17 @@ class TrainingResult final : public ITrainingResult {
 };
 
 AbstractRuleLearner::Config::Config() {
+    this->useSequentialRuleModelAssemblage();
     this->useTopDownRuleInduction();
     this->useNoLabelSampling();
     this->useNoInstanceSampling();
     this->useNoFeatureSampling();
     this->useNoPartitionSampling();
     this->useNoPruning();
+}
+
+const IRuleModelAssemblageConfig& AbstractRuleLearner::Config::getRuleModelAssemblageConfig() const {
+    return *ruleModelAssemblageConfigPtr_;
 }
 
 const IRuleInductionConfig& AbstractRuleLearner::Config::getRuleInductionConfig() const {
@@ -113,6 +117,13 @@ const TimeStoppingCriterionConfig* AbstractRuleLearner::Config::getTimeStoppingC
 
 const MeasureStoppingCriterionConfig* AbstractRuleLearner::Config::getMeasureStoppingCriterionConfig() const {
     return measureStoppingCriterionConfigPtr_.get();
+}
+
+SequentialRuleModelAssemblageConfig& AbstractRuleLearner::Config::useSequentialRuleModelAssemblage() {
+    std::unique_ptr<SequentialRuleModelAssemblageConfig> ptr = std::make_unique<SequentialRuleModelAssemblageConfig>();
+    SequentialRuleModelAssemblageConfig& ref = *ptr;
+    ruleModelAssemblageConfigPtr_ = std::move(ptr);
+    return ref;
 }
 
 TopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
@@ -277,7 +288,13 @@ AbstractRuleLearner::AbstractRuleLearner(const IRuleLearner::IConfig& config)
 }
 
 std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory() const {
-    return std::make_unique<SequentialRuleModelAssemblageFactory>();
+    const IRuleModelAssemblageConfig* baseConfig = &config_.getRuleModelAssemblageConfig();
+
+    if (dynamic_cast<const SequentialRuleModelAssemblageConfig*>(baseConfig)) {
+        return std::make_unique<SequentialRuleModelAssemblageFactory>();
+    }
+
+    throw std::runtime_error("Failed to create IRuleModelAssemblageFactory");
 }
 
 std::unique_ptr<IFeatureBinningFactory> AbstractRuleLearner::createFeatureBinningFactory() const {
