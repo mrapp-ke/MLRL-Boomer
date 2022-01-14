@@ -271,8 +271,8 @@ MeasureStoppingCriterionConfig& AbstractRuleLearner::Config::useMeasureStoppingC
     return ref;
 }
 
-AbstractRuleLearner::AbstractRuleLearner(std::unique_ptr<IRuleLearner::IConfig> configPtr)
-    : configPtr_(std::move(configPtr)) {
+AbstractRuleLearner::AbstractRuleLearner(const IRuleLearner::IConfig& config)
+    : config_(config) {
 
 }
 
@@ -281,7 +281,7 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
 }
 
 std::unique_ptr<IFeatureBinningFactory> AbstractRuleLearner::createFeatureBinningFactory() const {
-    const IFeatureBinningConfig* baseConfig = this->configPtr_->getFeatureBinningConfig();
+    const IFeatureBinningConfig* baseConfig = config_.getFeatureBinningConfig();
 
     if (baseConfig) {
         if (auto* config = dynamic_cast<const EqualWidthFeatureBinningConfig*>(baseConfig)) {
@@ -310,7 +310,7 @@ std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
-    const IRuleInductionConfig* baseConfig = &this->configPtr_->getRuleInductionConfig();
+    const IRuleInductionConfig* baseConfig = &config_.getRuleInductionConfig();
 
     if (auto* config = dynamic_cast<const TopDownRuleInductionConfig*>(baseConfig)) {
         return std::make_unique<TopDownRuleInductionFactory>(
@@ -322,7 +322,7 @@ std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionF
 }
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory() const {
-    const ILabelSamplingConfig* baseConfig = &this->configPtr_->getLabelSamplingConfig();
+    const ILabelSamplingConfig* baseConfig = &config_.getLabelSamplingConfig();
 
     if (dynamic_cast<const NoLabelSamplingConfig*>(baseConfig)) {
         return std::make_unique<NoLabelSamplingFactory>();
@@ -334,7 +334,7 @@ std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingF
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
-    const IInstanceSamplingConfig* baseConfig = &this->configPtr_->getInstanceSamplingConfig();
+    const IInstanceSamplingConfig* baseConfig = &config_.getInstanceSamplingConfig();
 
     if (dynamic_cast<const NoInstanceSamplingConfig*>(baseConfig)) {
         return std::make_unique<NoInstanceSamplingFactory>();
@@ -353,7 +353,7 @@ std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSam
 }
 
 std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSamplingFactory() const {
-    const IFeatureSamplingConfig* baseConfig = &this->configPtr_->getFeatureSamplingConfig();
+    const IFeatureSamplingConfig* baseConfig = &config_.getFeatureSamplingConfig();
 
     if (dynamic_cast<const NoFeatureSamplingConfig*>(baseConfig)) {
         return std::make_unique<NoFeatureSamplingFactory>();
@@ -365,7 +365,7 @@ std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSampl
 }
 
 std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionSamplingFactory() const {
-    const IPartitionSamplingConfig* baseConfig = &this->configPtr_->getPartitionSamplingConfig();
+    const IPartitionSamplingConfig* baseConfig = &config_.getPartitionSamplingConfig();
 
     if (dynamic_cast<const NoPartitionSamplingConfig*>(baseConfig)) {
         return std::make_unique<NoPartitionSamplingFactory>();
@@ -381,7 +381,7 @@ std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionS
 }
 
 std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() const {
-    const IPruningConfig* baseConfig = &this->configPtr_->getPruningConfig();
+    const IPruningConfig* baseConfig = &config_.getPruningConfig();
 
     if (dynamic_cast<const NoPruningConfig*>(baseConfig)) {
         return std::make_unique<NoPruningFactory>();
@@ -402,7 +402,7 @@ bool AbstractRuleLearner::useDefaultRule() const {
 }
 
 std::unique_ptr<SizeStoppingCriterionFactory> AbstractRuleLearner::createSizeStoppingCriterionFactory() const {
-    const SizeStoppingCriterionConfig* config = this->configPtr_->getSizeStoppingCriterionConfig();
+    const SizeStoppingCriterionConfig* config = config_.getSizeStoppingCriterionConfig();
 
     if (config) {
         return std::make_unique<SizeStoppingCriterionFactory>(config->getMaxRules());
@@ -412,7 +412,7 @@ std::unique_ptr<SizeStoppingCriterionFactory> AbstractRuleLearner::createSizeSto
 }
 
 std::unique_ptr<TimeStoppingCriterionFactory> AbstractRuleLearner::createTimeStoppingCriterionFactory() const {
-    const TimeStoppingCriterionConfig* config = this->configPtr_->getTimeStoppingCriterionConfig();
+    const TimeStoppingCriterionConfig* config = config_.getTimeStoppingCriterionConfig();
 
     if (config) {
         return std::make_unique<TimeStoppingCriterionFactory>(config->getTimeLimit());
@@ -422,7 +422,7 @@ std::unique_ptr<TimeStoppingCriterionFactory> AbstractRuleLearner::createTimeSto
 }
 
 std::unique_ptr<MeasureStoppingCriterionFactory> AbstractRuleLearner::createMeasureStoppingCriterionFactory() const {
-    const MeasureStoppingCriterionConfig* config = this->configPtr_->getMeasureStoppingCriterionConfig();
+    const MeasureStoppingCriterionConfig* config = config_.getMeasureStoppingCriterionConfig();
 
     if (config) {
         return std::make_unique<MeasureStoppingCriterionFactory>(

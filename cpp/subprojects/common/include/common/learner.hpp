@@ -669,10 +669,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
     protected:
 
         /**
-         * An unique pointer to an object of type `IRuleLearner::IConfig` that specifies the configuration that is used
-         * by the rule learner.
+         * A reference to an object of type `IRuleLearner::IConfig` that specifies the configuration that is used by the
+         * rule learner.
          */
-        const std::unique_ptr<IRuleLearner::IConfig> configPtr_;
+        const IRuleLearner::IConfig& config_;
 
         /**
          * May be overridden by subclasses in order to create the `IRuleModelAssemblageFactory` to be used by the rule
@@ -850,10 +850,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
     public:
 
         /**
-         * @param configPtr An unique pointer to an object of type `IRuleLearner::IConfig` that specifies the
-         *                  configuration that should be used by the rule learner
+         * @param config A reference to an object of type `IRuleLearner::IConfig` that specifies the configuration that
+         *               should be used by the rule learner
          */
-        AbstractRuleLearner(std::unique_ptr<IRuleLearner::IConfig> configPtr);
+        AbstractRuleLearner(const IRuleLearner::IConfig& config);
 
         std::unique_ptr<ITrainingResult> fit(
             const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,

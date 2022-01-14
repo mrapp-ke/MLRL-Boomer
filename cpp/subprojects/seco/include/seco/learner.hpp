@@ -252,6 +252,10 @@ namespace seco {
 
             };
 
+        private:
+
+            std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr_;
+
         protected:
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory() const override;
