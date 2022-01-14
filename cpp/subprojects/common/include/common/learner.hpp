@@ -17,7 +17,7 @@
 #include "common/output/predictor_probability.hpp"
 #include "common/pruning/pruning_irep.hpp"
 #include "common/rule_induction/rule_induction_top_down.hpp"
-#include "common/rule_induction/rule_model_assemblage.hpp"
+#include "common/rule_induction/rule_model_assemblage_sequential.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"
 #include "common/sampling/instance_sampling_stratified_example_wise.hpp"
 #include "common/sampling/instance_sampling_stratified_label_wise.hpp"
@@ -97,6 +97,16 @@ class IRuleLearner {
             friend class AbstractRuleLearner;
 
             private:
+
+                /**
+                 * Returns the configuration of the algorithm for the induction of several rules that are added to a
+                 * rule-based model.
+                 *
+                 * @return A reference to an object of type `IRuleModelAssemblageConfig` that specifies the
+                 *         configuration of the algorithm for the induction of several rules that are added to a
+                 *         rule-based model
+                 */
+                virtual const IRuleModelAssemblageConfig& getRuleModelAssemblageConfig() const = 0;
 
                 /**
                  * Returns the configuration of the algorithm for the induction of individual rules.
@@ -190,6 +200,16 @@ class IRuleLearner {
             public:
 
                 virtual ~IConfig() { };
+
+                /**
+                 * Configures the rule learner to use an algorithm that sequentially induces several rules, optionally
+                 * starting with a default rule, that are added to a rule-based model.
+                 *
+                 * @return A reference to an object of type `SequentialRuleModelAssemblageConfig` that allows further
+                 *         configuration of the algorithm for the induction of several rules that are added to a
+                 *         rule-based model
+                 */
+                virtual SequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage() = 0;
 
                 /**
                  * Configures the rule learner to use a top-down greedy search for the induction of individual rules.
@@ -570,6 +590,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             private:
 
+                std::unique_ptr<IRuleModelAssemblageConfig> ruleModelAssemblageConfigPtr_;
+
                 std::unique_ptr<IRuleInductionConfig> ruleInductionConfigPtr_;
 
                 std::unique_ptr<IFeatureBinningConfig> featureBinningConfigPtr_;
@@ -589,6 +611,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<TimeStoppingCriterionConfig> timeStoppingCriterionConfigPtr_;
 
                 std::unique_ptr<MeasureStoppingCriterionConfig> measureStoppingCriterionConfigPtr_;
+
+                const IRuleModelAssemblageConfig& getRuleModelAssemblageConfig() const override;
 
                 const IRuleInductionConfig& getRuleInductionConfig() const override;
 
@@ -613,6 +637,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
             public:
 
                 Config();
+
+                SequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage() override;
 
                 TopDownRuleInductionConfig& useTopDownRuleInduction() override;
 
