@@ -131,6 +131,11 @@ namespace seco {
         return ref;
     }
 
+    SeCoRuleLearner::SeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr)
+        : AbstractRuleLearner(*configPtr), configPtr_(std::move(configPtr)) {
+
+    }
+
     std::unique_ptr<IStatisticsProviderFactory> SeCoRuleLearner::createStatisticsProviderFactory() const {
         // TODO Implement
         return nullptr;
@@ -143,11 +148,6 @@ namespace seco {
     std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory() const {
         uint32 numThreads = 1;  // TODO Use correct number of threads
         return std::make_unique<LabelWiseClassificationPredictorFactory>(numThreads);
-    }
-
-    SeCoRuleLearner::SeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr)
-        : AbstractRuleLearner(std::move(configPtr)) {
-
     }
 
     std::unique_ptr<ISeCoRuleLearner::IConfig> createSeCoRuleLearnerConfig() {

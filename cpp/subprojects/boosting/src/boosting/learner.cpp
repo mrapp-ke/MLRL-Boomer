@@ -79,6 +79,11 @@ namespace boosting {
         return ref;
     }
 
+    BoostingRuleLearner::BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr)
+        : AbstractRuleLearner(*configPtr), configPtr_(std::move(configPtr)) {
+
+    }
+
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory() const {
         // TODO Implement
         float64 l1RegularizationWeight = 0;
@@ -103,11 +108,6 @@ namespace boosting {
         float64 threshold = 0;
         uint32 numThreads = 1;
         return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, numThreads);
-    }
-
-    BoostingRuleLearner::BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr)
-        : AbstractRuleLearner(std::move(configPtr)) {
-
     }
 
     std::unique_ptr<IBoostingRuleLearner::IConfig> createBoostingRuleLearnerConfig() {

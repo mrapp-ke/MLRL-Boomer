@@ -180,6 +180,10 @@ namespace boosting {
 
             };
 
+        private:
+
+            std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr_;
+
         protected:
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory() const override;
