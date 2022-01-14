@@ -15,6 +15,7 @@ from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartit
 from mlrl.common.cython.pruning cimport IrepConfigImpl
 from mlrl.common.cython.rule_induction cimport TopDownRuleInductionConfigImpl
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
+from mlrl.common.cython.rule_model_assemblage cimport SequentialRuleModelAssemblageConfigImpl
 from mlrl.common.cython.stopping_criterion cimport SizeStoppingCriterionConfigImpl, TimeStoppingCriterionConfigImpl, \
     MeasureStoppingCriterionConfigImpl
 
@@ -60,6 +61,8 @@ cdef extern from "common/learner.hpp" nogil:
     cdef cppclass IRuleLearnerConfig"IRuleLearner::IConfig":
 
         # Functions:
+
+        SequentialRuleModelAssemblageConfigImpl& useSequentialRuleModelAssemblage()
 
         TopDownRuleInductionConfigImpl& useTopDownRuleInduction()
 
