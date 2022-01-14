@@ -16,6 +16,7 @@ cython_module_names = [
     'pruning',
     'rule_induction',
     'rule_model',
+    'rule_model_assemblage',
     'stopping_criterion'
 ]
 
