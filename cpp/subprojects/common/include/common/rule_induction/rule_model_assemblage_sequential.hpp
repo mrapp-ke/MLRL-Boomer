@@ -7,8 +7,16 @@
 
 
 /**
+ * Allows to configure a method that sequentially induces several rules, optionally starting with a default rule, that
+ * are added to a rule-based model.
+ */
+class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageConfig {
+
+};
+
+/**
  * A factory that allows to create instances of the class `IRuleModelAssemblage` that allow to sequentially induce
- * several rules, optionally starting with a default rule, that will be added to a resulting rule-based model.
+ * several rules, optionally starting with a default rule, that are added to a rule-based model.
  */
 class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
 
