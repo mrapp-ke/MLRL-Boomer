@@ -7,8 +7,8 @@
 
 
 /**
- * Allows to configure a method that sequentially induces several rules, optionally starting with a default rule, that
- * are added to a rule-based model.
+ * Allows to configure an algorithm that sequentially induces several rules, optionally starting with a default rule,
+ * that are added to a rule-based model.
  */
 class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageConfig {
 
