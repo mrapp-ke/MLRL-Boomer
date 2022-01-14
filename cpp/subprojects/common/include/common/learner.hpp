@@ -350,7 +350,7 @@ class IRuleLearner {
 
                 /**
                  * Configures the rule learner to use a stopping criterion that ensures that the number of induced rules
-                 * does not exceed a certain minimum.
+                 * does not exceed a certain maximum.
                  *
                  * @return A reference to an object of type `SizeStoppingCriterionConfig` that allows further
                  *         configuration of the stopping criterion
@@ -367,9 +367,9 @@ class IRuleLearner {
                 virtual TimeStoppingCriterionConfig& useTimeStoppingCriterion() = 0;
 
                 /**
-                 * Configures the rule learner to use a stopping criterion that ensures that a stops the induction of
-                 * rules as soon as the quality of a model's predictions for the examples in a holdout set do not
-                 * improve according to a certain measure.
+                 * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as
+                 * the quality of a model's predictions for the examples in a holdout set do not improve according to a
+                 * certain measure.
                  *
                  * @return A reference to an object of the type `MeasureStoppingCriterionConfig` that allows further
                  *         configuration of the stopping criterion
