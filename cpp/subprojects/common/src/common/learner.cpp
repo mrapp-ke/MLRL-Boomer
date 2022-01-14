@@ -290,8 +290,8 @@ AbstractRuleLearner::AbstractRuleLearner(const IRuleLearner::IConfig& config)
 std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory() const {
     const IRuleModelAssemblageConfig* baseConfig = &config_.getRuleModelAssemblageConfig();
 
-    if (dynamic_cast<const SequentialRuleModelAssemblageConfig*>(baseConfig)) {
-        return std::make_unique<SequentialRuleModelAssemblageFactory>();
+    if (auto* config = dynamic_cast<const SequentialRuleModelAssemblageConfig*>(baseConfig)) {
+        return std::make_unique<SequentialRuleModelAssemblageFactory>(config->getUseDefaultRule());
     }
 
     throw std::runtime_error("Failed to create IRuleModelAssemblageFactory");
@@ -413,11 +413,6 @@ std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorF
     return std::make_unique<NoPostProcessorFactory>();
 }
 
-// TODO Should be part of the configuration of the rule model assemblage
-bool AbstractRuleLearner::useDefaultRule() const {
-    return true;
-}
-
 std::unique_ptr<SizeStoppingCriterionFactory> AbstractRuleLearner::createSizeStoppingCriterionFactory() const {
     const SizeStoppingCriterionConfig* config = config_.getSizeStoppingCriterionConfig();
 
@@ -497,7 +492,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         this->createStatisticsProviderFactory(), this->createThresholdsFactory(), this->createRuleInductionFactory(),
         this->createLabelSamplingFactory(), this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(),
         this->createPartitionSamplingFactory(), this->createPruningFactory(), this->createPostProcessorFactory(),
-        stoppingCriterionFactories, this->useDefaultRule());
+        stoppingCriterionFactories);
     std::unique_ptr<IRuleModel> ruleModelPtr = ruleModelAssemblagePtr->induceRules(
         nominalFeatureMask, featureMatrix, labelMatrix, randomState, *modelBuilderPtr);
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), std::move(ruleModelPtr),
