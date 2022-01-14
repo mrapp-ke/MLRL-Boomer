@@ -280,7 +280,7 @@ cdef class RuleLearnerConfig:
     def use_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
         """
         Configures the rule learner to use a stopping criterion that ensures that the number of induced rules does not
-        exceed a certain minimum.
+        exceed a certain maximum.
 
         :return: A `SizeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
@@ -304,9 +304,8 @@ cdef class RuleLearnerConfig:
 
     def use_measure_stopping_criterion(self) -> MeasureStoppingCriterionConfig:
         """
-        Configures the rule learner to use a stopping criterion to the rule learner that ensures that a stops the
-        induction of rules as soon as the quality of a model's predictions for the examples in a holdout set do not
-        improve according to a certain measure.
+        Configures the rule learner to use a stopping criterion stops the induction of rules as soon as the quality of a
+        model's predictions for the examples in a holdout set do not improve according to a certain measure.
 
         :return: A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
