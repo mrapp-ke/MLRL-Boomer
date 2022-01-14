@@ -56,7 +56,7 @@ cdef class MeasureStoppingCriterionConfig:
                                         further configuration of the stopping criterion
         """
         assert_not_none('aggregation_function', aggregation_function)
-        cdef uint32 enum_value = aggregation_function
+        cdef uint8 enum_value = aggregation_function
         self.config_ptr.setAggregationFunction(<AggregationFunctionImpl>enum_value)
         return self
 

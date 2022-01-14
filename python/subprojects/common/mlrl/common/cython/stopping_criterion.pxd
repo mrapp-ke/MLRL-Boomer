@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport uint32, float64
+from mlrl.common.cython._types cimport uint8, uint32, float64
 
 from libcpp cimport bool
 
@@ -89,11 +89,11 @@ cdef class TimeStoppingCriterionConfig:
 
 cdef enum AggregationFunction:
 
-    MIN = <uint32>MIN_,
+    MIN = <uint8>MIN_,
 
-    MAX = <uint32>MAX_,
+    MAX = <uint8>MAX_,
 
-    ARITHMETIC_MEAN = <uint32>ARITHMETIC_MEAN_
+    ARITHMETIC_MEAN = <uint8>ARITHMETIC_MEAN_
 
 
 cdef class MeasureStoppingCriterionConfig:

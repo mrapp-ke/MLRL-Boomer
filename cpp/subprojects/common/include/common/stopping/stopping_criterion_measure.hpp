@@ -103,7 +103,7 @@ class MeasureStoppingCriterionConfig final : public IStoppingCriterionConfig {
          * Specifies different types of aggregation functions that allow to aggregate the values that are stored in a
          * buffer.
          */
-        enum AggregationFunction : uint32 {
+        enum AggregationFunction : uint8 {
 
             /**
              * An aggregation function that finds the minimum value in a buffer.
