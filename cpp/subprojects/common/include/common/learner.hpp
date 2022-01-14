@@ -780,14 +780,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         virtual std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const;
 
         /**
-         * May be overridden by subclasses in order to specify whether a default rule should be induced by the rule
-         * learner or not.
-         *
-         * @return True, if a default rule should be induced, false otherwise
-         */
-        virtual bool useDefaultRule() const;
-
-        /**
          * May be overridden by subclasses in order to create  `SizeStoppingCriterionFactory` to be used by the rule
          * learner.
          *

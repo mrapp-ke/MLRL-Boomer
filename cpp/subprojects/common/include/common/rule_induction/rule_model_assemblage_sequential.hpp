@@ -12,6 +12,31 @@
  */
 class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageConfig {
 
+    private:
+
+        bool useDefaultRule_;
+
+    public:
+
+        SequentialRuleModelAssemblageConfig();
+
+        /**
+         * Returns whether a default rule should be used or not.
+         *
+         * @return True, if a default rule should be used, false otherwise
+         */
+        bool getUseDefaultRule() const;
+
+        /**
+         * Sets whether a default rule should be used or not.
+         *
+         * @param useDefaultRule    True, if a default rule should be used, false otherwise
+         * @return                  A reference to an object of type `SequentialRuleModelAssemblageConfig` that allows
+         *                          further configuration of the algorithm for the induction of several rules that are
+         *                          added to a rule-based model
+         */
+        SequentialRuleModelAssemblageConfig& setUseDefaultRule(bool useDefaultRule);
+
 };
 
 /**
@@ -20,7 +45,16 @@ class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageCon
  */
 class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
 
+    private:
+
+        bool useDefaultRule_;
+
     public:
+
+        /**
+         * @param useDefaultRule True, if a default rule should be used, false otherwise
+         */
+        SequentialRuleModelAssemblageFactory(bool useDefaultRule);
 
         std::unique_ptr<IRuleModelAssemblage> create(
             std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
@@ -32,7 +66,6 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::unique_ptr<IPruningFactory> pruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories,
-            bool useDefaultRule) const override;
+            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const override;
 
 };

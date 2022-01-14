@@ -104,7 +104,6 @@ class IRuleModelAssemblageFactory {
          *                                      objects of type `IStoppingCriterionFactory` that allow to create the
          *                                      implementations to be used to decide whether additional rules should be
          *                                      induced or not
-         * @param useDefaultRule                True, if a default rule should be used, false otherwise
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
             std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
@@ -116,7 +115,6 @@ class IRuleModelAssemblageFactory {
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::unique_ptr<IPruningFactory> pruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories,
-            bool useDefaultRule) const = 0;
+            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const = 0;
 
 };

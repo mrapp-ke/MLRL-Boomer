@@ -200,6 +200,25 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
 };
 
+SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig()
+    : useDefaultRule_(true) {
+
+}
+
+bool SequentialRuleModelAssemblageConfig::getUseDefaultRule() const {
+    return useDefaultRule_;
+}
+
+SequentialRuleModelAssemblageConfig& SequentialRuleModelAssemblageConfig::setUseDefaultRule(bool useDefaultRule) {
+    useDefaultRule_ = useDefaultRule;
+    return *this;
+}
+
+SequentialRuleModelAssemblageFactory::SequentialRuleModelAssemblageFactory(bool useDefaultRule)
+    : useDefaultRule_(useDefaultRule) {
+
+}
+
 std::unique_ptr<IRuleModelAssemblage> SequentialRuleModelAssemblageFactory::create(
         std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
         std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
@@ -210,8 +229,7 @@ std::unique_ptr<IRuleModelAssemblage> SequentialRuleModelAssemblageFactory::crea
         std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
         std::unique_ptr<IPruningFactory> pruningFactoryPtr,
         std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-        std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories,
-        bool useDefaultRule) const {
+        std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const {
     std::unique_ptr<SequentialRuleModelAssemblage> rule_model_assemblage_ptr =
         std::make_unique<SequentialRuleModelAssemblage>(std::move(statisticsProviderFactoryPtr),
                                                         std::move(thresholdsFactoryPtr),
@@ -222,7 +240,7 @@ std::unique_ptr<IRuleModelAssemblage> SequentialRuleModelAssemblageFactory::crea
                                                         std::move(partitionSamplingFactoryPtr),
                                                         std::move(pruningFactoryPtr),
                                                         std::move(postProcessorFactoryPtr),
-                                                        useDefaultRule);
+                                                        useDefaultRule_);
 
     for (auto it = stoppingCriterionFactories.begin(); it != stoppingCriterionFactories.end(); it++) {
         rule_model_assemblage_ptr->addStoppingCriterionFactory(std::move(*it));
