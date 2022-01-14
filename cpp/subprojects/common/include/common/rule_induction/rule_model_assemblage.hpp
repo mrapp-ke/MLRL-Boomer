@@ -19,8 +19,8 @@
 
 
 /**
- * Defines an interface for all classes that implement an algorithm for inducing several rules that will be added to a
- * resulting rule-based model.
+ * Defines an interface for all classes that implement an algorithm for the induction of several rules that will be
+ * added to a rule-based model.
  */
 class IRuleModelAssemblage {
 
