@@ -4,6 +4,7 @@
 from mlrl.seco.cython.heuristic cimport AccuracyConfig, FMeasureConfig, LaplaceConfig, MEstimateConfig, \
     PrecisionConfig, RecallConfig, WraConfig
 from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfig
+from mlrl.seco.cython.predictor cimport LabelWiseClassificationPredictorConfig
 
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
@@ -198,6 +199,21 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef PeakLiftFunctionConfigImpl* config_ptr = &rule_learner_config_ptr.usePeakLiftFunction()
         cdef PeakLiftFunctionConfig config = PeakLiftFunctionConfig.__new__(PeakLiftFunctionConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_label_wise_classification_predictor(self) -> LabelWiseClassificationPredictorConfig:
+        """
+        Configures the rule learner to use predictor for predicting whether individual labels of given query examples
+        are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been
+        learned. If a rule covers an example, its prediction is applied to each label individually.
+
+        :return: A `LabelWiseClassificationPredictorConfig` that allows further configuration of the predictor for
+                 predicting whether individual labels of given query examples are relevant or irrelevant
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef LabelWiseClassificationPredictorConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelWiseClassificationPredictor()
+        cdef LabelWiseClassificationPredictorConfig config = LabelWiseClassificationPredictorConfig.__new__(LabelWiseClassificationPredictorConfig)
         config.config_ptr = config_ptr
         return config
 
