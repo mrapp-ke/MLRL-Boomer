@@ -5,7 +5,8 @@ cython_dir = 'cython'
 cython_module_names = [
     'heuristic',
     'learner',
-    'lift_function'
+    'lift_function',
+    'predictor'
 ]
 
 # Dependencies
