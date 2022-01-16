@@ -172,6 +172,16 @@ namespace boosting {
         throw std::runtime_error("Failed to create IClassificationPredictorFactory");
     }
 
+    std::unique_ptr<IRegressionPredictorFactory> BoostingRuleLearner::createRegressionPredictorFactory() const {
+        // TODO Implement
+        return nullptr;
+    }
+
+    std::unique_ptr<IProbabilityPredictorFactory> BoostingRuleLearner::createProbabilityPredictorFactory() const {
+        // TODO Implement
+        return nullptr;
+    }
+
     std::unique_ptr<IBoostingRuleLearner::IConfig> createBoostingRuleLearnerConfig() {
         return std::make_unique<BoostingRuleLearner::Config>();
     }
