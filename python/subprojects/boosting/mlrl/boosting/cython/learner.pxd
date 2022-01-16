@@ -3,6 +3,9 @@ from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfigImpl
 from mlrl.boosting.cython.loss cimport ExampleWiseLogisticLossConfigImpl, LabelWiseLogisticLossConfigImpl, \
     LabelWiseSquaredErrorLossConfigImpl, LabelWiseSquaredHingeLossConfigImpl
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfigImpl
+from mlrl.boosting.cython.predictor cimport ExampleWiseClassificationPredictorConfigImpl, \
+    LabelWiseClassificationPredictorConfigImpl, LabelWiseRegressionPredictorConfigImpl, \
+    LabelWiseProbabilityPredictorConfigImpl
 
 from libcpp.memory cimport unique_ptr
 
@@ -28,6 +31,14 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useNoLabelBinning()
 
         EqualWidthLabelBinningConfigImpl& useEqualWidthLabelBinning()
+
+        ExampleWiseClassificationPredictorConfigImpl& useExampleWiseClassificationPredictor()
+
+        LabelWiseClassificationPredictorConfigImpl& useLabelWiseClassificationPredictor()
+
+        LabelWiseRegressionPredictorConfigImpl& useLabelWiseRegressionPredictor()
+
+        LabelWiseProbabilityPredictorConfigImpl& useLabelWiseProbabilityPredictor()
 
 
     cdef cppclass IBoostingRuleLearner(IRuleLearner):
