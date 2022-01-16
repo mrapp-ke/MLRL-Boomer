@@ -198,7 +198,7 @@ namespace boosting {
                      * function that is applied to each label individually.
                      *
                      * @return A reference to an object of type `LabelWiseProbabilityPredictorConfig` that allows
-                     *         further configuration of the predictor for predicting regression scores
+                     *         further configuration of the predictor for predicting probability estimates
                      */
                     virtual LabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() = 0;
 
