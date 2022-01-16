@@ -145,18 +145,8 @@ namespace boosting {
     }
 
     LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig()
-        : probabilityFunction_(ProbabilityFunction::LOGISTIC), numThreads_(0) {
+        : numThreads_(0) {
 
-    }
-
-    LabelWiseProbabilityPredictorConfig::ProbabilityFunction LabelWiseProbabilityPredictorConfig::getProbabilityFunction() const {
-        return probabilityFunction_;
-    }
-
-    LabelWiseProbabilityPredictorConfig& LabelWiseProbabilityPredictorConfig::setProbabilityFunction(
-            LabelWiseProbabilityPredictorConfig::ProbabilityFunction probabilityFunction) {
-        probabilityFunction_ = probabilityFunction;
-        return *this;
     }
 
     uint32 LabelWiseProbabilityPredictorConfig::getNumThreads() const {
