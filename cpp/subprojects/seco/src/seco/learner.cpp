@@ -1,6 +1,5 @@
 #include "seco/learner.hpp"
 #include "seco/model/decision_list_builder.hpp"
-#include "seco/output/predictor_classification_label_wise.hpp"
 
 
 namespace seco {
@@ -12,6 +11,7 @@ namespace seco {
         this->useFMeasureHeuristic();
         this->useAccuracyPruningHeuristic();
         this->usePeakLiftFunction();
+        this->useLabelWiseClassificationPredictor();
     }
 
     const IHeuristicConfig& SeCoRuleLearner::Config::getHeuristicConfig() const {
@@ -24,6 +24,10 @@ namespace seco {
 
     const ILiftFunctionConfig& SeCoRuleLearner::Config::getLiftFunctionConfig() const {
         return *liftFunctionConfigPtr_;
+    }
+
+    const IClassificationPredictorConfig& SeCoRuleLearner::Config::getClassificationPredictorConfig() const {
+        return *classificationPredictorConfigPtr_;
     }
 
     AccuracyConfig& SeCoRuleLearner::Config::useAccuracyHeuristic() {
@@ -131,6 +135,14 @@ namespace seco {
         return ref;
     }
 
+    LabelWiseClassificationPredictorConfig& SeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
+        std::unique_ptr<LabelWiseClassificationPredictorConfig> ptr =
+            std::make_unique<LabelWiseClassificationPredictorConfig>();
+        LabelWiseClassificationPredictorConfig& ref = *ptr;
+        classificationPredictorConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     SeCoRuleLearner::SeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr)
         : AbstractRuleLearner(*configPtr), configPtr_(std::move(configPtr)) {
 
@@ -146,8 +158,14 @@ namespace seco {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory() const {
-        uint32 numThreads = 1;  // TODO Use correct number of threads
-        return std::make_unique<LabelWiseClassificationPredictorFactory>(numThreads);
+        const IClassificationPredictorConfig* baseConfig = &configPtr_->getClassificationPredictorConfig();
+
+        if (auto* config = dynamic_cast<const LabelWiseClassificationPredictorConfig*>(baseConfig)) {
+            return std::make_unique<LabelWiseClassificationPredictorFactory>(config->getNumThreads());
+
+        }
+
+        throw std::runtime_error("Failed to create IClassificationPredictorFactory");
     }
 
     std::unique_ptr<ISeCoRuleLearner::IConfig> createSeCoRuleLearnerConfig() {

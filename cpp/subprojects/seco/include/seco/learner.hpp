@@ -11,6 +11,7 @@
 #include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/heuristics/heuristic_recall.hpp"
 #include "seco/heuristics/heuristic_wra.hpp"
+#include "seco/output/predictor_classification_label_wise.hpp"
 #include "seco/rule_evaluation/lift_function_peak.hpp"
 
 
@@ -58,6 +59,16 @@ namespace seco {
                      *         for which they predict
                      */
                     virtual const ILiftFunctionConfig& getLiftFunctionConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the predictor that predicts whether individual labels of given query
+                     * examples are relevant or irrelevant.
+                     *
+                     * @return A reference to an object of type `IClassificationPredictorConfig` that specifies the
+                     *         configuration of the predictor that predicts whether individual labels of given query
+                     *         examples are relevant or irrelevant
+                     */
+                    virtual const IClassificationPredictorConfig& getClassificationPredictorConfig() const = 0;
 
                 public:
 
@@ -184,6 +195,18 @@ namespace seco {
                      */
                     virtual PeakLiftFunctionConfig& usePeakLiftFunction() = 0;
 
+                    /**
+                     * Configures the rule learner to use predictor for predicting whether individual labels of given
+                     * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
+                     * the order they have been learned. If a rule covers an example, its prediction is applied to each
+                     * label individually.
+                     *
+                     * @return A reference to an object of type `LabelWiseClassificationPredictorConfig` that allows
+                     *         further configuration of the predictor for predicting whether individual labels of given
+                     *         query examples are relevant or irrelevant
+                     */
+                    virtual LabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() = 0;
+
             };
 
             virtual ~ISeCoRuleLearner() override { };
@@ -210,11 +233,15 @@ namespace seco {
 
                     std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
 
+                    std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
+
                     const IHeuristicConfig& getHeuristicConfig() const override;
 
                     const IHeuristicConfig& getPruningHeuristicConfig() const override;
 
                     const ILiftFunctionConfig& getLiftFunctionConfig() const override;
+
+                    const IClassificationPredictorConfig& getClassificationPredictorConfig() const override;
 
                 public:
 
@@ -249,6 +276,8 @@ namespace seco {
                     WraConfig& useWraPruningHeuristic() override;
 
                     PeakLiftFunctionConfig& usePeakLiftFunction() override;
+
+                    LabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
 
             };
 
