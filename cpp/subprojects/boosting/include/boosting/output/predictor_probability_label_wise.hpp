@@ -66,52 +66,13 @@ namespace boosting {
      */
     class LabelWiseProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
 
-        public:
-
-            /**
-             * Specifies different types of transformation functions that allow to transform the score that is predicted
-             * for an individual label into a probability.
-             */
-            enum ProbabilityFunction : uint8 {
-
-                /**
-                 * A transformation function that transforms the score that is predicted for an individual label into a
-                 * probability by applying the logistic sigmoid function.
-                 */
-                LOGISTIC = 0
-
-            };
-
         private:
-
-            ProbabilityFunction probabilityFunction_;
 
             uint32 numThreads_;
 
         public:
 
             LabelWiseProbabilityPredictorConfig();
-
-            /**
-             * Returns the type of the transformation function that is used to transform predicted scores into
-             * probabilities.
-             *
-             * @return A value of the enum `ProbabilityFunction` that specifies the type of the transformation function
-             *         that is used to transform predicted scores into probabilities
-             */
-            ProbabilityFunction getProbabilityFunction() const;
-
-            /**
-             * Sets the type of the transformation function that should be used to transform predicted scores into
-             * probabilities.
-             *
-             * @param probabilityFunction   A value of the enum `ProbabilityFunction` that specifies the type of the
-             *                              transformation function that should be used to transform predicted scores
-             *                              into probabilities
-             * @return                      A reference to an object of type `LabelWiseProbabilityPredictorConfig` that
-             *                              allows further configuration of the predictor
-             */
-            LabelWiseProbabilityPredictorConfig& setProbabilityFunction(ProbabilityFunction probabilityFunction);
 
             /**
              * Returns the number of CPU threads that are used to make predictions for different query examples in
