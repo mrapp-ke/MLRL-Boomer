@@ -9,6 +9,10 @@
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/losses/loss_label_wise_squared_error.hpp"
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
+#include "boosting/output/predictor_classification_example_wise.hpp"
+#include "boosting/output/predictor_classification_label_wise.hpp"
+#include "boosting/output/predictor_regression_label_wise.hpp"
+#include "boosting/output/predictor_probability_label_wise.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
 
 
@@ -56,6 +60,33 @@ namespace boosting {
                      *         should be used
                      */
                     virtual const ILabelBinningConfig* getLabelBinningConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the predictor that predicts whether individual labels of given query
+                     * examples are relevant or irrelevant.
+                     *
+                     * @return A reference to an object of type `IClassificationPredictorConfig` that specifies the
+                     *         configuration of the predictor that predicts whether individual labels of given query
+                     *         examples are relevant or irrelevant
+                     */
+                    virtual const IClassificationPredictorConfig& getClassificationPredictorConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the predictor that predicts regression scores for individual labels.
+                     *
+                     * @return A reference to an object of type `IClassificationPredictorConfig` that specifies the
+                     *         configuration of the predictor that predicts regression scores for individual labels
+                     */
+                    virtual const IRegressionPredictorConfig& getRegressionPredictorConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the predictor that predicts probability estimates for individual
+                     * labels.
+                     *
+                     * @return A reference to an object of type `IClassificationPredictorConfig` that specifies the
+                     *         configuration of the predictor that predicts probability estimates for individual labels
+                     */
+                    virtual const IProbabilityPredictorConfig& getProbabilityPredictorConfig() const = 0;
 
                 public:
 
@@ -126,6 +157,51 @@ namespace boosting {
                      */
                     virtual EqualWidthLabelBinningConfig& useEqualWidthLabelBinning() = 0;
 
+                    /**
+                     * Configures the algorithm to use a predictor for predicting whether individual labels are relevant
+                     * or irrelevant by summing up the scores that are provided by an existing rule-based model and
+                     * comparing the aggregated score vector to the known label vectors according to a certain distance
+                     * measure. The label vector that is closest to the aggregated score vector is finally predicted.
+                     *
+                     * @return A reference to an object of type `ExampleWiseClassificationPredictorConfig` that allows
+                     *         further configuration of the predictor for predicting whether individual labels are
+                     *         relevant or irrelevant
+                     */
+                    virtual ExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() = 0;
+
+                    /**
+                     * Configures the algorithm to use a predictor for predicting whether individual labels are relevant
+                     * or irrelevant by summing up the scores that are provided by the individual rules of an existing
+                     * rule-based model and transforming them into binary values according to a certain threshold that
+                     * is applied to each label individually.
+                     *
+                     * @return A reference to an object of type `LabelWiseClassificationPredictorConfig` that allows
+                     *         further configuration of the predictor for predicting whether individual labels are
+                     *         relevant or irrelevant
+                     */
+                    virtual LabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() = 0;
+
+                    /**
+                     * Configures the algorithm to use a predictor for predicting regression scores by summing up the
+                     * scores that are provided by the individual rules of an existing rule-based model for each label
+                     * individually.
+                     *
+                     * @return A reference to an object of type `LabelWiseRegressionPredictorConfig` that allows further
+                     *         configuration of the predictor for predicting regression scores
+                     */
+                    virtual LabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() = 0;
+
+                    /**
+                     * Configures the algorithm to use a predictor for predicting probability estimates by summing up
+                     * the scores that are provided by individual rules of an existing rule-based models and
+                     * transforming the aggregated scores into probabilities according to a certain transformation
+                     * function that is applied to each label individually.
+                     *
+                     * @return A reference to an object of type `LabelWiseProbabilityPredictorConfig` that allows
+                     *         further configuration of the predictor for predicting regression scores
+                     */
+                    virtual LabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() = 0;
+
             };
 
             virtual ~IBoostingRuleLearner() override { };
@@ -152,11 +228,23 @@ namespace boosting {
 
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
 
+                    std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
+
+                    std::unique_ptr<IRegressionPredictorConfig> regressionPredictorConfigPtr_;
+
+                    std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
+
                     const IPostProcessorConfig& getPostProcessorConfig() const override;
 
                     const ILossConfig& getLossConfig() const override;
 
                     const ILabelBinningConfig* getLabelBinningConfig() const override;
+
+                    const IClassificationPredictorConfig& getClassificationPredictorConfig() const override;
+
+                    const IRegressionPredictorConfig& getRegressionPredictorConfig() const override;
+
+                    const IProbabilityPredictorConfig& getProbabilityPredictorConfig() const override;
 
                 public:
 
@@ -177,6 +265,14 @@ namespace boosting {
                     void useNoLabelBinning() override;
 
                     EqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
+
+                    ExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() override;
+
+                    LabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
+
+                    LabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() override;
+
+                    LabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() override;
 
             };
 
