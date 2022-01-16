@@ -2,6 +2,7 @@ from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLe
 from mlrl.seco.cython.heuristic cimport AccuracyConfigImpl, FMeasureConfigImpl, LaplaceConfigImpl, \
     MEstimateConfigImpl, PrecisionConfigImpl, RecallConfigImpl, WraConfigImpl
 from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfigImpl
+from mlrl.seco.cython.predictor cimport LabelWiseClassificationPredictorConfigImpl
 
 from libcpp.memory cimport unique_ptr
 
@@ -41,6 +42,8 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         WraConfigImpl& useWraPruningHeuristic()
 
         PeakLiftFunctionConfigImpl& usePeakLiftFunction()
+
+        LabelWiseClassificationPredictorConfigImpl& useLabelWiseClassificationPredictor()
 
 
     cdef cppclass ISeCoRuleLearner(IRuleLearner):
