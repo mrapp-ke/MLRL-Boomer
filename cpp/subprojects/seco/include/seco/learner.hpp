@@ -321,6 +321,12 @@ namespace seco {
 
             std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr_;
 
+            std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const;
+
+            std::unique_ptr<IHeuristicFactory> createPruningHeuristicFactory() const;
+
+            std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory() const;
+
             std::unique_ptr<CoverageStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const;
 
         protected:
