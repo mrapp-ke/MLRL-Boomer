@@ -193,7 +193,8 @@ class IRuleLearner {
                  *
                  * @return A pointer to an object of type `MeasureStoppingCriterionConfig` that specifies the
                  *         configuration of the stopping criterion that stops the induction of rules as soon as a
-                 *         model's quality does not improve
+                 *         model's quality does not improve or a null pointer, if no such stopping criterion should be
+                 *         used
                  */
                 virtual const MeasureStoppingCriterionConfig* getMeasureStoppingCriterionConfig() const = 0;
 
