@@ -251,7 +251,7 @@ namespace seco {
             /**
              * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
              */
-            class Config : public AbstractRuleLearner::Config, virtual public ISeCoRuleLearner::IConfig {
+            class Config final : public AbstractRuleLearner::Config, virtual public ISeCoRuleLearner::IConfig {
 
                 private:
 
