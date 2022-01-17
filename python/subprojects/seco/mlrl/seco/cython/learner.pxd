@@ -3,6 +3,7 @@ from mlrl.seco.cython.heuristic cimport AccuracyConfigImpl, FMeasureConfigImpl, 
     MEstimateConfigImpl, PrecisionConfigImpl, RecallConfigImpl, WraConfigImpl
 from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfigImpl
 from mlrl.seco.cython.predictor cimport LabelWiseClassificationPredictorConfigImpl
+from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfigImpl
 
 from libcpp.memory cimport unique_ptr
 
@@ -12,6 +13,10 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
     cdef cppclass ISeCoRuleLearnerConfig"seco::ISeCoRuleLearner::IConfig"(IRuleLearnerConfig):
 
         # Functions:
+
+        void useNoCoverageStoppingCriterion()
+
+        CoverageStoppingCriterionConfigImpl& useCoverageStoppingCriterion()
 
         AccuracyConfigImpl& useAccuracyHeuristic()
 

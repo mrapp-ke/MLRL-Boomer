@@ -13,6 +13,7 @@
 #include "seco/heuristics/heuristic_wra.hpp"
 #include "seco/output/predictor_classification_label_wise.hpp"
 #include "seco/rule_evaluation/lift_function_peak.hpp"
+#include "seco/stopping/stopping_criterion_coverage.hpp"
 
 
 namespace seco {
@@ -33,6 +34,17 @@ namespace seco {
                 friend class SeCoRuleLearner;
 
                 private:
+
+                    /**
+                     * Returns the configuration of the stopping criterion that stops the induction of rules as soon as
+                     * the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
+                     *
+                     * @return A pointer to an object of type `CoverageStoppingCriterionConfig` that specifies the
+                     *         configuration of the stopping criterion that stops the induction of rules as soon as a
+                     *         the sum of the weights of the uncovered labels is smaller or equal to a certain threshold
+                     *         or a null pointer, if no such stopping criterion should be used
+                     */
+                    virtual const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const = 0;
 
                     /**
                      * Returns the configuration of the heuristic for learning rules.
@@ -73,6 +85,22 @@ namespace seco {
                 public:
 
                     virtual ~IConfig() override { };
+
+                    /**
+                     * Configures the rule learner to not use any stopping criterion that stops the induction of rules
+                     * as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain
+                     * threshold.
+                     */
+                    virtual void useNoCoverageStoppingCriterion() = 0;
+
+                    /**
+                     * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon
+                     * as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
+                     *
+                     * @return A reference to an object of type `CoverageStoppingCriterionConfig` that allows further
+                     *         configuration of the stopping criterion
+                     */
+                    virtual CoverageStoppingCriterionConfig& useCoverageStoppingCriterion() = 0;
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
@@ -227,6 +255,8 @@ namespace seco {
 
                 private:
 
+                    std::unique_ptr<CoverageStoppingCriterionConfig> coverageStoppingCriterionConfigPtr_;
+
                     std::unique_ptr<IHeuristicConfig> heuristicConfigPtr_;
 
                     std::unique_ptr<IHeuristicConfig> pruningHeuristicConfigPtr_;
@@ -234,6 +264,8 @@ namespace seco {
                     std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
 
                     std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
+
+                    const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const override;
 
                     const IHeuristicConfig& getHeuristicConfig() const override;
 
@@ -246,6 +278,10 @@ namespace seco {
                 public:
 
                     Config();
+
+                    void useNoCoverageStoppingCriterion() override;
+
+                    CoverageStoppingCriterionConfig& useCoverageStoppingCriterion() override;
 
                     AccuracyConfig& useAccuracyHeuristic() override;
 
@@ -285,7 +321,12 @@ namespace seco {
 
             std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr_;
 
+            std::unique_ptr<CoverageStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const;
+
         protected:
+
+            void createStoppingCriterionFactories(
+                std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory() const override;
 
