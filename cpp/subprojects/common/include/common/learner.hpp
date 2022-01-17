@@ -613,27 +613,27 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<MeasureStoppingCriterionConfig> measureStoppingCriterionConfigPtr_;
 
-                const IRuleModelAssemblageConfig& getRuleModelAssemblageConfig() const override;
+                const IRuleModelAssemblageConfig& getRuleModelAssemblageConfig() const override final;
 
-                const IRuleInductionConfig& getRuleInductionConfig() const override;
+                const IRuleInductionConfig& getRuleInductionConfig() const override final;
 
-                const IFeatureBinningConfig* getFeatureBinningConfig() const override;
+                const IFeatureBinningConfig* getFeatureBinningConfig() const override final;
 
-                const ILabelSamplingConfig& getLabelSamplingConfig() const override;
+                const ILabelSamplingConfig& getLabelSamplingConfig() const override final;
 
-                const IInstanceSamplingConfig& getInstanceSamplingConfig() const override;
+                const IInstanceSamplingConfig& getInstanceSamplingConfig() const override final;
 
-                const IFeatureSamplingConfig& getFeatureSamplingConfig() const override;
+                const IFeatureSamplingConfig& getFeatureSamplingConfig() const override final;
 
-                const IPartitionSamplingConfig& getPartitionSamplingConfig() const override;
+                const IPartitionSamplingConfig& getPartitionSamplingConfig() const override final;
 
-                const IPruningConfig& getPruningConfig() const override;
+                const IPruningConfig& getPruningConfig() const override final;
 
-                const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const override;
+                const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const override final;
 
-                const TimeStoppingCriterionConfig* getTimeStoppingCriterionConfig() const override;
+                const TimeStoppingCriterionConfig* getTimeStoppingCriterionConfig() const override final;
 
-                const MeasureStoppingCriterionConfig* getMeasureStoppingCriterionConfig() const override;
+                const MeasureStoppingCriterionConfig* getMeasureStoppingCriterionConfig() const override final;
 
             public:
 
@@ -643,17 +643,17 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 TopDownRuleInductionConfig& useTopDownRuleInduction() override;
 
-                void useNoFeatureBinning() override;
+                void useNoFeatureBinning() override final;
 
                 EqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
 
                 EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
 
-                void useNoLabelSampling() override;
+                void useNoLabelSampling() override final;
 
                 LabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
 
-                void useNoInstanceSampling() override;
+                void useNoInstanceSampling() override final;
 
                 InstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() override;
 
@@ -663,11 +663,11 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 ExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
 
-                void useNoFeatureSampling() override;
+                void useNoFeatureSampling() override final;
 
                 FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
 
-                void useNoPartitionSampling() override;
+                void useNoPartitionSampling() override final;
 
                 RandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
 
@@ -675,19 +675,19 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 ExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
 
-                void useNoPruning() override;
+                void useNoPruning() override final;
 
                 IrepConfig& useIrepPruning() override;
 
-                void useNoSizeStoppingCriterion() override;
+                void useNoSizeStoppingCriterion() override final;
 
                 SizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
-                void useNoTimeStoppingCriterion() override;
+                void useNoTimeStoppingCriterion() override final;
 
                 TimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
 
-                void useNoMeasureStoppingCriterion() override;
+                void useNoMeasureStoppingCriterion() override final;
 
                 MeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
 
