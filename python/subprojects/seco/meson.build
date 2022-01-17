@@ -6,7 +6,8 @@ cython_module_names = [
     'heuristic',
     'learner',
     'lift_function',
-    'predictor'
+    'predictor',
+    'stopping_criterion'
 ]
 
 # Dependencies
