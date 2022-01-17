@@ -5,7 +5,7 @@
 namespace seco {
 
     SeCoRuleLearner::Config::Config() {
-        this->useSizeStoppingCriterion().setMaxRules(500);
+        this->useSizeStoppingCriterion();
         this->useLabelWiseStratifiedInstanceSampling();
         this->useIrepPruning();
         this->useFMeasureHeuristic();
@@ -32,6 +32,12 @@ namespace seco {
 
     const IClassificationPredictorConfig& SeCoRuleLearner::Config::getClassificationPredictorConfig() const {
         return *classificationPredictorConfigPtr_;
+    }
+
+    TopDownRuleInductionConfig& SeCoRuleLearner::Config::useTopDownRuleInduction() {
+        TopDownRuleInductionConfig& config = AbstractRuleLearner::Config::useTopDownRuleInduction();
+        config.setRecalculatePredictions(false);
+        return config;
     }
 
     void SeCoRuleLearner::Config::useNoCoverageStoppingCriterion() {
