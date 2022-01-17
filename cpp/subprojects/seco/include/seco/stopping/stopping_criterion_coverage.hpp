@@ -11,8 +11,8 @@ namespace seco {
 
     /**
      * Allows to create instances of the type `IStoppingCriterion` that stop the induction of rules as soon as the sum
-     * of the weights of the uncovered labels, as provided by an object of type `ICoverageStatistics`, is smaller than
-     * or equal to a certain threshold.
+     * of the weights of the uncovered labels, as provided by an object of type `ICoverageStatistics`, is smaller or
+     * equal to a certain threshold.
      */
     class CoverageStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
