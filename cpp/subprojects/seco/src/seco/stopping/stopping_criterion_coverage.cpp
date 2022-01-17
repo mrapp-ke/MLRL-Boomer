@@ -42,9 +42,24 @@ namespace seco {
 
     };
 
+    CoverageStoppingCriterionConfig::CoverageStoppingCriterionConfig()
+        : threshold_(0) {
+
+    }
+
+    float64 CoverageStoppingCriterionConfig::getThreshold() const {
+        return threshold_;
+    }
+
+    CoverageStoppingCriterionConfig& CoverageStoppingCriterionConfig::setThreshold(float64 threshold) {
+        assertGreaterOrEqual<float64>("threshold", threshold, 0);
+        threshold_ = threshold;
+        return *this;
+    }
+
     CoverageStoppingCriterionFactory::CoverageStoppingCriterionFactory(float64 threshold)
         : threshold_(threshold) {
-        assertGreaterOrEqual<float64>("threshold", threshold, 0);
+
     }
 
     std::unique_ptr<IStoppingCriterion> CoverageStoppingCriterionFactory::create(
