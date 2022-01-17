@@ -162,7 +162,6 @@ namespace seco {
 
         if (auto* config = dynamic_cast<const LabelWiseClassificationPredictorConfig*>(baseConfig)) {
             return std::make_unique<LabelWiseClassificationPredictorFactory>(config->getNumThreads());
-
         }
 
         throw std::runtime_error("Failed to create IClassificationPredictorFactory");
