@@ -163,6 +163,62 @@ namespace seco {
 
     }
 
+    std::unique_ptr<IHeuristicFactory> SeCoRuleLearner::createHeuristicFactory() const {
+        const IHeuristicConfig* baseConfig = &configPtr_->getHeuristicConfig();
+
+        if (dynamic_cast<const AccuracyConfig*>(baseConfig)) {
+            return std::make_unique<AccuracyFactory>();
+        } else if (auto* config = dynamic_cast<const FMeasureConfig*>(baseConfig)) {
+            return std::make_unique<FMeasureFactory>(config->getBeta());
+        } else if (dynamic_cast<const LaplaceConfig*>(baseConfig)) {
+            return std::make_unique<LaplaceFactory>();
+        } else if (auto* config = dynamic_cast<const MEstimateConfig*>(baseConfig)) {
+            return std::make_unique<MEstimateFactory>(config->getM());
+        } else if (dynamic_cast<const PrecisionConfig*>(baseConfig)) {
+            return std::make_unique<PrecisionFactory>();
+        } else if (dynamic_cast<const RecallConfig*>(baseConfig)) {
+            return std::make_unique<RecallFactory>();
+        } else if (dynamic_cast<const WraConfig*>(baseConfig)) {
+            return std::make_unique<WraFactory>();
+        }
+
+        throw std::runtime_error("Failed to create IHeuristicFactory");
+    }
+
+    // TODO Avoid redundant code
+    std::unique_ptr<IHeuristicFactory> SeCoRuleLearner::createPruningHeuristicFactory() const {
+        const IHeuristicConfig* baseConfig = &configPtr_->getPruningHeuristicConfig();
+
+        if (dynamic_cast<const AccuracyConfig*>(baseConfig)) {
+            return std::make_unique<AccuracyFactory>();
+        } else if (auto* config = dynamic_cast<const FMeasureConfig*>(baseConfig)) {
+            return std::make_unique<FMeasureFactory>(config->getBeta());
+        } else if (dynamic_cast<const LaplaceConfig*>(baseConfig)) {
+            return std::make_unique<LaplaceFactory>();
+        } else if (auto* config = dynamic_cast<const MEstimateConfig*>(baseConfig)) {
+            return std::make_unique<MEstimateFactory>(config->getM());
+        } else if (dynamic_cast<const PrecisionConfig*>(baseConfig)) {
+            return std::make_unique<PrecisionFactory>();
+        } else if (dynamic_cast<const RecallConfig*>(baseConfig)) {
+            return std::make_unique<RecallFactory>();
+        } else if (dynamic_cast<const WraConfig*>(baseConfig)) {
+            return std::make_unique<WraFactory>();
+        }
+
+        throw std::runtime_error("Failed to create IHeuristicFactory");
+    }
+
+    std::unique_ptr<ILiftFunctionFactory> SeCoRuleLearner::createLiftFunctionFactory() const {
+        const ILiftFunctionConfig* baseConfig = &configPtr_->getLiftFunctionConfig();
+
+        if (auto* config = dynamic_cast<const PeakLiftFunctionConfig*>(baseConfig)) {
+            return std::make_unique<PeakLiftFunctionFactory>(config->getNumLabels(), config->getPeakLabel(),
+                                                             config->getMaxLift(), config->getCurvature());
+        }
+
+        throw std::runtime_error("Failed to create ILiftFunctionFactory");
+    }
+
     std::unique_ptr<CoverageStoppingCriterionFactory> SeCoRuleLearner::createCoverageStoppingCriterionFactory() const {
         const CoverageStoppingCriterionConfig* config = configPtr_->getCoverageStoppingCriterionConfig();
 
