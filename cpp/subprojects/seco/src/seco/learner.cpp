@@ -14,6 +14,10 @@ namespace seco {
         this->useLabelWiseClassificationPredictor();
     }
 
+    const CoverageStoppingCriterionConfig* SeCoRuleLearner::Config::getCoverageStoppingCriterionConfig() const {
+        return coverageStoppingCriterionConfigPtr_.get();
+    }
+
     const IHeuristicConfig& SeCoRuleLearner::Config::getHeuristicConfig() const {
         return *heuristicConfigPtr_;
     }
@@ -28,6 +32,17 @@ namespace seco {
 
     const IClassificationPredictorConfig& SeCoRuleLearner::Config::getClassificationPredictorConfig() const {
         return *classificationPredictorConfigPtr_;
+    }
+
+    void SeCoRuleLearner::Config::useNoCoverageStoppingCriterion() {
+        coverageStoppingCriterionConfigPtr_ = nullptr;
+    }
+
+    CoverageStoppingCriterionConfig& SeCoRuleLearner::Config::useCoverageStoppingCriterion() {
+        std::unique_ptr<CoverageStoppingCriterionConfig> ptr = std::make_unique<CoverageStoppingCriterionConfig>();
+        CoverageStoppingCriterionConfig& ref = *ptr;
+        coverageStoppingCriterionConfigPtr_ = std::move(ptr);
+        return ref;
     }
 
     AccuracyConfig& SeCoRuleLearner::Config::useAccuracyHeuristic() {
@@ -146,6 +161,27 @@ namespace seco {
     SeCoRuleLearner::SeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr)
         : AbstractRuleLearner(*configPtr), configPtr_(std::move(configPtr)) {
 
+    }
+
+    std::unique_ptr<CoverageStoppingCriterionFactory> SeCoRuleLearner::createCoverageStoppingCriterionFactory() const {
+        const CoverageStoppingCriterionConfig* config = configPtr_->getCoverageStoppingCriterionConfig();
+
+        if (config) {
+            return std::make_unique<CoverageStoppingCriterionFactory>(config->getThreshold());
+        }
+
+        return nullptr;
+    }
+
+    void SeCoRuleLearner::createStoppingCriterionFactories(
+            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const {
+        AbstractRuleLearner::createStoppingCriterionFactories(stoppingCriterionFactories);
+        std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory =
+            this->createCoverageStoppingCriterionFactory();
+
+        if (stoppingCriterionFactory) {
+            stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
+        }
     }
 
     std::unique_ptr<IStatisticsProviderFactory> SeCoRuleLearner::createStatisticsProviderFactory() const {
