@@ -218,7 +218,7 @@ namespace boosting {
             /**
              * Allows to configure a rule learner that makes use of gradient boosting.
              */
-            class Config : public AbstractRuleLearner::Config, virtual public IBoostingRuleLearner::IConfig {
+            class Config final : public AbstractRuleLearner::Config, virtual public IBoostingRuleLearner::IConfig {
 
                 private:
 
