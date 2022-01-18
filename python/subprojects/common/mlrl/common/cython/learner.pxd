@@ -7,7 +7,7 @@ from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceS
     LabelWiseStratifiedInstanceSamplingConfigImpl, InstanceSamplingWithReplacementConfigImpl, \
     InstanceSamplingWithoutReplacementConfigImpl
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
-from mlrl.common.cython.label_sampling cimport LabelSamplingWithoutReplacementConfigImpl
+from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
 from mlrl.common.cython.nominal_feature_mask cimport INominalFeatureMask
 from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfigImpl, \
@@ -74,7 +74,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoLabelSampling()
 
-        LabelSamplingWithoutReplacementConfigImpl& useLabelSamplingWithoutReplacement()
+        ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement()
 
         void useNoInstanceSampling()
 

@@ -256,10 +256,10 @@ class IRuleLearner {
                  * Configures the rule learner to sample from the available labels with replacement whenever a new rule
                  * should be learned.
                  *
-                 * @return A reference to an object of type `LabelSamplingWithoutReplacementConfig` that allows further
+                 * @return A reference to an object of type `ILabelSamplingWithoutReplacementConfig` that allows further
                  *         configuration of the method for sampling labels
                  */
-                virtual LabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() = 0;
+                virtual ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() = 0;
 
                 /**
                  * Configures the rule learner to not sample from the available training examples whenever a new rule
@@ -653,7 +653,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoLabelSampling() override final;
 
-                LabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
+                ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
 
                 void useNoInstanceSampling() override final;
 
