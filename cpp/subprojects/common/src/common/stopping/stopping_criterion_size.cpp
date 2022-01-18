@@ -38,7 +38,7 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
 };
 
 SizeStoppingCriterionConfig::SizeStoppingCriterionConfig()
-    : maxRules_(1000) {
+    : maxRules_(10) {
 
 }
 
