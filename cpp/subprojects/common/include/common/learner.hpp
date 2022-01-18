@@ -226,6 +226,8 @@ class IRuleLearner {
                  */
                 virtual void useNoFeatureBinning() = 0;
 
+                // TODO Add function to use automatic feature binning
+
                 /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
                  * such that each bin contains values from equally sized value ranges.
