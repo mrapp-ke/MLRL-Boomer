@@ -9,9 +9,37 @@
 namespace boosting {
 
     /**
+     * Defines an interface for all classes that allow to configure a post-processor that shrinks the weights of rules
+     * by a constant "shrinkage" parameter.
+     */
+    class IConstantShrinkageConfig {
+
+        public:
+
+            virtual ~IConstantShrinkageConfig() { };
+
+            /**
+             * Returns the value of the "shrinkage" parameter.
+             *
+             * @return The value of the "shrinkage" parameter
+             */
+            virtual float64 getShrinkage() const = 0;
+
+            /**
+             * Sets the value of the "shrinkage" parameter.
+             *
+             * @param shrinkage The value of the "shrinkage" parameter. Must be in (0, 1)
+             * @return          A reference to an object of type `IConstantShrinkageConfig` that allows further
+             *                  configuration of the post-processor
+             */
+            virtual IConstantShrinkageConfig& setShrinkage(float64 shrinkage) = 0;
+
+    };
+
+    /**
      * Allows to configure a post-processor that shrinks the weights of rules by a constant "shrinkage" parameter.
      */
-    class ConstantShrinkageConfig final : public IPostProcessorConfig {
+    class ConstantShrinkageConfig final : public IPostProcessorConfig, public IConstantShrinkageConfig {
 
         private:
 
@@ -21,42 +49,11 @@ namespace boosting {
 
             ConstantShrinkageConfig();
 
-            /**
-             * Returns the value of the "shrinkage" parameter.
-             *
-             * @return The value of the "shrinkage" parameter
-             */
-            float64 getShrinkage() const;
+            float64 getShrinkage() const override;
 
-            /**
-             * Sets the value of the "shrinkage" parameter.
-             *
-             * @param shrinkage The value of the "shrinkage" parameter. Must be in (0, 1)
-             * @return          A reference to an object of type `ConstantShrinkageConfig` that allows further
-             *                  configuration of the post-processor
-             */
-            ConstantShrinkageConfig& setShrinkage(float64 shrinkage);
+            IConstantShrinkageConfig& setShrinkage(float64 shrinkage) override;
 
-    };
-
-    /**
-     * Allows to create instances of the type `IPostProcessor` that post-process the predictions of rules by shrinking
-     * their weights by a constant "shrinkage" parameter.
-     */
-    class ConstantShrinkageFactory final : public IPostProcessorFactory {
-
-        private:
-
-            float64 shrinkage_;
-
-        public:
-
-            /**
-             * @param shrinkage The value of the "shrinkage" parameter. Must be in (0, 1)
-             */
-            ConstantShrinkageFactory(float64 shrinkage);
-
-            std::unique_ptr<IPostProcessor> create() const override;
+            std::unique_ptr<IPostProcessorFactory> create() const override;
 
     };
 

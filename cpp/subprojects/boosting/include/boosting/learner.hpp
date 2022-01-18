@@ -101,10 +101,10 @@ namespace boosting {
                      * Configures the rule learner to use a post processor that shrinks the weights of rules by a
                      * constant "shrinkage" parameter.
                      *
-                     * @return A reference to an object of type `ConstantShrinkageConfig` that allows further
+                     * @return A reference to an object of type `IConstantShrinkageConfig` that allows further
                      *         configuration of the loss function
                      */
-                    virtual ConstantShrinkageConfig& useConstantShrinkagePostProcessor() = 0;
+                    virtual IConstantShrinkageConfig& useConstantShrinkagePostProcessor() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -254,7 +254,7 @@ namespace boosting {
 
                     void useNoPostProcessor() override;
 
-                    ConstantShrinkageConfig& useConstantShrinkagePostProcessor() override;
+                    IConstantShrinkageConfig& useConstantShrinkagePostProcessor() override;
 
                     ExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() override;
 

@@ -38,7 +38,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `ConstantShrinkageConfig` that allows further configuration of the post-processor
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ConstantShrinkageConfigImpl* config_ptr = &rule_learner_config_ptr.useConstantShrinkagePostProcessor()
+        cdef IConstantShrinkageConfig* config_ptr = &rule_learner_config_ptr.useConstantShrinkagePostProcessor()
         cdef ConstantShrinkageConfig config = ConstantShrinkageConfig.__new__(ConstantShrinkageConfig)
         config.config_ptr = config_ptr
         return config

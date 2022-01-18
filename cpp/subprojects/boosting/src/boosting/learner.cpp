@@ -53,9 +53,9 @@ namespace boosting {
         postProcessorConfigPtr_ = std::make_unique<NoPostProcessorConfig>();
     }
 
-    ConstantShrinkageConfig& BoostingRuleLearner::Config::useConstantShrinkagePostProcessor() {
+    IConstantShrinkageConfig& BoostingRuleLearner::Config::useConstantShrinkagePostProcessor() {
         std::unique_ptr<ConstantShrinkageConfig> ptr = std::make_unique<ConstantShrinkageConfig>();
-        ConstantShrinkageConfig& ref = *ptr;
+        IConstantShrinkageConfig& ref = *ptr;
         postProcessorConfigPtr_ = std::move(ptr);
         return ref;
     }
@@ -137,15 +137,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IPostProcessorFactory> BoostingRuleLearner::createPostProcessorFactory() const {
-        const IPostProcessorConfig* baseConfig = &configPtr_->getPostProcessorConfig();
-
-        if (dynamic_cast<const NoPostProcessorConfig*>(baseConfig)) {
-            return std::make_unique<NoPostProcessorFactory>();
-        } else if (auto* config = dynamic_cast<const ConstantShrinkageConfig*>(baseConfig)) {
-            return std::make_unique<ConstantShrinkageFactory>(config->getShrinkage());
-        }
-
-        throw std::runtime_error("Failed to create IPostProcessorFactory");
+        return configPtr_->getPostProcessorConfig().create();
     }
 
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory() const {
