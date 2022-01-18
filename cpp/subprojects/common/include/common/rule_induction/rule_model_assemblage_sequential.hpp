@@ -7,25 +7,21 @@
 
 
 /**
- * Allows to configure an algorithm that sequentially induces several rules, optionally starting with a default rule,
- * that are added to a rule-based model.
+ * Defines an interface for all classes that allow to configure an algorithm that sequentially induces several rules,
+ * optionally starting with a default rule, that are added to a rule-based model.
  */
-class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageConfig {
-
-    private:
-
-        bool useDefaultRule_;
+class ISequentialRuleModelAssemblageConfig {
 
     public:
 
-        SequentialRuleModelAssemblageConfig();
+        virtual ~ISequentialRuleModelAssemblageConfig() { };
 
         /**
          * Returns whether a default rule should be used or not.
          *
          * @return True, if a default rule should be used, false otherwise
          */
-        bool getUseDefaultRule() const;
+        virtual bool getUseDefaultRule() const = 0;
 
         /**
          * Sets whether a default rule should be used or not.
@@ -35,15 +31,16 @@ class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageCon
          *                          further configuration of the algorithm for the induction of several rules that are
          *                          added to a rule-based model
          */
-        SequentialRuleModelAssemblageConfig& setUseDefaultRule(bool useDefaultRule);
+        virtual ISequentialRuleModelAssemblageConfig& setUseDefaultRule(bool useDefaultRule) = 0;
 
 };
 
 /**
- * A factory that allows to create instances of the class `IRuleModelAssemblage` that allow to sequentially induce
- * several rules, optionally starting with a default rule, that are added to a rule-based model.
+ * Allows to configure an algorithm that sequentially induces several rules, optionally starting with a default rule,
+ * that are added to a rule-based model.
  */
-class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
+class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageConfig,
+                                                  public ISequentialRuleModelAssemblageConfig {
 
     private:
 
@@ -51,21 +48,12 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
 
     public:
 
-        /**
-         * @param useDefaultRule True, if a default rule should be used, false otherwise
-         */
-        SequentialRuleModelAssemblageFactory(bool useDefaultRule);
+        SequentialRuleModelAssemblageConfig();
 
-        std::unique_ptr<IRuleModelAssemblage> create(
-            std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-            std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-            std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
-            std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
-            std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
-            std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-            std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-            std::unique_ptr<IPruningFactory> pruningFactoryPtr,
-            std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const override;
+        bool getUseDefaultRule() const override;
+
+        ISequentialRuleModelAssemblageConfig& setUseDefaultRule(bool useDefaultRule) override;
+
+        std::unique_ptr<IRuleModelAssemblageFactory> create() const override;
 
 };

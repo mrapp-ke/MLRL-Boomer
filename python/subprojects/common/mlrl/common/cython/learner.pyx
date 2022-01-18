@@ -62,7 +62,7 @@ cdef class RuleLearnerConfig:
                  induction of several rules that are added to a rule-based model
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef SequentialRuleModelAssemblageConfigImpl* config_ptr = &rule_learner_config_ptr.useSequentialRuleModelAssemblage()
+        cdef ISequentialRuleModelAssemblageConfig* config_ptr = &rule_learner_config_ptr.useSequentialRuleModelAssemblage()
         cdef SequentialRuleModelAssemblageConfig config = SequentialRuleModelAssemblageConfig.__new__(SequentialRuleModelAssemblageConfig)
         config.config_ptr = config_ptr
         return config

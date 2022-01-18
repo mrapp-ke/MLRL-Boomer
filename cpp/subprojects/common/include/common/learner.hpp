@@ -206,11 +206,11 @@ class IRuleLearner {
                  * Configures the rule learner to use an algorithm that sequentially induces several rules, optionally
                  * starting with a default rule, that are added to a rule-based model.
                  *
-                 * @return A reference to an object of type `SequentialRuleModelAssemblageConfig` that allows further
+                 * @return A reference to an object of type `ISequentialRuleModelAssemblageConfig` that allows further
                  *         configuration of the algorithm for the induction of several rules that are added to a
                  *         rule-based model
                  */
-                virtual SequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage() = 0;
+                virtual ISequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage() = 0;
 
                 /**
                  * Configures the rule learner to use a top-down greedy search for the induction of individual rules.
@@ -639,7 +639,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 Config();
 
-                SequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage() override;
+                ISequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage() override;
 
                 TopDownRuleInductionConfig& useTopDownRuleInduction() override;
 

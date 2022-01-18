@@ -51,18 +51,6 @@ class IRuleModelAssemblage {
 };
 
 /**
- * Defines an interface for all classes that allow to configure an algorithm for the induction of several rules that
- * will be added to a rule-based model.
- */
-class IRuleModelAssemblageConfig {
-
-    public:
-
-        virtual ~IRuleModelAssemblageConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create instances of the type `IRuleModelAssemblage`.
  */
 class IRuleModelAssemblageFactory {
@@ -116,5 +104,24 @@ class IRuleModelAssemblageFactory {
             std::unique_ptr<IPruningFactory> pruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
             std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that allow to configure an algorithm for the induction of several rules that
+ * will be added to a rule-based model.
+ */
+class IRuleModelAssemblageConfig {
+
+    public:
+
+        virtual ~IRuleModelAssemblageConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IRuleModelAssemblageFactory` according to specified configuration.
+         *
+         * @return An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been created
+         */
+        virtual std::unique_ptr<IRuleModelAssemblageFactory> create() const = 0;
 
 };
