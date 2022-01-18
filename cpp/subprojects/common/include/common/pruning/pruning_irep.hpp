@@ -7,23 +7,26 @@
 
 
 /**
- * Allows to configure a strategy for pruning classification rules that prunes rules by following the ideas of
- * "incremental reduced error pruning" (IREP).
+ * Defines an interface for all classes that allow to configure a strategy for pruning classification rules that prunes
+ * rules by following the ideas of "incremental reduced error pruning" (IREP).
  */
-class IrepConfig final : public IPruningConfig {
+class IIrepConfig {
+
+    public:
+
+        virtual ~IIrepConfig() { };
 
 };
 
 /**
- * Allows to create instances of the type `IPruning` that prune rules by following the ideas of "incremental reduced
- * error pruning" (IREP). Given `n` conditions in the order of their induction, IREP may remove up to `n - 1` trailing
- * conditions, depending on which of the resulting rules comes with the greatest improvement in terms of quality as
- * measured on the prune set.
+ * Allows to configure a strategy for pruning classification rules that prunes rules by following the ideas of
+ * "incremental reduced error pruning" (IREP).
  */
-class IrepFactory final : public IPruningFactory {
+class IrepConfig final : public IPruningConfig, public IIrepConfig {
 
     public:
 
-        std::unique_ptr<IPruning> create() const override;
+        std::unique_ptr<IPruningFactory> create() const override;
 
 };
+

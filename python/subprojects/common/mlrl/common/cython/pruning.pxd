@@ -1,9 +1,9 @@
 cdef extern from "common/pruning/pruning_irep.hpp" nogil:
 
-    cdef cppclass IrepConfigImpl"IrepConfig":
+    cdef cppclass IIrepConfig:
         pass
 
 
 cdef class IrepConfig:
 
-    cdef IrepConfigImpl* config_ptr
+    cdef IIrepConfig* config_ptr

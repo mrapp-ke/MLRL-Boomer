@@ -16,6 +16,20 @@ class NoPruning final : public IPruning {
 
 };
 
-std::unique_ptr<IPruning> NoPruningFactory::create() const {
-    return std::make_unique<NoPruning>();
+/**
+ * Allows to create instances of the type `IPruning` that do not actually perform any pruning.
+ */
+class NoPruningFactory final : public IPruningFactory {
+
+    public:
+
+        std::unique_ptr<IPruning> create() const override {
+            return std::make_unique<NoPruning>();
+        }
+
+};
+
+
+std::unique_ptr<IPruningFactory> NoPruningConfig::create() const {
+    return std::make_unique<NoPruningFactory>();
 }

@@ -242,9 +242,9 @@ void AbstractRuleLearner::Config::useNoPruning() {
     pruningConfigPtr_ = std::make_unique<NoPruningConfig>();
 }
 
-IrepConfig& AbstractRuleLearner::Config::useIrepPruning() {
+IIrepConfig& AbstractRuleLearner::Config::useIrepPruning() {
     std::unique_ptr<IrepConfig> ptr = std::make_unique<IrepConfig>();
-    IrepConfig& ref = *ptr;
+    IIrepConfig& ref = *ptr;
     pruningConfigPtr_ = std::move(ptr);
     return ref;
 }
@@ -341,15 +341,7 @@ std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionS
 }
 
 std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() const {
-    const IPruningConfig* baseConfig = &config_.getPruningConfig();
-
-    if (dynamic_cast<const NoPruningConfig*>(baseConfig)) {
-        return std::make_unique<NoPruningFactory>();
-    } else if (dynamic_cast<const IrepConfig*>(baseConfig)) {
-        return std::make_unique<IrepFactory>();
-    }
-
-    throw std::runtime_error("Failed to create IPruningFactory");
+    return config_.getPruningConfig().create();
 }
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {

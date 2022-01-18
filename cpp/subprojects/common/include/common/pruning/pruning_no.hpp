@@ -11,15 +11,8 @@
  */
 class NoPruningConfig final : public IPruningConfig {
 
-};
-
-/**
- * Allows to create instances of the type `IPruning` that do not actually perform any pruning.
- */
-class NoPruningFactory final : public IPruningFactory {
-
     public:
 
-        std::unique_ptr<IPruning> create() const override;
+        std::unique_ptr<IPruningFactory> create() const override;
 
 };
