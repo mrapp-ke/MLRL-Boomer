@@ -7,9 +7,112 @@
 
 
 /**
+ * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules that
+ * uses a top-down greedy search.
+ */
+class ITopDownRuleInductionConfig {
+
+    public:
+
+        virtual ~ITopDownRuleInductionConfig() { };
+
+        /**
+         * Returns the minimum number of training examples that must be covered by a rule.
+         *
+         * @return The minimum number of training examples that must be covered by a rule.
+         */
+        virtual uint32 getMinCoverage() const = 0;
+
+        /**
+         * Sets the minimum number of training examples that must be covered by a rule.
+         *
+         * @param minCoverage   The minimum number of training examples that must be covered by a rule. Must be at least
+         *                      1
+         * @return              A reference to an object of type `ITopDownRuleInductionConfig` that allows further
+         *                      configuration of the algorithm for the induction of individual rules
+         */
+        virtual ITopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) = 0;
+
+        /**
+         * Returns the maximum number of conditions to be included in a rule's body.
+         *
+         * @return The maximum number of conditions to be included in a rule's body or 0, if the number of conditions is
+         *         not restricted
+         */
+        virtual uint32 getMaxConditions() const = 0;
+
+        /**
+         * Sets the maximum number of conditions to be included in a rule's body.
+         *
+         * @param maxConditions The maximum number of conditions to be included in a rule's body. Must be at least 1 or
+         *                      0, if the number of conditions should not be restricted
+         * @return              A reference to an object of type `ITopDownRuleInductionConfig` that allows further
+         *                      configuration of the algorithm for the induction of individual rules
+         */
+        virtual ITopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) = 0;
+
+        /**
+         * Returns the maximum number of times, the head of a rule may be refinement after a new condition has been
+         * added to its body.
+         *
+         * @return The maximum number of times, the head of a rule may be refined or 0, if the number of refinements is
+         *         not restricted
+         */
+        virtual uint32 getMaxHeadRefinements() const = 0;
+
+        /**
+         * Sets the maximum number of times, the head of a rule may be refined after a new condition has been added to
+         * its body.
+         *
+         * @param maxHeadRefinement The maximum number of times, the head of a rule may be refined. Must be at least 1
+         *                          or 0, if the number of refinements should not be restricted
+         * @return                  A reference to an object of type `ITopDownRuleInductionConfig` that allows further
+         *                          configuration of the algorithm for the induction of individual rules
+         */
+        virtual ITopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) = 0;
+
+        /**
+         * Returns whether the predictions of rules are recalculated on all training examples, if some of the examples
+         * have zero weights, or not.
+         *
+         * @return True, if the predictions of rules are recalculated on all training examples, false otherwise
+         */
+        virtual bool getRecalculatePredictions() const = 0;
+
+        /**
+         * Sets whether the predictions of rules should be recalculated on all training examples, if some of the
+         * examples have zero weights, or not.
+         *
+         * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
+         *                                  examples, false otherwise
+         * @return                          A reference to an object of type `ITopDownRuleInductionConfig` that allows
+         *                                  further configuration of the algorithm for the induction of individual rules
+         */
+        virtual ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) = 0;
+
+        /**
+         * Returns the number of CPU threads to be used to search for potential refinements of rules in parallel.
+         *
+         * @return The number of CPU threads to be used or 0, if the number of threads should be chosen automatically
+         */
+        virtual uint32 getNumThreads() const = 0;
+
+        /**
+         * Sets the number of CPU threads to be used to search for potential refinements of rules in parallel.
+         *
+         * @param numThreads    The number of CPU threads to be used. Must be at least 1 or 0, if the number of threads
+         *                      should be chosen automatically
+         * @return              A reference to an object of type `ITopDownRuleInductionConfig` that allows further
+         *                      configuration of the algorithm for the induction of individual rules
+         */
+        virtual ITopDownRuleInductionConfig& setNumThreads(uint32 numThreads) = 0;
+
+};
+
+/**
  * Allows to configure an algorithm for the induction of individual rules that uses a top-down greedy search.
  */
-class TopDownRuleInductionConfig : public IRuleInductionConfig {
+class TopDownRuleInductionConfig final : public IRuleInductionConfig, public ITopDownRuleInductionConfig {
 
     private:
 
@@ -27,137 +130,26 @@ class TopDownRuleInductionConfig : public IRuleInductionConfig {
 
         TopDownRuleInductionConfig();
 
-        /**
-         * Returns the minimum number of training examples that must be covered by a rule.
-         *
-         * @return The minimum number of training examples that must be covered by a rule.
-         */
-        uint32 getMinCoverage() const;
+        uint32 getMinCoverage() const override;
 
-        /**
-         * Sets the minimum number of training examples that must be covered by a rule.
-         *
-         * @param minCoverage   The minimum number of training examples that must be covered by a rule. Must be at least
-         *                      1
-         * @return              A reference to an object of type `TopDownRuleInduction` that allows further
-         *                      configuration of the algorithm for the induction of individual rules
-         */
-        TopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage);
+        ITopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) override;
 
-        /**
-         * Returns the maximum number of conditions to be included in a rule's body.
-         *
-         * @return The maximum number of conditions to be included in a rule's body or 0, if the number of conditions is
-         *         not restricted
-         */
-        uint32 getMaxConditions() const;
+        uint32 getMaxConditions() const override;
 
-        /**
-         * Sets the maximum number of conditions to be included in a rule's body.
-         *
-         * @param maxConditions The maximum number of conditions to be included in a rule's body. Must be at least 1 or
-         *                      0, if the number of conditions should not be restricted
-         * @return              A reference to an object of type `TopDownRuleInduction` that allows further
-         *                      configuration of the algorithm for the induction of individual rules
-         */
-        TopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions);
+        ITopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) override;
 
-        /**
-         * Returns the maximum number of times, the head of a rule may be refinement after a new condition has been
-         * added to its body.
-         *
-         * @return The maximum number of times, the head of a rule may be refined or 0, if the number of refinements is
-         *         not restricted
-         */
-        uint32 getMaxHeadRefinements() const;
+        uint32 getMaxHeadRefinements() const override;
 
-        /**
-         * Sets the maximum number of times, the head of a rule may be refined after a new condition has been added to
-         * its body.
-         *
-         * @param maxHeadRefinement The maximum number of times, the head of a rule may be refined. Must be at least 1
-         *                          or 0, if the number of refinements should not be restricted
-         * @return                  A reference to an object of type `TopDownRuleInduction` that allows further
-         *                          configuration of the algorithm for the induction of individual rules
-         */
-        TopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements);
+        ITopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) override;
 
-        /**
-         * Returns whether the predictions of rules are recalculated on all training examples, if some of the examples
-         * have zero weights, or not.
-         *
-         * @return True, if the predictions of rules are recalculated on all training examples, false otherwise
-         */
-        bool getRecalculatePredictions() const;
+        bool getRecalculatePredictions() const override;
 
-        /**
-         * Sets whether the predictions of rules should be recalculated on all training examples, if some of the
-         * examples have zero weights, or not.
-         *
-         * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
-         *                                  examples, false otherwise
-         * @return                          A reference to an object of type `TopDownRuleInduction` that allows further
-         *                                  configuration of the algorithm for the induction of individual rules
-         */
-        TopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions);
+        ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) override;
 
-        /**
-         * Returns the number of CPU threads to be used to search for potential refinements of rules in parallel.
-         *
-         * @return The number of CPU threads to be used or 0, if the number of threads should be chosen automatically
-         */
-        uint32 getNumThreads() const;
+        uint32 getNumThreads() const override;
 
-        /**
-         * Sets the number of CPU threads to be used to search for potential refinements of rules in parallel.
-         *
-         * @param numThreads    The number of CPU threads to be used. Must be at least 1 or 0, if the number of threads
-         *                      should be chosen automatically
-         * @return              A reference to an object of type `TopDownRuleInduction` that allows further
-         *                      configuration of the algorithm for the induction of individual rules
-         */
-        TopDownRuleInductionConfig& setNumThreads(uint32 numThreads);
+        ITopDownRuleInductionConfig& setNumThreads(uint32 numThreads) override;
 
-};
-
-/**
- * Allows to create instances of the type `IRuleInduction` that induce classification rules by using a top-down greedy
- * search, where new conditions are added iteratively to the (initially empty) body of a rule. At each iteration, the
- * refinement that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
- */
-class TopDownRuleInductionFactory final : public IRuleInductionFactory {
-
-    private:
-
-        uint32 minCoverage_;
-
-        uint32 maxConditions_;
-
-        uint32 maxHeadRefinements_;
-
-        bool recalculatePredictions_;
-
-        uint32 numThreads_;
-
-    public:
-
-        /**
-         * @param minCoverage               The minimum number of training examples that must be covered by a rule. Must
-         *                                  be at least 1
-         * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
-         *                                  least 1 or 0, if the number of conditions should not be restricted
-         * @param maxHeadRefinements        The maximum number of times, the head of a rule may be refined after a new
-         *                                  condition has been added to its body. Must be at least 1 or 0, if the number
-         *                                  of refinements should not be restricted
-         * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
-         *                                  examples, if some of the examples have zero weights, false otherwise
-         * @param numThreads                The number of CPU threads to be used to search for potential refinements of
-         *                                  a rule in parallel. Must be at least 1
-         */
-        // TODO Check if it is better to pass a config here and store it as a member variable!? This probably allows to get rid of the config's getter methods when defined as a friend class
-        TopDownRuleInductionFactory(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
-                                    bool recalculatePredictions, uint32 numThreads);
-
-        std::unique_ptr<IRuleInduction> create() const override;
+        std::unique_ptr<IRuleInductionFactory> create() const override;
 
 };

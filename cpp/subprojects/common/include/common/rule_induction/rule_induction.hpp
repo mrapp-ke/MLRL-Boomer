@@ -62,18 +62,6 @@ class IRuleInduction {
 };
 
 /**
- * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules.
- */
-// TODO Should this class provide a (private) method for creating a IRuleInductionFactory to avoid type checks!?
-class IRuleInductionConfig {
-
-    public:
-
-        virtual ~IRuleInductionConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create instances of the type `IRuleInduction`.
  */
 class IRuleInductionFactory {
@@ -88,5 +76,23 @@ class IRuleInductionFactory {
          * @return An unique pointer to an object of type `IRuleInduction` that has been created.
          */
         virtual std::unique_ptr<IRuleInduction> create() const = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules.
+ */
+class IRuleInductionConfig {
+
+    public:
+
+        virtual ~IRuleInductionConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IRuleInductionFactory` according to the specified configuration.
+         *
+         * @return An unique pointer to an object of type `IRuleInductionFactory` that has been created
+         */
+        virtual std::unique_ptr<IRuleInductionFactory> create() const = 0;
 
 };

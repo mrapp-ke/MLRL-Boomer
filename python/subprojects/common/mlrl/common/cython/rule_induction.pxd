@@ -5,27 +5,27 @@ from libcpp cimport bool
 
 cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
 
-    cdef cppclass TopDownRuleInductionConfigImpl"TopDownRuleInductionConfig":
+    cdef cppclass ITopDownRuleInductionConfig:
 
         # Functions:
 
-        TopDownRuleInductionConfigImpl& setMinCoverage(uint32 minCoverage) except +
+        ITopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) except +
 
         uint32 getMinCoverage() const
 
-        TopDownRuleInductionConfigImpl& setMaxConditions(uint32 maxConditions) except +
+        ITopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) except +
 
         uint32 getMaxConditions() const;
 
-        TopDownRuleInductionConfigImpl& setMaxHeadRefinements(uint32 maxHeadRefinements) except +
+        ITopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) except +
 
         uint32 getMaxHeadRefinements() const
 
-        TopDownRuleInductionConfigImpl& setRecalculatePredictions(bool recalculatePredictions) except +
+        ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) except +
 
         bool getRecalculatePredictions() const
 
-        TopDownRuleInductionConfigImpl& setNumThreads(uint32 numThreads) except +
+        ITopDownRuleInductionConfig& setNumThreads(uint32 numThreads) except +
 
         uint32 getNumThreads() const
 
@@ -34,4 +34,4 @@ cdef class TopDownRuleInductionConfig:
 
     # Attributes:
 
-    cdef TopDownRuleInductionConfigImpl* config_ptr
+    cdef ITopDownRuleInductionConfig* config_ptr

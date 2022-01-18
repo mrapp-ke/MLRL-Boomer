@@ -13,7 +13,7 @@ from mlrl.common.cython.nominal_feature_mask cimport INominalFeatureMask
 from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfigImpl, \
     LabelWiseStratifiedBiPartitionSamplingConfigImpl, RandomBiPartitionSamplingConfigImpl
 from mlrl.common.cython.pruning cimport IrepConfigImpl
-from mlrl.common.cython.rule_induction cimport TopDownRuleInductionConfigImpl
+from mlrl.common.cython.rule_induction cimport ITopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.rule_model_assemblage cimport ISequentialRuleModelAssemblageConfig
 from mlrl.common.cython.stopping_criterion cimport SizeStoppingCriterionConfigImpl, TimeStoppingCriterionConfigImpl, \
@@ -64,7 +64,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         ISequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage()
 
-        TopDownRuleInductionConfigImpl& useTopDownRuleInduction()
+        ITopDownRuleInductionConfig& useTopDownRuleInduction()
 
         void useNoFeatureBinning()
 

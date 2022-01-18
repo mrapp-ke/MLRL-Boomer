@@ -126,9 +126,9 @@ ISequentialRuleModelAssemblageConfig& AbstractRuleLearner::Config::useSequential
     return ref;
 }
 
-TopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
+ITopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
     std::unique_ptr<TopDownRuleInductionConfig> ptr = std::make_unique<TopDownRuleInductionConfig>();
-    TopDownRuleInductionConfig& ref = *ptr;
+    ITopDownRuleInductionConfig& ref = *ptr;
     ruleInductionConfigPtr_ = std::move(ptr);
     return ref;
 }
@@ -321,15 +321,7 @@ std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
-    const IRuleInductionConfig* baseConfig = &config_.getRuleInductionConfig();
-
-    if (auto* config = dynamic_cast<const TopDownRuleInductionConfig*>(baseConfig)) {
-        return std::make_unique<TopDownRuleInductionFactory>(
-            config->getMinCoverage(), config->getMaxConditions(), config->getMaxHeadRefinements(),
-            config->getRecalculatePredictions(), getNumThreads(config->getNumThreads()));
-    }
-
-    throw std::runtime_error("Failed to create IRuleInductionFactory");
+    return config_.getRuleInductionConfig().create();
 }
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory() const {
