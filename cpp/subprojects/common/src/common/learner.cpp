@@ -345,7 +345,7 @@ std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() con
 }
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {
-    return std::make_unique<NoPostProcessorFactory>();
+    return NoPostProcessorConfig().create();
 }
 
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createSizeStoppingCriterionFactory() const {
