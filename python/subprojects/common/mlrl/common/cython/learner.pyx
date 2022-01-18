@@ -75,7 +75,7 @@ cdef class RuleLearnerConfig:
                  individual rules
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef TopDownRuleInductionConfigImpl* config_ptr = &rule_learner_config_ptr.useTopDownRuleInduction()
+        cdef ITopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useTopDownRuleInduction()
         cdef TopDownRuleInductionConfig config = TopDownRuleInductionConfig.__new__(TopDownRuleInductionConfig)
         config.config_ptr = config_ptr
         return config
