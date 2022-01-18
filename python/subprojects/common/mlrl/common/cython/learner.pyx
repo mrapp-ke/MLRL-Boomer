@@ -239,7 +239,7 @@ cdef class RuleLearnerConfig:
                  the available training examples into a training set and a holdout set
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef RandomBiPartitionSamplingConfigImpl* config_ptr = &rule_learner_config_ptr.useRandomBiPartitionSampling()
+        cdef IRandomBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useRandomBiPartitionSampling()
         cdef RandomBiPartitionSamplingConfig config = RandomBiPartitionSamplingConfig.__new__(RandomBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
         return config
@@ -253,7 +253,7 @@ cdef class RuleLearnerConfig:
                  partitioning the available training examples into a training and a holdout set
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef LabelWiseStratifiedBiPartitionSamplingConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedBiPartitionSampling()
+        cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedBiPartitionSampling()
         cdef LabelWiseStratifiedBiPartitionSamplingConfig config = LabelWiseStratifiedBiPartitionSamplingConfig.__new__(LabelWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
         return config
@@ -267,7 +267,7 @@ cdef class RuleLearnerConfig:
                  partitioning the available training examples into a training and a holdout set
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef ExampleWiseStratifiedBiPartitionSamplingConfigImpl* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedBiPartitionSampling()
+        cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedBiPartitionSampling()
         cdef ExampleWiseStratifiedBiPartitionSamplingConfig config = ExampleWiseStratifiedBiPartitionSamplingConfig.__new__(ExampleWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
         return config

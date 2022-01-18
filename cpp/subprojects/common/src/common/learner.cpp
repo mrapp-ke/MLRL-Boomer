@@ -215,25 +215,25 @@ void AbstractRuleLearner::Config::useNoPartitionSampling() {
     partitionSamplingConfigPtr_ = std::make_unique<NoPartitionSamplingConfig>();
 }
 
-RandomBiPartitionSamplingConfig& AbstractRuleLearner::Config::useRandomBiPartitionSampling() {
+IRandomBiPartitionSamplingConfig& AbstractRuleLearner::Config::useRandomBiPartitionSampling() {
     std::unique_ptr<RandomBiPartitionSamplingConfig> ptr = std::make_unique<RandomBiPartitionSamplingConfig>();
-    RandomBiPartitionSamplingConfig& ref = *ptr;
+    IRandomBiPartitionSamplingConfig& ref = *ptr;
     partitionSamplingConfigPtr_ = std::move(ptr);
     return ref;
 }
 
-LabelWiseStratifiedBiPartitionSamplingConfig& AbstractRuleLearner::Config::useLabelWiseStratifiedBiPartitionSampling() {
+ILabelWiseStratifiedBiPartitionSamplingConfig& AbstractRuleLearner::Config::useLabelWiseStratifiedBiPartitionSampling() {
     std::unique_ptr<LabelWiseStratifiedBiPartitionSamplingConfig> ptr =
         std::make_unique<LabelWiseStratifiedBiPartitionSamplingConfig>();
-    LabelWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
+    ILabelWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
     partitionSamplingConfigPtr_ = std::move(ptr);
     return ref;
 }
 
-ExampleWiseStratifiedBiPartitionSamplingConfig& AbstractRuleLearner::Config::useExampleWiseStratifiedBiPartitionSampling() {
+IExampleWiseStratifiedBiPartitionSamplingConfig& AbstractRuleLearner::Config::useExampleWiseStratifiedBiPartitionSampling() {
     std::unique_ptr<ExampleWiseStratifiedBiPartitionSamplingConfig> ptr =
         std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
-    ExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
+    IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
     partitionSamplingConfigPtr_ = std::move(ptr);
     return ref;
 }
@@ -337,19 +337,7 @@ std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSampl
 }
 
 std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionSamplingFactory() const {
-    const IPartitionSamplingConfig* baseConfig = &config_.getPartitionSamplingConfig();
-
-    if (dynamic_cast<const NoPartitionSamplingConfig*>(baseConfig)) {
-        return std::make_unique<NoPartitionSamplingFactory>();
-    } else if (auto* config = dynamic_cast<const RandomBiPartitionSamplingConfig*>(baseConfig)) {
-        return std::make_unique<RandomBiPartitionSamplingFactory>(config->getHoldoutSetSize());
-    } else if (auto* config = dynamic_cast<const LabelWiseStratifiedBiPartitionSamplingConfig*>(baseConfig)) {
-        return std::make_unique<LabelWiseStratifiedBiPartitionSamplingFactory>(config->getHoldoutSetSize());
-    } else if (auto* config = dynamic_cast<const ExampleWiseStratifiedBiPartitionSamplingConfig*>(baseConfig)) {
-        return std::make_unique<ExampleWiseStratifiedBiPartitionSamplingFactory>(config->getHoldoutSetSize());
-    }
-
-    throw std::runtime_error("Failed to create IPartitionSamplingFactory");
+    return config_.getPartitionSamplingConfig().create();
 }
 
 std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() const {

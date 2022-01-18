@@ -32,18 +32,6 @@ class IPartitionSampling {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a method for partitioning the available training
- * examples into a training set and a holdout set.
- */
-class IPartitionSamplingConfig {
-
-    public:
-
-        virtual ~IPartitionSamplingConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create objects of type `IPartitionSampling`.
  */
 class IPartitionSamplingFactory {
@@ -69,5 +57,25 @@ class IPartitionSamplingFactory {
          * @return              An unique pointer to an object of type `IPartitionSampling` that has been created
          */
         virtual std::unique_ptr<IPartitionSampling> create(const CsrLabelMatrix& labelMatrix) const = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for partitioning the available training
+ * examples into a training set and a holdout set.
+ */
+class IPartitionSamplingConfig {
+
+    public:
+
+        virtual ~IPartitionSamplingConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IPartitionSamplingFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IPartitionSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSamplingFactory> create() const = 0;
 
 };
