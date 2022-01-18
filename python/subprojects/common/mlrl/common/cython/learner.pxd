@@ -2,7 +2,7 @@ from mlrl.common.cython._types cimport uint8, uint32, float64
 from mlrl.common.cython.feature_binning cimport EqualWidthFeatureBinningConfigImpl, \
     EqualFrequencyFeatureBinningConfigImpl
 from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
-from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplacementConfigImpl
+from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
     ILabelWiseStratifiedInstanceSamplingConfig, IInstanceSamplingWithReplacementConfig, \
     IInstanceSamplingWithoutReplacementConfig
@@ -88,7 +88,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoFeatureSampling()
 
-        FeatureSamplingWithoutReplacementConfigImpl& useFeatureSamplingWithoutReplacement()
+        IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement()
 
         void useNoPartitionSampling()
 

@@ -315,10 +315,10 @@ class IRuleLearner {
                  * Configures the rule learner to sample from the available features with replacement whenever a rule
                  * should be refined.
                  *
-                 * @return A reference to an object of type `FeatureSamplingWithoutReplacementConfig` that allows
+                 * @return A reference to an object of type `IFeatureSamplingWithoutReplacementConfig` that allows
                  *         further configuration of the method for sampling features
                  */
-                virtual FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() = 0;
+                virtual IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() = 0;
 
                 /**
                  * Configures the rule learner to not partition the available training examples into a training set and
@@ -667,7 +667,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoFeatureSampling() override final;
 
-                FeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
+                IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
 
                 void useNoPartitionSampling() override final;
 

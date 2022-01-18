@@ -217,7 +217,7 @@ cdef class RuleLearnerConfig:
                  sampling features
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef FeatureSamplingWithoutReplacementConfigImpl* config_ptr = &rule_learner_config_ptr.useFeatureSamplingWithoutReplacement()
+        cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useFeatureSamplingWithoutReplacement()
         cdef FeatureSamplingWithoutReplacementConfig config = FeatureSamplingWithoutReplacementConfig.__new__(FeatureSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config

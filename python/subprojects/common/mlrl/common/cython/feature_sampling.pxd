@@ -3,17 +3,17 @@ from mlrl.common.cython._types cimport float32
 
 cdef extern from "common/sampling/feature_sampling_without_replacement.hpp" nogil:
 
-    cdef cppclass FeatureSamplingWithoutReplacementConfigImpl"FeatureSamplingWithoutReplacementConfig":
+    cdef cppclass IFeatureSamplingWithoutReplacementConfig:
 
         # Functions:
 
         float32 getSampleSize() const
 
-        FeatureSamplingWithoutReplacementConfigImpl& setSampleSize(float32 sampleSize) except +
+        IFeatureSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) except +
 
 
 cdef class FeatureSamplingWithoutReplacementConfig:
 
     # Attributes:
 
-    cdef FeatureSamplingWithoutReplacementConfigImpl* config_ptr
+    cdef IFeatureSamplingWithoutReplacementConfig* config_ptr
