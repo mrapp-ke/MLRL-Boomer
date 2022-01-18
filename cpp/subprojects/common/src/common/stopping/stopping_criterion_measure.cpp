@@ -1,9 +1,31 @@
 #include "common/stopping/stopping_criterion_measure.hpp"
+#include "common/data/ring_buffer.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/math/math.hpp"
 #include "common/util/validation.hpp"
 #include <limits>
 
+
+/**
+ * Defines an interface for all classes that allow to aggregate the values that are stored in a buffer.
+ */
+class IAggregationFunction {
+
+    public:
+
+        virtual ~IAggregationFunction() { };
+
+        /**
+         * Aggregates the values that are stored in a buffer.
+         *
+         * @param begin An iterator to the beginning of the buffer
+         * @param end   An iterator to the end of the buffer
+         * @return      The aggregated value
+         */
+        virtual float64 aggregate(RingBuffer<float64>::const_iterator begin,
+                                  RingBuffer<float64>::const_iterator end) const = 0;
+
+};
 
 /**
  * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
@@ -77,6 +99,24 @@ class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
 
             return mean;
         }
+
+};
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IAggregationFunction`.
+ */
+class IAggregationFunctionFactory {
+
+    public:
+
+        virtual ~IAggregationFunctionFactory() { };
+
+        /**
+         * Creates and returns a new object of type `IAggregationFunction`.
+         *
+         * @return An unique pointer to an object of type `IAggregationFunction` that has been created
+         */
+        virtual std::unique_ptr<IAggregationFunction> create() const = 0;
 
 };
 
