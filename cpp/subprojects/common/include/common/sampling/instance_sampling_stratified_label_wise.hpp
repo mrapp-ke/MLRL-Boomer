@@ -8,10 +8,41 @@
 
 
 /**
+ * Defines an interface for all classes that allow to configure a method for selecting a subset of the available
+ * training examples using stratification, such that for each label the proportion of relevant and irrelevant examples
+ * are maintained.
+ */
+class ILabelWiseStratifiedInstanceSamplingConfig {
+
+    public:
+
+        virtual ~ILabelWiseStratifiedInstanceSamplingConfig() { };
+
+        /**
+         * Returns the fraction of examples that are included in a sample.
+         *
+         * @return The fraction of examples that are included in a sample
+         */
+        virtual float32 getSampleSize() const = 0;
+
+        /**
+         * Sets the fraction of examples that should be included in a sample.
+         *
+         * @param sampleSize    The fraction of examples that should be included in a sample, e.g., a value of 0.6
+         *                      corresponds to 60 % of the available training examples. Must be in (0, 1)
+         * @return              A reference to an object of type `ILabelWiseStratifiedInstanceSamplingConfig` that
+         *                      allows further configuration of the method for sampling instances
+         */
+        virtual ILabelWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) = 0;
+
+};
+
+/**
  * Allows to configure a method for selecting a subset of the available training examples using stratification, such
  * that for each label the proportion of relevant and irrelevant examples are maintained.
  */
-class LabelWiseStratifiedInstanceSamplingConfig : public IInstanceSamplingConfig {
+class LabelWiseStratifiedInstanceSamplingConfig final : public IInstanceSamplingConfig,
+                                                        public ILabelWiseStratifiedInstanceSamplingConfig {
 
     private:
 
@@ -21,55 +52,10 @@ class LabelWiseStratifiedInstanceSamplingConfig : public IInstanceSamplingConfig
 
         LabelWiseStratifiedInstanceSamplingConfig();
 
-        /**
-         * Returns the fraction of examples that are included in a sample.
-         *
-         * @return The fraction of examples that are included in a sample
-         */
-        float32 getSampleSize() const;
+        float32 getSampleSize() const override;
 
-        /**
-         * Sets the fraction of examples that should be included in a sample.
-         *
-         * @param sampleSize    The fraction of examples that should be included in a sample, e.g., a value of 0.6
-         *                      corresponds to 60 % of the available training examples. Must be in (0, 1)
-         * @return              A reference to an object of type `LabelWiseStratifiedInstanceSamplingConfig` that allows
-         *                      further configuration of the method for sampling instances
-         */
-        LabelWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize);
+        ILabelWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) override;
 
-};
-
-/**
- * Allows to create instances of the type `IInstanceSampling` that implement stratified sampling for selecting a subset
- * of the available training examples, such that for each label the proportion of relevant and irrelevant examples is
- * maintained.
- */
-class LabelWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplingFactory {
-
-    private:
-
-        float32 sampleSize_;
-
-    public:
-
-        /**
-         * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
-         *                   60 % of the available examples). Must be in (0, 1]
-         */
-        LabelWiseStratifiedInstanceSamplingFactory(float32 sampleSize);
-
-        std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
-                                                  const SinglePartition& partition,
-                                                  IStatistics& statistics) const override;
-
-        std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix, BiPartition& partition,
-                                                  IStatistics& statistics) const override;
-
-        std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix, const SinglePartition& partition,
-                                                  IStatistics& statistics) const override;
-
-        std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix, BiPartition& partition,
-                                                  IStatistics& statistics) const override;
+        std::unique_ptr<IInstanceSamplingFactory> create() const override;
 
 };

@@ -36,17 +36,6 @@ class IInstanceSampling {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a method for sampling instances.
- */
-class IInstanceSamplingConfig {
-
-    public:
-
-        virtual ~IInstanceSamplingConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create instances of the type `IInstanceSampling`.
  */
 class IInstanceSamplingFactory {
@@ -114,5 +103,24 @@ class IInstanceSamplingFactory {
          */
         virtual std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix,
                                                           BiPartition& partition, IStatistics& statistics) const = 0;
+
+};
+
+
+/**
+ * Defines an interface for all classes that allow to configure a method for sampling instances.
+ */
+class IInstanceSamplingConfig {
+
+    public:
+
+        virtual ~IInstanceSamplingConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IInstanceSamplingFactory` according to the specified configuration.
+         *
+         * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSamplingFactory> create() const = 0;
 
 };
