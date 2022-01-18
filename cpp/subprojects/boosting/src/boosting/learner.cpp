@@ -171,8 +171,8 @@ namespace boosting {
         const IClassificationPredictorConfig* baseConfig = &configPtr_->getClassificationPredictorConfig();
 
         if (auto* config = dynamic_cast<const LabelWiseClassificationPredictorConfig*>(baseConfig)) {
-            return std::make_unique<LabelWiseClassificationPredictorFactory>(config->getThreshold(),
-                                                                             config->getNumThreads());
+            float64 threshold = 0;  // TODO Use correct threshold
+            return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, config->getNumThreads());
         }
 
         throw std::runtime_error("Failed to create IClassificationPredictorFactory");

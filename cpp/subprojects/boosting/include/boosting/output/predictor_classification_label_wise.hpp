@@ -18,29 +18,11 @@ namespace boosting {
 
         private:
 
-            float64 threshold_;
-
             uint32 numThreads_;
 
         public:
 
             LabelWiseClassificationPredictorConfig();
-
-            /**
-             * Returns the threshold that is used to transform predicted scores into binary predictions.
-             *
-             * @return The threshold that is used to transform predicted scores into binary predictions
-             */
-            float64 getThreshold() const;
-
-            /**
-             * Sets the threshold that should be used to transform predicted scores into binary predictions.
-             *
-             * @param threshold The threshold that should be used to transform predicted scores into binary predictions
-             * @return          A reference to an object of type `ExampleWiseClassificationPredictorConfig` that allows
-             *                  further configuration of the predictor
-             */
-            LabelWiseClassificationPredictorConfig& setThreshold(float64 threshold);
 
             /**
              * Returns the number of CPU threads that are used to make predictions for different query examples in
