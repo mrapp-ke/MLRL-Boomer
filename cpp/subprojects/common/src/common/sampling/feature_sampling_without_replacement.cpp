@@ -40,6 +40,34 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
 
 };
 
+/**
+ * Allows to create instances of the type `IFeatureSampling` that select a random subset of the available features
+ * without replacement.
+ */
+class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFactory {
+
+    private:
+
+        float32 sampleSize_;
+
+    public:
+
+        /**
+         * @param sampleSize The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds to
+         *                   60 % of the available features). Must be in (0, 1) or 0, if the default sample size
+         *                   `floor(log2(num_features - 1) + 1)` should be used
+         */
+        FeatureSamplingWithoutReplacementFactory(float32 sampleSize)
+            : sampleSize_(sampleSize) {
+
+        }
+
+        std::unique_ptr<IFeatureSampling> create(uint32 numFeatures) const override {
+            return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures, sampleSize_);
+        }
+
+};
+
 FeatureSamplingWithoutReplacementConfig::FeatureSamplingWithoutReplacementConfig()
     : sampleSize_(0) {
 
@@ -49,18 +77,13 @@ float32 FeatureSamplingWithoutReplacementConfig::getSampleSize() const {
     return sampleSize_;
 }
 
-FeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfig::setSampleSize(float32 sampleSize) {
+IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfig::setSampleSize(float32 sampleSize) {
     assertGreaterOrEqual<float32>("sampleSize", sampleSize, 0);
     assertLess<float32>("sampleSize", sampleSize, 1);
     sampleSize_ = sampleSize;
     return *this;
 }
 
-FeatureSamplingWithoutReplacementFactory::FeatureSamplingWithoutReplacementFactory(float32 sampleSize)
-    : sampleSize_(sampleSize) {
-
-}
-
-std::unique_ptr<IFeatureSampling> FeatureSamplingWithoutReplacementFactory::create(uint32 numFeatures) const {
-    return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures, sampleSize_);
+std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig::create() const {
+    return std::make_unique<FeatureSamplingWithoutReplacementFactory>(sampleSize_);
 }

@@ -203,10 +203,10 @@ void AbstractRuleLearner::Config::useNoFeatureSampling() {
     featureSamplingConfigPtr_ = std::make_unique<NoFeatureSamplingConfig>();
 }
 
-FeatureSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useFeatureSamplingWithoutReplacement() {
+IFeatureSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useFeatureSamplingWithoutReplacement() {
     std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
         std::make_unique<FeatureSamplingWithoutReplacementConfig>();
-    FeatureSamplingWithoutReplacementConfig& ref = *ptr;
+    IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
     featureSamplingConfigPtr_ = std::move(ptr);
     return ref;
 }
@@ -333,15 +333,7 @@ std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSam
 }
 
 std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSamplingFactory() const {
-    const IFeatureSamplingConfig* baseConfig = &config_.getFeatureSamplingConfig();
-
-    if (dynamic_cast<const NoFeatureSamplingConfig*>(baseConfig)) {
-        return std::make_unique<NoFeatureSamplingFactory>();
-    } else if (auto* config = dynamic_cast<const FeatureSamplingWithoutReplacementConfig*>(baseConfig)) {
-        return std::make_unique<FeatureSamplingWithoutReplacementFactory>(config->getSampleSize());
-    }
-
-    throw std::runtime_error("Failed to create IFeatureSamplingFactory");
+    return config_.getFeatureSamplingConfig().create();
 }
 
 std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionSamplingFactory() const {

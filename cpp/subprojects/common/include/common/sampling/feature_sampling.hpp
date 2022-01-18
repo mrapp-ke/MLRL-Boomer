@@ -29,17 +29,6 @@ class IFeatureSampling {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a method for sampling features.
- */
-class IFeatureSamplingConfig {
-
-    public:
-
-        virtual ~IFeatureSamplingConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create instances of the type `IFeatureSampling`.
  */
 class IFeatureSamplingFactory {
@@ -55,5 +44,23 @@ class IFeatureSamplingFactory {
          * @return              An unique pointer to an object of type `IFeatureSampling` that has been created
          */
         virtual std::unique_ptr<IFeatureSampling> create(uint32 numFeatures) const = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for sampling features.
+ */
+class IFeatureSamplingConfig {
+
+    public:
+
+        virtual ~IFeatureSamplingConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IFeatureSamplingFactory` according to the specified configuration.
+         *
+         * @return An unique pointer to an object of type `IFeatureSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IFeatureSamplingFactory> create() const = 0;
 
 };
