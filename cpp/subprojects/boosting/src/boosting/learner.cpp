@@ -11,7 +11,7 @@ namespace boosting {
     BoostingRuleLearner::Config::Config() {
         this->useSizeStoppingCriterion().setMaxRules(1000);
         this->useFeatureSamplingWithoutReplacement();
-        this->useConstantShrinkagePostProcessor().setShrinkage(0.3);
+        this->useConstantShrinkagePostProcessor();
         this->useLabelWiseLogisticLoss();
         this->useNoLabelBinning();
         this->useLabelWiseClassificationPredictor(); // TODO use automatical configuration by default
