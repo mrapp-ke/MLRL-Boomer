@@ -287,7 +287,7 @@ cdef class RuleLearnerConfig:
         :return: An `IrepConfig` that allows further configuration of the method for pruning classification rules
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IrepConfigImpl* config_ptr = &rule_learner_config_ptr.useIrepPruning()
+        cdef IIrepConfig* config_ptr = &rule_learner_config_ptr.useIrepPruning()
         cdef IrepConfig config = IrepConfig.__new__(IrepConfig)
         config.config_ptr = config_ptr
         return config

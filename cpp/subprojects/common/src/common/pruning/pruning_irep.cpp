@@ -68,6 +68,22 @@ class Irep final : public IPruning {
 
 };
 
-std::unique_ptr<IPruning> IrepFactory::create() const {
-    return std::make_unique<Irep>();
+/**
+ * Allows to create instances of the type `IPruning` that prune rules by following the ideas of "incremental reduced
+ * error pruning" (IREP). Given `n` conditions in the order of their induction, IREP may remove up to `n - 1` trailing
+ * conditions, depending on which of the resulting rules comes with the greatest improvement in terms of quality as
+ * measured on the prune set.
+ */
+class IrepFactory final : public IPruningFactory {
+
+    public:
+
+        std::unique_ptr<IPruning> create() const override {
+            return std::make_unique<Irep>();
+        }
+
+};
+
+std::unique_ptr<IPruningFactory> IrepConfig::create() const {
+    return std::make_unique<IrepFactory>();
 }

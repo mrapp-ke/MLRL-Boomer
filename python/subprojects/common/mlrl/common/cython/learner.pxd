@@ -12,7 +12,7 @@ from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
 from mlrl.common.cython.nominal_feature_mask cimport INominalFeatureMask
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
-from mlrl.common.cython.pruning cimport IrepConfigImpl
+from mlrl.common.cython.pruning cimport IIrepConfig
 from mlrl.common.cython.rule_induction cimport ITopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.rule_model_assemblage cimport ISequentialRuleModelAssemblageConfig
@@ -100,7 +100,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoPruning()
 
-        IrepConfigImpl& useIrepPruning()
+        IIrepConfig& useIrepPruning()
 
         void useNoSizeStoppingCriterion()
 

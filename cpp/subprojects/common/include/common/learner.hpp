@@ -366,10 +366,10 @@ class IRuleLearner {
                  * Configures the rule learner to prune classification rules by following the ideas of "incremental
                  * reduced error pruning" (IREP).
                  *
-                 * @return A reference to an object of type `IrepConfig` that allows further configuration of the method
-                 *         for pruning classification rules
+                 * @return A reference to an object of type `IIrepConfig` that allows further configuration of the
+                 *         method for pruning classification rules
                  */
-                virtual IrepConfig& useIrepPruning() = 0;
+                virtual IIrepConfig& useIrepPruning() = 0;
 
                 /**
                  * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
@@ -679,7 +679,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoPruning() override final;
 
-                IrepConfig& useIrepPruning() override;
+                IIrepConfig& useIrepPruning() override;
 
                 void useNoSizeStoppingCriterion() override final;
 
