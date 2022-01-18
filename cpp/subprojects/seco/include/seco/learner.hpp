@@ -281,6 +281,8 @@ namespace seco {
 
                     TopDownRuleInductionConfig& useTopDownRuleInduction() override;
 
+                    SizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
+
                     void useNoCoverageStoppingCriterion() override;
 
                     CoverageStoppingCriterionConfig& useCoverageStoppingCriterion() override;

@@ -9,7 +9,7 @@
 namespace boosting {
 
     BoostingRuleLearner::Config::Config() {
-        this->useSizeStoppingCriterion().setMaxRules(1000);
+        this->useSizeStoppingCriterion();
         this->useFeatureSamplingWithoutReplacement();
         this->useConstantShrinkagePostProcessor();
         this->useLabelWiseLogisticLoss();
@@ -41,6 +41,12 @@ namespace boosting {
 
     const IProbabilityPredictorConfig& BoostingRuleLearner::Config::getProbabilityPredictorConfig() const {
         return *probabilityPredictorConfigPtr_;
+    }
+
+    SizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
+        SizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
+        ref.setMaxRules(1000);
+        return ref;
     }
 
     void BoostingRuleLearner::Config::useNoPostProcessor() {
