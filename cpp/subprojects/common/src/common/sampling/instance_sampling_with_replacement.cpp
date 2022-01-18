@@ -103,38 +103,40 @@ class InstanceSamplingWithReplacementFactory final : public IInstanceSamplingFac
 
     private:
 
-        float32 sampleSize_;
+        const IInstanceSamplingWithReplacementConfig& config_;
 
     public:
 
         /**
-         * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
-         *                   60 % of the available examples). Must be in (0, 1]
+         * @param config A reference to an object of type `IInstanceSamplingWithReplacementConfig` that specifies the
+         *               configuration to be used
          */
-        InstanceSamplingWithReplacementFactory(float32 sampleSize)
-            : sampleSize_(sampleSize) {
+        InstanceSamplingWithReplacementFactory(const IInstanceSamplingWithReplacementConfig& config)
+            : config_(config) {
 
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
                                                   const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(partition,
+                                                                                            config_.getSampleSize());
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix, BiPartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(partition, config_.getSampleSize());
         }
 
         std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix, const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(partition,
+                                                                                            config_.getSampleSize());
         }
 
         std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix, BiPartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(partition, config_.getSampleSize());
         }
 
 };
@@ -156,5 +158,5 @@ IInstanceSamplingWithReplacementConfig& InstanceSamplingWithReplacementConfig::s
 }
 
 std::unique_ptr<IInstanceSamplingFactory> InstanceSamplingWithReplacementConfig::create() const {
-    return std::make_unique<InstanceSamplingWithReplacementFactory>(sampleSize_);
+    return std::make_unique<InstanceSamplingWithReplacementFactory>(*this);
 }

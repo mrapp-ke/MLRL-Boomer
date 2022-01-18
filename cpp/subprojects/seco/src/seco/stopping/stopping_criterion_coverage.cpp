@@ -51,24 +51,25 @@ namespace seco {
 
         private:
 
-            float64 threshold_;
+            const ICoverageStoppingCriterionConfig& config_;
 
         public:
 
             /**
-             * @param threshold The threshold. Must be at least 0
+             * @param config A reference to an object of type `ICoverageStoppingCriterionConfig` that specifies the
+             *               configuration to be used
              */
-            CoverageStoppingCriterionFactory(float64 threshold)
-                : threshold_(threshold) {
+            CoverageStoppingCriterionFactory(const ICoverageStoppingCriterionConfig& config)
+                : config_(config) {
 
             }
 
             std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
-                return std::make_unique<CoverageStoppingCriterion>(threshold_);
+                return std::make_unique<CoverageStoppingCriterion>(config_.getThreshold());
             }
 
             std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
-                return std::make_unique<CoverageStoppingCriterion>(threshold_);
+                return std::make_unique<CoverageStoppingCriterion>(config_.getThreshold());
             }
 
     };
@@ -89,7 +90,7 @@ namespace seco {
     }
 
     std::unique_ptr<IStoppingCriterionFactory> CoverageStoppingCriterionConfig::create() const {
-        return std::make_unique<CoverageStoppingCriterionFactory>(threshold_);
+        return std::make_unique<CoverageStoppingCriterionFactory>(*this);
     }
 
 }
