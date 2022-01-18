@@ -10,8 +10,8 @@ from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
 from mlrl.common.cython.nominal_feature_mask cimport INominalFeatureMask
-from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfigImpl, \
-    LabelWiseStratifiedBiPartitionSamplingConfigImpl, RandomBiPartitionSamplingConfigImpl
+from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
+    ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.pruning cimport IrepConfigImpl
 from mlrl.common.cython.rule_induction cimport ITopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
@@ -92,11 +92,11 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoPartitionSampling()
 
-        ExampleWiseStratifiedBiPartitionSamplingConfigImpl& useExampleWiseStratifiedBiPartitionSampling()
+        IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling()
 
-        LabelWiseStratifiedBiPartitionSamplingConfigImpl& useLabelWiseStratifiedBiPartitionSampling()
+        ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
 
-        RandomBiPartitionSamplingConfigImpl& useRandomBiPartitionSampling()
+        IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
         void useNoPruning()
 

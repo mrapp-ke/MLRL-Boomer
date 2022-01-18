@@ -330,32 +330,32 @@ class IRuleLearner {
                  * Configures the rule learner to partition the available training examples into a training set and a
                  * holdout set by randomly splitting the training examples into two mutually exclusive sets.
                  *
-                 * @return A reference to an object of type `RandomBiPartitionSamplingConfig` that allows further
+                 * @return A reference to an object of type `IRandomBiPartitionSamplingConfig` that allows further
                  *         configuration of the method for partitioning the available training examples into a training
                  *         set and a holdout set
                  */
-                virtual RandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() = 0;
+                virtual IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() = 0;
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
                  * holdout set using stratification, such that for each label the proportion of relevant and irrelevant
                  * examples is maintained.
                  *
-                 * @return A reference to an object of type `LabelWiseStratifiedBiPartitionSamplingConfig` that allows
+                 * @return A reference to an object of type `ILabelWiseStratifiedBiPartitionSamplingConfig` that allows
                  *         further configuration of the method for partitioning the available training examples into a
                  *         training and a holdout set
                  */
-                virtual LabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() = 0;
+                virtual ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() = 0;
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
                  * holdout set using stratification, where distinct label vectors are treated as individual classes
                  *
-                 * @return A reference to an object of type `ExampleWiseStratifiedBiPartitionSamplingConfig` that allows
-                 *         further configuration of the method for partitioning the available training examples into a
-                 *         training and a holdout set
+                 * @return A reference to an object of type `IExampleWiseStratifiedBiPartitionSamplingConfig` that
+                 *         allows further configuration of the method for partitioning the available training examples
+                 *         into a training and a holdout set
                  */
-                virtual ExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() = 0;
+                virtual IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() = 0;
 
                 /**
                  * Configures the rule learner to not prune classification rules.
@@ -671,11 +671,11 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoPartitionSampling() override final;
 
-                RandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
+                IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
 
-                LabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
+                ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
 
-                ExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
+                IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
 
                 void useNoPruning() override final;
 
