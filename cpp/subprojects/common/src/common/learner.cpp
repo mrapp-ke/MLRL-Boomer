@@ -119,9 +119,9 @@ const MeasureStoppingCriterionConfig* AbstractRuleLearner::Config::getMeasureSto
     return measureStoppingCriterionConfigPtr_.get();
 }
 
-SequentialRuleModelAssemblageConfig& AbstractRuleLearner::Config::useSequentialRuleModelAssemblage() {
+ISequentialRuleModelAssemblageConfig& AbstractRuleLearner::Config::useSequentialRuleModelAssemblage() {
     std::unique_ptr<SequentialRuleModelAssemblageConfig> ptr = std::make_unique<SequentialRuleModelAssemblageConfig>();
-    SequentialRuleModelAssemblageConfig& ref = *ptr;
+    ISequentialRuleModelAssemblageConfig& ref = *ptr;
     ruleModelAssemblageConfigPtr_ = std::move(ptr);
     return ref;
 }
@@ -288,13 +288,7 @@ AbstractRuleLearner::AbstractRuleLearner(const IRuleLearner::IConfig& config)
 }
 
 std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory() const {
-    const IRuleModelAssemblageConfig* baseConfig = &config_.getRuleModelAssemblageConfig();
-
-    if (auto* config = dynamic_cast<const SequentialRuleModelAssemblageConfig*>(baseConfig)) {
-        return std::make_unique<SequentialRuleModelAssemblageFactory>(config->getUseDefaultRule());
-    }
-
-    throw std::runtime_error("Failed to create IRuleModelAssemblageFactory");
+    return config_.getRuleModelAssemblageConfig().create();
 }
 
 std::unique_ptr<IFeatureBinningFactory> AbstractRuleLearner::createFeatureBinningFactory() const {

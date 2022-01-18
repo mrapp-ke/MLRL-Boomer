@@ -200,6 +200,54 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
 };
 
+/**
+ * A factory that allows to create instances of the class `IRuleModelAssemblage` that allow to sequentially induce
+ * several rules, optionally starting with a default rule, that are added to a rule-based model.
+ */
+class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
+
+    private:
+
+        bool useDefaultRule_;
+
+    public:
+
+        /**
+         * @param useDefaultRule True, if a default rule should be used, false otherwise
+         */
+        SequentialRuleModelAssemblageFactory(bool useDefaultRule)
+            : useDefaultRule_(useDefaultRule) {
+
+        }
+
+        std::unique_ptr<IRuleModelAssemblage> create(
+                std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+                std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
+                std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
+                std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
+                std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
+                std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
+                std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
+                std::unique_ptr<IPruningFactory> pruningFactoryPtr,
+                std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
+                std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const override {
+            std::unique_ptr<SequentialRuleModelAssemblage> rule_model_assemblage_ptr =
+                std::make_unique<SequentialRuleModelAssemblage>(
+                    std::move(statisticsProviderFactoryPtr), std::move(thresholdsFactoryPtr),
+                    std::move(ruleInductionFactoryPtr), std::move(labelSamplingFactoryPtr),
+                    std::move(instanceSamplingFactoryPtr), std::move(featureSamplingFactoryPtr),
+                    std::move(partitionSamplingFactoryPtr), std::move(pruningFactoryPtr),
+                    std::move(postProcessorFactoryPtr), useDefaultRule_);
+
+            for (auto it = stoppingCriterionFactories.begin(); it != stoppingCriterionFactories.end(); it++) {
+                rule_model_assemblage_ptr->addStoppingCriterionFactory(std::move(*it));
+            }
+
+            return rule_model_assemblage_ptr;
+        }
+
+};
+
 SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig()
     : useDefaultRule_(true) {
 
@@ -209,42 +257,11 @@ bool SequentialRuleModelAssemblageConfig::getUseDefaultRule() const {
     return useDefaultRule_;
 }
 
-SequentialRuleModelAssemblageConfig& SequentialRuleModelAssemblageConfig::setUseDefaultRule(bool useDefaultRule) {
+ISequentialRuleModelAssemblageConfig& SequentialRuleModelAssemblageConfig::setUseDefaultRule(bool useDefaultRule) {
     useDefaultRule_ = useDefaultRule;
     return *this;
 }
 
-SequentialRuleModelAssemblageFactory::SequentialRuleModelAssemblageFactory(bool useDefaultRule)
-    : useDefaultRule_(useDefaultRule) {
-
-}
-
-std::unique_ptr<IRuleModelAssemblage> SequentialRuleModelAssemblageFactory::create(
-        std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-        std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-        std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
-        std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
-        std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
-        std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-        std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-        std::unique_ptr<IPruningFactory> pruningFactoryPtr,
-        std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-        std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const {
-    std::unique_ptr<SequentialRuleModelAssemblage> rule_model_assemblage_ptr =
-        std::make_unique<SequentialRuleModelAssemblage>(std::move(statisticsProviderFactoryPtr),
-                                                        std::move(thresholdsFactoryPtr),
-                                                        std::move(ruleInductionFactoryPtr),
-                                                        std::move(labelSamplingFactoryPtr),
-                                                        std::move(instanceSamplingFactoryPtr),
-                                                        std::move(featureSamplingFactoryPtr),
-                                                        std::move(partitionSamplingFactoryPtr),
-                                                        std::move(pruningFactoryPtr),
-                                                        std::move(postProcessorFactoryPtr),
-                                                        useDefaultRule_);
-
-    for (auto it = stoppingCriterionFactories.begin(); it != stoppingCriterionFactories.end(); it++) {
-        rule_model_assemblage_ptr->addStoppingCriterionFactory(std::move(*it));
-    }
-
-    return rule_model_assemblage_ptr;
+std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::create() const {
+    return std::make_unique<SequentialRuleModelAssemblageFactory>(useDefaultRule_);
 }
