@@ -3,9 +3,9 @@ from mlrl.common.cython.feature_binning cimport EqualWidthFeatureBinningConfigIm
     EqualFrequencyFeatureBinningConfigImpl
 from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
 from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplacementConfigImpl
-from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceSamplingConfigImpl, \
-    LabelWiseStratifiedInstanceSamplingConfigImpl, InstanceSamplingWithReplacementConfigImpl, \
-    InstanceSamplingWithoutReplacementConfigImpl
+from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
+    ILabelWiseStratifiedInstanceSamplingConfig, IInstanceSamplingWithReplacementConfig, \
+    IInstanceSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
@@ -78,13 +78,13 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoInstanceSampling()
 
-        ExampleWiseStratifiedInstanceSamplingConfigImpl& useExampleWiseStratifiedInstanceSampling()
+        IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling()
 
-        LabelWiseStratifiedInstanceSamplingConfigImpl& useLabelWiseStratifiedInstanceSampling()
+        ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling()
 
-        InstanceSamplingWithReplacementConfigImpl& useInstanceSamplingWithReplacement()
+        IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement()
 
-        InstanceSamplingWithoutReplacementConfigImpl& useInstanceSamplingWithoutReplacement()
+        IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement()
 
         void useNoFeatureSampling()
 

@@ -153,7 +153,7 @@ cdef class RuleLearnerConfig:
                  instances
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef InstanceSamplingWithReplacementConfigImpl* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithReplacement()
+        cdef IInstanceSamplingWithReplacementConfig* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithReplacement()
         cdef InstanceSamplingWithReplacementConfig config = InstanceSamplingWithReplacementConfig.__new__(InstanceSamplingWithReplacementConfig)
         config.config_ptr = config_ptr
         return config
@@ -167,7 +167,7 @@ cdef class RuleLearnerConfig:
                  sampling instances
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef InstanceSamplingWithoutReplacementConfigImpl* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithoutReplacement()
+        cdef IInstanceSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithoutReplacement()
         cdef InstanceSamplingWithoutReplacementConfig config = InstanceSamplingWithoutReplacementConfig.__new__(InstanceSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config
@@ -182,7 +182,7 @@ cdef class RuleLearnerConfig:
                  sampling instances
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef LabelWiseStratifiedInstanceSamplingConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedInstanceSampling()
+        cdef ILabelWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedInstanceSampling()
         cdef LabelWiseStratifiedInstanceSamplingConfig config = LabelWiseStratifiedInstanceSamplingConfig.__new__(LabelWiseStratifiedInstanceSamplingConfig)
         config.config_ptr = config_ptr
         return config
@@ -196,7 +196,7 @@ cdef class RuleLearnerConfig:
                  sampling instances
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef ExampleWiseStratifiedInstanceSamplingConfigImpl* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedInstanceSampling()
+        cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedInstanceSampling()
         cdef ExampleWiseStratifiedInstanceSamplingConfig config = ExampleWiseStratifiedInstanceSamplingConfig.__new__(ExampleWiseStratifiedInstanceSamplingConfig)
         config.config_ptr = config_ptr
         return config
