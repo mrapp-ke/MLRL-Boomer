@@ -29,17 +29,6 @@ class ILabelSampling {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a method for sampling labels.
- */
-class ILabelSamplingConfig {
-
-    public:
-
-        virtual ~ILabelSamplingConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create objects of type `ILabelSampling`.
  */
 class ILabelSamplingFactory {
@@ -55,5 +44,23 @@ class ILabelSamplingFactory {
          * @return          An unique pointer to an object of type `ILabelSampling` that has been created
          */
         virtual std::unique_ptr<ILabelSampling> create(uint32 numLabels) const = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for sampling labels.
+ */
+class ILabelSamplingConfig {
+
+    public:
+
+        virtual ~ILabelSamplingConfig() { };
+
+        /**
+         * Creates and returns a new object of type `ILabelSamplingFactory` according to the specified configuration.
+         *
+         * @return An unique pointer to an object of type `ILabelSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<ILabelSamplingFactory> create() const = 0;
 
 };

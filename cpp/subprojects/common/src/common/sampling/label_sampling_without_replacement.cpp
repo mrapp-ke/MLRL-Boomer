@@ -34,6 +34,33 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
 
 };
 
+/**
+ * Allows to create objects of type `ILabelSampling` that select a random subset of the available features without
+ * replacement.
+ */
+class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactory {
+
+    private:
+
+        uint32 numSamples_;
+
+    public:
+
+        /**
+         * @param numSamples The number of labels to be included in the sample. Must be at least 1
+         */
+        LabelSamplingWithoutReplacementFactory(uint32 numSamples)
+            : numSamples_(numSamples) {
+
+        }
+
+        std::unique_ptr<ILabelSampling> create(uint32 numLabels) const override {
+            uint32 numSamples = numSamples_ > numLabels ? numLabels : numSamples_;
+            return std::make_unique<LabelSamplingWithoutReplacement>(numLabels, numSamples);
+        }
+
+};
+
 LabelSamplingWithoutReplacementConfig::LabelSamplingWithoutReplacementConfig()
     : numSamples_(1) {
 
@@ -43,18 +70,12 @@ uint32 LabelSamplingWithoutReplacementConfig::getNumSamples() const {
     return numSamples_;
 }
 
-LabelSamplingWithoutReplacementConfig& LabelSamplingWithoutReplacementConfig::setNumSamples(uint32 numSamples) {
+ILabelSamplingWithoutReplacementConfig& LabelSamplingWithoutReplacementConfig::setNumSamples(uint32 numSamples) {
     assertGreaterOrEqual<uint32>("numSamples", numSamples, 1);
     numSamples_ = numSamples;
     return *this;
 }
 
-LabelSamplingWithoutReplacementFactory::LabelSamplingWithoutReplacementFactory(uint32 numSamples)
-    : numSamples_(numSamples) {
-
-}
-
-std::unique_ptr<ILabelSampling> LabelSamplingWithoutReplacementFactory::create(uint32 numLabels) const {
-    return std::make_unique<LabelSamplingWithoutReplacement>(numLabels,
-                                                             numSamples_ > numLabels ? numLabels : numSamples_);
+std::unique_ptr<ILabelSamplingFactory> LabelSamplingWithoutReplacementConfig::create() const {
+    return std::make_unique<LabelSamplingWithoutReplacementFactory>(numSamples_);
 }

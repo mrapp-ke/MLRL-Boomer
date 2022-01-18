@@ -131,7 +131,7 @@ cdef class RuleLearnerConfig:
                  labels
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef LabelSamplingWithoutReplacementConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelSamplingWithoutReplacement()
+        cdef ILabelSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useLabelSamplingWithoutReplacement()
         cdef LabelSamplingWithoutReplacementConfig config = LabelSamplingWithoutReplacementConfig.__new__(LabelSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config

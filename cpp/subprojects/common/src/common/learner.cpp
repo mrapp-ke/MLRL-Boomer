@@ -155,10 +155,10 @@ void AbstractRuleLearner::Config::useNoLabelSampling() {
     labelSamplingConfigPtr_ = std::make_unique<NoLabelSamplingConfig>();
 }
 
-LabelSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useLabelSamplingWithoutReplacement() {
+ILabelSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useLabelSamplingWithoutReplacement() {
     std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
         std::make_unique<LabelSamplingWithoutReplacementConfig>();
-    LabelSamplingWithoutReplacementConfig& ref = *ptr;
+    ILabelSamplingWithoutReplacementConfig& ref = *ptr;
     labelSamplingConfigPtr_ = std::move(ptr);
     return ref;
 }
@@ -325,15 +325,7 @@ std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionF
 }
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory() const {
-    const ILabelSamplingConfig* baseConfig = &config_.getLabelSamplingConfig();
-
-    if (dynamic_cast<const NoLabelSamplingConfig*>(baseConfig)) {
-        return std::make_unique<NoLabelSamplingFactory>();
-    } else if (auto* config = dynamic_cast<const LabelSamplingWithoutReplacementConfig*>(baseConfig)) {
-        return std::make_unique<LabelSamplingWithoutReplacementFactory>(config->getNumSamples());
-    }
-
-    throw std::runtime_error("Failed to create ILabelSamplingFactory");
+    return config_.getLabelSamplingConfig().create();
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
