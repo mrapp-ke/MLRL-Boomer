@@ -186,17 +186,8 @@ namespace boosting {
     };
 
     LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig()
-        : threshold_(0.0), numThreads_(0) {
+        : numThreads_(0) {
 
-    }
-
-    float64 LabelWiseClassificationPredictorConfig::getThreshold() const {
-        return threshold_;
-    }
-
-    LabelWiseClassificationPredictorConfig& LabelWiseClassificationPredictorConfig::setThreshold(float64 threshold) {
-        threshold_ = threshold;
-        return *this;
     }
 
     uint32 LabelWiseClassificationPredictorConfig:: getNumThreads() const {
