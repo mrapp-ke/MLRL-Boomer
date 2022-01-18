@@ -43,8 +43,8 @@ namespace boosting {
         return *probabilityPredictorConfigPtr_;
     }
 
-    SizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
-        SizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
+    ISizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
+        ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
         ref.setMaxRules(1000);
         return ref;
     }

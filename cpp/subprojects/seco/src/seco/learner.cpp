@@ -35,8 +35,8 @@ namespace seco {
         return *classificationPredictorConfigPtr_;
     }
 
-    SizeStoppingCriterionConfig& SeCoRuleLearner::Config::useSizeStoppingCriterion() {
-        SizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
+    ISizeStoppingCriterionConfig& SeCoRuleLearner::Config::useSizeStoppingCriterion() {
+        ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
         ref.setMaxRules(500);
         return ref;
     }
@@ -51,9 +51,9 @@ namespace seco {
         coverageStoppingCriterionConfigPtr_ = nullptr;
     }
 
-    CoverageStoppingCriterionConfig& SeCoRuleLearner::Config::useCoverageStoppingCriterion() {
+    ICoverageStoppingCriterionConfig& SeCoRuleLearner::Config::useCoverageStoppingCriterion() {
         std::unique_ptr<CoverageStoppingCriterionConfig> ptr = std::make_unique<CoverageStoppingCriterionConfig>();
-        CoverageStoppingCriterionConfig& ref = *ptr;
+        ICoverageStoppingCriterionConfig& ref = *ptr;
         coverageStoppingCriterionConfigPtr_ = std::move(ptr);
         return ref;
     }
@@ -232,14 +232,9 @@ namespace seco {
         throw std::runtime_error("Failed to create ILiftFunctionFactory");
     }
 
-    std::unique_ptr<CoverageStoppingCriterionFactory> SeCoRuleLearner::createCoverageStoppingCriterionFactory() const {
+    std::unique_ptr<IStoppingCriterionFactory> SeCoRuleLearner::createCoverageStoppingCriterionFactory() const {
         const CoverageStoppingCriterionConfig* config = configPtr_->getCoverageStoppingCriterionConfig();
-
-        if (config) {
-            return std::make_unique<CoverageStoppingCriterionFactory>(config->getThreshold());
-        }
-
-        return nullptr;
+        return config ? config->create() : nullptr;
     }
 
     void SeCoRuleLearner::createStoppingCriterionFactories(

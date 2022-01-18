@@ -55,6 +55,35 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
 
 };
 
+/**
+ * Allows to create instances of the type `IStoppingCriterion` that ensure that a certain time limit is not exceeded.
+ */
+class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
+
+    private:
+
+        uint32 timeLimit_;
+
+    public:
+
+        /**
+         * @param timeLimit The time limit in seconds. Must be at least 1
+         */
+        TimeStoppingCriterionFactory(uint32 timeLimit)
+            : timeLimit_(timeLimit) {
+
+        }
+
+        std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
+            return std::make_unique<TimeStoppingCriterion>(timeLimit_);
+        }
+
+        std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
+            return std::make_unique<TimeStoppingCriterion>(timeLimit_);
+        }
+
+};
+
 TimeStoppingCriterionConfig::TimeStoppingCriterionConfig()
     : timeLimit_(3600) {
 
@@ -64,21 +93,12 @@ uint32 TimeStoppingCriterionConfig::getTimeLimit() const {
     return timeLimit_;
 }
 
-TimeStoppingCriterionConfig& TimeStoppingCriterionConfig::setTimeLimit(uint32 timeLimit) {
+ITimeStoppingCriterionConfig& TimeStoppingCriterionConfig::setTimeLimit(uint32 timeLimit) {
     assertGreaterOrEqual<uint32>("timeLimit", timeLimit, 1);
     timeLimit_ = timeLimit;
     return *this;
 }
 
-TimeStoppingCriterionFactory::TimeStoppingCriterionFactory(uint32 timeLimit)
-    : timeLimit_(timeLimit) {
-
-}
-
-std::unique_ptr<IStoppingCriterion> TimeStoppingCriterionFactory::create(const SinglePartition& partition) const {
-    return std::make_unique<TimeStoppingCriterion>(timeLimit_);
-}
-
-std::unique_ptr<IStoppingCriterion> TimeStoppingCriterionFactory::create(BiPartition& partition) const {
-    return std::make_unique<TimeStoppingCriterion>(timeLimit_);
+std::unique_ptr<IStoppingCriterionFactory> TimeStoppingCriterionConfig::create() const {
+    return std::make_unique<TimeStoppingCriterionFactory>(timeLimit_);
 }

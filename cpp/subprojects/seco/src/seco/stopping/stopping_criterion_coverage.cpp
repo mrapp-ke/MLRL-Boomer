@@ -42,6 +42,37 @@ namespace seco {
 
     };
 
+    /**
+     * Allows to create instances of the type `IStoppingCriterion` that stop the induction of rules as soon as the sum
+     * of the weights of the uncovered labels, as provided by an object of type `ICoverageStatistics`, is smaller or
+     * equal to a certain threshold.
+     */
+    class CoverageStoppingCriterionFactory final : public IStoppingCriterionFactory {
+
+        private:
+
+            float64 threshold_;
+
+        public:
+
+            /**
+             * @param threshold The threshold. Must be at least 0
+             */
+            CoverageStoppingCriterionFactory(float64 threshold)
+                : threshold_(threshold) {
+
+            }
+
+            std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
+                return std::make_unique<CoverageStoppingCriterion>(threshold_);
+            }
+
+            std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
+                return std::make_unique<CoverageStoppingCriterion>(threshold_);
+            }
+
+    };
+
     CoverageStoppingCriterionConfig::CoverageStoppingCriterionConfig()
         : threshold_(0) {
 
@@ -51,24 +82,14 @@ namespace seco {
         return threshold_;
     }
 
-    CoverageStoppingCriterionConfig& CoverageStoppingCriterionConfig::setThreshold(float64 threshold) {
+    ICoverageStoppingCriterionConfig& CoverageStoppingCriterionConfig::setThreshold(float64 threshold) {
         assertGreaterOrEqual<float64>("threshold", threshold, 0);
         threshold_ = threshold;
         return *this;
     }
 
-    CoverageStoppingCriterionFactory::CoverageStoppingCriterionFactory(float64 threshold)
-        : threshold_(threshold) {
-
-    }
-
-    std::unique_ptr<IStoppingCriterion> CoverageStoppingCriterionFactory::create(
-            const SinglePartition& partition) const {
-        return std::make_unique<CoverageStoppingCriterion>(threshold_);
-    }
-
-    std::unique_ptr<IStoppingCriterion> CoverageStoppingCriterionFactory::create(BiPartition& partition) const {
-        return std::make_unique<CoverageStoppingCriterion>(threshold_);
+    std::unique_ptr<IStoppingCriterionFactory> CoverageStoppingCriterionConfig::create() const {
+        return std::make_unique<CoverageStoppingCriterionFactory>(threshold_);
     }
 
 }

@@ -250,7 +250,7 @@ namespace boosting {
 
                     Config();
 
-                    SizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
+                    ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                     void useNoPostProcessor() override;
 

@@ -5,86 +5,86 @@ from libcpp cimport bool
 
 cdef extern from "common/stopping/stopping_criterion_size.hpp" nogil:
 
-    cdef cppclass SizeStoppingCriterionConfigImpl"SizeStoppingCriterionConfig":
+    cdef cppclass ISizeStoppingCriterionConfig:
 
         # Functions:
 
         uint32 getMaxRules() const
 
-        SizeStoppingCriterionConfigImpl& setMaxRules(uint32 maxRules) except +
+        ISizeStoppingCriterionConfig& setMaxRules(uint32 maxRules) except +
 
 
 cdef extern from "common/stopping/stopping_criterion_time.hpp" nogil:
 
-    cdef cppclass TimeStoppingCriterionConfigImpl"TimeStoppingCriterionConfig":
+    cdef cppclass ITimeStoppingCriterionConfig:
 
         # Functions:
 
         uint32 getTimeLimit() const
 
-        TimeStoppingCriterionConfigImpl& setTimeLimit(uint32 timeLimit) except +
+        ITimeStoppingCriterionConfig& setTimeLimit(uint32 timeLimit) except +
 
 
 cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
 
-    cpdef enum AggregationFunctionImpl"MeasureStoppingCriterionConfig::AggregationFunction":
+    cpdef enum AggregationFunctionImpl"IMeasureStoppingCriterionConfig::AggregationFunction":
 
-        MIN_"MeasureStoppingCriterionConfig::AggregationFunction::MIN" = 0,
+        MIN_"IMeasureStoppingCriterionConfig::AggregationFunction::MIN" = 0,
 
-        MAX_"MeasureStoppingCriterionConfig::AggregationFunction::MAX" = 1,
+        MAX_"IMeasureStoppingCriterionConfig::AggregationFunction::MAX" = 1,
 
-        ARITHMETIC_MEAN_"MeasureStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN" = 2
+        ARITHMETIC_MEAN_"IMeasureStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN" = 2
 
 
-    cdef cppclass MeasureStoppingCriterionConfigImpl"MeasureStoppingCriterionConfig":
+    cdef cppclass IMeasureStoppingCriterionConfig:
 
         # Functions:
 
         AggregationFunctionImpl getAggregationFunction() const
 
-        MeasureStoppingCriterionConfigImpl& setAggregationFunction(AggregationFunctionImpl aggregationFunction) except +
+        IMeasureStoppingCriterionConfig& setAggregationFunction(AggregationFunctionImpl aggregationFunction) except +
 
         uint32 getMinRules() const
 
-        MeasureStoppingCriterionConfigImpl& setMinRules(uint32 minRules) except +
+        IMeasureStoppingCriterionConfig& setMinRules(uint32 minRules) except +
 
         uint32 getUpdateInterval() const
 
-        MeasureStoppingCriterionConfigImpl& setUpdateInterval(uint32 updateInterval) except +
+        IMeasureStoppingCriterionConfig& setUpdateInterval(uint32 updateInterval) except +
 
         uint32 getStopInterval() const;
 
-        MeasureStoppingCriterionConfigImpl& setStopInterval(uint32 stopInterval) except +
+        IMeasureStoppingCriterionConfig& setStopInterval(uint32 stopInterval) except +
 
         uint32 getNumPast() const
 
-        MeasureStoppingCriterionConfigImpl& setNumPast(uint32 numPast) except +
+        IMeasureStoppingCriterionConfig& setNumPast(uint32 numPast) except +
 
         uint32 getNumCurrent() const
 
-        MeasureStoppingCriterionConfigImpl& setNumCurrent(uint32 numCurrent) except +
+        IMeasureStoppingCriterionConfig& setNumCurrent(uint32 numCurrent) except +
 
         float64 getMinImprovement() const
 
-        MeasureStoppingCriterionConfigImpl& setMinImprovement(float64 minImprovement) except +
+        IMeasureStoppingCriterionConfig& setMinImprovement(float64 minImprovement) except +
 
         bool getForceStop() const
 
-        MeasureStoppingCriterionConfigImpl& setForceStop(bool forceStop) except +
+        IMeasureStoppingCriterionConfig& setForceStop(bool forceStop) except +
 
 
 cdef class SizeStoppingCriterionConfig:
 
     # Attributes:
 
-    cdef SizeStoppingCriterionConfigImpl* config_ptr
+    cdef ISizeStoppingCriterionConfig* config_ptr
 
 
 cdef class TimeStoppingCriterionConfig:
 
     # Attributes:
 
-    cdef TimeStoppingCriterionConfigImpl* config_ptr
+    cdef ITimeStoppingCriterionConfig* config_ptr
 
 
 cdef enum AggregationFunction:
@@ -101,4 +101,4 @@ cdef class MeasureStoppingCriterionConfig:
 
     # Attributes:
 
-    cdef MeasureStoppingCriterionConfigImpl* config_ptr
+    cdef IMeasureStoppingCriterionConfig* config_ptr

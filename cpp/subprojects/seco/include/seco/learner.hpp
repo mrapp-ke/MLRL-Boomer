@@ -97,10 +97,10 @@ namespace seco {
                      * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon
                      * as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
                      *
-                     * @return A reference to an object of type `CoverageStoppingCriterionConfig` that allows further
+                     * @return A reference to an object of type `ICoverageStoppingCriterionConfig` that allows further
                      *         configuration of the stopping criterion
                      */
-                    virtual CoverageStoppingCriterionConfig& useCoverageStoppingCriterion() = 0;
+                    virtual ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() = 0;
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
@@ -281,11 +281,11 @@ namespace seco {
 
                     ITopDownRuleInductionConfig& useTopDownRuleInduction() override;
 
-                    SizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
+                    ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                     void useNoCoverageStoppingCriterion() override;
 
-                    CoverageStoppingCriterionConfig& useCoverageStoppingCriterion() override;
+                    ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() override;
 
                     AccuracyConfig& useAccuracyHeuristic() override;
 
@@ -331,7 +331,7 @@ namespace seco {
 
             std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory() const;
 
-            std::unique_ptr<CoverageStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const;
+            std::unique_ptr<IStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const;
 
         protected:
 
