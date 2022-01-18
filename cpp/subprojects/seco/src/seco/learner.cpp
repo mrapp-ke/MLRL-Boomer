@@ -35,6 +35,12 @@ namespace seco {
         return *classificationPredictorConfigPtr_;
     }
 
+    SizeStoppingCriterionConfig& SeCoRuleLearner::Config::useSizeStoppingCriterion() {
+        SizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
+        ref.setMaxRules(500);
+        return ref;
+    }
+
     TopDownRuleInductionConfig& SeCoRuleLearner::Config::useTopDownRuleInduction() {
         TopDownRuleInductionConfig& config = AbstractRuleLearner::Config::useTopDownRuleInduction();
         config.setRecalculatePredictions(false);
