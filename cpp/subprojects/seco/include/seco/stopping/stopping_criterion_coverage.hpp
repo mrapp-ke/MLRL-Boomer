@@ -10,10 +10,40 @@
 namespace seco {
 
     /**
+     * Defines an interface for all classes that allow to configure a stopping criterion that stops the induction of
+     * rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
+     */
+    class ICoverageStoppingCriterionConfig {
+
+        public:
+
+            virtual ~ICoverageStoppingCriterionConfig() { };
+
+            /**
+             * Returns the threshold that is used by the stopping criterion.
+             *
+             * @return The threshold that is used by the stopping criterion
+             */
+            virtual float64 getThreshold() const = 0;
+
+            /**
+             * Sets the threshold that should be used by the stopping criterion.
+             *
+             * @param threshold The threshold that should be used by the stopping criterion. The threshold must be at
+             *                  least 0
+             * @return          A reference to an object of type `ICoverageStoppingCriterionConfig` that allows further
+             *                  configuration of the stopping criterion
+             */
+            virtual ICoverageStoppingCriterionConfig& setThreshold(float64 threshold) = 0;
+
+    };
+
+    /**
      * Allows to configure a stopping criterion that stops the induction of rules as soon as the sum of the weights of
      * the uncovered labels is smaller or equal to a certain threshold.
      */
-    class CoverageStoppingCriterionConfig : public IStoppingCriterionConfig {
+    class CoverageStoppingCriterionConfig final : public IStoppingCriterionConfig,
+                                                  public ICoverageStoppingCriterionConfig {
 
         private:
 
@@ -23,46 +53,11 @@ namespace seco {
 
             CoverageStoppingCriterionConfig();
 
-            /**
-             * Returns the threshold that is used by the stopping criterion.
-             *
-             * @return The threshold that is used by the stopping criterion
-             */
-            float64 getThreshold() const;
+            float64 getThreshold() const override;
 
-            /**
-             * Sets the threshold that should be used by the stopping criterion.
-             *
-             * @param threshold The threshold that should be used by the stopping criterion. The threshold must be at
-             *                  least 0
-             * @return          A reference to an object of type `CoverageStoppingCriterionConfig` that allows further
-             *                  configuration of the stopping criterion
-             */
-            CoverageStoppingCriterionConfig& setThreshold(float64 threshold);
+            ICoverageStoppingCriterionConfig& setThreshold(float64 threshold) override;
 
-    };
-
-    /**
-     * Allows to create instances of the type `IStoppingCriterion` that stop the induction of rules as soon as the sum
-     * of the weights of the uncovered labels, as provided by an object of type `ICoverageStatistics`, is smaller or
-     * equal to a certain threshold.
-     */
-    class CoverageStoppingCriterionFactory final : public IStoppingCriterionFactory {
-
-        private:
-
-            float64 threshold_;
-
-        public:
-
-            /**
-             * @param threshold The threshold. Must be at least 0
-             */
-            CoverageStoppingCriterionFactory(float64 threshold);
-
-            std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override;
-
-            std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override;
+            std::unique_ptr<IStoppingCriterionFactory> create() const override;
 
     };
 

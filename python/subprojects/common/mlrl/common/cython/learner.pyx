@@ -308,7 +308,7 @@ cdef class RuleLearnerConfig:
         :return: A `SizeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef SizeStoppingCriterionConfigImpl* config_ptr = &rule_learner_config_ptr.useSizeStoppingCriterion()
+        cdef ISizeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useSizeStoppingCriterion()
         cdef SizeStoppingCriterionConfig config = SizeStoppingCriterionConfig.__new__(SizeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
@@ -328,7 +328,7 @@ cdef class RuleLearnerConfig:
         :return: A `TimeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef TimeStoppingCriterionConfigImpl* config_ptr = &rule_learner_config_ptr.useTimeStoppingCriterion()
+        cdef ITimeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useTimeStoppingCriterion()
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
@@ -350,7 +350,7 @@ cdef class RuleLearnerConfig:
         :return: A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef MeasureStoppingCriterionConfigImpl* config_ptr = &rule_learner_config_ptr.useMeasureStoppingCriterion()
+        cdef IMeasureStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useMeasureStoppingCriterion()
         cdef MeasureStoppingCriterionConfig config = MeasureStoppingCriterionConfig.__new__(MeasureStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config

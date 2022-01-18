@@ -381,10 +381,10 @@ class IRuleLearner {
                  * Configures the rule learner to use a stopping criterion that ensures that the number of induced rules
                  * does not exceed a certain maximum.
                  *
-                 * @return A reference to an object of type `SizeStoppingCriterionConfig` that allows further
+                 * @return A reference to an object of type `ISizeStoppingCriterionConfig` that allows further
                  *         configuration of the stopping criterion
                  */
-                virtual SizeStoppingCriterionConfig& useSizeStoppingCriterion() = 0;
+                virtual ISizeStoppingCriterionConfig& useSizeStoppingCriterion() = 0;
 
                 /**
                  * Configures the rule learner to not use a stopping criterion that ensures that are certain time limit
@@ -396,10 +396,10 @@ class IRuleLearner {
                  * Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not
                  * exceeded.
                  *
-                 * @return A reference to an object of type `TimeStoppingCriterionConfig` that allows further
+                 * @return A reference to an object of type `ITimeStoppingCriterionConfig` that allows further
                  *         configuration of the stopping criterion
                  */
-                virtual TimeStoppingCriterionConfig& useTimeStoppingCriterion() = 0;
+                virtual ITimeStoppingCriterionConfig& useTimeStoppingCriterion() = 0;
 
                 /**
                  * Configures the rule learner to not use a stopping criterion that stops the induction of rules as soon
@@ -413,10 +413,10 @@ class IRuleLearner {
                  * the quality of a model's predictions for the examples in a holdout set do not improve according to a
                  * certain measure.
                  *
-                 * @return A reference to an object of the type `MeasureStoppingCriterionConfig` that allows further
+                 * @return A reference to an object of the type `IMeasureStoppingCriterionConfig` that allows further
                  *         configuration of the stopping criterion
                  */
-                virtual MeasureStoppingCriterionConfig& useMeasureStoppingCriterion() = 0;
+                virtual IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() = 0;
 
         };
 
@@ -683,15 +683,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoSizeStoppingCriterion() override final;
 
-                SizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
+                ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                 void useNoTimeStoppingCriterion() override final;
 
-                TimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
+                ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
 
                 void useNoMeasureStoppingCriterion() override final;
 
-                MeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
+                IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
 
         };
 
@@ -786,28 +786,28 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * May be overridden by subclasses in order to create  `SizeStoppingCriterionFactory` to be used by the rule
          * learner.
          *
-         * @return An unique pointer to an object of type `SizeStoppingCriterionFactory` that has been created or a null
+         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created or a null
          *         pointer, if no `SizeStoppingCriterionFactory` should be used
          */
-        std::unique_ptr<SizeStoppingCriterionFactory> createSizeStoppingCriterionFactory() const;
+        std::unique_ptr<IStoppingCriterionFactory> createSizeStoppingCriterionFactory() const;
 
         /**
          * May be overridden by subclasses in order to create  `TimeStoppingCriterionFactory` to be used by the rule
          * learner.
          *
-         * @return An unique pointer to an object of type `TimeStoppingCriterionFactory` that has been created or a null
+         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created or a null
          *         pointer, if no `TimeStoppingCriterionFactory` should be used
          */
-        std::unique_ptr<TimeStoppingCriterionFactory> createTimeStoppingCriterionFactory() const;
+        std::unique_ptr<IStoppingCriterionFactory> createTimeStoppingCriterionFactory() const;
 
         /**
          * May be overridden by subclasses in order to create  `MeasureStoppingCriterionFactory` to be used by the rule
          * learner.
          *
-         * @return An unique pointer to an object of type `MeasureStoppingCriterionFactory` that has been created or a
-         *         null pointer, if no `MeasureStoppingCriterionFactory` should be used
+         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created or a null
+         *         pointer, if no `MeasureStoppingCriterionFactory` should be used
          */
-        std::unique_ptr<MeasureStoppingCriterionFactory> createMeasureStoppingCriterionFactory() const;
+        std::unique_ptr<IStoppingCriterionFactory> createMeasureStoppingCriterionFactory() const;
 
         /**
          * May be overridden by subclasses in order create objects of the type `IStoppingCriterionFactory` to be used by

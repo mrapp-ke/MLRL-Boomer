@@ -16,8 +16,8 @@ from mlrl.common.cython.pruning cimport IIrepConfig
 from mlrl.common.cython.rule_induction cimport ITopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.rule_model_assemblage cimport ISequentialRuleModelAssemblageConfig
-from mlrl.common.cython.stopping_criterion cimport SizeStoppingCriterionConfigImpl, TimeStoppingCriterionConfigImpl, \
-    MeasureStoppingCriterionConfigImpl
+from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
+    IMeasureStoppingCriterionConfig
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
@@ -104,15 +104,15 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoSizeStoppingCriterion()
 
-        SizeStoppingCriterionConfigImpl& useSizeStoppingCriterion();
+        ISizeStoppingCriterionConfig& useSizeStoppingCriterion();
 
         void useNoTimeStoppingCriterion()
 
-        TimeStoppingCriterionConfigImpl& useTimeStoppingCriterion();
+        ITimeStoppingCriterionConfig& useTimeStoppingCriterion();
 
         void useNoMeasureStoppingCriterion()
 
-        MeasureStoppingCriterionConfigImpl& useMeasureStoppingCriterion();
+        IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion();
 
 
     cdef cppclass IRuleLearner:

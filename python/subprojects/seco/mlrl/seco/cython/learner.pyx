@@ -38,7 +38,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `CoverageStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef CoverageStoppingCriterionConfigImpl* config_ptr = &rule_learner_config_ptr.useCoverageStoppingCriterion()
+        cdef ICoverageStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useCoverageStoppingCriterion()
         cdef CoverageStoppingCriterionConfig config = CoverageStoppingCriterionConfig.__new__(CoverageStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config

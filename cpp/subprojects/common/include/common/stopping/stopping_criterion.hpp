@@ -62,18 +62,6 @@ class IStoppingCriterion {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a stopping criterion that allows to decide whether
- * additional rules should be induced or not.
- */
-class IStoppingCriterionConfig {
-
-    public:
-
-        virtual ~IStoppingCriterionConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create instances of the type `IStoppingCriterion`.
  */
 class IStoppingCriterionFactory {
@@ -100,5 +88,26 @@ class IStoppingCriterionFactory {
          * @return              An unique pointer to an object of type `IStoppingCriterion` that has been created
          */
         virtual std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const = 0;
+
+};
+
+
+/**
+ * Defines an interface for all classes that allow to configure a stopping criterion that allows to decide whether
+ * additional rules should be induced or not.
+ */
+class IStoppingCriterionConfig {
+
+    public:
+
+        virtual ~IStoppingCriterionConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IStoppingCriterionFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created
+         */
+        virtual std::unique_ptr<IStoppingCriterionFactory> create() const = 0;
 
 };
