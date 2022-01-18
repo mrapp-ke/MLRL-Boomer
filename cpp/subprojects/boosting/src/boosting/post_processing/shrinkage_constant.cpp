@@ -34,6 +34,11 @@ namespace boosting {
 
     };
 
+    ConstantShrinkageConfig::ConstantShrinkageConfig()
+        : shrinkage_(0.3) {
+
+    }
+
     float64 ConstantShrinkageConfig::getShrinkage() const {
         return shrinkage_;
     }

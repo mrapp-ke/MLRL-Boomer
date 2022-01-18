@@ -19,6 +19,8 @@ namespace boosting {
 
         public:
 
+            ConstantShrinkageConfig();
+
             /**
              * Returns the value of the "shrinkage" parameter.
              *
