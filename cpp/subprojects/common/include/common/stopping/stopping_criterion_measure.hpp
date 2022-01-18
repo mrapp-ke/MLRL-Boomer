@@ -298,15 +298,3 @@ class MeasureStoppingCriterionConfig final : public IStoppingCriterionConfig, pu
         std::unique_ptr<IStoppingCriterionFactory> create() const override;
 
 };
-
-/**
- * Creates and returns a new object of type `IAggregationFunctionFactory`.
- *
- * @param aggregationFunction   A value of the enum `MeasureStoppingCriterionConfig::AggregationFunction` that specifies
- *                              the type of the aggregation function
- * @return                      An unique pointer to an object of type `IAggregationFunctionFactory` that has been
- *                              created
- */
-// TODO Remove
-std::unique_ptr<IAggregationFunctionFactory> createAggregationFunctionFactory(
-    MeasureStoppingCriterionConfig::AggregationFunction aggregationFunction);
