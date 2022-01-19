@@ -164,8 +164,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IRegressionPredictorFactory> BoostingRuleLearner::createRegressionPredictorFactory() const {
-        // TODO Implement
-        return nullptr;
+        return configPtr_->getRegressionPredictorConfig().create();
     }
 
     std::unique_ptr<IProbabilityPredictorFactory> BoostingRuleLearner::createProbabilityPredictorFactory() const {
