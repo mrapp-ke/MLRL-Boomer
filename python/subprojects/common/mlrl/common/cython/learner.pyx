@@ -87,6 +87,14 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoFeatureBinning()
 
+    def use_automatic_feature_binning(self):
+        """
+        Configures the rule learning to automatically decide whether a method for the assignment of numerical feature
+        values to bins should be used or not.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useAutomaticFeatureBinning()
+
     def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
         """
         Configures the rule learner to use a method for the assignment of numerical feature values to bins, such that
