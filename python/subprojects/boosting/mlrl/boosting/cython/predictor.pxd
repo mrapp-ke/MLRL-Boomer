@@ -36,13 +36,13 @@ cdef extern from "boosting/output/predictor_regression_label_wise.hpp" namespace
 
 cdef extern from "boosting/output/predictor_probability_label_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass LabelWiseProbabilityPredictorConfigImpl"boosting::LabelWiseProbabilityPredictorConfig":
+    cdef cppclass ILabelWiseProbabilityPredictorConfig:
 
         # Functions:
 
         uint32 getNumThreads() const
 
-        LabelWiseProbabilityPredictorConfigImpl& setNumThreads(uint32 numThreads) except +
+        ILabelWiseProbabilityPredictorConfig& setNumThreads(uint32 numThreads) except +
 
 
 cdef class ExampleWiseClassificationPredictorConfig:
@@ -70,4 +70,4 @@ cdef class LabelWiseProbabilityPredictorConfig:
 
     # Attributes:
 
-    cdef LabelWiseProbabilityPredictorConfigImpl* config_ptr
+    cdef ILabelWiseProbabilityPredictorConfig* config_ptr

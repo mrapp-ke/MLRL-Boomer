@@ -172,7 +172,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
                  predicting probability estimates
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef LabelWiseProbabilityPredictorConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelWiseProbabilityPredictor()
+        cdef ILabelWiseProbabilityPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseProbabilityPredictor()
         cdef LabelWiseProbabilityPredictorConfig config = LabelWiseProbabilityPredictorConfig.__new__(LabelWiseProbabilityPredictorConfig)
         config.config_ptr = config_ptr
         return config
