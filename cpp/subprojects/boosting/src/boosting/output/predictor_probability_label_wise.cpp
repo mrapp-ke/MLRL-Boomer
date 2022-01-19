@@ -248,6 +248,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::create() const {
+        // TODO check if prediction of regression scores is supported
         std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr = nullptr; // TODO Initialize
         return std::make_unique<LabelWiseProbabilityPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
                                                                       numThreads_);
