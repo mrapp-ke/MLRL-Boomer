@@ -62,25 +62,24 @@ class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
     private:
 
-        const ITimeStoppingCriterionConfig& config_;
+        uint32 timeLimit_;
 
     public:
 
         /**
-         * @param config A reference to an object of type `ITimeStoppingCriterionConfig` that specifies the
-         *               configuration to be used
+         * @param timeLimit The time limit in seconds. Must be at least 1
          */
-        TimeStoppingCriterionFactory(const ITimeStoppingCriterionConfig& config)
-            : config_(config) {
+        TimeStoppingCriterionFactory(uint32 timeLimit)
+            : timeLimit_(timeLimit) {
 
         }
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
-            return std::make_unique<TimeStoppingCriterion>(config_.getTimeLimit());
+            return std::make_unique<TimeStoppingCriterion>(timeLimit_);
         }
 
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
-            return std::make_unique<TimeStoppingCriterion>(config_.getTimeLimit());
+            return std::make_unique<TimeStoppingCriterion>(timeLimit_);
         }
 
 };
@@ -101,5 +100,5 @@ ITimeStoppingCriterionConfig& TimeStoppingCriterionConfig::setTimeLimit(uint32 t
 }
 
 std::unique_ptr<IStoppingCriterionFactory> TimeStoppingCriterionConfig::create() const {
-    return std::make_unique<TimeStoppingCriterionFactory>(*this);
+    return std::make_unique<TimeStoppingCriterionFactory>(timeLimit_);
 }

@@ -208,16 +208,15 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
 
     private:
 
-        const ISequentialRuleModelAssemblageConfig& config_;
+        bool useDefaultRule_;
 
     public:
 
         /**
-         * @param config A reference to an object of type `ISequentialRuleModelAssemblageConfig` that specifies the
-         *               configuration to be used
+         * @param useDefaultRule True, if a default rule should be used, false otherwise
          */
-        SequentialRuleModelAssemblageFactory(const ISequentialRuleModelAssemblageConfig& config)
-            : config_(config) {
+        SequentialRuleModelAssemblageFactory(bool useDefaultRule)
+            : useDefaultRule_(useDefaultRule) {
 
         }
 
@@ -238,7 +237,7 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
                     std::move(ruleInductionFactoryPtr), std::move(labelSamplingFactoryPtr),
                     std::move(instanceSamplingFactoryPtr), std::move(featureSamplingFactoryPtr),
                     std::move(partitionSamplingFactoryPtr), std::move(pruningFactoryPtr),
-                    std::move(postProcessorFactoryPtr), config_.getUseDefaultRule());
+                    std::move(postProcessorFactoryPtr), useDefaultRule_);
 
             for (auto it = stoppingCriterionFactories.begin(); it != stoppingCriterionFactories.end(); it++) {
                 rule_model_assemblage_ptr->addStoppingCriterionFactory(std::move(*it));
@@ -264,5 +263,5 @@ ISequentialRuleModelAssemblageConfig& SequentialRuleModelAssemblageConfig::setUs
 }
 
 std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::create() const {
-    return std::make_unique<SequentialRuleModelAssemblageFactory>(*this);
+    return std::make_unique<SequentialRuleModelAssemblageFactory>(useDefaultRule_);
 }

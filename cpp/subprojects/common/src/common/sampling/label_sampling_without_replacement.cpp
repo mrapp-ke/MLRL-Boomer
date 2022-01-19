@@ -42,26 +42,20 @@ class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactor
 
     private:
 
-        const ILabelSamplingWithoutReplacementConfig& config_;
+        uint32 numSamples_;
 
     public:
 
         /**
-         * @param config A reference to an object of type `ILabelSamplingWithoutReplacementConfig` that specifies the
-         *               configuration to be used
+         * @param numSamples The number of labels to be included in the sample. Must be at least 1
          */
-        LabelSamplingWithoutReplacementFactory(const ILabelSamplingWithoutReplacementConfig& config)
-            : config_(config) {
+        LabelSamplingWithoutReplacementFactory(uint32 numSamples)
+            : numSamples_(numSamples) {
 
         }
 
         std::unique_ptr<ILabelSampling> create(uint32 numLabels) const override {
-            uint32 numSamples = config_.getNumSamples();
-
-            if (numSamples > numLabels) {
-                numSamples = numLabels;
-            }
-
+            uint32 numSamples = numSamples_ > numLabels ? numLabels : numSamples_;
             return std::make_unique<LabelSamplingWithoutReplacement>(numLabels, numSamples);
         }
 
@@ -83,5 +77,5 @@ ILabelSamplingWithoutReplacementConfig& LabelSamplingWithoutReplacementConfig::s
 }
 
 std::unique_ptr<ILabelSamplingFactory> LabelSamplingWithoutReplacementConfig::create() const {
-    return std::make_unique<LabelSamplingWithoutReplacementFactory>(*this);
+    return std::make_unique<LabelSamplingWithoutReplacementFactory>(numSamples_);
 }

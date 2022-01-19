@@ -42,21 +42,20 @@ namespace boosting {
 
         private:
 
-            const IConstantShrinkageConfig& config_;
+            float64 shrinkage_;
 
         public:
 
             /**
-             * @param config A reference to an object of type `IConstantShrinkageConfig` that specifies the
-             *               configuration to be used
+             * @param shrinkage The value of the "shrinkage" parameter. Must be in (0, 1)
              */
-            ConstantShrinkageFactory(const IConstantShrinkageConfig& config)
-                : config_(config) {
+            ConstantShrinkageFactory(float64 shrinkage)
+                : shrinkage_(shrinkage) {
 
             }
 
             std::unique_ptr<IPostProcessor> create() const override {
-                return std::make_unique<ConstantShrinkage>(config_.getShrinkage());
+                return std::make_unique<ConstantShrinkage>(shrinkage_);
             }
 
     };
@@ -78,7 +77,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IPostProcessorFactory> ConstantShrinkageConfig::create() const {
-        return std::make_unique<ConstantShrinkageFactory>(*this);
+        return std::make_unique<ConstantShrinkageFactory>(shrinkage_);
     }
 
 }

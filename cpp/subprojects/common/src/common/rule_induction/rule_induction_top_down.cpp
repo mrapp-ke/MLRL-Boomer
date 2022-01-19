@@ -200,23 +200,42 @@ class TopDownRuleInductionFactory final : public IRuleInductionFactory {
 
     private:
 
-        const ITopDownRuleInductionConfig& config_;
+        uint32 minCoverage_;
+
+        uint32 maxConditions_;
+
+        uint32 maxHeadRefinements_;
+
+        bool recalculatePredictions_;
+
+        uint32 numThreads_;
 
     public:
 
         /**
-         * @param config A reference to an object of type `ITopDownRuleInductionConfig` that specifies the configuration
-         *               to be used
+         * @param minCoverage               The minimum number of training examples that must be covered by a rule. Must
+         *                                  be at least 1
+         * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
+         *                                  least 1 or 0, if the number of conditions should not be restricted
+         * @param maxHeadRefinements        The maximum number of times, the head of a rule may be refined after a new
+         *                                  condition has been added to its body. Must be at least 1 or 0, if the number
+         *                                  of refinements should not be restricted
+         * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
+         *                                  examples, if some of the examples have zero weights, false otherwise
+         * @param numThreads                The number of CPU threads to be used to search for potential refinements of
+         *                                  a rule in parallel. Must be at least 1
          */
-        TopDownRuleInductionFactory(const ITopDownRuleInductionConfig& config)
-            : config_(config) {
+        // TODO Check if it is better to pass a config by value and store it as a member variable!?
+        TopDownRuleInductionFactory(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
+                                    bool recalculatePredictions, uint32 numThreads)
+            : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
+              recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
 
         }
 
         std::unique_ptr<IRuleInduction> create() const override {
-            return std::make_unique<TopDownRuleInduction>(config_.getMinCoverage(), config_.getMaxConditions(),
-                                                          config_.getMaxHeadRefinements(),
-                                                          config_.getRecalculatePredictions(), config_.getNumThreads());
+            return std::make_unique<TopDownRuleInduction>(minCoverage_, maxConditions_, maxHeadRefinements_,
+                                                          recalculatePredictions_, numThreads_);
         }
 
 };
@@ -277,5 +296,6 @@ ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setNumThreads(uint32 nu
 }
 
 std::unique_ptr<IRuleInductionFactory> TopDownRuleInductionConfig::create() const {
-    return std::make_unique<TopDownRuleInductionFactory>(*this);
+    return std::make_unique<TopDownRuleInductionFactory>(minCoverage_, maxConditions_, maxHeadRefinements_,
+                                                         recalculatePredictions_, numThreads_);
 }
