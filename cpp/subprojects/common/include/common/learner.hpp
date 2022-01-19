@@ -722,110 +722,35 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         };
 
-    protected:
+    private:
 
-        /**
-         * A reference to an object of type `IRuleLearner::IConfig` that specifies the configuration that is used by the
-         * rule learner.
-         */
         const IRuleLearner::IConfig& config_;
 
-        /**
-         * May be overridden by subclasses in order to create the `IRuleModelAssemblageFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been created
-         */
-        virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory() const;
+        std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create the `IThresholdsFactory` to be used by the rule learner.
-         *
-         * @return An unique pointer to an object of type `IThresholdsFactory` that has been created
-         */
-        virtual std::unique_ptr<IThresholdsFactory> createThresholdsFactory() const;
+        std::unique_ptr<IThresholdsFactory> createThresholdsFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create the `IRuleInductionFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IRuleInductionFactory` that has been created
-         */
-        virtual std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory() const;
+        std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create the `ILabelSamplingFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `ILabelSamplingFactory` that has been created
-         */
-        virtual std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory() const;
+        std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create the `IInstanceSamplingFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
-         */
-        virtual std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const;
+        std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create the `IFeatureSamplingFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IFeatureSamplingFactory` that has been created
-         */
-        virtual std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory() const;
+        std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create the `IPartitionSamplingFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IPartitionSamplingFactory` that has been created
-         */
-        virtual std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const;
+        std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create the `IPruningFactory` to be used by the rule learner.
-         *
-         * @return An unique pointer to an object of type `IPruningFactory` that has been created
-         */
-        virtual std::unique_ptr<IPruningFactory> createPruningFactory() const;
+        std::unique_ptr<IPruningFactory> createPruningFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create the `IPostProcessorFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IPostProcessorFactory` that has been created
-         */
-        virtual std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const;
+        std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create  `SizeStoppingCriterionFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created or a null
-         *         pointer, if no `SizeStoppingCriterionFactory` should be used
-         */
         std::unique_ptr<IStoppingCriterionFactory> createSizeStoppingCriterionFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create  `TimeStoppingCriterionFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created or a null
-         *         pointer, if no `TimeStoppingCriterionFactory` should be used
-         */
         std::unique_ptr<IStoppingCriterionFactory> createTimeStoppingCriterionFactory() const;
 
-        /**
-         * May be overridden by subclasses in order to create  `MeasureStoppingCriterionFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created or a null
-         *         pointer, if no `MeasureStoppingCriterionFactory` should be used
-         */
         std::unique_ptr<IStoppingCriterionFactory> createMeasureStoppingCriterionFactory() const;
+
+    protected:
 
         /**
          * May be overridden by subclasses in order create objects of the type `IStoppingCriterionFactory` to be used by
