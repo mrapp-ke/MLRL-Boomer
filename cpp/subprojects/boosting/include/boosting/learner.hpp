@@ -186,10 +186,10 @@ namespace boosting {
                      * scores that are provided by the individual rules of an existing rule-based model for each label
                      * individually.
                      *
-                     * @return A reference to an object of type `LabelWiseRegressionPredictorConfig` that allows further
-                     *         configuration of the predictor for predicting regression scores
+                     * @return A reference to an object of type `ILabelWiseRegressionPredictorConfig` that allows
+                     *         further configuration of the predictor for predicting regression scores
                      */
-                    virtual LabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() = 0;
+                    virtual ILabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() = 0;
 
                     /**
                      * Configures the algorithm to use a predictor for predicting probability estimates by summing up
@@ -272,7 +272,7 @@ namespace boosting {
 
                     ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
 
-                    LabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() override;
+                    ILabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() override;
 
                     LabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() override;
 

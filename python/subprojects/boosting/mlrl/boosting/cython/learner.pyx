@@ -157,7 +157,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
                  predicting regression scores
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef LabelWiseRegressionPredictorConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelWiseRegressionPredictor()
+        cdef ILabelWiseRegressionPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseRegressionPredictor()
         cdef LabelWiseRegressionPredictorConfig config = LabelWiseRegressionPredictorConfig.__new__(LabelWiseRegressionPredictorConfig)
         config.config_ptr = config_ptr
         return config

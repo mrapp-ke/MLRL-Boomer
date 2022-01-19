@@ -115,10 +115,10 @@ namespace boosting {
         return ref;
     }
 
-    LabelWiseRegressionPredictorConfig& BoostingRuleLearner::Config::useLabelWiseRegressionPredictor() {
+    ILabelWiseRegressionPredictorConfig& BoostingRuleLearner::Config::useLabelWiseRegressionPredictor() {
         std::unique_ptr<LabelWiseRegressionPredictorConfig> ptr
             = std::make_unique<LabelWiseRegressionPredictorConfig>();
-        LabelWiseRegressionPredictorConfig& ref = *ptr;
+        ILabelWiseRegressionPredictorConfig& ref = *ptr;
         regressionPredictorConfigPtr_ = std::move(ptr);
         return ref;
     }

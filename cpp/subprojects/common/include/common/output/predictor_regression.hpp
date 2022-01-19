@@ -21,18 +21,6 @@ class IRegressionPredictor : public IPredictor<float64> {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a predictor that predicts label-wise regression scores
- * for given query examples.
- */
-class IRegressionPredictorConfig {
-
-    public:
-
-        virtual ~IRegressionPredictorConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create instances of the type `IRegressionPredictor`.
  */
 class IRegressionPredictorFactory {
@@ -52,5 +40,26 @@ class IRegressionPredictorFactory {
          */
         virtual std::unique_ptr<IRegressionPredictor> create(const RuleList& model,
                                                              const LabelVectorSet* labelVectorSet) const = 0;
+
+};
+
+
+/**
+ * Defines an interface for all classes that allow to configure a predictor that predicts label-wise regression scores
+ * for given query examples.
+ */
+class IRegressionPredictorConfig {
+
+    public:
+
+        virtual ~IRegressionPredictorConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IRegressionPredictorFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IRegressionPredictorFactory` that has been created
+         */
+        virtual std::unique_ptr<IRegressionPredictorFactory> create() const = 0;
 
 };
