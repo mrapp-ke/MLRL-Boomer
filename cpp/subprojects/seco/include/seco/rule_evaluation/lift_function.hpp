@@ -38,17 +38,6 @@ namespace seco {
     };
 
     /**
-     * Defines an interface for all classes that allow to configure a lift function.
-     */
-    class ILiftFunctionConfig {
-
-        public:
-
-            virtual ~ILiftFunctionConfig() { };
-
-    };
-
-    /**
      * Defines an interface for all factories that allow to create instances of the type `ILiftFunction`.
      */
     class ILiftFunctionFactory {
@@ -63,6 +52,24 @@ namespace seco {
              * @return An unique pointer to an object of type `ILiftFunction` that has been created
              */
             virtual std::unique_ptr<ILiftFunction> create() const = 0;
+
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a lift function.
+     */
+    class ILiftFunctionConfig {
+
+        public:
+
+            virtual ~ILiftFunctionConfig() { };
+
+            /**
+             * Creates and returns a new object of type `ILiftFunctionFactory` according to the specified configuration.
+             *
+             * @return An unique pointer to an object of type `ILiftFunctionFactory` that has been created
+             */
+            virtual std::unique_ptr<ILiftFunctionFactory> create() const = 0;
 
     };
 

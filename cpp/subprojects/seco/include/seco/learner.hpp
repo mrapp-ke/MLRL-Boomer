@@ -218,10 +218,10 @@ namespace seco {
                      * Configures the rule learner to use a lift function that monotonously increases until a certain
                      * number of labels, where the maximum lift is reached, and monotonously decreases afterwards.
                      *
-                     * @return A reference to an object of type `PeakLiftFunctionConfig` that allows further
+                     * @return A reference to an object of type `IPeakLiftFunctionConfig` that allows further
                      *         configuration of the lift function
                      */
-                    virtual PeakLiftFunctionConfig& usePeakLiftFunction() = 0;
+                    virtual IPeakLiftFunctionConfig& usePeakLiftFunction() = 0;
 
                     /**
                      * Configures the rule learner to use predictor for predicting whether individual labels of given
@@ -315,7 +315,7 @@ namespace seco {
 
                     IWraConfig& useWraPruningHeuristic() override;
 
-                    PeakLiftFunctionConfig& usePeakLiftFunction() override;
+                    IPeakLiftFunctionConfig& usePeakLiftFunction() override;
 
                     LabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
 

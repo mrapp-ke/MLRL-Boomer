@@ -156,9 +156,9 @@ namespace seco {
         return ref;
     }
 
-    PeakLiftFunctionConfig& SeCoRuleLearner::Config::usePeakLiftFunction() {
+    IPeakLiftFunctionConfig& SeCoRuleLearner::Config::usePeakLiftFunction() {
         std::unique_ptr<PeakLiftFunctionConfig> ptr = std::make_unique<PeakLiftFunctionConfig>();
-        PeakLiftFunctionConfig& ref = *ptr;
+        IPeakLiftFunctionConfig& ref = *ptr;
         liftFunctionConfigPtr_ = std::move(ptr);
         return ref;
     }
@@ -185,14 +185,7 @@ namespace seco {
     }
 
     std::unique_ptr<ILiftFunctionFactory> SeCoRuleLearner::createLiftFunctionFactory() const {
-        const ILiftFunctionConfig* baseConfig = &configPtr_->getLiftFunctionConfig();
-
-        if (auto* config = dynamic_cast<const PeakLiftFunctionConfig*>(baseConfig)) {
-            return std::make_unique<PeakLiftFunctionFactory>(config->getNumLabels(), config->getPeakLabel(),
-                                                             config->getMaxLift(), config->getCurvature());
-        }
-
-        throw std::runtime_error("Failed to create ILiftFunctionFactory");
+        return configPtr_->getLiftFunctionConfig().create();
     }
 
     std::unique_ptr<IStoppingCriterionFactory> SeCoRuleLearner::createCoverageStoppingCriterionFactory() const {
