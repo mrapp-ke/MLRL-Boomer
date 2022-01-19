@@ -57,7 +57,8 @@ class IProbabilityPredictorConfig {
          * Creates and returns a new object of type `IProbabilityPredictorFactory` according to the specified
          * configuration.
          *
-         * @return An unique pointer to an object of type `IProbabilityPredictorFactory` that has been created
+         * @return An unique pointer to an object of type `IProbabilityPredictorFactory` that has been created or a null
+         *         pointer if the prediction of probabilities is not supported
          */
         virtual std::unique_ptr<IProbabilityPredictorFactory> create() const = 0;
 
