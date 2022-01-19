@@ -74,6 +74,9 @@ AbstractRuleLearner::Config::Config() {
     this->useNoFeatureSampling();
     this->useNoPartitionSampling();
     this->useNoPruning();
+    this->useNoSizeStoppingCriterion();
+    this->useNoTimeStoppingCriterion();
+    this->useNoMeasureStoppingCriterion();
 }
 
 const IRuleModelAssemblageConfig& AbstractRuleLearner::Config::getRuleModelAssemblageConfig() const {
