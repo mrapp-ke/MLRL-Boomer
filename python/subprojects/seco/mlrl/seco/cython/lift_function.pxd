@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint32, float64
 
 
-cdef extern from "seco/rule_evaluation/lift_function_peak.hpp" namespace "seco" nogil:
+cdef extern from "seco/lift_functions/lift_function_peak.hpp" namespace "seco" nogil:
 
     cdef cppclass IPeakLiftFunctionConfig:
 

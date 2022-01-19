@@ -11,8 +11,8 @@
 #include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/heuristics/heuristic_recall.hpp"
 #include "seco/heuristics/heuristic_wra.hpp"
+#include "seco/lift_functions/lift_function_peak.hpp"
 #include "seco/output/predictor_classification_label_wise.hpp"
-#include "seco/rule_evaluation/lift_function_peak.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 
 
