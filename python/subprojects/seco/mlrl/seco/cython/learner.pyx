@@ -234,7 +234,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
                  predicting whether individual labels of given query examples are relevant or irrelevant
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef LabelWiseClassificationPredictorConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelWiseClassificationPredictor()
+        cdef ILabelWiseClassificationPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseClassificationPredictor()
         cdef LabelWiseClassificationPredictorConfig config = LabelWiseClassificationPredictorConfig.__new__(LabelWiseClassificationPredictorConfig)
         config.config_ptr = config_ptr
         return config

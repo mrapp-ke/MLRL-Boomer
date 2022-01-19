@@ -163,11 +163,11 @@ namespace boosting {
                      * comparing the aggregated score vector to the known label vectors according to a certain distance
                      * measure. The label vector that is closest to the aggregated score vector is finally predicted.
                      *
-                     * @return A reference to an object of type `ExampleWiseClassificationPredictorConfig` that allows
+                     * @return A reference to an object of type `IExampleWiseClassificationPredictorConfig` that allows
                      *         further configuration of the predictor for predicting whether individual labels are
                      *         relevant or irrelevant
                      */
-                    virtual ExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() = 0;
+                    virtual IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() = 0;
 
                     /**
                      * Configures the algorithm to use a predictor for predicting whether individual labels are relevant
@@ -175,11 +175,11 @@ namespace boosting {
                      * rule-based model and transforming them into binary values according to a certain threshold that
                      * is applied to each label individually.
                      *
-                     * @return A reference to an object of type `LabelWiseClassificationPredictorConfig` that allows
+                     * @return A reference to an object of type `ILabelWiseClassificationPredictorConfig` that allows
                      *         further configuration of the predictor for predicting whether individual labels are
                      *         relevant or irrelevant
                      */
-                    virtual LabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() = 0;
+                    virtual ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() = 0;
 
                     /**
                      * Configures the algorithm to use a predictor for predicting regression scores by summing up the
@@ -268,9 +268,9 @@ namespace boosting {
 
                     EqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
 
-                    ExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() override;
+                    IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() override;
 
-                    LabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
+                    ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
 
                     LabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() override;
 

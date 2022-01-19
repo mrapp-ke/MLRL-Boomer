@@ -163,10 +163,10 @@ namespace seco {
         return ref;
     }
 
-    LabelWiseClassificationPredictorConfig& SeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
+    ILabelWiseClassificationPredictorConfig& SeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
         std::unique_ptr<LabelWiseClassificationPredictorConfig> ptr =
             std::make_unique<LabelWiseClassificationPredictorConfig>();
-        LabelWiseClassificationPredictorConfig& ref = *ptr;
+        ILabelWiseClassificationPredictorConfig& ref = *ptr;
         classificationPredictorConfigPtr_ = std::move(ptr);
         return ref;
     }
@@ -214,13 +214,7 @@ namespace seco {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory() const {
-        const IClassificationPredictorConfig* baseConfig = &configPtr_->getClassificationPredictorConfig();
-
-        if (auto* config = dynamic_cast<const LabelWiseClassificationPredictorConfig*>(baseConfig)) {
-            return std::make_unique<LabelWiseClassificationPredictorFactory>(config->getNumThreads());
-        }
-
-        throw std::runtime_error("Failed to create IClassificationPredictorFactory");
+        return configPtr_->getClassificationPredictorConfig().create();
     }
 
     std::unique_ptr<ISeCoRuleLearner::IConfig> createSeCoRuleLearnerConfig() {

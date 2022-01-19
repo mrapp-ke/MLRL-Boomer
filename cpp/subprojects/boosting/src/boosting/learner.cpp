@@ -99,18 +99,18 @@ namespace boosting {
         return ref;
     }
 
-    ExampleWiseClassificationPredictorConfig& BoostingRuleLearner::Config::useExampleWiseClassificationPredictor() {
+    IExampleWiseClassificationPredictorConfig& BoostingRuleLearner::Config::useExampleWiseClassificationPredictor() {
         std::unique_ptr<ExampleWiseClassificationPredictorConfig> ptr
             = std::make_unique<ExampleWiseClassificationPredictorConfig>();
-        ExampleWiseClassificationPredictorConfig& ref = *ptr;
+        IExampleWiseClassificationPredictorConfig& ref = *ptr;
         classificationPredictorConfigPtr_ = std::move(ptr);
         return ref;
     }
 
-    LabelWiseClassificationPredictorConfig& BoostingRuleLearner::Config::useLabelWiseClassificationPredictor() {
+    ILabelWiseClassificationPredictorConfig& BoostingRuleLearner::Config::useLabelWiseClassificationPredictor() {
         std::unique_ptr<LabelWiseClassificationPredictorConfig> ptr =
             std::make_unique<LabelWiseClassificationPredictorConfig>();
-        LabelWiseClassificationPredictorConfig& ref = *ptr;
+        ILabelWiseClassificationPredictorConfig& ref = *ptr;
         classificationPredictorConfigPtr_ = std::move(ptr);
         return ref;
     }
@@ -160,14 +160,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> BoostingRuleLearner::createClassificationPredictorFactory() const {
-        const IClassificationPredictorConfig* baseConfig = &configPtr_->getClassificationPredictorConfig();
-
-        if (auto* config = dynamic_cast<const LabelWiseClassificationPredictorConfig*>(baseConfig)) {
-            float64 threshold = 0;  // TODO Use correct threshold
-            return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, config->getNumThreads());
-        }
-
-        throw std::runtime_error("Failed to create IClassificationPredictorFactory");
+        return configPtr_->getClassificationPredictorConfig().create();
     }
 
     std::unique_ptr<IRegressionPredictorFactory> BoostingRuleLearner::createRegressionPredictorFactory() const {

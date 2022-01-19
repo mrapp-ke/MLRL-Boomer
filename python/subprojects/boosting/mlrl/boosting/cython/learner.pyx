@@ -127,7 +127,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
                  predicting whether individual labels are relevant or irrelevant
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ExampleWiseClassificationPredictorConfigImpl* config_ptr = &rule_learner_config_ptr.useExampleWiseClassificationPredictor()
+        cdef IExampleWiseClassificationPredictorConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseClassificationPredictor()
         cdef ExampleWiseClassificationPredictorConfig config = ExampleWiseClassificationPredictorConfig.__new__(ExampleWiseClassificationPredictorConfig)
         config.config_ptr = config_ptr
         return config
@@ -143,7 +143,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
                  predicting whether individual labels are relevant or irrelevant
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef LabelWiseClassificationPredictorConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelWiseClassificationPredictor()
+        cdef ILabelWiseClassificationPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseClassificationPredictor()
         cdef LabelWiseClassificationPredictorConfig config = LabelWiseClassificationPredictorConfig.__new__(LabelWiseClassificationPredictorConfig)
         config.config_ptr = config_ptr
         return config

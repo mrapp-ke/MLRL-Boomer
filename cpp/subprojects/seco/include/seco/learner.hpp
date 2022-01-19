@@ -229,11 +229,11 @@ namespace seco {
                      * the order they have been learned. If a rule covers an example, its prediction is applied to each
                      * label individually.
                      *
-                     * @return A reference to an object of type `LabelWiseClassificationPredictorConfig` that allows
+                     * @return A reference to an object of type `ILabelWiseClassificationPredictorConfig` that allows
                      *         further configuration of the predictor for predicting whether individual labels of given
                      *         query examples are relevant or irrelevant
                      */
-                    virtual LabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() = 0;
+                    virtual ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() = 0;
 
             };
 
@@ -317,7 +317,7 @@ namespace seco {
 
                     IPeakLiftFunctionConfig& usePeakLiftFunction() override;
 
-                    LabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
+                    ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
 
             };
 

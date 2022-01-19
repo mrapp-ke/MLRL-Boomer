@@ -21,18 +21,6 @@ class IClassificationPredictor : public ISparsePredictor<uint8> {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a predictor that predicts whether individual labels of
- * given query examples are relevant or irrelevant.
- */
-class IClassificationPredictorConfig {
-
-    public:
-
-        virtual ~IClassificationPredictorConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create instances of the type `IClassificationPredictor`.
  */
 class IClassificationPredictorFactory {
@@ -53,5 +41,25 @@ class IClassificationPredictorFactory {
          */
         virtual std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
                                                                  const LabelVectorSet* labelVectorSet) const = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a predictor that predicts whether individual labels of
+ * given query examples are relevant or irrelevant.
+ */
+class IClassificationPredictorConfig {
+
+    public:
+
+        virtual ~IClassificationPredictorConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IClassificationPredictorFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IClassificationPredictorFactory` that has been created
+         */
+        virtual std::unique_ptr<IClassificationPredictorFactory> create() const = 0;
 
 };
