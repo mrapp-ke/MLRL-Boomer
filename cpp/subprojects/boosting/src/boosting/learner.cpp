@@ -3,7 +3,6 @@
 #include "boosting/model/rule_list_builder.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
-#include "common/post_processing/post_processor_no.hpp"
 
 
 namespace boosting {
@@ -17,10 +16,6 @@ namespace boosting {
         this->useLabelWiseClassificationPredictor(); // TODO use automatical configuration by default
         this->useLabelWiseRegressionPredictor();
         this->useLabelWiseProbabilityPredictor();
-    }
-
-    const IPostProcessorConfig& BoostingRuleLearner::Config::getPostProcessorConfig() const {
-        return *postProcessorConfigPtr_;
     }
 
     const ILossConfig& BoostingRuleLearner::Config::getLossConfig() const {
@@ -47,10 +42,6 @@ namespace boosting {
         ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
         ref.setMaxRules(1000);
         return ref;
-    }
-
-    void BoostingRuleLearner::Config::useNoPostProcessor() {
-        postProcessorConfigPtr_ = std::make_unique<NoPostProcessorConfig>();
     }
 
     IConstantShrinkageConfig& BoostingRuleLearner::Config::useConstantShrinkagePostProcessor() {
@@ -134,10 +125,6 @@ namespace boosting {
     BoostingRuleLearner::BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr)
         : AbstractRuleLearner(*configPtr), configPtr_(std::move(configPtr)) {
 
-    }
-
-    std::unique_ptr<IPostProcessorFactory> BoostingRuleLearner::createPostProcessorFactory() const {
-        return configPtr_->getPostProcessorConfig().create();
     }
 
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory() const {

@@ -103,6 +103,8 @@ cdef extern from "common/learner.hpp" nogil:
 
         IIrepConfig& useIrepPruning()
 
+        void useNoPostProcessor()
+
         void useNoSizeStoppingCriterion()
 
         ISizeStoppingCriterionConfig& useSizeStoppingCriterion();
