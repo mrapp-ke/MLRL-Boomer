@@ -9,21 +9,25 @@
 namespace seco {
 
     /**
-     * Allows to configure a heuristic that implements a Laplace-corrected variant of the "Precision" metric.
+     * Defines an interface for all classes that allow to configure a heuristic that implements a Laplace-corrected
+     * variant of the "Precision" metric.
      */
-    class LaplaceConfig final : public IHeuristicConfig {
+    class ILaplaceConfig {
+
+        public:
+
+            virtual ~ILaplaceConfig() { };
 
     };
 
     /**
-     * Allows to create instances of the type `IHeuristic` that implement a Laplace-corrected variant of the "Precision"
-     * metric.
+     * Allows to configure a heuristic that implements a Laplace-corrected variant of the "Precision" metric.
      */
-    class LaplaceFactory final : public IHeuristicFactory {
+    class LaplaceConfig final : public IHeuristicConfig, public ILaplaceConfig {
 
         public:
 
-            std::unique_ptr<IHeuristic> create() const override;
+            std::unique_ptr<IHeuristicFactory> create() const override;
 
     };
 

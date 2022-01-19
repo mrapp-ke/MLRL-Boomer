@@ -105,114 +105,114 @@ namespace seco {
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
                      *
-                     * @return A reference to an object of type `AccuracyConfig` that allows further configuration of
+                     * @return A reference to an object of type `IAccuracyConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual AccuracyConfig& useAccuracyHeuristic() = 0;
+                    virtual IAccuracyConfig& useAccuracyHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
                      *
-                     * @return A reference to an object of type `FMeasureConfig` that allows further configuration of
+                     * @return A reference to an object of type `IFMeasureConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual FMeasureConfig& useFMeasureHeuristic() = 0;
+                    virtual IFMeasureConfig& useFMeasureHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for learning rules.
                      *
-                     * @return A reference to an object of type `LaplaceConfig` that allows further configuration of the
+                     * @return A reference to an object of type `ILaplaceConfig` that allows further configuration of the
                      *         heuristic
                      */
-                    virtual LaplaceConfig& useLaplaceHeuristic() = 0;
+                    virtual ILaplaceConfig& useLaplaceHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
                      *
-                     * @return A reference to an object of type `MEstimateConfig` that allows further configuration of
+                     * @return A reference to an object of type `IMEstimateConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual MEstimateConfig& useMEstimateHeuristic() = 0;
+                    virtual IMEstimateConfig& useMEstimateHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Precision" heuristic for learning rules.
                      *
-                     * @return A reference to an object of type `PrecisionConfig` that allows further configuration of
+                     * @return A reference to an object of type `IPrecisionConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual PrecisionConfig& usePrecisionHeuristic() = 0;
+                    virtual IPrecisionConfig& usePrecisionHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for learning rules.
                      *
-                     * @return A reference to an object of type `RecallConfig` that allows further configuration of the
+                     * @return A reference to an object of type `IRecallConfig` that allows further configuration of the
                      *         heuristic
                      */
-                    virtual RecallConfig& useRecallHeuristic() = 0;
+                    virtual IRecallConfig& useRecallHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
                      *
-                     * @return A reference to an object of type `WraConfig` that allows further configuration of the
+                     * @return A reference to an object of type `IWraConfig` that allows further configuration of the
                      *         heuristic
                      */
-                    virtual WraConfig& useWraHeuristic() = 0;
+                    virtual IWraConfig& useWraHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
                      *
-                     * @return A reference to an object of type `AccuracyConfig` that allows further configuration of
+                     * @return A reference to an object of type `IAccuracyConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual AccuracyConfig& useAccuracyPruningHeuristic() = 0;
+                    virtual IAccuracyConfig& useAccuracyPruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
                      *
-                     * @return A reference to an object of type `FMeasureConfig` that allows further configuration of
+                     * @return A reference to an object of type `IFMeasureConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual FMeasureConfig& useFMeasurePruningHeuristic() = 0;
+                    virtual IFMeasureConfig& useFMeasurePruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for pruning rules.
                      *
-                     * @return A reference to an object of type `LaplaceConfig` that allows further configuration of the
-                     *         heuristic
+                     * @return A reference to an object of type `ILaplaceConfig` that allows further configuration of
+                     *         the heuristic
                      */
-                    virtual LaplaceConfig& useLaplacePruningHeuristic() = 0;
+                    virtual ILaplaceConfig& useLaplacePruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
                      *
-                     * @return A reference to an object of type `MEstimateConfig` that allows further configuration of
+                     * @return A reference to an object of type `IMEstimateConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual MEstimateConfig& useMEstimatePruningHeuristic() = 0;
+                    virtual IMEstimateConfig& useMEstimatePruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Precision" heuristic for pruning rules.
                      *
-                     * @return A reference to an object of type `PrecisionConfig` that allows further configuration of
+                     * @return A reference to an object of type `IPrecisionConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual PrecisionConfig& usePrecisionPruningHeuristic() = 0;
+                    virtual IPrecisionConfig& usePrecisionPruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for pruning rules.
                      *
-                     * @return A reference to an object of type `RecallConfig` that allows further configuration of the
+                     * @return A reference to an object of type `IRecallConfig` that allows further configuration of the
                      *         heuristic
                      */
-                    virtual RecallConfig& useRecallPruningHeuristic() = 0;
+                    virtual IRecallConfig& useRecallPruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
                      *
-                     * @return A reference to an object of type `WraConfig` that allows further configuration of the
+                     * @return A reference to an object of type `IWraConfig` that allows further configuration of the
                      *         heuristic
                      */
-                    virtual WraConfig& useWraPruningHeuristic() = 0;
+                    virtual IWraConfig& useWraPruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases until a certain
@@ -287,33 +287,33 @@ namespace seco {
 
                     ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() override;
 
-                    AccuracyConfig& useAccuracyHeuristic() override;
+                    IAccuracyConfig& useAccuracyHeuristic() override;
 
-                    FMeasureConfig& useFMeasureHeuristic() override;
+                    IFMeasureConfig& useFMeasureHeuristic() override;
 
-                    LaplaceConfig& useLaplaceHeuristic() override;
+                    ILaplaceConfig& useLaplaceHeuristic() override;
 
-                    MEstimateConfig& useMEstimateHeuristic() override;
+                    IMEstimateConfig& useMEstimateHeuristic() override;
 
-                    PrecisionConfig& usePrecisionHeuristic() override;
+                    IPrecisionConfig& usePrecisionHeuristic() override;
 
-                    RecallConfig& useRecallHeuristic() override;
+                    IRecallConfig& useRecallHeuristic() override;
 
-                    WraConfig& useWraHeuristic() override;
+                    IWraConfig& useWraHeuristic() override;
 
-                    AccuracyConfig& useAccuracyPruningHeuristic() override;
+                    IAccuracyConfig& useAccuracyPruningHeuristic() override;
 
-                    FMeasureConfig& useFMeasurePruningHeuristic() override;
+                    IFMeasureConfig& useFMeasurePruningHeuristic() override;
 
-                    LaplaceConfig& useLaplacePruningHeuristic() override;
+                    ILaplaceConfig& useLaplacePruningHeuristic() override;
 
-                    MEstimateConfig& useMEstimatePruningHeuristic() override;
+                    IMEstimateConfig& useMEstimatePruningHeuristic() override;
 
-                    PrecisionConfig& usePrecisionPruningHeuristic() override;
+                    IPrecisionConfig& usePrecisionPruningHeuristic() override;
 
-                    RecallConfig& useRecallPruningHeuristic() override;
+                    IRecallConfig& useRecallPruningHeuristic() override;
 
-                    WraConfig& useWraPruningHeuristic() override;
+                    IWraConfig& useWraPruningHeuristic() override;
 
                     PeakLiftFunctionConfig& usePeakLiftFunction() override;
 
