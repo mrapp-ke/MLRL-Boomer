@@ -3,24 +3,24 @@ from mlrl.common.cython._types cimport uint32
 
 cdef extern from "boosting/output/predictor_classification_example_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass ExampleWiseClassificationPredictorConfigImpl"boosting::ExampleWiseClassificationPredictorConfig":
+    cdef cppclass IExampleWiseClassificationPredictorConfig:
 
         # Functions:
 
         uint32 getNumThreads() const
 
-        ExampleWiseClassificationPredictorConfigImpl& setNumThreads(uint32 numThreads) except +
+        IExampleWiseClassificationPredictorConfig& setNumThreads(uint32 numThreads) except +
 
 
 cdef extern from "boosting/output/predictor_classification_label_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass LabelWiseClassificationPredictorConfigImpl"boosting::LabelWiseClassificationPredictorConfig":
+    cdef cppclass ILabelWiseClassificationPredictorConfig:
 
         # Functions:
 
         uint32 getNumThreads() const
 
-        LabelWiseClassificationPredictorConfigImpl& setNumThreads(uint32 numThreads) except +
+        ILabelWiseClassificationPredictorConfig& setNumThreads(uint32 numThreads) except +
 
 
 cdef extern from "boosting/output/predictor_regression_label_wise.hpp" namespace "boosting" nogil:
@@ -49,14 +49,14 @@ cdef class ExampleWiseClassificationPredictorConfig:
 
     # Attributes:
 
-    cdef ExampleWiseClassificationPredictorConfigImpl* config_ptr
+    cdef IExampleWiseClassificationPredictorConfig* config_ptr
 
 
 cdef class LabelWiseClassificationPredictorConfig:
 
     # Attributes:
 
-    cdef LabelWiseClassificationPredictorConfigImpl* config_ptr
+    cdef ILabelWiseClassificationPredictorConfig* config_ptr
 
 
 cdef class LabelWiseRegressionPredictorConfig:

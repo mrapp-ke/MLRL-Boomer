@@ -3,8 +3,8 @@ from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfigImpl
 from mlrl.boosting.cython.loss cimport ExampleWiseLogisticLossConfigImpl, LabelWiseLogisticLossConfigImpl, \
     LabelWiseSquaredErrorLossConfigImpl, LabelWiseSquaredHingeLossConfigImpl
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
-from mlrl.boosting.cython.predictor cimport ExampleWiseClassificationPredictorConfigImpl, \
-    LabelWiseClassificationPredictorConfigImpl, LabelWiseRegressionPredictorConfigImpl, \
+from mlrl.boosting.cython.predictor cimport IExampleWiseClassificationPredictorConfig, \
+    ILabelWiseClassificationPredictorConfig, LabelWiseRegressionPredictorConfigImpl, \
     LabelWiseProbabilityPredictorConfigImpl
 
 from libcpp.memory cimport unique_ptr
@@ -32,9 +32,9 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         EqualWidthLabelBinningConfigImpl& useEqualWidthLabelBinning()
 
-        ExampleWiseClassificationPredictorConfigImpl& useExampleWiseClassificationPredictor()
+        IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor()
 
-        LabelWiseClassificationPredictorConfigImpl& useLabelWiseClassificationPredictor()
+        ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor()
 
         LabelWiseRegressionPredictorConfigImpl& useLabelWiseRegressionPredictor()
 

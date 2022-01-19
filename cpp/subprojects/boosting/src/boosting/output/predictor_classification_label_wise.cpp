@@ -185,6 +185,41 @@ namespace boosting {
 
     };
 
+    /**
+     * Allows to create instances of the type `IClassificationPredictor` that allow to predict whether individual labels
+     * of given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
+     * rules of an existing rule-based model and transforming them into binary values according to a certain threshold
+     * that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
+     * otherwise).
+     */
+    class LabelWiseClassificationPredictorFactory final : public IClassificationPredictorFactory {
+
+        private:
+
+            float64 threshold_;
+
+            uint32 numThreads_;
+
+        public:
+
+            /**
+             * @param threshold     The threshold that should be used to transform predicted scores into binary
+             *                      predictions
+             * @param numThreads    The number of CPU threads to be used to make predictions for different query
+             *                      examples in parallel. Must be at least 1
+             */
+            LabelWiseClassificationPredictorFactory(float64 threshold, uint32 numThreads)
+                : threshold_(threshold), numThreads_(numThreads) {
+
+            }
+
+            std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
+                                                             const LabelVectorSet* labelVectorSet) const override {
+                return std::make_unique<LabelWiseClassificationPredictor<RuleList>>(model, threshold_, numThreads_);
+            }
+
+    };
+
     LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig()
         : numThreads_(0) {
 
@@ -194,21 +229,15 @@ namespace boosting {
         return numThreads_;
     }
 
-    LabelWiseClassificationPredictorConfig& LabelWiseClassificationPredictorConfig::setNumThreads(uint32 numThreads) {
+    ILabelWiseClassificationPredictorConfig& LabelWiseClassificationPredictorConfig::setNumThreads(uint32 numThreads) {
         if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
         numThreads_ = numThreads;
         return *this;
     }
 
-    LabelWiseClassificationPredictorFactory::LabelWiseClassificationPredictorFactory(float64 threshold,
-                                                                                     uint32 numThreads)
-        : threshold_(threshold), numThreads_(numThreads) {
-
-    }
-
-    std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
-            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
-        return std::make_unique<LabelWiseClassificationPredictor<RuleList>>(model, threshold_, numThreads_);
+    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::create() const {
+        float64 threshold = 0; // TODO Use correct threshold
+        return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, numThreads_);
     }
 
 }
