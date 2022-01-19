@@ -5,8 +5,8 @@
 #pragma once
 
 #include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
-#include "seco/rule_evaluation/lift_function.hpp"
 #include "seco/heuristics/heuristic.hpp"
+#include "seco/lift_functions/lift_function.hpp"
 
 
 namespace seco {
