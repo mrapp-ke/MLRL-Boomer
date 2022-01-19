@@ -45,25 +45,24 @@ class SizeStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
     private:
 
-        const ISizeStoppingCriterionConfig& config_;
+        uint32 maxRules_;
 
     public:
 
         /**
-         * @param config A reference to an object of type `ISizeStoppingCriterionConfig` that specifies the
-         *               configuration to be used
+         * @param maxRules The maximum number of rules. Must be at least 1
          */
-        SizeStoppingCriterionFactory(const ISizeStoppingCriterionConfig& config)
-            : config_(config) {
+        SizeStoppingCriterionFactory(uint32 maxRules)
+            : maxRules_(maxRules) {
 
         }
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
-            return std::make_unique<SizeStoppingCriterion>(config_.getMaxRules());
+            return std::make_unique<SizeStoppingCriterion>(maxRules_);
         }
 
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
-            return std::make_unique<SizeStoppingCriterion>(config_.getMaxRules());
+            return std::make_unique<SizeStoppingCriterion>(maxRules_);
         }
 
 };
@@ -84,5 +83,5 @@ ISizeStoppingCriterionConfig& SizeStoppingCriterionConfig::setMaxRules(uint32 ma
 }
 
 std::unique_ptr<IStoppingCriterionFactory> SizeStoppingCriterionConfig::create() const {
-    return std::make_unique<SizeStoppingCriterionFactory>(*this);
+    return std::make_unique<SizeStoppingCriterionFactory>(maxRules_);
 }

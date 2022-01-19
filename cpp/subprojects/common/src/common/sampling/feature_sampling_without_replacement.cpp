@@ -48,21 +48,22 @@ class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFa
 
     private:
 
-        const IFeatureSamplingWithoutReplacementConfig& config_;
+        float32 sampleSize_;
 
     public:
 
         /**
-         * @param config A reference to an object of type `IFeatureSamplingWithoutReplacementConfig` that specifies the
-         *               configuration to be used
+         * @param sampleSize The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds to
+         *                   60 % of the available features). Must be in (0, 1) or 0, if the default sample size
+         *                   `floor(log2(num_features - 1) + 1)` should be used
          */
-        FeatureSamplingWithoutReplacementFactory(const IFeatureSamplingWithoutReplacementConfig& config)
-            : config_(config) {
+        FeatureSamplingWithoutReplacementFactory(float32 sampleSize)
+            : sampleSize_(sampleSize) {
 
         }
 
         std::unique_ptr<IFeatureSampling> create(uint32 numFeatures) const override {
-            return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures, config_.getSampleSize());
+            return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures, sampleSize_);
         }
 
 };
@@ -84,5 +85,5 @@ IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfi
 }
 
 std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig::create() const {
-    return std::make_unique<FeatureSamplingWithoutReplacementFactory>(*this);
+    return std::make_unique<FeatureSamplingWithoutReplacementFactory>(sampleSize_);
 }
