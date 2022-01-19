@@ -139,6 +139,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IRegressionPredictorFactory> LabelWiseRegressionPredictorConfig::create() const {
+        // TODO check if prediction of regression scores is supported
         return std::make_unique<LabelWiseRegressionPredictorFactory>(numThreads_);
     }
 
