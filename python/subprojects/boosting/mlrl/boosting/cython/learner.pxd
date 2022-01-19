@@ -4,7 +4,7 @@ from mlrl.boosting.cython.loss cimport ExampleWiseLogisticLossConfigImpl, LabelW
     LabelWiseSquaredErrorLossConfigImpl, LabelWiseSquaredHingeLossConfigImpl
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.predictor cimport IExampleWiseClassificationPredictorConfig, \
-    ILabelWiseClassificationPredictorConfig, LabelWiseRegressionPredictorConfigImpl, \
+    ILabelWiseClassificationPredictorConfig, ILabelWiseRegressionPredictorConfig, \
     LabelWiseProbabilityPredictorConfigImpl
 
 from libcpp.memory cimport unique_ptr
@@ -36,7 +36,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor()
 
-        LabelWiseRegressionPredictorConfigImpl& useLabelWiseRegressionPredictor()
+        ILabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor()
 
         LabelWiseProbabilityPredictorConfigImpl& useLabelWiseProbabilityPredictor()
 
