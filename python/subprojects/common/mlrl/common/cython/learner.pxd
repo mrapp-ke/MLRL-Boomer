@@ -65,6 +65,8 @@ cdef extern from "common/learner.hpp" nogil:
 
         ITopDownRuleInductionConfig& useTopDownRuleInduction()
 
+        void useAutomaticFeatureBinning()
+
         void useNoFeatureBinning()
 
         IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning()

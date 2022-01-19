@@ -4,6 +4,7 @@ project('common', 'cpp')
 source_files = [
     'src/common/binning/bin_index_vector_dense.cpp',
     'src/common/binning/bin_index_vector_dok.cpp',
+    'src/common/binning/feature_binning_auto.cpp',
     'src/common/binning/feature_binning_equal_frequency.cpp',
     'src/common/binning/feature_binning_equal_width.cpp',
     'src/common/binning/feature_binning_no.cpp',

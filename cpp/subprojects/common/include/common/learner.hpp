@@ -225,7 +225,11 @@ class IRuleLearner {
                  */
                 virtual void useNoFeatureBinning() = 0;
 
-                // TODO Add function to use automatic feature binning
+                /**
+                 * Configures the rule learning to automatically decide whether a method for the assignment of numerical
+                 * feature values to bins should be used or not.
+                 */
+                virtual void useAutomaticFeatureBinning() = 0;
 
                 /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
@@ -645,6 +649,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 ITopDownRuleInductionConfig& useTopDownRuleInduction() override;
 
                 void useNoFeatureBinning() override final;
+
+                void useAutomaticFeatureBinning() override final;
 
                 IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
 
