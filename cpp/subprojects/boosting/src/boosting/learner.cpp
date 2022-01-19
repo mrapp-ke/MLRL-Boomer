@@ -123,10 +123,10 @@ namespace boosting {
         return ref;
     }
 
-    LabelWiseProbabilityPredictorConfig& BoostingRuleLearner::Config::useLabelWiseProbabilityPredictor() {
+    ILabelWiseProbabilityPredictorConfig& BoostingRuleLearner::Config::useLabelWiseProbabilityPredictor() {
         std::unique_ptr<LabelWiseProbabilityPredictorConfig> ptr
             = std::make_unique<LabelWiseProbabilityPredictorConfig>();
-        LabelWiseProbabilityPredictorConfig& ref = *ptr;
+        ILabelWiseProbabilityPredictorConfig& ref = *ptr;
         probabilityPredictorConfigPtr_ = std::move(ptr);
         return ref;
     }

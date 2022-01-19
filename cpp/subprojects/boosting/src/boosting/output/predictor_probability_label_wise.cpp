@@ -140,6 +140,46 @@ namespace boosting {
 
     };
 
+    /**
+     * Allows to create instances of the type `IProbabilityPredictor` that allow to predict label-wise probabilities
+     * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
+     * that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
+     * into probabilities in [0, 1] according to a certain transformation function that is applied to each label
+     * individually.
+     */
+    class LabelWiseProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
+
+        private:
+
+            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
+
+            uint32 numThreads_;
+
+        public:
+
+            /**
+             * @param probabilityFunctionFactoryPtr An unique pointer to an object of type `IProbabilityFunctionFactory`
+             *                                      that allows to create implementations of the transformation function
+             *                                      to be used to transform predicted scores into probabilities
+             * @param numThreads                    The number of CPU threads to be used to make predictions for
+             *                                      different query examples in parallel. Must be at least 1
+             */
+            LabelWiseProbabilityPredictorFactory(
+                    std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
+                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
+
+            }
+
+            std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
+                                                          const LabelVectorSet* labelVectorSet) const override {
+                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
+                return std::make_unique<LabelWiseProbabilityPredictor<RuleList>>(model,
+                                                                                 std::move(probabilityFunctionPtr),
+                                                                                 numThreads_);
+            }
+
+    };
+
     std::unique_ptr<IProbabilityFunction> LogisticFunctionFactory::create() const {
         return std::make_unique<LogisticFunction>();
     }
@@ -153,23 +193,16 @@ namespace boosting {
         return numThreads_;
     }
 
-    LabelWiseProbabilityPredictorConfig& LabelWiseProbabilityPredictorConfig::setNumThreads(uint32 numThreads) {
+    ILabelWiseProbabilityPredictorConfig& LabelWiseProbabilityPredictorConfig::setNumThreads(uint32 numThreads) {
         assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
         numThreads_ = numThreads;
         return *this;
     }
 
-    LabelWiseProbabilityPredictorFactory::LabelWiseProbabilityPredictorFactory(
-            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
-        : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
-
-    }
-
-    std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(
-            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
-        std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
-        return std::make_unique<LabelWiseProbabilityPredictor<RuleList>>(model, std::move(probabilityFunctionPtr),
-                                                                         numThreads_);
+    std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::create() const {
+        std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr = nullptr; // TODO Initialize
+        return std::make_unique<LabelWiseProbabilityPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
+                                                                      numThreads_);
     }
 
 }

@@ -197,10 +197,10 @@ namespace boosting {
                      * transforming the aggregated scores into probabilities according to a certain transformation
                      * function that is applied to each label individually.
                      *
-                     * @return A reference to an object of type `LabelWiseProbabilityPredictorConfig` that allows
+                     * @return A reference to an object of type `ILabelWiseProbabilityPredictorConfig` that allows
                      *         further configuration of the predictor for predicting probability estimates
                      */
-                    virtual LabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() = 0;
+                    virtual ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() = 0;
 
             };
 
@@ -274,7 +274,7 @@ namespace boosting {
 
                     ILabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() override;
 
-                    LabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() override;
+                    ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() override;
 
             };
 

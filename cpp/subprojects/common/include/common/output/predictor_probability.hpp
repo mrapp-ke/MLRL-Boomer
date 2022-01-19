@@ -21,18 +21,6 @@ class IProbabilityPredictor : public IPredictor<float64> {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a predictor that predicts label-wise probabilities for
- * given query examples.
- */
-class IProbabilityPredictorConfig {
-
-    public:
-
-        virtual ~IProbabilityPredictorConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create instances of the type `IProbabilityPredictor`.
  */
 class IProbabilityPredictorFactory {
@@ -52,5 +40,25 @@ class IProbabilityPredictorFactory {
          */
         virtual std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
                                                               const LabelVectorSet* labelVectorSet) const = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a predictor that predicts label-wise probabilities for
+ * given query examples.
+ */
+class IProbabilityPredictorConfig {
+
+    public:
+
+        virtual ~IProbabilityPredictorConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IProbabilityPredictorFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IProbabilityPredictorFactory` that has been created
+         */
+        virtual std::unique_ptr<IProbabilityPredictorFactory> create() const = 0;
 
 };
