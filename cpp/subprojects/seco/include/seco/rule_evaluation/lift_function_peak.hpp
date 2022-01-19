@@ -10,10 +10,87 @@
 namespace seco {
 
     /**
+     * Defines an interface for all classes that allow to configure a lift function that monotonously increases until a
+     * certain number of labels, where the maximum lift is reached, and monotonously decreases afterwards.
+     */
+    class IPeakLiftFunctionConfig {
+
+        public:
+
+            virtual ~IPeakLiftFunctionConfig() { };
+
+            /**
+             * Returns the total number of available labels.
+             *
+             * @return The total number of available labels
+             */
+            virtual uint32 getNumLabels() const = 0;
+
+            /**
+             * Sets the total number of available labels.
+             *
+             * @param numLabels The total number of available labels. Must be greater than 0
+             * @return          A reference to an object of type `IPeakLiftFunctionConfig` that allows further
+             *                  configuration of the lift function
+             */
+            virtual IPeakLiftFunctionConfig& setNumLabels(uint32 numLabels) = 0;
+
+            /**
+             * Returns the index of the label for which the lift is maximal.
+             *
+             * @return The index of the label for which the lift is maximal
+             */
+            virtual uint32 getPeakLabel() const = 0;
+
+            /**
+             * Sets the index of the label for which the lift should be maximal.
+             *
+             * @param peakLabel The index of the label for which the lift should be maximal.  Must be at least 0
+             * @return          A reference to an object of type `IPeakLiftFunctionConfig` that allows further
+             *                  configuration of the lift function
+             */
+            virtual IPeakLiftFunctionConfig& setPeakLabel(uint32 peakLabel) = 0;
+
+            /**
+             * Returns the lift at the peak label.
+             *
+             * @return The lift at the peak label
+             */
+            virtual float64 getMaxLift() const = 0;
+
+            /**
+             * Sets the lift at the peak label.
+             *
+             * @param maxLift   The lift at the peak label. Must be at least 1
+             * @return          A reference to an object of type `IPeakLiftFunctionConfig` that allows further
+             *                  configuration of the lift function
+             */
+            virtual IPeakLiftFunctionConfig& setMaxLift(float64 maxLift) = 0;
+
+            /**
+             * Returns the curvature of the lift function.
+             *
+             * @return The curvature of the lift function
+             */
+            virtual float64 getCurvature() const = 0;
+
+            /**
+             * Sets the curvature of the lift function.
+             *
+             * @param curvature The curvature of the lift function. A greater value results in a steeper curvature, a
+             *                  smaller value results in a flatter curvature. Must be greater than 0
+             * @return          A reference to an object of type `IPeakLiftFunctionConfig` that allows further
+             *                  configuration of the lift function
+             */
+            virtual IPeakLiftFunctionConfig& setCurvature(float64 curvature) = 0;
+
+    };
+
+    /**
      * Allows to configure a lift function that monotonously increases until a certain number of labels, where the
      * maximum lift is reached, and monotonously decreases afterwards.
      */
-    class PeakLiftFunctionConfig final : public ILiftFunctionConfig {
+    class PeakLiftFunctionConfig final : public ILiftFunctionConfig, public IPeakLiftFunctionConfig {
 
         private:
 
@@ -30,102 +107,24 @@ namespace seco {
 
             PeakLiftFunctionConfig();
 
-            /**
-             * Returns the total number of available labels.
-             *
-             * @return The total number of available labels
-             */
-            uint32 getNumLabels() const;
+            uint32 getNumLabels() const override;
 
-            /**
-             * Sets the total number of available labels.
-             *
-             * @param numLabels The total number of available labels. Must be greater than 0
-             * @return          A reference to an object of type `PeakLiftFunctionConfig` that allows further
-             *                  configuration of the lift function
-             */
-            PeakLiftFunctionConfig& setNumLabels(uint32 numLabels);
+            IPeakLiftFunctionConfig& setNumLabels(uint32 numLabels) override;
 
-            /**
-             * Returns the index of the label for which the lift is maximal.
-             *
-             * @return The index of the label for which the lift is maximal
-             */
-            uint32 getPeakLabel() const;
+            uint32 getPeakLabel() const override;
 
-            /**
-             * Sets the index of the label for which the lift should be maximal.
-             *
-             * @param peakLabel The index of the label for which the lift should be maximal.  Must be at least 0
-             * @return          A reference to an object of type `PeakLiftFunctionConfig` that allows further
-             *                  configuration of the lift function
-             */
             // TODO Allow to use choose the peak label automatically based on the label cardinality
-            PeakLiftFunctionConfig& setPeakLabel(uint32 peakLabel);
+            IPeakLiftFunctionConfig& setPeakLabel(uint32 peakLabel) override;
 
-            /**
-             * Returns the lift at the peak label.
-             *
-             * @return The lift at the peak label
-             */
-            float64 getMaxLift() const;
+            float64 getMaxLift() const override;
 
-            /**
-             * Sets the lift at the peak label.
-             *
-             * @param maxLift   The lift at the peak label. Must be at least 1
-             * @return          A reference to an object of type `PeakLiftFunctionConfig` that allows further
-             *                  configuration of the lift function
-             */
-            PeakLiftFunctionConfig& setMaxLift(float64 maxLift);
+            IPeakLiftFunctionConfig& setMaxLift(float64 maxLift) override;
 
-            /**
-             * Returns the curvature of the lift function.
-             *
-             * @return The curvature of the lift function
-             */
-            float64 getCurvature() const;
+            float64 getCurvature() const override;
 
-            /**
-             * Sets the curvature of the lift function.
-             *
-             * @param curvature The curvature of the lift function. A greater value results in a steeper curvature, a
-             *                  smaller value results in a flatter curvature. Must be greater than 0
-             * @return          A reference to an object of type `PeakLiftFunctionConfig` that allows further
-             *                  configuration of the lift function
-             */
-            PeakLiftFunctionConfig& setCurvature(float64 curvature);
+            IPeakLiftFunctionConfig& setCurvature(float64 curvature) override;
 
-    };
-
-    /**
-     * Allows to create instances of the type `ILiftFunction` that monotonously increase until a certain number of
-     * labels, where the maximum lift is reached, and monotonously decrease afterwards.
-     */
-    class PeakLiftFunctionFactory final : public ILiftFunctionFactory {
-
-        private:
-
-            uint32 numLabels_;
-
-            uint32 peakLabel_;
-
-            float64 maxLift_;
-
-            float64 curvature_;
-
-        public:
-
-            /**
-             * @param numLabels The total number of available labels. Must be greater than 0
-             * @param peakLabel The index of the label for which the lift is maximal. Must be at least 0
-             * @param maxLift   The lift at the peak label. Must be at least 1
-             * @param curvature The curvature of the lift function. A greater value results in a steeper curvature, a
-             *                  smaller value results in a flatter curvature. Must be greater than 0
-             */
-            PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature);
-
-            std::unique_ptr<ILiftFunction> create() const override;
+            std::unique_ptr<ILiftFunctionFactory> create() const override;
 
     };
 

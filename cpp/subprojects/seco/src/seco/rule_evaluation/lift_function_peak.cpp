@@ -56,6 +56,42 @@ namespace seco {
 
     };
 
+    /**
+     * Allows to create instances of the type `ILiftFunction` that monotonously increase until a certain number of
+     * labels, where the maximum lift is reached, and monotonously decrease afterwards.
+     */
+    class PeakLiftFunctionFactory final : public ILiftFunctionFactory {
+
+        private:
+
+            uint32 numLabels_;
+
+            uint32 peakLabel_;
+
+            float64 maxLift_;
+
+            float64 curvature_;
+
+        public:
+
+            /**
+             * @param numLabels The total number of available labels. Must be greater than 0
+             * @param peakLabel The index of the label for which the lift is maximal. Must be at least 0
+             * @param maxLift   The lift at the peak label. Must be at least 1
+             * @param curvature The curvature of the lift function. A greater value results in a steeper curvature, a
+             *                  smaller value results in a flatter curvature. Must be greater than 0
+             */
+            PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature)
+                : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature) {
+
+            }
+
+            std::unique_ptr<ILiftFunction> create() const override {
+                return std::make_unique<PeakLiftFunction>(numLabels_, peakLabel_, maxLift_, curvature_);
+            }
+
+    };
+
     PeakLiftFunctionConfig::PeakLiftFunctionConfig()
         : numLabels_(10), peakLabel_(2), maxLift_(1.08), curvature_(1.0) {
 
@@ -65,7 +101,7 @@ namespace seco {
         return numLabels_;
     }
 
-    PeakLiftFunctionConfig& PeakLiftFunctionConfig::setNumLabels(uint32 numLabels) {
+    IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setNumLabels(uint32 numLabels) {
         assertGreater<uint32>("numLabels", numLabels, 0);
         numLabels_ = numLabels;
         return *this;
@@ -75,7 +111,7 @@ namespace seco {
         return peakLabel_;
     }
 
-    PeakLiftFunctionConfig& PeakLiftFunctionConfig::setPeakLabel(uint32 peakLabel) {
+    IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setPeakLabel(uint32 peakLabel) {
         assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 0);
         peakLabel_ = peakLabel;
         return *this;
@@ -85,7 +121,7 @@ namespace seco {
         return maxLift_;
     }
 
-    PeakLiftFunctionConfig& PeakLiftFunctionConfig::setMaxLift(float64 maxLift) {
+    IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setMaxLift(float64 maxLift) {
         assertGreaterOrEqual<float64>("maxLift", maxLift, 1);
         maxLift_ = maxLift;
         return *this;
@@ -95,20 +131,14 @@ namespace seco {
         return curvature_;
     }
 
-    PeakLiftFunctionConfig& PeakLiftFunctionConfig::setCurvature(float64 curvature) {
+    IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setCurvature(float64 curvature) {
         assertGreater<float64>("curvature", curvature, 0);
         curvature_ = curvature;
         return *this;
     }
 
-    PeakLiftFunctionFactory::PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float64 maxLift,
-                                                     float64 curvature)
-        : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature) {
-
-    }
-
-    std::unique_ptr<ILiftFunction> PeakLiftFunctionFactory::create() const {
-        return std::make_unique<PeakLiftFunction>(numLabels_, peakLabel_, maxLift_, curvature_);
+    std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::create() const {
+        return std::make_unique<PeakLiftFunctionFactory>(numLabels_, peakLabel_, maxLift_, curvature_);
     }
 
 }

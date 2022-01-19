@@ -219,7 +219,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `PeakLiftFunctionConfig` that allows further configuration of the lift function
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef PeakLiftFunctionConfigImpl* config_ptr = &rule_learner_config_ptr.usePeakLiftFunction()
+        cdef IPeakLiftFunctionConfig* config_ptr = &rule_learner_config_ptr.usePeakLiftFunction()
         cdef PeakLiftFunctionConfig config = PeakLiftFunctionConfig.__new__(PeakLiftFunctionConfig)
         config.config_ptr = config_ptr
         return config
