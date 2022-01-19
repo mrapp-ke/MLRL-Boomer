@@ -1,4 +1,9 @@
-#include "common/binning/feature_binning_nominal.hpp"
+/*
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
+ */
+#pragma once
+
+#include "common/binning/feature_binning.hpp"
 #include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/bin_index_vector_dok.hpp"
 #include <unordered_map>
@@ -64,6 +69,16 @@ class NominalFeatureBinning final : public IFeatureBinning {
 
 };
 
-std::unique_ptr<IFeatureBinning> NominalFeatureBinningFactory::create() const {
-    return std::make_unique<NominalFeatureBinning>();
-}
+/**
+ * Allows to create instances of the type `IFeatureBinning` that assign nominal feature values to bins, such that each
+ * bin contains one of the available values.
+ */
+class NominalFeatureBinningFactory final : public IFeatureBinningFactory {
+
+    public:
+
+        std::unique_ptr<IFeatureBinning> create() const override {
+            return std::make_unique<NominalFeatureBinning>();
+        }
+
+};

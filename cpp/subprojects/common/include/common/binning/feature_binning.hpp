@@ -7,6 +7,7 @@
 #include "common/input/feature_vector.hpp"
 #include "common/binning/bin_index_vector.hpp"
 #include "common/binning/threshold_vector.hpp"
+#include "common/thresholds/thresholds.hpp"
 #include <memory>
 
 
@@ -54,17 +55,6 @@ class IFeatureBinning {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a method that assigns feature values to bins.
- */
-class IFeatureBinningConfig {
-
-    public:
-
-        virtual ~IFeatureBinningConfig() { };
-
-};
-
-/**
  * Defines an interface for all factories that allow to create instances of the type `IFeatureBinning`.
  */
 class IFeatureBinningFactory {
@@ -79,5 +69,23 @@ class IFeatureBinningFactory {
          * @return An unique pointer to an object of type `IFeatureBinning` that has been created
          */
         virtual std::unique_ptr<IFeatureBinning> create() const = 0;
+
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method that assigns feature values to bins.
+ */
+class IFeatureBinningConfig {
+
+    public:
+
+        virtual ~IFeatureBinningConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IThresholdsFactory` according to the specified configuration.
+         *
+         * @return An unique pointer to an object of type `IThresholdsFactory` that has been created
+         */
+        virtual std::unique_ptr<IThresholdsFactory> create() const = 0;
 
 };

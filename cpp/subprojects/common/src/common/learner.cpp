@@ -1,4 +1,5 @@
 #include "common/learner.hpp"
+#include "common/binning/feature_binning_no.hpp"
 #include "common/output/label_space_info_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/pruning/pruning_no.hpp"
@@ -7,8 +8,6 @@
 #include "common/sampling/label_sampling_no.hpp"
 #include "common/sampling/partition_sampling_no.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
-#include "common/thresholds/thresholds_approximate.hpp"
-#include "common/thresholds/thresholds_exact.hpp"
 #include "common/util/threads.hpp"
 #include <stdexcept>
 #include <string>
@@ -83,8 +82,8 @@ const IRuleInductionConfig& AbstractRuleLearner::Config::getRuleInductionConfig(
     return *ruleInductionConfigPtr_;
 }
 
-const IFeatureBinningConfig* AbstractRuleLearner::Config::getFeatureBinningConfig() const {
-    return featureBinningConfigPtr_.get();
+const IFeatureBinningConfig& AbstractRuleLearner::Config::getFeatureBinningConfig() const {
+    return *featureBinningConfigPtr_;
 }
 
 const ILabelSamplingConfig& AbstractRuleLearner::Config::getLabelSamplingConfig() const {
@@ -134,19 +133,19 @@ ITopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInductio
 }
 
 void AbstractRuleLearner::Config::useNoFeatureBinning() {
-    featureBinningConfigPtr_ = nullptr;
+    featureBinningConfigPtr_ = std::make_unique<NoFeatureBinningConfig>();
 }
 
-EqualWidthFeatureBinningConfig& AbstractRuleLearner::Config::useEqualWidthFeatureBinning() {
+IEqualWidthFeatureBinningConfig& AbstractRuleLearner::Config::useEqualWidthFeatureBinning() {
     std::unique_ptr<EqualWidthFeatureBinningConfig> ptr = std::make_unique<EqualWidthFeatureBinningConfig>();
-    EqualWidthFeatureBinningConfig& ref = *ptr;
+    IEqualWidthFeatureBinningConfig& ref = *ptr;
     featureBinningConfigPtr_ = std::move(ptr);
     return ref;
 }
 
-EqualFrequencyFeatureBinningConfig& AbstractRuleLearner::Config::useEqualFrequencyFeatureBinning() {
+IEqualFrequencyFeatureBinningConfig& AbstractRuleLearner::Config::useEqualFrequencyFeatureBinning() {
     std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr = std::make_unique<EqualFrequencyFeatureBinningConfig>();
-    EqualFrequencyFeatureBinningConfig& ref = *ptr;
+    IEqualFrequencyFeatureBinningConfig& ref = *ptr;
     featureBinningConfigPtr_ = std::move(ptr);
     return ref;
 }
@@ -291,33 +290,8 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
     return config_.getRuleModelAssemblageConfig().create();
 }
 
-std::unique_ptr<IFeatureBinningFactory> AbstractRuleLearner::createFeatureBinningFactory() const {
-    const IFeatureBinningConfig* baseConfig = config_.getFeatureBinningConfig();
-
-    if (baseConfig) {
-        if (auto* config = dynamic_cast<const EqualWidthFeatureBinningConfig*>(baseConfig)) {
-            return std::make_unique<EqualWidthFeatureBinningFactory>(config->getBinRatio(), config->getMinBins(),
-                                                                     config->getMaxBins());
-        } else if (auto* config = dynamic_cast<const EqualFrequencyFeatureBinningConfig*>(baseConfig)) {
-            return std::make_unique<EqualFrequencyFeatureBinningFactory>(config->getBinRatio(), config->getMinBins(),
-                                                                         config->getMaxBins());
-        }
-
-        throw std::runtime_error("Failed to create IFeatureBinningFactory");
-    }
-
-    return nullptr;
-}
-
 std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory() const {
-    uint32 numThreads = 1; // TODO Use correct number of threads
-    std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr = this->createFeatureBinningFactory();
-
-    if (featureBinningFactoryPtr) {
-        return std::make_unique<ApproximateThresholdsFactory>(std::move(featureBinningFactoryPtr), numThreads);
-    }
-
-    return std::make_unique<ExactThresholdsFactory>(numThreads);
+    return config_.getFeatureBinningConfig().create();
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
