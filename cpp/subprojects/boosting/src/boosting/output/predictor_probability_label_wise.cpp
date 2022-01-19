@@ -8,6 +8,44 @@
 namespace boosting {
 
     /**
+     * Defines an interface for all classes that allow to transform the scores that are predicted for individual labels
+     * into probabilities.
+     */
+    class IProbabilityFunction {
+
+        public:
+
+            virtual ~IProbabilityFunction() { };
+
+            /**
+             * Transforms the score that is predicted for an individual label into a probability.
+             *
+             * @param predictedScore    The predicted score
+             * @return                  The probability
+             */
+            virtual float64 transform(float64 predictedScore) const = 0;
+
+    };
+
+    /**
+     * Defines an interface for all factories that allow to create instances of the type `IProbabilityFunction`.
+     */
+    class IProbabilityFunctionFactory {
+
+        public:
+
+            virtual ~IProbabilityFunctionFactory() { };
+
+            /**
+             * Creates and returns a new object of the type `IProbabilityFunction`.
+             *
+             * @return An unique pointer to an object of type `IProbabilityFunction` that has been created
+             */
+            virtual std::unique_ptr<IProbabilityFunction> create() const = 0;
+
+    };
+
+    /**
      * Allows to transform the score that is predicted for an individual label into a probability by applying the
      * logistic sigmoid function.
      */
@@ -17,6 +55,20 @@ namespace boosting {
 
             float64 transform(float64 predictedScore) const override {
                 return logisticFunction(predictedScore);
+            }
+
+    };
+
+    /**
+     * Allows to create instances of the type `IProbabilityFunction` that transform the score that is predicted for an
+     * individual label into a probability by applying the logistic sigmoid function.
+     */
+    class LogisticFunctionFactory final : public IProbabilityFunctionFactory {
+
+        public:
+
+            std::unique_ptr<IProbabilityFunction> create() const override {
+                return std::make_unique<LogisticFunction>();
             }
 
     };
@@ -179,10 +231,6 @@ namespace boosting {
             }
 
     };
-
-    std::unique_ptr<IProbabilityFunction> LogisticFunctionFactory::create() const {
-        return std::make_unique<LogisticFunction>();
-    }
 
     LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig()
         : numThreads_(0) {
