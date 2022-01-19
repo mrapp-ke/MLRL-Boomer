@@ -52,6 +52,33 @@ namespace seco {
 
     };
 
+    /**
+     * Allows to create instances of the type `IHeuristic` that trade off between the heuristics "Precision" and "WRA",
+     * where the "m" parameter controls the trade-off between both heuristics. If m = 0, this heuristic is equivalent to
+     * "Precision". As m approaches infinity, the isometrics of this heuristic become equivalent to those of "WRA".
+     */
+    class MEstimateFactory final : public IHeuristicFactory {
+
+        private:
+
+            float64 m_;
+
+        public:
+
+            /**
+             * @param The value of the "m" parameter. Must be at least 0
+             */
+            MEstimateFactory(float64 m)
+                : m_(m) {
+
+            }
+
+            std::unique_ptr<IHeuristic> create() const override {
+                return std::make_unique<MEstimate>(m_);
+            }
+
+    };
+
     MEstimateConfig::MEstimateConfig()
         : m_(22.466) {
 
@@ -61,19 +88,14 @@ namespace seco {
         return m_;
     }
 
-    MEstimateConfig& MEstimateConfig::setM(float64 m) {
+    IMEstimateConfig& MEstimateConfig::setM(float64 m) {
         assertGreaterOrEqual<float64>("m", m, 0);
         m_ = m;
         return *this;
     }
 
-    MEstimateFactory::MEstimateFactory(float64 m)
-        : m_(m) {
-
-    }
-
-    std::unique_ptr<IHeuristic> MEstimateFactory::create() const {
-        return std::make_unique<MEstimate>(m_);
+    std::unique_ptr<IHeuristicFactory> MEstimateConfig::create() const {
+        return std::make_unique<MEstimateFactory>(m_);
     }
 
 }

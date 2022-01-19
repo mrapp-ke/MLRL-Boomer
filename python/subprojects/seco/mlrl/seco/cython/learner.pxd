@@ -1,6 +1,6 @@
 from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
-from mlrl.seco.cython.heuristic cimport AccuracyConfigImpl, FMeasureConfigImpl, LaplaceConfigImpl, \
-    MEstimateConfigImpl, PrecisionConfigImpl, RecallConfigImpl, WraConfigImpl
+from mlrl.seco.cython.heuristic cimport IAccuracyConfig, IFMeasureConfig, ILaplaceConfig, IMEstimateConfig, \
+    IPrecisionConfig, IRecallConfig, IWraConfig
 from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfigImpl
 from mlrl.seco.cython.predictor cimport LabelWiseClassificationPredictorConfigImpl
 from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfig
@@ -18,33 +18,33 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion()
 
-        AccuracyConfigImpl& useAccuracyHeuristic()
+        IAccuracyConfig& useAccuracyHeuristic()
 
-        FMeasureConfigImpl& useFMeasureHeuristic()
+        IFMeasureConfig& useFMeasureHeuristic()
 
-        LaplaceConfigImpl& useLaplaceHeuristic()
+        ILaplaceConfig& useLaplaceHeuristic()
 
-        MEstimateConfigImpl& useMEstimateHeuristic()
+        IMEstimateConfig& useMEstimateHeuristic()
 
-        PrecisionConfigImpl& usePrecisionHeuristic()
+        IPrecisionConfig& usePrecisionHeuristic()
 
-        RecallConfigImpl& useRecallHeuristic()
+        IRecallConfig& useRecallHeuristic()
 
-        WraConfigImpl& useWraHeuristic()
+        IWraConfig& useWraHeuristic()
 
-        AccuracyConfigImpl& useAccuracyPruningHeuristic()
+        IAccuracyConfig& useAccuracyPruningHeuristic()
 
-        FMeasureConfigImpl& useFMeasurePruningHeuristic()
+        IFMeasureConfig& useFMeasurePruningHeuristic()
 
-        LaplaceConfigImpl& useLaplacePruningHeuristic()
+        ILaplaceConfig& useLaplacePruningHeuristic()
 
-        MEstimateConfigImpl& useMEstimatePruningHeuristic()
+        IMEstimateConfig& useMEstimatePruningHeuristic()
 
-        PrecisionConfigImpl& usePrecisionPruningHeuristic()
+        IPrecisionConfig& usePrecisionPruningHeuristic()
 
-        RecallConfigImpl& useRecallPruningHeuristic()
+        IRecallConfig& useRecallPruningHeuristic()
 
-        WraConfigImpl& useWraPruningHeuristic()
+        IWraConfig& useWraPruningHeuristic()
 
         PeakLiftFunctionConfigImpl& usePeakLiftFunction()
 

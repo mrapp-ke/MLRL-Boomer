@@ -50,7 +50,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: An `AccuracyConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef AccuracyConfigImpl* config_ptr = &rule_learner_config_ptr.useAccuracyHeuristic()
+        cdef IAccuracyConfig* config_ptr = &rule_learner_config_ptr.useAccuracyHeuristic()
         cdef AccuracyConfig config = AccuracyConfig.__new__(AccuracyConfig)
         config.config_ptr = config_ptr
         return config
@@ -62,7 +62,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `FMeasureConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef FMeasureConfigImpl* config_ptr = &rule_learner_config_ptr.useFMeasureHeuristic()
+        cdef IFMeasureConfig* config_ptr = &rule_learner_config_ptr.useFMeasureHeuristic()
         cdef FMeasureConfig config = FMeasureConfig.__new__(FMeasureConfig)
         config.config_ptr = config_ptr
         return config
@@ -74,7 +74,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LaplaceConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef LaplaceConfigImpl* config_ptr = &rule_learner_config_ptr.useLaplaceHeuristic()
+        cdef ILaplaceConfig* config_ptr = &rule_learner_config_ptr.useLaplaceHeuristic()
         cdef LaplaceConfig config = LaplaceConfig.__new__(LaplaceConfig)
         config.config_ptr = config_ptr
         return config
@@ -86,7 +86,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `MEstimateConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef MEstimateConfigImpl* config_ptr = &rule_learner_config_ptr.useMEstimateHeuristic()
+        cdef IMEstimateConfig* config_ptr = &rule_learner_config_ptr.useMEstimateHeuristic()
         cdef MEstimateConfig config = MEstimateConfig.__new__(MEstimateConfig)
         config.config_ptr = config_ptr
         return config
@@ -98,7 +98,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `PrecisionConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef PrecisionConfigImpl* config_ptr = &rule_learner_config_ptr.usePrecisionHeuristic()
+        cdef IPrecisionConfig* config_ptr = &rule_learner_config_ptr.usePrecisionHeuristic()
         cdef PrecisionConfig config = PrecisionConfig.__new__(PrecisionConfig)
         config.config_ptr = config_ptr
         return config
@@ -110,7 +110,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `RecallConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef RecallConfigImpl* config_ptr = &rule_learner_config_ptr.useRecallHeuristic()
+        cdef IRecallConfig* config_ptr = &rule_learner_config_ptr.useRecallHeuristic()
         cdef RecallConfig config = RecallConfig.__new__(RecallConfig)
         config.config_ptr = config_ptr
         return config
@@ -122,7 +122,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `WraConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef WraConfigImpl* config_ptr = &rule_learner_config_ptr.useWraHeuristic()
+        cdef IWraConfig* config_ptr = &rule_learner_config_ptr.useWraHeuristic()
         cdef WraConfig config = WraConfig.__new__(WraConfig)
         config.config_ptr = config_ptr
         return config
@@ -134,7 +134,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: An `AccuracyConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef AccuracyConfigImpl* config_ptr = &rule_learner_config_ptr.useAccuracyPruningHeuristic()
+        cdef IAccuracyConfig* config_ptr = &rule_learner_config_ptr.useAccuracyPruningHeuristic()
         cdef AccuracyConfig config = AccuracyConfig.__new__(AccuracyConfig)
         config.config_ptr = config_ptr
         return config
@@ -146,7 +146,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `FMeasureConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef FMeasureConfigImpl* config_ptr = &rule_learner_config_ptr.useFMeasurePruningHeuristic()
+        cdef IFMeasureConfig* config_ptr = &rule_learner_config_ptr.useFMeasurePruningHeuristic()
         cdef FMeasureConfig config = FMeasureConfig.__new__(FMeasureConfig)
         config.config_ptr = config_ptr
         return config
@@ -158,7 +158,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LaplaceConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef LaplaceConfigImpl* config_ptr = &rule_learner_config_ptr.useLaplacePruningHeuristic()
+        cdef ILaplaceConfig* config_ptr = &rule_learner_config_ptr.useLaplacePruningHeuristic()
         cdef LaplaceConfig config = LaplaceConfig.__new__(LaplaceConfig)
         config.config_ptr = config_ptr
         return config
@@ -170,7 +170,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `MEstimateConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef MEstimateConfigImpl* config_ptr = &rule_learner_config_ptr.useMEstimatePruningHeuristic()
+        cdef IMEstimateConfig* config_ptr = &rule_learner_config_ptr.useMEstimatePruningHeuristic()
         cdef MEstimateConfig config = MEstimateConfig.__new__(MEstimateConfig)
         config.config_ptr = config_ptr
         return config
@@ -182,7 +182,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `PrecisionConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef PrecisionConfigImpl* config_ptr = &rule_learner_config_ptr.usePrecisionPruningHeuristic()
+        cdef IPrecisionConfig* config_ptr = &rule_learner_config_ptr.usePrecisionPruningHeuristic()
         cdef PrecisionConfig config = PrecisionConfig.__new__(PrecisionConfig)
         config.config_ptr = config_ptr
         return config
@@ -194,7 +194,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `RecallConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef RecallConfigImpl* config_ptr = &rule_learner_config_ptr.useRecallPruningHeuristic()
+        cdef IRecallConfig* config_ptr = &rule_learner_config_ptr.useRecallPruningHeuristic()
         cdef RecallConfig config = RecallConfig.__new__(RecallConfig)
         config.config_ptr = config_ptr
         return config
@@ -206,7 +206,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `WraConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef WraConfigImpl* config_ptr = &rule_learner_config_ptr.useWraPruningHeuristic()
+        cdef IWraConfig* config_ptr = &rule_learner_config_ptr.useWraPruningHeuristic()
         cdef WraConfig config = WraConfig.__new__(WraConfig)
         config.config_ptr = config_ptr
         return config
