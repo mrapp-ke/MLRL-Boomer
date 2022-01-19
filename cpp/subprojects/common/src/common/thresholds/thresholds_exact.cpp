@@ -1,6 +1,5 @@
 #include "common/thresholds/thresholds_exact.hpp"
 #include "common/rule_refinement/rule_refinement_exact.hpp"
-#include "common/util/validation.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
 #include <cmath>
@@ -555,7 +554,7 @@ class ExactThresholds final : public AbstractThresholds {
 
 ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
     : numThreads_(numThreads) {
-    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
 }
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(

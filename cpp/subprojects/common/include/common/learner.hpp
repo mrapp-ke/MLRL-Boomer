@@ -119,11 +119,10 @@ class IRuleLearner {
                 /**
                  * Returns the configuration of the method for the assignment of numerical feature values to bins.
                  *
-                 * @return A pointer to an object of type `IFeatureBinningConfig` that specifies the configuration of
-                 *         the method for the assignment of numerical feature values to bins or a null pointer, if no
-                 *         such method should be used
+                 * @return A reference to an object of type `IFeatureBinningConfig` that specifies the configuration of
+                 *         the method for the assignment of numerical feature values to bins
                  */
-                virtual const IFeatureBinningConfig* getFeatureBinningConfig() const = 0;
+                virtual const IFeatureBinningConfig& getFeatureBinningConfig() const = 0;
 
                 /**
                  * Returns the configuration of the method for sampling labels.
@@ -232,19 +231,19 @@ class IRuleLearner {
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
                  * such that each bin contains values from equally sized value ranges.
                  *
-                 * @return A reference to an object of type `EqualWidthFeatureBinningConfig` that allows further
+                 * @return A reference to an object of type `IEqualWidthFeatureBinningConfig` that allows further
                  *         configuration of the method for the assignment of numerical feature values to bins
                  */
-                virtual EqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() = 0;
+                virtual IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() = 0;
 
                 /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
                  * such that each bin contains approximately the same number of values.
                  *
-                 * @return A reference to an object of type `EqualFrequencyFeatureBinningConfig` that allows further
+                 * @return A reference to an object of type `IEqualFrequencyFeatureBinningConfig` that allows further
                  *         configuration of the method for the assignment of numerical feature values to bins
                  */
-                virtual EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() = 0;
+                virtual IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() = 0;
 
                 /**
                  * Configures the rule learner to not sample from the available labels whenever a new rule should be
@@ -619,7 +618,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 const IRuleInductionConfig& getRuleInductionConfig() const override final;
 
-                const IFeatureBinningConfig* getFeatureBinningConfig() const override final;
+                const IFeatureBinningConfig& getFeatureBinningConfig() const override final;
 
                 const ILabelSamplingConfig& getLabelSamplingConfig() const override final;
 
@@ -647,9 +646,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoFeatureBinning() override final;
 
-                EqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
+                IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
 
-                EqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
+                IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
 
                 void useNoLabelSampling() override final;
 
@@ -710,15 +709,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * @return An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been created
          */
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory() const;
-
-        /**
-         * May be overridden by subclasses in order to create the `IFeatureBinningFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IFeatureBinningFactory` that has been created or a null
-         *         pointer, if no `IFeatureBinningFactory` should be used
-         */
-        virtual std::unique_ptr<IFeatureBinningFactory> createFeatureBinningFactory() const;
 
         /**
          * May be overridden by subclasses in order to create the `IThresholdsFactory` to be used by the rule learner.

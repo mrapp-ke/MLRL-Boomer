@@ -96,7 +96,7 @@ cdef class RuleLearnerConfig:
                  of numerical feature values to bins
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef EqualWidthFeatureBinningConfigImpl* config_ptr = &rule_learner_config_ptr.useEqualWidthFeatureBinning()
+        cdef IEqualWidthFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualWidthFeatureBinning()
         cdef EqualWidthFeatureBinningConfig config = EqualWidthFeatureBinningConfig.__new__(EqualWidthFeatureBinningConfig)
         config.config_ptr = config_ptr
         return config
@@ -110,7 +110,7 @@ cdef class RuleLearnerConfig:
                  assignment of numerical feature values to bins
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef EqualFrequencyFeatureBinningConfigImpl* config_ptr = &rule_learner_config_ptr.useEqualFrequencyFeatureBinning()
+        cdef IEqualFrequencyFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualFrequencyFeatureBinning()
         cdef EqualFrequencyFeatureBinningConfig config = EqualFrequencyFeatureBinningConfig.__new__(EqualFrequencyFeatureBinningConfig)
         config.config_ptr = config_ptr
         return config

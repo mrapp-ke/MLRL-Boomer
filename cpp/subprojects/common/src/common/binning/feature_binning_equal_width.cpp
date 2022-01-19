@@ -2,7 +2,9 @@
 #include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/bin_index_vector_dok.hpp"
 #include "common/binning/binning.hpp"
+#include "common/thresholds/thresholds_approximate.hpp"
 #include "common/util/validation.hpp"
+#include "feature_binning_nominal.hpp"
 #include <unordered_set>
 #include <tuple>
 
@@ -175,6 +177,40 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
 
 };
 
+/**
+ * Allows to create instances of the type `IFeatureBinning` that assign numerical feature values to bins, such that each
+ * bin contains values from equally sized value ranges.
+ */
+class EqualWidthFeatureBinningFactory final : public IFeatureBinningFactory {
+
+    private:
+
+        float32 binRatio_;
+
+        uint32 minBins_;
+
+        uint32 maxBins_;
+
+    public:
+
+        /**
+         * @param binRatio  A percentage that specifies how many bins should be used, e.g., if 100 values are available,
+         *                  0.5 means that `ceil(0.5 * 100) = 50` bins should be used. Must be in (0, 1)
+         * @param minBins   The minimum number of bins to be used. Must be at least 2
+         * @param maxBins   The maximum number of bins to be used. Must be at least `minBins` or 0, if the maximum
+         *                  number of bins should not be restricted
+         */
+        EqualWidthFeatureBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
+            : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
+
+        }
+
+        std::unique_ptr<IFeatureBinning> create() const override {
+            return std::make_unique<EqualWidthFeatureBinning>(binRatio_, minBins_, maxBins_);
+        }
+
+};
+
 EqualWidthFeatureBinningConfig::EqualWidthFeatureBinningConfig()
     : binRatio_(0.33), minBins_(2), maxBins_(0) {
 
@@ -184,7 +220,7 @@ float32 EqualWidthFeatureBinningConfig::getBinRatio() const {
     return binRatio_;
 }
 
-EqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setBinRatio(float32 binRatio) {
+IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setBinRatio(float32 binRatio) {
     assertGreater<float32>("bin_ratio", binRatio, 0);
     assertLess<float32>("bin_ratio", binRatio, 1);
     binRatio_ = binRatio;
@@ -195,7 +231,7 @@ uint32 EqualWidthFeatureBinningConfig::getMinBins() const {
     return minBins_;
 }
 
-EqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMinBins(uint32 minBins) {
+IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMinBins(uint32 minBins) {
     assertGreaterOrEqual<uint32>("min_bins", minBins, 2);
     minBins_ = minBins;
     return *this;
@@ -205,17 +241,19 @@ uint32 EqualWidthFeatureBinningConfig::getMaxBins() const {
     return maxBins_;
 }
 
-EqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint32 maxBins) {
+IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint32 maxBins) {
     if (maxBins != 0) { assertGreaterOrEqual<uint32>("max_bins", maxBins, minBins_); }
     maxBins_ = maxBins;
     return *this;
 }
 
-EqualWidthFeatureBinningFactory::EqualWidthFeatureBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
-    : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
 
-}
-
-std::unique_ptr<IFeatureBinning> EqualWidthFeatureBinningFactory::create() const {
-    return std::make_unique<EqualWidthFeatureBinning>(binRatio_, minBins_, maxBins_);
+std::unique_ptr<IThresholdsFactory> EqualWidthFeatureBinningConfig::create() const {
+    std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr =
+        std::make_unique<EqualWidthFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
+    std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr =
+        std::make_unique<NominalFeatureBinningFactory>();
+    uint32 numThreads = 1; // TODO use correct value
+    return std::make_unique<ApproximateThresholdsFactory>(std::move(numericalFeatureBinningFactoryPtr),
+                                                          std::move(nominalFeatureBinningFactoryPtr), numThreads);
 }
