@@ -28,6 +28,20 @@ namespace boosting {
     };
 
     /**
+     * Allows to transform the score that is predicted for an individual label into a probability by applying the
+     * logistic sigmoid function.
+     */
+    class LogisticFunction final : public IProbabilityFunction {
+
+        public:
+
+            float64 transform(float64 predictedScore) const override {
+                return logisticFunction(predictedScore);
+            }
+
+    };
+
+    /**
      * Defines an interface for all factories that allow to create instances of the type `IProbabilityFunction`.
      */
     class IProbabilityFunctionFactory {
@@ -42,20 +56,6 @@ namespace boosting {
              * @return An unique pointer to an object of type `IProbabilityFunction` that has been created
              */
             virtual std::unique_ptr<IProbabilityFunction> create() const = 0;
-
-    };
-
-    /**
-     * Allows to transform the score that is predicted for an individual label into a probability by applying the
-     * logistic sigmoid function.
-     */
-    class LogisticFunction final : public IProbabilityFunction {
-
-        public:
-
-            float64 transform(float64 predictedScore) const override {
-                return logisticFunction(predictedScore);
-            }
 
     };
 
