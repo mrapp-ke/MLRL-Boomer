@@ -167,6 +167,15 @@ class IRuleLearner {
                 virtual const IPruningConfig& getPruningConfig() const = 0;
 
                 /**
+                 * Returns the configuration of the method that post-processes the predictions of rules once they
+                 * have been learned.
+                 *
+                 * @return A reference to an object of type `IPostProcessorConfig` that specifies the configuration
+                 *         of the method that post-processes the predictions of rules once they have been learned
+                 */
+                virtual const IPostProcessorConfig& getPostProcessorConfig() const = 0;
+
+                /**
                  * Returns the configuration of the stopping criterion that ensures that the number of rules does not
                  * exceed a certain maximum.
                  *
@@ -373,6 +382,11 @@ class IRuleLearner {
                  *         method for pruning classification rules
                  */
                 virtual IIrepConfig& useIrepPruning() = 0;
+
+                /**
+                 * Configures the rule learner to not use any post processor.
+                 */
+                virtual void useNoPostProcessor() = 0;
 
                 /**
                  * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
@@ -594,7 +608,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          */
         class Config : virtual public IRuleLearner::IConfig {
 
-            private:
+            protected:
 
                 std::unique_ptr<IRuleModelAssemblageConfig> ruleModelAssemblageConfigPtr_;
 
@@ -612,11 +626,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IPruningConfig> pruningConfigPtr_;
 
+                std::unique_ptr<IPostProcessorConfig> postProcessorConfigPtr_;
+
                 std::unique_ptr<SizeStoppingCriterionConfig> sizeStoppingCriterionConfigPtr_;
 
                 std::unique_ptr<TimeStoppingCriterionConfig> timeStoppingCriterionConfigPtr_;
 
                 std::unique_ptr<MeasureStoppingCriterionConfig> measureStoppingCriterionConfigPtr_;
+
+            private:
 
                 const IRuleModelAssemblageConfig& getRuleModelAssemblageConfig() const override final;
 
@@ -633,6 +651,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 const IPartitionSamplingConfig& getPartitionSamplingConfig() const override final;
 
                 const IPruningConfig& getPruningConfig() const override final;
+
+                const IPostProcessorConfig& getPostProcessorConfig() const override final;
 
                 const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const override final;
 
@@ -685,6 +705,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoPruning() override final;
 
                 IIrepConfig& useIrepPruning() override;
+
+                void useNoPostProcessor() override final;
 
                 void useNoSizeStoppingCriterion() override final;
 

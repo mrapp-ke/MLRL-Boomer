@@ -23,13 +23,6 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()
 
-    def use_no_post_processor(self):
-        """
-        Configures the rule learner to not use any post-processor.
-        """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useNoPostProcessor()
-
     def use_constant_shrinkage_post_processor(self) -> ConstantShrinkageConfig:
         """
         Configures the rule learner to use a post-processor that shrinks the weights of rules by a constant "shrinkage"

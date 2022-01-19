@@ -15,8 +15,6 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useNoPostProcessor()
-
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
 
         ExampleWiseLogisticLossConfigImpl& useExampleWiseLogisticLoss()

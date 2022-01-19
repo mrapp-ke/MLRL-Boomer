@@ -300,6 +300,13 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
+    def use_no_post_processor(self):
+        """
+        Configures the rule learner to not use any post-processor.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoPostProcessor()
+
     def use_no_size_stopping_criterion(self):
         """
         Configures the rule learner to not use a stopping criterion that ensures that the number of induced rules does

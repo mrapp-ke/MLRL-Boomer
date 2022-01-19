@@ -74,6 +74,7 @@ AbstractRuleLearner::Config::Config() {
     this->useNoFeatureSampling();
     this->useNoPartitionSampling();
     this->useNoPruning();
+    this->useNoPostProcessor();
     this->useNoSizeStoppingCriterion();
     this->useNoTimeStoppingCriterion();
     this->useNoMeasureStoppingCriterion();
@@ -109,6 +110,10 @@ const IPartitionSamplingConfig& AbstractRuleLearner::Config::getPartitionSamplin
 
 const IPruningConfig& AbstractRuleLearner::Config::getPruningConfig() const {
     return *pruningConfigPtr_;
+}
+
+const IPostProcessorConfig& AbstractRuleLearner::Config::getPostProcessorConfig() const {
+    return *postProcessorConfigPtr_;
 }
 
 const SizeStoppingCriterionConfig* AbstractRuleLearner::Config::getSizeStoppingCriterionConfig() const {
@@ -257,6 +262,10 @@ IIrepConfig& AbstractRuleLearner::Config::useIrepPruning() {
     return ref;
 }
 
+void AbstractRuleLearner::Config::useNoPostProcessor() {
+    postProcessorConfigPtr_ = std::make_unique<NoPostProcessorConfig>();
+}
+
 void AbstractRuleLearner::Config::useNoSizeStoppingCriterion() {
     sizeStoppingCriterionConfigPtr_ = nullptr;
 }
@@ -328,7 +337,7 @@ std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() con
 }
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {
-    return NoPostProcessorConfig().create();
+    return config_.getPostProcessorConfig().create();
 }
 
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createSizeStoppingCriterionFactory() const {
