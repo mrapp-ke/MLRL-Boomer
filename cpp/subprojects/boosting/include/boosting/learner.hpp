@@ -274,6 +274,8 @@ namespace boosting {
 
             std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory() const override;
 
+            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo() const override;
+
         public:
 
             /**
