@@ -382,12 +382,17 @@ std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo() con
 std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const {
+    std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories;
+    this->createStoppingCriterionFactories(stoppingCriterionFactories);
+
+    if (stoppingCriterionFactories.empty()) {
+        throw std::runtime_error("At least one stopping criterion must be used by the rule learner");
+    }
+
     std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr = this->createLabelSpaceInfo();
     std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
         this->createRuleModelAssemblageFactory();
     std::unique_ptr<IModelBuilder> modelBuilderPtr = this->createModelBuilder();
-    std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories;
-    this->createStoppingCriterionFactories(stoppingCriterionFactories);
     std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr = ruleModelAssemblageFactoryPtr->create(
         this->createStatisticsProviderFactory(), this->createThresholdsFactory(), this->createRuleInductionFactory(),
         this->createLabelSamplingFactory(), this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(),
