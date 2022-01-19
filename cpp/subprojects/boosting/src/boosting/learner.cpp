@@ -158,6 +158,11 @@ namespace boosting {
         return configPtr_->getProbabilityPredictorConfig().create();
     }
 
+    std::unique_ptr<ILabelSpaceInfo> BoostingRuleLearner::createLabelSpaceInfo() const {
+        // TODO Implement
+        return AbstractRuleLearner::createLabelSpaceInfo();
+    }
+
     std::unique_ptr<IBoostingRuleLearner::IConfig> createBoostingRuleLearnerConfig() {
         return std::make_unique<BoostingRuleLearner::Config>();
     }
