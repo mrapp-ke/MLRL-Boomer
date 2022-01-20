@@ -1,5 +1,6 @@
 #include "boosting/output/predictor_probability_label_wise.hpp"
 #include "boosting/math/math.hpp"
+#include "common/util/threads.hpp"
 #include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
@@ -250,8 +251,9 @@ namespace boosting {
     std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::create() const {
         // TODO check if prediction of regression scores is supported
         std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr = nullptr; // TODO Initialize
+        uint32 numThreads = getNumAvailableThreads(numThreads_);
         return std::make_unique<LabelWiseProbabilityPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
-                                                                      numThreads_);
+                                                                      numThreads);
     }
 
 }

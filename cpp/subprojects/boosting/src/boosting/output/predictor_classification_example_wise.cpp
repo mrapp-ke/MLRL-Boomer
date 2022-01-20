@@ -1,5 +1,6 @@
 #include "boosting/output/predictor_classification_example_wise.hpp"
 #include "common/data/arrays.hpp"
+#include "common/util/threads.hpp"
 #include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
@@ -300,8 +301,9 @@ namespace boosting {
 
     std::unique_ptr<IClassificationPredictorFactory> ExampleWiseClassificationPredictorConfig::create() const {
         std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr = nullptr; // TODO initialize
+        uint32 numThreads = getNumAvailableThreads(numThreads_);
         return std::make_unique<ExampleWiseClassificationPredictorFactory>(std::move(similarityMeasureFactoryPtr),
-                                                                           numThreads_);
+                                                                           numThreads);
     }
 
 }

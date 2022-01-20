@@ -26,7 +26,7 @@ namespace boosting {
              * parallel.
              *
              * @return The number of CPU threads that are used to make predictions for different query examples in
-             *         parallel
+             *         parallel or 0, if all available CPU cores are utilized
              */
             virtual uint32 getNumThreads() const = 0;
 
@@ -34,8 +34,8 @@ namespace boosting {
              * Sets the number of CPU threads that should be used to make predictions for different query examples in
              * parallel.
              *
-             * @param numThreads    The number of CPU threads that should be used. Must be at least 1 or 0, if the
-             *                      number of CPU threads should be chosen automatically
+             * @param numThreads    The number of CPU threads that should be used. Must be at least 1 or 0, if all
+             *                      available CPU cores should be utilized
              * @return              A reference to an object of type `ExampleWiseClassificationPredictorConfig` that
              *                      allows further configuration of the predictor
              */
