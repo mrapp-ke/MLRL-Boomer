@@ -17,7 +17,8 @@ cdef class PeakLiftFunctionConfig:
                             average label cardinality should be used
         :return:            A `PeakLiftFunctionConfig` that allows further configuration of the lift function
         """
-        assert_greater_or_equal('peak_label', peak_label, 0)
+        if peak_label != 0:
+            assert_greater_or_equal('peak_label', peak_label, 1)
         self.config_ptr.setPeakLabel(peak_label)
         return self
 

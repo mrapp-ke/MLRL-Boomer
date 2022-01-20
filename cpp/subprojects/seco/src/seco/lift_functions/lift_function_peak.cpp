@@ -103,7 +103,7 @@ namespace seco {
     }
 
     IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setPeakLabel(uint32 peakLabel) {
-        assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 0);
+        if (peakLabel != 0) { assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 1); }
         peakLabel_ = peakLabel;
         return *this;
     }
