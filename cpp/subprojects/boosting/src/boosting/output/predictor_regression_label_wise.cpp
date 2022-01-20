@@ -1,4 +1,5 @@
 #include "boosting/output/predictor_regression_label_wise.hpp"
+#include "common/util/threads.hpp"
 #include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
@@ -140,7 +141,8 @@ namespace boosting {
 
     std::unique_ptr<IRegressionPredictorFactory> LabelWiseRegressionPredictorConfig::create() const {
         // TODO check if prediction of regression scores is supported
-        return std::make_unique<LabelWiseRegressionPredictorFactory>(numThreads_);
+        uint32 numThreads = getNumAvailableThreads(numThreads_);
+        return std::make_unique<LabelWiseRegressionPredictorFactory>(numThreads);
     }
 
 }

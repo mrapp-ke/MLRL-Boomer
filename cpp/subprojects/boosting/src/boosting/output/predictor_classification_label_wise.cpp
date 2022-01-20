@@ -1,5 +1,6 @@
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "common/iterator/index_iterator.hpp"
+#include "common/util/threads.hpp"
 #include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
@@ -237,7 +238,8 @@ namespace boosting {
 
     std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::create() const {
         float64 threshold = 0; // TODO Use correct threshold
-        return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, numThreads_);
+        uint32 numThreads = getNumAvailableThreads(numThreads_);
+        return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, numThreads);
     }
 
 }
