@@ -43,6 +43,7 @@ class ILabelSamplingFactory {
          * @param numLabels The total number of available labels
          * @return          An unique pointer to an object of type `ILabelSampling` that has been created
          */
+        // TODO Pass argument to constructor
         virtual std::unique_ptr<ILabelSampling> create(uint32 numLabels) const = 0;
 
 };
