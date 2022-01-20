@@ -36,16 +36,16 @@ namespace seco {
             virtual IPeakLiftFunctionConfig& setNumLabels(uint32 numLabels) = 0;
 
             /**
-             * Returns the index of the label for which the lift is maximal.
+             * Returns the number of labels for which the lift is maximal.
              *
-             * @return The index of the label for which the lift is maximal
+             * @return The number of labels for which the lift is maximal
              */
             virtual uint32 getPeakLabel() const = 0;
 
             /**
-             * Sets the index of the label for which the lift should be maximal.
+             * Sets the number of labels for which the lift should be maximal.
              *
-             * @param peakLabel The index of the label for which the lift should be maximal.  Must be at least 0
+             * @param peakLabel The number of labels for which the lift should be maximal. Must be at least 1
              * @return          A reference to an object of type `IPeakLiftFunctionConfig` that allows further
              *                  configuration of the lift function
              */
