@@ -1,5 +1,4 @@
 #include "common/learner.hpp"
-#include "common/binning/feature_binning_auto.hpp"
 #include "common/binning/feature_binning_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/output/label_space_info_no.hpp"
@@ -69,7 +68,7 @@ class TrainingResult final : public ITrainingResult {
 AbstractRuleLearner::Config::Config() {
     this->useSequentialRuleModelAssemblage();
     this->useTopDownRuleInduction();
-    this->useAutomaticFeatureBinning();
+    this->useNoFeatureBinning();
     this->useNoLabelSampling();
     this->useNoInstanceSampling();
     this->useNoFeatureSampling();
@@ -156,10 +155,6 @@ ITopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInductio
 
 void AbstractRuleLearner::Config::useNoFeatureBinning() {
     featureBinningConfigPtr_ = std::make_unique<NoFeatureBinningConfig>();
-}
-
-void AbstractRuleLearner::Config::useAutomaticFeatureBinning() {
-    featureBinningConfigPtr_ = std::make_unique<AutomaticFeatureBinningConfig>();
 }
 
 IEqualWidthFeatureBinningConfig& AbstractRuleLearner::Config::useEqualWidthFeatureBinning() {

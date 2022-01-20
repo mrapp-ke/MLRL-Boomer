@@ -84,6 +84,12 @@ namespace boosting {
                     virtual ~IConfig() override { };
 
                     /**
+                     * Configures the rule learning to automatically decide whether a method for the assignment of
+                     * numerical feature values to bins should be used or not.
+                     */
+                    virtual void useAutomaticFeatureBinning() = 0;
+
+                    /**
                      * Configures the rule learner to use a post processor that shrinks the weights of rules by a
                      * constant "shrinkage" parameter.
                      *
@@ -247,6 +253,8 @@ namespace boosting {
                     Config();
 
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
+
+                    void useAutomaticFeatureBinning() override final;
 
                     IConstantShrinkageConfig& useConstantShrinkagePostProcessor() override;
 

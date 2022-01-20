@@ -2,6 +2,7 @@ project('boosting', 'cpp')
 
 # Source files
 source_files = [
+    'src/boosting/binning/feature_binning_auto.cpp',
     'src/boosting/binning/label_binning_equal_width.cpp',
     'src/boosting/data/matrix_dense_numeric.cpp',
     'src/boosting/data/statistic_vector_example_wise_dense.cpp',

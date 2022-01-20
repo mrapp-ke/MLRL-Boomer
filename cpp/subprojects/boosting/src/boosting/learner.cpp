@@ -1,4 +1,5 @@
 #include "boosting/learner.hpp"
+#include "boosting/binning/feature_binning_auto.hpp"
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/model/rule_list_builder.hpp"
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
@@ -10,8 +11,9 @@
 namespace boosting {
 
     BoostingRuleLearner::Config::Config() {
-        this->useSizeStoppingCriterion();
+        this->useAutomaticFeatureBinning();
         this->useFeatureSamplingWithoutReplacement();
+        this->useSizeStoppingCriterion();
         this->useConstantShrinkagePostProcessor();
         this->useLabelWiseLogisticLoss();
         this->useNoLabelBinning(); // TODO use automatic configuration by default
@@ -44,6 +46,10 @@ namespace boosting {
         ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
         ref.setMaxRules(1000);
         return ref;
+    }
+
+    void BoostingRuleLearner::Config::useAutomaticFeatureBinning() {
+        featureBinningConfigPtr_ = std::make_unique<AutomaticFeatureBinningConfig>();
     }
 
     IConstantShrinkageConfig& BoostingRuleLearner::Config::useConstantShrinkagePostProcessor() {
