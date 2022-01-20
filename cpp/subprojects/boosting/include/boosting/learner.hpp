@@ -133,6 +133,8 @@ namespace boosting {
                      */
                     virtual void useNoLabelBinning() = 0;
 
+                    // TODO Add function to use automatic label binning
+
                     /**
                      * Configures the algorithm to use a method for the assignment of labels to bins in a way such that
                      * each bin contains labels for which the predicted score is expected to belong to the same value
