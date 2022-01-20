@@ -225,7 +225,6 @@ class TopDownRuleInductionFactory final : public IRuleInductionFactory {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        // TODO Check if it is better to pass a config by value and store it as a member variable!?
         TopDownRuleInductionFactory(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
                                     bool recalculatePredictions, uint32 numThreads)
             : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
