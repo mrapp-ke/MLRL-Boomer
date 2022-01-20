@@ -22,14 +22,15 @@ namespace seco {
             /**
              * Returns the number of labels for which the lift is maximal.
              *
-             * @return The number of labels for which the lift is maximal
+             * @return The number of labels for which the lift is maximal or 0, if the average label cardinality is used
              */
             virtual uint32 getPeakLabel() const = 0;
 
             /**
              * Sets the number of labels for which the lift should be maximal.
              *
-             * @param peakLabel The number of labels for which the lift should be maximal. Must be at least 1
+             * @param peakLabel The number of labels for which the lift should be maximal. Must be at least 1 or 0, if
+             *                  the average label cardinality should be used
              * @return          A reference to an object of type `IPeakLiftFunctionConfig` that allows further
              *                  configuration of the lift function
              */
@@ -90,7 +91,6 @@ namespace seco {
 
             uint32 getPeakLabel() const override;
 
-            // TODO Allow to use choose the peak label automatically based on the label cardinality
             IPeakLiftFunctionConfig& setPeakLabel(uint32 peakLabel) override;
 
             float64 getMaxLift() const override;
