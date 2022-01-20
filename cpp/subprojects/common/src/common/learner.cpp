@@ -147,7 +147,8 @@ ISequentialRuleModelAssemblageConfig& AbstractRuleLearner::Config::useSequential
 }
 
 ITopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
-    std::unique_ptr<TopDownRuleInductionConfig> ptr = std::make_unique<TopDownRuleInductionConfig>();
+    std::unique_ptr<TopDownRuleInductionConfig> ptr =
+        std::make_unique<TopDownRuleInductionConfig>(parallelRuleRefinementConfigPtr_);
     ITopDownRuleInductionConfig& ref = *ptr;
     ruleInductionConfigPtr_ = std::move(ptr);
     return ref;

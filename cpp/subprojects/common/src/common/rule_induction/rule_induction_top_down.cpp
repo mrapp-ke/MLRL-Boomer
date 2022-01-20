@@ -240,8 +240,10 @@ class TopDownRuleInductionFactory final : public IRuleInductionFactory {
 };
 
 
-TopDownRuleInductionConfig::TopDownRuleInductionConfig()
-    : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(0), recalculatePredictions_(true) {
+TopDownRuleInductionConfig::TopDownRuleInductionConfig(
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+    : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(0), recalculatePredictions_(true),
+      multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
 
@@ -285,8 +287,7 @@ ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setRecalculatePredictio
 }
 
 std::unique_ptr<IRuleInductionFactory> TopDownRuleInductionConfig::configure() const {
-    // TODO The boosting algorithm uses a more advanced strategy to set the numThreads parameter
-    uint32 numThreads = 1; // TODO Use correct value
+    uint32 numThreads = multiThreadingConfigPtr_->configure();
     return std::make_unique<TopDownRuleInductionFactory>(minCoverage_, maxConditions_, maxHeadRefinements_,
                                                          recalculatePredictions_, numThreads);
 }
