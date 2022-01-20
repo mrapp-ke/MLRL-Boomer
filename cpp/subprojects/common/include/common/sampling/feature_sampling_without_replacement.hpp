@@ -53,6 +53,6 @@ class FeatureSamplingWithoutReplacementConfig final : public IFeatureSamplingCon
 
         IFeatureSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) override;
 
-        std::unique_ptr<IFeatureSamplingFactory> create() const override;
+        std::unique_ptr<IFeatureSamplingFactory> create(const IFeatureMatrix& featureMatrix) const override;
 
 };

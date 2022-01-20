@@ -736,7 +736,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const;
 
-        std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory() const;
+        std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory(
+            const IFeatureMatrix& featureMatrix) const;
 
         std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const;
 
