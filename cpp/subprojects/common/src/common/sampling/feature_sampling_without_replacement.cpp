@@ -52,13 +52,10 @@ class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFa
 
         /**
          * @param numFeatures   The total number of available features
-         * @param numSamples    The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds
-         *                      to 60 % of the available features). Must be in (0, 1) or 0, if the default sample size
-         *                      `floor(log2(num_features - 1) + 1)` should be used
+         * @param numSamples    The number of features to be included in the sample
          */
-        FeatureSamplingWithoutReplacementFactory(uint32 numFeatures, float32 sampleSize)
-            : numFeatures_(numFeatures),
-              numSamples_((uint32) (sampleSize > 0 ? sampleSize * numFeatures : log2(numFeatures - 1) + 1)) {
+        FeatureSamplingWithoutReplacementFactory(uint32 numFeatures, uint32 numSamples)
+            : numFeatures_(numFeatures), numSamples_(numSamples) {
 
         }
 
@@ -86,5 +83,7 @@ IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfi
 
 std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig::create(
         const IFeatureMatrix& featureMatrix) const {
-    return std::make_unique<FeatureSamplingWithoutReplacementFactory>(featureMatrix.getNumCols(), sampleSize_);
+    uint32 numFeatures = featureMatrix.getNumCols();
+    uint32 numSamples = (uint32) (sampleSize_ > 0 ? sampleSize_ * numFeatures : log2(numFeatures - 1) + 1);
+    return std::make_unique<FeatureSamplingWithoutReplacementFactory>(numFeatures, numSamples);
 }
