@@ -141,7 +141,6 @@ namespace boosting {
             numThreads);
     }
 
-
     std::unique_ptr<IModelBuilder> BoostingRuleLearner::createModelBuilder() const {
         return std::make_unique<RuleListBuilder>();
     }
