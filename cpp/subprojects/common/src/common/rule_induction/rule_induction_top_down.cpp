@@ -1,6 +1,7 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_refinement/score_processor.hpp"
 #include "common/indices/index_vector_complete.hpp"
+#include "common/util/threads.hpp"
 #include "common/util/validation.hpp"
 #include "omp.h"
 #include <unordered_map>
@@ -295,6 +296,8 @@ ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setNumThreads(uint32 nu
 }
 
 std::unique_ptr<IRuleInductionFactory> TopDownRuleInductionConfig::create() const {
+    // TODO The boosting algorithm uses a more advanced strategy to set the numThreads parameter
+    uint32 numThreads = getMaxThreads(numThreads_);
     return std::make_unique<TopDownRuleInductionFactory>(minCoverage_, maxConditions_, maxHeadRefinements_,
-                                                         recalculatePredictions_, numThreads_);
+                                                         recalculatePredictions_, numThreads);
 }
