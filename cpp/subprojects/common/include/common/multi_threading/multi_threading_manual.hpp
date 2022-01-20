@@ -8,7 +8,7 @@
 
 /**
  * Defines an interface for all classes that allow to configure the multi-threading behavior of a parallelizable
- * algorithm by manually specifying the preferred number of threads.
+ * algorithm by manually specifying the number of threads to be used.
  */
 class IManualMultiThreadingConfig {
 
@@ -36,8 +36,8 @@ class IManualMultiThreadingConfig {
 };
 
 /**
- * Allows to configure the multi-threading behavior of a parallelizable algorithm by manually specifying the preferred
- * number of threads.
+ * Allows to configure the multi-threading behavior of a parallelizable algorithm by manually specifying the number of
+ * threads to be used.
  */
 class ManualMultiThreadingConfig final : public IMultiThreadingConfig, public IManualMultiThreadingConfig{
 
