@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/input/label_matrix.hpp"
 #include <memory>
 
 
@@ -67,9 +67,11 @@ namespace seco {
             /**
              * Creates and returns a new object of type `ILiftFunctionFactory` according to the specified configuration.
              *
-             * @return An unique pointer to an object of type `ILiftFunctionFactory` that has been created
+             * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels
+             *                      of the training examples
+             * @return              An unique pointer to an object of type `ILiftFunctionFactory` that has been created
              */
-            virtual std::unique_ptr<ILiftFunctionFactory> create() const = 0;
+            virtual std::unique_ptr<ILiftFunctionFactory> create(const ILabelMatrix& labelMatrix) const = 0;
 
     };
 

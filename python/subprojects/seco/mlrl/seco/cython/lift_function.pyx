@@ -9,17 +9,6 @@ cdef class PeakLiftFunctionConfig:
     A wrapper for the C++ class `PeakLiftFunctionConfig`.
     """
 
-    def set_num_labels(self, num_labels: int) -> PeakLiftFunctionConfig:
-        """
-        Sets the total number of available labels.
-
-        :param num_labels:  The total number of available labels. Must be greater than 0
-        :return:            A `PeakLiftFunctionConfig` that allows further configuration of the lift function
-        """
-        assert_greater('num_labels', num_labels, 0)
-        self.config_ptr.setNumLabels(num_labels)
-        return self
-
     def set_peak_label(self, peak_label: int) -> PeakLiftFunctionConfig:
         """
         Sets the number of labels for which the lift should be maximal.

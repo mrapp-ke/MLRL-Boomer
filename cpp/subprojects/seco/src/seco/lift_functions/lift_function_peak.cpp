@@ -76,7 +76,7 @@ namespace seco {
 
             /**
              * @param numLabels The total number of available labels. Must be greater than 0
-             * @param peakLabel The index of the label for which the lift is maximal. Must be at least 0
+             * @param peakLabel The index of the label for which the lift is maximal. Must be in [1, numLabels]
              * @param maxLift   The lift at the peak label. Must be at least 1
              * @param curvature The curvature of the lift function. A greater value results in a steeper curvature, a
              *                  smaller value results in a flatter curvature. Must be greater than 0
@@ -93,18 +93,8 @@ namespace seco {
     };
 
     PeakLiftFunctionConfig::PeakLiftFunctionConfig()
-        : numLabels_(10), peakLabel_(2), maxLift_(1.08), curvature_(1.0) {
+        : peakLabel_(2), maxLift_(1.08), curvature_(1.0) {
 
-    }
-
-    uint32 PeakLiftFunctionConfig::getNumLabels() const {
-        return numLabels_;
-    }
-
-    IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setNumLabels(uint32 numLabels) {
-        assertGreater<uint32>("numLabels", numLabels, 0);
-        numLabels_ = numLabels;
-        return *this;
     }
 
     uint32 PeakLiftFunctionConfig::getPeakLabel() const {
@@ -137,8 +127,10 @@ namespace seco {
         return *this;
     }
 
-    std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::create() const {
-        return std::make_unique<PeakLiftFunctionFactory>(numLabels_, peakLabel_, maxLift_, curvature_);
+    std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::create(const ILabelMatrix& labelMatrix) const {
+        uint32 numLabels = labelMatrix.getNumRows();
+        return std::make_unique<PeakLiftFunctionFactory>(numLabels, peakLabel_ > numLabels ? numLabels : peakLabel_,
+                                                         maxLift_, curvature_);
     }
 
 }

@@ -329,7 +329,7 @@ namespace seco {
 
             std::unique_ptr<IHeuristicFactory> createPruningHeuristicFactory() const;
 
-            std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory() const;
+            std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(const ILabelMatrix& labelMatrix) const;
 
             std::unique_ptr<IStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const;
 

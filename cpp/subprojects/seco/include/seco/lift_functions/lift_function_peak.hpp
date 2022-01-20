@@ -20,22 +20,6 @@ namespace seco {
             virtual ~IPeakLiftFunctionConfig() { };
 
             /**
-             * Returns the total number of available labels.
-             *
-             * @return The total number of available labels
-             */
-            virtual uint32 getNumLabels() const = 0;
-
-            /**
-             * Sets the total number of available labels.
-             *
-             * @param numLabels The total number of available labels. Must be greater than 0
-             * @return          A reference to an object of type `IPeakLiftFunctionConfig` that allows further
-             *                  configuration of the lift function
-             */
-            virtual IPeakLiftFunctionConfig& setNumLabels(uint32 numLabels) = 0;
-
-            /**
              * Returns the number of labels for which the lift is maximal.
              *
              * @return The number of labels for which the lift is maximal
@@ -94,9 +78,6 @@ namespace seco {
 
         private:
 
-            // TODO Move to the PeakLiftFunctionFactory
-            uint32 numLabels_;
-
             uint32 peakLabel_;
 
             float64 maxLift_;
@@ -106,10 +87,6 @@ namespace seco {
         public:
 
             PeakLiftFunctionConfig();
-
-            uint32 getNumLabels() const override;
-
-            IPeakLiftFunctionConfig& setNumLabels(uint32 numLabels) override;
 
             uint32 getPeakLabel() const override;
 
@@ -124,7 +101,7 @@ namespace seco {
 
             IPeakLiftFunctionConfig& setCurvature(float64 curvature) override;
 
-            std::unique_ptr<ILiftFunctionFactory> create() const override;
+            std::unique_ptr<ILiftFunctionFactory> create(const ILabelMatrix& labelMatrix) const override;
 
     };
 
