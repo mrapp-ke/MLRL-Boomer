@@ -4,21 +4,17 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include <algorithm>
 #include <thread>
 
 
 /**
- * Returns the maximum number of threads that can be for parallelized algorithms.
+ * Returns the number of threads that are available for parallelized algorithms.
  *
- * @param preferredNumThreads   The preferred number of threads or 0, if all available CPU cores should be used
- * @return                      The maximum number of threads that can be used
+ * @param numPreferredThreads   The preferred number of threads or 0, if all available CPU cores should be used
+ * @return                      The number of available threads
  */
-static inline uint32 getMaxThreads(uint32 preferredNumThreads) {
-    uint32 maxThreads = std::thread::hardware_concurrency();
-
-    if (maxThreads == 0) {
-        maxThreads = 1;
-    }
-
-    return preferredNumThreads > 0 ? std::min(maxThreads, preferredNumThreads) : maxThreads;
+static inline uint32 getNumAvailableThreads(uint32 numPreferredThreads) {
+    uint32 numAvailableThreads = std::max(std::thread::hardware_concurrency(), (uint32) 1);
+    return numPreferredThreads > 0 ? std::min(numAvailableThreads, numPreferredThreads) : numAvailableThreads;
 }
