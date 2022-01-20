@@ -22,12 +22,12 @@ cdef class PeakLiftFunctionConfig:
 
     def set_peak_label(self, peak_label: int) -> PeakLiftFunctionConfig:
         """
-        Sets the index of the label for which the lift should be maximal.
+        Sets the number of labels for which the lift should be maximal.
 
-        :param peak_label:  The index of the label for which the lift should be maximal. Must be at least 0
+        :param peak_label:  The number of labels for which the lift should be maximal. Must be at least 1
         :return:            A `PeakLiftFunctionConfig` that allows further configuration of the lift function
         """
-        assert_greater_or_equal('peak_label', peak_label, 0)
+        assert_greater_or_equal('peak_label', peak_label, 1)
         self.config_ptr.setPeakLabel(peak_label)
         return self
 
