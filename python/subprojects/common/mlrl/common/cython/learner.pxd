@@ -8,6 +8,7 @@ from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstance
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
+from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport INominalFeatureMask
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
@@ -104,6 +105,14 @@ cdef extern from "common/learner.hpp" nogil:
         IIrepConfig& useIrepPruning()
 
         void useNoPostProcessor()
+
+        void useNoParallelRuleRefinement()
+
+        IManualMultiThreadingConfig& useParallelRuleRefinement()
+
+        void useNoParallelStatisticUpdate()
+
+        IManualMultiThreadingConfig& useParallelStatisticUpdate()
 
         void useNoSizeStoppingCriterion()
 
