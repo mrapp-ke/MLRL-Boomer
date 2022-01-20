@@ -1,4 +1,4 @@
-#include "common/binning/feature_binning_auto.hpp"
+#include "boosting/binning/feature_binning_auto.hpp"
 #include "common/binning/feature_binning_equal_width.hpp"
 #include "common/binning/feature_binning_no.hpp"
 

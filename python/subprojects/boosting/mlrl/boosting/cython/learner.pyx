@@ -23,6 +23,14 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()
 
+    def use_automatic_feature_binning(self):
+        """
+        Configures the rule learning to automatically decide whether a method for the assignment of numerical feature
+        values to bins should be used or not.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticFeatureBinning()
+
     def use_constant_shrinkage_post_processor(self) -> ConstantShrinkageConfig:
         """
         Configures the rule learner to use a post-processor that shrinks the weights of rules by a constant "shrinkage"
