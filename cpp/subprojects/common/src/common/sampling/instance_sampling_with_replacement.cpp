@@ -155,6 +155,6 @@ IInstanceSamplingWithReplacementConfig& InstanceSamplingWithReplacementConfig::s
     return *this;
 }
 
-std::unique_ptr<IInstanceSamplingFactory> InstanceSamplingWithReplacementConfig::create() const {
+std::unique_ptr<IInstanceSamplingFactory> InstanceSamplingWithReplacementConfig::configure() const {
     return std::make_unique<InstanceSamplingWithReplacementFactory>(sampleSize_);
 }

@@ -52,6 +52,6 @@ class SizeStoppingCriterionConfig final : public IStoppingCriterionConfig, publi
 
         ISizeStoppingCriterionConfig& setMaxRules(uint32 maxRules) override;
 
-        std::unique_ptr<IStoppingCriterionFactory> create() const override;
+        std::unique_ptr<IStoppingCriterionFactory> configure() const override;
 
 };

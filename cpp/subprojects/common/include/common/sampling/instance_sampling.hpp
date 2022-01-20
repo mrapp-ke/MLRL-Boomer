@@ -121,6 +121,6 @@ class IInstanceSamplingConfig {
          *
          * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
          */
-        virtual std::unique_ptr<IInstanceSamplingFactory> create() const = 0;
+        virtual std::unique_ptr<IInstanceSamplingFactory> configure() const = 0;
 
 };

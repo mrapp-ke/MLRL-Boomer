@@ -93,6 +93,6 @@ class IRuleInductionConfig {
          *
          * @return An unique pointer to an object of type `IRuleInductionFactory` that has been created
          */
-        virtual std::unique_ptr<IRuleInductionFactory> create() const = 0;
+        virtual std::unique_ptr<IRuleInductionFactory> configure() const = 0;
 
 };

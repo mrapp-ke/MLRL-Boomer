@@ -52,6 +52,6 @@ class NoFeatureSamplingFactory final : public IFeatureSamplingFactory {
 
 };
 
-std::unique_ptr<IFeatureSamplingFactory> NoFeatureSamplingConfig::create(const IFeatureMatrix& featureMatrix) const {
+std::unique_ptr<IFeatureSamplingFactory> NoFeatureSamplingConfig::configure(const IFeatureMatrix& featureMatrix) const {
     return std::make_unique<NoFeatureSamplingFactory>(featureMatrix.getNumCols());
 }

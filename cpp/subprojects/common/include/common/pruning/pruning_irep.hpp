@@ -26,7 +26,7 @@ class IrepConfig final : public IPruningConfig, public IIrepConfig {
 
     public:
 
-        std::unique_ptr<IPruningFactory> create() const override;
+        std::unique_ptr<IPruningFactory> configure() const override;
 
 };
 

@@ -366,7 +366,7 @@ namespace seco {
         return *this;
     }
 
-    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::create() const {
+    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::configure() const {
         uint32 numThreads = getNumAvailableThreads(numThreads_);
         return std::make_unique<LabelWiseClassificationPredictorFactory>(numThreads);
     }

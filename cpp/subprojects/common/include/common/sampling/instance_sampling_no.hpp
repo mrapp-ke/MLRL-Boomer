@@ -14,6 +14,6 @@ class NoInstanceSamplingConfig final : public IInstanceSamplingConfig {
 
     public:
 
-        std::unique_ptr<IInstanceSamplingFactory> create() const override;
+        std::unique_ptr<IInstanceSamplingFactory> configure() const override;
 
 };

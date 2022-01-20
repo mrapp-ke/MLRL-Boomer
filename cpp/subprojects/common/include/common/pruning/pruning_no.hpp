@@ -13,6 +13,6 @@ class NoPruningConfig final : public IPruningConfig {
 
     public:
 
-        std::unique_ptr<IPruningFactory> create() const override;
+        std::unique_ptr<IPruningFactory> configure() const override;
 
 };

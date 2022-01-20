@@ -33,7 +33,7 @@ namespace seco {
 
     };
 
-    std::unique_ptr<IHeuristicFactory> PrecisionConfig::create() const {
+    std::unique_ptr<IHeuristicFactory> PrecisionConfig::configure() const {
         return std::make_unique<PrecisionFactory>();
     }
 

@@ -76,6 +76,6 @@ class IPruningConfig {
          *
          * @return An unique pointer to an object of type `IPruningFactory` that has been created
          */
-        virtual std::unique_ptr<IPruningFactory> create() const = 0;
+        virtual std::unique_ptr<IPruningFactory> configure() const = 0;
 
 };

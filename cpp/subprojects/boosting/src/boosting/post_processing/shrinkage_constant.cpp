@@ -76,7 +76,7 @@ namespace boosting {
         return *this;
     }
 
-    std::unique_ptr<IPostProcessorFactory> ConstantShrinkageConfig::create() const {
+    std::unique_ptr<IPostProcessorFactory> ConstantShrinkageConfig::configure() const {
         return std::make_unique<ConstantShrinkageFactory>(shrinkage_);
     }
 

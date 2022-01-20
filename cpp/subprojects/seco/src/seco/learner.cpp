@@ -177,21 +177,21 @@ namespace seco {
     }
 
     std::unique_ptr<IHeuristicFactory> SeCoRuleLearner::createHeuristicFactory() const {
-        return configPtr_->getHeuristicConfig().create();
+        return configPtr_->getHeuristicConfig().configure();
     }
 
     std::unique_ptr<IHeuristicFactory> SeCoRuleLearner::createPruningHeuristicFactory() const {
-        return configPtr_->getPruningHeuristicConfig().create();
+        return configPtr_->getPruningHeuristicConfig().configure();
     }
 
     std::unique_ptr<ILiftFunctionFactory> SeCoRuleLearner::createLiftFunctionFactory(
             const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getLiftFunctionConfig().create(labelMatrix);
+        return configPtr_->getLiftFunctionConfig().configure(labelMatrix);
     }
 
     std::unique_ptr<IStoppingCriterionFactory> SeCoRuleLearner::createCoverageStoppingCriterionFactory() const {
         const CoverageStoppingCriterionConfig* config = configPtr_->getCoverageStoppingCriterionConfig();
-        return config ? config->create() : nullptr;
+        return config ? config->configure() : nullptr;
     }
 
     void SeCoRuleLearner::createStoppingCriterionFactories(
@@ -215,7 +215,7 @@ namespace seco {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory() const {
-        return configPtr_->getClassificationPredictorConfig().create();
+        return configPtr_->getClassificationPredictorConfig().configure();
     }
 
     std::unique_ptr<ISeCoRuleLearner::IConfig> createSeCoRuleLearnerConfig() {

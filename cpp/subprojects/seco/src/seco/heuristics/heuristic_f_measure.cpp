@@ -94,7 +94,7 @@ namespace seco {
         return *this;
     }
 
-    std::unique_ptr<IHeuristicFactory> FMeasureConfig::create() const {
+    std::unique_ptr<IHeuristicFactory> FMeasureConfig::configure() const {
         return std::make_unique<FMeasureFactory>(beta_);
     }
 

@@ -100,6 +100,6 @@ class EqualWidthFeatureBinningConfig final : public IFeatureBinningConfig, publi
 
         IEqualWidthFeatureBinningConfig& setMaxBins(uint32 maxBins) override;
 
-        std::unique_ptr<IThresholdsFactory> create(const IFeatureMatrix& featureMatrix) const override;
+        std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix) const override;
 
 };

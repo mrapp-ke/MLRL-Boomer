@@ -57,6 +57,6 @@ class IPostProcessorConfig {
          *
          * @return An unique pointer to an object of type `IPostProcessorFactory` that has been created
          */
-        virtual std::unique_ptr<IPostProcessorFactory> create() const = 0;
+        virtual std::unique_ptr<IPostProcessorFactory> configure() const = 0;
 
 };

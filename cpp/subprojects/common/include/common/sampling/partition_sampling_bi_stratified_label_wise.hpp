@@ -56,6 +56,6 @@ class LabelWiseStratifiedBiPartitionSamplingConfig final : public IPartitionSamp
 
         ILabelWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) override;
 
-        std::unique_ptr<IPartitionSamplingFactory> create() const override;
+        std::unique_ptr<IPartitionSamplingFactory> configure() const override;
 
 };

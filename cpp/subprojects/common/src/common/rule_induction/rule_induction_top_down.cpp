@@ -295,7 +295,7 @@ ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setNumThreads(uint32 nu
     return *this;
 }
 
-std::unique_ptr<IRuleInductionFactory> TopDownRuleInductionConfig::create() const {
+std::unique_ptr<IRuleInductionFactory> TopDownRuleInductionConfig::configure() const {
     // TODO The boosting algorithm uses a more advanced strategy to set the numThreads parameter
     uint32 numThreads = getNumAvailableThreads(numThreads_);
     return std::make_unique<TopDownRuleInductionFactory>(minCoverage_, maxConditions_, maxHeadRefinements_,

@@ -64,7 +64,7 @@ namespace seco {
 
             ILabelWiseClassificationPredictorConfig& setNumThreads(uint32 numThreads) override;
 
-            std::unique_ptr<IClassificationPredictorFactory> create() const override;
+            std::unique_ptr<IClassificationPredictorFactory> configure() const override;
 
     };
 

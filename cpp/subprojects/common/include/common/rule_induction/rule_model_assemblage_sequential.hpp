@@ -54,6 +54,6 @@ class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageCon
 
         ISequentialRuleModelAssemblageConfig& setUseDefaultRule(bool useDefaultRule) override;
 
-        std::unique_ptr<IRuleModelAssemblageFactory> create() const override;
+        std::unique_ptr<IRuleModelAssemblageFactory> configure() const override;
 
 };

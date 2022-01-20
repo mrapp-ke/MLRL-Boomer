@@ -46,6 +46,6 @@ class NoPartitionSamplingFactory final : public IPartitionSamplingFactory {
 
 };
 
-std::unique_ptr<IPartitionSamplingFactory> NoPartitionSamplingConfig::create() const {
+std::unique_ptr<IPartitionSamplingFactory> NoPartitionSamplingConfig::configure() const {
     return std::make_unique<NoPartitionSamplingFactory>();
 }
