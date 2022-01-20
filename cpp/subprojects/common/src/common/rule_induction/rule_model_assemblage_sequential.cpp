@@ -164,11 +164,10 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrix,
                                                                                        nominalFeatureMask,
                                                                                        *statisticsProviderPtr);
-            uint32 numFeatures = thresholdsPtr->getNumFeatures();
             uint32 numLabels = thresholdsPtr->getNumLabels();
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr = partition.createInstanceSampling(
                 *instanceSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
-            std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr_->create(numFeatures);
+            std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr_->create();
             std::unique_ptr<ILabelSampling> labelSamplingPtr = labelSamplingFactoryPtr_->create(numLabels);
             std::unique_ptr<IPruning> pruningPtr = pruningFactoryPtr_->create();
             std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr_->create();

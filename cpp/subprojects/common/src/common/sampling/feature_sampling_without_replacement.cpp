@@ -21,14 +21,10 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
 
         /**
          * @param numFeatures   The total number of available features
-         * @param sampleSize    The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds
-         *                      to 60 % of the available features). Must be in (0, 1) or 0, if the default sample size
-         *                      `floor(log2(num_features - 1) + 1)` should be used
+         * @param sampleSize    The number of features to be included in the sample
          */
-        FeatureSamplingWithoutReplacement(uint32 numFeatures, float32 sampleSize)
-            : numFeatures_(numFeatures),
-              indexVector_(PartialIndexVector((uint32) (sampleSize > 0 ? sampleSize * numFeatures
-                                                                       : log2(numFeatures - 1) + 1))) {
+        FeatureSamplingWithoutReplacement(uint32 numFeatures, uint32 numSamples)
+            : numFeatures_(numFeatures), indexVector_(PartialIndexVector(numSamples)) {
 
         }
 
@@ -48,22 +44,26 @@ class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFa
 
     private:
 
-        float32 sampleSize_;
+        uint32 numFeatures_;
+
+        uint32 numSamples_;
 
     public:
 
         /**
-         * @param sampleSize The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds to
-         *                   60 % of the available features). Must be in (0, 1) or 0, if the default sample size
-         *                   `floor(log2(num_features - 1) + 1)` should be used
+         * @param numFeatures   The total number of available features
+         * @param numSamples    The fraction of features to be included in the sample (e.g. a value of 0.6 corresponds
+         *                      to 60 % of the available features). Must be in (0, 1) or 0, if the default sample size
+         *                      `floor(log2(num_features - 1) + 1)` should be used
          */
-        FeatureSamplingWithoutReplacementFactory(float32 sampleSize)
-            : sampleSize_(sampleSize) {
+        FeatureSamplingWithoutReplacementFactory(uint32 numFeatures, float32 sampleSize)
+            : numFeatures_(numFeatures),
+              numSamples_((uint32) (sampleSize > 0 ? sampleSize * numFeatures : log2(numFeatures - 1) + 1)) {
 
         }
 
-        std::unique_ptr<IFeatureSampling> create(uint32 numFeatures) const override {
-            return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures, sampleSize_);
+        std::unique_ptr<IFeatureSampling> create() const override {
+            return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures_, numSamples_);
         }
 
 };
@@ -84,6 +84,7 @@ IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfi
     return *this;
 }
 
-std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig::create() const {
-    return std::make_unique<FeatureSamplingWithoutReplacementFactory>(sampleSize_);
+std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig::create(
+        const IFeatureMatrix& featureMatrix) const {
+    return std::make_unique<FeatureSamplingWithoutReplacementFactory>(featureMatrix.getNumCols(), sampleSize_);
 }

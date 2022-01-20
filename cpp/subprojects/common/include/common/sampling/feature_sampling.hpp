@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/indices/index_vector.hpp"
+#include "common/input/feature_matrix.hpp"
 #include "common/sampling/random.hpp"
 #include <memory>
 
@@ -40,11 +41,9 @@ class IFeatureSamplingFactory {
         /**
          * Creates and returns a new object of type `IFeatureSampling`.
          *
-         * @param numFeatures   The total number of available features
-         * @return              An unique pointer to an object of type `IFeatureSampling` that has been created
+         * @return An unique pointer to an object of type `IFeatureSampling` that has been created
          */
-        // TODO Pass argument to constructor
-        virtual std::unique_ptr<IFeatureSampling> create(uint32 numFeatures) const = 0;
+        virtual std::unique_ptr<IFeatureSampling> create() const = 0;
 
 };
 
@@ -60,8 +59,10 @@ class IFeatureSamplingConfig {
         /**
          * Creates and returns a new object of type `IFeatureSamplingFactory` according to the specified configuration.
          *
-         * @return An unique pointer to an object of type `IFeatureSamplingFactory` that has been created
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the features
+         *                      of the training examples
+         * @return              An unique pointer to an object of type `IFeatureSamplingFactory` that has been created
          */
-        virtual std::unique_ptr<IFeatureSamplingFactory> create() const = 0;
+        virtual std::unique_ptr<IFeatureSamplingFactory> create(const IFeatureMatrix& featureMatrix) const = 0;
 
 };

@@ -32,14 +32,26 @@ class NoFeatureSampling final : public IFeatureSampling {
  */
 class NoFeatureSamplingFactory final : public IFeatureSamplingFactory {
 
+    private:
+
+        uint32 numFeatures_;
+
     public:
 
-        std::unique_ptr<IFeatureSampling> create(uint32 numFeatures) const override {
-            return std::make_unique<NoFeatureSampling>(numFeatures);
+        /**
+         * @param numFeatures The total number of available features
+         */
+        NoFeatureSamplingFactory(uint32 numFeatures)
+            : numFeatures_(numFeatures) {
+
+        }
+
+        std::unique_ptr<IFeatureSampling> create() const override {
+            return std::make_unique<NoFeatureSampling>(numFeatures_);
         }
 
 };
 
-std::unique_ptr<IFeatureSamplingFactory> NoFeatureSamplingConfig::create() const {
-    return std::make_unique<NoFeatureSamplingFactory>();
+std::unique_ptr<IFeatureSamplingFactory> NoFeatureSamplingConfig::create(const IFeatureMatrix& featureMatrix) const {
+    return std::make_unique<NoFeatureSamplingFactory>(featureMatrix.getNumCols());
 }
