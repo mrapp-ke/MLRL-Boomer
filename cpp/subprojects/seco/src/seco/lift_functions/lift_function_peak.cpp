@@ -1,5 +1,6 @@
 #include "seco/lift_functions/lift_function_peak.hpp"
 #include "common/util/validation.hpp"
+#include <algorithm>
 #include <cmath>
 
 
@@ -102,7 +103,7 @@ namespace seco {
     }
 
     IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setPeakLabel(uint32 peakLabel) {
-        assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 1);
+        assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 0);
         peakLabel_ = peakLabel;
         return *this;
     }
@@ -129,8 +130,10 @@ namespace seco {
 
     std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::create(const IRowWiseLabelMatrix& labelMatrix) const {
         uint32 numLabels = labelMatrix.getNumRows();
-        return std::make_unique<PeakLiftFunctionFactory>(numLabels, peakLabel_ > numLabels ? numLabels : peakLabel_,
-                                                         maxLift_, curvature_);
+        uint32 peakLabel =
+            peakLabel_ > 0 ? std::min(numLabels, peakLabel_)
+                           : std::max((uint32) 1, (uint32) std::round(labelMatrix.calculateLabelCardinality()));
+        return std::make_unique<PeakLiftFunctionFactory>(numLabels, peakLabel, maxLift_, curvature_);
     }
 
 }

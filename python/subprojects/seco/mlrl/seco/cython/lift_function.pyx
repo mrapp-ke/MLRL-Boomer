@@ -13,10 +13,11 @@ cdef class PeakLiftFunctionConfig:
         """
         Sets the number of labels for which the lift should be maximal.
 
-        :param peak_label:  The number of labels for which the lift should be maximal. Must be at least 1
+        :param peak_label:  The number of labels for which the lift should be maximal. Must be at least 1 or 0, if the
+                            average label cardinality should be used
         :return:            A `PeakLiftFunctionConfig` that allows further configuration of the lift function
         """
-        assert_greater_or_equal('peak_label', peak_label, 1)
+        assert_greater_or_equal('peak_label', peak_label, 0)
         self.config_ptr.setPeakLabel(peak_label)
         return self
 
