@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/rule_induction/rule_induction.hpp"
+#include "common/multi_threading/multi_threading.hpp"
 
 
 /**
@@ -107,9 +108,16 @@ class TopDownRuleInductionConfig final : public IRuleInductionConfig, public ITo
 
         bool recalculatePredictions_;
 
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+
     public:
 
-        TopDownRuleInductionConfig();
+        /**
+         * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
+         *                                multi-threading behavior that should be used for the parallel refinement of
+         *                                rules
+         */
+        TopDownRuleInductionConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
         uint32 getMinCoverage() const override;
 
