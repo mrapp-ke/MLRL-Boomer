@@ -1,6 +1,8 @@
 #include "boosting/learner.hpp"
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/model/rule_list_builder.hpp"
+#include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
+#include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
 
@@ -49,6 +51,14 @@ namespace boosting {
         IConstantShrinkageConfig& ref = *ptr;
         postProcessorConfigPtr_ = std::move(ptr);
         return ref;
+    }
+
+    void BoostingRuleLearner::Config::useAutomaticParallelRuleRefinement() {
+        parallelRuleRefinementConfigPtr_ = std::make_unique<AutoParallelRuleRefinementConfig>();
+    }
+
+    void BoostingRuleLearner::Config::useAutomaticParallelStatisticUpdate() {
+        parallelStatisticUpdateConfigPtr_ = std::make_unique<AutoParallelStatisticUpdateConfig>();
     }
 
     ExampleWiseLogisticLossConfig& BoostingRuleLearner::Config::useExampleWiseLogisticLoss() {

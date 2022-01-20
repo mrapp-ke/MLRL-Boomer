@@ -36,6 +36,22 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_automatic_parallel_rule_refinement(self):
+        """
+        Configures the rule learner to automatically decide whether multi-threading should be used for the parallel
+        refinement of rules or not.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticParallelRuleRefinement()
+
+    def use_automatic_parallel_statistic_update(self):
+        """
+        Configures the rule learner to automatically decide whether multi-threading should be used for the parallel
+        update of statistics or not.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticParallelStatisticUpdate()
+
     def use_example_wise_logistic_loss(self) -> ExampleWiseLogisticLossConfig:
         """
         Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
