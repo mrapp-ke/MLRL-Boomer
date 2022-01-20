@@ -93,6 +93,18 @@ namespace boosting {
                     virtual IConstantShrinkageConfig& useConstantShrinkagePostProcessor() = 0;
 
                     /**
+                     * Configures the rule learner to automatically decide whether multi-threading should be used for
+                     * the parallel refinement of rules or not.
+                     */
+                    virtual void useAutomaticParallelRuleRefinement() = 0;
+
+                    /**
+                     * Configures the rule learner to automatically decide whether multi-threading should be used for
+                     * the parallel update of statistics or not.
+                     */
+                    virtual void useAutomaticParallelStatisticUpdate() = 0;
+
+                    /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * logistic loss that is applied example-wise.
                      *
@@ -237,6 +249,10 @@ namespace boosting {
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                     IConstantShrinkageConfig& useConstantShrinkagePostProcessor() override;
+
+                    void useAutomaticParallelRuleRefinement() override;
+
+                    void useAutomaticParallelStatisticUpdate() override;
 
                     ExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() override;
 

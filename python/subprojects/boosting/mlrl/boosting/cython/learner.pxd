@@ -17,6 +17,10 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
 
+        void useAutomaticParallelRuleRefinement()
+
+        void useAutomaticParallelStatisticUpdate()
+
         ExampleWiseLogisticLossConfigImpl& useExampleWiseLogisticLoss()
 
         LabelWiseLogisticLossConfigImpl& useLabelWiseLogisticLoss()
