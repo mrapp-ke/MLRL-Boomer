@@ -728,7 +728,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory() const;
 
-        std::unique_ptr<IThresholdsFactory> createThresholdsFactory() const;
+        std::unique_ptr<IThresholdsFactory> createThresholdsFactory(const IFeatureMatrix& featureMatrix) const;
 
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory() const;
 

@@ -248,7 +248,7 @@ IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint
 }
 
 
-std::unique_ptr<IThresholdsFactory> EqualWidthFeatureBinningConfig::create() const {
+std::unique_ptr<IThresholdsFactory> EqualWidthFeatureBinningConfig::create(const IFeatureMatrix& featureMatrix) const {
     std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr =
         std::make_unique<EqualWidthFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
     std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr =

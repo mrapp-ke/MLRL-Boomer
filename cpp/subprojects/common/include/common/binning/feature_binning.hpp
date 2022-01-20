@@ -4,9 +4,10 @@
  */
 #pragma once
 
-#include "common/input/feature_vector.hpp"
 #include "common/binning/bin_index_vector.hpp"
 #include "common/binning/threshold_vector.hpp"
+#include "common/input/feature_matrix.hpp"
+#include "common/input/feature_vector.hpp"
 #include "common/thresholds/thresholds.hpp"
 #include <memory>
 
@@ -84,8 +85,10 @@ class IFeatureBinningConfig {
         /**
          * Creates and returns a new object of type `IThresholdsFactory` according to the specified configuration.
          *
-         * @return An unique pointer to an object of type `IThresholdsFactory` that has been created
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @return              An unique pointer to an object of type `IThresholdsFactory` that has been created
          */
-        virtual std::unique_ptr<IThresholdsFactory> create() const = 0;
+        virtual std::unique_ptr<IThresholdsFactory> create(const IFeatureMatrix& featureMatrix) const = 0;
 
 };
