@@ -185,7 +185,7 @@ namespace seco {
     }
 
     std::unique_ptr<ILiftFunctionFactory> SeCoRuleLearner::createLiftFunctionFactory(
-            const ILabelMatrix& labelMatrix) const {
+            const IRowWiseLabelMatrix& labelMatrix) const {
         return configPtr_->getLiftFunctionConfig().create(labelMatrix);
     }
 

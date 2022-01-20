@@ -127,7 +127,7 @@ namespace seco {
         return *this;
     }
 
-    std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::create(const ILabelMatrix& labelMatrix) const {
+    std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::create(const IRowWiseLabelMatrix& labelMatrix) const {
         uint32 numLabels = labelMatrix.getNumRows();
         return std::make_unique<PeakLiftFunctionFactory>(numLabels, peakLabel_ > numLabels ? numLabels : peakLabel_,
                                                          maxLift_, curvature_);

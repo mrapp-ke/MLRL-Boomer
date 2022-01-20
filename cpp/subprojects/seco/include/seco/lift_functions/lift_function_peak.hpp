@@ -101,7 +101,7 @@ namespace seco {
 
             IPeakLiftFunctionConfig& setCurvature(float64 curvature) override;
 
-            std::unique_ptr<ILiftFunctionFactory> create(const ILabelMatrix& labelMatrix) const override;
+            std::unique_ptr<ILiftFunctionFactory> create(const IRowWiseLabelMatrix& labelMatrix) const override;
 
     };
 
