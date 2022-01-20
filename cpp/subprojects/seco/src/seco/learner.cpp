@@ -184,8 +184,9 @@ namespace seco {
         return configPtr_->getPruningHeuristicConfig().create();
     }
 
-    std::unique_ptr<ILiftFunctionFactory> SeCoRuleLearner::createLiftFunctionFactory() const {
-        return configPtr_->getLiftFunctionConfig().create();
+    std::unique_ptr<ILiftFunctionFactory> SeCoRuleLearner::createLiftFunctionFactory(
+            const ILabelMatrix& labelMatrix) const {
+        return configPtr_->getLiftFunctionConfig().create(labelMatrix);
     }
 
     std::unique_ptr<IStoppingCriterionFactory> SeCoRuleLearner::createCoverageStoppingCriterionFactory() const {

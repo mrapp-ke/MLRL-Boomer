@@ -7,10 +7,6 @@ cdef extern from "seco/lift_functions/lift_function_peak.hpp" namespace "seco" n
 
         # Functions:
 
-        uint32 getNumLabels() const
-
-        IPeakLiftFunctionConfig& setNumLabels(uint32 numLabels) except +
-
         uint32 getPeakLabel() const
 
         IPeakLiftFunctionConfig& setPeakLabel(uint32 peakLabel) except +
