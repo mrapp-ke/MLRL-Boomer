@@ -82,6 +82,6 @@ ISizeStoppingCriterionConfig& SizeStoppingCriterionConfig::setMaxRules(uint32 ma
     return *this;
 }
 
-std::unique_ptr<IStoppingCriterionFactory> SizeStoppingCriterionConfig::create() const {
+std::unique_ptr<IStoppingCriterionFactory> SizeStoppingCriterionConfig::configure() const {
     return std::make_unique<SizeStoppingCriterionFactory>(maxRules_);
 }

@@ -260,6 +260,6 @@ ISequentialRuleModelAssemblageConfig& SequentialRuleModelAssemblageConfig::setUs
     return *this;
 }
 
-std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::create() const {
+std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::configure() const {
     return std::make_unique<SequentialRuleModelAssemblageFactory>(useDefaultRule_);
 }

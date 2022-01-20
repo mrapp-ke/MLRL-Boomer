@@ -30,6 +30,6 @@ class NoPruningFactory final : public IPruningFactory {
 };
 
 
-std::unique_ptr<IPruningFactory> NoPruningConfig::create() const {
+std::unique_ptr<IPruningFactory> NoPruningConfig::configure() const {
     return std::make_unique<NoPruningFactory>();
 }

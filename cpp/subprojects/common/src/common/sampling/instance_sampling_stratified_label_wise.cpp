@@ -119,6 +119,6 @@ ILabelWiseStratifiedInstanceSamplingConfig& LabelWiseStratifiedInstanceSamplingC
     return *this;
 }
 
-std::unique_ptr<IInstanceSamplingFactory> LabelWiseStratifiedInstanceSamplingConfig::create() const {
+std::unique_ptr<IInstanceSamplingFactory> LabelWiseStratifiedInstanceSamplingConfig::configure() const {
     return std::make_unique<LabelWiseStratifiedInstanceSamplingFactory>(sampleSize_);
 }

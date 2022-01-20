@@ -221,7 +221,7 @@ IEqualFrequencyFeatureBinningConfig& EqualFrequencyFeatureBinningConfig::setMaxB
     return *this;
 }
 
-std::unique_ptr<IThresholdsFactory> EqualFrequencyFeatureBinningConfig::create(
+std::unique_ptr<IThresholdsFactory> EqualFrequencyFeatureBinningConfig::configure(
         const IFeatureMatrix& featureMatrix) const {
     std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr =
         std::make_unique<EqualFrequencyFeatureBinningFactory>(binRatio_, minBins_, maxBins_);

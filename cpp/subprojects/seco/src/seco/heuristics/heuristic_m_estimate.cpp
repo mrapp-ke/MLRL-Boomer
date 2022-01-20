@@ -94,7 +94,7 @@ namespace seco {
         return *this;
     }
 
-    std::unique_ptr<IHeuristicFactory> MEstimateConfig::create() const {
+    std::unique_ptr<IHeuristicFactory> MEstimateConfig::configure() const {
         return std::make_unique<MEstimateFactory>(m_);
     }
 

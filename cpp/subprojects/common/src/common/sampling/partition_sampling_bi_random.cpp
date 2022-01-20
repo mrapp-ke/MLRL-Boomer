@@ -101,6 +101,6 @@ IRandomBiPartitionSamplingConfig& RandomBiPartitionSamplingConfig::setHoldoutSet
     return *this;
 }
 
-std::unique_ptr<IPartitionSamplingFactory> RandomBiPartitionSamplingConfig::create() const {
+std::unique_ptr<IPartitionSamplingFactory> RandomBiPartitionSamplingConfig::configure() const {
     return std::make_unique<RandomBiPartitionSamplingFactory>(holdoutSetSize_);
 }

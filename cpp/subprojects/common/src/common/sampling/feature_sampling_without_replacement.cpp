@@ -81,7 +81,7 @@ IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfi
     return *this;
 }
 
-std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig::create(
+std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig::configure(
         const IFeatureMatrix& featureMatrix) const {
     uint32 numFeatures = featureMatrix.getNumCols();
     uint32 numSamples = (uint32) (sampleSize_ > 0 ? sampleSize_ * numFeatures : log2(numFeatures - 1) + 1);

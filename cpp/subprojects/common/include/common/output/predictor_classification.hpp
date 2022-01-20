@@ -60,6 +60,6 @@ class IClassificationPredictorConfig {
          *
          * @return An unique pointer to an object of type `IClassificationPredictorFactory` that has been created
          */
-        virtual std::unique_ptr<IClassificationPredictorFactory> create() const = 0;
+        virtual std::unique_ptr<IClassificationPredictorFactory> configure() const = 0;
 
 };

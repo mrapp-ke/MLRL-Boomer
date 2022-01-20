@@ -150,6 +150,6 @@ class TopDownRuleInductionConfig final : public IRuleInductionConfig, public ITo
 
         ITopDownRuleInductionConfig& setNumThreads(uint32 numThreads) override;
 
-        std::unique_ptr<IRuleInductionFactory> create() const override;
+        std::unique_ptr<IRuleInductionFactory> configure() const override;
 
 };

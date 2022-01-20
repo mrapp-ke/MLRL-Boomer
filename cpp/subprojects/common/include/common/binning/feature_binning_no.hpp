@@ -13,6 +13,6 @@ class NoFeatureBinningConfig final : public IFeatureBinningConfig {
 
     public:
 
-        std::unique_ptr<IThresholdsFactory> create(const IFeatureMatrix& featureMatrix) const override;
+        std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix) const override;
 
 };

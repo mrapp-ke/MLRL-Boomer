@@ -55,6 +55,6 @@ class ExampleWiseStratifiedInstanceSamplingConfig final : public IInstanceSampli
 
         IExampleWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) override;
 
-        std::unique_ptr<IInstanceSamplingFactory> create() const override;
+        std::unique_ptr<IInstanceSamplingFactory> configure() const override;
 
 };

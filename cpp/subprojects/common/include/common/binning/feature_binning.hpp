@@ -89,6 +89,6 @@ class IFeatureBinningConfig {
          *                      values of the training examples
          * @return              An unique pointer to an object of type `IThresholdsFactory` that has been created
          */
-        virtual std::unique_ptr<IThresholdsFactory> create(const IFeatureMatrix& featureMatrix) const = 0;
+        virtual std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix) const = 0;
 
 };

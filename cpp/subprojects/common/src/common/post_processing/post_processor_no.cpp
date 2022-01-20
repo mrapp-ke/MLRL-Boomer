@@ -29,6 +29,6 @@ class NoPostProcessorFactory final : public IPostProcessorFactory {
 
 };
 
-std::unique_ptr<IPostProcessorFactory> NoPostProcessorConfig::create() const {
+std::unique_ptr<IPostProcessorFactory> NoPostProcessorConfig::configure() const {
     return std::make_unique<NoPostProcessorFactory>();
 }

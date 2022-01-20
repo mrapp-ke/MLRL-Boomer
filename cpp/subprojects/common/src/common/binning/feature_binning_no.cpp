@@ -2,7 +2,7 @@
 #include "common/thresholds/thresholds_exact.hpp"
 
 
-std::unique_ptr<IThresholdsFactory> NoFeatureBinningConfig::create(const IFeatureMatrix& featureMatrix) const {
+std::unique_ptr<IThresholdsFactory> NoFeatureBinningConfig::configure(const IFeatureMatrix& featureMatrix) const {
     uint32 numThreads = 1; // TODO use correct value
     return std::make_unique<ExactThresholdsFactory>(numThreads);
 }

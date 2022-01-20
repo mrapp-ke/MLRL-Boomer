@@ -33,7 +33,7 @@ namespace seco {
 
     };
 
-    std::unique_ptr<IHeuristicFactory> WraConfig::create() const {
+    std::unique_ptr<IHeuristicFactory> WraConfig::configure() const {
         return std::make_unique<WraFactory>();
     }
 

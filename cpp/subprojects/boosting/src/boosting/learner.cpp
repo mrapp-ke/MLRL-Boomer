@@ -146,15 +146,15 @@ namespace boosting {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> BoostingRuleLearner::createClassificationPredictorFactory() const {
-        return configPtr_->getClassificationPredictorConfig().create();
+        return configPtr_->getClassificationPredictorConfig().configure();
     }
 
     std::unique_ptr<IRegressionPredictorFactory> BoostingRuleLearner::createRegressionPredictorFactory() const {
-        return configPtr_->getRegressionPredictorConfig().create();
+        return configPtr_->getRegressionPredictorConfig().configure();
     }
 
     std::unique_ptr<IProbabilityPredictorFactory> BoostingRuleLearner::createProbabilityPredictorFactory() const {
-        return configPtr_->getProbabilityPredictorConfig().create();
+        return configPtr_->getProbabilityPredictorConfig().configure();
     }
 
     std::unique_ptr<ILabelSpaceInfo> BoostingRuleLearner::createLabelSpaceInfo() const {
