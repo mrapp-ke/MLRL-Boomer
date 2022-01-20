@@ -251,7 +251,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
                     : thresholds_(thresholds), weights_(weights),
-                      coverageSet_(CoverageSet(thresholds.getNumExamples())) {
+                      coverageSet_(CoverageSet(thresholds.featureMatrix_.getNumRows())) {
 
                 }
 

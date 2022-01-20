@@ -175,18 +175,6 @@ class AbstractThresholds : public IThresholds {
 
         virtual ~AbstractThresholds() override { };
 
-        uint32 getNumExamples() const override final {
-            return featureMatrix_.getNumRows();
-        }
-
-        uint32 getNumFeatures() const override final {
-            return featureMatrix_.getNumCols();
-        }
-
-        uint32 getNumLabels() const override final {
-            return statisticsProvider_.get().getNumLabels();
-        }
-
         IStatisticsProvider& getStatisticsProvider() const override final {
             return statisticsProvider_;
         }

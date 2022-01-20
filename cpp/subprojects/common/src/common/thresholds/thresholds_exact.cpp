@@ -371,7 +371,7 @@ class ExactThresholds final : public AbstractThresholds {
                  */
                 ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
                     : thresholds_(thresholds), weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
-                      coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
+                      coverageMask_(CoverageMask(thresholds.featureMatrix_.getNumRows())), numModifications_(0) {
 
                 }
 
