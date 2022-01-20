@@ -732,7 +732,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory() const;
 
-        std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory() const;
+        std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory(const ILabelMatrix& labelMatrix) const;
 
         std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const;
 

@@ -42,21 +42,23 @@ class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactor
 
     private:
 
+        uint32 numLabels_;
+
         uint32 numSamples_;
 
     public:
 
         /**
-         * @param numSamples The number of labels to be included in the sample. Must be at least 1
+         * @param numLabels     The total number of available labels
+         * @param numSamples    The number of labels to be included in the sample. Must be at least 1
          */
-        LabelSamplingWithoutReplacementFactory(uint32 numSamples)
-            : numSamples_(numSamples) {
+        LabelSamplingWithoutReplacementFactory(uint32 numLabels, uint32 numSamples)
+            : numLabels_(numLabels), numSamples_(numSamples > numLabels ? numLabels : numSamples) {
 
         }
 
-        std::unique_ptr<ILabelSampling> create(uint32 numLabels) const override {
-            uint32 numSamples = numSamples_ > numLabels ? numLabels : numSamples_;
-            return std::make_unique<LabelSamplingWithoutReplacement>(numLabels, numSamples);
+        std::unique_ptr<ILabelSampling> create() const override {
+            return std::make_unique<LabelSamplingWithoutReplacement>(numLabels_, numSamples_);
         }
 
 };
@@ -76,6 +78,7 @@ ILabelSamplingWithoutReplacementConfig& LabelSamplingWithoutReplacementConfig::s
     return *this;
 }
 
-std::unique_ptr<ILabelSamplingFactory> LabelSamplingWithoutReplacementConfig::create() const {
-    return std::make_unique<LabelSamplingWithoutReplacementFactory>(numSamples_);
+std::unique_ptr<ILabelSamplingFactory> LabelSamplingWithoutReplacementConfig::create(
+        const ILabelMatrix& labelMatrix) const {
+    return std::make_unique<LabelSamplingWithoutReplacementFactory>(labelMatrix.getNumCols(), numSamples_);
 }

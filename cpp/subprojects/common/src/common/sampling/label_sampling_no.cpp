@@ -32,14 +32,26 @@ class NoLabelSampling final : public ILabelSampling {
  */
 class NoLabelSamplingFactory final : public ILabelSamplingFactory {
 
+    private:
+
+        uint32 numLabels_;
+
     public:
 
-        std::unique_ptr<ILabelSampling> create(uint32 numLabels) const override {
-            return std::make_unique<NoLabelSampling>(numLabels);
+        /**
+         * @param numLabels The total number of available labels
+         */
+        NoLabelSamplingFactory(uint32 numLabels)
+            : numLabels_(numLabels) {
+
+        }
+
+        std::unique_ptr<ILabelSampling> create() const override {
+            return std::make_unique<NoLabelSampling>(numLabels_);
         }
 
 };
 
-std::unique_ptr<ILabelSamplingFactory> NoLabelSamplingConfig::create() const {
-    return std::make_unique<NoLabelSamplingFactory>();
+std::unique_ptr<ILabelSamplingFactory> NoLabelSamplingConfig::create(const ILabelMatrix& labelMatrix) const {
+    return std::make_unique<NoLabelSamplingFactory>(labelMatrix.getNumCols());
 }
