@@ -15,6 +15,6 @@
  * @return                      The number of available threads
  */
 static inline uint32 getNumAvailableThreads(uint32 numPreferredThreads) {
-    uint32 numAvailableThreads = std::max(std::thread::hardware_concurrency(), (uint32) 1);
+    uint32 numAvailableThreads = std::max<uint32>(std::thread::hardware_concurrency(), 1);
     return numPreferredThreads > 0 ? std::min(numAvailableThreads, numPreferredThreads) : numAvailableThreads;
 }
