@@ -43,6 +43,7 @@ class IFeatureSamplingFactory {
          * @param numFeatures   The total number of available features
          * @return              An unique pointer to an object of type `IFeatureSampling` that has been created
          */
+        // TODO Pass argument to constructor
         virtual std::unique_ptr<IFeatureSampling> create(uint32 numFeatures) const = 0;
 
 };
