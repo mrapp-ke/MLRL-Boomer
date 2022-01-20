@@ -1,7 +1,6 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_refinement/score_processor.hpp"
 #include "common/indices/index_vector_complete.hpp"
-#include "common/util/threads.hpp"
 #include "common/util/validation.hpp"
 #include "omp.h"
 #include <unordered_map>
@@ -242,7 +241,7 @@ class TopDownRuleInductionFactory final : public IRuleInductionFactory {
 
 
 TopDownRuleInductionConfig::TopDownRuleInductionConfig()
-    : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(0), recalculatePredictions_(true), numThreads_(0) {
+    : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(0), recalculatePredictions_(true) {
 
 }
 
@@ -285,19 +284,9 @@ ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setRecalculatePredictio
     return *this;
 }
 
-uint32 TopDownRuleInductionConfig::getNumThreads() const {
-    return numThreads_;
-}
-
-ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setNumThreads(uint32 numThreads) {
-    if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
-    numThreads_ = numThreads;
-    return *this;
-}
-
 std::unique_ptr<IRuleInductionFactory> TopDownRuleInductionConfig::configure() const {
     // TODO The boosting algorithm uses a more advanced strategy to set the numThreads parameter
-    uint32 numThreads = getNumAvailableThreads(numThreads_);
+    uint32 numThreads = 1; // TODO Use correct value
     return std::make_unique<TopDownRuleInductionFactory>(minCoverage_, maxConditions_, maxHeadRefinements_,
                                                          recalculatePredictions_, numThreads);
 }

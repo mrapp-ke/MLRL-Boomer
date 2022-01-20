@@ -90,23 +90,6 @@ class ITopDownRuleInductionConfig {
          */
         virtual ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) = 0;
 
-        /**
-         * Returns the number of CPU threads to be used to search for potential refinements of rules in parallel.
-         *
-         * @return The number of CPU threads to be used or 0, if the number of threads should be chosen automatically
-         */
-        virtual uint32 getNumThreads() const = 0;
-
-        /**
-         * Sets the number of CPU threads to be used to search for potential refinements of rules in parallel.
-         *
-         * @param numThreads    The number of CPU threads to be used. Must be at least 1 or 0, if the number of threads
-         *                      should be chosen automatically
-         * @return              A reference to an object of type `ITopDownRuleInductionConfig` that allows further
-         *                      configuration of the algorithm for the induction of individual rules
-         */
-        virtual ITopDownRuleInductionConfig& setNumThreads(uint32 numThreads) = 0;
-
 };
 
 /**
@@ -123,8 +106,6 @@ class TopDownRuleInductionConfig final : public IRuleInductionConfig, public ITo
         uint32 maxHeadRefinements_;
 
         bool recalculatePredictions_;
-
-        uint32 numThreads_;
 
     public:
 
@@ -145,10 +126,6 @@ class TopDownRuleInductionConfig final : public IRuleInductionConfig, public ITo
         bool getRecalculatePredictions() const override;
 
         ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) override;
-
-        uint32 getNumThreads() const override;
-
-        ITopDownRuleInductionConfig& setNumThreads(uint32 numThreads) override;
 
         std::unique_ptr<IRuleInductionFactory> configure() const override;
 

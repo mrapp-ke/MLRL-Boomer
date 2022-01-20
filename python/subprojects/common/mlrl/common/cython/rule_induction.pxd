@@ -25,10 +25,6 @@ cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
 
         bool getRecalculatePredictions() const
 
-        ITopDownRuleInductionConfig& setNumThreads(uint32 numThreads) except +
-
-        uint32 getNumThreads() const
-
 
 cdef class TopDownRuleInductionConfig:
 

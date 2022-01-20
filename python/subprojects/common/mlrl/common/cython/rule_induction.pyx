@@ -63,17 +63,3 @@ cdef class TopDownRuleInductionConfig:
         """
         self.config_ptr.setRecalculatePredictions(recalculate_predictions)
         return self
-
-    def set_num_threads(self, num_threads: int) -> TopDownRuleInductionConfig:
-        """
-        Sets the number of CPU threads to be used to search for potential refinements of rules in parallel.
-
-        :param num_threads: The number of CPU threads to be used. Must be at least 1 or 0, if the number of threads
-                            should be chosen automatically
-        :return:            A `TopDownRuleInductionConfig` that allows further configuration of the algorithm for the
-                            induction of individual rules
-        """
-        if num_threads != 0:
-            assert_greater_or_equal('num_threads', num_threads, 1)
-        self.config_ptr.setNumThreads(num_threads)
-        return self
