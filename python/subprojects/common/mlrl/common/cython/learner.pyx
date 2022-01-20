@@ -11,6 +11,7 @@ from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceS
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_sampling cimport LabelSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_space_info cimport create_label_space_info
+from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
 from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfig, \
     LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
@@ -306,6 +307,44 @@ cdef class RuleLearnerConfig:
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoPostProcessor()
+
+    def use_no_parallel_rule_refinement(self):
+        """
+        Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoParallelRuleRefinement()
+
+    def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
+        """
+        Configures the rule learner to use multi-threading for the parallel refinement of rules.
+
+        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelRuleRefinement()
+        cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_no_parallel_statistic_update(self):
+        """
+        Configures the rule learner to not use any multi-threading for the parallel update of statistics.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoParallelStatisticUpdate()
+
+    def use_parallel_statistic_update(self) -> ManualMultiThreadingConfig:
+        """
+        Configures the rule learner to use multi-threading for the parallel update of statistics.
+
+        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelStatisticUpdate()
+        cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_no_size_stopping_criterion(self):
         """

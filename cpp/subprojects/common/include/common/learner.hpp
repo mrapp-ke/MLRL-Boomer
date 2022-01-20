@@ -9,6 +9,7 @@
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/input/nominal_feature_mask.hpp"
+#include "common/multi_threading/multi_threading_manual.hpp"
 #include "common/output/label_space_info.hpp"
 #include "common/output/prediction_matrix_dense.hpp"
 #include "common/output/prediction_matrix_sparse_binary.hpp"
@@ -174,6 +175,24 @@ class IRuleLearner {
                  *         of the method that post-processes the predictions of rules once they have been learned
                  */
                 virtual const IPostProcessorConfig& getPostProcessorConfig() const = 0;
+
+                /**
+                 * Returns the configuration of the multi-threading behavior that is used for the parallel refinement of
+                 * rules.
+                 *
+                 * @return A reference to an object of type `IMultiThreadingConfig` that specifies the configuration of
+                 *         the multi-threading behavior that is used for the parallel refinement of rules
+                 */
+                virtual const IMultiThreadingConfig& getParallelRuleRefinementConfig() const = 0;
+
+                /**
+                 * Returns the configuration of the multi-threading behavior that is used for the parallel update of
+                 * statistics.
+                 *
+                 * @return A reference to an object of type `IMultiThreadingConfig` that specifies the configuration of
+                 *         the multi-threading behavior that is used for the parallel update of statistics
+                 */
+                virtual const IMultiThreadingConfig& getParallelStatisticUpdateConfig() const = 0;
 
                 /**
                  * Returns the configuration of the stopping criterion that ensures that the number of rules does not
@@ -387,6 +406,32 @@ class IRuleLearner {
                  * Configures the rule learner to not use any post processor.
                  */
                 virtual void useNoPostProcessor() = 0;
+
+                /**
+                 * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
+                 */
+                virtual void useNoParallelRuleRefinement() = 0;
+
+                /**
+                 * Configures the rule learner to use multi-threading for the parallel refinement of rules.
+                 *
+                 * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
+                 *         configuration of the multi-threading behavior
+                 */
+                virtual IManualMultiThreadingConfig& useParallelRuleRefinement() = 0;
+
+                /**
+                 * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
+                 */
+                virtual void useNoParallelStatisticUpdate() = 0;
+
+                /**
+                 * Configures the rule learner to use multi-threading for the parallel update of statistics.
+                 *
+                 * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
+                 *         configuration of the multi-threading behavior
+                 */
+                virtual IManualMultiThreadingConfig& useParallelStatisticUpdate() = 0;
 
                 /**
                  * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
@@ -628,6 +673,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IPostProcessorConfig> postProcessorConfigPtr_;
 
+                std::unique_ptr<IMultiThreadingConfig> parallelRuleRefinementConfigPtr_;
+
+                std::unique_ptr<IMultiThreadingConfig> parallelStatisticUpdateConfigPtr_;
+
                 std::unique_ptr<SizeStoppingCriterionConfig> sizeStoppingCriterionConfigPtr_;
 
                 std::unique_ptr<TimeStoppingCriterionConfig> timeStoppingCriterionConfigPtr_;
@@ -653,6 +702,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 const IPruningConfig& getPruningConfig() const override final;
 
                 const IPostProcessorConfig& getPostProcessorConfig() const override final;
+
+                const IMultiThreadingConfig& getParallelRuleRefinementConfig() const override final;
+
+                const IMultiThreadingConfig& getParallelStatisticUpdateConfig() const override final;
 
                 const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const override final;
 
@@ -707,6 +760,14 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 IIrepConfig& useIrepPruning() override;
 
                 void useNoPostProcessor() override final;
+
+                void useNoParallelRuleRefinement() override final;
+
+                IManualMultiThreadingConfig& useParallelRuleRefinement() override;
+
+                void useNoParallelStatisticUpdate() override final;
+
+                IManualMultiThreadingConfig& useParallelStatisticUpdate() override;
 
                 void useNoSizeStoppingCriterion() override final;
 
