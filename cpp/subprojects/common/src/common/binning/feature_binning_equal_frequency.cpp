@@ -185,8 +185,9 @@ class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory 
 
 };
 
-EqualFrequencyFeatureBinningConfig::EqualFrequencyFeatureBinningConfig()
-    : binRatio_(0.33), minBins_(2), maxBins_(0) {
+EqualFrequencyFeatureBinningConfig::EqualFrequencyFeatureBinningConfig(
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+    : binRatio_(0.33), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
 
@@ -227,7 +228,7 @@ std::unique_ptr<IThresholdsFactory> EqualFrequencyFeatureBinningConfig::configur
         std::make_unique<EqualFrequencyFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
     std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr =
         std::make_unique<NominalFeatureBinningFactory>();
-    uint32 numThreads = 1; // TODO use correct value
+    uint32 numThreads = multiThreadingConfigPtr_->configure();
     return std::make_unique<ApproximateThresholdsFactory>(std::move(numericalFeatureBinningFactoryPtr),
                                                           std::move(nominalFeatureBinningFactoryPtr), numThreads);
 }

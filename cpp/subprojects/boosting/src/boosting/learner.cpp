@@ -49,7 +49,7 @@ namespace boosting {
     }
 
     void BoostingRuleLearner::Config::useAutomaticFeatureBinning() {
-        featureBinningConfigPtr_ = std::make_unique<AutomaticFeatureBinningConfig>();
+        featureBinningConfigPtr_ = std::make_unique<AutomaticFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
     }
 
     IConstantShrinkageConfig& BoostingRuleLearner::Config::useConstantShrinkagePostProcessor() {
