@@ -154,18 +154,20 @@ ITopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInductio
 }
 
 void AbstractRuleLearner::Config::useNoFeatureBinning() {
-    featureBinningConfigPtr_ = std::make_unique<NoFeatureBinningConfig>();
+    featureBinningConfigPtr_ = std::make_unique<NoFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
 }
 
 IEqualWidthFeatureBinningConfig& AbstractRuleLearner::Config::useEqualWidthFeatureBinning() {
-    std::unique_ptr<EqualWidthFeatureBinningConfig> ptr = std::make_unique<EqualWidthFeatureBinningConfig>();
+    std::unique_ptr<EqualWidthFeatureBinningConfig> ptr =
+        std::make_unique<EqualWidthFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
     IEqualWidthFeatureBinningConfig& ref = *ptr;
     featureBinningConfigPtr_ = std::move(ptr);
     return ref;
 }
 
 IEqualFrequencyFeatureBinningConfig& AbstractRuleLearner::Config::useEqualFrequencyFeatureBinning() {
-    std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr = std::make_unique<EqualFrequencyFeatureBinningConfig>();
+    std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
+        std::make_unique<EqualFrequencyFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
     IEqualFrequencyFeatureBinningConfig& ref = *ptr;
     featureBinningConfigPtr_ = std::move(ptr);
     return ref;

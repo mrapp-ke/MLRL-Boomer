@@ -5,6 +5,7 @@
 #pragma once
 
 #include "common/binning/feature_binning.hpp"
+#include "common/multi_threading/multi_threading.hpp"
 
 
 /**
@@ -85,9 +86,16 @@ class EqualFrequencyFeatureBinningConfig final : public IFeatureBinningConfig,
 
         uint32 maxBins_;
 
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+
     public:
 
-        EqualFrequencyFeatureBinningConfig();
+        /**
+         * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
+         *                                multi-threading behavior that should be used for the parallel update of
+         *                                statistics
+         */
+        EqualFrequencyFeatureBinningConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
         float32 getBinRatio() const override;
 
