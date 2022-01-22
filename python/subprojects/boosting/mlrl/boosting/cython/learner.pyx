@@ -128,7 +128,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
                  labels to bins
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef EqualWidthLabelBinningConfigImpl* config_ptr = &rule_learner_config_ptr.useEqualWidthLabelBinning()
+        cdef IEqualWidthLabelBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualWidthLabelBinning()
         cdef EqualWidthLabelBinningConfig config = EqualWidthLabelBinningConfig.__new__(EqualWidthLabelBinningConfig)
         config.config_ptr = config_ptr
         return config

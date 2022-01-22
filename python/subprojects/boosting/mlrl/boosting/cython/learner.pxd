@@ -1,5 +1,5 @@
 from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
-from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfigImpl
+from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.loss cimport ExampleWiseLogisticLossConfigImpl, LabelWiseLogisticLossConfigImpl, \
     LabelWiseSquaredErrorLossConfigImpl, LabelWiseSquaredHingeLossConfigImpl
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
@@ -33,7 +33,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useNoLabelBinning()
 
-        EqualWidthLabelBinningConfigImpl& useEqualWidthLabelBinning()
+        IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
 
         IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor()
 
