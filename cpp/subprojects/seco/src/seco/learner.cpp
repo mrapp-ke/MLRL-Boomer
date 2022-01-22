@@ -10,6 +10,7 @@ namespace seco {
         this->useIrepPruning();
         this->useParallelRuleRefinement();
         this->useCoverageStoppingCriterion();
+        this->useSingleLabelHeads();
         this->useFMeasureHeuristic();
         this->useAccuracyPruningHeuristic();
         this->usePeakLiftFunction();
@@ -18,6 +19,10 @@ namespace seco {
 
     const CoverageStoppingCriterionConfig* SeCoRuleLearner::Config::getCoverageStoppingCriterionConfig() const {
         return coverageStoppingCriterionConfigPtr_.get();
+    }
+
+    const IHeadConfig& SeCoRuleLearner::Config::getHeadConfig() const {
+        return *headConfigPtr_;
     }
 
     const IHeuristicConfig& SeCoRuleLearner::Config::getHeuristicConfig() const {
@@ -56,6 +61,23 @@ namespace seco {
         std::unique_ptr<CoverageStoppingCriterionConfig> ptr = std::make_unique<CoverageStoppingCriterionConfig>();
         ICoverageStoppingCriterionConfig& ref = *ptr;
         coverageStoppingCriterionConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    ISingleLabelHeadConfig& SeCoRuleLearner::Config::useSingleLabelHeads() {
+        std::unique_ptr<SingleLabelHeadConfig> ptr =
+            std::make_unique<SingleLabelHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_);
+        ISingleLabelHeadConfig& ref = *ptr;
+        headConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IPartialHeadConfig& SeCoRuleLearner::Config::usePartialHeads() {
+        std::unique_ptr<PartialHeadConfig> ptr =
+            std::make_unique<PartialHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_,
+                                                liftFunctionConfigPtr_);
+        IPartialHeadConfig& ref = *ptr;
+        headConfigPtr_ = std::move(ptr);
         return ref;
     }
 
@@ -208,8 +230,7 @@ namespace seco {
 
     std::unique_ptr<IStatisticsProviderFactory> SeCoRuleLearner::createStatisticsProviderFactory(
             const IRowWiseLabelMatrix& labelMatrix) const {
-        // TODO Implement
-        return nullptr;
+        return configPtr_->getHeadConfig().configure(labelMatrix);
     }
 
     std::unique_ptr<IModelBuilder> SeCoRuleLearner::createModelBuilder() const {
