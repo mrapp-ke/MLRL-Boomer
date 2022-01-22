@@ -112,17 +112,6 @@ namespace boosting {
     };
 
     /**
-     * Defines an interface for all classes that allow to configure a method that assings labels to bins.
-     */
-    class ILabelBinningConfig {
-
-        public:
-
-            virtual ~ILabelBinningConfig() { };
-
-    };
-
-    /**
      * Defines an interface for all factories that allows to create instances of the type `ILabelBinning`.
      */
     class ILabelBinningFactory {
@@ -137,6 +126,17 @@ namespace boosting {
              * @return An unique pointer to an object of type `ILabelBinning` that has been created
              */
             virtual std::unique_ptr<ILabelBinning> create() const = 0;
+
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a method that assigns labels to bins.
+     */
+    class ILabelBinningConfig {
+
+        public:
+
+            virtual ~ILabelBinningConfig() { };
 
     };
 
