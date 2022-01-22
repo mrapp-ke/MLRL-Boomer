@@ -1,4 +1,5 @@
 from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
+from mlrl.boosting.cython.head_type cimport ISingleLabelHeadConfig, ICompleteHeadConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.loss cimport IExampleWiseLogisticLossConfig, ILabelWiseLogisticLossConfig, \
     ILabelWiseSquaredErrorLossConfig, ILabelWiseSquaredHingeLossConfig
@@ -22,6 +23,10 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useAutomaticParallelRuleRefinement()
 
         void useAutomaticParallelStatisticUpdate()
+
+        ISingleLabelHeadConfig& useSingleLabelHeads()
+
+        ICompleteHeadConfig& useCompleteHeads()
 
         IExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss()
 
