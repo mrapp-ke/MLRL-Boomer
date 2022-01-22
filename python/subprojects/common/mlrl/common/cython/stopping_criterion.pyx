@@ -1,8 +1,8 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython._validation import assert_at_least, assert_greater_or_equal, assert_less_or_equal, \
-    assert_multiple, assert_not_none
+from mlrl.common.cython._validation import assert_greater_or_equal, assert_less_or_equal, assert_multiple, \
+    assert_not_none
 
 
 cdef class SizeStoppingCriterionConfig:
@@ -17,7 +17,7 @@ cdef class SizeStoppingCriterionConfig:
         :param max_rules:   The maximum number of rules that should be induced. Must be at least 1
         :return:            A `SizeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-        assert_at_least('max_rules', max_rules, 1)
+        assert_greater_or_equal('max_rules', max_rules, 1)
         self.config_ptr.setMaxRules(max_rules)
         return self
 
@@ -34,7 +34,7 @@ cdef class TimeStoppingCriterionConfig:
         :param time_limit:  The time limit in seconds. Must be at least 1
         :return:            A `TimeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-        assert_at_least('time_limit', time_limit, 1)
+        assert_greater_or_equal('time_limit', time_limit, 1)
         self.config_ptr.setTimeLimit(time_limit)
         return self
 
@@ -69,7 +69,7 @@ cdef class MeasureStoppingCriterionConfig:
         :return:            A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping
                             criterion
         """
-        assert_at_least('min_rules', min_rules, 1)
+        assert_greater_or_equal('min_rules', min_rules, 1)
         self.config_ptr.setMinRules(min_rules)
         return self
 
@@ -109,7 +109,7 @@ cdef class MeasureStoppingCriterionConfig:
         :return:            A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping
                             criterion
         """
-        assert_at_least('num_past', num_past, 1)
+        assert_greater_or_equal('num_past', num_past, 1)
         self.config_ptr.setNumPast(num_past)
         return self
 
@@ -122,7 +122,7 @@ cdef class MeasureStoppingCriterionConfig:
         :return:            A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping
                             criterion
         """
-        assert_at_least('num_current', num_current, 1)
+        assert_greater_or_equal('num_current', num_current, 1)
         self.config_ptr.setNumCurrent(num_current)
         return self
 
