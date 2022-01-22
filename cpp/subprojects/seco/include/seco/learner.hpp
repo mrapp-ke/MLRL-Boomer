@@ -13,6 +13,8 @@
 #include "seco/heuristics/heuristic_wra.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
 #include "seco/output/predictor_classification_label_wise.hpp"
+#include "seco/rule_evaluation/head_type_partial.hpp"
+#include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 
 
@@ -45,6 +47,14 @@ namespace seco {
                      *         or a null pointer, if no such stopping criterion should be used
                      */
                     virtual const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the rule heads that should be induced by the rule learner.
+                     *
+                     * @return A reference to an object of type `IHeadConfig` that specifies the configuration of the
+                     *         rule heads
+                     */
+                    virtual const IHeadConfig& getHeadConfig() const = 0;
 
                     /**
                      * Returns the configuration of the heuristic for learning rules.
@@ -101,6 +111,24 @@ namespace seco {
                      *         configuration of the stopping criterion
                      */
                     virtual ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() = 0;
+
+                    /**
+                     * Configures the rule learner to induce rules with single-label heads that predict for a single
+                     * label.
+                     *
+                     * @return A reference to an object of type `ISingleLabelHeadConfig` that allows further
+                     *         configuration of the rule heads
+                     */
+                    virtual ISingleLabelHeadConfig& useSingleLabelHeads() = 0;
+
+                    /**
+                     * Configures the rule learner to induce rules with partial heads that predict for a subset of the
+                     * available labels.
+                     *
+                     * @return A reference to an object of type `IPartialHeadConfig` that allows further configuration
+                     *         of the rule heads
+                     */
+                    virtual IPartialHeadConfig& usePartialHeads() = 0;
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
@@ -257,6 +285,8 @@ namespace seco {
 
                     std::unique_ptr<CoverageStoppingCriterionConfig> coverageStoppingCriterionConfigPtr_;
 
+                    std::unique_ptr<IHeadConfig> headConfigPtr_;
+
                     std::unique_ptr<IHeuristicConfig> heuristicConfigPtr_;
 
                     std::unique_ptr<IHeuristicConfig> pruningHeuristicConfigPtr_;
@@ -266,6 +296,8 @@ namespace seco {
                     std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
 
                     const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const override;
+
+                    const IHeadConfig& getHeadConfig() const override;
 
                     const IHeuristicConfig& getHeuristicConfig() const override;
 
@@ -286,6 +318,10 @@ namespace seco {
                     void useNoCoverageStoppingCriterion() override;
 
                     ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() override;
+
+                    ISingleLabelHeadConfig& useSingleLabelHeads() override;
+
+                    IPartialHeadConfig& usePartialHeads() override;
 
                     IAccuracyConfig& useAccuracyHeuristic() override;
 
