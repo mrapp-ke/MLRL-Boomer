@@ -350,4 +350,9 @@ namespace boosting {
         return nullptr;
     }
 
+    std::unique_ptr<IExampleWiseLossFactory> ExampleWiseLogisticLossConfig::configureExampleWise() const {
+        // TODO
+        return nullptr;
+    }
+
 }

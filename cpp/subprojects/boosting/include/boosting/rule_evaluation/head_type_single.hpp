@@ -27,7 +27,11 @@ namespace boosting {
 
         public:
 
-            std::unique_ptr<IStatisticsProviderFactory> configure() const override;
+            std::unique_ptr<IStatisticsProviderFactory> configure(
+                const ILabelWiseLossConfig& lossConfig) const override;
+
+            std::unique_ptr<IStatisticsProviderFactory> configure(
+                const IExampleWiseLossConfig& lossConfig) const override;
 
     };
 

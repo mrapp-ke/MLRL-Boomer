@@ -21,11 +21,13 @@ namespace boosting {
      * Allows to configure a loss function that implements a multi-label variant of the squared hinge loss that is
      * applied label-wise.
      */
-    class LabelWiseSquaredHingeLossConfig final : public ILossConfig, public ILabelWiseSquaredHingeLossConfig {
+    class LabelWiseSquaredHingeLossConfig final : public ILabelWiseLossConfig, public ILabelWiseSquaredHingeLossConfig {
 
         public:
 
             std::unique_ptr<IStatisticsProviderFactory> configure() const override;
+
+            std::unique_ptr<ILabelWiseLossFactory> configureLabelWise() const override;
 
     };
 

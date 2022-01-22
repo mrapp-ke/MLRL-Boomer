@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_provider.hpp"
+#include "boosting/losses/loss_example_wise.hpp"
+#include "boosting/losses/loss_label_wise.hpp"
 
 
 namespace boosting {
@@ -22,9 +23,25 @@ namespace boosting {
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
              * configuration.
              *
-             * @return An unique pointer to an object of type `IStatisticsProviderFactory` that has been created
+             * @param lossConfig    A reference to an object of type `ILabelWiseLossConfig` that specifies the
+             *                      configuration of the loss function
+             * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
+             *                      created
              */
-            virtual std::unique_ptr<IStatisticsProviderFactory> configure() const = 0;
+            virtual std::unique_ptr<IStatisticsProviderFactory> configure(
+                const ILabelWiseLossConfig& lossConfig) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
+             * configuration.
+             *
+             * @param lossConfig    A reference to an object of type `IExampleWiseLossConfig` that specifies the
+             *                      configuration of the loss function
+             * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
+             *                      created
+             */
+            virtual std::unique_ptr<IStatisticsProviderFactory> configure(
+                const IExampleWiseLossConfig& lossConfig) const = 0;
 
     };
 
