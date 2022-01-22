@@ -77,4 +77,9 @@ namespace boosting {
         return nullptr;
     }
 
+    std::unique_ptr<ILabelWiseLossFactory> LabelWiseLogisticLossConfig::configureLabelWise() const {
+        // TODO
+        return nullptr;
+    }
+
 }

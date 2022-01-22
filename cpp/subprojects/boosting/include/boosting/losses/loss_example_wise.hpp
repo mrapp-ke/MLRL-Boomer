@@ -71,4 +71,24 @@ namespace boosting {
 
     };
 
+    /**
+     * Defines an interface for all classes that allow to configure a (non-decomposable) loss function that is applied
+     * example-wise.
+     */
+    class IExampleWiseLossConfig : public ILossConfig {
+
+        public:
+
+            virtual ~IExampleWiseLossConfig() override { };
+
+            /**
+             * Creates and returns a new object of type `IExampleWiseLossFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `IExampleWiseLossFactory` that has been created
+             */
+            virtual std::unique_ptr<IExampleWiseLossFactory> configureExampleWise() const = 0;
+
+    };
+
 }

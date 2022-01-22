@@ -5,7 +5,18 @@
 
 namespace boosting {
 
-    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::configure() const {
+    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::configure(
+            const ILabelWiseLossConfig& lossConfig) const {
+        // TODO
+        return nullptr;
+    }
+
+    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::configure(
+            const IExampleWiseLossConfig& lossConfig) const {
+        // TODO
+        return nullptr;
+    }
+
         /*
         std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr,
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
@@ -32,8 +43,5 @@ namespace boosting {
                                                                             pruning_rule_evaluation_factory,
                                                                             num_threads)
         */
-        // TODO
-        return nullptr;
-    }
 
 }

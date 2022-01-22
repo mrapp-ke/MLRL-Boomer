@@ -126,4 +126,24 @@ namespace boosting {
 
     };
 
+    /**
+     * Defines an interface for all classes that allow to configure a (decomposable) loss function that is applied
+     * label-wise.
+     */
+    class ILabelWiseLossConfig : public ILossConfig {
+
+        public:
+
+            virtual ~ILabelWiseLossConfig() override { };
+
+            /**
+             * Creates and returns a new object of type `ILabelWiseLossFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `ILabelWiseLossFactory` that has been created
+             */
+            virtual std::unique_ptr<ILabelWiseLossFactory> configureLabelWise() const = 0;
+
+    };
+
 }

@@ -24,11 +24,13 @@ namespace boosting {
      * Allows to configure a loss function that implements a multi-label variant of the logistic loss that is applied
      * label-wise.
      */
-    class LabelWiseLogisticLossConfig final : public ILossConfig, public ILabelWiseLogisticLossConfig {
+    class LabelWiseLogisticLossConfig final : public ILabelWiseLossConfig, public ILabelWiseLogisticLossConfig {
 
         public:
 
             std::unique_ptr<IStatisticsProviderFactory> configure() const override;
+
+            std::unique_ptr<ILabelWiseLossFactory> configureLabelWise() const override;
 
     };
 

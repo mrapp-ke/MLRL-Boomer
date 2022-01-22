@@ -3,7 +3,18 @@
 
 namespace boosting {
 
-    std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::configure() const {
+    std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::configure(
+            const ILabelWiseLossConfig& lossConfig) const {
+        // TODO
+        return nullptr;
+    }
+
+    std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::configure(
+            const IExampleWiseLossConfig& lossConfig) const {
+        // TODO
+        return nullptr;
+    }
+
         /*
         std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr,
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
@@ -16,8 +27,5 @@ namespace boosting {
                                                                  regular_rule_evaluation_factory,
                                                                  pruning_rule_evaluation_factory, num_threads)
         */
-        // TODO
-        return nullptr;
-    }
 
 }
