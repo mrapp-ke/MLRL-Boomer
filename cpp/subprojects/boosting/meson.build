@@ -25,6 +25,8 @@ source_files = [
     'src/boosting/output/predictor_probability_label_wise.cpp',
     'src/boosting/output/predictor_regression_label_wise.cpp',
     'src/boosting/post_processing/shrinkage_constant.cpp',
+    'src/boosting/rule_evaluation/head_type_complete.cpp',
+    'src/boosting/rule_evaluation/head_type_single.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_example_wise_complete.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_example_wise_complete_binned.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_complete.cpp',
