@@ -68,7 +68,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: An `ExampleWiseLogisticLossConfig` that allows further configuration of the loss function
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ExampleWiseLogisticLossConfigImpl* config_ptr = &rule_learner_config_ptr.useExampleWiseLogisticLoss()
+        cdef IExampleWiseLogisticLossConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseLogisticLoss()
         cdef ExampleWiseLogisticLossConfig config = ExampleWiseLogisticLossConfig.__new__(ExampleWiseLogisticLossConfig)
         config.config_ptr = config_ptr
         return config
@@ -81,7 +81,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LabelWiseLogisticLossConfig` that allows further configuration of the loss function
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef LabelWiseLogisticLossConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelWiseLogisticLoss()
+        cdef ILabelWiseLogisticLossConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseLogisticLoss()
         cdef LabelWiseLogisticLossConfig config = LabelWiseLogisticLossConfig.__new__(LabelWiseLogisticLossConfig)
         config.config_ptr = config_ptr
         return config
@@ -94,7 +94,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LabelWiseSquaredErrorLossConfig` that allows further configuration of the loss function
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef LabelWiseSquaredErrorLossConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelWiseSquaredErrorLoss()
+        cdef ILabelWiseSquaredErrorLossConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseSquaredErrorLoss()
         cdef LabelWiseSquaredErrorLossConfig config = LabelWiseSquaredErrorLossConfig.__new__(LabelWiseSquaredErrorLossConfig)
         config.config_ptr = config_ptr
         return config
@@ -107,7 +107,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LabelWiseSquaredHingeLossConfig` that allows further configuration of the loss function
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef LabelWiseSquaredHingeLossConfigImpl* config_ptr = &rule_learner_config_ptr.useLabelWiseSquaredHingeLoss()
+        cdef ILabelWiseSquaredHingeLossConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseSquaredHingeLoss()
         cdef LabelWiseSquaredHingeLossConfig config = LabelWiseSquaredHingeLossConfig.__new__(LabelWiseSquaredHingeLossConfig)
         config.config_ptr = config_ptr
         return config

@@ -9,22 +9,26 @@
 namespace boosting {
 
     /**
-     * Allows to configure a loss function that implements a multi-label variant of the squared error loss that is
-     * applied label-wise.
+     * Defines an interface for all classes that allow to configure a loss function that implements a multi-label
+     * variant of the squared error loss that is applied label-wise.
      */
-    class LabelWiseSquaredErrorLossConfig final : public ILossConfig {
+    class ILabelWiseSquaredErrorLossConfig {
+
+        public:
+
+            virtual ~ILabelWiseSquaredErrorLossConfig() { };
 
     };
 
     /**
-     * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the squared error
-     * loss that is applied label-wise.
+     * Allows to configure a loss function that implements a multi-label variant of the squared error loss that is
+     * applied label-wise.
      */
-    class LabelWiseSquaredErrorLossFactory final : public ILabelWiseLossFactory {
+    class LabelWiseSquaredErrorLossConfig final : public ILossConfig, public ILabelWiseSquaredErrorLossConfig {
 
         public:
 
-            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override;
+            std::unique_ptr<IStatisticsProviderFactory> configure() const override;
 
     };
 

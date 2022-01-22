@@ -9,22 +9,26 @@
 namespace boosting {
 
     /**
-     * Allows to configure a loss function that implements a multi-label variant of the logistic loss that is applied
-     * example-wise.
+     * Defines an interface for all classes that allow to configure a loss function that implements a multi-label
+     * variant of the logistic loss that is applied example-wise.
      */
-    class ExampleWiseLogisticLossConfig final : public ILossConfig {
+    class IExampleWiseLogisticLossConfig {
+
+        public:
+
+            virtual ~IExampleWiseLogisticLossConfig() { };
 
     };
 
     /**
-     * Allows to create instances of the type `IExampleWiseLoss` that implement a multi-label variant of the logistic
-     * loss that is applied example-wise.
+     * Allows to configure a loss function that implements a multi-label variant of the logistic loss that is applied
+     * example-wise.
      */
-    class ExampleWiseLogisticLossFactory final : public IExampleWiseLossFactory {
+    class ExampleWiseLogisticLossConfig final : public ILossConfig, public IExampleWiseLogisticLossConfig {
 
         public:
 
-            std::unique_ptr<IExampleWiseLoss> createExampleWiseLoss() const override;
+            std::unique_ptr<IStatisticsProviderFactory> configure() const override;
 
     };
 
