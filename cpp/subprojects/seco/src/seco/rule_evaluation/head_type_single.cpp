@@ -1,8 +1,7 @@
 #include "seco/rule_evaluation/head_type_single.hpp"
-#include "seco/rule_evaluation/rule_evaluation_label_wise_majority.hpp"
 #include "seco/rule_evaluation/rule_evaluation_label_wise_single.hpp"
 #include "seco/statistics/statistics_provider_label_wise_dense.hpp"
-
+#include "rule_evaluation_label_wise_majority.hpp"
 
 namespace seco {
 

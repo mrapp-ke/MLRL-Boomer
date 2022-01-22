@@ -1,5 +1,11 @@
-#include "seco/rule_evaluation/rule_evaluation_label_wise_majority.hpp"
+/*
+ * @author Jakob Steeg (jakob.steeg@gmail.com)
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
+ */
+#pragma once
+
 #include "common/rule_evaluation/score_vector_dense.hpp"
+#include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 
 
 namespace seco {
@@ -51,14 +57,21 @@ namespace seco {
 
     };
 
-    std::unique_ptr<IRuleEvaluation> LabelWiseMajorityRuleEvaluationFactory::create(
-            const CompleteIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseMajorityRuleEvaluation<CompleteIndexVector>>(indexVector);
-    }
+    /**
+     * Allows to create instances of the class `LabelWiseMajorityRuleEvaluation`.
+     */
+    class LabelWiseMajorityRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
 
-    std::unique_ptr<IRuleEvaluation> LabelWiseMajorityRuleEvaluationFactory::create(
-            const PartialIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseMajorityRuleEvaluation<PartialIndexVector>>(indexVector);
-    }
+        public:
+
+            std::unique_ptr<IRuleEvaluation> create(const CompleteIndexVector& indexVector) const override {
+                return std::make_unique<LabelWiseMajorityRuleEvaluation<CompleteIndexVector>>(indexVector);
+            }
+
+            std::unique_ptr<IRuleEvaluation> create(const PartialIndexVector& indexVector) const override {
+                return std::make_unique<LabelWiseMajorityRuleEvaluation<PartialIndexVector>>(indexVector);
+            }
+
+    };
 
 }

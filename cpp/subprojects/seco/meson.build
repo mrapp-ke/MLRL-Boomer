@@ -16,7 +16,6 @@ source_files = [
     'src/seco/output/predictor_classification_label_wise.cpp',
     'src/seco/rule_evaluation/head_type_partial.cpp',
     'src/seco/rule_evaluation/head_type_single.cpp',
-    'src/seco/rule_evaluation/rule_evaluation_label_wise_majority.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_partial.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_single.cpp',
     'src/seco/statistics/statistics_provider_label_wise_dense.cpp',
