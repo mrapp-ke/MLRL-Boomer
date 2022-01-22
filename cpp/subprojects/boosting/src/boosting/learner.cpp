@@ -13,6 +13,7 @@ namespace boosting {
         this->useFeatureSamplingWithoutReplacement();
         this->useSizeStoppingCriterion();
         this->useConstantShrinkagePostProcessor();
+        this->useSingleLabelHeads();
         this->useLabelWiseLogisticLoss();
         this->useNoLabelBinning(); // TODO use automatic configuration by default
         this->useLabelWiseClassificationPredictor(); // TODO use automatic configuration by default
