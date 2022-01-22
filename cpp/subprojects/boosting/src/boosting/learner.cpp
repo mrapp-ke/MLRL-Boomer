@@ -65,30 +65,30 @@ namespace boosting {
         parallelStatisticUpdateConfigPtr_ = std::make_unique<AutoParallelStatisticUpdateConfig>();
     }
 
-    ExampleWiseLogisticLossConfig& BoostingRuleLearner::Config::useExampleWiseLogisticLoss() {
+    IExampleWiseLogisticLossConfig& BoostingRuleLearner::Config::useExampleWiseLogisticLoss() {
         std::unique_ptr<ExampleWiseLogisticLossConfig> ptr = std::make_unique<ExampleWiseLogisticLossConfig>();
-        ExampleWiseLogisticLossConfig& ref = *ptr;
+        IExampleWiseLogisticLossConfig& ref = *ptr;
         lossConfigPtr_ = std::move(ptr);
         return ref;
     }
 
-    LabelWiseLogisticLossConfig& BoostingRuleLearner::Config::useLabelWiseLogisticLoss() {
+    ILabelWiseLogisticLossConfig& BoostingRuleLearner::Config::useLabelWiseLogisticLoss() {
         std::unique_ptr<LabelWiseLogisticLossConfig> ptr = std::make_unique<LabelWiseLogisticLossConfig>();
-        LabelWiseLogisticLossConfig& ref = *ptr;
+        ILabelWiseLogisticLossConfig& ref = *ptr;
         lossConfigPtr_ = std::move(ptr);
         return ref;
     }
 
-    LabelWiseSquaredErrorLossConfig& BoostingRuleLearner::Config::useLabelWiseSquaredErrorLoss() {
+    ILabelWiseSquaredErrorLossConfig& BoostingRuleLearner::Config::useLabelWiseSquaredErrorLoss() {
         std::unique_ptr<LabelWiseSquaredErrorLossConfig> ptr = std::make_unique<LabelWiseSquaredErrorLossConfig>();
-        LabelWiseSquaredErrorLossConfig& ref = *ptr;
+        ILabelWiseSquaredErrorLossConfig& ref = *ptr;
         lossConfigPtr_ = std::move(ptr);
         return ref;
     }
 
-    LabelWiseSquaredHingeLossConfig& BoostingRuleLearner::Config::useLabelWiseSquaredHingeLoss() {
+    ILabelWiseSquaredHingeLossConfig& BoostingRuleLearner::Config::useLabelWiseSquaredHingeLoss() {
         std::unique_ptr<LabelWiseSquaredHingeLossConfig> ptr = std::make_unique<LabelWiseSquaredHingeLossConfig>();
-        LabelWiseSquaredHingeLossConfig& ref = *ptr;
+        ILabelWiseSquaredHingeLossConfig& ref = *ptr;
         lossConfigPtr_ = std::move(ptr);
         return ref;
     }

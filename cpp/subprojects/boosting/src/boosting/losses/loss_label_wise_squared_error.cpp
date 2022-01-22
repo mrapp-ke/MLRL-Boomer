@@ -17,8 +17,23 @@ namespace boosting {
         return difference * difference;
     }
 
-    std::unique_ptr<ILabelWiseLoss> LabelWiseSquaredErrorLossFactory::createLabelWiseLoss() const {
-        return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
+    /**
+     * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the squared error
+     * loss that is applied label-wise.
+     */
+    class LabelWiseSquaredErrorLossFactory final : public ILabelWiseLossFactory {
+
+        public:
+
+            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override {
+                return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            }
+
+    };
+
+    std::unique_ptr<IStatisticsProviderFactory> LabelWiseSquaredErrorLossConfig::configure() const {
+        // TODO
+        return nullptr;
     }
 
 }

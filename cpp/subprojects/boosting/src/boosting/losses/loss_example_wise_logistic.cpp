@@ -331,8 +331,23 @@ namespace boosting {
 
     };
 
-    std::unique_ptr<IExampleWiseLoss> ExampleWiseLogisticLossFactory::createExampleWiseLoss() const {
-        return std::make_unique<ExampleWiseLogisticLoss>();
+    /**
+     * Allows to create instances of the type `IExampleWiseLoss` that implement a multi-label variant of the logistic
+     * loss that is applied example-wise.
+     */
+    class ExampleWiseLogisticLossFactory final : public IExampleWiseLossFactory {
+
+        public:
+
+            std::unique_ptr<IExampleWiseLoss> createExampleWiseLoss() const override {
+                return std::make_unique<ExampleWiseLogisticLoss>();
+            }
+
+    };
+
+    std::unique_ptr<IStatisticsProviderFactory> ExampleWiseLogisticLossConfig::configure() const {
+        // TODO
+        return nullptr;
     }
 
 }

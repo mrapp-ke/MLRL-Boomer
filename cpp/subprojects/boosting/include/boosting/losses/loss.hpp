@@ -5,6 +5,7 @@
 
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
+#include "common/statistics/statistics_provider.hpp"
 
 
 namespace boosting {
@@ -28,6 +29,14 @@ namespace boosting {
         public:
 
             virtual ~ILossConfig() { };
+
+            /**
+             * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `IStatisticsProviderFactory` that has been created
+             */
+            virtual std::unique_ptr<IStatisticsProviderFactory> configure() const = 0;
 
     };
 

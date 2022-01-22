@@ -113,37 +113,37 @@ namespace boosting {
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * logistic loss that is applied example-wise.
                      *
-                     * @return A reference to an object of type `ExampleWiseLogisticLossConfig` that allows further
+                     * @return A reference to an object of type `IExampleWiseLogisticLossConfig` that allows further
                      *         configuration of the loss function
                      */
-                    virtual ExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() = 0;
+                    virtual IExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * logistic loss that is applied label-wise.
                      *
-                     * @return A reference to an object of type `LabelWiseLogisticLossConfig` that allows further
+                     * @return A reference to an object of type `ILabelWiseLogisticLossConfig` that allows further
                      *         configuration of the loss function
                      */
-                    virtual LabelWiseLogisticLossConfig& useLabelWiseLogisticLoss() = 0;
+                    virtual ILabelWiseLogisticLossConfig& useLabelWiseLogisticLoss() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * squared error loss that is applied label-wise.
                      *
-                     * @return A reference to an object of type `LabelWiseSquaredErrorLossConfig` that allows further
+                     * @return A reference to an object of type `ILabelWiseSquaredErrorLossConfig` that allows further
                      *         configuration of the loss function
                      */
-                    virtual LabelWiseSquaredErrorLossConfig& useLabelWiseSquaredErrorLoss() = 0;
+                    virtual ILabelWiseSquaredErrorLossConfig& useLabelWiseSquaredErrorLoss() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * squared hinge loss that is applied label-wise.
                      *
-                     * @return A reference to an object of type `LabelWiseSquaredHingeLossConfig` that allows further
+                     * @return A reference to an object of type `ILabelWiseSquaredHingeLossConfig` that allows further
                      *         configuration of the loss function
                      */
-                    virtual LabelWiseSquaredHingeLossConfig& useLabelWiseSquaredHingeLoss() = 0;
+                    virtual ILabelWiseSquaredHingeLossConfig& useLabelWiseSquaredHingeLoss() = 0;
 
                     /**
                      * Configures the algorithm to not use any method for the assignment of labels to bins.
@@ -261,13 +261,13 @@ namespace boosting {
 
                     void useAutomaticParallelStatisticUpdate() override;
 
-                    ExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() override;
+                    IExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() override;
 
-                    LabelWiseLogisticLossConfig& useLabelWiseLogisticLoss() override;
+                    ILabelWiseLogisticLossConfig& useLabelWiseLogisticLoss() override;
 
-                    LabelWiseSquaredErrorLossConfig& useLabelWiseSquaredErrorLoss() override;
+                    ILabelWiseSquaredErrorLossConfig& useLabelWiseSquaredErrorLoss() override;
 
-                    LabelWiseSquaredHingeLossConfig& useLabelWiseSquaredHingeLoss() override;
+                    ILabelWiseSquaredHingeLossConfig& useLabelWiseSquaredHingeLoss() override;
 
                     void useNoLabelBinning() override;
 
