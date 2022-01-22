@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 #include <functional>
 #include <memory>
 
@@ -137,6 +138,22 @@ namespace boosting {
         public:
 
             virtual ~ILabelBinningConfig() { };
+
+            /**
+             * Creates and returns a new object of type `ILabelWiseRuleEvaluationFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `ILabelWiseRuleEvaluationFactory` that has been created
+             */
+            virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> configureLabelWise() const = 0;
+
+            /**
+             * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has been created
+             */
+            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> configureExampleWise() const = 0;
 
     };
 
