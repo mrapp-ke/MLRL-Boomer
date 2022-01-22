@@ -161,8 +161,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory(
             const IRowWiseLabelMatrix& labelMatrix) const {
-        // TODO Implement
-        return nullptr;
+        return configPtr_->getLossConfig().configure();
     }
 
     std::unique_ptr<IModelBuilder> BoostingRuleLearner::createModelBuilder() const {
