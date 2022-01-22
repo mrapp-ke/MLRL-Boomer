@@ -1,6 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from mlrl.seco.cython.head_type cimport SingleLabelHeadConfig, PartialHeadConfig
 from mlrl.seco.cython.heuristic cimport AccuracyConfig, FMeasureConfig, LaplaceConfig, MEstimateConfig, \
     PrecisionConfig, RecallConfig, WraConfig
 from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfig
@@ -40,6 +41,31 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ICoverageStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useCoverageStoppingCriterion()
         cdef CoverageStoppingCriterionConfig config = CoverageStoppingCriterionConfig.__new__(CoverageStoppingCriterionConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_single_label_heads(self) -> SingleLabelHeadConfig:
+        """
+        Configures the rule learner to induce rules with single-label heads that predict for a single label.
+
+        :return: A `SingleLabelHeadConfig` that allows further configuration of the rule heads
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef ISingleLabelHeadConfig* config_ptr = &rule_learner_config_ptr.useSingleLabelHeads()
+        cdef SingleLabelHeadConfig config = SingleLabelHeadConfig.__new__(SingleLabelHeadConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_partial_heads(self) -> PartialHeadConfig:
+        """
+        Configures the rule learner to induce rules with partial heads that predict for a subset of the available
+        labels.
+
+        :return: A `PartialHeadConfig` that allows further configuration of the rule heads
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IPartialHeadConfig* config_ptr = &rule_learner_config_ptr.usePartialHeads()
+        cdef PartialHeadConfig config = PartialHeadConfig.__new__(PartialHeadConfig)
         config.config_ptr = config_ptr
         return config
 
