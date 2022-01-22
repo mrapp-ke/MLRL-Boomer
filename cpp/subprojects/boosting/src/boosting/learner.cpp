@@ -20,6 +20,10 @@ namespace boosting {
         this->useLabelWiseProbabilityPredictor();
     }
 
+    const IHeadConfig& BoostingRuleLearner::Config::getHeadConfig() const {
+        return *headConfigPtr_;
+    }
+
     const ILossConfig& BoostingRuleLearner::Config::getLossConfig() const {
         return *lossConfigPtr_;
     }
@@ -63,6 +67,20 @@ namespace boosting {
 
     void BoostingRuleLearner::Config::useAutomaticParallelStatisticUpdate() {
         parallelStatisticUpdateConfigPtr_ = std::make_unique<AutoParallelStatisticUpdateConfig>();
+    }
+
+    ISingleLabelHeadConfig& BoostingRuleLearner::Config::useSingleLabelHeads() {
+        std::unique_ptr<SingleLabelHeadConfig> ptr = std::make_unique<SingleLabelHeadConfig>();
+        ISingleLabelHeadConfig& ref = *ptr;
+        headConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    ICompleteHeadConfig& BoostingRuleLearner::Config::useCompleteHeads() {
+        std::unique_ptr<CompleteHeadConfig> ptr = std::make_unique<CompleteHeadConfig>();
+        ICompleteHeadConfig& ref = *ptr;
+        headConfigPtr_ = std::move(ptr);
+        return ref;
     }
 
     IExampleWiseLogisticLossConfig& BoostingRuleLearner::Config::useExampleWiseLogisticLoss() {
