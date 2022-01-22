@@ -14,6 +14,8 @@
 #include "boosting/output/predictor_regression_label_wise.hpp"
 #include "boosting/output/predictor_probability_label_wise.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
+#include "boosting/rule_evaluation/head_type_complete.hpp"
+#include "boosting/rule_evaluation/head_type_single.hpp"
 
 
 namespace boosting {
@@ -34,6 +36,14 @@ namespace boosting {
                 friend class BoostingRuleLearner;
 
                 private:
+
+                    /**
+                     * Returns the configuration of the rule heads that should be induced by the rule learner.
+                     *
+                     * @return A reference to an object of type `IHeadConfig` that specifies the configuration of the
+                     *         rule heads
+                     */
+                    virtual const IHeadConfig& getHeadConfig() const = 0;
 
                     /**
                      * Returns the configuration of the loss function.
@@ -108,6 +118,24 @@ namespace boosting {
                      * the parallel update of statistics or not.
                      */
                     virtual void useAutomaticParallelStatisticUpdate() = 0;
+
+                    /**
+                     * Configures the rule learner to induce rules with single-label heads that predict for a single
+                     * label.
+                     *
+                     * @return A reference to an object of type `ISingleLabelHeadConfig` that allows further
+                     *         configuration of the rule heads
+                     */
+                    virtual ISingleLabelHeadConfig& useSingleLabelHeads() = 0;
+
+                    /**
+                     * Configures the rule learner to induce rules with complete heads that predict for all available
+                     * labels.
+                     *
+                     * @return A reference to an object of type `ICompleteHeadConfig` that allows further configuration
+                     *         of the rule heads
+                     */
+                    virtual ICompleteHeadConfig& useCompleteHeads() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -227,6 +255,8 @@ namespace boosting {
 
                 private:
 
+                    std::unique_ptr<IHeadConfig> headConfigPtr_;
+
                     std::unique_ptr<ILossConfig> lossConfigPtr_;
 
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
@@ -236,6 +266,8 @@ namespace boosting {
                     std::unique_ptr<IRegressionPredictorConfig> regressionPredictorConfigPtr_;
 
                     std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
+
+                    const IHeadConfig& getHeadConfig() const override;
 
                     const ILossConfig& getLossConfig() const override;
 
@@ -260,6 +292,10 @@ namespace boosting {
                     void useAutomaticParallelRuleRefinement() override;
 
                     void useAutomaticParallelStatisticUpdate() override;
+
+                    ISingleLabelHeadConfig& useSingleLabelHeads() override;
+
+                    ICompleteHeadConfig& useCompleteHeads() override;
 
                     IExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() override;
 
