@@ -143,7 +143,8 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory() const {
+    std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory(
+            const IRowWiseLabelMatrix& labelMatrix) const {
         // TODO Implement
         float64 l1RegularizationWeight = 0;
         float64 l2RegularizationWeight = 1;

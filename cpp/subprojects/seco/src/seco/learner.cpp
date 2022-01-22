@@ -206,7 +206,8 @@ namespace seco {
         }
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> SeCoRuleLearner::createStatisticsProviderFactory() const {
+    std::unique_ptr<IStatisticsProviderFactory> SeCoRuleLearner::createStatisticsProviderFactory(
+            const IRowWiseLabelMatrix& labelMatrix) const {
         // TODO Implement
         return nullptr;
     }

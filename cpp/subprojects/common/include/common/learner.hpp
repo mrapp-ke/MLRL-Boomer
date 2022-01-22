@@ -820,9 +820,13 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * Must be implemented by subclasses in order to create the `IStatisticsProviderFactory` to be used by the rule
          * learner.
          *
-         * @return An unique pointer to an object of type `IStatisticsProviderFactory` that has been created
+         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
+         *                      the labels of the training examples
+         * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
+         *                      created
          */
-        virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory() const = 0;
+        virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
         /**
          * Must be implemented by subclasses in order to create `IModelBuilder` to be used by the rule learner.
