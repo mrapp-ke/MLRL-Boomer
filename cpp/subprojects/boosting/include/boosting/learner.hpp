@@ -46,11 +46,10 @@ namespace boosting {
                     /**
                      * Returns the configuration of the method for the assignment of labels to bins.
                      *
-                     * @return A pointer to an object of type `ILabelBinningConfig` that specifies the configuration of
-                     *         the algorithm for the assignment of labels to bins or a null pointer, if no such method
-                     *         should be used
+                     * @return A reference to an object of type `ILabelBinningConfig` that specifies the configuration
+                     *         of the algorithm for the assignment of labels to bins
                      */
-                    virtual const ILabelBinningConfig* getLabelBinningConfig() const = 0;
+                    virtual const ILabelBinningConfig& getLabelBinningConfig() const = 0;
 
                     /**
                      * Returns the configuration of the predictor that predicts whether individual labels of given query
@@ -158,10 +157,10 @@ namespace boosting {
                      * each bin contains labels for which the predicted score is expected to belong to the same value
                      * range.
                      *
-                     * @return A reference to an object of type `EqualWidthLabelBinningConfig` that allows further
+                     * @return A reference to an object of type `IEqualWidthLabelBinningConfig` that allows further
                      *         configuration of the method for the assignment of labels to bins
                      */
-                    virtual EqualWidthLabelBinningConfig& useEqualWidthLabelBinning() = 0;
+                    virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() = 0;
 
                     /**
                      * Configures the algorithm to use a predictor for predicting whether individual labels are relevant
@@ -240,7 +239,7 @@ namespace boosting {
 
                     const ILossConfig& getLossConfig() const override;
 
-                    const ILabelBinningConfig* getLabelBinningConfig() const override;
+                    const ILabelBinningConfig& getLabelBinningConfig() const override;
 
                     const IClassificationPredictorConfig& getClassificationPredictorConfig() const override;
 
@@ -272,7 +271,7 @@ namespace boosting {
 
                     void useNoLabelBinning() override;
 
-                    EqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
+                    IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
 
                     IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() override;
 

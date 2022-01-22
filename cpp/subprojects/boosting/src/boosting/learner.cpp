@@ -1,5 +1,6 @@
 #include "boosting/learner.hpp"
 #include "boosting/binning/feature_binning_auto.hpp"
+#include "boosting/binning/label_binning_no.hpp"
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/model/rule_list_builder.hpp"
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
@@ -26,8 +27,8 @@ namespace boosting {
         return *lossConfigPtr_;
     }
 
-    const ILabelBinningConfig* BoostingRuleLearner::Config::getLabelBinningConfig() const {
-        return labelBinningConfigPtr_.get();
+    const ILabelBinningConfig& BoostingRuleLearner::Config::getLabelBinningConfig() const {
+        return *labelBinningConfigPtr_;
     }
 
     const IClassificationPredictorConfig& BoostingRuleLearner::Config::getClassificationPredictorConfig() const {
@@ -96,12 +97,12 @@ namespace boosting {
     }
 
     void BoostingRuleLearner::Config::useNoLabelBinning() {
-        labelBinningConfigPtr_ = nullptr;
+        labelBinningConfigPtr_ = std::make_unique<NoLabelBinningConfig>();
     }
 
-    EqualWidthLabelBinningConfig& BoostingRuleLearner::Config::useEqualWidthLabelBinning() {
+    IEqualWidthLabelBinningConfig& BoostingRuleLearner::Config::useEqualWidthLabelBinning() {
         std::unique_ptr<EqualWidthLabelBinningConfig> ptr = std::make_unique<EqualWidthLabelBinningConfig>();
-        EqualWidthLabelBinningConfig& ref = *ptr;
+        IEqualWidthLabelBinningConfig& ref = *ptr;
         labelBinningConfigPtr_ = std::move(ptr);
         return ref;
     }
