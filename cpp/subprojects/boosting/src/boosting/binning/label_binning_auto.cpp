@@ -1,4 +1,5 @@
 #include "boosting/binning/label_binning_auto.hpp"
+#include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/binning/label_binning_no.hpp"
 
 
@@ -12,13 +13,12 @@ namespace boosting {
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::configureLabelWise() const {
-        // TODO Implement
         return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_).configureLabelWise();
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::configureExampleWise() const {
-        // TODO Implement
-        return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_).configureExampleWise();
+        return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_,l2RegularizationConfigPtr_)
+            .configureExampleWise();
     }
 
 }
