@@ -8,6 +8,7 @@
 #include "common/binning/threshold_vector.hpp"
 #include "common/input/feature_matrix.hpp"
 #include "common/input/feature_vector.hpp"
+#include "common/input/label_matrix.hpp"
 #include "common/thresholds/thresholds.hpp"
 #include <memory>
 
@@ -87,8 +88,11 @@ class IFeatureBinningConfig {
          *
          * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
          *                      values of the training examples
+         * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels of
+         *                      the training examples
          * @return              An unique pointer to an object of type `IThresholdsFactory` that has been created
          */
-        virtual std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix) const = 0;
+        virtual std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix,
+                                                              const ILabelMatrix& labelMatrix) const = 0;
 
 };

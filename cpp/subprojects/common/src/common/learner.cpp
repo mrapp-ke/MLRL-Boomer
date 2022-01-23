@@ -338,12 +338,13 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
 }
 
 std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory(
-        const IFeatureMatrix& featureMatrix) const {
-    return config_.getFeatureBinningConfig().configure(featureMatrix);
+        const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+    return config_.getFeatureBinningConfig().configure(featureMatrix, labelMatrix);
 }
 
-std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory() const {
-    return config_.getRuleInductionConfig().configure();
+std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory(
+        const ILabelMatrix& labelMatrix) const {
+    return config_.getRuleInductionConfig().configure(labelMatrix);
 }
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory(
@@ -435,8 +436,8 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         this->createRuleModelAssemblageFactory();
     std::unique_ptr<IModelBuilder> modelBuilderPtr = this->createModelBuilder();
     std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr = ruleModelAssemblageFactoryPtr->create(
-        this->createStatisticsProviderFactory(labelMatrix), this->createThresholdsFactory(featureMatrix),
-        this->createRuleInductionFactory(), this->createLabelSamplingFactory(labelMatrix),
+        this->createStatisticsProviderFactory(labelMatrix), this->createThresholdsFactory(featureMatrix, labelMatrix),
+        this->createRuleInductionFactory(labelMatrix), this->createLabelSamplingFactory(labelMatrix),
         this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
         this->createPartitionSamplingFactory(), this->createPruningFactory(), this->createPostProcessorFactory(),
         stoppingCriterionFactories);

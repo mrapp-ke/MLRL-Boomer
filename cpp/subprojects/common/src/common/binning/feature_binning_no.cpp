@@ -7,7 +7,8 @@ NoFeatureBinningConfig::NoFeatureBinningConfig(const std::unique_ptr<IMultiThrea
 
 }
 
-std::unique_ptr<IThresholdsFactory> NoFeatureBinningConfig::configure(const IFeatureMatrix& featureMatrix) const {
-    uint32 numThreads = multiThreadingConfigPtr_->configure();
+std::unique_ptr<IThresholdsFactory> NoFeatureBinningConfig::configure(const IFeatureMatrix& featureMatrix,
+                                                                      const ILabelMatrix& labelMatrix) const {
+    uint32 numThreads = multiThreadingConfigPtr_->configure(labelMatrix);
     return std::make_unique<ExactThresholdsFactory>(numThreads);
 }

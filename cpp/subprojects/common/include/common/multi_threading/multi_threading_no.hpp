@@ -13,6 +13,6 @@ class NoMultiThreadingConfig final : public IMultiThreadingConfig {
 
     public:
 
-        uint32 configure() const override;
+        uint32 configure(const ILabelMatrix& labelMatrix) const override;
 
 };

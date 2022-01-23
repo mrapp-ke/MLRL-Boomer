@@ -25,6 +25,7 @@ class NoFeatureBinningConfig final : public IFeatureBinningConfig {
          */
         NoFeatureBinningConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
-        std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix) const override;
+        std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix,
+                                                      const ILabelMatrix& labelMatrix) const override;
 
 };
