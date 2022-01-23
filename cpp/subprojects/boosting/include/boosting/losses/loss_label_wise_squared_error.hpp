@@ -10,22 +10,10 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that allow to configure a loss function that implements a multi-label
-     * variant of the squared error loss that is applied label-wise.
-     */
-    class ILabelWiseSquaredErrorLossConfig {
-
-        public:
-
-            virtual ~ILabelWiseSquaredErrorLossConfig() { };
-
-    };
-
-    /**
      * Allows to configure a loss function that implements a multi-label variant of the squared error loss that is
      * applied label-wise.
      */
-    class LabelWiseSquaredErrorLossConfig final : public ILabelWiseLossConfig, public ILabelWiseSquaredErrorLossConfig {
+    class LabelWiseSquaredErrorLossConfig final : public ILabelWiseLossConfig {
 
         private:
 

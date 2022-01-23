@@ -2,8 +2,6 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig
-from mlrl.boosting.cython.loss cimport ExampleWiseLogisticLossConfig, LabelWiseLogisticLossConfig, \
-    LabelWiseSquaredErrorLossConfig, LabelWiseSquaredHingeLossConfig
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig
 from mlrl.boosting.cython.predictor cimport ExampleWiseClassificationPredictorConfig, \
     LabelWiseClassificationPredictorConfig, LabelWiseRegressionPredictorConfig, LabelWiseProbabilityPredictorConfig
@@ -74,57 +72,37 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useCompleteHeads()
 
-    def use_example_wise_logistic_loss(self) -> ExampleWiseLogisticLossConfig:
+    def use_example_wise_logistic_loss(self):
         """
         Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
         that is applied example-wise.
-
-        :return: An `ExampleWiseLogisticLossConfig` that allows further configuration of the loss function
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IExampleWiseLogisticLossConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseLogisticLoss()
-        cdef ExampleWiseLogisticLossConfig config = ExampleWiseLogisticLossConfig.__new__(ExampleWiseLogisticLossConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useExampleWiseLogisticLoss()
 
-    def use_label_wise_logistic_loss(self) -> LabelWiseLogisticLossConfig:
+    def use_label_wise_logistic_loss(self):
         """
         Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
         that is applied label-wise.
-
-        :return: A `LabelWiseLogisticLossConfig` that allows further configuration of the loss function
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ILabelWiseLogisticLossConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseLogisticLoss()
-        cdef LabelWiseLogisticLossConfig config = LabelWiseLogisticLossConfig.__new__(LabelWiseLogisticLossConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useLabelWiseLogisticLoss()
 
-    def use_label_wise_squared_error_loss(self) -> LabelWiseSquaredErrorLossConfig:
+    def use_label_wise_squared_error_loss(self):
         """
         Configures the rule learner to use a loss function that implements a multi-label variant of the squared error
         loss that is applied label-wise.
-
-        :return: A `LabelWiseSquaredErrorLossConfig` that allows further configuration of the loss function
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ILabelWiseSquaredErrorLossConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseSquaredErrorLoss()
-        cdef LabelWiseSquaredErrorLossConfig config = LabelWiseSquaredErrorLossConfig.__new__(LabelWiseSquaredErrorLossConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useLabelWiseSquaredErrorLoss()
 
-    def use_label_wise_squared_hinge_loss(self) -> LabelWiseSquaredHingeLossConfig:
+    def use_label_wise_squared_hinge_loss(self):
         """
         Configures the rule learner to use a loss function that implements a multi-label variant of the squared hinge
         loss that is applied label-wise.
-
-        :return: A `LabelWiseSquaredHingeLossConfig` that allows further configuration of the loss function
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ILabelWiseSquaredHingeLossConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseSquaredHingeLoss()
-        cdef LabelWiseSquaredHingeLossConfig config = LabelWiseSquaredHingeLossConfig.__new__(LabelWiseSquaredHingeLossConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useLabelWiseSquaredHingeLoss()
 
     def use_no_label_binning(self):
         """

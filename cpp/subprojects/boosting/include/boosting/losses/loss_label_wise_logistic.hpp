@@ -10,22 +10,10 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that allow to configure a loss function that implements a multi-label
-     * variant of the logistic loss that is applied label-wise.
-     */
-    class ILabelWiseLogisticLossConfig {
-
-        public:
-
-            virtual ~ILabelWiseLogisticLossConfig() { };
-
-    };
-
-    /**
      * Allows to configure a loss function that implements a multi-label variant of the logistic loss that is applied
      * label-wise.
      */
-    class LabelWiseLogisticLossConfig final : public ILabelWiseLossConfig, public ILabelWiseLogisticLossConfig {
+    class LabelWiseLogisticLossConfig final : public ILabelWiseLossConfig {
 
         private:
 

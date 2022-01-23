@@ -1,6 +1,10 @@
 #include "boosting/learner.hpp"
 #include "boosting/binning/feature_binning_auto.hpp"
 #include "boosting/binning/label_binning_no.hpp"
+#include "boosting/losses/loss_example_wise_logistic.hpp"
+#include "boosting/losses/loss_label_wise_logistic.hpp"
+#include "boosting/losses/loss_label_wise_squared_error.hpp"
+#include "boosting/losses/loss_label_wise_squared_hinge.hpp"
 #include "boosting/model/rule_list_builder.hpp"
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
 #include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
@@ -82,36 +86,20 @@ namespace boosting {
                                                               parallelStatisticUpdateConfigPtr_);
     }
 
-    IExampleWiseLogisticLossConfig& BoostingRuleLearner::Config::useExampleWiseLogisticLoss() {
-        std::unique_ptr<ExampleWiseLogisticLossConfig> ptr =
-            std::make_unique<ExampleWiseLogisticLossConfig>(headConfigPtr_);
-        IExampleWiseLogisticLossConfig& ref = *ptr;
-        lossConfigPtr_ = std::move(ptr);
-        return ref;
+    void BoostingRuleLearner::Config::useExampleWiseLogisticLoss() {
+        lossConfigPtr_ = std::make_unique<ExampleWiseLogisticLossConfig>(headConfigPtr_);
     }
 
-    ILabelWiseLogisticLossConfig& BoostingRuleLearner::Config::useLabelWiseLogisticLoss() {
-        std::unique_ptr<LabelWiseLogisticLossConfig> ptr =
-            std::make_unique<LabelWiseLogisticLossConfig>(headConfigPtr_);
-        ILabelWiseLogisticLossConfig& ref = *ptr;
-        lossConfigPtr_ = std::move(ptr);
-        return ref;
+    void BoostingRuleLearner::Config::useLabelWiseLogisticLoss() {
+        lossConfigPtr_ = std::make_unique<LabelWiseLogisticLossConfig>(headConfigPtr_);
     }
 
-    ILabelWiseSquaredErrorLossConfig& BoostingRuleLearner::Config::useLabelWiseSquaredErrorLoss() {
-        std::unique_ptr<LabelWiseSquaredErrorLossConfig> ptr =
-            std::make_unique<LabelWiseSquaredErrorLossConfig>(headConfigPtr_);
-        ILabelWiseSquaredErrorLossConfig& ref = *ptr;
-        lossConfigPtr_ = std::move(ptr);
-        return ref;
+    void BoostingRuleLearner::Config::useLabelWiseSquaredErrorLoss() {
+        lossConfigPtr_ = std::make_unique<LabelWiseSquaredErrorLossConfig>(headConfigPtr_);
     }
 
-    ILabelWiseSquaredHingeLossConfig& BoostingRuleLearner::Config::useLabelWiseSquaredHingeLoss() {
-        std::unique_ptr<LabelWiseSquaredHingeLossConfig> ptr =
-            std::make_unique<LabelWiseSquaredHingeLossConfig>(headConfigPtr_);
-        ILabelWiseSquaredHingeLossConfig& ref = *ptr;
-        lossConfigPtr_ = std::move(ptr);
-        return ref;
+    void BoostingRuleLearner::Config::useLabelWiseSquaredHingeLoss() {
+        lossConfigPtr_ = std::make_unique<LabelWiseSquaredHingeLossConfig>(headConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useNoLabelBinning() {
