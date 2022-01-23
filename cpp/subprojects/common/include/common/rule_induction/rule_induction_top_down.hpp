@@ -135,6 +135,7 @@ class TopDownRuleInductionConfig final : public IRuleInductionConfig, public ITo
 
         ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) override;
 
-        std::unique_ptr<IRuleInductionFactory> configure(const ILabelMatrix& labelMatrix) const override;
+        std::unique_ptr<IRuleInductionFactory> configure(const IFeatureMatrix& featureMatrix,
+                                                         const ILabelMatrix& labelMatrix) const override;
 
 };

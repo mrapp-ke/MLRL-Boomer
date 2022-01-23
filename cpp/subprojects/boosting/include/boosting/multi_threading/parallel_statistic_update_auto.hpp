@@ -26,7 +26,7 @@ namespace boosting {
              */
             AutoParallelStatisticUpdateConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
 
-            uint32 configure(const ILabelMatrix& labelMatrix) const override;
+            uint32 configure(const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
 
     };
 

@@ -327,7 +327,7 @@ namespace seco {
                 std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
+                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
 
             std::unique_ptr<IModelBuilder> createModelBuilder() const override;
 

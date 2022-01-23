@@ -378,7 +378,7 @@ namespace boosting {
         protected:
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
+                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
 
             std::unique_ptr<IModelBuilder> createModelBuilder() const override;
 
