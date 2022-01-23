@@ -11,6 +11,7 @@
 #include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
+#include "boosting/rule_evaluation/regularization_no.hpp"
 
 
 namespace boosting {
@@ -21,6 +22,8 @@ namespace boosting {
         this->useSizeStoppingCriterion();
         this->useConstantShrinkagePostProcessor();
         this->useSingleLabelHeads();
+        this->useNoL1Regularization();
+        this->useL2Regularization();
         this->useLabelWiseLogisticLoss();
         this->useAutomaticLabelBinning();
         this->useLabelWiseClassificationPredictor(); // TODO use automatic configuration by default
@@ -30,6 +33,14 @@ namespace boosting {
 
     const IHeadConfig& BoostingRuleLearner::Config::getHeadConfig() const {
         return *headConfigPtr_;
+    }
+
+    const IRegularizationConfig& BoostingRuleLearner::Config::getL1RegularizationConfig() const {
+        return *l1RegularizationConfigPtr_;
+    }
+
+    const IRegularizationConfig& BoostingRuleLearner::Config::getL2RegularizationConfig() const {
+        return *l2RegularizationConfigPtr_;
     }
 
     const ILossConfig& BoostingRuleLearner::Config::getLossConfig() const {
@@ -85,6 +96,28 @@ namespace boosting {
     void BoostingRuleLearner::Config::useCompleteHeads() {
         headConfigPtr_ = std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_,
                                                               parallelStatisticUpdateConfigPtr_);
+    }
+
+    void BoostingRuleLearner::Config::useNoL1Regularization() {
+        l1RegularizationConfigPtr_ = std::make_unique<NoRegularizationConfig>();
+    }
+
+    IManualRegularizationConfig& BoostingRuleLearner::Config::useL1Regularization() {
+        std::unique_ptr<ManualRegularizationConfig> ptr = std::make_unique<ManualRegularizationConfig>();
+        IManualRegularizationConfig& ref = *ptr;
+        l1RegularizationConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    void BoostingRuleLearner::Config::useNoL2Regularization() {
+        l2RegularizationConfigPtr_ = std::make_unique<NoRegularizationConfig>();
+    }
+
+    IManualRegularizationConfig& BoostingRuleLearner::Config::useL2Regularization() {
+        std::unique_ptr<ManualRegularizationConfig> ptr = std::make_unique<ManualRegularizationConfig>();
+        IManualRegularizationConfig& ref = *ptr;
+        l2RegularizationConfigPtr_ = std::move(ptr);
+        return ref;
     }
 
     void BoostingRuleLearner::Config::useExampleWiseLogisticLoss() {
