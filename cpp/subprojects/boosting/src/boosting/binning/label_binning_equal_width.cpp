@@ -166,8 +166,11 @@ namespace boosting {
 
     };
 
-    EqualWidthLabelBinningConfig::EqualWidthLabelBinningConfig()
-        : binRatio_(0.04), minBins_(1), maxBins_(0) {
+    EqualWidthLabelBinningConfig::EqualWidthLabelBinningConfig(
+            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
+            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
+        : binRatio_(0.04), minBins_(1), maxBins_(0), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
+          l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
     }
 
@@ -203,8 +206,8 @@ namespace boosting {
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::configureLabelWise() const {
-        float64 l1RegularizationWeight = 0;  // TODO Use correct value
-        float64 l2RegularizationWeight = 0;  // TODO Use correct value
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->configure();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->configure();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
             std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<LabelWiseCompleteBinnedRuleEvaluationFactory>(l1RegularizationWeight,
@@ -213,8 +216,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::configureExampleWise() const {
-        float64 l1RegularizationWeight = 0;  // TODO Use correct value
-        float64 l2RegularizationWeight = 0;  // TODO Use correct value
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->configure();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->configure();
         std::unique_ptr<Blas> blasPtr = nullptr;  // TODO
         std::unique_ptr<Lapack> lapackPtr = nullptr;  // TODO
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "boosting/binning/label_binning.hpp"
+#include "boosting/rule_evaluation/regularization.hpp"
 
 
 namespace boosting {
@@ -13,7 +14,22 @@ namespace boosting {
      */
     class AutomaticLabelBinningConfig final : public ILabelBinningConfig {
 
+        private:
+
+            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr_;
+
+            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr_;
+
         public:
+
+            /**
+             * @param l1RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L1
+             *                                  regularization
+             * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
+             *                                  regularization
+             */
+            AutomaticLabelBinningConfig(const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
+                                        const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
 
             std::unique_ptr<ILabelWiseRuleEvaluationFactory> configureLabelWise() const override;
 
