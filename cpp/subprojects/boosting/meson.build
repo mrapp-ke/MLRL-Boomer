@@ -21,6 +21,7 @@ source_files = [
     'src/boosting/model/rule_list_builder.cpp',
     'src/boosting/multi_threading/parallel_rule_refinement_auto.cpp',
     'src/boosting/multi_threading/parallel_statistic_update_auto.cpp',
+    'src/boosting/output/predictor_classification_auto.cpp',
     'src/boosting/output/predictor_classification_example_wise.cpp',
     'src/boosting/output/predictor_classification_label_wise.cpp',
     'src/boosting/output/predictor_probability_label_wise.cpp',
