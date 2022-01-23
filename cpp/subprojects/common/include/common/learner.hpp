@@ -16,7 +16,6 @@
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
-#include "common/pruning/pruning_irep.hpp"
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_induction/rule_model_assemblage_sequential.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"
@@ -390,11 +389,8 @@ class IRuleLearner {
                 /**
                  * Configures the rule learner to prune classification rules by following the ideas of "incremental
                  * reduced error pruning" (IREP).
-                 *
-                 * @return A reference to an object of type `IIrepConfig` that allows further configuration of the
-                 *         method for pruning classification rules
                  */
-                virtual IIrepConfig& useIrepPruning() = 0;
+                virtual void useIrepPruning() = 0;
 
                 /**
                  * Configures the rule learner to not use any post processor.
@@ -749,7 +745,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoPruning() override final;
 
-                IIrepConfig& useIrepPruning() override;
+                void useIrepPruning() override;
 
                 void useNoPostProcessor() override final;
 

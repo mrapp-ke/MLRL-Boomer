@@ -14,7 +14,6 @@ cython_module_names = [
     'multi_threading',
     'nominal_feature_mask',
     'partition_sampling',
-    'pruning',
     'rule_induction',
     'rule_model',
     'rule_model_assemblage',

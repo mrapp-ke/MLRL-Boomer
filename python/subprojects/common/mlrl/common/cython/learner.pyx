@@ -15,7 +15,6 @@ from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
 from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfig, \
     LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
-from mlrl.common.cython.pruning cimport IrepConfig
 from mlrl.common.cython.rule_induction cimport TopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
 from mlrl.common.cython.rule_model_assemblage cimport SequentialRuleModelAssemblageConfig
@@ -280,18 +279,13 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoPruning()
 
-    def use_irep_pruning(self) -> IrepConfig:
+    def use_irep_pruning(self):
         """
         Configures the rule learner to prune classification rules by following the ideas of "incremental reduced error
         pruning" (IREP).
-
-        :return: An `IrepConfig` that allows further configuration of the method for pruning classification rules
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IIrepConfig* config_ptr = &rule_learner_config_ptr.useIrepPruning()
-        cdef IrepConfig config = IrepConfig.__new__(IrepConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useIrepPruning()
 
     def use_no_post_processor(self):
         """
