@@ -204,6 +204,14 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_automatic_classification_predictor(self):
+        """
+        Configures the rule learner to automatically decide for a predictor for predicting whether individual labels are
+        relevant or irrelevant.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useLabelWiseClassificationPredictor()
+
     def use_label_wise_regression_predictor(self) -> LabelWiseRegressionPredictorConfig:
         """
         Configures the rule learner to use a predictor for predicting regression scores by summing up the scores that

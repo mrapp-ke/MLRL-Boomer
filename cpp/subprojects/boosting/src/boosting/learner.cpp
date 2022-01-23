@@ -9,6 +9,7 @@
 #include "boosting/model/rule_list_builder.hpp"
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
 #include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
+#include "boosting/output/predictor_classification_auto.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
@@ -26,7 +27,7 @@ namespace boosting {
         this->useL2Regularization();
         this->useLabelWiseLogisticLoss();
         this->useAutomaticLabelBinning();
-        this->useLabelWiseClassificationPredictor(); // TODO use automatic configuration by default
+        this->useAutomaticClassificationPredictor();
         this->useLabelWiseRegressionPredictor();
         this->useLabelWiseProbabilityPredictor();
     }
@@ -170,6 +171,10 @@ namespace boosting {
         ILabelWiseClassificationPredictorConfig& ref = *ptr;
         classificationPredictorConfigPtr_ = std::move(ptr);
         return ref;
+    }
+
+    void BoostingRuleLearner::Config::useAutomaticClassificationPredictor() {
+        classificationPredictorConfigPtr_ = std::make_unique<AutomaticClassificationPredictorConfig>();
     }
 
     ILabelWiseRegressionPredictorConfig& BoostingRuleLearner::Config::useLabelWiseRegressionPredictor() {
