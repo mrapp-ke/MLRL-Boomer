@@ -106,10 +106,18 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
     def use_no_label_binning(self):
         """
-        Configures the algorithm to not use any method for the assignment of labels to bins.
+        Configures the rule learner to not use any method for the assignment of labels to bins.
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoLabelBinning()
+
+    def use_automatic_label_binning(self):
+        """
+        Configures the rule learner to automatically decide whether a method for the assignment of labels to bins should
+        be used or not.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticLabelBinning()
 
     def use_equal_width_label_binning(self) -> EqualWidthLabelBinningConfig:
         """

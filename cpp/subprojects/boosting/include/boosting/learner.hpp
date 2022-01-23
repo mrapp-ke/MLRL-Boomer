@@ -156,7 +156,11 @@ namespace boosting {
                      */
                     virtual void useNoLabelBinning() = 0;
 
-                    // TODO Add function to use automatic label binning
+                    /**
+                     * Configures the rule learner to automatically decide whether a method for the assignment of labels
+                     * to bins should be used or not.
+                     */
+                    virtual void useAutomaticLabelBinning() = 0;
 
                     /**
                      * Configures the algorithm to use a method for the assignment of labels to bins in a way such that
@@ -284,6 +288,8 @@ namespace boosting {
                     void useLabelWiseSquaredHingeLoss() override;
 
                     void useNoLabelBinning() override;
+
+                    void useAutomaticLabelBinning() override;
 
                     IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
 
