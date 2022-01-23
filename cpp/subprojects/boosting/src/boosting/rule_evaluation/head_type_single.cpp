@@ -6,8 +6,9 @@
 
 namespace boosting {
 
-    SingleLabelHeadConfig::SingleLabelHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr)
-        : labelBinningConfigPtr_(labelBinningConfigPtr) {
+    SingleLabelHeadConfig::SingleLabelHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+                                                 const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : labelBinningConfigPtr_(labelBinningConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
@@ -15,7 +16,7 @@ namespace boosting {
             const ILabelWiseLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = 0;  // TODO Use correct value
         float64 l2RegularizationWeight = 0;  // TODO Use correct value
-        uint32 numThreads = 1;  // TODO Use correct value
+        uint32 numThreads = multiThreadingConfigPtr_->configure();
         std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.configureLabelWise();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr = lossConfig.configureLabelWise();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
@@ -34,7 +35,7 @@ namespace boosting {
             const IExampleWiseLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = 0;  // TODO Use correct value
         float64 l2RegularizationWeight = 0;  // TODO Use correct value
-        uint32 numThreads = 1;  // TODO Use correct value
+        uint32 numThreads = multiThreadingConfigPtr_->configure();
         std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.configureExampleWise();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr = lossConfig.configureExampleWise();
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
