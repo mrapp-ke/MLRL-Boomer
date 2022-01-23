@@ -144,6 +144,10 @@ namespace boosting {
              */
             virtual std::unique_ptr<ILabelWiseLossFactory> configureLabelWise() const = 0;
 
+            bool isDecomposable() const override final {
+                return true;
+            }
+
     };
 
 }
