@@ -3,6 +3,7 @@
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/output/label_space_info_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
+#include "common/pruning/pruning_irep.hpp"
 #include "common/pruning/pruning_no.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
 #include "common/sampling/instance_sampling_no.hpp"
@@ -264,11 +265,8 @@ void AbstractRuleLearner::Config::useNoPruning() {
     pruningConfigPtr_ = std::make_unique<NoPruningConfig>();
 }
 
-IIrepConfig& AbstractRuleLearner::Config::useIrepPruning() {
-    std::unique_ptr<IrepConfig> ptr = std::make_unique<IrepConfig>();
-    IIrepConfig& ref = *ptr;
-    pruningConfigPtr_ = std::move(ptr);
-    return ref;
+void AbstractRuleLearner::Config::useIrepPruning() {
+    pruningConfigPtr_ = std::make_unique<IrepConfig>();
 }
 
 void AbstractRuleLearner::Config::useNoPostProcessor() {
