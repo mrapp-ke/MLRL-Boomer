@@ -13,8 +13,7 @@
 #include "seco/heuristics/heuristic_wra.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
 #include "seco/output/predictor_classification_label_wise.hpp"
-#include "seco/rule_evaluation/head_type_partial.hpp"
-#include "seco/rule_evaluation/head_type_single.hpp"
+#include "seco/rule_evaluation/head_type.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 
 
@@ -115,20 +114,14 @@ namespace seco {
                     /**
                      * Configures the rule learner to induce rules with single-label heads that predict for a single
                      * label.
-                     *
-                     * @return A reference to an object of type `ISingleLabelHeadConfig` that allows further
-                     *         configuration of the rule heads
                      */
-                    virtual ISingleLabelHeadConfig& useSingleLabelHeads() = 0;
+                    virtual void useSingleLabelHeads() = 0;
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
                      * available labels.
-                     *
-                     * @return A reference to an object of type `IPartialHeadConfig` that allows further configuration
-                     *         of the rule heads
                      */
-                    virtual IPartialHeadConfig& usePartialHeads() = 0;
+                    virtual void usePartialHeads() = 0;
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
@@ -319,9 +312,9 @@ namespace seco {
 
                     ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() override;
 
-                    ISingleLabelHeadConfig& useSingleLabelHeads() override;
+                    void useSingleLabelHeads() override;
 
-                    IPartialHeadConfig& usePartialHeads() override;
+                    void usePartialHeads() override;
 
                     IAccuracyConfig& useAccuracyHeuristic() override;
 

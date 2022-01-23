@@ -1,5 +1,4 @@
 from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
-from mlrl.seco.cython.head_type cimport ISingleLabelHeadConfig, IPartialHeadConfig
 from mlrl.seco.cython.heuristic cimport IAccuracyConfig, IFMeasureConfig, ILaplaceConfig, IMEstimateConfig, \
     IPrecisionConfig, IRecallConfig, IWraConfig
 from mlrl.seco.cython.lift_function cimport IPeakLiftFunctionConfig
@@ -19,9 +18,9 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion()
 
-        ISingleLabelHeadConfig& useSingleLabelHeads()
+        void useSingleLabelHeads()
 
-        IPartialHeadConfig& usePartialHeads()
+        void usePartialHeads()
 
         IAccuracyConfig& useAccuracyHeuristic()
 

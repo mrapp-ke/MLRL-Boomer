@@ -3,7 +3,6 @@ project('seco', 'cython', 'cpp')
 # Source files
 cython_dir = 'cython'
 cython_module_names = [
-    'head_type',
     'heuristic',
     'learner',
     'lift_function',
