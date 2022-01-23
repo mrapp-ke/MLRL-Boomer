@@ -745,7 +745,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoPruning() override final;
 
-                void useIrepPruning() override;
+                void useIrepPruning() override final;
 
                 void useNoPostProcessor() override final;
 
