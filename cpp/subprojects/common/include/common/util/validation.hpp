@@ -1,4 +1,3 @@
-// TODO Remove all uses of this header that are not directly related to configuration
 /*
  * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
