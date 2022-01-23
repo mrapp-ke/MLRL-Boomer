@@ -1,8 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.seco.cython.heuristic cimport AccuracyConfig, FMeasureConfig, LaplaceConfig, MEstimateConfig, \
-    PrecisionConfig, RecallConfig, WraConfig
+from mlrl.seco.cython.heuristic cimport FMeasureConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfig
 from mlrl.seco.cython.predictor cimport LabelWiseClassificationPredictorConfig
 from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig
@@ -58,17 +57,12 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.usePartialHeads()
 
-    def use_accuracy_heuristic(self) -> AccuracyConfig:
+    def use_accuracy_heuristic(self):
         """
         Configures the rule learner to use the "Accuracy" heuristic for learning rules.
-
-        :return: An `AccuracyConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IAccuracyConfig* config_ptr = &rule_learner_config_ptr.useAccuracyHeuristic()
-        cdef AccuracyConfig config = AccuracyConfig.__new__(AccuracyConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useAccuracyHeuristic()
 
     def use_f_measure_heuristic(self) -> FMeasureConfig:
         """
@@ -82,17 +76,12 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_laplace_heuristic(self) -> LaplaceConfig:
+    def use_laplace_heuristic(self):
         """
         Configures the rule learner to use the "Laplace" heuristic for learning rules.
-
-        :return: A `LaplaceConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ILaplaceConfig* config_ptr = &rule_learner_config_ptr.useLaplaceHeuristic()
-        cdef LaplaceConfig config = LaplaceConfig.__new__(LaplaceConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useLaplaceHeuristic()
 
     def use_m_estimate_heuristic(self) -> MEstimateConfig:
         """
@@ -106,53 +95,33 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_precision_heuristic(self) -> PrecisionConfig:
+    def use_precision_heuristic(self):
         """
         Configures the rule learner to use the "Precision" heuristic for learning rules.
-
-        :return: A `PrecisionConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IPrecisionConfig* config_ptr = &rule_learner_config_ptr.usePrecisionHeuristic()
-        cdef PrecisionConfig config = PrecisionConfig.__new__(PrecisionConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.usePrecisionHeuristic()
 
-    def use_recall_heuristic(self) -> RecallConfig:
+    def use_recall_heuristic(self):
         """
         Configures the rule learner to use the "Recall" heuristic for learning rules.
-
-        :return: A `RecallConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IRecallConfig* config_ptr = &rule_learner_config_ptr.useRecallHeuristic()
-        cdef RecallConfig config = RecallConfig.__new__(RecallConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useRecallHeuristic()
 
-    def use_wra__heuristic(self) -> WraConfig:
+    def use_wra_heuristic(self):
         """
         Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
-
-        :return: A `WraConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IWraConfig* config_ptr = &rule_learner_config_ptr.useWraHeuristic()
-        cdef WraConfig config = WraConfig.__new__(WraConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useWraHeuristic()
 
-    def use_accuracy_pruning_heuristic(self) -> AccuracyConfig:
+    def use_accuracy_pruning_heuristic(self):
         """
         Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
-
-        :return: An `AccuracyConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IAccuracyConfig* config_ptr = &rule_learner_config_ptr.useAccuracyPruningHeuristic()
-        cdef AccuracyConfig config = AccuracyConfig.__new__(AccuracyConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useAccuracyPruningHeuristic()
 
     def use_f_measure_pruning_heuristic(self) -> FMeasureConfig:
         """
@@ -166,17 +135,12 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_laplace_pruning_heuristic(self) -> LaplaceConfig:
+    def use_laplace_pruning_heuristic(self):
         """
         Configures the rule learner to use the "Laplace" heuristic for pruning rules.
-
-        :return: A `LaplaceConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ILaplaceConfig* config_ptr = &rule_learner_config_ptr.useLaplacePruningHeuristic()
-        cdef LaplaceConfig config = LaplaceConfig.__new__(LaplaceConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useLaplacePruningHeuristic()
 
     def use_m_estimate_pruning_heuristic(self) -> MEstimateConfig:
         """
@@ -190,41 +154,26 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_precision_pruning_heuristic(self) -> PrecisionConfig:
+    def use_precision_pruning_heuristic(self):
         """
         Configures the rule learner to use the "Precision" heuristic for pruning rules.
-
-        :return: A `PrecisionConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IPrecisionConfig* config_ptr = &rule_learner_config_ptr.usePrecisionPruningHeuristic()
-        cdef PrecisionConfig config = PrecisionConfig.__new__(PrecisionConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.usePrecisionPruningHeuristic()
 
-    def use_recall_pruning_heuristic(self) -> RecallConfig:
+    def use_recall_pruning_heuristic(self):
         """
         Configures the rule learner to use the "Recall" heuristic for pruning rules.
-
-        :return: A `RecallConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IRecallConfig* config_ptr = &rule_learner_config_ptr.useRecallPruningHeuristic()
-        cdef RecallConfig config = RecallConfig.__new__(RecallConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useRecallPruningHeuristic()
 
-    def use_wra_pruning_heuristic(self) -> WraConfig:
+    def use_wra_pruning_heuristic(self):
         """
         Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
-
-        :return: A `WraConfig` that allows further configuration of the heuristic
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IWraConfig* config_ptr = &rule_learner_config_ptr.useWraPruningHeuristic()
-        cdef WraConfig config = WraConfig.__new__(WraConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useWraPruningHeuristic()
 
     def use_peak_lift_function(self) -> PeakLiftFunctionConfig:
         """

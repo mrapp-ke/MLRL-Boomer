@@ -1,6 +1,5 @@
 from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
-from mlrl.seco.cython.heuristic cimport IAccuracyConfig, IFMeasureConfig, ILaplaceConfig, IMEstimateConfig, \
-    IPrecisionConfig, IRecallConfig, IWraConfig
+from mlrl.seco.cython.heuristic cimport IFMeasureConfig, IMEstimateConfig
 from mlrl.seco.cython.lift_function cimport IPeakLiftFunctionConfig
 from mlrl.seco.cython.predictor cimport ILabelWiseClassificationPredictorConfig
 from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfig
@@ -22,33 +21,33 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         void usePartialHeads()
 
-        IAccuracyConfig& useAccuracyHeuristic()
+        void useAccuracyHeuristic()
 
         IFMeasureConfig& useFMeasureHeuristic()
 
-        ILaplaceConfig& useLaplaceHeuristic()
+        void useLaplaceHeuristic()
 
         IMEstimateConfig& useMEstimateHeuristic()
 
-        IPrecisionConfig& usePrecisionHeuristic()
+        void usePrecisionHeuristic()
 
-        IRecallConfig& useRecallHeuristic()
+        void useRecallHeuristic()
 
-        IWraConfig& useWraHeuristic()
+        void useWraHeuristic()
 
-        IAccuracyConfig& useAccuracyPruningHeuristic()
+        void useAccuracyPruningHeuristic()
 
         IFMeasureConfig& useFMeasurePruningHeuristic()
 
-        ILaplaceConfig& useLaplacePruningHeuristic()
+        void useLaplacePruningHeuristic()
 
         IMEstimateConfig& useMEstimatePruningHeuristic()
 
-        IPrecisionConfig& usePrecisionPruningHeuristic()
+        void usePrecisionPruningHeuristic()
 
-        IRecallConfig& useRecallPruningHeuristic()
+        void useRecallPruningHeuristic()
 
-        IWraConfig& useWraPruningHeuristic()
+        void useWraPruningHeuristic()
 
         IPeakLiftFunctionConfig& usePeakLiftFunction()
 

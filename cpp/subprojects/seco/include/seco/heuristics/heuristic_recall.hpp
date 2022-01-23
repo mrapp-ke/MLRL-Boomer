@@ -10,23 +10,10 @@
 namespace seco {
 
     /**
-     * Defines an interface for all classes that allow to configure a heuristic that measures the fraction of uncovered
-     * labels among all labels for which a rule's prediction is (or would be) correct, i.e., for which the ground truth
-     * is equal to the rule's prediction.
-     */
-    class IRecallConfig {
-
-        public:
-
-            virtual ~IRecallConfig() { };
-
-    };
-
-    /**
      * Allows to configure a heuristic that measures the fraction of uncovered labels among all labels for which a
      * rule's prediction is (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
      */
-    class RecallConfig final : public IHeuristicConfig, public IRecallConfig {
+    class RecallConfig final : public IHeuristicConfig {
 
         public:
 
