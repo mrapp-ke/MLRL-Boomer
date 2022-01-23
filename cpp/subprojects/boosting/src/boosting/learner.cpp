@@ -4,6 +4,8 @@
 #include "boosting/model/rule_list_builder.hpp"
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
 #include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
+#include "boosting/rule_evaluation/head_type_complete.hpp"
+#include "boosting/rule_evaluation/head_type_single.hpp"
 
 
 namespace boosting {
@@ -70,20 +72,14 @@ namespace boosting {
         parallelStatisticUpdateConfigPtr_ = std::make_unique<AutoParallelStatisticUpdateConfig>();
     }
 
-    ISingleLabelHeadConfig& BoostingRuleLearner::Config::useSingleLabelHeads() {
-        std::unique_ptr<SingleLabelHeadConfig> ptr =
-            std::make_unique<SingleLabelHeadConfig>(labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_);
-        ISingleLabelHeadConfig& ref = *ptr;
-        headConfigPtr_ = std::move(ptr);
-        return ref;
+    void BoostingRuleLearner::Config::useSingleLabelHeads() {
+        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(labelBinningConfigPtr_,
+                                                                 parallelStatisticUpdateConfigPtr_);
     }
 
-    ICompleteHeadConfig& BoostingRuleLearner::Config::useCompleteHeads() {
-        std::unique_ptr<CompleteHeadConfig> ptr =
-            std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_);
-        ICompleteHeadConfig& ref = *ptr;
-        headConfigPtr_ = std::move(ptr);
-        return ref;
+    void BoostingRuleLearner::Config::useCompleteHeads() {
+        headConfigPtr_ = std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_,
+                                                              parallelStatisticUpdateConfigPtr_);
     }
 
     IExampleWiseLogisticLossConfig& BoostingRuleLearner::Config::useExampleWiseLogisticLoss() {
