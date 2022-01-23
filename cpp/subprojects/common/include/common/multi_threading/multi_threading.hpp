@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/input/label_matrix.hpp"
 
 
 /**
@@ -19,8 +19,10 @@ class IMultiThreadingConfig {
         /**
          * Determines and returns the number of threads to be used by a parallelizable algorithm.
          *
-         * @return The number of threads to be used
+         * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels of
+         *                      the training examples
+         * @return              The number of threads to be used
          */
-        virtual uint32 configure() const = 0;
+        virtual uint32 configure(const ILabelMatrix& labelMatrix) const = 0;
 
 };

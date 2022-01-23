@@ -26,7 +26,7 @@ namespace boosting {
              */
             ExampleWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
 
-            std::unique_ptr<IStatisticsProviderFactory> configure() const override;
+            std::unique_ptr<IStatisticsProviderFactory> configure(const ILabelMatrix& labelMatrix) const override;
 
             std::unique_ptr<IExampleWiseLossFactory> configureExampleWise() const override;
 

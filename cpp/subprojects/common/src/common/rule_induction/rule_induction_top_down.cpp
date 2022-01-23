@@ -286,8 +286,8 @@ ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setRecalculatePredictio
     return *this;
 }
 
-std::unique_ptr<IRuleInductionFactory> TopDownRuleInductionConfig::configure() const {
-    uint32 numThreads = multiThreadingConfigPtr_->configure();
+std::unique_ptr<IRuleInductionFactory> TopDownRuleInductionConfig::configure(const ILabelMatrix& labelMatrix) const {
+    uint32 numThreads = multiThreadingConfigPtr_->configure(labelMatrix);
     return std::make_unique<TopDownRuleInductionFactory>(minCoverage_, maxConditions_, maxHeadRefinements_,
                                                          recalculatePredictions_, numThreads);
 }

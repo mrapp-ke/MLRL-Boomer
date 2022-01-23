@@ -27,7 +27,8 @@ namespace boosting {
              */
             AutomaticFeatureBinningConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
-            std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix) const override;
+            std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix,
+                                                          const ILabelMatrix& labelMatrix) const override;
 
     };
 

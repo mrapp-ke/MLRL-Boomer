@@ -53,6 +53,6 @@ class ManualMultiThreadingConfig final : public IMultiThreadingConfig, public IM
 
         IManualMultiThreadingConfig& setNumThreads(uint32 numThreads) override;
 
-        uint32 configure() const override;
+        uint32 configure(const ILabelMatrix& labelMatrix) const override;
 
 };

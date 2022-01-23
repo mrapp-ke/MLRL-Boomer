@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/input/label_matrix.hpp"
 #include "common/model/model_builder.hpp"
 #include "common/post_processing/post_processor.hpp"
 #include "common/pruning/pruning.hpp"
@@ -91,8 +92,10 @@ class IRuleInductionConfig {
         /**
          * Creates and returns a new object of type `IRuleInductionFactory` according to the specified configuration.
          *
-         * @return An unique pointer to an object of type `IRuleInductionFactory` that has been created
+         * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels of
+         *                      the training examples
+         * @return              An unique pointer to an object of type `IRuleInductionFactory` that has been created
          */
-        virtual std::unique_ptr<IRuleInductionFactory> configure() const = 0;
+        virtual std::unique_ptr<IRuleInductionFactory> configure(const ILabelMatrix& labelMatrix) const = 0;
 
 };
