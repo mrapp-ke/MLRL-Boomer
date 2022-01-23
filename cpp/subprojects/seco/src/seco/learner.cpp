@@ -1,4 +1,9 @@
 #include "seco/learner.hpp"
+#include "seco/heuristics/heuristic_accuracy.hpp"
+#include "seco/heuristics/heuristic_laplace.hpp"
+#include "seco/heuristics/heuristic_precision.hpp"
+#include "seco/heuristics/heuristic_recall.hpp"
+#include "seco/heuristics/heuristic_wra.hpp"
 #include "seco/model/decision_list_builder.hpp"
 #include "seco/rule_evaluation/head_type_partial.hpp"
 #include "seco/rule_evaluation/head_type_single.hpp"
@@ -75,11 +80,8 @@ namespace seco {
                                                              liftFunctionConfigPtr_);
     }
 
-    IAccuracyConfig& SeCoRuleLearner::Config::useAccuracyHeuristic() {
-        std::unique_ptr<AccuracyConfig> ptr = std::make_unique<AccuracyConfig>();
-        IAccuracyConfig& ref = *ptr;
-        heuristicConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::useAccuracyHeuristic() {
+        heuristicConfigPtr_ = std::make_unique<AccuracyConfig>();
     }
 
     IFMeasureConfig& SeCoRuleLearner::Config::useFMeasureHeuristic() {
@@ -89,11 +91,8 @@ namespace seco {
         return ref;
     }
 
-    ILaplaceConfig& SeCoRuleLearner::Config::useLaplaceHeuristic() {
-        std::unique_ptr<LaplaceConfig> ptr = std::make_unique<LaplaceConfig>();
-        ILaplaceConfig& ref = *ptr;
-        heuristicConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::useLaplaceHeuristic() {
+        heuristicConfigPtr_ = std::make_unique<LaplaceConfig>();
     }
 
     IMEstimateConfig& SeCoRuleLearner::Config::useMEstimateHeuristic() {
@@ -103,32 +102,20 @@ namespace seco {
         return ref;
     }
 
-    IPrecisionConfig& SeCoRuleLearner::Config::usePrecisionHeuristic() {
-        std::unique_ptr<PrecisionConfig> ptr = std::make_unique<PrecisionConfig>();
-        IPrecisionConfig& ref = *ptr;
-        heuristicConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::usePrecisionHeuristic() {
+        heuristicConfigPtr_ = std::make_unique<PrecisionConfig>();
     }
 
-    IRecallConfig& SeCoRuleLearner::Config::useRecallHeuristic() {
-        std::unique_ptr<RecallConfig> ptr = std::make_unique<RecallConfig>();
-        IRecallConfig& ref = *ptr;
-        heuristicConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::useRecallHeuristic() {
+        heuristicConfigPtr_ = std::make_unique<RecallConfig>();
     }
 
-    IWraConfig& SeCoRuleLearner::Config::useWraHeuristic() {
-        std::unique_ptr<WraConfig> ptr = std::make_unique<WraConfig>();
-        IWraConfig& ref = *ptr;
-        heuristicConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::useWraHeuristic() {
+        heuristicConfigPtr_ = std::make_unique<WraConfig>();
     }
 
-    IAccuracyConfig& SeCoRuleLearner::Config::useAccuracyPruningHeuristic() {
-        std::unique_ptr<AccuracyConfig> ptr = std::make_unique<AccuracyConfig>();
-        IAccuracyConfig& ref = *ptr;
-        pruningHeuristicConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::useAccuracyPruningHeuristic() {
+        pruningHeuristicConfigPtr_ = std::make_unique<AccuracyConfig>();
     }
 
     IFMeasureConfig& SeCoRuleLearner::Config::useFMeasurePruningHeuristic() {
@@ -138,11 +125,8 @@ namespace seco {
         return ref;
     }
 
-    ILaplaceConfig& SeCoRuleLearner::Config::useLaplacePruningHeuristic() {
-        std::unique_ptr<LaplaceConfig> ptr = std::make_unique<LaplaceConfig>();
-        ILaplaceConfig& ref = *ptr;
-        pruningHeuristicConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::useLaplacePruningHeuristic() {
+        pruningHeuristicConfigPtr_ = std::make_unique<LaplaceConfig>();
     }
 
     IMEstimateConfig& SeCoRuleLearner::Config::useMEstimatePruningHeuristic() {
@@ -152,25 +136,16 @@ namespace seco {
         return ref;
     }
 
-    IPrecisionConfig& SeCoRuleLearner::Config::usePrecisionPruningHeuristic() {
-        std::unique_ptr<PrecisionConfig> ptr = std::make_unique<PrecisionConfig>();
-        IPrecisionConfig& ref = *ptr;
-        pruningHeuristicConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::usePrecisionPruningHeuristic() {
+        pruningHeuristicConfigPtr_ = std::make_unique<PrecisionConfig>();
     }
 
-    IRecallConfig& SeCoRuleLearner::Config::useRecallPruningHeuristic() {
-        std::unique_ptr<RecallConfig> ptr = std::make_unique<RecallConfig>();
-        IRecallConfig& ref = *ptr;
-        pruningHeuristicConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::useRecallPruningHeuristic() {
+        pruningHeuristicConfigPtr_ = std::make_unique<RecallConfig>();
     }
 
-    IWraConfig& SeCoRuleLearner::Config::useWraPruningHeuristic() {
-        std::unique_ptr<WraConfig> ptr = std::make_unique<WraConfig>();
-        IWraConfig& ref = *ptr;
-        pruningHeuristicConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::useWraPruningHeuristic() {
+        pruningHeuristicConfigPtr_ = std::make_unique<WraConfig>();
     }
 
     IPeakLiftFunctionConfig& SeCoRuleLearner::Config::usePeakLiftFunction() {

@@ -4,13 +4,8 @@
 #pragma once
 
 #include "common/learner.hpp"
-#include "seco/heuristics/heuristic_accuracy.hpp"
 #include "seco/heuristics/heuristic_f_measure.hpp"
-#include "seco/heuristics/heuristic_laplace.hpp"
 #include "seco/heuristics/heuristic_m_estimate.hpp"
-#include "seco/heuristics/heuristic_precision.hpp"
-#include "seco/heuristics/heuristic_recall.hpp"
-#include "seco/heuristics/heuristic_wra.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
 #include "seco/output/predictor_classification_label_wise.hpp"
 #include "seco/rule_evaluation/head_type.hpp"
@@ -125,11 +120,8 @@ namespace seco {
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
-                     *
-                     * @return A reference to an object of type `IAccuracyConfig` that allows further configuration of
-                     *         the heuristic
                      */
-                    virtual IAccuracyConfig& useAccuracyHeuristic() = 0;
+                    virtual void useAccuracyHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
@@ -141,11 +133,8 @@ namespace seco {
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for learning rules.
-                     *
-                     * @return A reference to an object of type `ILaplaceConfig` that allows further configuration of the
-                     *         heuristic
                      */
-                    virtual ILaplaceConfig& useLaplaceHeuristic() = 0;
+                    virtual void useLaplaceHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
@@ -157,35 +146,23 @@ namespace seco {
 
                     /**
                      * Configures the rule learner to use the "Precision" heuristic for learning rules.
-                     *
-                     * @return A reference to an object of type `IPrecisionConfig` that allows further configuration of
-                     *         the heuristic
                      */
-                    virtual IPrecisionConfig& usePrecisionHeuristic() = 0;
+                    virtual void usePrecisionHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for learning rules.
-                     *
-                     * @return A reference to an object of type `IRecallConfig` that allows further configuration of the
-                     *         heuristic
                      */
-                    virtual IRecallConfig& useRecallHeuristic() = 0;
+                    virtual void useRecallHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
-                     *
-                     * @return A reference to an object of type `IWraConfig` that allows further configuration of the
-                     *         heuristic
                      */
-                    virtual IWraConfig& useWraHeuristic() = 0;
+                    virtual void useWraHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
-                     *
-                     * @return A reference to an object of type `IAccuracyConfig` that allows further configuration of
-                     *         the heuristic
                      */
-                    virtual IAccuracyConfig& useAccuracyPruningHeuristic() = 0;
+                    virtual void useAccuracyPruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
@@ -197,11 +174,8 @@ namespace seco {
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for pruning rules.
-                     *
-                     * @return A reference to an object of type `ILaplaceConfig` that allows further configuration of
-                     *         the heuristic
                      */
-                    virtual ILaplaceConfig& useLaplacePruningHeuristic() = 0;
+                    virtual void useLaplacePruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
@@ -213,27 +187,18 @@ namespace seco {
 
                     /**
                      * Configures the rule learner to use the "Precision" heuristic for pruning rules.
-                     *
-                     * @return A reference to an object of type `IPrecisionConfig` that allows further configuration of
-                     *         the heuristic
                      */
-                    virtual IPrecisionConfig& usePrecisionPruningHeuristic() = 0;
+                    virtual void usePrecisionPruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for pruning rules.
-                     *
-                     * @return A reference to an object of type `IRecallConfig` that allows further configuration of the
-                     *         heuristic
                      */
-                    virtual IRecallConfig& useRecallPruningHeuristic() = 0;
+                    virtual void useRecallPruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
-                     *
-                     * @return A reference to an object of type `IWraConfig` that allows further configuration of the
-                     *         heuristic
                      */
-                    virtual IWraConfig& useWraPruningHeuristic() = 0;
+                    virtual void useWraPruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases until a certain
@@ -316,33 +281,33 @@ namespace seco {
 
                     void usePartialHeads() override;
 
-                    IAccuracyConfig& useAccuracyHeuristic() override;
+                    void useAccuracyHeuristic() override;
 
                     IFMeasureConfig& useFMeasureHeuristic() override;
 
-                    ILaplaceConfig& useLaplaceHeuristic() override;
+                    void useLaplaceHeuristic() override;
 
                     IMEstimateConfig& useMEstimateHeuristic() override;
 
-                    IPrecisionConfig& usePrecisionHeuristic() override;
+                    void usePrecisionHeuristic() override;
 
-                    IRecallConfig& useRecallHeuristic() override;
+                    void useRecallHeuristic() override;
 
-                    IWraConfig& useWraHeuristic() override;
+                    void useWraHeuristic() override;
 
-                    IAccuracyConfig& useAccuracyPruningHeuristic() override;
+                    void useAccuracyPruningHeuristic() override;
 
                     IFMeasureConfig& useFMeasurePruningHeuristic() override;
 
-                    ILaplaceConfig& useLaplacePruningHeuristic() override;
+                    void useLaplacePruningHeuristic() override;
 
                     IMEstimateConfig& useMEstimatePruningHeuristic() override;
 
-                    IPrecisionConfig& usePrecisionPruningHeuristic() override;
+                    void usePrecisionPruningHeuristic() override;
 
-                    IRecallConfig& useRecallPruningHeuristic() override;
+                    void useRecallPruningHeuristic() override;
 
-                    IWraConfig& useWraPruningHeuristic() override;
+                    void useWraPruningHeuristic() override;
 
                     IPeakLiftFunctionConfig& usePeakLiftFunction() override;
 
