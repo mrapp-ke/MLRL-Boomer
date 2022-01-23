@@ -4,6 +4,7 @@
 #pragma once
 
 #include "boosting/rule_evaluation/head_type.hpp"
+#include "boosting/rule_evaluation/regularization.hpp"
 #include "boosting/binning/label_binning.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 
@@ -21,6 +22,10 @@ namespace boosting {
 
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
 
+            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr_;
+
+            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr_;
+
         public:
 
             /**
@@ -29,9 +34,15 @@ namespace boosting {
              * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
              *                                  multi-threading behavior that should be used for the parallel update of
              *                                  statistics
+             * @param l1RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L1
+             *                                  regularization
+             * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
+             *                                  regularization
              */
             SingleLabelHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-                                  const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+                                  const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
+                                  const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
+                                  const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> configure(
                 const ILabelWiseLossConfig& lossConfig) const override;

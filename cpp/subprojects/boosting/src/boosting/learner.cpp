@@ -89,13 +89,15 @@ namespace boosting {
     }
 
     void BoostingRuleLearner::Config::useSingleLabelHeads() {
-        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(labelBinningConfigPtr_,
-                                                                 parallelStatisticUpdateConfigPtr_);
+        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(
+            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
+            l2RegularizationConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useCompleteHeads() {
-        headConfigPtr_ = std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_,
-                                                              parallelStatisticUpdateConfigPtr_);
+        headConfigPtr_ = std::make_unique<CompleteHeadConfig>(
+            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
+            l2RegularizationConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useNoL1Regularization() {
@@ -137,15 +139,18 @@ namespace boosting {
     }
 
     void BoostingRuleLearner::Config::useNoLabelBinning() {
-        labelBinningConfigPtr_ = std::make_unique<NoLabelBinningConfig>();
+        labelBinningConfigPtr_ =
+            std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useAutomaticLabelBinning() {
-        labelBinningConfigPtr_ = std::make_unique<AutomaticLabelBinningConfig>();
+        labelBinningConfigPtr_ =
+            std::make_unique<AutomaticLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     IEqualWidthLabelBinningConfig& BoostingRuleLearner::Config::useEqualWidthLabelBinning() {
-        std::unique_ptr<EqualWidthLabelBinningConfig> ptr = std::make_unique<EqualWidthLabelBinningConfig>();
+        std::unique_ptr<EqualWidthLabelBinningConfig> ptr =
+            std::make_unique<EqualWidthLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
         IEqualWidthLabelBinningConfig& ref = *ptr;
         labelBinningConfigPtr_ = std::move(ptr);
         return ref;

@@ -7,15 +7,18 @@
 namespace boosting {
 
     CompleteHeadConfig::CompleteHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-                                           const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : labelBinningConfigPtr_(labelBinningConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+                                           const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
+                                           const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
+                                           const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
+        : labelBinningConfigPtr_(labelBinningConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr),
+          l1RegularizationConfigPtr_(l1RegularizationConfigPtr), l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
     }
 
     std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::configure(
             const ILabelWiseLossConfig& lossConfig) const {
-        float64 l1RegularizationWeight = 0;  // TODO Use correct value
-        float64 l2RegularizationWeight = 0;  // TODO Use correct value
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->configure();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->configure();
         uint32 numThreads = multiThreadingConfigPtr_->configure();
         std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.configureLabelWise();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr = lossConfig.configureLabelWise();
