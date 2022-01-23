@@ -70,7 +70,7 @@ namespace boosting {
                      * Returns the configuration of the method for the assignment of labels to bins.
                      *
                      * @return A reference to an object of type `ILabelBinningConfig` that specifies the configuration
-                     *         of the algorithm for the assignment of labels to bins
+                     *         of the method for the assignment of labels to bins
                      */
                     virtual const ILabelBinningConfig& getLabelBinningConfig() const = 0;
 
@@ -195,7 +195,7 @@ namespace boosting {
                     virtual void useLabelWiseSquaredHingeLoss() = 0;
 
                     /**
-                     * Configures the algorithm to not use any method for the assignment of labels to bins.
+                     * Configures the rule learner to not use any method for the assignment of labels to bins.
                      */
                     virtual void useNoLabelBinning() = 0;
 
@@ -206,9 +206,9 @@ namespace boosting {
                     virtual void useAutomaticLabelBinning() = 0;
 
                     /**
-                     * Configures the algorithm to use a method for the assignment of labels to bins in a way such that
-                     * each bin contains labels for which the predicted score is expected to belong to the same value
-                     * range.
+                     * Configures the rule learner to use a method for the assignment of labels to bins in a way such
+                     * that each bin contains labels for which the predicted score is expected to belong to the same
+                     * value range.
                      *
                      * @return A reference to an object of type `IEqualWidthLabelBinningConfig` that allows further
                      *         configuration of the method for the assignment of labels to bins
@@ -216,10 +216,11 @@ namespace boosting {
                     virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() = 0;
 
                     /**
-                     * Configures the algorithm to use a predictor for predicting whether individual labels are relevant
-                     * or irrelevant by summing up the scores that are provided by an existing rule-based model and
-                     * comparing the aggregated score vector to the known label vectors according to a certain distance
-                     * measure. The label vector that is closest to the aggregated score vector is finally predicted.
+                     * Configures the rule learner to use a predictor for predicting whether individual labels are
+                     * relevant or irrelevant by summing up the scores that are provided by an existing rule-based model
+                     * and comparing the aggregated score vector to the known label vectors according to a certain
+                     * distance measure. The label vector that is closest to the aggregated score vector is finally
+                     * predicted.
                      *
                      * @return A reference to an object of type `IExampleWiseClassificationPredictorConfig` that allows
                      *         further configuration of the predictor for predicting whether individual labels are
@@ -228,10 +229,10 @@ namespace boosting {
                     virtual IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() = 0;
 
                     /**
-                     * Configures the algorithm to use a predictor for predicting whether individual labels are relevant
-                     * or irrelevant by summing up the scores that are provided by the individual rules of an existing
-                     * rule-based model and transforming them into binary values according to a certain threshold that
-                     * is applied to each label individually.
+                     * Configures the rule learner to use a predictor for predicting whether individual labels are
+                     * relevant or irrelevant by summing up the scores that are provided by the individual rules of an
+                     * existing rule-based model and transforming them into binary values according to a certain
+                     * threshold that is applied to each label individually.
                      *
                      * @return A reference to an object of type `ILabelWiseClassificationPredictorConfig` that allows
                      *         further configuration of the predictor for predicting whether individual labels are
@@ -240,7 +241,7 @@ namespace boosting {
                     virtual ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() = 0;
 
                     /**
-                     * Configures the algorithm to use a predictor for predicting regression scores by summing up the
+                     * Configures the rule learner to use a predictor for predicting regression scores by summing up the
                      * scores that are provided by the individual rules of an existing rule-based model for each label
                      * individually.
                      *
@@ -250,7 +251,7 @@ namespace boosting {
                     virtual ILabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() = 0;
 
                     /**
-                     * Configures the algorithm to use a predictor for predicting probability estimates by summing up
+                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
                      * the scores that are provided by individual rules of an existing rule-based models and
                      * transforming the aggregated scores into probabilities according to a certain transformation
                      * function that is applied to each label individually.
