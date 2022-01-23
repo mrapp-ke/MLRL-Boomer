@@ -16,7 +16,7 @@ namespace boosting {
 
         public:
 
-            uint32 configure(const ILabelMatrix& labelMatrix) const override;
+            uint32 configure(const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
 
     };
 

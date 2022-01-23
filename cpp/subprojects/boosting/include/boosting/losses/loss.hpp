@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/input/feature_matrix.hpp"
 #include "common/input/label_matrix.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
@@ -42,12 +43,15 @@ namespace boosting {
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
              * configuration.
              *
+             * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the
+             *                      feature values of the training examples
              * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels
              *                      of the training examples
              * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
              *                      created
              */
-            virtual std::unique_ptr<IStatisticsProviderFactory> configure(const ILabelMatrix& labelMatrix) const = 0;
+            virtual std::unique_ptr<IStatisticsProviderFactory> configure(const IFeatureMatrix& featureMatrix,
+                                                                          const ILabelMatrix& labelMatrix) const = 0;
 
     };
 

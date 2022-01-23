@@ -780,7 +780,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         std::unique_ptr<IThresholdsFactory> createThresholdsFactory(const IFeatureMatrix& featureMatrix,
                                                                     const ILabelMatrix& labelMatrix) const;
 
-        std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(const ILabelMatrix& labelMatrix) const;
+        std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(const IFeatureMatrix& featureMatrix,
+                                                                          const ILabelMatrix& labelMatrix) const;
 
         std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory(const ILabelMatrix& labelMatrix) const;
 
@@ -817,13 +818,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * Must be implemented by subclasses in order to create the `IStatisticsProviderFactory` to be used by the rule
          * learner.
          *
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
          * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
          *                      the labels of the training examples
          * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
          *                      created
          */
         virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-            const IRowWiseLabelMatrix& labelMatrix) const = 0;
+            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
         /**
          * Must be implemented by subclasses in order to create `IModelBuilder` to be used by the rule learner.

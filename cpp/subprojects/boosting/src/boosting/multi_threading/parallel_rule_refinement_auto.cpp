@@ -3,7 +3,8 @@
 
 namespace boosting {
 
-    uint32 AutoParallelRuleRefinementConfig::configure(const ILabelMatrix& labelMatrix) const {
+    uint32 AutoParallelRuleRefinementConfig::configure(const IFeatureMatrix& featureMatrix,
+                                                       const ILabelMatrix& labelMatrix) const {
         // TODO Implement
         return 1;
     };

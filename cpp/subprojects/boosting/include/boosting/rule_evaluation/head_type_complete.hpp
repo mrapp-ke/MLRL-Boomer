@@ -45,10 +45,12 @@ namespace boosting {
                                const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> configure(
-                const ILabelMatrix& labelMatrix, const ILabelWiseLossConfig& lossConfig) const override;
+                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
+                const ILabelWiseLossConfig& lossConfig) const override;
 
             std::unique_ptr<IStatisticsProviderFactory> configure(
-                const ILabelMatrix& labelMatrix, const IExampleWiseLossConfig& lossConfig) const override;
+                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
+                const IExampleWiseLossConfig& lossConfig) const override;
 
     };
 

@@ -351,8 +351,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> ExampleWiseLogisticLossConfig::configure(
-            const ILabelMatrix& labelMatrix) const {
-        return headConfigPtr_->configure(labelMatrix, *this);
+            const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+        return headConfigPtr_->configure(featureMatrix, labelMatrix, *this);
     }
 
     std::unique_ptr<IExampleWiseLossFactory> ExampleWiseLogisticLossConfig::configureExampleWise() const {

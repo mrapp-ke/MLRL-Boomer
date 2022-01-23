@@ -185,7 +185,7 @@ namespace seco {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> SeCoRuleLearner::createStatisticsProviderFactory(
-            const IRowWiseLabelMatrix& labelMatrix) const {
+            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
         return configPtr_->getHeadConfig().configure(labelMatrix);
     }
 
