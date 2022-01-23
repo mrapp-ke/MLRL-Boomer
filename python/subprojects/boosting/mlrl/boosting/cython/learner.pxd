@@ -35,6 +35,8 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useNoLabelBinning()
 
+        void useAutomaticLabelBinning()
+
         IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
 
         IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor()

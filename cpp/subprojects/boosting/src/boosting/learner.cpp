@@ -1,5 +1,6 @@
 #include "boosting/learner.hpp"
 #include "boosting/binning/feature_binning_auto.hpp"
+#include "boosting/binning/label_binning_auto.hpp"
 #include "boosting/binning/label_binning_no.hpp"
 #include "boosting/losses/loss_example_wise_logistic.hpp"
 #include "boosting/losses/loss_label_wise_logistic.hpp"
@@ -21,7 +22,7 @@ namespace boosting {
         this->useConstantShrinkagePostProcessor();
         this->useSingleLabelHeads();
         this->useLabelWiseLogisticLoss();
-        this->useNoLabelBinning(); // TODO use automatic configuration by default
+        this->useAutomaticLabelBinning();
         this->useLabelWiseClassificationPredictor(); // TODO use automatic configuration by default
         this->useLabelWiseRegressionPredictor();
         this->useLabelWiseProbabilityPredictor();
@@ -104,6 +105,10 @@ namespace boosting {
 
     void BoostingRuleLearner::Config::useNoLabelBinning() {
         labelBinningConfigPtr_ = std::make_unique<NoLabelBinningConfig>();
+    }
+
+    void BoostingRuleLearner::Config::useAutomaticLabelBinning() {
+        labelBinningConfigPtr_ = std::make_unique<AutomaticLabelBinningConfig>();
     }
 
     IEqualWidthLabelBinningConfig& BoostingRuleLearner::Config::useEqualWidthLabelBinning() {

@@ -3,6 +3,7 @@ project('boosting', 'cpp')
 # Source files
 source_files = [
     'src/boosting/binning/feature_binning_auto.cpp',
+    'src/boosting/binning/label_binning_auto.cpp',
     'src/boosting/binning/label_binning_equal_width.cpp',
     'src/boosting/binning/label_binning_no.cpp',
     'src/boosting/data/matrix_dense_numeric.cpp',
