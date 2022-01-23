@@ -241,6 +241,12 @@ namespace boosting {
                     virtual ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() = 0;
 
                     /**
+                     * Configures the rule learner to automatically decide for a predictor for predicting whether
+                     * individual labels are relevant or irrelevant.
+                     */
+                    virtual void useAutomaticClassificationPredictor() = 0;
+
+                    /**
                      * Configures the rule learner to use a predictor for predicting regression scores by summing up the
                      * scores that are provided by the individual rules of an existing rule-based model for each label
                      * individually.
@@ -356,6 +362,8 @@ namespace boosting {
                     IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() override;
 
                     ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
+
+                    void useAutomaticClassificationPredictor() override;
 
                     ILabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() override;
 
