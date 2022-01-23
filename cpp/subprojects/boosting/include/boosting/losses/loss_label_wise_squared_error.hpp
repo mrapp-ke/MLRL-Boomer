@@ -4,6 +4,7 @@
 #pragma once
 
 #include "boosting/losses/loss_label_wise.hpp"
+#include "boosting/rule_evaluation/head_type.hpp"
 
 
 namespace boosting {
@@ -26,7 +27,16 @@ namespace boosting {
      */
     class LabelWiseSquaredErrorLossConfig final : public ILabelWiseLossConfig, public ILabelWiseSquaredErrorLossConfig {
 
+        private:
+
+            const std::unique_ptr<IHeadConfig>& headConfigPtr_;
+
         public:
+
+            /**
+             * @param headConfigPtr A reference to an unique pointer that stores the configuration of rule heads
+             */
+            LabelWiseSquaredErrorLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> configure() const override;
 
