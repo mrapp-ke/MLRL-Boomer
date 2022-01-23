@@ -8,7 +8,7 @@
 
 
 /**
- * Allows to configure a method that automatically whether feature binning should be used or not.
+ * Allows to configure a method that automatically decides whether feature binning should be used or not.
  */
 class AutomaticFeatureBinningConfig final : public IFeatureBinningConfig {
 
