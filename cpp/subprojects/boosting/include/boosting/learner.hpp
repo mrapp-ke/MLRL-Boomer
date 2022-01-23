@@ -5,10 +5,7 @@
 
 #include "common/learner.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
-#include "boosting/losses/loss_example_wise_logistic.hpp"
-#include "boosting/losses/loss_label_wise_logistic.hpp"
-#include "boosting/losses/loss_label_wise_squared_error.hpp"
-#include "boosting/losses/loss_label_wise_squared_hinge.hpp"
+#include "boosting/losses/loss.hpp"
 #include "boosting/output/predictor_classification_example_wise.hpp"
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "boosting/output/predictor_regression_label_wise.hpp"
@@ -133,38 +130,26 @@ namespace boosting {
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * logistic loss that is applied example-wise.
-                     *
-                     * @return A reference to an object of type `IExampleWiseLogisticLossConfig` that allows further
-                     *         configuration of the loss function
                      */
-                    virtual IExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() = 0;
+                    virtual void useExampleWiseLogisticLoss() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * logistic loss that is applied label-wise.
-                     *
-                     * @return A reference to an object of type `ILabelWiseLogisticLossConfig` that allows further
-                     *         configuration of the loss function
                      */
-                    virtual ILabelWiseLogisticLossConfig& useLabelWiseLogisticLoss() = 0;
+                    virtual void useLabelWiseLogisticLoss() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * squared error loss that is applied label-wise.
-                     *
-                     * @return A reference to an object of type `ILabelWiseSquaredErrorLossConfig` that allows further
-                     *         configuration of the loss function
                      */
-                    virtual ILabelWiseSquaredErrorLossConfig& useLabelWiseSquaredErrorLoss() = 0;
+                    virtual void useLabelWiseSquaredErrorLoss() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * squared hinge loss that is applied label-wise.
-                     *
-                     * @return A reference to an object of type `ILabelWiseSquaredHingeLossConfig` that allows further
-                     *         configuration of the loss function
                      */
-                    virtual ILabelWiseSquaredHingeLossConfig& useLabelWiseSquaredHingeLoss() = 0;
+                    virtual void useLabelWiseSquaredHingeLoss() = 0;
 
                     /**
                      * Configures the algorithm to not use any method for the assignment of labels to bins.
@@ -290,13 +275,13 @@ namespace boosting {
 
                     void useCompleteHeads() override;
 
-                    IExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() override;
+                    void useExampleWiseLogisticLoss() override;
 
-                    ILabelWiseLogisticLossConfig& useLabelWiseLogisticLoss() override;
+                    void useLabelWiseLogisticLoss() override;
 
-                    ILabelWiseSquaredErrorLossConfig& useLabelWiseSquaredErrorLoss() override;
+                    void useLabelWiseSquaredErrorLoss() override;
 
-                    ILabelWiseSquaredHingeLossConfig& useLabelWiseSquaredHingeLoss() override;
+                    void useLabelWiseSquaredHingeLoss() override;
 
                     void useNoLabelBinning() override;
 

@@ -7,22 +7,10 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that allow to configure a loss function that implements a multi-label
-     * variant of the squared hinge loss that is applied label-wise.
-     */
-    class ILabelWiseSquaredHingeLossConfig {
-
-        public:
-
-            virtual ~ILabelWiseSquaredHingeLossConfig() { };
-
-    };
-
-    /**
      * Allows to configure a loss function that implements a multi-label variant of the squared hinge loss that is
      * applied label-wise.
      */
-    class LabelWiseSquaredHingeLossConfig final : public ILabelWiseLossConfig, public ILabelWiseSquaredHingeLossConfig {
+    class LabelWiseSquaredHingeLossConfig final : public ILabelWiseLossConfig {
 
         private:
 
