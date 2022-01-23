@@ -8,7 +8,6 @@
 #include "boosting/data/statistic_vector_example_wise_dense.hpp"
 #include "boosting/data/statistic_view_example_wise_dense.hpp"
 #include "boosting/math/math.hpp"
-#include "common/util/validation.hpp"
 #include "statistics_example_wise_common.hpp"
 #include "statistics_label_wise_dense.hpp"
 #include "statistics_provider_example_wise.hpp"
@@ -168,12 +167,7 @@ namespace boosting {
           defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {
-        assertNotNull("lossFactoryPtr", lossFactoryPtr_.get());
-        assertNotNull("evaluationMeasureFactoryPtr", evaluationMeasureFactoryPtr_.get());
-        assertNotNull("defaultRuleEvaluationFactoryPtr", defaultRuleEvaluationFactoryPtr_.get());
-        assertNotNull("regularRuleEvaluationFactoryPtr", regularRuleEvaluationFactoryPtr_.get());
-        assertNotNull("pruningRuleEvaluationFactoryPtr", pruningRuleEvaluationFactoryPtr_.get());
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
@@ -205,12 +199,7 @@ namespace boosting {
           defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {
-        assertNotNull("lossFactoryPtr", lossFactoryPtr_.get());
-        assertNotNull("evaluationMeasureFactoryPtr", evaluationMeasureFactoryPtr_.get());
-        assertNotNull("defaultRuleEvaluationFactoryPtr", defaultRuleEvaluationFactoryPtr_.get());
-        assertNotNull("regularRuleEvaluationFactoryPtr", regularRuleEvaluationFactoryPtr_.get());
-        assertNotNull("pruningRuleEvaluationFactoryPtr", pruningRuleEvaluationFactoryPtr_.get());
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(

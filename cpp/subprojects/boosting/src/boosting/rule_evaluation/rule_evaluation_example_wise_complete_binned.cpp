@@ -2,7 +2,6 @@
 #include "boosting/math/math.hpp"
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "common/data/arrays.hpp"
-#include "common/util/validation.hpp"
 #include "rule_evaluation_example_wise_complete_common.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
@@ -273,11 +272,7 @@ namespace boosting {
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)), blasPtr_(std::move(blasPtr)),
           lapackPtr_(std::move(lapackPtr)) {
-        assertGreaterOrEqual<float64>("l1RegularizationWeight", l1RegularizationWeight, 0);
-        assertGreaterOrEqual<float64>("l2RegularizationWeight", l2RegularizationWeight, 0);
-        assertNotNull("labelBinningFactoryPtr", labelBinningFactoryPtr_.get());
-        assertNotNull("blasPtr", blasPtr_.get());
-        assertNotNull("lapackPtr", lapackPtr_.get());
+
     }
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseCompleteBinnedRuleEvaluationFactory::create(
