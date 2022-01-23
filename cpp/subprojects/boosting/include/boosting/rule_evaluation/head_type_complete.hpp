@@ -5,6 +5,7 @@
 
 #include "boosting/rule_evaluation/head_type.hpp"
 #include "boosting/binning/label_binning.hpp"
+#include "common/multi_threading/multi_threading.hpp"
 
 
 namespace boosting {
@@ -30,13 +31,19 @@ namespace boosting {
 
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr_;
 
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+
         public:
 
             /**
-             * @param labelBinningConfigPtr A reference to an unique pointer that stores the configuration of the method
-             *                              for assigning labels to bins
+             * @param labelBinningConfigPtr     A reference to an unique pointer that stores the configuration of the
+             *                                  method for assigning labels to bins
+             * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
+             *                                  multi-threading behavior that should be used for the parallel update of
+             *                                  statistics
              */
-            CompleteHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr);
+            CompleteHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+                               const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> configure(
                 const ILabelWiseLossConfig& lossConfig) const override;
