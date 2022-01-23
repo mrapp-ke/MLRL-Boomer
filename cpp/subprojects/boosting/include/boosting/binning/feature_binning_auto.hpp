@@ -7,24 +7,28 @@
 #include "common/multi_threading/multi_threading.hpp"
 
 
-/**
- * Allows to configure a method that automatically decides whether feature binning should be used or not.
- */
-class AutomaticFeatureBinningConfig final : public IFeatureBinningConfig {
+namespace boosting {
 
-    private:
+    /**
+     * Allows to configure a method that automatically decides whether feature binning should be used or not.
+     */
+    class AutomaticFeatureBinningConfig final : public IFeatureBinningConfig {
 
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+        private:
 
-    public:
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
 
-        /**
-         * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
-         *                                multi-threading behavior that should be used for the parallel update of
-         *                                statistics
-         */
-        AutomaticFeatureBinningConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+        public:
 
-        std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix) const override;
+            /**
+             * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
+             *                                multi-threading behavior that should be used for the parallel update of
+             *                                statistics
+             */
+            AutomaticFeatureBinningConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
-};
+            std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix) const override;
+
+    };
+
+}
