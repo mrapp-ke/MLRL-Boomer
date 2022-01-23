@@ -5,6 +5,7 @@ from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig
 from mlrl.boosting.cython.predictor cimport ExampleWiseClassificationPredictorConfig, \
     LabelWiseClassificationPredictorConfig, LabelWiseRegressionPredictorConfig, LabelWiseProbabilityPredictorConfig
+from mlrl.boosting.cython.regularization cimport ManualRegularizationConfig
 
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
@@ -71,6 +72,44 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useCompleteHeads()
+
+    def use_no_l1_regularization(self):
+        """
+        Configures the rule learner to not use L1 regularization.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoL1Regularization()
+
+    def use_l1_regularization(self) -> ManualRegularizationConfig:
+        """
+        Configures the rule learner to use L1 regularization.
+
+        :return: A `ManualRegularizationConfig` that allows further configuration of the regularization term
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IManualRegularizationConfig* config_ptr = &rule_learner_config_ptr.useL1Regularization()
+        cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_no_l2_regularization(self):
+        """
+        Configures the rule learner to not use L2 regularization.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoL2Regularization()
+
+    def use_l2_regularization(self) -> ManualRegularizationConfig:
+        """
+        Configures the rule learner to use L2 regularization.
+
+        :return: A `ManualRegularizationConfig` that allows further configuration of the regularization term
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IManualRegularizationConfig* config_ptr = &rule_learner_config_ptr.useL2Regularization()
+        cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_example_wise_logistic_loss(self):
         """

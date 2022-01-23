@@ -3,6 +3,7 @@ from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.predictor cimport IExampleWiseClassificationPredictorConfig, \
     ILabelWiseClassificationPredictorConfig, ILabelWiseRegressionPredictorConfig, ILabelWiseProbabilityPredictorConfig
+from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
 
 from libcpp.memory cimport unique_ptr
 
@@ -24,6 +25,14 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useSingleLabelHeads()
 
         void useCompleteHeads()
+
+        void useNoL1Regularization()
+
+        IManualRegularizationConfig& useL1Regularization()
+
+        void useNoL2Regularization()
+
+        IManualRegularizationConfig& useL2Regularization()
 
         void useExampleWiseLogisticLoss()
 

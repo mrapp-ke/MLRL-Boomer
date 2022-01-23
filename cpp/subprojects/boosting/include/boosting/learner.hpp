@@ -12,6 +12,7 @@
 #include "boosting/output/predictor_probability_label_wise.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
+#include "boosting/rule_evaluation/regularization_manual.hpp"
 
 
 namespace boosting {
@@ -40,6 +41,22 @@ namespace boosting {
                      *         rule heads
                      */
                     virtual const IHeadConfig& getHeadConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the L1 regularization term.
+                     *
+                     * @return A reference to an object of type `IRegularizationConfig` that specifies the configuration
+                     *         of the L1 regularization term
+                     */
+                    virtual const IRegularizationConfig& getL1RegularizationConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the L2 regularization term.
+                     *
+                     * @return A reference to an object of type `IRegularizationConfig` that specifies the configuration
+                     *         of the L2 regularization term
+                     */
+                    virtual const IRegularizationConfig& getL2RegularizationConfig() const = 0;
 
                     /**
                      * Returns the configuration of the loss function.
@@ -126,6 +143,32 @@ namespace boosting {
                      * labels.
                      */
                     virtual void useCompleteHeads() = 0;
+
+                    /**
+                     * Configures the rule learner to not use L1 regularization.
+                     */
+                    virtual void useNoL1Regularization() = 0;
+
+                    /**
+                     * Configures the rule learner to use L1 regularization.
+                     *
+                     * @return A reference to an object of type `IManualRegularizationConfig` that allows further
+                     *         configuration of the regularization term
+                     */
+                    virtual IManualRegularizationConfig& useL1Regularization() = 0;
+
+                    /**
+                     * Configures the rule learner to not use L2 regularization.
+                     */
+                    virtual void useNoL2Regularization() = 0;
+
+                    /**
+                     * Configures the rule learner to use L2 regularization.
+                     *
+                     * @return A reference to an object of type `IManualRegularizationConfig` that allows further
+                     *         configuration of the regularization term
+                     */
+                    virtual IManualRegularizationConfig& useL2Regularization() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -241,6 +284,10 @@ namespace boosting {
 
                     std::unique_ptr<ILossConfig> lossConfigPtr_;
 
+                    std::unique_ptr<IRegularizationConfig> l1RegularizationConfigPtr_;
+
+                    std::unique_ptr<IRegularizationConfig> l2RegularizationConfigPtr_;
+
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
 
                     std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
@@ -250,6 +297,10 @@ namespace boosting {
                     std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
 
                     const IHeadConfig& getHeadConfig() const override;
+
+                    const IRegularizationConfig& getL1RegularizationConfig() const override;
+
+                    const IRegularizationConfig& getL2RegularizationConfig() const override;
 
                     const ILossConfig& getLossConfig() const override;
 
@@ -278,6 +329,14 @@ namespace boosting {
                     void useSingleLabelHeads() override;
 
                     void useCompleteHeads() override;
+
+                    void useNoL1Regularization() override;
+
+                    IManualRegularizationConfig& useL1Regularization() override;
+
+                    void useNoL2Regularization() override;
+
+                    IManualRegularizationConfig& useL2Regularization() override;
 
                     void useExampleWiseLogisticLoss() override;
 
