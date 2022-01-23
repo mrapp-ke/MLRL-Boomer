@@ -6,14 +6,18 @@
 #include "common/multi_threading/multi_threading.hpp"
 
 
-/**
- * Allows to configure the multi-threading behavior that is used for the parallel refinement of rules by automatically
- * deciding for the number of threads to be used.
- */
-class AutoParallelRuleRefinementConfig final : public IMultiThreadingConfig {
+namespace boosting {
 
-    public:
+    /**
+     * Allows to configure the multi-threading behavior that is used for the parallel refinement of rules by
+     * automatically deciding for the number of threads to be used.
+     */
+    class AutoParallelRuleRefinementConfig final : public IMultiThreadingConfig {
 
-        uint32 configure(const ILabelMatrix& labelMatrix) const override;
+        public:
 
-};
+            uint32 configure(const ILabelMatrix& labelMatrix) const override;
+
+    };
+
+}
