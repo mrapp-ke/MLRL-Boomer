@@ -72,9 +72,13 @@ namespace boosting {
 
     };
 
+    LabelWiseLogisticLossConfig::LabelWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)
+        : headConfigPtr_(headConfigPtr) {
+
+    }
+
     std::unique_ptr<IStatisticsProviderFactory> LabelWiseLogisticLossConfig::configure() const {
-        // TODO
-        return nullptr;
+        return headConfigPtr_->configure(*this);
     }
 
     std::unique_ptr<ILabelWiseLossFactory> LabelWiseLogisticLossConfig::configureLabelWise() const {

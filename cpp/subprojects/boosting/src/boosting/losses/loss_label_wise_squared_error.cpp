@@ -31,9 +31,13 @@ namespace boosting {
 
     };
 
+    LabelWiseSquaredErrorLossConfig::LabelWiseSquaredErrorLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)
+        : headConfigPtr_(headConfigPtr) {
+
+    }
+
     std::unique_ptr<IStatisticsProviderFactory> LabelWiseSquaredErrorLossConfig::configure() const {
-        // TODO
-        return nullptr;
+        return headConfigPtr_->configure(*this);
     }
 
     std::unique_ptr<ILabelWiseLossFactory> LabelWiseSquaredErrorLossConfig::configureLabelWise() const {

@@ -85,28 +85,32 @@ namespace boosting {
     }
 
     IExampleWiseLogisticLossConfig& BoostingRuleLearner::Config::useExampleWiseLogisticLoss() {
-        std::unique_ptr<ExampleWiseLogisticLossConfig> ptr = std::make_unique<ExampleWiseLogisticLossConfig>();
+        std::unique_ptr<ExampleWiseLogisticLossConfig> ptr =
+            std::make_unique<ExampleWiseLogisticLossConfig>(headConfigPtr_);
         IExampleWiseLogisticLossConfig& ref = *ptr;
         lossConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     ILabelWiseLogisticLossConfig& BoostingRuleLearner::Config::useLabelWiseLogisticLoss() {
-        std::unique_ptr<LabelWiseLogisticLossConfig> ptr = std::make_unique<LabelWiseLogisticLossConfig>();
+        std::unique_ptr<LabelWiseLogisticLossConfig> ptr =
+            std::make_unique<LabelWiseLogisticLossConfig>(headConfigPtr_);
         ILabelWiseLogisticLossConfig& ref = *ptr;
         lossConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     ILabelWiseSquaredErrorLossConfig& BoostingRuleLearner::Config::useLabelWiseSquaredErrorLoss() {
-        std::unique_ptr<LabelWiseSquaredErrorLossConfig> ptr = std::make_unique<LabelWiseSquaredErrorLossConfig>();
+        std::unique_ptr<LabelWiseSquaredErrorLossConfig> ptr =
+            std::make_unique<LabelWiseSquaredErrorLossConfig>(headConfigPtr_);
         ILabelWiseSquaredErrorLossConfig& ref = *ptr;
         lossConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     ILabelWiseSquaredHingeLossConfig& BoostingRuleLearner::Config::useLabelWiseSquaredHingeLoss() {
-        std::unique_ptr<LabelWiseSquaredHingeLossConfig> ptr = std::make_unique<LabelWiseSquaredHingeLossConfig>();
+        std::unique_ptr<LabelWiseSquaredHingeLossConfig> ptr =
+            std::make_unique<LabelWiseSquaredHingeLossConfig>(headConfigPtr_);
         ILabelWiseSquaredHingeLossConfig& ref = *ptr;
         lossConfigPtr_ = std::move(ptr);
         return ref;

@@ -345,9 +345,13 @@ namespace boosting {
 
     };
 
+    ExampleWiseLogisticLossConfig::ExampleWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)
+        : headConfigPtr_(headConfigPtr) {
+
+    }
+
     std::unique_ptr<IStatisticsProviderFactory> ExampleWiseLogisticLossConfig::configure() const {
-        // TODO
-        return nullptr;
+        return headConfigPtr_->configure(*this);
     }
 
     std::unique_ptr<IExampleWiseLossFactory> ExampleWiseLogisticLossConfig::configureExampleWise() const {
