@@ -14,8 +14,7 @@
 #include "boosting/output/predictor_regression_label_wise.hpp"
 #include "boosting/output/predictor_probability_label_wise.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
-#include "boosting/rule_evaluation/head_type_complete.hpp"
-#include "boosting/rule_evaluation/head_type_single.hpp"
+#include "boosting/rule_evaluation/head_type.hpp"
 
 
 namespace boosting {
@@ -122,20 +121,14 @@ namespace boosting {
                     /**
                      * Configures the rule learner to induce rules with single-label heads that predict for a single
                      * label.
-                     *
-                     * @return A reference to an object of type `ISingleLabelHeadConfig` that allows further
-                     *         configuration of the rule heads
                      */
-                    virtual ISingleLabelHeadConfig& useSingleLabelHeads() = 0;
+                    virtual void useSingleLabelHeads() = 0;
 
                     /**
                      * Configures the rule learner to induce rules with complete heads that predict for all available
                      * labels.
-                     *
-                     * @return A reference to an object of type `ICompleteHeadConfig` that allows further configuration
-                     *         of the rule heads
                      */
-                    virtual ICompleteHeadConfig& useCompleteHeads() = 0;
+                    virtual void useCompleteHeads() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -293,9 +286,9 @@ namespace boosting {
 
                     void useAutomaticParallelStatisticUpdate() override;
 
-                    ISingleLabelHeadConfig& useSingleLabelHeads() override;
+                    void useSingleLabelHeads() override;
 
-                    ICompleteHeadConfig& useCompleteHeads() override;
+                    void useCompleteHeads() override;
 
                     IExampleWiseLogisticLossConfig& useExampleWiseLogisticLoss() override;
 
