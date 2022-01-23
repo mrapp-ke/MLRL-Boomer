@@ -6,14 +6,14 @@
 namespace boosting {
 
     std::unique_ptr<ILabelWiseRuleEvaluationFactory> NoLabelBinningConfig::configureLabelWise() const {
-        uint32 l1RegularizationWeight = 0;  // TODO Use correct value
-        uint32 l2RegularizationWeight = 0;  // TODO Use correct value
+        float64 l1RegularizationWeight = 0;  // TODO Use correct value
+        float64 l2RegularizationWeight = 0;  // TODO Use correct value
         return std::make_unique<LabelWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory> NoLabelBinningConfig::configureExampleWise() const {
-        uint32 l1RegularizationWeight = 0;  // TODO Use correct value
-        uint32 l2RegularizationWeight = 0;  // TODO Use correct value
+        float64 l1RegularizationWeight = 0;  // TODO Use correct value
+        float64 l2RegularizationWeight = 0;  // TODO Use correct value
         std::unique_ptr<Blas> blasPtr = nullptr;  // TODO
         std::unique_ptr<Lapack> lapackPtr = nullptr;  // TODO
         return std::make_unique<ExampleWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight,
