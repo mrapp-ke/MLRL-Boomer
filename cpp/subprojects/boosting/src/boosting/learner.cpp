@@ -71,14 +71,14 @@ namespace boosting {
     }
 
     ISingleLabelHeadConfig& BoostingRuleLearner::Config::useSingleLabelHeads() {
-        std::unique_ptr<SingleLabelHeadConfig> ptr = std::make_unique<SingleLabelHeadConfig>();
+        std::unique_ptr<SingleLabelHeadConfig> ptr = std::make_unique<SingleLabelHeadConfig>(labelBinningConfigPtr_);
         ISingleLabelHeadConfig& ref = *ptr;
         headConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     ICompleteHeadConfig& BoostingRuleLearner::Config::useCompleteHeads() {
-        std::unique_ptr<CompleteHeadConfig> ptr = std::make_unique<CompleteHeadConfig>();
+        std::unique_ptr<CompleteHeadConfig> ptr = std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_);
         ICompleteHeadConfig& ref = *ptr;
         headConfigPtr_ = std::move(ptr);
         return ref;
