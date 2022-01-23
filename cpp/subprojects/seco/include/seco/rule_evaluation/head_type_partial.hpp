@@ -11,21 +11,9 @@
 namespace seco {
 
     /**
-     * Defines an interface for all classes that allow to configure partial rule heads that predict for a subset of the
-     * available labels.
-     */
-    class IPartialHeadConfig {
-
-        public:
-
-            virtual ~IPartialHeadConfig() { };
-
-    };
-
-    /**
      * Allows to configure partial rule heads that predict for a subset of the available labels.
      */
-    class PartialHeadConfig final : public IHeadConfig, public IPartialHeadConfig {
+    class PartialHeadConfig final : public IHeadConfig {
 
         private:
 

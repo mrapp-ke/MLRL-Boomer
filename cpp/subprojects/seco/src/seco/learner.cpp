@@ -1,5 +1,7 @@
 #include "seco/learner.hpp"
 #include "seco/model/decision_list_builder.hpp"
+#include "seco/rule_evaluation/head_type_partial.hpp"
+#include "seco/rule_evaluation/head_type_single.hpp"
 
 
 namespace seco {
@@ -64,21 +66,13 @@ namespace seco {
         return ref;
     }
 
-    ISingleLabelHeadConfig& SeCoRuleLearner::Config::useSingleLabelHeads() {
-        std::unique_ptr<SingleLabelHeadConfig> ptr =
-            std::make_unique<SingleLabelHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_);
-        ISingleLabelHeadConfig& ref = *ptr;
-        headConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::useSingleLabelHeads() {
+        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_);
     }
 
-    IPartialHeadConfig& SeCoRuleLearner::Config::usePartialHeads() {
-        std::unique_ptr<PartialHeadConfig> ptr =
-            std::make_unique<PartialHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_,
-                                                liftFunctionConfigPtr_);
-        IPartialHeadConfig& ref = *ptr;
-        headConfigPtr_ = std::move(ptr);
-        return ref;
+    void SeCoRuleLearner::Config::usePartialHeads() {
+        headConfigPtr_ = std::make_unique<PartialHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_,
+                                                             liftFunctionConfigPtr_);
     }
 
     IAccuracyConfig& SeCoRuleLearner::Config::useAccuracyHeuristic() {
