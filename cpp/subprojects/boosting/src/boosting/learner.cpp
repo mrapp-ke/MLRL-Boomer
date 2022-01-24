@@ -175,7 +175,7 @@ namespace boosting {
     }
 
     void BoostingRuleLearner::Config::useAutomaticClassificationPredictor() {
-        classificationPredictorConfigPtr_ = std::make_unique<AutomaticClassificationPredictorConfig>();
+        classificationPredictorConfigPtr_ = std::make_unique<AutomaticClassificationPredictorConfig>(lossConfigPtr_);
     }
 
     ILabelWiseRegressionPredictorConfig& BoostingRuleLearner::Config::useLabelWiseRegressionPredictor() {
