@@ -382,13 +382,14 @@ namespace boosting {
 
             std::unique_ptr<IModelBuilder> createModelBuilder() const override;
 
+            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
+                const IRowWiseLabelMatrix& labelMatrix) const override;
+
             std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
 
             std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory() const override;
 
             std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory() const override;
-
-            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo() const override;
 
         public:
 

@@ -836,6 +836,16 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         virtual std::unique_ptr<IModelBuilder> createModelBuilder() const = 0;
 
         /**
+         * Must be overridden by subclasses in order to create the `ILabelSpaceInfo` to be used by the rule learner as a
+         * basis for for making predictions.
+         *
+         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
+         *                      the labels of the training examples
+         * @return              An unique pointer to an object of type `ILabelSpaceInfo` that has been created
+         */
+        virtual std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const = 0;
+
+        /**
          * Must be implemented by subclasses in order to create the `IClassificationPredictorFactory` to be used by the
          * rule learner for predicting labels.
          *
@@ -860,14 +870,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *         pointer, if the rule learner does not support to predict probability estimates
          */
         virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory() const;
-
-        /**
-         * May be overridden by subclasses in order to create the `ILabelSpaceInfo` to be used by the rule learner as a
-         * basis for for making predictions.
-         *
-         * @return An unique pointer to an object of type `ILabelSpaceInfo` that has been created
-         */
-        virtual std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo() const;
 
     public:
 

@@ -331,6 +331,9 @@ namespace seco {
 
             std::unique_ptr<IModelBuilder> createModelBuilder() const override;
 
+            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
+                const IRowWiseLabelMatrix& labelMatrix) const override;
+
             std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
 
         public:

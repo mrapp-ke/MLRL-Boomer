@@ -1,7 +1,6 @@
 #include "common/learner.hpp"
 #include "common/binning/feature_binning_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
-#include "common/output/label_space_info_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/pruning/pruning_irep.hpp"
 #include "common/pruning/pruning_no.hpp"
@@ -417,10 +416,6 @@ std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabi
     return nullptr;
 }
 
-std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo() const {
-    return createNoLabelSpaceInfo();
-}
-
 std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const {
@@ -431,7 +426,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         throw std::runtime_error("At least one stopping criterion must be used by the rule learner");
     }
 
-    std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr = this->createLabelSpaceInfo();
+    std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr = this->createLabelSpaceInfo(labelMatrix);
     std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
         this->createRuleModelAssemblageFactory();
     std::unique_ptr<IModelBuilder> modelBuilderPtr = this->createModelBuilder();
