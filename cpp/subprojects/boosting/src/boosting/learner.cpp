@@ -82,7 +82,8 @@ namespace boosting {
     }
 
     void BoostingRuleLearner::Config::useAutomaticParallelRuleRefinement() {
-        parallelRuleRefinementConfigPtr_ = std::make_unique<AutoParallelRuleRefinementConfig>();
+        parallelRuleRefinementConfigPtr_ = std::make_unique<AutoParallelRuleRefinementConfig>(
+            lossConfigPtr_, headConfigPtr_, featureSamplingConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useAutomaticParallelStatisticUpdate() {
