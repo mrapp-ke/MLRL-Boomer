@@ -53,6 +53,6 @@ class InstanceSamplingWithReplacementConfig final : public IInstanceSamplingConf
 
         IInstanceSamplingWithReplacementConfig& setSampleSize(float32 sampleSize) override;
 
-        std::unique_ptr<IInstanceSamplingFactory> configure() const override;
+        std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const override;
 
 };

@@ -128,7 +128,7 @@ namespace seco {
         return *this;
     }
 
-    std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::configure(
+    std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::createLiftFunctionFactory(
             const IRowWiseLabelMatrix& labelMatrix) const {
         uint32 numLabels = labelMatrix.getNumRows();
         uint32 peakLabel = peakLabel_ > 0 ? std::min(numLabels, peakLabel_)

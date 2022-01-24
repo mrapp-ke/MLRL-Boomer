@@ -84,6 +84,6 @@ class IrepFactory final : public IPruningFactory {
 
 };
 
-std::unique_ptr<IPruningFactory> IrepConfig::configure() const {
+std::unique_ptr<IPruningFactory> IrepConfig::createPruningFactory() const {
     return std::make_unique<IrepFactory>();
 }

@@ -59,7 +59,7 @@ namespace seco {
 
             IFMeasureConfig& setBeta(float64 beta) override;
 
-            std::unique_ptr<IHeuristicFactory> configure() const override;
+            std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
 
     };
 

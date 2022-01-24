@@ -15,7 +15,7 @@ namespace seco {
 
         public:
 
-            std::unique_ptr<IHeuristicFactory> configure() const override;
+            std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
 
     };
 

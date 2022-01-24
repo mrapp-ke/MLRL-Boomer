@@ -11,8 +11,8 @@ namespace boosting {
 
     }
 
-    uint32 AutoParallelStatisticUpdateConfig::configure(const IFeatureMatrix& featureMatrix,
-                                                        const ILabelMatrix& labelMatrix) const {
+    uint32 AutoParallelStatisticUpdateConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
+                                                            const ILabelMatrix& labelMatrix) const {
         if (dynamic_cast<const ILabelWiseLossConfig*>(lossConfigPtr_.get()) || labelMatrix.getNumCols() < 20) {
             return getNumAvailableThreads(0);
         } else {

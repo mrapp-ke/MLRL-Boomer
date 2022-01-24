@@ -109,7 +109,7 @@ class EqualFrequencyFeatureBinningConfig final : public IFeatureBinningConfig,
 
         IEqualFrequencyFeatureBinningConfig& setMaxBins(uint32 maxBins) override;
 
-        std::unique_ptr<IThresholdsFactory> configure(const IFeatureMatrix& featureMatrix,
-                                                      const ILabelMatrix& labelMatrix) const override;
+        std::unique_ptr<IThresholdsFactory> createThresholdsFactory(const IFeatureMatrix& featureMatrix,
+                                                                    const ILabelMatrix& labelMatrix) const override;
 
 };

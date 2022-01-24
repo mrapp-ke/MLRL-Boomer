@@ -237,7 +237,7 @@ namespace boosting {
         return *this;
     }
 
-    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::configure() const {
+    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::createClassificationPredictorFactory() const {
         float64 threshold = 0; // TODO Use correct threshold
         uint32 numThreads = getNumAvailableThreads(numThreads_);
         return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, numThreads);

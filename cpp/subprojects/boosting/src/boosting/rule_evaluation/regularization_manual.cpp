@@ -19,7 +19,7 @@ namespace boosting {
         return *this;
     }
 
-    float64 ManualRegularizationConfig::configure() const {
+    float64 ManualRegularizationConfig::getWeight() const {
         return 0;
     }
 

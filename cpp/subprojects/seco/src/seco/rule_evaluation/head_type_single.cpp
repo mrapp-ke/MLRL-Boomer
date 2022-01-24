@@ -11,14 +11,15 @@ namespace seco {
 
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::configure(
+    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
             const IRowWiseLabelMatrix& labelMatrix) const {
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
             std::make_unique<LabelWiseMajorityRuleEvaluationFactory>();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(heuristicConfigPtr_->configure());
+            std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(heuristicConfigPtr_->createHeuristicFactory());
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(pruningHeuristicConfigPtr_->configure());
+            std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(
+                pruningHeuristicConfigPtr_->createHeuristicFactory());
         return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(std::move(defaultRuleEvaluationFactoryPtr),
                                                                          std::move(regularRuleEvaluationFactoryPtr),
                                                                          std::move(pruningRuleEvaluationFactoryPtr));

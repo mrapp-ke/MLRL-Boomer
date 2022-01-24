@@ -36,12 +36,12 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> LabelWiseSquaredErrorLossConfig::configure(
+    std::unique_ptr<IStatisticsProviderFactory> LabelWiseSquaredErrorLossConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-        return headConfigPtr_->configure(featureMatrix, labelMatrix, *this);
+        return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 
-    std::unique_ptr<ILabelWiseLossFactory> LabelWiseSquaredErrorLossConfig::configureLabelWise() const {
+    std::unique_ptr<ILabelWiseLossFactory> LabelWiseSquaredErrorLossConfig::createLabelWiseLossFactory() const {
         return std::make_unique<LabelWiseSquaredErrorLossFactory>();
     }
 

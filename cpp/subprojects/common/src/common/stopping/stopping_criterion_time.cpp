@@ -99,6 +99,6 @@ ITimeStoppingCriterionConfig& TimeStoppingCriterionConfig::setTimeLimit(uint32 t
     return *this;
 }
 
-std::unique_ptr<IStoppingCriterionFactory> TimeStoppingCriterionConfig::configure() const {
+std::unique_ptr<IStoppingCriterionFactory> TimeStoppingCriterionConfig::createStoppingCriterionFactory() const {
     return std::make_unique<TimeStoppingCriterionFactory>(timeLimit_);
 }

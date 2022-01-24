@@ -170,7 +170,7 @@ namespace seco {
 
     std::unique_ptr<IStoppingCriterionFactory> SeCoRuleLearner::createCoverageStoppingCriterionFactory() const {
         const CoverageStoppingCriterionConfig* config = configPtr_->getCoverageStoppingCriterionConfig();
-        return config ? config->configure() : nullptr;
+        return config ? config->createStoppingCriterionFactory() : nullptr;
     }
 
     void SeCoRuleLearner::createStoppingCriterionFactories(
@@ -186,7 +186,7 @@ namespace seco {
 
     std::unique_ptr<IStatisticsProviderFactory> SeCoRuleLearner::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getHeadConfig().configure(labelMatrix);
+        return configPtr_->getHeadConfig().createStatisticsProviderFactory(labelMatrix);
     }
 
     std::unique_ptr<IModelBuilder> SeCoRuleLearner::createModelBuilder() const {
@@ -199,7 +199,7 @@ namespace seco {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory() const {
-        return configPtr_->getClassificationPredictorConfig().configure();
+        return configPtr_->getClassificationPredictorConfig().createClassificationPredictorFactory();
     }
 
     std::unique_ptr<ISeCoRuleLearner::IConfig> createSeCoRuleLearnerConfig() {

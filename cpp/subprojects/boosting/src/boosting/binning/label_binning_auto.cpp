@@ -12,13 +12,14 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::configureLabelWise() const {
-        return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_).configureLabelWise();
+    std::unique_ptr<ILabelWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createLabelWiseRuleEvaluationFactory() const {
+        return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
+            .createLabelWiseRuleEvaluationFactory();
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::configureExampleWise() const {
+    std::unique_ptr<IExampleWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createExampleWiseRuleEvaluationFactory() const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_,l2RegularizationConfigPtr_)
-            .configureExampleWise();
+            .createExampleWiseRuleEvaluationFactory();
     }
 
 }

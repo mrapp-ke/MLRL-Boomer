@@ -299,7 +299,7 @@ namespace boosting {
         return *this;
     }
 
-    std::unique_ptr<IClassificationPredictorFactory> ExampleWiseClassificationPredictorConfig::configure() const {
+    std::unique_ptr<IClassificationPredictorFactory> ExampleWiseClassificationPredictorConfig::createClassificationPredictorFactory() const {
         std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr = nullptr; // TODO initialize
         uint32 numThreads = getNumAvailableThreads(numThreads_);
         return std::make_unique<ExampleWiseClassificationPredictorFactory>(std::move(similarityMeasureFactoryPtr),

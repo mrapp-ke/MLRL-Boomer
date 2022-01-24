@@ -88,6 +88,6 @@ class NoInstanceSamplingFactory final : public IInstanceSamplingFactory {
 
 };
 
-std::unique_ptr<IInstanceSamplingFactory> NoInstanceSamplingConfig::configure() const {
+std::unique_ptr<IInstanceSamplingFactory> NoInstanceSamplingConfig::createInstanceSamplingFactory() const {
     return std::make_unique<NoInstanceSamplingFactory>();
 }

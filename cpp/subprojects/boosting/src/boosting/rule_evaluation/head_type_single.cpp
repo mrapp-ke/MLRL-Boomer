@@ -16,16 +16,17 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::configure(
+    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
             const ILabelWiseLossConfig& lossConfig) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->configure();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->configure();
-        uint32 numThreads = multiThreadingConfigPtr_->configure(featureMatrix, labelMatrix);
-        std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.configureLabelWise();
-        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr = lossConfig.configureLabelWise();
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix);
+        std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.createLabelWiseLossFactory();
+        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+            lossConfig.createLabelWiseLossFactory();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->configureLabelWise();
+            labelBinningConfigPtr_->createLabelWiseRuleEvaluationFactory();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
             std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
@@ -36,16 +37,17 @@ namespace boosting {
             std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::configure(
+    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
             const IExampleWiseLossConfig& lossConfig) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->configure();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->configure();
-        uint32 numThreads = multiThreadingConfigPtr_->configure(featureMatrix, labelMatrix);
-        std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.configureExampleWise();
-        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr = lossConfig.configureExampleWise();
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix);
+        std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();
+        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+            lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->configureExampleWise();
+            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
             std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =

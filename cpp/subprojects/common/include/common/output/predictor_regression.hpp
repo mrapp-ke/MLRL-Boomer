@@ -61,6 +61,6 @@ class IRegressionPredictorConfig {
          * @return An unique pointer to an object of type `IRegressionPredictorFactory` that has been created or a null
          *         pointer, if the prediction of regression scores is not supported
          */
-        virtual std::unique_ptr<IRegressionPredictorFactory> configure() const = 0;
+        virtual std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory() const = 0;
 
 };

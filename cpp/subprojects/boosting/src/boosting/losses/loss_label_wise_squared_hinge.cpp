@@ -58,12 +58,12 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> LabelWiseSquaredHingeLossConfig::configure(
+    std::unique_ptr<IStatisticsProviderFactory> LabelWiseSquaredHingeLossConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-        return headConfigPtr_->configure(featureMatrix, labelMatrix, *this);
+        return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 
-    std::unique_ptr<ILabelWiseLossFactory> LabelWiseSquaredHingeLossConfig::configureLabelWise() const {
+    std::unique_ptr<ILabelWiseLossFactory> LabelWiseSquaredHingeLossConfig::createLabelWiseLossFactory() const {
         return std::make_unique<LabelWiseSquaredHingeLossFactory>();
     }
 

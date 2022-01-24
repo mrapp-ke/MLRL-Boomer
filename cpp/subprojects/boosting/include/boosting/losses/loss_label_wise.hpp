@@ -142,7 +142,7 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `ILabelWiseLossFactory` that has been created
              */
-            virtual std::unique_ptr<ILabelWiseLossFactory> configureLabelWise() const = 0;
+            virtual std::unique_ptr<ILabelWiseLossFactory> createLabelWiseLossFactory() const = 0;
 
     };
 

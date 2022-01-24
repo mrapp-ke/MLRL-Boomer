@@ -350,12 +350,12 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> ExampleWiseLogisticLossConfig::configure(
+    std::unique_ptr<IStatisticsProviderFactory> ExampleWiseLogisticLossConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-        return headConfigPtr_->configure(featureMatrix, labelMatrix, *this);
+        return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 
-    std::unique_ptr<IExampleWiseLossFactory> ExampleWiseLogisticLossConfig::configureExampleWise() const {
+    std::unique_ptr<IExampleWiseLossFactory> ExampleWiseLogisticLossConfig::createExampleWiseLossFactory() const {
         return std::make_unique<ExampleWiseLogisticLossFactory>();
     }
 

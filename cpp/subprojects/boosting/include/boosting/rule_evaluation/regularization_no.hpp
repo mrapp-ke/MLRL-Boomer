@@ -15,7 +15,7 @@ namespace boosting {
 
         public:
 
-            float64 configure() const override;
+            float64 getWeight() const override;
 
     };
 

@@ -53,7 +53,7 @@ namespace boosting {
 
             IConstantShrinkageConfig& setShrinkage(float64 shrinkage) override;
 
-            std::unique_ptr<IPostProcessorFactory> configure() const override;
+            std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const override;
 
     };
 

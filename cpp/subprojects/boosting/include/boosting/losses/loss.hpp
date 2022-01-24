@@ -43,8 +43,8 @@ namespace boosting {
              * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
              *                      created
              */
-            virtual std::unique_ptr<IStatisticsProviderFactory> configure(const IFeatureMatrix& featureMatrix,
-                                                                          const ILabelMatrix& labelMatrix) const = 0;
+            virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const = 0;
 
     };
 

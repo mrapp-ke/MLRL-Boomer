@@ -102,6 +102,6 @@ ILabelWiseStratifiedBiPartitionSamplingConfig& LabelWiseStratifiedBiPartitionSam
     return *this;
 }
 
-std::unique_ptr<IPartitionSamplingFactory> LabelWiseStratifiedBiPartitionSamplingConfig::configure() const {
+std::unique_ptr<IPartitionSamplingFactory> LabelWiseStratifiedBiPartitionSamplingConfig::createPartitionSamplingFactory() const {
     return std::make_unique<LabelWiseStratifiedBiPartitionSamplingFactory>(holdoutSetSize_);
 }

@@ -122,6 +122,6 @@ class IRuleModelAssemblageConfig {
          *
          * @return An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been created
          */
-        virtual std::unique_ptr<IRuleModelAssemblageFactory> configure() const = 0;
+        virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory() const = 0;
 
 };

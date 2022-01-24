@@ -14,6 +14,6 @@ class NoPostProcessorConfig final : public IPostProcessorConfig {
 
     public:
 
-        std::unique_ptr<IPostProcessorFactory> configure() const override;
+        std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const override;
 
 };

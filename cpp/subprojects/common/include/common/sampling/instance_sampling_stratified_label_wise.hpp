@@ -56,6 +56,6 @@ class LabelWiseStratifiedInstanceSamplingConfig final : public IInstanceSampling
 
         ILabelWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) override;
 
-        std::unique_ptr<IInstanceSamplingFactory> configure() const override;
+        std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const override;
 
 };

@@ -201,7 +201,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getLossConfig().configure(featureMatrix, labelMatrix);
+        return configPtr_->getLossConfig().createStatisticsProviderFactory(featureMatrix, labelMatrix);
     }
 
     std::unique_ptr<IModelBuilder> BoostingRuleLearner::createModelBuilder() const {
@@ -209,15 +209,15 @@ namespace boosting {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> BoostingRuleLearner::createClassificationPredictorFactory() const {
-        return configPtr_->getClassificationPredictorConfig().configure();
+        return configPtr_->getClassificationPredictorConfig().createClassificationPredictorFactory();
     }
 
     std::unique_ptr<IRegressionPredictorFactory> BoostingRuleLearner::createRegressionPredictorFactory() const {
-        return configPtr_->getRegressionPredictorConfig().configure();
+        return configPtr_->getRegressionPredictorConfig().createRegressionPredictorFactory();
     }
 
     std::unique_ptr<IProbabilityPredictorFactory> BoostingRuleLearner::createProbabilityPredictorFactory() const {
-        return configPtr_->getProbabilityPredictorConfig().configure();
+        return configPtr_->getProbabilityPredictorConfig().createProbabilityPredictorFactory();
     }
 
     std::unique_ptr<ILabelSpaceInfo> BoostingRuleLearner::createLabelSpaceInfo(

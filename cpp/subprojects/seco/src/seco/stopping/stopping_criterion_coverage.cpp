@@ -88,7 +88,7 @@ namespace seco {
         return *this;
     }
 
-    std::unique_ptr<IStoppingCriterionFactory> CoverageStoppingCriterionConfig::configure() const {
+    std::unique_ptr<IStoppingCriterionFactory> CoverageStoppingCriterionConfig::createStoppingCriterionFactory() const {
         return std::make_unique<CoverageStoppingCriterionFactory>(threshold_);
     }
 

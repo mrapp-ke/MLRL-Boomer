@@ -114,7 +114,7 @@ namespace seco {
              *
              * @return An unique pointer to an object of type `IHeuristicFactory` that has been created
              */
-            virtual std::unique_ptr<IHeuristicFactory> configure() const = 0;
+            virtual std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const = 0;
 
     };
 

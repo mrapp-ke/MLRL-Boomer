@@ -61,7 +61,7 @@ class IClassificationPredictorConfig {
          *
          * @return An unique pointer to an object of type `IClassificationPredictorFactory` that has been created
          */
-        virtual std::unique_ptr<IClassificationPredictorFactory> configure() const = 0;
+        virtual std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const = 0;
 
         /**
          * Creates and returns a new object of type `ILabelSpaceInfo` that is required by the predictor.
