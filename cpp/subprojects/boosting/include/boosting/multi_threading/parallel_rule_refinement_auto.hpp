@@ -4,6 +4,9 @@
 #pragma once
 
 #include "common/multi_threading/multi_threading.hpp"
+#include "common/sampling/feature_sampling.hpp"
+#include "boosting/losses/loss.hpp"
+#include "boosting/rule_evaluation/head_type.hpp"
 
 
 namespace boosting {
@@ -14,7 +17,27 @@ namespace boosting {
      */
     class AutoParallelRuleRefinementConfig final : public IMultiThreadingConfig {
 
+        private:
+
+            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+
+            const std::unique_ptr<IHeadConfig>& headConfigPtr_;
+
+            const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr_;
+
         public:
+
+            /**
+             * @param lossConfigPtr             A reference to an unique pointer that stores the configuration of the
+             *                                  loss function
+             * @param headConfigPtr             A reference to an unique pointer that stores the configuration of rule
+             *                                  heads
+             * @param featureSamplingConfigPtr  A reference to an unique pointer that stores the configuration of the
+             *                                  method for sampling features
+             */
+            AutoParallelRuleRefinementConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                                             const std::unique_ptr<IHeadConfig>& headConfigPtr,
+                                             const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr);
 
             uint32 configure(const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
 
