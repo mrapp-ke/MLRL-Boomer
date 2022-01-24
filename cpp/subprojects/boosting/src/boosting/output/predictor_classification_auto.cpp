@@ -1,10 +1,14 @@
 #include "boosting/output/predictor_classification_auto.hpp"
 #include "boosting/output/predictor_classification_example_wise.hpp"
 #include "boosting/output/predictor_classification_label_wise.hpp"
-#include "boosting/losses/loss_label_wise.hpp"
+#include "boosting/losses/loss_example_wise.hpp"
 
 
 namespace boosting {
+
+    static inline constexpr bool isExampleWisePredictorPreferred(const ILossConfig* lossConfig) {
+        return dynamic_cast<const IExampleWiseLossConfig*>(lossConfig) != nullptr;
+    }
 
     AutomaticClassificationPredictorConfig::AutomaticClassificationPredictorConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr)
@@ -13,10 +17,19 @@ namespace boosting {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> AutomaticClassificationPredictorConfig::configure() const {
-        if (dynamic_cast<const ILabelWiseLossConfig*>(lossConfigPtr_.get())) {
-            return LabelWiseClassificationPredictorConfig().configure();
-        } else {
+        if (isExampleWisePredictorPreferred(lossConfigPtr_.get())) {
             return ExampleWiseClassificationPredictorConfig().configure();
+        } else {
+            return LabelWiseClassificationPredictorConfig().configure();
+        }
+    }
+
+    std::unique_ptr<ILabelSpaceInfo> AutomaticClassificationPredictorConfig::createLabelSpaceInfo(
+            const IRowWiseLabelMatrix& labelMatrix) const {
+        if (isExampleWisePredictorPreferred(lossConfigPtr_.get())) {
+            return ExampleWiseClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
+        } else {
+            return LabelWiseClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
         }
     }
 
