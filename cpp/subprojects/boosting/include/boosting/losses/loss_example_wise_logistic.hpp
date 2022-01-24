@@ -29,7 +29,12 @@ namespace boosting {
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
 
+            std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const override;
+
+            std::unique_ptr<ISimilarityMeasureFactory> createSimilarityMeasureFactory() const override;
+
             std::unique_ptr<IExampleWiseLossFactory> createExampleWiseLossFactory() const override;
+
 
     };
 

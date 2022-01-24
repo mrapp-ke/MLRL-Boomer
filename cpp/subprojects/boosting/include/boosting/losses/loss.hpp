@@ -46,6 +46,22 @@ namespace boosting {
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const = 0;
 
+            /**
+             * Creates and returns a new object of type `IEvaluationMeasureFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `IEvaluationMeasureFactory` that has been created
+             */
+            virtual std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const = 0;
+
+            /**
+             * Creates and returns a new object of type `ISimilarityMeasureFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `ISimilarityMeasureFactory` that has been created
+             */
+            virtual std::unique_ptr<ISimilarityMeasureFactory> createSimilarityMeasureFactory() const = 0;
+
     };
 
 };
