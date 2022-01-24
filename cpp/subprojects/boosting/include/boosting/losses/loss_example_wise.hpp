@@ -89,10 +89,6 @@ namespace boosting {
              */
             virtual std::unique_ptr<IExampleWiseLossFactory> configureExampleWise() const = 0;
 
-            bool isDecomposable() const override final {
-                return false;
-            }
-
     };
 
 }
