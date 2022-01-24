@@ -66,6 +66,9 @@ namespace seco {
 
             std::unique_ptr<IClassificationPredictorFactory> configure() const override;
 
+            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
+                const IRowWiseLabelMatrix& labelMatrix) const override;
+
     };
 
 }
