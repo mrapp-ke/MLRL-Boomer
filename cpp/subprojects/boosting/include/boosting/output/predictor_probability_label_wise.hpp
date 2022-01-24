@@ -64,7 +64,7 @@ namespace boosting {
 
             ILabelWiseProbabilityPredictorConfig& setNumThreads(uint32 numThreads) override;
 
-            std::unique_ptr<IProbabilityPredictorFactory> configure() const override;
+            std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory() const override;
 
     };
 

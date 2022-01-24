@@ -34,7 +34,7 @@ namespace seco {
 
     };
 
-    std::unique_ptr<IHeuristicFactory> RecallConfig::configure() const {
+    std::unique_ptr<IHeuristicFactory> RecallConfig::createHeuristicFactory() const {
         return std::make_unique<RecallFactory>();
     }
 

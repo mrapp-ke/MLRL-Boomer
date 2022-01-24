@@ -23,7 +23,7 @@ namespace boosting {
              *
              * @return The weight of the regularization term
              */
-            virtual float64 configure() const = 0;
+            virtual float64 getWeight() const = 0;
 
     };
 

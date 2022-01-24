@@ -33,7 +33,7 @@ namespace seco {
 
     };
 
-    std::unique_ptr<IHeuristicFactory> LaplaceConfig::configure() const {
+    std::unique_ptr<IHeuristicFactory> LaplaceConfig::createHeuristicFactory() const {
         return std::make_unique<LaplaceFactory>();
     }
 

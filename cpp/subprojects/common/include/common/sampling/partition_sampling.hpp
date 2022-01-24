@@ -76,6 +76,6 @@ class IPartitionSamplingConfig {
          *
          * @return An unique pointer to an object of type `IPartitionSamplingFactory` that has been created
          */
-        virtual std::unique_ptr<IPartitionSamplingFactory> configure() const = 0;
+        virtual std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const = 0;
 
 };

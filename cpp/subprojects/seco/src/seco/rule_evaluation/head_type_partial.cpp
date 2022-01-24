@@ -14,16 +14,18 @@ namespace seco {
 
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> PartialHeadConfig::configure(
+    std::unique_ptr<IStatisticsProviderFactory> PartialHeadConfig::createStatisticsProviderFactory(
             const IRowWiseLabelMatrix& labelMatrix) const {
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
             std::make_unique<LabelWiseMajorityRuleEvaluationFactory>();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            std::make_unique<LabelWisePartialRuleEvaluationFactory>(heuristicConfigPtr_->configure(),
-                                                                    liftFunctionConfigPtr_->configure(labelMatrix));
+            std::make_unique<LabelWisePartialRuleEvaluationFactory>(
+                heuristicConfigPtr_->createHeuristicFactory(),
+                liftFunctionConfigPtr_->createLiftFunctionFactory(labelMatrix));
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            std::make_unique<LabelWisePartialRuleEvaluationFactory>(pruningHeuristicConfigPtr_->configure(),
-                                                                    liftFunctionConfigPtr_->configure(labelMatrix));
+            std::make_unique<LabelWisePartialRuleEvaluationFactory>(
+                pruningHeuristicConfigPtr_->createHeuristicFactory(),
+                liftFunctionConfigPtr_->createLiftFunctionFactory(labelMatrix));
         return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(std::move(defaultRuleEvaluationFactoryPtr),
                                                                          std::move(regularRuleEvaluationFactoryPtr),
                                                                          std::move(pruningRuleEvaluationFactoryPtr));

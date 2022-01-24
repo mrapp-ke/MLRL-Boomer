@@ -26,6 +26,6 @@ class IMultiThreadingConfig {
          *                      the training examples
          * @return              The number of threads to be used
          */
-        virtual uint32 configure(const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const = 0;
+        virtual uint32 getNumThreads(const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const = 0;
 
 };

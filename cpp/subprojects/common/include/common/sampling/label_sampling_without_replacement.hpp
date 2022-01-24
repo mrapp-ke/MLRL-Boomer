@@ -51,6 +51,7 @@ class LabelSamplingWithoutReplacementConfig final : public ILabelSamplingConfig,
 
         ILabelSamplingWithoutReplacementConfig& setNumSamples(uint32 numSamples) override;
 
-        std::unique_ptr<ILabelSamplingFactory> configure(const ILabelMatrix& labelMatrix) const override;
+        std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory(
+            const ILabelMatrix& labelMatrix) const override;
 
 };

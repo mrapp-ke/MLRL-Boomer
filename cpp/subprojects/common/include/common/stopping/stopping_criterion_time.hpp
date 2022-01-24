@@ -51,6 +51,6 @@ class TimeStoppingCriterionConfig final : public IStoppingCriterionConfig, publi
 
         ITimeStoppingCriterionConfig& setTimeLimit(uint32 timeLimit) override;
 
-        std::unique_ptr<IStoppingCriterionFactory> configure() const override;
+        std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
 
 };

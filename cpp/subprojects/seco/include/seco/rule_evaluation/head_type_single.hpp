@@ -31,7 +31,7 @@ namespace seco {
             SingleLabelHeadConfig(const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr,
                                   const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr);
 
-            std::unique_ptr<IStatisticsProviderFactory> configure(
+            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IRowWiseLabelMatrix& labelMatrix) const override;
 
     };

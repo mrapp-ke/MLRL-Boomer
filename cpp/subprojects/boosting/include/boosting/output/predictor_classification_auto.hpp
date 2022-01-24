@@ -26,7 +26,7 @@ namespace boosting {
              */
             AutomaticClassificationPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
 
-            std::unique_ptr<IClassificationPredictorFactory> configure() const override;
+            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
 
             std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
                 const IRowWiseLabelMatrix& labelMatrix) const override;

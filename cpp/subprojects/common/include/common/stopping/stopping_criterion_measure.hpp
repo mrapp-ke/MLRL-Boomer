@@ -255,6 +255,6 @@ class MeasureStoppingCriterionConfig final : public IStoppingCriterionConfig, pu
 
         IMeasureStoppingCriterionConfig& setForceStop(bool forceStop) override;
 
-        std::unique_ptr<IStoppingCriterionFactory> configure() const override;
+        std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
 
 };

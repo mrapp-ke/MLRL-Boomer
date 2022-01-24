@@ -100,6 +100,6 @@ IExampleWiseStratifiedBiPartitionSamplingConfig& ExampleWiseStratifiedBiPartitio
     return *this;
 }
 
-std::unique_ptr<IPartitionSamplingFactory> ExampleWiseStratifiedBiPartitionSamplingConfig::configure() const {
+std::unique_ptr<IPartitionSamplingFactory> ExampleWiseStratifiedBiPartitionSamplingConfig::createPartitionSamplingFactory() const {
     return std::make_unique<ExampleWiseStratifiedBiPartitionSamplingFactory>(holdoutSetSize_);
 }

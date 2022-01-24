@@ -249,13 +249,13 @@ IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint
 }
 
 
-std::unique_ptr<IThresholdsFactory> EqualWidthFeatureBinningConfig::configure(
+std::unique_ptr<IThresholdsFactory> EqualWidthFeatureBinningConfig::createThresholdsFactory(
         const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
     std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr =
         std::make_unique<EqualWidthFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
     std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr =
         std::make_unique<NominalFeatureBinningFactory>();
-    uint32 numThreads = multiThreadingConfigPtr_->configure(featureMatrix, labelMatrix);
+    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix);
     return std::make_unique<ApproximateThresholdsFactory>(std::move(numericalFeatureBinningFactoryPtr),
                                                           std::move(nominalFeatureBinningFactoryPtr), numThreads);
 }

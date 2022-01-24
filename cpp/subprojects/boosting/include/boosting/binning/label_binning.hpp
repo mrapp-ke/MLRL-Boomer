@@ -145,7 +145,7 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `ILabelWiseRuleEvaluationFactory` that has been created
              */
-            virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> configureLabelWise() const = 0;
+            virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseRuleEvaluationFactory() const = 0;
 
             /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` according to the specified
@@ -153,7 +153,7 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has been created
              */
-            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> configureExampleWise() const = 0;
+            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseRuleEvaluationFactory() const = 0;
 
     };
 

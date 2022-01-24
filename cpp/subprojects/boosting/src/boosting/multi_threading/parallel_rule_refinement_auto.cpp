@@ -15,8 +15,8 @@ namespace boosting {
 
     }
 
-    uint32 AutoParallelRuleRefinementConfig::configure(const IFeatureMatrix& featureMatrix,
-                                                       const ILabelMatrix& labelMatrix) const {
+    uint32 AutoParallelRuleRefinementConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
+                                                           const ILabelMatrix& labelMatrix) const {
         if ((dynamic_cast<const ILabelWiseLossConfig*>(lossConfigPtr_.get())
              || dynamic_cast<const SingleLabelHeadConfig*>(headConfigPtr_.get()))
             && dynamic_cast<const NoFeatureSamplingConfig*>(featureSamplingConfigPtr_.get())

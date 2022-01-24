@@ -71,7 +71,8 @@ namespace seco {
              *                      to the labels of the training examples
              * @return              An unique pointer to an object of type `ILiftFunctionFactory` that has been created
              */
-            virtual std::unique_ptr<ILiftFunctionFactory> configure(const IRowWiseLabelMatrix& labelMatrix) const = 0;
+            virtual std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
+                const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
     };
 

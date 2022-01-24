@@ -14,6 +14,6 @@ class NoPartitionSamplingConfig final : public IPartitionSamplingConfig {
 
     public:
 
-        std::unique_ptr<IPartitionSamplingFactory> configure() const override;
+        std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const override;
 
 };

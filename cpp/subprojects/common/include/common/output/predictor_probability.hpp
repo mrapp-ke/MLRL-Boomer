@@ -60,6 +60,6 @@ class IProbabilityPredictorConfig {
          * @return An unique pointer to an object of type `IProbabilityPredictorFactory` that has been created or a null
          *         pointer if the prediction of probabilities is not supported
          */
-        virtual std::unique_ptr<IProbabilityPredictorFactory> configure() const = 0;
+        virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory() const = 0;
 
 };

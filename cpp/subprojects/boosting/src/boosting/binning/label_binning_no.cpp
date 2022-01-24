@@ -11,15 +11,15 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory> NoLabelBinningConfig::configureLabelWise() const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->configure();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->configure();
+    std::unique_ptr<ILabelWiseRuleEvaluationFactory> NoLabelBinningConfig::createLabelWiseRuleEvaluationFactory() const {
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         return std::make_unique<LabelWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory> NoLabelBinningConfig::configureExampleWise() const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->configure();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->configure();
+    std::unique_ptr<IExampleWiseRuleEvaluationFactory> NoLabelBinningConfig::createExampleWiseRuleEvaluationFactory() const {
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         std::unique_ptr<Blas> blasPtr = nullptr;  // TODO
         std::unique_ptr<Lapack> lapackPtr = nullptr;  // TODO
         return std::make_unique<ExampleWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight,

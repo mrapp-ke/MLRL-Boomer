@@ -465,7 +465,7 @@ IMeasureStoppingCriterionConfig& MeasureStoppingCriterionConfig::setForceStop(bo
     return *this;
 }
 
-std::unique_ptr<IStoppingCriterionFactory> MeasureStoppingCriterionConfig::configure() const {
+std::unique_ptr<IStoppingCriterionFactory> MeasureStoppingCriterionConfig::createStoppingCriterionFactory() const {
     std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr;
 
     switch (aggregationFunction_) {

@@ -36,7 +36,7 @@ namespace seco {
 
     };
 
-    std::unique_ptr<IHeuristicFactory> AccuracyConfig::configure() const {
+    std::unique_ptr<IHeuristicFactory> AccuracyConfig::createHeuristicFactory() const {
         return std::make_unique<AccuracyFactory>();
     }
 

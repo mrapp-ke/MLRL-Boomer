@@ -54,7 +54,7 @@ namespace boosting {
 
             IManualRegularizationConfig& setRegularizationWeight(float64 regularizationWeight) override;
 
-            float64 configure() const override;
+            float64 getWeight() const override;
 
     };
 

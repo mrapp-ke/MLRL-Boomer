@@ -16,11 +16,11 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IClassificationPredictorFactory> AutomaticClassificationPredictorConfig::configure() const {
+    std::unique_ptr<IClassificationPredictorFactory> AutomaticClassificationPredictorConfig::createClassificationPredictorFactory() const {
         if (isExampleWisePredictorPreferred(lossConfigPtr_.get())) {
-            return ExampleWiseClassificationPredictorConfig().configure();
+            return ExampleWiseClassificationPredictorConfig().createClassificationPredictorFactory();
         } else {
-            return LabelWiseClassificationPredictorConfig().configure();
+            return LabelWiseClassificationPredictorConfig().createClassificationPredictorFactory();
         }
     }
 

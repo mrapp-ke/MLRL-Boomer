@@ -56,6 +56,6 @@ class ExampleWiseStratifiedBiPartitionSamplingConfig final : public IPartitionSa
 
         IExampleWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) override;
 
-        std::unique_ptr<IPartitionSamplingFactory> configure() const override;
+        std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const override;
 
 };
