@@ -193,6 +193,11 @@ namespace seco {
         return std::make_unique<DecisionListBuilder>();
     }
 
+    std::unique_ptr<ILabelSpaceInfo> SeCoRuleLearner::createLabelSpaceInfo(
+            const IRowWiseLabelMatrix& labelMatrix) const {
+        return configPtr_->getClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
+    }
+
     std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory() const {
         return configPtr_->getClassificationPredictorConfig().configure();
     }

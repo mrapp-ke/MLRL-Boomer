@@ -220,9 +220,9 @@ namespace boosting {
         return configPtr_->getProbabilityPredictorConfig().configure();
     }
 
-    std::unique_ptr<ILabelSpaceInfo> BoostingRuleLearner::createLabelSpaceInfo() const {
-        // TODO Implement
-        return AbstractRuleLearner::createLabelSpaceInfo();
+    std::unique_ptr<ILabelSpaceInfo> BoostingRuleLearner::createLabelSpaceInfo(
+            const IRowWiseLabelMatrix& labelMatrix) const {
+        return configPtr_->getClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
     }
 
     std::unique_ptr<IBoostingRuleLearner::IConfig> createBoostingRuleLearnerConfig() {
