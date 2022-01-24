@@ -33,13 +33,6 @@ namespace boosting {
             virtual ~ILossConfig() { };
 
             /**
-             * Returns whether the loss function is decomposable or not.
-             *
-             * @return True, if the loss function is decomposable, false otherwise
-             */
-            virtual bool isDecomposable() const = 0;
-
-            /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
              * configuration.
              *
