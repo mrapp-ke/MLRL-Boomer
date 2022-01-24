@@ -283,8 +283,9 @@ namespace boosting {
 
     };
 
-    ExampleWiseClassificationPredictorConfig::ExampleWiseClassificationPredictorConfig()
-        : numThreads_(0) {
+    ExampleWiseClassificationPredictorConfig::ExampleWiseClassificationPredictorConfig(
+            const std::unique_ptr<ILossConfig>& lossConfigPtr)
+        : numThreads_(0), lossConfigPtr_(lossConfigPtr) {
 
     }
 
@@ -300,7 +301,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> ExampleWiseClassificationPredictorConfig::createClassificationPredictorFactory() const {
-        std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr = nullptr; // TODO initialize
+        std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr =
+            lossConfigPtr_->createSimilarityMeasureFactory();
         uint32 numThreads = getNumAvailableThreads(numThreads_);
         return std::make_unique<ExampleWiseClassificationPredictorFactory>(std::move(similarityMeasureFactoryPtr),
                                                                            numThreads);

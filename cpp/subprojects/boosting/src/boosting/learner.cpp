@@ -160,7 +160,7 @@ namespace boosting {
 
     IExampleWiseClassificationPredictorConfig& BoostingRuleLearner::Config::useExampleWiseClassificationPredictor() {
         std::unique_ptr<ExampleWiseClassificationPredictorConfig> ptr
-            = std::make_unique<ExampleWiseClassificationPredictorConfig>();
+            = std::make_unique<ExampleWiseClassificationPredictorConfig>(lossConfigPtr_);
         IExampleWiseClassificationPredictorConfig& ref = *ptr;
         classificationPredictorConfigPtr_ = std::move(ptr);
         return ref;

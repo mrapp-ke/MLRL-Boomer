@@ -18,7 +18,7 @@ namespace boosting {
 
     std::unique_ptr<IClassificationPredictorFactory> AutomaticClassificationPredictorConfig::createClassificationPredictorFactory() const {
         if (isExampleWisePredictorPreferred(lossConfigPtr_.get())) {
-            return ExampleWiseClassificationPredictorConfig().createClassificationPredictorFactory();
+            return ExampleWiseClassificationPredictorConfig(lossConfigPtr_).createClassificationPredictorFactory();
         } else {
             return LabelWiseClassificationPredictorConfig().createClassificationPredictorFactory();
         }
@@ -27,7 +27,7 @@ namespace boosting {
     std::unique_ptr<ILabelSpaceInfo> AutomaticClassificationPredictorConfig::createLabelSpaceInfo(
             const IRowWiseLabelMatrix& labelMatrix) const {
         if (isExampleWisePredictorPreferred(lossConfigPtr_.get())) {
-            return ExampleWiseClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
+            return ExampleWiseClassificationPredictorConfig(lossConfigPtr_).createLabelSpaceInfo(labelMatrix);
         } else {
             return LabelWiseClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
         }
