@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/output/predictor_classification.hpp"
+#include "boosting/losses/loss.hpp"
 
 
 namespace boosting {
@@ -14,7 +15,16 @@ namespace boosting {
      */
     class AutomaticClassificationPredictorConfig : public IClassificationPredictorConfig {
 
+        private:
+
+            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+
         public:
+
+            /**
+             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             */
+            AutomaticClassificationPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
 
             std::unique_ptr<IClassificationPredictorFactory> configure() const override;
 
