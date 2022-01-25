@@ -8,6 +8,7 @@
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
 #include "common/statistics/statistics_provider.hpp"
+#include "boosting/output/probability_function.hpp"
 
 
 namespace boosting {
@@ -61,6 +62,15 @@ namespace boosting {
              * @return An unique pointer to an object of type `ISimilarityMeasureFactory` that has been created
              */
             virtual std::unique_ptr<ISimilarityMeasureFactory> createSimilarityMeasureFactory() const = 0;
+
+            /**
+             * Creates and returns a new object of type `IProbabilityFunctionFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `IProbabilityFunctionFactory` that has been created or a
+             *         null pointer, if the loss function does not support the prediction of probabilities
+             */
+            virtual std::unique_ptr<IProbabilityFunctionFactory> createProbabilityFunctionFactory() const = 0;
 
             /**
              * Returns the default prediction for an example that is not covered by any rules.
