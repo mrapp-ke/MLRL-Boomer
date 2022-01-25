@@ -188,7 +188,7 @@ namespace boosting {
 
     ILabelWiseProbabilityPredictorConfig& BoostingRuleLearner::Config::useLabelWiseProbabilityPredictor() {
         std::unique_ptr<LabelWiseProbabilityPredictorConfig> ptr
-            = std::make_unique<LabelWiseProbabilityPredictorConfig>();
+            = std::make_unique<LabelWiseProbabilityPredictorConfig>(lossConfigPtr_);
         ILabelWiseProbabilityPredictorConfig& ref = *ptr;
         probabilityPredictorConfigPtr_ = std::move(ptr);
         return ref;
