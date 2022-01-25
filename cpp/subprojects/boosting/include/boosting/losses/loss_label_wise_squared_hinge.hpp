@@ -30,6 +30,8 @@ namespace boosting {
 
             std::unique_ptr<ISimilarityMeasureFactory> createSimilarityMeasureFactory() const override;
 
+            std::unique_ptr<IProbabilityFunctionFactory> createProbabilityFunctionFactory() const override;
+
             float64 getDefaultPrediction() const override;
 
             std::unique_ptr<ILabelWiseLossFactory> createLabelWiseLossFactory() const override;

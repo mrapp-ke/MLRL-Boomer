@@ -72,6 +72,34 @@ namespace boosting {
 
     };
 
+    /**
+     * Allows to transform the score that is predicted for an individual label into a probability by applying the
+     * logistic sigmoid function.
+     */
+    class LogisticFunction final : public IProbabilityFunction {
+
+        public:
+
+            float64 transform(float64 predictedScore) const override {
+                return logisticFunction(predictedScore);
+            }
+
+    };
+
+    /**
+     * Allows to create instances of the type `IProbabilityFunction` that transform the score that is predicted for an
+     * individual label into a probability by applying the logistic sigmoid function.
+     */
+    class LogisticFunctionFactory final : public IProbabilityFunctionFactory {
+
+        public:
+
+            std::unique_ptr<IProbabilityFunction> create() const override {
+                return std::make_unique<LogisticFunction>();
+            }
+
+    };
+
     LabelWiseLogisticLossConfig::LabelWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)
         : headConfigPtr_(headConfigPtr) {
 
@@ -88,6 +116,10 @@ namespace boosting {
 
     std::unique_ptr<ISimilarityMeasureFactory> LabelWiseLogisticLossConfig::createSimilarityMeasureFactory() const {
         return std::make_unique<LabelWiseLogisticLossFactory>();
+    }
+
+    std::unique_ptr<IProbabilityFunctionFactory> LabelWiseLogisticLossConfig::createProbabilityFunctionFactory() const {
+        return std::make_unique<LogisticFunctionFactory>();
     }
 
     float64 LabelWiseLogisticLossConfig::getDefaultPrediction() const {

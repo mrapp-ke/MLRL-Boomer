@@ -49,6 +49,10 @@ namespace boosting {
         return std::make_unique<LabelWiseSquaredErrorLossFactory>();
     }
 
+    std::unique_ptr<IProbabilityFunctionFactory> LabelWiseSquaredErrorLossConfig::createProbabilityFunctionFactory() const {
+        return nullptr;
+    }
+
     float64 LabelWiseSquaredErrorLossConfig::getDefaultPrediction() const {
         return 0;
     }

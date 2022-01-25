@@ -1,5 +1,5 @@
 #include "boosting/output/predictor_probability_label_wise.hpp"
-#include "boosting/math/math.hpp"
+#include "boosting/output/probability_function.hpp"
 #include "common/util/threads.hpp"
 #include "common/util/validation.hpp"
 #include "predictor_common.hpp"
@@ -7,72 +7,6 @@
 
 
 namespace boosting {
-
-    /**
-     * Defines an interface for all classes that allow to transform the scores that are predicted for individual labels
-     * into probabilities.
-     */
-    class IProbabilityFunction {
-
-        public:
-
-            virtual ~IProbabilityFunction() { };
-
-            /**
-             * Transforms the score that is predicted for an individual label into a probability.
-             *
-             * @param predictedScore    The predicted score
-             * @return                  The probability
-             */
-            virtual float64 transform(float64 predictedScore) const = 0;
-
-    };
-
-    /**
-     * Allows to transform the score that is predicted for an individual label into a probability by applying the
-     * logistic sigmoid function.
-     */
-    class LogisticFunction final : public IProbabilityFunction {
-
-        public:
-
-            float64 transform(float64 predictedScore) const override {
-                return logisticFunction(predictedScore);
-            }
-
-    };
-
-    /**
-     * Defines an interface for all factories that allow to create instances of the type `IProbabilityFunction`.
-     */
-    class IProbabilityFunctionFactory {
-
-        public:
-
-            virtual ~IProbabilityFunctionFactory() { };
-
-            /**
-             * Creates and returns a new object of the type `IProbabilityFunction`.
-             *
-             * @return An unique pointer to an object of type `IProbabilityFunction` that has been created
-             */
-            virtual std::unique_ptr<IProbabilityFunction> create() const = 0;
-
-    };
-
-    /**
-     * Allows to create instances of the type `IProbabilityFunction` that transform the score that is predicted for an
-     * individual label into a probability by applying the logistic sigmoid function.
-     */
-    class LogisticFunctionFactory final : public IProbabilityFunctionFactory {
-
-        public:
-
-            std::unique_ptr<IProbabilityFunction> create() const override {
-                return std::make_unique<LogisticFunction>();
-            }
-
-    };
 
     static inline void applyTransformationFunction(CContiguousConstView<float64>::value_const_iterator originalIterator,
                                                    CContiguousView<float64>::value_iterator transformedIterator,

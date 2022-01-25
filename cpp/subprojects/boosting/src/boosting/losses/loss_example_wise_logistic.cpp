@@ -359,6 +359,10 @@ namespace boosting {
         return std::make_unique<ExampleWiseLogisticLossFactory>();
     }
 
+    std::unique_ptr<IProbabilityFunctionFactory> ExampleWiseLogisticLossConfig::createProbabilityFunctionFactory() const {
+        return nullptr;
+    }
+
     float64 ExampleWiseLogisticLossConfig::getDefaultPrediction() const {
         return 0;
     }
