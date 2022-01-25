@@ -20,7 +20,7 @@ namespace boosting {
         if (isExampleWisePredictorPreferred(lossConfigPtr_.get())) {
             return ExampleWiseClassificationPredictorConfig(lossConfigPtr_).createClassificationPredictorFactory();
         } else {
-            return LabelWiseClassificationPredictorConfig().createClassificationPredictorFactory();
+            return LabelWiseClassificationPredictorConfig(lossConfigPtr_).createClassificationPredictorFactory();
         }
     }
 
@@ -29,7 +29,7 @@ namespace boosting {
         if (isExampleWisePredictorPreferred(lossConfigPtr_.get())) {
             return ExampleWiseClassificationPredictorConfig(lossConfigPtr_).createLabelSpaceInfo(labelMatrix);
         } else {
-            return LabelWiseClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
+            return LabelWiseClassificationPredictorConfig(lossConfigPtr_).createLabelSpaceInfo(labelMatrix);
         }
     }
 
