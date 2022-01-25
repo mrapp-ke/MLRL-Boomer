@@ -7,7 +7,7 @@ Provides scikit-learn implementations of separate-and-conquer algorithms.
 """
 from typing import Dict, Set
 
-from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
+from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
@@ -187,6 +187,9 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_learner(self) -> RuleLearnerWrapper:
-        config = SeCoRuleLearnerConfig()
+    def _create_confgi(self) -> RuleLearnerConfig:
+        return SeCoRuleLearnerConfig()
+
+    def _create_learner(self, config) -> RuleLearnerWrapper:
+        # TODO configure
         return SeCoRuleLearnerWrapper(config)
