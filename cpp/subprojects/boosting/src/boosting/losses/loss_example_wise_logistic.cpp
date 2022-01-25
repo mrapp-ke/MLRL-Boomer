@@ -359,6 +359,10 @@ namespace boosting {
         return std::make_unique<ExampleWiseLogisticLossFactory>();
     }
 
+    float64 ExampleWiseLogisticLossConfig::getDefaultPrediction() const {
+        return 0;
+    }
+
     std::unique_ptr<ISimilarityMeasureFactory> ExampleWiseLogisticLossConfig::createSimilarityMeasureFactory() const {
         return std::make_unique<ExampleWiseLogisticLossFactory>();
     }

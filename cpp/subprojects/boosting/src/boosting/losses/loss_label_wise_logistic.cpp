@@ -90,6 +90,10 @@ namespace boosting {
         return std::make_unique<LabelWiseLogisticLossFactory>();
     }
 
+    float64 LabelWiseLogisticLossConfig::getDefaultPrediction() const {
+        return 0;
+    }
+
     std::unique_ptr<ILabelWiseLossFactory> LabelWiseLogisticLossConfig::createLabelWiseLossFactory() const {
         return std::make_unique<LabelWiseLogisticLossFactory>();
     }

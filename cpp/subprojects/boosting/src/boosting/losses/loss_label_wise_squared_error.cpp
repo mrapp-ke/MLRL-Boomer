@@ -49,6 +49,10 @@ namespace boosting {
         return std::make_unique<LabelWiseSquaredErrorLossFactory>();
     }
 
+    float64 LabelWiseSquaredErrorLossConfig::getDefaultPrediction() const {
+        return 0;
+    }
+
     std::unique_ptr<ILabelWiseLossFactory> LabelWiseSquaredErrorLossConfig::createLabelWiseLossFactory() const {
         return std::make_unique<LabelWiseSquaredErrorLossFactory>();
     }
