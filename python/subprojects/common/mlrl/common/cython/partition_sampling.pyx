@@ -23,3 +23,43 @@ cdef class ExampleWiseStratifiedBiPartitionSamplingConfig:
         assert_less('holdout_set_size', holdout_set_size, 1)
         self.config_ptr.setHoldoutSetSize(holdout_set_size)
         return self
+
+
+cdef class LabelWiseStratifiedBiPartitionSamplingConfig:
+    """
+    A wrapper for the C++ class `LabelWiseStratifiedBiPartitionSamplingConfig`.
+    """
+
+    def set_holdout_set_size(self, holdout_set_size: float) -> LabelWiseStratifiedBiPartitionSamplingConfig:
+        """
+        Sets the fraction of examples that should be included in the holdout set.
+
+        :param holdout_set_size:    The fraction of examples that should be included in the holdout set, e.g., a value
+                                    of 0.6 corresponds to 60 % of the available examples. Must be in (0, 1)
+        :return:                    An `LabelWiseStratifiedBiPartitionSamplingConfig` that allows further configuration
+                                    of the method for partitioning the available training examples into a training set
+                                    and a holdout set
+        """
+        assert_greater('holdout_set_size', holdout_set_size, 0)
+        assert_less('holdout_set_size', holdout_set_size, 1)
+        self.config_ptr.setHoldoutSetSize(holdout_set_size)
+
+
+cdef class RandomBiPartitionSamplingConfig:
+    """
+    A wrapper for the C++ class `RandomBiPartitionSamplingConfig`.
+    """
+
+    def set_holdout_set_size(self, holdout_set_size: float) -> RandomBiPartitionSamplingConfig:
+        """
+        Sets the fraction of examples that should be included in the holdout set.
+
+        :param holdout_set_size:    The fraction of examples that should be included in the holdout set, e.g., a value
+                                    of 0.6 corresponds to 60 % of the available examples. Must be in (0, 1)
+        :return:                    A `RandomBiPartitionSamplingConfig` that allows further configuration of the method
+                                    for partitioning the available training examples into a training set and a holdout
+                                    set
+        """
+        assert_greater('holdout_set_size', holdout_set_size, 0)
+        assert_less('holdout_set_size', holdout_set_size, 1)
+        self.config_ptr.setHoldoutSetSize(holdout_set_size)
