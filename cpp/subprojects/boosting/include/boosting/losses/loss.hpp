@@ -62,6 +62,13 @@ namespace boosting {
              */
             virtual std::unique_ptr<ISimilarityMeasureFactory> createSimilarityMeasureFactory() const = 0;
 
+            /**
+             * Returns the default prediction for an example that is not covered by any rules.
+             *
+             * @return The default prediction
+             */
+            virtual float64 getDefaultPrediction() const = 0;
+
     };
 
 };
