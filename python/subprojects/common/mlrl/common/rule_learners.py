@@ -15,7 +15,7 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.cython.feature_matrix import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
-from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
+from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.nominal_feature_mask import EqualNominalFeatureMask, MixedNominalFeatureMask
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from mlrl.common.learners import Learner, NominalAttributeLearner
@@ -282,7 +282,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = MixedNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        learner = self._create_learner()
+        learner = self.__create_learner()
         training_result = learner.fit(nominal_feature_mask, feature_matrix, label_matrix, self.random_state)
         self.num_labels_ = training_result.num_labels
         self.label_space_info_ = training_result.label_space_info
@@ -290,7 +290,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def _predict(self, x):
         feature_matrix = self.__create_row_wise_feature_matrix(x)
-        learner = self._create_learner()
+        learner = self.__create_learner()
 
         if self.sparse_predictions_:
             log.debug('A sparse matrix is used to store the predicted labels')
@@ -300,7 +300,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
 
     def _predict_proba(self, x):
-        learner = self._create_learner()
+        learner = self.__create_learner()
 
         if learner.can_predict_probabilities():
             feature_matrix = self.__create_row_wise_feature_matrix(x)
@@ -328,6 +328,26 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             log.debug('A dense matrix is used to store the feature values of the query examples')
             return CContiguousFeatureMatrix(x)
 
+    def __create_learner(self) -> RuleLearnerWrapper:
+        config = self._create_config()
+        # TODO configure
+        return self._create_learner(config)
+
     @abstractmethod
-    def _create_learner(self) -> RuleLearnerWrapper:
+    def _create_config(self) -> RuleLearnerConfig:
+        """
+        Must be implemented by subclasses in order to create the configuration of the rule learner.
+
+        :return: The `RuleLearnerConfig` that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _create_learner(self, config) -> RuleLearnerWrapper:
+        """
+        Must be implemented by subclasses in order to create the implementation of the rule learner.
+
+        :param config:  The configuration of the rule learner
+        :return:        The `RuleLearnerWrapper` that has been created
+        """
         pass
