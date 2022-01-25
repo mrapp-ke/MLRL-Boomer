@@ -167,8 +167,9 @@ namespace boosting {
 
     };
 
-    LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig()
-        : numThreads_(0) {
+    LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig(
+            const std::unique_ptr<ILossConfig>& lossConfigPtr)
+        : numThreads_(0), lossConfigPtr_(lossConfigPtr) {
 
     }
 
@@ -183,11 +184,16 @@ namespace boosting {
     }
 
     std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::createProbabilityPredictorFactory() const {
-        // TODO check if prediction of regression scores is supported
-        std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr = nullptr; // TODO Initialize
-        uint32 numThreads = getNumAvailableThreads(numThreads_);
-        return std::make_unique<LabelWiseProbabilityPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
-                                                                      numThreads);
+        std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
+            lossConfigPtr_->createProbabilityFunctionFactory();
+
+        if (probabilityFunctionFactoryPtr) {
+            uint32 numThreads = getNumAvailableThreads(numThreads_);
+            return std::make_unique<LabelWiseProbabilityPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
+                                                                          numThreads);
+        } else {
+            return nullptr;
+        }
     }
 
 }
