@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/output/predictor_classification.hpp"
+#include "boosting/losses/loss.hpp"
 
 
 namespace boosting {
@@ -56,9 +57,14 @@ namespace boosting {
 
             uint32 numThreads_;
 
+            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+
         public:
 
-            LabelWiseClassificationPredictorConfig();
+            /**
+             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             */
+            LabelWiseClassificationPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
 
             uint32 getNumThreads() const override;
 

@@ -222,8 +222,9 @@ namespace boosting {
 
     };
 
-    LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig()
-        : numThreads_(0) {
+    LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig(
+            const std::unique_ptr<ILossConfig>& lossConfigPtr)
+        : numThreads_(0), lossConfigPtr_(lossConfigPtr) {
 
     }
 
@@ -238,7 +239,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::createClassificationPredictorFactory() const {
-        float64 threshold = 0; // TODO Use correct threshold
+        float64 threshold = lossConfigPtr_->getDefaultPrediction();
         uint32 numThreads = getNumAvailableThreads(numThreads_);
         return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, numThreads);
     }

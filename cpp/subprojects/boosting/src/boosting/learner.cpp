@@ -168,7 +168,7 @@ namespace boosting {
 
     ILabelWiseClassificationPredictorConfig& BoostingRuleLearner::Config::useLabelWiseClassificationPredictor() {
         std::unique_ptr<LabelWiseClassificationPredictorConfig> ptr =
-            std::make_unique<LabelWiseClassificationPredictorConfig>();
+            std::make_unique<LabelWiseClassificationPredictorConfig>(lossConfigPtr_);
         ILabelWiseClassificationPredictorConfig& ref = *ptr;
         classificationPredictorConfigPtr_ = std::move(ptr);
         return ref;
