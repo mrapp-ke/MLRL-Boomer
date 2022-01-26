@@ -178,7 +178,7 @@ namespace boosting {
     }
 
     ILabelWiseProbabilityPredictorConfig& LabelWiseProbabilityPredictorConfig::setNumThreads(uint32 numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+        if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
         numThreads_ = numThreads;
         return *this;
     }
