@@ -112,6 +112,143 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
                          + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
 
 
+def configure_rule_model_assemblage(config: RuleLearnerConfig, default_rule: str):
+    config.use_sequential_rule_model_assemblage() \
+        .use_default_rule(BooleanOption.parse(default_rule) == BooleanOption.TRUE)
+
+
+def configure_rule_induction(config: RuleLearnerConfig, min_coverage: int, max_conditions: int,
+                             max_head_refinements: int, recalculate_predictions: str):
+    config.use_top_down_rule_induction() \
+        .set_min_coverage(min_coverage) \
+        .set_max_conditions(max_conditions) \
+        .set_max_head_refinements(max_head_refinements) \
+        .set_recalculate_predictions(BooleanOption.parse(recalculate_predictions) == BooleanOption.TRUE.value)
+
+
+def configure_feature_binning(config: RuleLearnerConfig, feature_binning: str):
+    if feature_binning is None:
+        config.use_no_feature_binning()
+    else:
+        value, options = parse_param_and_options('feature_binning', feature_binning, FEATURE_BINNING_VALUES)
+
+        if value == BINNING_EQUAL_FREQUENCY:
+            config.use_equal_frequency_feature_binning() \
+                .set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, 0.33)) \
+                .set_min_bins(options.get_int(ARGUMENT_MIN_BINS, 2)) \
+                .set_max_bins(options.get_int(ARGUMENT_MAX_BINS, 0))
+        elif value == BINNING_EQUAL_WIDTH:
+            config.use_equal_width_feature_binning() \
+                .set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, 0.33)) \
+                .set_min_bins(options.get_int(ARGUMENT_MIN_BINS, 2)) \
+                .set_max_bins(options.get_int(ARGUMENT_MAX_BINS, 0))
+
+
+def configure_label_sampling(config: RuleLearnerConfig, label_sampling: str):
+    if label_sampling is None:
+        config.use_no_label_sampling()
+    else:
+        value, options = parse_param_and_options('label_sampling', label_sampling, LABEL_SAMPLING_VALUES)
+
+        if value == SAMPLING_WITHOUT_REPLACEMENT:
+            config.use_label_sampling_without_replacement() \
+                .set_num_samples(options.get_int(ARGUMENT_NUM_SAMPLES, 1))
+
+
+def configure_instance_sampling(config: RuleLearnerConfig, instance_sampling: str):
+    if instance_sampling is None:
+        config.use_no_instance_sampling()
+    else:
+        value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
+
+        if value == SAMPLING_WITH_REPLACEMENT:
+            config.use_instance_sampling_with_replacement() \
+                .set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0))
+        elif value == SAMPLING_WITHOUT_REPLACEMENT:
+            config.use_instance_sampling_without_replacement() \
+                .set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66))
+        elif value == SAMPLING_STRATIFIED_LABEL_WISE:
+            config.use_label_wise_stratified_instance_sampling() \
+                .set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66))
+        elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
+            config.use_example_wise_stratified_instance_sampling() \
+                .set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66))
+
+
+def configure_feature_sampling(config: RuleLearnerConfig, feature_sampling: str):
+    if feature_sampling is None:
+        config.use_no_feature_sampling()
+    else:
+        value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
+
+        if value == SAMPLING_WITHOUT_REPLACEMENT:
+            config.use_feature_sampling_without_replacement() \
+                .set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, 0))
+
+
+def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: str):
+    if partition_sampling is None:
+        config.use_no_partition_sampling()
+    else:
+        value, options = parse_param_and_options('holdout', partition_sampling, PARTITION_SAMPLING_VALUES)
+
+        if value == PARTITION_SAMPLING_RANDOM:
+            config.use_random_bi_partition_sampling() \
+                .set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33))
+        if value == SAMPLING_STRATIFIED_LABEL_WISE:
+            config.use_label_wise_stratified_bi_partition_sampling() \
+                .set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33))
+        if value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
+            config.use_example_wise_stratified_bi_partition_sampling() \
+                .set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33))
+
+
+def configure_pruning(config: RuleLearnerConfig, pruning: str, instance_sampling: str):
+    if pruning is None:
+        config.use_no_pruning()
+    elif instance_sampling is None:
+        log.warning(
+            'Parameter "pruning" does not have any effect, because parameter "instance_sampling" is set to "None"!')
+        config.use_no_pruning()
+    else:
+        value = parse_param('pruning', pruning, PRUNING_VALUES)
+
+        if value == PRUNING_IREP:
+            config.use_irep_pruning()
+
+
+def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_refinement: str):
+    value, options = parse_param_and_options('parallel_rule_refinement', parallel_rule_refinement, PARALLEL_VALUES)
+
+    if value == BooleanOption.FALSE.value:
+        config.use_no_parallel_rule_refinement()
+    else:
+        config.use_parallel_rule_refinement().set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, 0))
+
+
+def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_statistic_update: str):
+    value, options = parse_param_and_options('parallel_statistic_update', parallel_statistic_update, PARALLEL_VALUES)
+
+    if value == BooleanOption.FALSE.value:
+        config.use_no_parallel_statistic_update()
+    else:
+        config.use_parallel_statistic_update().set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, 0))
+
+
+def configure_size_stopping_criterion(config: RuleLearnerConfig, max_rules: int):
+    if max_rules == 0:
+        config.use_no_size_stopping_criterion()
+    else:
+        config.use_size_stopping_criterion().set_max_rules(max_rules)
+
+
+def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: int):
+    if time_limit == 0:
+        config.use_no_time_stopping_criterion()
+    else:
+        config.use_time_stopping_criterion().set_time_limit(time_limit)
+
+
 def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
     if value in allowed_values:
         return value
@@ -282,7 +419,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = MixedNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        learner = self.__create_learner()
+        learner = self._create_learner()
         training_result = learner.fit(nominal_feature_mask, feature_matrix, label_matrix, self.random_state)
         self.num_labels_ = training_result.num_labels
         self.label_space_info_ = training_result.label_space_info
@@ -290,7 +427,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def _predict(self, x):
         feature_matrix = self.__create_row_wise_feature_matrix(x)
-        learner = self.__create_learner()
+        learner = self._create_learner()
 
         if self.sparse_predictions_:
             log.debug('A sparse matrix is used to store the predicted labels')
@@ -300,7 +437,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
 
     def _predict_proba(self, x):
-        learner = self.__create_learner()
+        learner = self._create_learner()
 
         if learner.can_predict_probabilities():
             feature_matrix = self.__create_row_wise_feature_matrix(x)
@@ -328,26 +465,11 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             log.debug('A dense matrix is used to store the feature values of the query examples')
             return CContiguousFeatureMatrix(x)
 
-    def __create_learner(self) -> RuleLearnerWrapper:
-        config = self._create_config()
-        # TODO configure
-        return self._create_learner(config)
-
     @abstractmethod
-    def _create_config(self) -> RuleLearnerConfig:
+    def _create_learner(self) -> RuleLearnerWrapper:
         """
-        Must be implemented by subclasses in order to create the configuration of the rule learner.
+        Must be implemented by subclasses in order to configure and create an implementation of the rule learner.
 
-        :return: The `RuleLearnerConfig` that has been created
-        """
-        pass
-
-    @abstractmethod
-    def _create_learner(self, config) -> RuleLearnerWrapper:
-        """
-        Must be implemented by subclasses in order to create the implementation of the rule learner.
-
-        :param config:  The configuration of the rule learner
-        :return:        The `RuleLearnerWrapper` that has been created
+        :return: The implementation of the rule learner that has been created
         """
         pass

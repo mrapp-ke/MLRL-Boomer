@@ -7,10 +7,14 @@ Provides scikit-learn implementations of separate-and-conquer algorithms.
 """
 from typing import Dict, Set
 
-from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLearnerWrapper
+from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
+from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
+    configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
+    configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
+    configure_parallel_statistic_update, configure_size_stopping_criterion, configure_time_stopping_criterion
 from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
 
@@ -187,9 +191,21 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_confgi(self) -> RuleLearnerConfig:
-        return SeCoRuleLearnerConfig()
-
-    def _create_learner(self, config) -> RuleLearnerWrapper:
+    def _create_learner(self) -> RuleLearnerWrapper:
+        config = SeCoRuleLearnerConfig()
+        configure_rule_model_assemblage(config, default_rule=BooleanOption.TRUE.value)
+        configure_rule_induction(config, min_coverage=int(self.min_coverage), max_conditions=int(self.max_conditions),
+                                 max_head_refinements=int(self.max_head_refinements),
+                                 recalculate_predictions=BooleanOption.FALSE.value)
+        configure_feature_binning(config, self.feature_binning)
+        configure_label_sampling(config, self.feature_sampling)
+        configure_instance_sampling(config, self.instance_sampling)
+        configure_feature_sampling(config, self.feature_sampling)
+        configure_partition_sampling(config, self.holdout)
+        configure_pruning(config, self.pruning, self.instance_sampling)
+        configure_parallel_rule_refinement(config.self.parallel_rule_refinement)
+        configure_parallel_statistic_update(config, self.parallel_statistic_update)
+        configure_size_stopping_criterion(config, max_rules=self.max_rules)
+        configure_time_stopping_criterion(config, time_limit=self.time_limit)
         # TODO configure
         return SeCoRuleLearnerWrapper(config)
