@@ -319,9 +319,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function, {AGGREGATION_FUNCTION_MIN,
                                                                                   AGGREGATION_FUNCTION_MAX,
                                                                                   AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
+
         if value == AGGREGATION_FUNCTION_MIN:
             return AggregationFunction.MIN
         elif value == AGGREGATION_FUNCTION_MAX:
             return AggregationFunction.MAX
-        else:
+        elif value == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
             return AggregationFunction.ARITHMETIC_MEAN

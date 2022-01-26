@@ -195,10 +195,10 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
         if value == PARTITION_SAMPLING_RANDOM:
             config.use_random_bi_partition_sampling() \
                 .set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33))
-        if value == SAMPLING_STRATIFIED_LABEL_WISE:
+        elif value == SAMPLING_STRATIFIED_LABEL_WISE:
             config.use_label_wise_stratified_bi_partition_sampling() \
                 .set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33))
-        if value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
+        elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             config.use_example_wise_stratified_bi_partition_sampling() \
                 .set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33))
 
@@ -222,7 +222,7 @@ def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_
 
     if value == BooleanOption.FALSE.value:
         config.use_no_parallel_rule_refinement()
-    else:
+    elif value == BooleanOption.TRUE.value:
         config.use_parallel_rule_refinement().set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, 0))
 
 
@@ -231,7 +231,7 @@ def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_stat
 
     if value == BooleanOption.FALSE.value:
         config.use_no_parallel_statistic_update()
-    else:
+    elif value == BooleanOption.TRUE.value:
         config.use_parallel_statistic_update().set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, 0))
 
 
