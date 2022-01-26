@@ -209,16 +209,12 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         configure_parallel_statistic_update(config, self.parallel_statistic_update)
         configure_size_stopping_criterion(config, max_rules=self.max_rules)
         configure_time_stopping_criterion(config, time_limit=self.time_limit)
-        self.__configure_coverage_stopping_criterion(config)
         self.__configure_head_type(config)
         self.__configure_heuristic(config)
         self.__configure_pruning_heuristic(config)
         self.__configure_lift_function(config)
         self.__configure_classification_predictor(config)
         return SeCoRuleLearnerWrapper(config)
-
-    def __configure_coverage_stopping_criterion(self, config: SeCoRuleLearnerConfig):
-        config.use_coverage_stopping_criterion().set_threshold(0)
 
     def __configure_head_type(self, config: SeCoRuleLearnerConfig):
         head_type = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
