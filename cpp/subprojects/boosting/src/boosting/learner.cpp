@@ -201,14 +201,17 @@ namespace boosting {
         return ref;
     }
 
-    BoostingRuleLearner::BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr)
-        : AbstractRuleLearner(*configPtr), configPtr_(std::move(configPtr)) {
+    BoostingRuleLearner::BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr,
+                                             Blas::DdotFunction ddotFunction, Blas::DspmvFunction dspmvFunction,
+                                             Lapack::DsysvFunction dsysvFunction)
+        : AbstractRuleLearner(*configPtr), configPtr_(std::move(configPtr)), blas_(Blas(ddotFunction, dspmvFunction)),
+          lapack_(Lapack(dsysvFunction)) {
 
     }
 
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getLossConfig().createStatisticsProviderFactory(featureMatrix, labelMatrix);
+        return configPtr_->getLossConfig().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_);
     }
 
     std::unique_ptr<IModelBuilder> BoostingRuleLearner::createModelBuilder() const {
@@ -237,8 +240,9 @@ namespace boosting {
     }
 
     std::unique_ptr<IBoostingRuleLearner> createBoostingRuleLearner(
-            std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr) {
-        return std::make_unique<BoostingRuleLearner>(std::move(configPtr));
+            std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr, Blas::DdotFunction ddotFunction,
+            Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction) {
+        return std::make_unique<BoostingRuleLearner>(std::move(configPtr), ddotFunction, dspmvFunction, dsysvFunction);
     }
 
 }

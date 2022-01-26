@@ -8,6 +8,8 @@
 #include "common/measures/measure_evaluation.hpp"
 #include "common/measures/measure_similarity.hpp"
 #include "common/statistics/statistics_provider.hpp"
+#include "boosting/math/blas.hpp"
+#include "boosting/math/lapack.hpp"
 #include "boosting/output/probability_function.hpp"
 
 
@@ -41,11 +43,14 @@ namespace boosting {
              *                      feature values of the training examples
              * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels
              *                      of the training examples
+             * @param blas          A reference to an object of type `Blas` that allows to execute BLAS routines
+             * @param lapack        A reference to an object of type `Lapack` that allows to execute LAPACK routines
              * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
              *                      created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const = 0;
+                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix, const Blas& blas,
+                const Lapack& lapack) const = 0;
 
             /**
              * Creates and returns a new object of type `IEvaluationMeasureFactory` according to the specified

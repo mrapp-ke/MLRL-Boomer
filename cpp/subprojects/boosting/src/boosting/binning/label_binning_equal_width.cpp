@@ -210,23 +210,18 @@ namespace boosting {
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
             std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
-        return std::make_unique<LabelWiseCompleteBinnedRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                              l2RegularizationWeight,
-                                                                              std::move(labelBinningFactoryPtr));
+        return std::make_unique<LabelWiseCompleteBinnedRuleEvaluationFactory>(
+            l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createExampleWiseRuleEvaluationFactory() const {
+    std::unique_ptr<IExampleWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createExampleWiseRuleEvaluationFactory(
+            const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        std::unique_ptr<Blas> blasPtr = nullptr;  // TODO
-        std::unique_ptr<Lapack> lapackPtr = nullptr;  // TODO
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
             std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
-        return std::make_unique<ExampleWiseCompleteBinnedRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                                l2RegularizationWeight,
-                                                                                std::move(labelBinningFactoryPtr),
-                                                                                std::move(blasPtr),
-                                                                                std::move(lapackPtr));
+        return std::make_unique<ExampleWiseCompleteBinnedRuleEvaluationFactory>(
+            l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blas, lapack);
     }
 
 }

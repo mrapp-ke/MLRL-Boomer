@@ -17,9 +17,10 @@ namespace boosting {
             .createLabelWiseRuleEvaluationFactory();
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createExampleWiseRuleEvaluationFactory() const {
+    std::unique_ptr<IExampleWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createExampleWiseRuleEvaluationFactory(
+            const Blas& blas, const Lapack& lapack) const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_,l2RegularizationConfigPtr_)
-            .createExampleWiseRuleEvaluationFactory();
+            .createExampleWiseRuleEvaluationFactory(blas, lapack);
     }
 
 }
