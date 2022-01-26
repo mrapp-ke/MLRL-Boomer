@@ -6,7 +6,8 @@ from mlrl.common.cython._validation import assert_less, assert_greater, assert_g
 
 cdef class EqualWidthLabelBinningConfig:
     """
-    A wrapper for the C++ class `EqualWidthLabelBinningConfig`.
+    Allows to configure a method that assigns labels to bins in a way such that each bin contains labels for which the
+    predicted score is expected to belong to the same value range.
     """
 
     def set_bin_ratio(self, bin_ratio: float) -> EqualWidthLabelBinningConfig:

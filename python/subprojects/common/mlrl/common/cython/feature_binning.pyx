@@ -6,7 +6,8 @@ from mlrl.common.cython._validation import assert_greater, assert_greater_or_equ
 
 cdef class EqualWidthFeatureBinningConfig:
     """
-    A wrapper for the C++ class `EqualWidthFeatureBinningConfig`.
+    Allow to configure a method that assigns numerical feature values to bins, such that each bin contains values from
+    equally sized value ranges.
     """
 
     def set_bin_ratio(self, bin_ratio: float) -> EqualWidthFeatureBinningConfig:
@@ -53,7 +54,8 @@ cdef class EqualWidthFeatureBinningConfig:
 
 cdef class EqualFrequencyFeatureBinningConfig:
     """
-    A wrapper for the C++ class `EqualFrequencyFeatureBinningConfig`.
+    Allows to configure a method that assigns numerical feature values to bins, such that each bins contains
+    approximately the same number of values.
     """
 
     def set_bin_ratio(self, bin_ratio: float) -> EqualFrequencyFeatureBinningConfig:

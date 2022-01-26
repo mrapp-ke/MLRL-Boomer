@@ -7,7 +7,8 @@ from mlrl.common.cython._validation import assert_greater_or_equal, assert_less_
 
 cdef class SizeStoppingCriterionConfig:
     """
-    A wrapper for the C++ class `SizeStoppingCriterionConfig`.
+    Allows to configure a stopping criterion that ensures that the number of induced rules does not exceed a certain
+    maximum.
     """
 
     def set_max_rules(self, max_rules: int) -> SizeStoppingCriterionConfig:
@@ -24,7 +25,7 @@ cdef class SizeStoppingCriterionConfig:
 
 cdef class TimeStoppingCriterionConfig:
     """
-    A wrapper for the C++ class `TimeStoppingCriterionConfig`.
+    Allows to configure a stopping criterion that ensures that a certain time limit is not exceeded.
     """
 
     def set_time_limit(self, time_limit: int) -> TimeStoppingCriterionConfig:
@@ -41,7 +42,17 @@ cdef class TimeStoppingCriterionConfig:
 
 cdef class MeasureStoppingCriterionConfig:
     """
-    A wrapper for the C++ class `MeasureStoppingCriterionConfig`.
+    Allow to configure a stopping criterion that stops the induction of rules as soon as the quality of a model's
+    predictions for the examples in a holdout set do not improve according to a certain measure.
+
+    This stopping criterion assesses the performance of the current model after every `update_interval` rules and stores
+    the resulting quality score in a buffer that keeps track of the last `num_current` scores. If the capacity of this
+    buffer is already reached, the oldest score is passed to a buffer of size `numPast`. Every `stopInterval` rules, it
+    is decided whether the rule induction should be stopped. For this reason, the `num_current` scores in the first
+    buffer, as well as the `num_past` scores in the second buffer are aggregated according to a certain
+    `aggregation_function`. If the percentage improvement, which results from comparing the more recent scores from the
+    first buffer to the older scores from the second buffer, is greater than a certain `min_improvement`, the rule
+    induction is continued, otherwise it is stopped.
     """
 
     def set_aggregation_function(self, aggregation_function: AggregationFunction) -> MeasureStoppingCriterionConfig:

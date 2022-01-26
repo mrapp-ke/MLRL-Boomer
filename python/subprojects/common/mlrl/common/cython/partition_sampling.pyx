@@ -6,7 +6,8 @@ from mlrl.common.cython._validation import assert_greater, assert_less
 
 cdef class ExampleWiseStratifiedBiPartitionSamplingConfig:
     """
-    A wrapper for the C++ class `ExampleWiseStratifiedBiPartitionSamplingConfig`.
+    Allows to configure a method for partitioning the available training examples into a training set and a holdout set
+    using stratification, where distinct label vectors are treated as individual classes.
     """
 
     def set_holdout_set_size(self, holdout_set_size: float) -> ExampleWiseStratifiedBiPartitionSamplingConfig:
@@ -27,7 +28,8 @@ cdef class ExampleWiseStratifiedBiPartitionSamplingConfig:
 
 cdef class LabelWiseStratifiedBiPartitionSamplingConfig:
     """
-    A wrapper for the C++ class `LabelWiseStratifiedBiPartitionSamplingConfig`.
+    Allows to configure a method for partitioning the available training examples into a training set and a holdout set
+    using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
     """
 
     def set_holdout_set_size(self, holdout_set_size: float) -> LabelWiseStratifiedBiPartitionSamplingConfig:
@@ -47,7 +49,8 @@ cdef class LabelWiseStratifiedBiPartitionSamplingConfig:
 
 cdef class RandomBiPartitionSamplingConfig:
     """
-    A wrapper for the C++ class `RandomBiPartitionSamplingConfig`.
+    Allows to configure a method for partitioning the available training examples into a training set and a holdout set
+    that randomly splits the training examples into two mutually exclusive sets.
     """
 
     def set_holdout_set_size(self, holdout_set_size: float) -> RandomBiPartitionSamplingConfig:

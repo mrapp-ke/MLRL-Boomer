@@ -6,7 +6,8 @@ from mlrl.common.cython._validation import assert_greater, assert_less
 
 cdef class ExampleWiseStratifiedInstanceSamplingConfig:
     """
-    A wrapper for the C++ class `ExampleWiseStratifiedInstanceSamplingConfig`.
+    Allows to configure a method for selecting a subset of the available training examples using stratification, where
+    distinct label vectors are treated as individual classes.
     """
 
     def set_sample_size(self, sample_size: float) -> ExampleWiseStratifiedInstanceSamplingConfig:
@@ -26,7 +27,8 @@ cdef class ExampleWiseStratifiedInstanceSamplingConfig:
 
 cdef class LabelWiseStratifiedInstanceSamplingConfig:
     """
-    A wrapper for the C++ class `LabelWiseStratifiedInstanceSamplingConfig`.
+    Allows to configure a method for selecting a subset of the available training examples using stratification, such
+    that for each label the proportion of relevant and irrelevant examples is maintained.
     """
 
     def set_sample_size(self, sample_size: float) -> LabelWiseStratifiedInstanceSamplingConfig:
@@ -46,7 +48,7 @@ cdef class LabelWiseStratifiedInstanceSamplingConfig:
 
 cdef class InstanceSamplingWithReplacementConfig:
     """
-    A wrapper for the C++ class `InstanceSamplingWithReplacementConfig`.
+    Allows to configure a method for selecting a subset of the available training examples with replacement.
     """
 
     def set_sample_size(self, sample_size: float) -> InstanceSamplingWithReplacementConfig:
@@ -66,7 +68,7 @@ cdef class InstanceSamplingWithReplacementConfig:
 
 cdef class InstanceSamplingWithoutReplacementConfig:
     """
-    A wrapper for the C++ class `InstanceSamplingWithoutReplacementConfig`.
+    Allows to configure a method for selecting a subset of the available training examples without replacement.
     """
 
     def set_sample_size(self, sample_size: float) -> InstanceSamplingWithoutReplacementConfig:

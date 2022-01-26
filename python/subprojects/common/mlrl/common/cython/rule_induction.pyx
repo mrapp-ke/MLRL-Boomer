@@ -6,7 +6,7 @@ from mlrl.common.cython._validation import assert_greater_or_equal
 
 cdef class TopDownRuleInductionConfig:
     """
-    A wrapper for the C++ class `TopDownRuleInductionConfig`.
+    Allows to configure an algorithm for the induction of individual rules that uses a top-down greedy search.
     """
 
     def set_min_coverage(self, min_coverage: int) -> TopDownRuleInductionConfig:

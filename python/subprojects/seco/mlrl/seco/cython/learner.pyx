@@ -12,7 +12,7 @@ from libcpp.utility cimport move
 
 cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
     """
-    A wrapper for the pure virtual C++ class `ISeCoRuleLearner::IConfig`.
+    Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
     """
 
     def __cinit__(self):
@@ -206,7 +206,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
 
 cdef class SeCoRuleLearner(RuleLearner):
     """
-    A wrapper for the pure virtual C++ class `ISeCoRuleLearner`.
+    A rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
     """
 
     def __cinit__(self, SeCoRuleLearnerConfig config not None):

@@ -6,7 +6,10 @@ from mlrl.common.cython._validation import assert_greater_or_equal
 
 cdef class ExampleWiseClassificationPredictorConfig:
     """
-    A wrapper for the C++ class `ExampleWiseClassificationPredictorConfig`.
+    Allows to configure a predictor that predicts known label vectors for given query examples by summing up the scores
+    that are provided by an existing rule-based model and comparing the aggregated score vector to the known label
+    vectors according to a certain distance measure. The label vector that is closest to the aggregated score vector is
+    finally predicted.
     """
 
     def set_num_threads(self, num_threads: int) -> ExampleWiseClassificationPredictorConfig:
@@ -26,7 +29,10 @@ cdef class ExampleWiseClassificationPredictorConfig:
 
 cdef class LabelWiseClassificationPredictorConfig:
     """
-    A wrapper for the C++ class `LabelWiseClassificationPredictorConfig`.
+    Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
+    irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model and
+    transforming them into binary values according to a certain threshold that is applied to each label individually (1
+    if a score exceeds the threshold, i.e., the label is relevant, 0 otherwise).
     """
 
     def set_num_threads(self, num_threads: int) -> LabelWiseClassificationPredictorConfig:
@@ -46,7 +52,8 @@ cdef class LabelWiseClassificationPredictorConfig:
 
 cdef class LabelWiseRegressionPredictorConfig:
     """
-    A wrapper for the C++ class `LabelWiseRegressionPredictorConfig`.
+    Allows to configure predictors that predict label-wise regression scores for given query examples by summing up the
+    scores that are provided by the individual rules of an existing rule-based model for each label individually.
     """
 
     def set_num_threads(self, num_threads: int) -> LabelWiseRegressionPredictorConfig:
@@ -65,7 +72,10 @@ cdef class LabelWiseRegressionPredictorConfig:
 
 cdef class LabelWiseProbabilityPredictorConfig:
     """
-    A wrapper for the C++ class `LabelWiseProbabilityPredictorConfig`.
+    Allows to configure a predictor that predicts label-wise probabilities for given query examples, which estimate the
+    chance of individual labels to be relevant, by summing up the scores that are provided by individual rules of an
+    existing rule-based models and transforming the aggregated scores into probabilities in [0, 1] according to a
+    certain transformation function that is applied to each label individually.
     """
 
     def set_num_threads(self, num_threads: int) -> LabelWiseProbabilityPredictorConfig:
