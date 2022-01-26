@@ -5,14 +5,21 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides scikit-learn implementations of boosting algorithms.
 """
+import logging as log
 from typing import Dict, Set
 
 from mlrl.boosting.cython.learner import BoostingRuleLearner as BoostingRuleLearnerWrapper, BoostingRuleLearnerConfig
 from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLearnerWrapper
+from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
+from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
+    configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
+    configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
+    configure_parallel_statistic_update, configure_size_stopping_criterion, configure_time_stopping_criterion
+from mlrl.common.rule_learners import parse_param, parse_param_and_options
 from sklearn.base import ClassifierMixin
 
 EARLY_STOPPING_LOSS = 'loss'
@@ -247,9 +254,74 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_random_state=' + str(self.random_state)
         return name
 
-    def _create_config(self) -> RuleLearnerConfig:
-        return BoostingRuleLearnerConfig()
-
-    def _create_learner(self, config) -> RuleLearnerWrapper:
+    def _create_learner(self) -> RuleLearnerWrapper:
+        config = BoostingRuleLearnerConfig()
+        configure_rule_model_assemblage(config, default_rule=self.default_rule)
+        configure_rule_induction(config, min_coverage=int(self.min_coverage), max_conditions=int(self.max_conditions),
+                                 max_head_refinements=int(self.max_head_refinements),
+                                 recalculate_predictions=self.recalculate_predictions)
+        configure_feature_binning(config, self.feature_binning)
+        configure_label_sampling(config, self.feature_sampling)
+        configure_instance_sampling(config, self.instance_sampling)
+        configure_feature_sampling(config, self.feature_sampling)
+        configure_partition_sampling(config, self.holdout)
+        configure_pruning(config, self.pruning, self.instance_sampling)
+        self.__configure_parallel_rule_refinement(config)
+        self.__configure_parallel_statistic_update(config)
+        configure_size_stopping_criterion(config, max_rules=self.max_rules)
+        configure_time_stopping_criterion(config, time_limit=self.time_limit)
+        self.__configure_measure_stopping_criterion(config)
         # TODO configure
         return BoostingRuleLearnerWrapper(config)
+
+    def __configure_parallel_rule_refinement(self, config: RuleLearnerConfig):
+        parallel_rule_refinement = self.parallel_rule_refinement
+
+        if parallel_rule_refinement == AUTOMATIC:
+            config.use_automatic_parallel_rule_refinement()
+        else:
+            configure_parallel_rule_refinement(config, parallel_rule_refinement)
+
+    def __configure_parallel_statistic_update(self, config: RuleLearnerConfig):
+        parallel_statistic_update = self.parallel_statistic_update
+
+        if parallel_statistic_update == AUTOMATIC:
+            config.use_automatic_parallel_statistic_update()
+        else:
+            configure_parallel_statistic_update(config, parallel_statistic_update)
+
+    def __configure_measure_stopping_criterion(self, config: RuleLearnerConfig):
+        early_stopping = self.early_stopping
+
+        if early_stopping is None:
+            config.use_no_measure_stopping_criterion()
+        elif self.holdout is None:
+            log.warning(
+                'Parameter "early_stopping" does not have any effect, because parameter "holdout" is set to "None"!')
+        else:
+            value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
+
+            if value == EARLY_STOPPING_LOSS:
+                aggregation_function = self.__create_aggregation_function(
+                    options.get_string(ARGUMENT_AGGREGATION_FUNCTION, 'avg'))
+                config.use_measure_stopping_criterion() \
+                    .set_aggregation_function(aggregation_function) \
+                    .set_min_rules(options.get_int(ARGUMENT_MIN_RULES, 100)) \
+                    .set_update_interval(options.get_int(ARGUMENT_UPDATE_INTERVAL, 1)) \
+                    .set_stop_interval(options.get_int(ARGUMENT_STOP_INTERVAL, 1)) \
+                    .set_num_past(options.get_int(ARGUMENT_NUM_PAST, 50)) \
+                    .set_num_current(options.get_int(ARGUMENT_NUM_RECENT, 50)) \
+                    .set_min_improvement(options.get_float(ARGUMENT_MIN_IMPROVEMENT, 0.005)) \
+                    .set_force_stop(options.get_bool(ARGUMENT_FORCE_STOP, True))
+
+    @staticmethod
+    def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:
+        value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function, {AGGREGATION_FUNCTION_MIN,
+                                                                                  AGGREGATION_FUNCTION_MAX,
+                                                                                  AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
+        if value == AGGREGATION_FUNCTION_MIN:
+            return AggregationFunction.MIN
+        elif value == AGGREGATION_FUNCTION_MAX:
+            return AggregationFunction.MAX
+        else:
+            return AggregationFunction.ARITHMETIC_MEAN
