@@ -26,8 +26,14 @@ namespace boosting {
              */
             typedef float64 (*EvaluateFunction)(bool trueLabel, float64 predictedScore);
 
+            /**
+             * The "update function" that is used for updating gradients and Hessians.
+             */
             UpdateFunction updateFunction_;
 
+            /**
+             * The "evaluation function" that is used for evaluating predictions.
+             */
             EvaluateFunction evaluateFunction_;
 
             /**

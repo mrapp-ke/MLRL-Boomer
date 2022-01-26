@@ -23,6 +23,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IPostProcessor::postProcess`
+             */
             void postProcess(AbstractPrediction& prediction) const override {
                 uint32 numElements = prediction.getNumElements();
                 AbstractPrediction::score_iterator iterator = prediction.scores_begin();
@@ -54,6 +57,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IPostProcessorFactory::create`
+             */
             std::unique_ptr<IPostProcessor> create() const override {
                 return std::make_unique<ConstantShrinkage>(shrinkage_);
             }

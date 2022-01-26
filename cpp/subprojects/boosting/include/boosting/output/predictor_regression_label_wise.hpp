@@ -60,6 +60,9 @@ namespace boosting {
 
             ILabelWiseRegressionPredictorConfig& setNumThreads(uint32 numThreads) override;
 
+            /**
+             * @see `IRegressionPredictorConfig::createRegressionPredictorFactory`
+             */
             std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory() const override;
 
     };
