@@ -10,8 +10,8 @@
 namespace boosting {
 
     /**
-     * Allows to configure a method that assigns labels to bins in a way such that each bin contains labels for which
-     * the predicted score is expected to belong to the same value range.
+     * Defines an interface for all classes that allow to configure a method that assigns labels to bins in a way such
+     * that each bin contains labels for which the predicted score is expected to belong to the same value range.
      */
     class IEqualWidthLabelBinningConfig {
 
