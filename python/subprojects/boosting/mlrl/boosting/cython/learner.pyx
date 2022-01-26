@@ -59,6 +59,13 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticParallelStatisticUpdate()
 
+    def use_automatic_heads(self):
+        """
+        Configures the rule learner to automatically decide for the type of rule heads to be used.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticHeads()
+
     def use_single_label_heads(self):
         """
         Configures the rule learner to induce rules with single-label heads that predict for a single label.

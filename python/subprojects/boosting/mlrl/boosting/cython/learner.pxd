@@ -22,6 +22,8 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useAutomaticParallelStatisticUpdate()
 
+        void useAutomaticHeads()
+
         void useSingleLabelHeads()
 
         void useCompleteHeads()

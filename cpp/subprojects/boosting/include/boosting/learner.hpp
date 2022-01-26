@@ -133,6 +133,12 @@ namespace boosting {
                     virtual void useAutomaticParallelStatisticUpdate() = 0;
 
                     /**
+                     * Configures the rule learner to automatically decide for the type of rule heads that should be
+                     * used.
+                     */
+                    virtual void useAutomaticHeads() = 0;
+
+                    /**
                      * Configures the rule learner to induce rules with single-label heads that predict for a single
                      * label.
                      */
@@ -332,6 +338,8 @@ namespace boosting {
                     void useAutomaticParallelRuleRefinement() override;
 
                     void useAutomaticParallelStatisticUpdate() override;
+
+                    void useAutomaticHeads() override;
 
                     void useSingleLabelHeads() override;
 
