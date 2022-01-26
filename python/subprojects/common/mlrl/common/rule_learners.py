@@ -222,7 +222,7 @@ def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_
 
     if value == BooleanOption.FALSE.value:
         config.use_no_parallel_rule_refinement()
-    elif value == BooleanOption.TRUE.value:
+    else:
         config.use_parallel_rule_refinement().set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, 0))
 
 
@@ -231,7 +231,7 @@ def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_stat
 
     if value == BooleanOption.FALSE.value:
         config.use_no_parallel_statistic_update()
-    elif value == BooleanOption.TRUE.value:
+    else:
         config.use_parallel_statistic_update().set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, 0))
 
 
