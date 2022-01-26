@@ -7,7 +7,7 @@
 
 
 /**
- * Allows to configure a method for sampling labels without replacement.
+ * Defines an interface for all classes that allow to configure a method for sampling labels without replacement.
  */
 class ILabelSamplingWithoutReplacementConfig {
 
