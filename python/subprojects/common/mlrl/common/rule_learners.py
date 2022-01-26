@@ -249,6 +249,15 @@ def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: int
         config.use_time_stopping_criterion().set_time_limit(time_limit)
 
 
+def get_num_threads_prediction(parallel_prediction: str):
+    value, options = parse_param_and_options('parallel_prediction', parallel_prediction, PARALLEL_VALUES)
+
+    if value == BooleanOption.TRUE.value:
+        return options.get_int(ARGUMENT_NUM_THREADS, 0)
+    else:
+        return 1
+
+
 def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
     if value in allowed_values:
         return value

@@ -19,7 +19,7 @@ from mlrl.common.rule_learners import configure_rule_model_assemblage, configure
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_size_stopping_criterion, configure_time_stopping_criterion
-from mlrl.common.rule_learners import parse_param, parse_param_and_options
+from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_num_threads_prediction
 from sklearn.base import ClassifierMixin
 
 EARLY_STOPPING_LOSS = 'loss'
@@ -278,6 +278,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.__configure_loss(config)
         self.__configure_label_binning(config)
         self.__configure_classification_predictor(config)
+        self.__configure_probability_predictor(config)
         return BoostingRuleLearnerWrapper(config)
 
     def __configure_feature_binning(self, config: BoostingRuleLearnerConfig):
@@ -412,16 +413,15 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if predictor == AUTOMATIC:
             config.use_automatic_label_binning()
         else:
-            value, options = parse_param_and_options('parallel_prediction', self.parallel_prediction, PARALLEL_VALUES)
-
-            if value == BooleanOption.TRUE.value:
-                num_threads = options.get_int(ARGUMENT_NUM_THREADS, 0)
-            else:
-                num_threads = 1
-
             value = parse_param('predictor', predictor, PREDICTOR_VALUES)
 
             if value == PREDICTOR_LABEL_WISE:
-                config.use_label_wise_classification_predictor().set_num_threads(num_threads)
+                config.use_label_wise_classification_predictor() \
+                    .set_num_threads(get_num_threads_prediction(self.parallel_prediction))
             elif value == PREDICTOR_EXAMPLE_WISE:
-                config.use_example_wise_classification_predictor().set_num_threads(num_threads)
+                config.use_example_wise_classification_predictor() \
+                    .set_num_threads(get_num_threads_prediction(self.parallel_prediction))
+
+    def _configure_probability_predictor(self, config: BoostingRuleLearnerConfig):
+        config.use_label_wise_probability_predictor() \
+            .set_num_threads(get_num_threads_prediction(self.parallel_prediction))
