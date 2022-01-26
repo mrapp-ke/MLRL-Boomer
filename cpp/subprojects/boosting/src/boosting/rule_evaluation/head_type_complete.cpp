@@ -38,17 +38,17 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
-            const IExampleWiseLossConfig& lossConfig) const {
+            const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix);
         std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
             lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory();
+            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory();
+            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory();
+            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory(blas, lapack);
         return std::make_unique<DenseExampleWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),

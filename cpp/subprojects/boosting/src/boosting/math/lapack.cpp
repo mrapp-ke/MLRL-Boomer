@@ -5,7 +5,7 @@
 
 namespace boosting {
 
-    Lapack::Lapack(dsysv_t dsysvFunction)
+    Lapack::Lapack(DsysvFunction dsysvFunction)
         : dsysvFunction_(dsysvFunction) {
 
     }

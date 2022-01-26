@@ -50,7 +50,7 @@ namespace boosting {
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
-                const IExampleWiseLossConfig& lossConfig) const override;
+                const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
 
     };
 

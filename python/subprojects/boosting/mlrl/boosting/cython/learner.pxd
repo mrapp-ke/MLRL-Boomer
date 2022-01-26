@@ -62,11 +62,17 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
     cdef cppclass IBoostingRuleLearner(IRuleLearner):
         pass
 
-
     unique_ptr[IBoostingRuleLearnerConfig] createBoostingRuleLearnerConfig()
 
+    ctypedef double (*DdotFunction)(int* n, double* dx, int* incx, double* dy, int* incy)
 
-    unique_ptr[IBoostingRuleLearner] createBoostingRuleLearner(unique_ptr[IBoostingRuleLearnerConfig] configPtr)
+    ctypedef void (*DspmvFunction)(char* uplo, int* n, double* alpha, double* ap, double* x, int* incx, double* beta, double* y, int* incy)
+
+    ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info)
+
+    unique_ptr[IBoostingRuleLearner] createBoostingRuleLearner(unique_ptr[IBoostingRuleLearnerConfig] configPtr,
+                                                               DdotFunction ddotFunction, DspmvFunction dspmvFunction,
+                                                               DsysvFunction dsysvFunction)
 
 
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):

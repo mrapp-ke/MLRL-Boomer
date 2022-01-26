@@ -115,7 +115,8 @@ namespace boosting {
 
             std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseRuleEvaluationFactory() const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseRuleEvaluationFactory() const override;
+            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseRuleEvaluationFactory(
+                const Blas& blas, const Lapack& lapack) const override;
 
     };
 

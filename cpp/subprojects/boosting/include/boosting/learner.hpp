@@ -6,6 +6,8 @@
 #include "common/learner.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/losses/loss.hpp"
+#include "boosting/math/blas.hpp"
+#include "boosting/math/lapack.hpp"
 #include "boosting/output/predictor_classification_example_wise.hpp"
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "boosting/output/predictor_regression_label_wise.hpp"
@@ -383,6 +385,10 @@ namespace boosting {
 
             std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr_;
 
+            Blas blas_;
+
+            Lapack lapack_;
+
         protected:
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
@@ -402,10 +408,15 @@ namespace boosting {
         public:
 
             /**
-             * @param configPtr An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that specifies
-             *                  the configuration that should be used by the rule learner
+             * @param configPtr     An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that
+             *                      specifies the configuration that should be used by the rule learner
+             * @param ddotFunction  A function pointer to BLAS' DDOT routine
+             * @param dspmvFunction A function pointer to BLAS' DSPMV routine
+             * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
              */
-            BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr);
+            BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr,
+                                Blas::DdotFunction ddotFunction, Blas::DspmvFunction dspmvFunction,
+                                Lapack::DsysvFunction dsysvFunction);
 
     };
 
@@ -419,11 +430,15 @@ namespace boosting {
     /**
      * Creates and returns a new object of type `IBoostingRuleLearner`.
      *
-     * @param configPtr An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that specifies the
-     *                  configuration that should be used by the rule learner.
-     * @return          An unique pointer to an object of type `IBoostingRuleLearner` that has been created
+     * @param configPtr     An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that specifies the
+     *                      configuration that should be used by the rule learner.
+     * @param ddotFunction  A function pointer to BLAS' DDOT routine
+     * @param dspmvFunction A function pointer to BLAS' DSPMV routine
+     * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
+     * @return              An unique pointer to an object of type `IBoostingRuleLearner` that has been created
      */
     std::unique_ptr<IBoostingRuleLearner> createBoostingRuleLearner(
-        std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr);
+        std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr, Blas::DdotFunction ddotFunction,
+        Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
 
 }

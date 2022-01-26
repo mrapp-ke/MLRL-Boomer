@@ -10,6 +10,9 @@ from mlrl.boosting.cython.regularization cimport ManualRegularizationConfig
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
+from scipy.linalg.cython_blas cimport ddot, dspmv
+from scipy.linalg.cython_lapack cimport dsysv
+
 
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
     """
@@ -258,7 +261,7 @@ cdef class BoostingRuleLearner(RuleLearner):
         """
         :param config: The configuration that should be used by the rule learner
         """
-        self.rule_learner_ptr = createBoostingRuleLearner(move(config.rule_learner_config_ptr))
+        self.rule_learner_ptr = createBoostingRuleLearner(move(config.rule_learner_config_ptr), ddot, dspmv, dsysv)
 
     cdef IRuleLearner* get_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()

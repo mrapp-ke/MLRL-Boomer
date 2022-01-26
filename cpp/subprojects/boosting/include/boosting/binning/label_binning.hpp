@@ -3,6 +3,8 @@
  */
 #pragma once
 
+#include "boosting/math/blas.hpp"
+#include "boosting/math/lapack.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 #include <functional>
@@ -151,9 +153,13 @@ namespace boosting {
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` according to the specified
              * configuration.
              *
-             * @return An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has been created
+             * @param blas      A reference to an object of type `Blas` that allows to execute BLAS routines
+             * @param lapack    A reference to an object of type `Lapack` that allows to execute LAPACK routines
+             * @return          An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has been
+             *                  created
              */
-            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseRuleEvaluationFactory() const = 0;
+            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseRuleEvaluationFactory(
+                const Blas& blas, const Lapack& lapack) const = 0;
 
     };
 

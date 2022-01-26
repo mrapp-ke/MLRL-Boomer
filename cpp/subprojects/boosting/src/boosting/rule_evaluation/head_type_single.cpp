@@ -39,7 +39,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
-            const IExampleWiseLossConfig& lossConfig) const {
+            const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix);
@@ -47,7 +47,7 @@ namespace boosting {
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
             lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory();
+            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
             std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =

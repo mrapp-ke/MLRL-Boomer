@@ -3,7 +3,7 @@
 
 namespace boosting {
 
-    Blas::Blas(ddot_t ddotFunction, dspmv_t dspmvFunction)
+    Blas::Blas(DdotFunction ddotFunction, DspmvFunction dspmvFunction)
         : ddotFunction_(ddotFunction), dspmvFunction_(dspmvFunction) {
 
     }
