@@ -260,7 +260,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         configure_rule_induction(config, min_coverage=int(self.min_coverage), max_conditions=int(self.max_conditions),
                                  max_head_refinements=int(self.max_head_refinements),
                                  recalculate_predictions=self.recalculate_predictions)
-        configure_feature_binning(config, self.feature_binning)
+        self.__configure_feature_binning(config)
         configure_label_sampling(config, self.feature_sampling)
         configure_instance_sampling(config, self.instance_sampling)
         configure_feature_sampling(config, self.feature_sampling)
@@ -271,10 +271,24 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         configure_size_stopping_criterion(config, max_rules=self.max_rules)
         configure_time_stopping_criterion(config, time_limit=self.time_limit)
         self.__configure_measure_stopping_criterion(config)
-        # TODO configure
+        self.__configure_post_processor(config)
+        self.__configure_head_type(config)
+        self.__configure_l1_regularization(config)
+        self.__configure_l2_regularization(config)
+        self.__configure_loss(config)
+        self.__configure_label_binning(config)
+        self.__configure_classification_predictor(config)
         return BoostingRuleLearnerWrapper(config)
 
-    def __configure_parallel_rule_refinement(self, config: RuleLearnerConfig):
+    def __configure_feature_binning(self, config: BoostingRuleLearnerConfig):
+        feature_binning = self.feature_binning
+
+        if feature_binning == AUTOMATIC:
+            config.use_automatic_feature_binning()
+        else:
+            configure_feature_binning(config, feature_binning)
+
+    def __configure_parallel_rule_refinement(self, config: BoostingRuleLearnerConfig):
         parallel_rule_refinement = self.parallel_rule_refinement
 
         if parallel_rule_refinement == AUTOMATIC:
@@ -282,7 +296,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         else:
             configure_parallel_rule_refinement(config, parallel_rule_refinement)
 
-    def __configure_parallel_statistic_update(self, config: RuleLearnerConfig):
+    def __configure_parallel_statistic_update(self, config: BoostingRuleLearnerConfig):
         parallel_statistic_update = self.parallel_statistic_update
 
         if parallel_statistic_update == AUTOMATIC:
@@ -326,3 +340,88 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             return AggregationFunction.MAX
         elif value == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
             return AggregationFunction.ARITHMETIC_MEAN
+
+    def __configure_post_processor(self, config: BoostingRuleLearnerConfig):
+        shrinkage = float(self.shrinkage)
+
+        if shrinkage == 1:
+            config.use_no_post_processor()
+        else:
+            config.use_constant_shrinkage_post_processor().set_shrinkage(shrinkage)
+
+    def __configure_head_type(self, config: BoostingRuleLearnerConfig):
+        head_type = self.head_type
+
+        if head_type == AUTOMATIC:
+            config.use_automatic_heads()
+        else:
+            value = parse_param("head_type", head_type, HEAD_TYPE_VALUES)
+
+            if value == HEAD_TYPE_SINGLE:
+                config.use_single_label_heads()
+            elif value == HEAD_TYPE_COMPLETE:
+                config.use_complete_heads()
+
+    def __configure_l1_regularization(self, config: BoostingRuleLearnerConfig):
+        l1_regularization_weight = float(self.l1_regularization_weight)
+
+        if l1_regularization_weight == 0:
+            config.use_no_l1_regularization()
+        else:
+            config.use_l1_regularization().set_regularization_weight(l1_regularization_weight)
+
+    def __configure_l2_regularization(self, config: BoostingRuleLearnerConfig):
+        l2_regularization_weight = float(self.l2_regularization_weight)
+
+        if l2_regularization_weight == 0:
+            config.use_no_l2_regularization()
+        else:
+            config.use_l2_regularization().set_regularization_weight(l2_regularization_weight)
+
+    def __configure_loss(self, config: BoostingRuleLearnerConfig):
+        value = parse_param("loss", self.loss, LOSS_VALUES)
+
+        if value == LOSS_SQUARED_ERROR_LABEL_WISE:
+            config.use_label_wise_squared_error_loss()
+        elif value == LOSS_SQUARED_HINGE_LABEL_WISE:
+            config.use_label_wise_squared_hinge_loss()
+        elif value == LOSS_LOGISTIC_LABEL_WISE:
+            config.use_label_wise_logistic_loss()
+        elif value == LOSS_LOGISTIC_EXAMPLE_WISE:
+            config.use_example_wise_logistic_loss()
+
+    def __configure_label_binning(self, config: BoostingRuleLearnerConfig):
+        label_binning = self.label_binning
+
+        if label_binning is None:
+            config.use_no_label_binning()
+        elif label_binning == AUTOMATIC:
+            config.use_automatic_label_binning()
+        else:
+            value, options = parse_param_and_options('label_binning', label_binning, LABEL_BINNING_VALUES)
+
+            if value == LABEL_BINNING_EQUAL_WIDTH:
+                config.use_equal_width_label_binning() \
+                    .set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, 0.04)) \
+                    .set_min_bins(options.get_int(ARGUMENT_MIN_BINS, 1)) \
+                    .set_max_bins(options.get_int(ARGUMENT_MAX_BINS, 0))
+
+    def __configure_classification_predictor(self, config: BoostingRuleLearnerConfig):
+        predictor = self.predictor
+
+        if predictor == AUTOMATIC:
+            config.use_automatic_label_binning()
+        else:
+            value, options = parse_param_and_options('parallel_prediction', self.parallel_prediction, PARALLEL_VALUES)
+
+            if value == BooleanOption.TRUE.value:
+                num_threads = options.get_int(ARGUMENT_NUM_THREADS, 0)
+            else:
+                num_threads = 1
+
+            value = parse_param('predictor', predictor, PREDICTOR_VALUES)
+
+            if value == PREDICTOR_LABEL_WISE:
+                config.use_label_wise_classification_predictor().set_num_threads(num_threads)
+            elif value == PREDICTOR_EXAMPLE_WISE:
+                config.use_example_wise_classification_predictor().set_num_threads(num_threads)
