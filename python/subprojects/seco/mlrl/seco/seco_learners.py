@@ -9,12 +9,14 @@ from typing import Dict, Set
 
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE, PARALLEL_VALUES, \
+    ARGUMENT_NUM_THREADS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_size_stopping_criterion, configure_time_stopping_criterion
+from mlrl.common.rule_learners import parse_param, parse_param_and_options
 from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
 
@@ -207,5 +209,76 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         configure_parallel_statistic_update(config, self.parallel_statistic_update)
         configure_size_stopping_criterion(config, max_rules=self.max_rules)
         configure_time_stopping_criterion(config, time_limit=self.time_limit)
-        # TODO configure
+        self.__configure_coverage_stopping_criterion(config)
+        self.__configure_head_type(config)
+        self.__configure_heuristic(config)
+        self.__configure_pruning_heuristic(config)
+        self.__configure_lift_function(config)
+        self.__configure_classification_predictor(config)
         return SeCoRuleLearnerWrapper(config)
+
+    def __configure_coverage_stopping_criterion(self, config: SeCoRuleLearnerConfig):
+        config.use_coverage_stopping_criterion().set_threshold(0)
+
+    def __configure_head_type(self, config: SeCoRuleLearnerConfig):
+        head_type = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
+
+        if head_type == HEAD_TYPE_SINGLE:
+            config.use_single_label_heads()
+        elif head_type == HEAD_TYPE_PARTIAL:
+            config.use_partial_heads()
+
+    def __configure_heuristic(self, config: SeCoRuleLearnerConfig):
+        value, options = parse_param_and_options('heuristic', self.heuristic, HEURISTIC_VALUES)
+
+        if value == HEURISTIC_ACCURACY:
+            config.use_accuracy_heuristic()
+        elif value == HEURISTIC_PRECISION:
+            config.use_precision_heuristic()
+        elif value == HEURISTIC_RECALL:
+            config.use_recall_heuristic()
+        elif value == HEURISTIC_LAPLACE:
+            config.use_laplace_heuristic()
+        elif value == HEURISTIC_WRA:
+            config.use_wra_heuristic()
+        elif value == HEURISTIC_F_MEASURE:
+            config.use_f_measure_heuristic().set_beta(options.get_float(ARGUMENT_BETA, 0.25))
+        elif value == HEURISTIC_M_ESTIMATE:
+            config.use_m_estimate_heuristic().set_m(options.get_float(ARGUMENT_M, 22.466))
+
+    def __configure_pruning_heuristic(self, config: SeCoRuleLearnerConfig):
+        value, options = parse_param_and_options('pruning_heuristic', self.pruning_heuristic, HEURISTIC_VALUES)
+
+        if value == HEURISTIC_ACCURACY:
+            config.use_accuracy_pruning_heuristic()
+        elif value == HEURISTIC_PRECISION:
+            config.use_precision_pruning_heuristic()
+        elif value == HEURISTIC_RECALL:
+            config.use_recall_pruning_heuristic()
+        elif value == HEURISTIC_LAPLACE:
+            config.use_laplace_pruning_heuristic()
+        elif value == HEURISTIC_WRA:
+            config.use_wra_pruning_heuristic()
+        elif value == HEURISTIC_F_MEASURE:
+            config.use_f_measure_pruning_heuristic().set_beta(options.get_float(ARGUMENT_BETA, 0.25))
+        elif value == HEURISTIC_M_ESTIMATE:
+            config.use_m_estimate_pruning_heuristic().set_m(options.get_float(ARGUMENT_M, 22.466))
+
+    def __configure_lift_function(self, config: SeCoRuleLearnerConfig):
+        value, options = parse_param_and_options('lift_function', self.lift_function, LIFT_FUNCTION_VALUES)
+
+        if value == LIFT_FUNCTION_PEAK:
+            config.use_peak_lift_function() \
+                .set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, 0)) \
+                .set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, 1.08)) \
+                .set_curvature(options.get_float(ARGUMENT_CURVATURE, 1.0))
+
+    def __configure_classification_predictor(self, config: SeCoRuleLearnerConfig):
+        value, options = parse_param_and_options('parallel_prediction', self.parallel_prediction, PARALLEL_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            num_threads = options.get_int(ARGUMENT_NUM_THREADS, 0)
+        else:
+            num_threads = 1
+
+        config.use_label_wise_classification_predictor().set_num_threads(num_threads)
