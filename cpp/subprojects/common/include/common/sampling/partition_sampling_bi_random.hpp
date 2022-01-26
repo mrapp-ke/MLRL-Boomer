@@ -8,7 +8,7 @@
 
 /**
  * Defines an interface for all classes that allow to configure a method for partitioning the available training
- * examples into a training set and a holdout set that randomly split the training examples into two mutually exclusive
+ * examples into a training set and a holdout set that randomly splits the training examples into two mutually exclusive
  * sets.
  */
 class IRandomBiPartitionSamplingConfig {
@@ -39,7 +39,7 @@ class IRandomBiPartitionSamplingConfig {
 
 /**
  * Allows to configure a method for partitioning the available training examples into a training set and a holdout set
- * that randomly split the training examples into two mutually exclusive sets.
+ * that randomly splits the training examples into two mutually exclusive sets.
  */
 class RandomBiPartitionSamplingConfig final : public IPartitionSamplingConfig, public IRandomBiPartitionSamplingConfig {
 
