@@ -10,6 +10,7 @@
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
 #include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "boosting/output/predictor_classification_auto.hpp"
+#include "boosting/rule_evaluation/head_type_auto.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
@@ -22,7 +23,7 @@ namespace boosting {
         this->useFeatureSamplingWithoutReplacement();
         this->useSizeStoppingCriterion();
         this->useConstantShrinkagePostProcessor();
-        this->useSingleLabelHeads();
+        this->useAutomaticHeads();
         this->useNoL1Regularization();
         this->useL2Regularization();
         this->useLabelWiseLogisticLoss();
@@ -88,6 +89,12 @@ namespace boosting {
 
     void BoostingRuleLearner::Config::useAutomaticParallelStatisticUpdate() {
         parallelStatisticUpdateConfigPtr_ = std::make_unique<AutoParallelStatisticUpdateConfig>(lossConfigPtr_);
+    }
+
+    void BoostingRuleLearner::Config::useAutomaticHeads() {
+        headConfigPtr_ = std::make_unique<AutomaticHeadConfig>(
+            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
+            l2RegularizationConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useSingleLabelHeads() {
