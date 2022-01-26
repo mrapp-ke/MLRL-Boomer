@@ -4,6 +4,8 @@
 from mlrl.common.cython._validation import assert_greater_or_equal, assert_less_or_equal, assert_multiple, \
     assert_not_none
 
+from enum import Enum
+
 
 cdef class SizeStoppingCriterionConfig:
     """
@@ -40,6 +42,15 @@ cdef class TimeStoppingCriterionConfig:
         return self
 
 
+class AggregationFunction(Enum):
+    """
+    Specifies different types of aggregation functions that allow to aggregate the values that are stored in a buffer.
+    """
+    MIN = 0
+    MAX = 1
+    ARITHMETIC_MEAN = 2
+
+
 cdef class MeasureStoppingCriterionConfig:
     """
     Allow to configure a stopping criterion that stops the induction of rules as soon as the quality of a model's
@@ -67,7 +78,7 @@ cdef class MeasureStoppingCriterionConfig:
                                         further configuration of the stopping criterion
         """
         assert_not_none('aggregation_function', aggregation_function)
-        cdef uint8 enum_value = aggregation_function
+        cdef uint8 enum_value = aggregation_function.value
         self.config_ptr.setAggregationFunction(<AggregationFunctionImpl>enum_value)
         return self
 
