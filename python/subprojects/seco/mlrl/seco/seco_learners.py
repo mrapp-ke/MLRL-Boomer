@@ -204,7 +204,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         configure_feature_sampling(config, self.feature_sampling)
         configure_partition_sampling(config, self.holdout)
         configure_pruning(config, self.pruning, self.instance_sampling)
-        configure_parallel_rule_refinement(config.self.parallel_rule_refinement)
+        configure_parallel_rule_refinement(config, self.parallel_rule_refinement)
         configure_parallel_statistic_update(config, self.parallel_statistic_update)
         configure_size_stopping_criterion(config, max_rules=self.max_rules)
         configure_time_stopping_criterion(config, time_limit=self.time_limit)
