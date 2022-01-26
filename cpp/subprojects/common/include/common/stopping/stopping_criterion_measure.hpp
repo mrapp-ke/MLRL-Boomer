@@ -12,13 +12,13 @@
  * certain measure.
  *
  * This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
- * the resulting quality score in a buffer that keeps track of the last `numRecent` scores. If the capacity of this
+ * the resulting quality score in a buffer that keeps track of the last `numCurrent` scores. If the capacity of this
  * buffer is already reached, the oldest score is passed to a buffer of size `numPast`. Every `stopInterval` rules, it
- * is decided whether the rule induction should be stopped. For this reason, the `numRecent` scores in the first buffer,
- * as well as the `numPast` scores in the second buffer are aggregated according to a certain `aggregationFunction`. If
- * the percentage improvement, which results from comparing the more recent scores from the first buffer to the older
- * scores from the second buffer, is greater than a certain `minImprovement`, the rule induction is continued,
- * otherwise it is stopped.
+ * is decided whether the rule induction should be stopped. For this reason, the `numCurrent` scores in the first
+ * buffer, as well as the `numPast` scores in the second buffer are aggregated according to a certain
+ * `aggregationFunction`. If the percentage improvement, which results from comparing the more recent scores from the
+ * first buffer to the older scores from the second buffer, is greater than a certain `minImprovement`, the rule
+ * induction is continued, otherwise it is stopped.
  */
 class IMeasureStoppingCriterionConfig {
 
