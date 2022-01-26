@@ -39,6 +39,9 @@ namespace boosting {
                                              const std::unique_ptr<IHeadConfig>& headConfigPtr,
                                              const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr);
 
+            /**
+             * @see `IMultiThreadingConfig::getNumThreads`
+             */
             uint32 getNumThreads(const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
 
     };

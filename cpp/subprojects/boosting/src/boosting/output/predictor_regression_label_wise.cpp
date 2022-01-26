@@ -36,6 +36,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IPredictor::predict`
+             */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(
                     const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
@@ -59,6 +62,9 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
+            /**
+             * @see `IPredictor::predict`
+             */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(const CsrConstView<const float32>& featureMatrix,
                                                                     uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
@@ -117,6 +123,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IRegressionPredictorFactory::create`
+             */
             std::unique_ptr<IRegressionPredictor> create(const RuleList& model,
                                                          const LabelVectorSet* labelVectorSet) const override {
                 return std::make_unique<LabelWiseRegressionPredictor<RuleList>>(model, numThreads_);

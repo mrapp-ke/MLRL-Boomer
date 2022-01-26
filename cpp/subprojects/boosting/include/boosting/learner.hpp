@@ -331,6 +331,9 @@ namespace boosting {
 
                     Config();
 
+                    /**
+                     * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`
+                     */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                     void useAutomaticFeatureBinning() override final;
@@ -391,18 +394,36 @@ namespace boosting {
 
         protected:
 
+            /**
+             * @see `AbstractRuleLearner::createStatisticsProviderFactory`
+             */
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
 
+            /**
+             * @see `AbstractRuleLearner::createModelBuilder`
+             */
             std::unique_ptr<IModelBuilder> createModelBuilder() const override;
 
+            /**
+             * @see `AbstractRuleLearner::createLabelSpaceInfo`
+             */
             std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
                 const IRowWiseLabelMatrix& labelMatrix) const override;
 
+            /**
+             * @see `AbstractRuleLearner::createClassificationPredictorFactory`
+             */
             std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
 
+            /**
+             * @see `AbstractRuleLearner::createRegressionPredictorFactory`
+             */
             std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory() const override;
 
+            /**
+             * @see `AbstractRuleLearner::createProbabilityPredictorFactory`
+             */
             std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory() const override;
 
         public:

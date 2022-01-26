@@ -82,6 +82,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IPredictor::predict`
+             */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(
                     const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
@@ -106,6 +109,9 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
+            /**
+             * @see `IPredictor::predict`
+             */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrConstView<const float32>& featureMatrix,
                                                                   uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
@@ -132,6 +138,9 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
+            /**
+             * @see `ISparsePredictor::predictSparse`
+             */
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
                     const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
@@ -157,6 +166,9 @@ namespace boosting {
                 return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
             }
 
+            /**
+             * @see `ISparsePredictor::predictSparse`
+             */
             std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
                     const CsrConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
@@ -215,6 +227,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IClassificationPredictorFactory::create`
+             */
             std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
                                                              const LabelVectorSet* labelVectorSet) const override {
                 return std::make_unique<LabelWiseClassificationPredictor<RuleList>>(model, threshold_, numThreads_);

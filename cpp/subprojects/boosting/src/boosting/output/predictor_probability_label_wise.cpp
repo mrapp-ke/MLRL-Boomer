@@ -56,6 +56,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IPredictor::predict`
+             */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(
                     const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
@@ -86,6 +89,9 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
+            /**
+             * @see `IPredictor::predict`
+             */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(const CsrConstView<const float32>& featureMatrix,
                                                                     uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
@@ -157,6 +163,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IProbabilityPredictorFactory::create`
+             */
             std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
                                                           const LabelVectorSet* labelVectorSet) const override {
                 std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();

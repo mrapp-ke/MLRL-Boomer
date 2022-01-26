@@ -70,8 +70,14 @@ namespace boosting {
 
             IExampleWiseClassificationPredictorConfig& setNumThreads(uint32 numThreads) override;
 
+            /**
+             * @see `IClassificationPredictorConfig::createClassificationPredictorFactory`
+             */
             std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
 
+            /**
+             * @see `IClassificationPredictorConfig::createLabelSpaceInfo`
+             */
             std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
                 const IRowWiseLabelMatrix& labelMatrix) const override;
 

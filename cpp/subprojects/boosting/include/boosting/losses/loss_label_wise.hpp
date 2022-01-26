@@ -116,10 +116,16 @@ namespace boosting {
              */
             virtual std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const = 0;
 
+            /**
+             * @see `IEvaluationMeasureFactory::createEvaluationMeasure`
+             */
             std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const override final {
                 return this->createLabelWiseLoss();
             }
 
+            /**
+             * @see `ISimilarityMeasureFactory::createSimilarityMeasure`
+             */
             std::unique_ptr<ISimilarityMeasure> createSimilarityMeasure() const override final {
                 return this->createLabelWiseLoss();
             }
