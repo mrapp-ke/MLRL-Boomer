@@ -130,7 +130,7 @@ class RuleModelVisitor:
 
 cdef class RuleModel:
     """
-    A wrapper for the pure virtual C++ class `IRuleModel`.
+    A rule-based model.
     """
 
     cdef IRuleModel* get_rule_model_ptr(self):
@@ -171,7 +171,7 @@ cdef class RuleModel:
 
 cdef class RuleList(RuleModel):
     """
-    A wrapper for the pure virtual C++ class `IRuleList`.
+    A rule-based model that stores several rules in an ordered list.
     """
 
     def __cinit__(self):

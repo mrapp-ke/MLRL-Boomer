@@ -5,7 +5,7 @@
 
 cdef class FeatureMatrix:
     """
-    A wrapper for the pure virtual C++ class `IFeatureMatrix`.
+    A feature matrix.
     """
 
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
@@ -38,7 +38,7 @@ cdef class FeatureMatrix:
 
 cdef class ColumnWiseFeatureMatrix(FeatureMatrix):
     """
-    A wrapper for the pure virtual C++ class `IColumnWiseFeatureMatrix`.
+    A feature matrix that provides column-wise access to the feature values of examples.
     """
 
     cdef IColumnWiseFeatureMatrix* get_column_wise_feature_matrix_ptr(self):
@@ -47,7 +47,8 @@ cdef class ColumnWiseFeatureMatrix(FeatureMatrix):
 
 cdef class FortranContiguousFeatureMatrix(ColumnWiseFeatureMatrix):
     """
-    A wrapper for the pure virtual C++ class `IFortranContiguousFeatureMatrix`.
+    A feature matrix that provides column-wise access to the feature values of examples that are stored in a
+    Fortran-contiguous array.
     """
 
     def __cinit__(self, const float32[::1, :] array not None):
@@ -68,7 +69,8 @@ cdef class FortranContiguousFeatureMatrix(ColumnWiseFeatureMatrix):
 
 cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
     """
-    A wrapper for the C++ class `ICscFeatureMatrix`.
+    A feature matrix that provides column-wise access to the feature values of examples that are stored in a sparse
+    matrix in the compressed sparse column (CSC) format.
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] data not None,
@@ -96,7 +98,7 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
 
 cdef class RowWiseFeatureMatrix(FeatureMatrix):
     """
-    A wrapper for the pure virtual C++ class `IRowWiseFeatureMatrix`.
+    A feature matrix that provides row-wise access to the feature values of examples.
     """
 
     cdef IRowWiseFeatureMatrix* get_row_wise_feature_matrix_ptr(self):
@@ -105,7 +107,8 @@ cdef class RowWiseFeatureMatrix(FeatureMatrix):
 
 cdef class CContiguousFeatureMatrix(RowWiseFeatureMatrix):
     """
-    A wrapper for the pure virtual C++ class `ICContiguousFeatureMatrix`.
+    A feature matrix that provides row-wise access to the feature values of examples that are stored in a C-contiguous
+    array.
     """
 
     def __cinit__(self, const float32[:, ::1] array not None):
@@ -126,7 +129,8 @@ cdef class CContiguousFeatureMatrix(RowWiseFeatureMatrix):
 
 cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
     """
-    A wrapper for the pure virtual C++ class `ICsrFeatureMatrix`.
+    A feature matrix that provides row-wise access to the feature values of examples that are stored in a sparse matrix
+    in the compressed sparse row (CSR) format.
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] data not None,

@@ -6,7 +6,7 @@ from mlrl.common.cython._validation import assert_greater, assert_less
 
 cdef class ConstantShrinkageConfig:
     """
-    A wrapper for the C++ class `ConstantShrinkageConfig`.
+    Allows to configure a post-processor that shrinks the weights of rules by a constant "shrinkage" parameter.
     """
 
     def set_shrinkage(self, shrinkage: float) -> ConstantShrinkageConfig:

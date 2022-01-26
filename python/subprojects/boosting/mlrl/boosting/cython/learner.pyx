@@ -13,7 +13,7 @@ from libcpp.utility cimport move
 
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
     """
-    A wrapper for the pure virtual C++ class `IBoostingRuleLearner::IConfig`.
+    Allows to configure a rule learner that makes use of gradient boosting.
     """
 
     def __cinit__(self):
@@ -251,7 +251,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
 cdef class BoostingRuleLearner(RuleLearner):
     """
-    A wrapper for the pure virtual C++ class `IBoostingRuleLearner`.
+    A rule learner that makes use of gradient boosting.
     """
 
     def __cinit__(self, BoostingRuleLearnerConfig config not None):

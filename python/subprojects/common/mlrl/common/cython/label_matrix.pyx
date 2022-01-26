@@ -5,7 +5,7 @@
 
 cdef class LabelMatrix:
     """
-    A wrapper for the pure virtual C++ class `ILabelMatrix`.
+    A label matrix.
     """
 
     cdef ILabelMatrix* get_label_matrix_ptr(self):
@@ -38,7 +38,7 @@ cdef class LabelMatrix:
 
 cdef class RowWiseLabelMatrix(LabelMatrix):
     """
-    A wrapper for the pure virtual C++ class `IRowWiseLabelMatrix`.
+    A label matrix that provides row-wise access to the labels of examples.
     """
 
     cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self):
@@ -50,7 +50,7 @@ cdef class RowWiseLabelMatrix(LabelMatrix):
 
 cdef class CContiguousLabelMatrix(RowWiseLabelMatrix):
     """
-    A wrapper for the pure virtual C++ class `ICContiguousLabelMatrix`.
+    A label matrix that provides row-wise access to the labels of examples that are stored in a C-contiguous array.
     """
 
     def __cinit__(self, const uint8[:, ::1] array not None):
@@ -71,7 +71,8 @@ cdef class CContiguousLabelMatrix(RowWiseLabelMatrix):
 
 cdef class CsrLabelMatrix(RowWiseLabelMatrix):
     """
-    A wrapper for the pure virtual C++ class `ICsrLabelMatrix`.
+    A label matrix that provides row-wise access to the labels of examples that are stored in a sparse matrix in the
+    compressed sparse row (CSR) format.
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_labels, uint32[::1] row_indices not None,

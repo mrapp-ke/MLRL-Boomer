@@ -6,7 +6,10 @@ from mlrl.common.cython._validation import assert_greater_or_equal
 
 cdef class LabelWiseClassificationPredictorConfig:
     """
-    A wrapper for the C++ class `LabelWiseClassificationPredictorConfig`.
+    Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
+    irrelevant by processing rules of an existing rule-based model in the order they have been learned. If a rule covers
+    an example, its prediction (1 if the label is relevant, 0 otherwise) is applied to each label individually, if none
+    of the previous rules has already predicted for a particular example and label.
     """
 
     def set_num_threads(self, num_threads: int) -> LabelWiseClassificationPredictorConfig:

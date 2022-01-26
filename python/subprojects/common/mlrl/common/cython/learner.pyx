@@ -31,7 +31,8 @@ import numpy as np
 
 cdef class TrainingResult:
     """
-    A wrapper for the pure virtual C++ class `ITrainingResult`.
+    Provides access to the results of fitting a rule learner to training data. It incorporates the model that has been
+    trained, as well as additional information that is necessary for obtaining predictions for unseen data.
     """
 
     def __cinit__(self, uint32 num_labels, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None):
@@ -47,7 +48,7 @@ cdef class TrainingResult:
 
 cdef class RuleLearnerConfig:
     """
-    A wrapper for the pure virtual C++ class `IRuleLearner::IConfig`.
+    Allows to configure a rule learner.
     """
 
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
@@ -398,7 +399,7 @@ cdef class RuleLearnerConfig:
 
 cdef class RuleLearner:
     """
-    A wrapper for the pure virtual C++ class `IRuleLearner`.
+    A rule learner.
     """
 
     cdef IRuleLearner* get_rule_learner_ptr(self):

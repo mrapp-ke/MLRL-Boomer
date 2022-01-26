@@ -5,7 +5,7 @@
 
 cdef class LabelSpaceInfo:
     """
-    A wrapper for the pure virtual C++ class `ILabelSpaceInfo`.
+    Provides information about the label space that may be used as a basis for making predictions.
     """
 
     cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
@@ -14,7 +14,7 @@ cdef class LabelSpaceInfo:
 
 cdef class NoLabelSpaceInfo(LabelSpaceInfo):
     """
-    A wrapper for the pure virtual C++ class `INoLabelSpaceInfo`.
+    Does not provide any information about the label space.
     """
 
     cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
@@ -23,7 +23,7 @@ cdef class NoLabelSpaceInfo(LabelSpaceInfo):
 
 cdef class LabelVectorSet(LabelSpaceInfo):
     """
-    A wrapper for the pure virtual C++ class `ILabelVectorSet`.
+    Stores a set of unique label vectors, as well as their frequency.
     """
 
     cdef ILabelSpaceInfo* get_label_space_info_ptr(self):

@@ -6,7 +6,7 @@ from mlrl.common.cython._validation import assert_greater_or_equal
 
 cdef class LabelSamplingWithoutReplacementConfig:
     """
-    A wrapper for the C++ class `FeatureSamplingWithoutReplacementConfig`.
+    Allows to configure a method for sampling labels without replacement.
     """
 
     def set_num_samples(self, num_samples: int) -> LabelSamplingWithoutReplacementConfig:

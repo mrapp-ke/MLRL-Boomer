@@ -6,7 +6,10 @@ from mlrl.common.cython._validation import assert_greater_or_equal
 
 cdef class FMeasureConfig:
     """
-    A wrapper for the C++ class `FMeasureConfig`.
+    Allows to configure a heuristic that calculates as the (weighted) harmonic mean between the heuristics "Precision"
+    and "Recall", where the parameter "beta" allows to trade off between both heuristics. If beta = 1, both heuristics
+    are weighed equally. If beta = 0, this heuristic is equivalent to "Precision". As beta approaches infinity, this
+    heuristic becomes equivalent to "Recall".
     """
 
     def set_beta(self, beta: float) -> FMeasureConfig:
@@ -23,7 +26,9 @@ cdef class FMeasureConfig:
 
 cdef class MEstimateConfig:
     """
-    A wrapper for the C++ class `MEstimateConfig`.
+    Allows to configure a heuristic that trades off between the heuristics "Precision" and "WRA", where the "m"
+    parameter controls the trade-off between both heuristics. If m = 0, this heuristic is equivalent to "Precision". As
+    m approaches infinity, the isometrics of this heuristic become equivalent to those of "WRA".
     """
 
     def set_m(self, m: float) -> MEstimateConfig:

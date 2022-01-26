@@ -6,7 +6,7 @@ from libcpp.utility cimport move
 
 cdef class NominalFeatureMask:
     """
-    A wrapper for the pure virtual C++ class `INominalFeatureMask`.
+    Allows to check whether individual features are nominal or not.
     """
 
     cdef INominalFeatureMask* get_nominal_feature_mask_ptr(self):
@@ -15,7 +15,8 @@ cdef class NominalFeatureMask:
 
 cdef class EqualNominalFeatureMask(NominalFeatureMask):
     """
-    A wrapper for the pure virtual C++ class `IEqualNominalFeatureMask`.
+    Allows to check whether individual features are nominal or not in cases where all features are of the same type,
+    i.e., where all features are either nominal or numerical/ordinal.
     """
 
     def __cinit__(self, bint nominal):
@@ -31,7 +32,8 @@ cdef class EqualNominalFeatureMask(NominalFeatureMask):
 
 cdef class MixedNominalFeatureMask(NominalFeatureMask):
     """
-    A wrapper for the pure virtual C++ class `IMixedNominalFeatureMask`.
+    Allows to check whether individual features are nominal or not in cases where different types of features, i.e.,
+    nominal and numerical/ordinal ones, are available.
     """
 
     def __cinit__(self, uint32 num_features, list nominal_feature_indices not None):

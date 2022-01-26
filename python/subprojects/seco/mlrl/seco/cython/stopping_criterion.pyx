@@ -6,7 +6,8 @@ from mlrl.common.cython._validation import assert_greater_or_equal
 
 cdef class CoverageStoppingCriterionConfig:
     """
-    A wrapper for the C++ class `CoverageStoppingCriterionConfig`.
+    Allows to configure a stopping criterion that stops the induction of rules as soon as the sum of the weights of the
+    uncovered labels is smaller or equal to a certain threshold.
     """
 
     def set_threshold(self, threshold: float) -> CoverageStoppingCriterionConfig:

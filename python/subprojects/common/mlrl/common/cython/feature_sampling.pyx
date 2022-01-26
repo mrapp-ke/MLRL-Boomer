@@ -6,7 +6,7 @@ from mlrl.common.cython._validation import assert_greater_or_equal, assert_less
 
 cdef class FeatureSamplingWithoutReplacementConfig:
     """
-    A wrapper for the C++ class `FeatureSamplingWithoutReplacementConfig`.
+    Allows to configure a method for sampling features without replacement.
     """
 
     def set_sample_size(self, sample_size: float) -> FeatureSamplingWithoutReplacementConfig:

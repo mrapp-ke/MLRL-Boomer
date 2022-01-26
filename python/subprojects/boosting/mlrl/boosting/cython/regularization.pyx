@@ -6,7 +6,8 @@ from mlrl.common.cython._validation import assert_greater
 
 cdef class ManualRegularizationConfig:
     """
-    A wrapper for the C++ class `ManualRegularizationConfig`.
+    Allows to configure a regularization term that affects the evaluation of rules by manually specifying the weight of
+    the regularization term.
     """
 
     def set_regularization_weight(self, regularization_weight: float) -> ManualRegularizationConfig:

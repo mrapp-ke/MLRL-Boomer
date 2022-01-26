@@ -6,7 +6,8 @@ from mlrl.common.cython._validation import assert_greater, assert_greater_or_equ
 
 cdef class PeakLiftFunctionConfig:
     """
-    A wrapper for the C++ class `PeakLiftFunctionConfig`.
+    Allows to configure a lift function that monotonously increases until a certain number of labels, where the maximum
+    lift is reached, and monotonously decreases afterwards.
     """
 
     def set_peak_label(self, peak_label: int) -> PeakLiftFunctionConfig:

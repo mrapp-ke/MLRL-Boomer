@@ -6,7 +6,8 @@ from mlrl.common.cython._validation import assert_greater_or_equal
 
 cdef class ManualMultiThreadingConfig:
     """
-    A wrapper for the C++ class `ManualMultiThreadingConfig`.
+    Allows to configure the multi-threading behavior of a parallelizable algorithm by manually specifying the number of
+    threads to be used.
     """
 
     def set_num_threads(self, num_threads: int) -> ManualMultiThreadingConfig:
