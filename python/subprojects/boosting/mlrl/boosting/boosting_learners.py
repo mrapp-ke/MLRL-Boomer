@@ -422,6 +422,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_example_wise_classification_predictor() \
                     .set_num_threads(get_num_threads_prediction(self.parallel_prediction))
 
-    def _configure_probability_predictor(self, config: BoostingRuleLearnerConfig):
+    def __configure_probability_predictor(self, config: BoostingRuleLearnerConfig):
         config.use_label_wise_probability_predictor() \
             .set_num_threads(get_num_threads_prediction(self.parallel_prediction))
