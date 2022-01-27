@@ -7,7 +7,6 @@
 #include "seco/heuristics/heuristic_f_measure.hpp"
 #include "seco/heuristics/heuristic_m_estimate.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
-#include "seco/output/predictor_classification_label_wise.hpp"
 #include "seco/rule_evaluation/head_type.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 
@@ -75,6 +74,16 @@ namespace seco {
                      *         for which they predict
                      */
                     virtual const ILiftFunctionConfig& getLiftFunctionConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the multi-threading behavior that is used to predict for several
+                     * query examples in parallel.
+                     *
+                     * @return A reference to an object of type `IMultiThreadingConfig` that specifies the configuration
+                     *         of the multi-threading behavior that is used to predict for several query examples in
+                     *         parallel
+                     */
+                    virtual const IMultiThreadingConfig& getParallelPredictionConfig() const = 0;
 
                     /**
                      * Returns the configuration of the predictor that predicts whether individual labels of given query
@@ -210,16 +219,27 @@ namespace seco {
                     virtual IPeakLiftFunctionConfig& usePeakLiftFunction() = 0;
 
                     /**
+                     * Configures the rule learner to not use any multi-threading to predict for several query examples
+                     * in parallel.
+                     */
+                    virtual void useNoParallelPrediction() = 0;
+
+                    /**
+                     * Configures the rule learner to use multi-threading to predict for several query examples in
+                     * parallel.
+                     *
+                     * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
+                     *         configuration of the multi-threading behavior
+                     */
+                    virtual IManualMultiThreadingConfig& useParallelPrediction() = 0;
+
+                    /**
                      * Configures the rule learner to use predictor for predicting whether individual labels of given
                      * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
                      * the order they have been learned. If a rule covers an example, its prediction is applied to each
                      * label individually.
-                     *
-                     * @return A reference to an object of type `ILabelWiseClassificationPredictorConfig` that allows
-                     *         further configuration of the predictor for predicting whether individual labels of given
-                     *         query examples are relevant or irrelevant
                      */
-                    virtual ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() = 0;
+                    virtual void useLabelWiseClassificationPredictor() = 0;
 
             };
 
@@ -251,6 +271,8 @@ namespace seco {
 
                     std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
 
+                    std::unique_ptr<IMultiThreadingConfig> parallelPredictionConfigPtr_;
+
                     std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
 
                     const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const override;
@@ -262,6 +284,8 @@ namespace seco {
                     const IHeuristicConfig& getPruningHeuristicConfig() const override;
 
                     const ILiftFunctionConfig& getLiftFunctionConfig() const override;
+
+                    const IMultiThreadingConfig& getParallelPredictionConfig() const override;
 
                     const IClassificationPredictorConfig& getClassificationPredictorConfig() const override;
 
@@ -311,7 +335,11 @@ namespace seco {
 
                     IPeakLiftFunctionConfig& usePeakLiftFunction() override;
 
-                    ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
+                    void useNoParallelPrediction() override;
+
+                    IManualMultiThreadingConfig& useParallelPrediction() override;
+
+                    void useLabelWiseClassificationPredictor() override;
 
             };
 
@@ -334,7 +362,8 @@ namespace seco {
             std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
                 const IRowWiseLabelMatrix& labelMatrix) const override;
 
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
+            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:
 

@@ -5,8 +5,6 @@
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
 #include "common/output/label_space_info_no.hpp"
-#include "common/util/threads.hpp"
-#include "common/util/validation.hpp"
 #include "omp.h"
 
 
@@ -354,23 +352,15 @@ namespace seco {
 
     };
 
-    LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig()
-        : numThreads_(0) {
+    LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig(
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
-    uint32 LabelWiseClassificationPredictorConfig::getNumThreads() const {
-        return numThreads_;
-    }
-
-    ILabelWiseClassificationPredictorConfig& LabelWiseClassificationPredictorConfig::setNumThreads(uint32 numThreads) {
-        if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
-        numThreads_ = numThreads;
-        return *this;
-    }
-
-    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::createClassificationPredictorFactory() const {
-        uint32 numThreads = getNumAvailableThreads(numThreads_);
+    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::createClassificationPredictorFactory(
+            const IFeatureMatrix& featureMatrix, const uint32 numLabels) const {
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseClassificationPredictorFactory>(numThreads);
     }
 

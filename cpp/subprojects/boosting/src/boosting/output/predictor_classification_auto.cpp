@@ -11,25 +11,31 @@ namespace boosting {
     }
 
     AutomaticClassificationPredictorConfig::AutomaticClassificationPredictorConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr)
-        : lossConfigPtr_(lossConfigPtr) {
+            const std::unique_ptr<ILossConfig>& lossConfigPtr,
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
-    std::unique_ptr<IClassificationPredictorFactory> AutomaticClassificationPredictorConfig::createClassificationPredictorFactory() const {
+    std::unique_ptr<IClassificationPredictorFactory> AutomaticClassificationPredictorConfig::createClassificationPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         if (isExampleWisePredictorPreferred(lossConfigPtr_.get())) {
-            return ExampleWiseClassificationPredictorConfig(lossConfigPtr_).createClassificationPredictorFactory();
+            return ExampleWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .createClassificationPredictorFactory(featureMatrix, numLabels);
         } else {
-            return LabelWiseClassificationPredictorConfig(lossConfigPtr_).createClassificationPredictorFactory();
+            return LabelWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .createClassificationPredictorFactory(featureMatrix, numLabels);
         }
     }
 
     std::unique_ptr<ILabelSpaceInfo> AutomaticClassificationPredictorConfig::createLabelSpaceInfo(
             const IRowWiseLabelMatrix& labelMatrix) const {
         if (isExampleWisePredictorPreferred(lossConfigPtr_.get())) {
-            return ExampleWiseClassificationPredictorConfig(lossConfigPtr_).createLabelSpaceInfo(labelMatrix);
+            return ExampleWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .createLabelSpaceInfo(labelMatrix);
         } else {
-            return LabelWiseClassificationPredictorConfig(lossConfigPtr_).createLabelSpaceInfo(labelMatrix);
+            return LabelWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .createLabelSpaceInfo(labelMatrix);
         }
     }
 

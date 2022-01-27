@@ -18,7 +18,6 @@ IManualMultiThreadingConfig& ManualMultiThreadingConfig::setNumThreads(uint32 nu
     return *this;
 }
 
-uint32 ManualMultiThreadingConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
-                                                 const ILabelMatrix& labelMatrix) const {
+uint32 ManualMultiThreadingConfig::getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
     return getNumAvailableThreads(numThreads_);
 }

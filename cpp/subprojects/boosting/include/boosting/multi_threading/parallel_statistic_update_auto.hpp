@@ -29,7 +29,7 @@ namespace boosting {
             /**
              * @see `IMultiThreadingConfig::getNumThreads`
              */
-            uint32 getNumThreads(const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
+            uint32 getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
     };
 

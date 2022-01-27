@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/output/predictor_classification.hpp"
+#include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
 
 
@@ -19,17 +20,26 @@ namespace boosting {
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
 
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+
         public:
 
             /**
-             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             * @param lossConfigPtr             A reference to an unique pointer that stores the configuration of the
+             *                                  loss function
+             * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
+             *                                  multi-threading behavior that should be used to predict for several
+             *                                  query examples in parallel
              */
-            AutomaticClassificationPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
+            AutomaticClassificationPredictorConfig(
+                const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             /**
              * @see `IClassificationPredictorConfig::createClassificationPredictorFactory`
              */
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
+            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `IClassificationPredictorConfig::createLabelSpaceInfo`

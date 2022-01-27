@@ -21,7 +21,7 @@ namespace boosting {
             const ILabelWiseLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix);
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.createLabelWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
             lossConfig.createEvaluationMeasureFactory();
@@ -42,7 +42,7 @@ namespace boosting {
             const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix);
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
             lossConfig.createExampleWiseLossFactory();

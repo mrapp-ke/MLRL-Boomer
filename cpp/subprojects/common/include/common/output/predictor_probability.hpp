@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/input/feature_matrix.hpp"
 #include "common/output/predictor.hpp"
 #include "common/output/label_vector_set.hpp"
 #include "common/model/rule_list.hpp"
@@ -57,9 +58,13 @@ class IProbabilityPredictorConfig {
          * Creates and returns a new object of type `IProbabilityPredictorFactory` according to the specified
          * configuration.
          *
-         * @return An unique pointer to an object of type `IProbabilityPredictorFactory` that has been created or a null
-         *         pointer if the prediction of probabilities is not supported
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param numLabels     The total number of available labels
+         * @return              An unique pointer to an object of type `IProbabilityPredictorFactory` that has been
+         *                      created or a null pointer if the prediction of probabilities is not supported
          */
-        virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory() const = 0;
+        virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
 };

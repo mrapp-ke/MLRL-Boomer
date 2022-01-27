@@ -1,8 +1,7 @@
 from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
+from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
-from mlrl.boosting.cython.predictor cimport IExampleWiseClassificationPredictorConfig, \
-    ILabelWiseClassificationPredictorConfig, ILabelWiseRegressionPredictorConfig, ILabelWiseProbabilityPredictorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
 
 from libcpp.memory cimport unique_ptr
@@ -50,13 +49,17 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
 
-        IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor()
+        void useNoParallelPrediction()
 
-        ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor()
+        IManualMultiThreadingConfig& useParallelPrediction()
 
-        ILabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor()
+        void useExampleWiseClassificationPredictor()
 
-        ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor()
+        void useLabelWiseClassificationPredictor()
+
+        void useLabelWiseRegressionPredictor()
+
+        void useLabelWiseProbabilityPredictor()
 
 
     cdef cppclass IBoostingRuleLearner(IRuleLearner):

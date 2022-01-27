@@ -5,8 +5,10 @@
 #include "seco/heuristics/heuristic_recall.hpp"
 #include "seco/heuristics/heuristic_wra.hpp"
 #include "seco/model/decision_list_builder.hpp"
+#include "seco/output/predictor_classification_label_wise.hpp"
 #include "seco/rule_evaluation/head_type_partial.hpp"
 #include "seco/rule_evaluation/head_type_single.hpp"
+#include "common/multi_threading/multi_threading_no.hpp"
 
 
 namespace seco {
@@ -21,6 +23,7 @@ namespace seco {
         this->useFMeasureHeuristic();
         this->useAccuracyPruningHeuristic();
         this->usePeakLiftFunction();
+        this->useParallelPrediction();
         this->useLabelWiseClassificationPredictor();
     }
 
@@ -42,6 +45,10 @@ namespace seco {
 
     const ILiftFunctionConfig& SeCoRuleLearner::Config::getLiftFunctionConfig() const {
         return *liftFunctionConfigPtr_;
+    }
+
+    const IMultiThreadingConfig& SeCoRuleLearner::Config::getParallelPredictionConfig() const {
+        return *parallelPredictionConfigPtr_;
     }
 
     const IClassificationPredictorConfig& SeCoRuleLearner::Config::getClassificationPredictorConfig() const {
@@ -155,12 +162,20 @@ namespace seco {
         return ref;
     }
 
-    ILabelWiseClassificationPredictorConfig& SeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
-        std::unique_ptr<LabelWiseClassificationPredictorConfig> ptr =
-            std::make_unique<LabelWiseClassificationPredictorConfig>();
-        ILabelWiseClassificationPredictorConfig& ref = *ptr;
-        classificationPredictorConfigPtr_ = std::move(ptr);
+    void SeCoRuleLearner::Config::useNoParallelPrediction() {
+        parallelPredictionConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
+    }
+
+    IManualMultiThreadingConfig& SeCoRuleLearner::Config::useParallelPrediction() {
+        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+        IManualMultiThreadingConfig& ref = *ptr;
+        parallelPredictionConfigPtr_ = std::move(ptr);
         return ref;
+    }
+
+    void SeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
+        classificationPredictorConfigPtr_ =
+            std::make_unique<LabelWiseClassificationPredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     SeCoRuleLearner::SeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr)
@@ -198,8 +213,10 @@ namespace seco {
         return configPtr_->getClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
     }
 
-    std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory() const {
-        return configPtr_->getClassificationPredictorConfig().createClassificationPredictorFactory();
+    std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        return configPtr_->getClassificationPredictorConfig()
+            .createClassificationPredictorFactory(featureMatrix, numLabels);
     }
 
     std::unique_ptr<ISeCoRuleLearner::IConfig> createSeCoRuleLearnerConfig() {

@@ -4,44 +4,10 @@
 #pragma once
 
 #include "common/output/predictor_classification.hpp"
+#include "common/multi_threading/multi_threading.hpp"
 
 
 namespace seco {
-
-    /**
-     * Defines an interface for all classes that allow to configure a predictor that predicts whether individual labels
-     * of given query examples are relevant or irrelevant by processing rules of an existing rule-based model in the
-     * order they have been learned. If a rule covers an example, its prediction (1 if the label is relevant, 0
-     * otherwise) is applied to each label individually, if none of the previous rules has already predicted for a
-     * particular example and label.
-     */
-    class ILabelWiseClassificationPredictorConfig {
-
-        public:
-
-            virtual ~ILabelWiseClassificationPredictorConfig() { };
-
-            /**
-             * Returns the number of CPU threads that are used to make predictions for different query examples in
-             * parallel.
-             *
-             * @return The number of CPU threads that are used to make predictions for different query examples in
-             *         parallel or 0, if all available CPU cores are utilized
-             */
-            virtual uint32 getNumThreads() const = 0;
-
-            /**
-             * Sets the number of CPU threads that should be used to make predictions for different query examples in
-             * parallel.
-             *
-             * @param numThreads    The number of CPU threads that should be used. Must be at least 1 or 0, if all
-             *                      available CPU cores should be utilized
-             * @return              A reference to an object of type `ILabelWiseClassificationPredictorConfig` that
-             *                      allows further configuration of the predictor
-             */
-            virtual ILabelWiseClassificationPredictorConfig& setNumThreads(uint32 numThreads) = 0;
-
-    };
 
     /**
      * Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
@@ -49,22 +15,24 @@ namespace seco {
      * covers an example, its prediction (1 if the label is relevant, 0 otherwise) is applied to each label
      * individually, if none of the previous rules has already predicted for a particular example and label.
      */
-    class LabelWiseClassificationPredictorConfig final : public IClassificationPredictorConfig,
-                                                         public ILabelWiseClassificationPredictorConfig {
+    class LabelWiseClassificationPredictorConfig final : public IClassificationPredictorConfig {
 
         private:
 
-            uint32 numThreads_;
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
 
         public:
 
-            LabelWiseClassificationPredictorConfig();
+            /**
+             * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
+             *                                multi-threading behavior that should be used to predict for several query
+             *                                examples in parallel
+             */
+            LabelWiseClassificationPredictorConfig(
+                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
-            uint32 getNumThreads() const override;
-
-            ILabelWiseClassificationPredictorConfig& setNumThreads(uint32 numThreads) override;
-
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
+            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
                 const IRowWiseLabelMatrix& labelMatrix) const override;

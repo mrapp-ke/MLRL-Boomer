@@ -5,44 +5,11 @@
 
 #include "common/output/predictor_classification.hpp"
 #include "common/measures/measure_similarity.hpp"
+#include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
 
 
 namespace boosting {
-
-    /**
-     * Defines an interface for all classes that allow to configure a predictor that predicts known label vectors for
-     * given query examples by summing up the scores that are provided by an existing rule-based model and comparing the
-     * aggregated score vector to the known label vectors according to a certain distance measure. The label vector that
-     * is closest to the aggregated score vector is finally predicted.
-     */
-    class IExampleWiseClassificationPredictorConfig {
-
-        public:
-
-            virtual ~IExampleWiseClassificationPredictorConfig() { };
-
-            /**
-             * Returns the number of CPU threads that are used to make predictions for different query examples in
-             * parallel.
-             *
-             * @return The number of CPU threads that are used to make predictions for different query examples in
-             *         parallel or 0, if all available CPU cores are utilized
-             */
-            virtual uint32 getNumThreads() const = 0;
-
-            /**
-             * Sets the number of CPU threads that should be used to make predictions for different query examples in
-             * parallel.
-             *
-             * @param numThreads    The number of CPU threads that should be used. Must be at least 1 or 0, if all
-             *                      available CPU cores should be utilized
-             * @return              A reference to an object of type `ExampleWiseClassificationPredictorConfig` that
-             *                      allows further configuration of the predictor
-             */
-            virtual IExampleWiseClassificationPredictorConfig& setNumThreads(uint32 numThreads) = 0;
-
-    };
 
     /**
      * Allows to configure a predictor that predicts known label vectors for given query examples by summing up the
@@ -50,30 +17,32 @@ namespace boosting {
      * label vectors according to a certain distance measure. The label vector that is closest to the aggregated score
      * vector is finally predicted.
      */
-    class ExampleWiseClassificationPredictorConfig final : public IClassificationPredictorConfig,
-                                                           public IExampleWiseClassificationPredictorConfig {
+    class ExampleWiseClassificationPredictorConfig final : public IClassificationPredictorConfig {
 
         private:
 
-            uint32 numThreads_;
-
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
 
         public:
 
             /**
-             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             * @param lossConfigPtr             A reference to an unique pointer that stores the configuration of the
+             *                                  loss function
+             * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
+             *                                  multi-threading behavior that should be used to predict for several
+             *                                  query examples in parallel
              */
-            ExampleWiseClassificationPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
-
-            uint32 getNumThreads() const override;
-
-            IExampleWiseClassificationPredictorConfig& setNumThreads(uint32 numThreads) override;
+            ExampleWiseClassificationPredictorConfig(
+                const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             /**
              * @see `IClassificationPredictorConfig::createClassificationPredictorFactory`
              */
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
+            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `IClassificationPredictorConfig::createLabelSpaceInfo`

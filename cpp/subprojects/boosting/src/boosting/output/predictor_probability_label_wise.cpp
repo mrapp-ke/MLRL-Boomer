@@ -1,7 +1,5 @@
 #include "boosting/output/predictor_probability_label_wise.hpp"
 #include "boosting/output/probability_function.hpp"
-#include "common/util/threads.hpp"
-#include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
@@ -177,29 +175,21 @@ namespace boosting {
     };
 
     LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr)
-        : numThreads_(0), lossConfigPtr_(lossConfigPtr) {
+            const std::unique_ptr<ILossConfig>& lossConfigPtr,
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
-    uint32 LabelWiseProbabilityPredictorConfig::getNumThreads() const {
-        return numThreads_;
-    }
-
-    ILabelWiseProbabilityPredictorConfig& LabelWiseProbabilityPredictorConfig::setNumThreads(uint32 numThreads) {
-        if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
-        numThreads_ = numThreads;
-        return *this;
-    }
-
-    std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::createProbabilityPredictorFactory() const {
+    std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::createProbabilityPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
             lossConfigPtr_->createProbabilityFunctionFactory();
 
         if (probabilityFunctionFactoryPtr) {
-            uint32 numThreads = getNumAvailableThreads(numThreads_);
-            return std::make_unique<LabelWiseProbabilityPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
-                                                                          numThreads);
+            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            return std::make_unique<LabelWiseProbabilityPredictorFactory>(
+                std::move(probabilityFunctionFactoryPtr), numThreads);
         } else {
             return nullptr;
         }

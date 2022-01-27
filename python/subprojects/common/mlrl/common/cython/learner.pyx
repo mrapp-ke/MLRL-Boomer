@@ -481,13 +481,17 @@ cdef class RuleLearner:
         indptr = np.asarray(array_uint32(row_indices, num_examples + 1))
         return csr_matrix((data, indices, indptr), shape=(num_examples, num_labels))
 
-    def can_predict_probabilities(self) -> bool:
+    def can_predict_probabilities(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """
         Returns whether the rule learner is able to predict probability estimates or not.
 
-        :return: True, if the rule learner is able to predict probability estimates, False otherwise
+        :param feature_matrix:  A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
+                                query examples
+        :param num_labels:      The number of labels to predict for
+        :return:                True, if the rule learner is able to predict probability estimates, False otherwise
         """
-        return self.get_rule_learner_ptr().canPredictProbabilities()
+        return self.get_rule_learner_ptr().canPredictProbabilities(
+            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
     def predict_probabilities(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
                               LabelSpaceInfo label_space_info not None, uint32 num_labels) -> np.ndarray:

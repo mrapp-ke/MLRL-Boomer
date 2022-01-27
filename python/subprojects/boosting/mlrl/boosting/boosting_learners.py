@@ -13,13 +13,13 @@ from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLea
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
-    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
+    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, PARALLEL_VALUES, ARGUMENT_NUM_THREADS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_size_stopping_criterion, configure_time_stopping_criterion
-from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_num_threads_prediction
+from mlrl.common.rule_learners import parse_param, parse_param_and_options
 from sklearn.base import ClassifierMixin
 
 EARLY_STOPPING_LOSS = 'loss'
@@ -82,7 +82,7 @@ LOSS_VALUES: Set[str] = {LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL
 
 PREDICTOR_VALUES: Set[str] = {PREDICTOR_LABEL_WISE, PREDICTOR_EXAMPLE_WISE, AUTOMATIC}
 
-PARALLEL_VALUES: Dict[str, Set[str]] = {
+PARALLEL_VALUES_AUTO: Dict[str, Set[str]] = {
     str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
     str(BooleanOption.FALSE.value): {},
     AUTOMATIC: {}
@@ -277,8 +277,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.__configure_l2_regularization(config)
         self.__configure_loss(config)
         self.__configure_label_binning(config)
+        self.__configure_parallel_prediction(config)
         self.__configure_classification_predictor(config)
-        self.__configure_probability_predictor(config)
         return BoostingRuleLearnerWrapper(config)
 
     def __configure_feature_binning(self, config: BoostingRuleLearnerConfig):
@@ -406,6 +406,15 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
                 c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
 
+    def __configure_parallel_prediction(self, config: BoostingRuleLearnerConfig):
+        value, options = parse_param_and_options('parallel_prediction', self.parallel_prediction, PARALLEL_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            c = config.use_parallel_prediction()
+            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
+        else:
+            config.use_no_parallel_prediction()
+
     def __configure_classification_predictor(self, config: BoostingRuleLearnerConfig):
         predictor = self.predictor
 
@@ -415,12 +424,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             value = parse_param('predictor', predictor, PREDICTOR_VALUES)
 
             if value == PREDICTOR_LABEL_WISE:
-                c = config.use_label_wise_classification_predictor()
-                c.set_num_threads(get_num_threads_prediction(self.parallel_prediction))
+                config.use_label_wise_classification_predictor()
             elif value == PREDICTOR_EXAMPLE_WISE:
-                c = config.use_example_wise_classification_predictor()
-                c.set_num_threads(get_num_threads_prediction(self.parallel_prediction))
-
-    def __configure_probability_predictor(self, config: BoostingRuleLearnerConfig):
-        c = config.use_label_wise_probability_predictor()
-        c.set_num_threads(get_num_threads_prediction(self.parallel_prediction))
+                config.use_example_wise_classification_predictor()

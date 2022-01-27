@@ -1,7 +1,5 @@
 #include "boosting/output/predictor_classification_example_wise.hpp"
 #include "common/data/arrays.hpp"
-#include "common/util/threads.hpp"
-#include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
@@ -299,28 +297,19 @@ namespace boosting {
     };
 
     ExampleWiseClassificationPredictorConfig::ExampleWiseClassificationPredictorConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr)
-        : numThreads_(0), lossConfigPtr_(lossConfigPtr) {
+            const std::unique_ptr<ILossConfig>& lossConfigPtr,
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
-    uint32 ExampleWiseClassificationPredictorConfig::getNumThreads() const {
-        return numThreads_;
-    }
-
-    IExampleWiseClassificationPredictorConfig& ExampleWiseClassificationPredictorConfig::setNumThreads(
-            uint32 numThreads) {
-        if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
-        numThreads_ = numThreads;
-        return *this;
-    }
-
-    std::unique_ptr<IClassificationPredictorFactory> ExampleWiseClassificationPredictorConfig::createClassificationPredictorFactory() const {
+    std::unique_ptr<IClassificationPredictorFactory> ExampleWiseClassificationPredictorConfig::createClassificationPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr =
             lossConfigPtr_->createSimilarityMeasureFactory();
-        uint32 numThreads = getNumAvailableThreads(numThreads_);
-        return std::make_unique<ExampleWiseClassificationPredictorFactory>(std::move(similarityMeasureFactoryPtr),
-                                                                           numThreads);
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+        return std::make_unique<ExampleWiseClassificationPredictorFactory>(
+            std::move(similarityMeasureFactoryPtr), numThreads);
     }
 
     std::unique_ptr<ILabelSpaceInfo> ExampleWiseClassificationPredictorConfig::createLabelSpaceInfo(

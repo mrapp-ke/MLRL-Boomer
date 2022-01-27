@@ -1,10 +1,9 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig
-from mlrl.boosting.cython.predictor cimport ExampleWiseClassificationPredictorConfig, \
-    LabelWiseClassificationPredictorConfig, LabelWiseRegressionPredictorConfig, LabelWiseProbabilityPredictorConfig
 from mlrl.boosting.cython.regularization cimport ManualRegularizationConfig
 
 from libcpp.memory cimport make_unique
@@ -182,37 +181,44 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_example_wise_classification_predictor(self) -> ExampleWiseClassificationPredictorConfig:
+    def use_no_parallel_prediction(self):
+        """
+        Configures the rule learner to not use any multi-threading to predict for several query examples in parallel.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoParallelPrediction()
+
+    def use_parallel_prediction(self) -> ManualMultiThreadingConfig:
+        """
+        Configures the rule learner to use multi-threading to predict for several query examples in parallel.
+
+        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelPrediction()
+        cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_example_wise_classification_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by an existing rule-based model and comparing the
         aggregated score vector to the known label vectors according to a certain distance measure. The label vector
         that is closest to the aggregated score vector is finally predicted.
-
-        :return: An `ExampleWiseClassificationPredictorConfig` that allows further configuration of the predictor for
-                 predicting whether individual labels are relevant or irrelevant
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IExampleWiseClassificationPredictorConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseClassificationPredictor()
-        cdef ExampleWiseClassificationPredictorConfig config = ExampleWiseClassificationPredictorConfig.__new__(ExampleWiseClassificationPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useExampleWiseClassificationPredictor()
 
-    def use_label_wise_classification_predictor(self) -> LabelWiseClassificationPredictorConfig:
+    def use_label_wise_classification_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model
         and transforming them into binary values according to a certain threshold that is applied to each label
         individually.
-
-        :return: A `LabelWiseClassificationPredictorConfig` that allows further configuration of the predictor for
-                 predicting whether individual labels are relevant or irrelevant
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ILabelWiseClassificationPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseClassificationPredictor()
-        cdef LabelWiseClassificationPredictorConfig config = LabelWiseClassificationPredictorConfig.__new__(LabelWiseClassificationPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useLabelWiseClassificationPredictor()
 
     def use_automatic_classification_predictor(self):
         """
@@ -222,34 +228,22 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseClassificationPredictor()
 
-    def use_label_wise_regression_predictor(self) -> LabelWiseRegressionPredictorConfig:
+    def use_label_wise_regression_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting regression scores by summing up the scores that
         are provided by the individual rules of an existing rule-based model for each label individually.
-
-        :return: A `LabelWiseRegressionPredictorConfig` that allows further configuration of the predictor for
-                 predicting regression scores
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ILabelWiseRegressionPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseRegressionPredictor()
-        cdef LabelWiseRegressionPredictorConfig config = LabelWiseRegressionPredictorConfig.__new__(LabelWiseRegressionPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useLabelWiseRegressionPredictor()
 
-    def use_label_wise_probability_predictor(self) -> LabelWiseProbabilityPredictorConfig:
+    def use_label_wise_probability_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting probability estimates by summing up the scores
         that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
         into probabilities according to a certain transformation function that is applied to each label individually.
-
-        :return: A `LabelWiseProbabilityPredictorConfig` that allows further configuration of the predictor for
-                 predicting probability estimates
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ILabelWiseProbabilityPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseProbabilityPredictor()
-        cdef LabelWiseProbabilityPredictorConfig config = LabelWiseProbabilityPredictorConfig.__new__(LabelWiseProbabilityPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useLabelWiseProbabilityPredictor()
 
 
 cdef class BoostingRuleLearner(RuleLearner):

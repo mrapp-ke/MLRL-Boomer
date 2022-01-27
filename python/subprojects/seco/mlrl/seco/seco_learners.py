@@ -9,13 +9,14 @@ from typing import Dict, Set
 
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
+from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE, PARALLEL_VALUES, \
+    ARGUMENT_NUM_THREADS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_size_stopping_criterion, configure_time_stopping_criterion
-from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_num_threads_prediction
+from mlrl.common.rule_learners import parse_param, parse_param_and_options
 from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
 
@@ -212,7 +213,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         self.__configure_heuristic(config)
         self.__configure_pruning_heuristic(config)
         self.__configure_lift_function(config)
-        self.__configure_classification_predictor(config)
+        self.__configure_parallel_prediction(config)
         return SeCoRuleLearnerWrapper(config)
 
     def __configure_head_type(self, config: SeCoRuleLearnerConfig):
@@ -272,6 +273,11 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             c.set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, c.get_max_lift()))
             c.set_curvature(options.get_float(ARGUMENT_CURVATURE, c.get_curvature()))
 
-    def __configure_classification_predictor(self, config: SeCoRuleLearnerConfig):
-        c = config.use_label_wise_classification_predictor()
-        c.set_num_threads(get_num_threads_prediction(self.parallel_prediction))
+    def __configure_parallel_prediction(self, config: SeCoRuleLearnerConfig):
+        value, options = parse_param_and_options('parallel_prediction', self.parallel_prediction, PARALLEL_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            c = config.use_parallel_prediction()
+            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
+        else:
+            config.use_no_parallel_prediction()
