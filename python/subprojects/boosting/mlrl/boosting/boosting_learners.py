@@ -13,7 +13,7 @@ from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLea
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, \
-    ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS, RULE_INDUCTION_TOP_DOWN
+    ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS, RULE_INDUCTION_TOP_DOWN, RULE_MODEL_ASSEMBLAGE_SEQUENTIAL
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
@@ -100,22 +100,22 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, prediction_format: str = SparsePolicy.AUTO.value,
-                 rule_induction: str = RULE_INDUCTION_TOP_DOWN, max_rules: int = 1000,
-                 default_rule: str = BooleanOption.TRUE.value, time_limit: int = 0, early_stopping: str = None,
-                 head_type: str = AUTOMATIC, loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = AUTOMATIC,
-                 label_sampling: str = None, instance_sampling: str = None,
+                 rule_model_assemblage: str = RULE_MODEL_ASSEMBLAGE_SEQUENTIAL,
+                 rule_induction: str = RULE_INDUCTION_TOP_DOWN, max_rules: int = 1000, time_limit: int = 0,
+                 early_stopping: str = None, head_type: str = AUTOMATIC, loss: str = LOSS_LOGISTIC_LABEL_WISE,
+                 predictor: str = AUTOMATIC, label_sampling: str = None, instance_sampling: str = None,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = AUTOMATIC, pruning: str = None, shrinkage: float = 0.3,
                  l1_regularization_weight: float = 0.0, l2_regularization_weight: float = 1.0,
                  parallel_rule_refinement: str = AUTOMATIC, parallel_statistic_update: str = AUTOMATIC,
                  parallel_prediction: str = BooleanOption.TRUE.value):
         """
-        :param rule_induction:              A algorithm to be used for the induction of individual rules. Must be
-                                            'top-down'. For additional options refer to the documentation
+        :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
+                                            be 'sequential'. For additional options refer to the documentation
+        :param rule_induction:              The algorithm that should be used for the induction of individual rules.
+                                            Must be 'top-down'. For additional options refer to the documentation
         :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
                                             be at least 1 or 0, if the number of rules should not be restricted
-        :param default_rule:                Whether the first rule should be a default rule that provides a default
-                                            prediction for all examples. Must be 'true' or 'false'
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled. Must be at least 1 or 0, if no time limit should be set
         :param early_stopping:              The strategy that should be used for early stopping. Must be 'loss', if the
@@ -175,9 +175,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             documentation
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
+        self.rule_model_assemblage = rule_model_assemblage
         self.rule_induction = rule_induction
         self.max_rules = max_rules
-        self.default_rule = default_rule
         self.time_limit = time_limit
         self.early_stopping = early_stopping
         self.head_type = head_type
@@ -232,7 +232,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def _create_learner(self) -> RuleLearnerWrapper:
         config = BoostingRuleLearnerConfig()
-        configure_rule_model_assemblage(config, default_rule=self.default_rule)
+        configure_rule_model_assemblage(config, self.rule_model_assemblage)
         configure_rule_induction(config, self.rule_induction)
         self.__configure_feature_binning(config)
         configure_label_sampling(config, self.feature_sampling)
