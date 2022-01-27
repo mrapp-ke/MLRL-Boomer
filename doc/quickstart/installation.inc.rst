@@ -10,7 +10,7 @@ The BOOMER algorithm is provided as part of the Python package `mlrl-boomer <htt
    pip install mlrl-boomer
 
 .. warning::
-    Currently, the above package is only available for the Linux and MacOS platform (supporting the x86_64 architecture). Support for Windows systems is planned for future releases.
+    Currently, the above package is only available for Linux (supporting x86_64 and aarch64 architectures) and MacOS (supporting the x86_64 architecture). Support for Windows is planned for future releases.
 
 An example of how to use the algorithm in your own Python program can be found in the section :ref:`usage` below.
 
