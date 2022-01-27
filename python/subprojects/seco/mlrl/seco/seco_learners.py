@@ -11,7 +11,7 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import RULE_INDUCTION_TOP_DOWN, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
-from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
+from mlrl.common.rule_learners import configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
@@ -176,7 +176,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def _create_learner(self) -> RuleLearnerWrapper:
         config = SeCoRuleLearnerConfig()
-        configure_rule_model_assemblage(config, default_rule=BooleanOption.TRUE.value)
         configure_rule_induction(config, self.rule_induction)
         configure_feature_binning(config, self.feature_binning)
         configure_label_sampling(config, self.feature_sampling)
