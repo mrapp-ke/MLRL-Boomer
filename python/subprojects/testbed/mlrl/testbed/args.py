@@ -10,8 +10,9 @@ from argparse import ArgumentParser
 from enum import Enum
 
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import SparsePolicy, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, \
-    INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, PRUNING_VALUES, PARALLEL_VALUES
+from mlrl.common.rule_learners import SparsePolicy, RULE_INDUCTION_VALUES, RULE_INDUCTION_TOP_DOWN, \
+    LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, \
+    FEATURE_BINNING_VALUES, PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 
 PARAM_LOG_LEVEL = '--log-level'
@@ -76,11 +77,7 @@ PARAM_PRUNING = '--pruning'
 
 PARAM_FEATURE_BINNING = '--feature-binning'
 
-PARAM_MIN_COVERAGE = '--min-coverage'
-
-PARAM_MAX_CONDITIONS = '--max-conditions'
-
-PARAM_MAX_HEAD_REFINEMENTS = '--max-head-refinements'
+PARAM_RULE_INDUCTION = '--rule-induction'
 
 PARAM_PARALLEL_RULE_REFINEMENT = '--parallel-rule-refinement'
 
@@ -296,18 +293,11 @@ def add_rule_learner_arguments(parser: ArgumentParser, **kwargs):
                              + format_string_set(PRUNING_VALUES) + ' or "None", if no pruning should be used. Does '
                              + 'only have an effect if the parameter ' + PARAM_INSTANCE_SAMPLING + ' is not set to '
                              + '"None".')
-    parser.add_argument(PARAM_MIN_COVERAGE, type=int,
-                        default=get_or_default(PARAM_MIN_COVERAGE, 1, **kwargs),
-                        help='The minimum number of training examples that must be covered by a rule. Must be at least '
-                             + '1.')
-    parser.add_argument(PARAM_MAX_CONDITIONS, type=int,
-                        default=get_or_default(PARAM_MAX_CONDITIONS, 0, **kwargs),
-                        help='The maximum number of conditions to be included in a rule\'s body. Must be at least 1 or '
-                             + '0, if the number of conditions should not be restricted.')
-    parser.add_argument(PARAM_MAX_HEAD_REFINEMENTS, type=int,
-                        default=get_or_default(PARAM_MAX_HEAD_REFINEMENTS, 1, **kwargs),
-                        help='The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, '
-                             + 'if the number of refinements should not be restricted.')
+    parser.add_argument(PARAM_RULE_INDUCTION, type=str,
+                        default=get_or_default(PARAM_RULE_INDUCTION, RULE_INDUCTION_TOP_DOWN, **kwargs),
+                        help='The algorithm to be used for the induction of individual rules. Must be one of '
+                             + format_string_set(RULE_INDUCTION_VALUES) + '. For additional options refer to the '
+                             + 'documentation')
     parser.add_argument(PARAM_PARALLEL_PREDICTION, type=optional_string,
                         default=get_or_default(PARAM_PARALLEL_PREDICTION, BooleanOption.TRUE.value, **kwargs),
                         help='Whether predictions for different examples should be obtained in parallel or not. Must '

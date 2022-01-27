@@ -8,8 +8,8 @@ from argparse import ArgumentParser
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT
 from mlrl.common.strings import format_enum_values, format_dict_keys, format_string_set
-from mlrl.testbed.args import add_rule_learner_arguments, get_or_default, optional_string, PARAM_INSTANCE_SAMPLING, \
-    PARAM_PARTITION_SAMPLING, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE, \
+from mlrl.testbed.args import add_rule_learner_arguments, get_or_default, optional_string, PARAM_PARTITION_SAMPLING, \
+    PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE, \
     PARAM_MAX_RULES, PARAM_FEATURE_SAMPLING
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
@@ -17,8 +17,6 @@ from mlrl.boosting.boosting_learners import Boomer, LOSS_LOGISTIC_LABEL_WISE, HE
     LABEL_BINNING_VALUES, LOSS_VALUES, PREDICTOR_VALUES, PARALLEL_VALUES_AUTO
 
 PARAM_DEFAULT_RULE = '--default-rule'
-
-PARAM_RECALCULATE_PREDICTIONS = '--recalculate-predictions'
 
 PARAM_EARLY_STOPPING = '--early-stopping'
 
@@ -40,15 +38,14 @@ class BoomerRunnable(RuleLearnerRunnable):
     def _create_learner(self, args):
         return Boomer(random_state=args.random_state, feature_format=args.feature_format,
                       label_format=args.label_format, prediction_format=args.prediction_format,
-                      max_rules=args.max_rules, default_rule=args.default_rule, time_limit=args.time_limit,
-                      early_stopping=args.early_stopping, loss=args.loss, predictor=args.predictor,
-                      pruning=args.pruning, label_sampling=args.label_sampling,
-                      instance_sampling=args.instance_sampling, recalculate_predictions=args.recalculate_predictions,
-                      shrinkage=args.shrinkage, feature_sampling=args.feature_sampling, holdout=args.holdout,
+                      rule_induction=args.rule_induction, max_rules=args.max_rules, default_rule=args.default_rule,
+                      time_limit=args.time_limit, early_stopping=args.early_stopping, loss=args.loss,
+                      predictor=args.predictor, pruning=args.pruning, label_sampling=args.label_sampling,
+                      instance_sampling=args.instance_sampling, shrinkage=args.shrinkage,
+                      feature_sampling=args.feature_sampling, holdout=args.holdout,
                       feature_binning=args.feature_binning, label_binning=args.label_binning, head_type=args.head_type,
                       l1_regularization_weight=args.l1_regularization_weight,
-                      l2_regularization_weight=args.l2_regularization_weight, min_coverage=args.min_coverage,
-                      max_conditions=args.max_conditions, max_head_refinements=args.max_head_refinements,
+                      l2_regularization_weight=args.l2_regularization_weight,
                       parallel_rule_refinement=args.parallel_rule_refinement,
                       parallel_statistic_update=args.parallel_statistic_update,
                       parallel_prediction=args.parallel_prediction)
@@ -63,11 +60,6 @@ def __add_arguments(parser: ArgumentParser, **kwargs):
                         default=get_or_default(PARAM_DEFAULT_RULE, BooleanOption.TRUE.value, **kwargs),
                         help='Whether the first rule should be a default rule or not. Must be one of '
                              + format_enum_values(BooleanOption))
-    parser.add_argument(PARAM_RECALCULATE_PREDICTIONS, type=optional_string,
-                        default=get_or_default(PARAM_RECALCULATE_PREDICTIONS, BooleanOption.TRUE.value, **kwargs),
-                        help='Whether the predictions of rules should be recalculated on the entire training data, if '
-                             + 'the parameter ' + PARAM_INSTANCE_SAMPLING + ' is not set to None, or not. Must be one '
-                             + 'of ' + format_enum_values(BooleanOption) + '.')
     parser.add_argument(PARAM_EARLY_STOPPING, type=optional_string,
                         default=get_or_default(PARAM_EARLY_STOPPING, None, **kwargs),
                         help='The name of the strategy to be used for early stopping. Must be one of '
