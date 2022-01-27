@@ -83,67 +83,60 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                  parallel_statistic_update: str = BooleanOption.FALSE.value,
                  parallel_prediction: str = BooleanOption.TRUE.value):
         """
-        :param max_rules:                           The maximum number of rules to be induced (including the default
-                                                    rule)
-        :param time_limit:                          The duration in seconds after which the induction of rules should be
-                                                    canceled
-        :param head_type:                           The type of the rule heads that should be used. Must be
-                                                    `single-label` or `partial`
-        :param lift_function:                       The lift function to use. Must be `peak`. Additional options may be
-                                                    provided using the bracket notation
-                                                    `peak{peak_label=10,max_lift=2.0,curvature=1.0}`
-        :param heuristic:                           The heuristic to be minimized. Must be `accuracy`, `precision`,
-                                                    `recall`, `weighted-relative-accuracy`, `f-measure`, `m-estimate` or
-                                                    `laplace`. Additional options may be provided using the bracket
-                                                    notation `f-measure{beta=1.0}`
-        :param pruning_heuristic:                   The heuristic to be used for pruning. Must be `accuracy`,
-                                                    `precision`, `recall`, `weighted-relative-accuracy`, `f-measure`,
-                                                    `m-estimate` or `laplace`. Additional options may be provided using
-                                                    the bracket notation `f-measure{beta=1.0}`
-        :param label_sampling:                      The strategy that is used for sampling the labels each time a new
-                                                    classification rule is learned. Must be 'without-replacement' or
-                                                    None, if no sampling should be used. Additional options may be
-                                                    provided using the bracket notation
-                                                    `without-replacement{num_samples=5}`
-        :param instance_sampling:                   The strategy that is used for sampling the training examples each
-                                                    time a new classification rule is learned. Must be
-                                                    `with-replacement`, `without-replacement`, `stratified_label_wise`,
-                                                    `stratified_example_wise` or None, if no sampling should be used.
-                                                    Additional options may be provided using the bracket notation
-                                                    `with-replacement{sample_size=0.5}`
-        :param feature_sampling:                    The strategy that is used for sampling the features each time a
-                                                    classification rule is refined. Must be `without-replacement` or
-                                                    None, if no sampling should be used. Additional options may be
-                                                    provided using the bracket notation
-                                                    `without-replacement{sample_size=0.5}`
-        :param holdout:                             The name of the strategy to be used for creating a holdout set. Must
-                                                    be `random` or None, if no holdout set should be used. Additional
-                                                    options may be provided using the bracket notation
-                                                    `random{holdout_set_size=0.5}`
-        :param feature_binning:                     The strategy that is used for assigning examples to bins based on
-                                                    their feature values. Must be `equal-width`, `equal-frequency` or
-                                                    None, if no feature binning should be used. Additional options may
-                                                    be provided using the bracket notation `equal-width{bin_ratio=0.5}`
-        :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
-                                                    if no pruning should be used
-        :param min_coverage:                        The minimum number of training examples that must be covered by a
-                                                    rule. Must be at least 1
-        :param max_conditions:                      The maximum number of conditions to be included in a rule's body.
-                                                    Must be at least 1 or 0, if the number of conditions should not be
-                                                    restricted
-        :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
-                                                    a new condition has been added to its body. Must be at least 1 or
-                                                    0, if the number of refinements should not be restricted
-        :param parallel_rule_refinement:            Whether potential refinements of rules should be searched for in
-                                                    parallel or not. Must be `true` or `false`. Additional options may
-                                                    be provided using the bracket notation `true{num_threads=8}`
-        :param parallel_statistic_update:           Whether the confusion matrices for different examples should be
-                                                    calculated in parallel or not. Must be `true` or `false`. Additional
-                                                    options may be provided using the bracket notation
-                                                    `true{num_threads=8}`
-        :param parallel_prediction:                 Whether predictions for different examples should be obtained in
-                                                    parallel or not. Must be `true` or `false`. Additional options may
-                                                    be provided using the bracket notation `true{num_threads=8}`
+        :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
+                                            be at least 1 or 0, if the number of rules should not be restricted
+        :param time_limit:                  The duration in seconds after which the induction of rules should be
+                                            canceled. Must be at least 1 or 0, if no time limit should be set
+        :param head_type:                   The type of the rule heads that should be used. Must be 'single-label' or
+                                            'partial'
+        :param lift_function:               The lift function that should be used for the induction of partial rule
+                                            heads. Must be 'peak'. For additional options refer to the documentation.
+        :param heuristic:                   The heuristic to be optimized. Must be 'accuracy', 'precision', 'recall',
+                                            'weighted-relative-accuracy', 'f-measure', 'm-estimate' or 'laplace'. For
+                                            additional options refer to the documentation
+        :param pruning_heuristic:           The heuristic to be optimized when pruning rules. Must be 'accuracy',
+                                            'precision', 'recall', 'weighted-relative-accuracy', 'f-measure',
+                                            'm-estimate' or 'laplace'. For additional options refer to the documentation
+        :param label_sampling:              The strategy that should be used to sample from the available labels
+                                            whenever a new rule is learned. Must be 'without-replacement' or `None`, if
+                                            no sampling should be used. For additional options refer to the
+                                            documentation
+        :param instance_sampling:           The strategy that should be used to sample from the available the training
+                                            examples whenever a new rule is learned. Must be 'with-replacement',
+                                            'without-replacement', 'stratified_label_wise', 'stratified_example_wise' or
+                                            `None`, if no sampling should be used. For additional options refer to the
+                                            documentation
+        :param feature_sampling:            The strategy that is used to sample from the available features whenever a
+                                            rule is refined. Must be 'without-replacement' or `None`, if no sampling
+                                            should be used. For additional options refer to the documentation
+        :param holdout:                     The name of the strategy that should be used to creating a holdout set. Must
+                                            be 'random', 'stratified-label-wise', 'stratified-example-wise' or `None`,
+                                            if no holdout set should be used. For additional options refer to the
+                                            documentation
+        :param feature_binning:             The strategy that should be used to assign examples to bins based on their
+                                            feature values. Must be 'equal-width', 'equal-frequency' or `None`, if no
+                                            feature binning should be used. For additional options refer to the
+                                            documentation
+        :param pruning:                     The strategy that should be used to prune individual rules. Must be 'irep'
+                                            or `None`, if no pruning should be used
+        :param min_coverage:                The minimum number of training examples that must be covered by a rule. Must
+                                            be at least 1
+        :param max_conditions:              The maximum number of conditions to be included in a rule's body. Must be at
+                                            least 1 or 0, if the number of conditions should not be restricted
+        :param max_head_refinements:        The maximum number of times the head of a rule may be refined after a new
+                                            condition has been added to its body. Must be at least 1 or 0, if the number
+                                            of refinements should not be restricted
+        :param parallel_rule_refinement:    Whether potential refinements of rules should be searched for in parallel or
+                                            not. Must be 'true', 'false' or 'auto', if the most suitable strategy should
+                                            be chosen automatically depending on the loss function. For additional
+                                            options refer to the documentation
+        :param parallel_statistic_update:   Whether the confusion matrices for different examples should be updated in
+                                            parallel or not. Must be 'true', 'false' or 'auto', if the most suitable
+                                            strategy should be chosen automatically, depending on the loss function. For
+                                            additional options refer to the documentation
+        :param parallel_prediction:         Whether predictions for different examples should be obtained in parallel or
+                                            not. Must be 'true' or 'false'. For additional options refer to the
+                                            documentation
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
         self.max_rules = max_rules
