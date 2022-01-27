@@ -27,8 +27,6 @@ from sklearn.utils import check_array
 
 AUTOMATIC = 'auto'
 
-HEAD_TYPE_SINGLE = 'single-label'
-
 SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
 SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
