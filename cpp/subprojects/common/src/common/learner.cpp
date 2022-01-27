@@ -9,7 +9,7 @@
 #include "common/sampling/label_sampling_no.hpp"
 #include "common/sampling/partition_sampling_no.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
-#include "common/util/threads.hpp"
+#include "common/util/validation.hpp"
 #include <stdexcept>
 #include <string>
 
@@ -437,6 +437,7 @@ std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabi
 std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const {
+    assertGreaterOrEqual<uint32>("randomState", randomState, 1);
     std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories;
     this->createStoppingCriterionFactories(stoppingCriterionFactories);
 
