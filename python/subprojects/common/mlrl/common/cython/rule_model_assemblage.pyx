@@ -9,6 +9,14 @@ cdef class SequentialRuleModelAssemblageConfig:
     that are added to a rule-based model.
     """
 
+    def get_use_default_rule(self) -> bool:
+        """
+        Returns whether a default rule should be used or not.
+
+        :return: True, if a default rule should be used, False otherwise
+        """
+        return self.config_ptr.getUseDefaultRule()
+
     def set_use_default_rule(self, use_default_rule: bool) -> SequentialRuleModelAssemblageConfig:
         """
         Sets whether a default rule should be used or not.

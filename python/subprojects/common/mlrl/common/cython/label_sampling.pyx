@@ -9,6 +9,14 @@ cdef class LabelSamplingWithoutReplacementConfig:
     Allows to configure a method for sampling labels without replacement.
     """
 
+    def get_num_samples(self) -> int:
+        """
+        Returns the number of labels that are included in a sample.
+
+        :return: The number of labels that are included in a sample
+        """
+        return self.config_ptr.getNumSamples()
+
     def set_num_samples(self, num_samples: int) -> LabelSamplingWithoutReplacementConfig:
         """
         Sets the number of labels that should be included in a sample.

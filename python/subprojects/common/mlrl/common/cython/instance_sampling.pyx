@@ -10,6 +10,14 @@ cdef class ExampleWiseStratifiedInstanceSamplingConfig:
     distinct label vectors are treated as individual classes.
     """
 
+    def get_sample_size(self) -> float:
+        """
+        Returns the fraction of examples that are included in a sample.
+
+        :return: The fraction of examples that are included in a sample
+        """
+        return self.config_ptr.getSampleSize()
+
     def set_sample_size(self, sample_size: float) -> ExampleWiseStratifiedInstanceSamplingConfig:
         """
         Sets the fraction of examples that should be included in a sample.
@@ -31,6 +39,14 @@ cdef class LabelWiseStratifiedInstanceSamplingConfig:
     that for each label the proportion of relevant and irrelevant examples is maintained.
     """
 
+    def get_sample_size(self) -> float:
+        """
+        Returns the fraction of examples that are included in a sample.
+
+        :return: The fraction of examples that are included in a sample
+        """
+        return self.config_ptr.getSampleSize()
+
     def set_sample_size(self, sample_size: float) -> LabelWiseStratifiedInstanceSamplingConfig:
         """
         Sets the fraction of examples that should be included in a sample.
@@ -51,6 +67,14 @@ cdef class InstanceSamplingWithReplacementConfig:
     Allows to configure a method for selecting a subset of the available training examples with replacement.
     """
 
+    def get_sample_size(self) -> float:
+        """
+        Returns the fraction of examples that are included in a sample.
+
+        :return: The fraction of examples that are included in a sample
+        """
+        return self.config_ptr.getSampleSize()
+
     def set_sample_size(self, sample_size: float) -> InstanceSamplingWithReplacementConfig:
         """
         Sets the fraction of examples that should be included in a sample.
@@ -70,6 +94,14 @@ cdef class InstanceSamplingWithoutReplacementConfig:
     """
     Allows to configure a method for selecting a subset of the available training examples without replacement.
     """
+
+    def get_sample_size(self) -> float:
+        """
+        Returns the fraction of examples that are included in a sample.
+
+        :return: The fraction of examples that are included in a sample
+        """
+        return self.config_ptr.getSampleSize()
 
     def set_sample_size(self, sample_size: float) -> InstanceSamplingWithoutReplacementConfig:
         """

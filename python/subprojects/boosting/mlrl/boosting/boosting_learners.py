@@ -317,17 +317,16 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
 
             if value == EARLY_STOPPING_LOSS:
-                aggregation_function = self.__create_aggregation_function(
-                    options.get_string(ARGUMENT_AGGREGATION_FUNCTION, 'avg'))
-                config.use_measure_stopping_criterion() \
-                    .set_aggregation_function(aggregation_function) \
-                    .set_min_rules(options.get_int(ARGUMENT_MIN_RULES, 100)) \
-                    .set_update_interval(options.get_int(ARGUMENT_UPDATE_INTERVAL, 1)) \
-                    .set_stop_interval(options.get_int(ARGUMENT_STOP_INTERVAL, 1)) \
-                    .set_num_past(options.get_int(ARGUMENT_NUM_PAST, 50)) \
-                    .set_num_current(options.get_int(ARGUMENT_NUM_RECENT, 50)) \
-                    .set_min_improvement(options.get_float(ARGUMENT_MIN_IMPROVEMENT, 0.005)) \
-                    .set_force_stop(options.get_bool(ARGUMENT_FORCE_STOP, True))
+                c = config.use_measure_stopping_criterion()
+                c.set_aggregation_function(self.__create_aggregation_function(
+                    options.get_string(ARGUMENT_AGGREGATION_FUNCTION, c.get_aggregation_function().value)))
+                c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
+                c.set_update_interval(options.get_int(ARGUMENT_UPDATE_INTERVAL, c.get_update_interval()))
+                c.set_stop_interval(options.get_int(ARGUMENT_STOP_INTERVAL, c.get_stop_interval()))
+                c.set_num_past(options.get_int(ARGUMENT_NUM_PAST, c.get_num_past()))
+                c.set_num_current(options.get_int(ARGUMENT_NUM_RECENT, c.get_num_current()))
+                c.set_min_improvement(options.get_float(ARGUMENT_MIN_IMPROVEMENT, c.get_min_improvement()))
+                c.set_force_stop(options.get_bool(ARGUMENT_FORCE_STOP, c.get_force_stop()))
 
     @staticmethod
     def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:
@@ -402,10 +401,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             value, options = parse_param_and_options('label_binning', label_binning, LABEL_BINNING_VALUES)
 
             if value == LABEL_BINNING_EQUAL_WIDTH:
-                config.use_equal_width_label_binning() \
-                    .set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, 0.04)) \
-                    .set_min_bins(options.get_int(ARGUMENT_MIN_BINS, 1)) \
-                    .set_max_bins(options.get_int(ARGUMENT_MAX_BINS, 0))
+                c = config.use_equal_width_label_binning()
+                c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
+                c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
+                c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
 
     def __configure_classification_predictor(self, config: BoostingRuleLearnerConfig):
         predictor = self.predictor
@@ -416,12 +415,12 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             value = parse_param('predictor', predictor, PREDICTOR_VALUES)
 
             if value == PREDICTOR_LABEL_WISE:
-                config.use_label_wise_classification_predictor() \
-                    .set_num_threads(get_num_threads_prediction(self.parallel_prediction))
+                c = config.use_label_wise_classification_predictor()
+                c.set_num_threads(get_num_threads_prediction(self.parallel_prediction))
             elif value == PREDICTOR_EXAMPLE_WISE:
-                config.use_example_wise_classification_predictor() \
-                    .set_num_threads(get_num_threads_prediction(self.parallel_prediction))
+                c = config.use_example_wise_classification_predictor()
+                c.set_num_threads(get_num_threads_prediction(self.parallel_prediction))
 
     def __configure_probability_predictor(self, config: BoostingRuleLearnerConfig):
-        config.use_label_wise_probability_predictor() \
-            .set_num_threads(get_num_threads_prediction(self.parallel_prediction))
+        c = config.use_label_wise_probability_predictor()
+        c.set_num_threads(get_num_threads_prediction(self.parallel_prediction))

@@ -12,6 +12,15 @@ cdef class LabelWiseClassificationPredictorConfig:
     of the previous rules has already predicted for a particular example and label.
     """
 
+    def get_num_threads(self) -> int:
+        """
+        Returns the number of CPU threads that are used to make predictions for different query examples in parallel.
+
+        :return: The number of CPU threads that are used to make predictions for different query examples in parallel or
+                 0, if all available CPU cores are utilized
+        """
+        return self.config_ptr.getNumThreads()
+
     def set_num_threads(self, num_threads: int) -> LabelWiseClassificationPredictorConfig:
         """
         Sets the number of CPU threads that should be used to make predictions for different query examples in parallel.

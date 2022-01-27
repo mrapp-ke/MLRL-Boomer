@@ -12,6 +12,14 @@ cdef class FMeasureConfig:
     heuristic becomes equivalent to "Recall".
     """
 
+    def get_beta(self) -> float:
+        """
+        Returns the value of the "beta" parameter.
+
+        :return: The value of the "beta" parameter
+        """
+        return self.config_ptr.getBeta()
+
     def set_beta(self, beta: float) -> FMeasureConfig:
         """
         Sets the value of the "beta" parameter.
@@ -30,6 +38,14 @@ cdef class MEstimateConfig:
     parameter controls the trade-off between both heuristics. If m = 0, this heuristic is equivalent to "Precision". As
     m approaches infinity, the isometrics of this heuristic become equivalent to those of "WRA".
     """
+
+    def get_m(self) -> float:
+        """
+        Returns the value of the "m" parameter.
+
+        :return: The value of the "m" parameter
+        """
+        return self.config_ptr.getM()
 
     def set_m(self, m: float) -> MEstimateConfig:
         """
