@@ -20,12 +20,26 @@ class IRuleList : public IRuleModel {
         virtual ~IRuleList() override { };
 
         /**
+         * Creates a new default rule from a given head and adds it to the end of the model.
+         *
+         * @param headPtr An unique pointer to an object of type `IHead` that should be used as the head of the rule
+         */
+        virtual void addDefaultRule(std::unique_ptr<IHead> headPtr) = 0;
+
+        /**
          * Creates a new rule from a given body and head and adds it to the end of the model.
          *
          * @param bodyPtr An unique pointer to an object of type `IBody` that should be used as the body of the rule
          * @param headPtr An unique pointer to an object of type `IHead` that should be used as the head of the rule
          */
         virtual void addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) = 0;
+
+        /**
+         * Returns whether the model contains a default rule or not.
+         *
+         * @return True, if the model contains a default rule, false otherwise
+         */
+        virtual bool containsDefaultRule() const = 0;
 
         /**
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
@@ -207,6 +221,8 @@ class RuleList final : public IRuleList {
 
         uint32 numUsedRules_;
 
+        bool containsDefaultRule_;
+
     public:
 
         RuleList();
@@ -255,7 +271,11 @@ class RuleList final : public IRuleList {
 
         void setNumUsedRules(uint32 numUsedRules) override;
 
+        void addDefaultRule(std::unique_ptr<IHead> headPtr) override;
+
         void addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) override;
+
+        bool containsDefaultRule() const override;
 
         void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                    IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
