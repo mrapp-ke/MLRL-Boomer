@@ -9,6 +9,14 @@ cdef class ConstantShrinkageConfig:
     Allows to configure a post-processor that shrinks the weights of rules by a constant "shrinkage" parameter.
     """
 
+    def get_shrinkage(self) -> float:
+        """
+        Returns the value of the "shrinkage" parameter.
+
+        :return: The value of the "shrinkage" parameter
+        """
+        return self.config_ptr.getShrinkage()
+
     def set_shrinkage(self, shrinkage: float) -> ConstantShrinkageConfig:
         """
         Sets the value of the "shrinkage" parameter.

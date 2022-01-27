@@ -12,6 +12,15 @@ cdef class ExampleWiseClassificationPredictorConfig:
     finally predicted.
     """
 
+    def get_num_threads(self) -> int:
+        """
+        Returns the number of CPU threads that are used to make predictions for different query examples in parallel.
+
+        :return: The number of CPU threads that are used to make predictions for different query examples in parallel or
+                 0, if all available CPU cores are utilized
+        """
+        return self.config_ptr.getNumThreads()
+
     def set_num_threads(self, num_threads: int) -> ExampleWiseClassificationPredictorConfig:
         """
         Sets the number of CPU threads that should be used to make predictions for different query examples in parallel.
@@ -35,6 +44,15 @@ cdef class LabelWiseClassificationPredictorConfig:
     if a score exceeds the threshold, i.e., the label is relevant, 0 otherwise).
     """
 
+    def get_num_threads(self) -> int:
+        """
+        Returns the number of CPU threads that are used to make predictions for different query examples in parallel.
+
+        :return: The number of CPU threads that are used to make predictions for different query examples in parallel or
+                 0, if all available CPU cores are utilized
+        """
+        return self.config_ptr.getNumThreads()
+
     def set_num_threads(self, num_threads: int) -> LabelWiseClassificationPredictorConfig:
         """
         Sets the number of CPU threads that should be used to make predictions for different query examples in parallel.
@@ -55,6 +73,15 @@ cdef class LabelWiseRegressionPredictorConfig:
     Allows to configure predictors that predict label-wise regression scores for given query examples by summing up the
     scores that are provided by the individual rules of an existing rule-based model for each label individually.
     """
+
+    def get_num_threads(self) -> int:
+        """
+        Returns the number of CPU threads that are used to make predictions for different query examples in parallel.
+
+        :return: The number of CPU threads that are used to make predictions for different query examples in parallel or
+                 0, if all available CPU cores are utilized
+        """
+        return self.config_ptr.getNumThreads()
 
     def set_num_threads(self, num_threads: int) -> LabelWiseRegressionPredictorConfig:
         """
@@ -77,6 +104,15 @@ cdef class LabelWiseProbabilityPredictorConfig:
     existing rule-based models and transforming the aggregated scores into probabilities in [0, 1] according to a
     certain transformation function that is applied to each label individually.
     """
+
+    def get_num_threads(self) -> int:
+        """
+        Returns the number of CPU threads that are used to make predictions for different query examples in parallel.
+
+        :return: The number of CPU threads that are used to make predictions for different query examples in parallel or
+                 0, if all available CPU cores are utilized
+        """
+        return self.config_ptr.getNumThreads()
 
     def set_num_threads(self, num_threads: int) -> LabelWiseProbabilityPredictorConfig:
         """

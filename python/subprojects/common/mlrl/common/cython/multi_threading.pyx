@@ -10,6 +10,14 @@ cdef class ManualMultiThreadingConfig:
     threads to be used.
     """
 
+    def get_num_threads(self) -> int:
+        """
+        Returns the number of threads that are used.
+
+        :return: The number of threads that are used or 0, if all available CPU cores are utilized
+        """
+        return self.config_ptr.getNumThreads()
+
     def set_num_threads(self, num_threads: int) -> ManualMultiThreadingConfig:
         """
         Sets the number of threads that should be used.

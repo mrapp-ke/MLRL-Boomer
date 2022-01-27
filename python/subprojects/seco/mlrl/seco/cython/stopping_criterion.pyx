@@ -10,6 +10,14 @@ cdef class CoverageStoppingCriterionConfig:
     uncovered labels is smaller or equal to a certain threshold.
     """
 
+    def get_threshold(self) -> float:
+        """
+        Returns the threshold that is used by the stopping criterion.
+
+        :return: The threshold that is used by the stopping criterion
+        """
+        return self.config_ptr.getThreshold()
+
     def set_threshold(self, threshold: float) -> CoverageStoppingCriterionConfig:
         """
         Sets the threshold that should be used by the stopping criterion.

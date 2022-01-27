@@ -237,9 +237,11 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         elif value == HEURISTIC_WRA:
             config.use_wra_heuristic()
         elif value == HEURISTIC_F_MEASURE:
-            config.use_f_measure_heuristic().set_beta(options.get_float(ARGUMENT_BETA, 0.25))
+            c = config.use_f_measure_heuristic()
+            c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
         elif value == HEURISTIC_M_ESTIMATE:
-            config.use_m_estimate_heuristic().set_m(options.get_float(ARGUMENT_M, 22.466))
+            c = config.use_m_estimate_heuristic()
+            c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
 
     def __configure_pruning_heuristic(self, config: SeCoRuleLearnerConfig):
         value, options = parse_param_and_options('pruning_heuristic', self.pruning_heuristic, HEURISTIC_VALUES)
@@ -255,19 +257,21 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         elif value == HEURISTIC_WRA:
             config.use_wra_pruning_heuristic()
         elif value == HEURISTIC_F_MEASURE:
-            config.use_f_measure_pruning_heuristic().set_beta(options.get_float(ARGUMENT_BETA, 0.25))
+            c = config.use_f_measure_pruning_heuristic()
+            c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
         elif value == HEURISTIC_M_ESTIMATE:
-            config.use_m_estimate_pruning_heuristic().set_m(options.get_float(ARGUMENT_M, 22.466))
+            c = config.use_m_estimate_pruning_heuristic()
+            c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
 
     def __configure_lift_function(self, config: SeCoRuleLearnerConfig):
         value, options = parse_param_and_options('lift_function', self.lift_function, LIFT_FUNCTION_VALUES)
 
         if value == LIFT_FUNCTION_PEAK:
-            config.use_peak_lift_function() \
-                .set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, 0)) \
-                .set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, 1.08)) \
-                .set_curvature(options.get_float(ARGUMENT_CURVATURE, 1.0))
+            c = config.use_peak_lift_function()
+            c.set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, c.get_peak_label()))
+            c.set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, c.get_max_lift()))
+            c.set_curvature(options.get_float(ARGUMENT_CURVATURE, c.get_curvature()))
 
     def __configure_classification_predictor(self, config: SeCoRuleLearnerConfig):
-        config.use_label_wise_classification_predictor() \
-            .set_num_threads(get_num_threads_prediction(self.parallel_prediction))
+        c = config.use_label_wise_classification_predictor()
+        c.set_num_threads(get_num_threads_prediction(self.parallel_prediction))

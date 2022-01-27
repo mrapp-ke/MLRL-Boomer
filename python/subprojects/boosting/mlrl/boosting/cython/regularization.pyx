@@ -10,6 +10,14 @@ cdef class ManualRegularizationConfig:
     the regularization term.
     """
 
+    def get_regularization_weight(self) -> float:
+        """
+        Returns the weight of the regularization term.
+
+        :return: The weight of the regularization term
+        """
+        return self.config_ptr.getRegularizationWeight()
+
     def set_regularization_weight(self, regularization_weight: float) -> ManualRegularizationConfig:
         """
         Sets the weight of the regularization term.

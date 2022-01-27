@@ -9,6 +9,14 @@ cdef class FeatureSamplingWithoutReplacementConfig:
     Allows to configure a method for sampling features without replacement.
     """
 
+    def get_sample_size(self) -> float:
+        """
+        Returns the fraction of features that are included in a sample.
+
+        :return: The fraction of features that are included in a sample
+        """
+        return self.config_ptr.getSampleSize()
+
     def set_sample_size(self, sample_size: float) -> FeatureSamplingWithoutReplacementConfig:
         """
         Sets the fraction of features that should be included in a sample.

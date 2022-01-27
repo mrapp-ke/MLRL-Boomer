@@ -10,6 +10,14 @@ cdef class PeakLiftFunctionConfig:
     lift is reached, and monotonously decreases afterwards.
     """
 
+    def get_peak_label(self) -> int:
+        """
+        Returns the number of labels for which the lift is maximal.
+
+        :return: The number of labels for which the lift is maximal or 0, if the average label cardinality is used
+        """
+        return self.config_ptr.getPeakLabel()
+
     def set_peak_label(self, peak_label: int) -> PeakLiftFunctionConfig:
         """
         Sets the number of labels for which the lift should be maximal.
@@ -23,6 +31,14 @@ cdef class PeakLiftFunctionConfig:
         self.config_ptr.setPeakLabel(peak_label)
         return self
 
+    def get_max_lift(self) -> float:
+        """
+        Returns the lift at the peak label.
+
+        :return: The lift at the peak label
+        """
+        return self.config_ptr.getMaxLift()
+
     def set_max_lift(self, max_lift: float) -> PeakLiftFunctionConfig:
         """
         Sets the lift at the peak label.
@@ -33,6 +49,14 @@ cdef class PeakLiftFunctionConfig:
         assert_greater_or_equal('max_lift', max_lift, 1)
         self.config_ptr.setMaxLift(max_lift)
         return self
+
+    def get_curvature(self) -> float:
+        """
+        Returns the curvature of the lift function.
+
+        :return: The curvature of the lift function
+        """
+        return self.config_ptr.getCurvature()
 
     def set_curvature(self, curvature: float) -> PeakLiftFunctionConfig:
         """

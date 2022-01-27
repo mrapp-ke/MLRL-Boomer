@@ -13,6 +13,14 @@ cdef class SizeStoppingCriterionConfig:
     maximum.
     """
 
+    def get_max_rules(self) -> int:
+        """
+        Returns the maximum number of rules that are induced.
+
+        :return: The maximum number of rules that are induced
+        """
+        return self.config_ptr.getMaxRules()
+
     def set_max_rules(self, max_rules: int) -> SizeStoppingCriterionConfig:
         """
         Sets the maximum number of rules that should be induced.
@@ -29,6 +37,14 @@ cdef class TimeStoppingCriterionConfig:
     """
     Allows to configure a stopping criterion that ensures that a certain time limit is not exceeded.
     """
+
+    def get_time_limit(self) -> int:
+        """
+        Returns the time limit.
+
+        :return: The time limit in seconds
+        """
+        return self.config_ptr.getTimeLimit()
 
     def set_time_limit(self, time_limit: int) -> TimeStoppingCriterionConfig:
         """
@@ -66,6 +82,16 @@ cdef class MeasureStoppingCriterionConfig:
     induction is continued, otherwise it is stopped.
     """
 
+    def get_aggregation_function(self) -> AggregationFunction:
+        """
+        Returns the type of the aggregation function that is used to aggregate the values that are stored in a buffer.
+
+        :return: A value of the enum `AggregationFunction` that specifies the type of the aggregation function that is
+                 used to aggregate the values that are stored in a buffer
+        """
+        cdef uint8 enum_value = self.config_ptr.getAggregationFunction()
+        return AggregationFunction(enum_value)
+
     def set_aggregation_function(self, aggregation_function: AggregationFunction) -> MeasureStoppingCriterionConfig:
         """
         Sets the type of the aggregation function that should be used to aggregate the values that are stored in a
@@ -82,6 +108,14 @@ cdef class MeasureStoppingCriterionConfig:
         self.config_ptr.setAggregationFunction(<AggregationFunctionImpl>enum_value)
         return self
 
+    def get_min_rules(self) -> int:
+        """
+        Returns the minimum number of rules that must have been learned until the induction of rules might be stopped.
+
+        :return: The minimum number of rules that must have been learned until the induction of rules might be stopped
+        """
+        return self.config_ptr.getMinRules()
+
     def set_min_rules(self, min_rules: int) -> MeasureStoppingCriterionConfig:
         """
         Sets the minimum number of rules that must have been learned until the induction of rules might be stopped.
@@ -95,6 +129,14 @@ cdef class MeasureStoppingCriterionConfig:
         self.config_ptr.setMinRules(min_rules)
         return self
 
+    def get_update_interval(self) -> int:
+        """
+        Returns the interval that is used to update the quality of the current model.
+
+        :return: The interval that is used to update the quality of the current model
+        """
+        return self.config_ptr.getUpdateInterval()
+
     def set_update_interval(self, update_interval: int) -> MeasureStoppingCriterionConfig:
         """
         Sets the interval that should be used to update the quality of the current model.
@@ -107,6 +149,14 @@ cdef class MeasureStoppingCriterionConfig:
         assert_greater_or_equal('update_interval', update_interval, 1)
         self.config_ptr.setUpdateInterval(update_interval)
         return self
+
+    def get_stop_interval(self) -> int:
+        """
+        Returns the interval that is used to decide whether the induction of rules should be stopped.
+
+        :return: The interval that is used to decide whether the induction of rules should be stopped
+        """
+        return self.config_ptr.getStopInterval()
 
     def set_stop_interval(self, stop_interval: int) -> MeasureStoppingCriterionConfig:
         """
@@ -122,6 +172,14 @@ cdef class MeasureStoppingCriterionConfig:
         self.config_ptr.setStopInterval(stop_interval)
         return self
 
+    def get_num_past(self) -> int:
+        """
+        Returns the number of quality stores of past iterations that are stored in a buffer.
+
+        :return: The number of quality stores of past iterations that are stored in a buffer
+        """
+        return self.config_ptr.getNumPast()
+
     def set_num_past(self, num_past: int) -> MeasureStoppingCriterionConfig:
         """
         Sets the number of quality scores of past iterations that should be stored in a buffer.
@@ -134,6 +192,14 @@ cdef class MeasureStoppingCriterionConfig:
         assert_greater_or_equal('num_past', num_past, 1)
         self.config_ptr.setNumPast(num_past)
         return self
+
+    def get_num_current(self) -> int:
+        """
+        Returns the number of quality scores of the most recent iterations that are stored in a buffer.
+
+        :return: The number of quality scores of the most recent iterations that are stored in a buffer
+        """
+        return self.config_ptr.getNumCurrent()
 
     def set_num_current(self, num_current: int) -> MeasureStoppingCriterionConfig:
         """
@@ -148,6 +214,14 @@ cdef class MeasureStoppingCriterionConfig:
         self.config_ptr.setNumCurrent(num_current)
         return self
 
+    def get_min_improvement(self) -> float:
+        """
+        Returns the minimum improvement that must be reached for the rule induction to be continued.
+
+        :return: The minimum improvement that must be reached for the rule induction to be continued
+        """
+        return self.config_ptr.getMinImprovement()
+
     def set_min_improvement(self, min_improvement: float) -> MeasureStoppingCriterionConfig:
         """
         Sets the minimum improvement that must be reached for the rule induction to be continued.
@@ -161,6 +235,15 @@ cdef class MeasureStoppingCriterionConfig:
         assert_less_or_equal('min_improvement', min_improvement, 1)
         self.config_ptr.setMinImprovement(min_improvement)
         return self
+
+    def get_force_stop(self) -> bool:
+        """
+        Returns whether the induction of rules is forced to be stopped, if the stopping criterion is met.
+
+        :return: True, if the induction of rules is forced to be stopped, if the stopping criterion is met, False, if
+                 only the time of stopping is stored
+        """
+        return self.config_ptr.getForceStop()
 
     def set_force_stop(self, force_stop: bool) -> MeasureStoppingCriterionConfig:
         """

@@ -118,11 +118,11 @@ def configure_rule_model_assemblage(config: RuleLearnerConfig, default_rule: str
 
 def configure_rule_induction(config: RuleLearnerConfig, min_coverage: int, max_conditions: int,
                              max_head_refinements: int, recalculate_predictions: str):
-    config.use_top_down_rule_induction() \
-        .set_min_coverage(min_coverage) \
-        .set_max_conditions(max_conditions) \
-        .set_max_head_refinements(max_head_refinements) \
-        .set_recalculate_predictions(BooleanOption.parse(recalculate_predictions))
+    c = config.use_top_down_rule_induction()
+    c.set_min_coverage(min_coverage)
+    c.set_max_conditions(max_conditions)
+    c.set_max_head_refinements(max_head_refinements)
+    c.set_recalculate_predictions(BooleanOption.parse(recalculate_predictions))
 
 
 def configure_feature_binning(config: RuleLearnerConfig, feature_binning: str):
@@ -132,15 +132,15 @@ def configure_feature_binning(config: RuleLearnerConfig, feature_binning: str):
         value, options = parse_param_and_options('feature_binning', feature_binning, FEATURE_BINNING_VALUES)
 
         if value == BINNING_EQUAL_FREQUENCY:
-            config.use_equal_frequency_feature_binning() \
-                .set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, 0.33)) \
-                .set_min_bins(options.get_int(ARGUMENT_MIN_BINS, 2)) \
-                .set_max_bins(options.get_int(ARGUMENT_MAX_BINS, 0))
+            c = config.use_equal_frequency_feature_binning()
+            c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
+            c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
+            c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
         elif value == BINNING_EQUAL_WIDTH:
-            config.use_equal_width_feature_binning() \
-                .set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, 0.33)) \
-                .set_min_bins(options.get_int(ARGUMENT_MIN_BINS, 2)) \
-                .set_max_bins(options.get_int(ARGUMENT_MAX_BINS, 0))
+            c = config.use_equal_width_feature_binning()
+            c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
+            c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
+            c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
 
 
 def configure_label_sampling(config: RuleLearnerConfig, label_sampling: str):
@@ -150,8 +150,8 @@ def configure_label_sampling(config: RuleLearnerConfig, label_sampling: str):
         value, options = parse_param_and_options('label_sampling', label_sampling, LABEL_SAMPLING_VALUES)
 
         if value == SAMPLING_WITHOUT_REPLACEMENT:
-            config.use_label_sampling_without_replacement() \
-                .set_num_samples(options.get_int(ARGUMENT_NUM_SAMPLES, 1))
+            c = config.use_label_sampling_without_replacement()
+            c.set_num_samples(options.get_int(ARGUMENT_NUM_SAMPLES, c.get_num_samples()))
 
 
 def configure_instance_sampling(config: RuleLearnerConfig, instance_sampling: str):
@@ -161,17 +161,17 @@ def configure_instance_sampling(config: RuleLearnerConfig, instance_sampling: st
         value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
 
         if value == SAMPLING_WITH_REPLACEMENT:
-            config.use_instance_sampling_with_replacement() \
-                .set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0))
+            c = config.use_instance_sampling_with_replacement()
+            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
-            config.use_instance_sampling_without_replacement() \
-                .set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66))
+            c = config.use_instance_sampling_without_replacement()
+            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
         elif value == SAMPLING_STRATIFIED_LABEL_WISE:
-            config.use_label_wise_stratified_instance_sampling() \
-                .set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66))
+            c = config.use_label_wise_stratified_instance_sampling()
+            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            config.use_example_wise_stratified_instance_sampling() \
-                .set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66))
+            c = config.use_example_wise_stratified_instance_sampling()
+            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
 
 
 def configure_feature_sampling(config: RuleLearnerConfig, feature_sampling: str):
@@ -181,8 +181,8 @@ def configure_feature_sampling(config: RuleLearnerConfig, feature_sampling: str)
         value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
 
         if value == SAMPLING_WITHOUT_REPLACEMENT:
-            config.use_feature_sampling_without_replacement() \
-                .set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, 0))
+            c = config.use_feature_sampling_without_replacement()
+            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
 
 
 def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: str):
@@ -192,14 +192,14 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
         value, options = parse_param_and_options('holdout', partition_sampling, PARTITION_SAMPLING_VALUES)
 
         if value == PARTITION_SAMPLING_RANDOM:
-            config.use_random_bi_partition_sampling() \
-                .set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33))
+            c = config.use_random_bi_partition_sampling()
+            c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
         elif value == SAMPLING_STRATIFIED_LABEL_WISE:
-            config.use_label_wise_stratified_bi_partition_sampling() \
-                .set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33))
+            c = config.use_label_wise_stratified_bi_partition_sampling()
+            c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            config.use_example_wise_stratified_bi_partition_sampling() \
-                .set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33))
+            c = config.use_example_wise_stratified_bi_partition_sampling()
+            c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
 
 
 def configure_pruning(config: RuleLearnerConfig, pruning: str, instance_sampling: str):
@@ -222,7 +222,8 @@ def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_
     if value == BooleanOption.FALSE.value:
         config.use_no_parallel_rule_refinement()
     else:
-        config.use_parallel_rule_refinement().set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, 0))
+        c = config.use_parallel_rule_refinement()
+        c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
 
 
 def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_statistic_update: str):
@@ -231,7 +232,8 @@ def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_stat
     if value == BooleanOption.FALSE.value:
         config.use_no_parallel_statistic_update()
     else:
-        config.use_parallel_statistic_update().set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, 0))
+        c = config.use_parallel_statistic_update()
+        c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
 
 
 def configure_size_stopping_criterion(config: RuleLearnerConfig, max_rules: int):
