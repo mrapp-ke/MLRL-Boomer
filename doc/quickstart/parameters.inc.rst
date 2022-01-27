@@ -48,6 +48,12 @@ The following parameters allow to control the behavior of the algorithm:
 
   * The seed to be used by random number generators. Must be at least 1.
 
+* ``rule_model_assemblage`` (Default value = ``'sequential'``)
+
+  * ``'sequential'`` The rules in a model are learned sequentially, starting with a default rule. The following options may be provided using the bracket notation:
+
+    * ``default_rule`` (Default value = ``'true'``) ``'true'``, if the first rule should be a default rule that provides a default prediction for all examples, ``'false'``, if no default rule should be used.
+
 * ``rule_induction`` (Default value = ``'top-down'``)
 
   * ``'top-down'`` A greedy top-down search, where rules are successively refined by adding new conditions, is used for the induction of individual rules. The following options may be provided using the bracket notation:
@@ -60,11 +66,6 @@ The following parameters allow to control the behavior of the algorithm:
 * ``max_rules`` (Default value = ``1000``)
 
   * The maximum number of rules to be learned (including the default rule). Must be at least 1 or 0, if the number of rules should not be restricted.
-
-* ``default_rule`` (Default value = ``'true'``)
-
-  * ``'true'`` The first rule is a default rule that provides a default prediction for all examples.
-  * ``'false'`` No default rule is used.
 
 * ``time_limit`` (Default value = ``0``)
 

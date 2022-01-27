@@ -5,9 +5,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from argparse import ArgumentParser
 
-from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT
-from mlrl.common.strings import format_enum_values, format_dict_keys, format_string_set
+from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, RULE_MODEL_ASSEMBLAGE_SEQUENTIAL, \
+    RULE_MODEL_ASSEMBLAGE_VALUES
+from mlrl.common.strings import format_dict_keys, format_string_set
 from mlrl.testbed.args import add_rule_learner_arguments, get_or_default, optional_string, PARAM_PARTITION_SAMPLING, \
     PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE, \
     PARAM_MAX_RULES, PARAM_FEATURE_SAMPLING
@@ -16,7 +16,7 @@ from mlrl.testbed.runnables import RuleLearnerRunnable
 from mlrl.boosting.boosting_learners import Boomer, LOSS_LOGISTIC_LABEL_WISE, HEAD_TYPE_VALUES, EARLY_STOPPING_VALUES, \
     LABEL_BINNING_VALUES, LOSS_VALUES, PREDICTOR_VALUES, PARALLEL_VALUES_AUTO
 
-PARAM_DEFAULT_RULE = '--default-rule'
+PARAM_RULE_MODEL_ASSEMBLAGE = '--rule-model-assemblage'
 
 PARAM_EARLY_STOPPING = '--early-stopping'
 
@@ -38,11 +38,11 @@ class BoomerRunnable(RuleLearnerRunnable):
     def _create_learner(self, args):
         return Boomer(random_state=args.random_state, feature_format=args.feature_format,
                       label_format=args.label_format, prediction_format=args.prediction_format,
-                      rule_induction=args.rule_induction, max_rules=args.max_rules, default_rule=args.default_rule,
-                      time_limit=args.time_limit, early_stopping=args.early_stopping, loss=args.loss,
-                      predictor=args.predictor, pruning=args.pruning, label_sampling=args.label_sampling,
-                      instance_sampling=args.instance_sampling, shrinkage=args.shrinkage,
-                      feature_sampling=args.feature_sampling, holdout=args.holdout,
+                      rule_model_assemblage=args.rule_model_assemblage, rule_induction=args.rule_induction,
+                      max_rules=args.max_rules, time_limit=args.time_limit, early_stopping=args.early_stopping,
+                      loss=args.loss, predictor=args.predictor, pruning=args.pruning,
+                      label_sampling=args.label_sampling, instance_sampling=args.instance_sampling,
+                      shrinkage=args.shrinkage, feature_sampling=args.feature_sampling, holdout=args.holdout,
                       feature_binning=args.feature_binning, label_binning=args.label_binning, head_type=args.head_type,
                       l1_regularization_weight=args.l1_regularization_weight,
                       l2_regularization_weight=args.l2_regularization_weight,
@@ -56,10 +56,11 @@ def __add_arguments(parser: ArgumentParser, **kwargs):
     args[PARAM_MAX_RULES] = 1000
     args[PARAM_FEATURE_SAMPLING] = SAMPLING_WITHOUT_REPLACEMENT
     add_rule_learner_arguments(parser, **args)
-    parser.add_argument(PARAM_DEFAULT_RULE, type=optional_string,
-                        default=get_or_default(PARAM_DEFAULT_RULE, BooleanOption.TRUE.value, **kwargs),
-                        help='Whether the first rule should be a default rule or not. Must be one of '
-                             + format_enum_values(BooleanOption))
+    parser.add_argument(PARAM_RULE_MODEL_ASSEMBLAGE, type=str,
+                        default=get_or_default(PARAM_RULE_MODEL_ASSEMBLAGE, RULE_MODEL_ASSEMBLAGE_SEQUENTIAL, **kwargs),
+                        help='The name of the algorithm to be used for the induction of several rule. Must be one of '
+                             + format_string_set(RULE_MODEL_ASSEMBLAGE_VALUES) + '. For additional options refer to '
+                             + 'the documentation.')
     parser.add_argument(PARAM_EARLY_STOPPING, type=optional_string,
                         default=get_or_default(PARAM_EARLY_STOPPING, None, **kwargs),
                         help='The name of the strategy to be used for early stopping. Must be one of '

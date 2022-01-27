@@ -29,6 +29,10 @@ AUTOMATIC = 'auto'
 
 RULE_INDUCTION_TOP_DOWN = 'top-down'
 
+ARGUMENT_USE_DEFAULT_RULE = 'default_rule'
+
+RULE_MODEL_ASSEMBLAGE_SEQUENTIAL = 'sequential'
+
 ARGUMENT_MIN_COVERAGE = 'min_coverage'
 
 ARGUMENT_MAX_CONDITIONS = 'max_conditions'
@@ -70,6 +74,10 @@ ARGUMENT_NUM_THREADS = 'num_threads'
 RULE_INDUCTION_VALUES: Dict[str, Set[str]] = {
     RULE_INDUCTION_TOP_DOWN: {ARGUMENT_MIN_COVERAGE, ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
                               ARGUMENT_RECALCULATE_PREDICTIONS}
+}
+
+RULE_MODEL_ASSEMBLAGE_VALUES: Dict[str, Set[str]] = {
+    RULE_MODEL_ASSEMBLAGE_SEQUENTIAL: {ARGUMENT_USE_DEFAULT_RULE}
 }
 
 LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
@@ -125,8 +133,13 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
                          + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
 
 
-def configure_rule_model_assemblage(config: RuleLearnerConfig, default_rule: str):
-    config.use_sequential_rule_model_assemblage().set_use_default_rule(BooleanOption.parse(default_rule))
+def configure_rule_model_assemblage(config: RuleLearnerConfig, rule_model_assemblage: str):
+    value, options = parse_param_and_options('rule_model_assemblage', rule_model_assemblage,
+                                             RULE_MODEL_ASSEMBLAGE_VALUES)
+
+    if value == RULE_MODEL_ASSEMBLAGE_SEQUENTIAL:
+        c = config.use_sequential_rule_model_assemblage()
+        c.set_use_default_rule(options.get_bool(ARGUMENT_USE_DEFAULT_RULE, c.get_use_default_rule()))
 
 
 def configure_rule_induction(config: RuleLearnerConfig, rule_induction: str):
