@@ -37,7 +37,7 @@ cdef class TopDownRuleInductionConfig:
         :return: The maximum number of conditions to be included in a rule's body or 0, if the number of conditions is
                  not restricted
         """
-        self.config_ptr.getMaxConditions()
+        return self.config_ptr.getMaxConditions()
 
     def set_max_conditions(self, max_conditions: int) -> TopDownRuleInductionConfig:
         """
