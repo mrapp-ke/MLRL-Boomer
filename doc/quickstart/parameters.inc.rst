@@ -48,6 +48,15 @@ The following parameters allow to control the behavior of the algorithm:
 
   * The seed to be used by random number generators. Must be at least 1.
 
+* ``rule_induction`` (Default value = ``'top-down'``)
+
+  * ``'top-down'`` A greedy top-down search, where rules are successively refined by adding new conditions, is used for the induction of individual rules. The following options may be provided using the bracket notation:
+
+    * ``max_conditions`` (Default value = ``0``) The maximum number of conditions to be included in a rule's body. Must be at least 1 or 0, if the number of conditions should not be restricted.
+    * ``min_coverage`` (Default value = ``1``) The minimum number of examples that must be covered by a rule. Must be at least 1.
+    * ``max_head_refinements`` (Default value = ``1``) The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, if the number of refinements should not be restricted.
+    * ``recalculate_predictions`` (Default value = ``'true'``) ``'true'``, if the predictions of rules should be recalculated on the entire training data if the parameter ``instance_sampling`` is not set to None, ``'false'``, if the predictions of rules should not be recalculated.
+
 * ``max_rules`` (Default value = ``1000``)
 
   * The maximum number of rules to be learned (including the default rule). Must be at least 1 or 0, if the number of rules should not be restricted.
@@ -93,11 +102,6 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'stratified-example-wise'`` The training examples to be considered for learning a new rule are selected according to stratified sampling method, where distinct label vectors are treated as individual classes. The following options may be provided using the bracket notation:
   
     * ``sample_size`` (Default value = ``0.66``) The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
-
-* ``recalculate_predictions`` (Default value = ``'true'``)
-
-  * ``'true'`` The predictions of rules are recalculated on the entire training data, if the parameter ``instance_sampling`` is not set to None.
-  * ``'false'`` The predictions of rules are not recalculated.
 
 * ``holdout`` (Default value = ``None``)
 
@@ -157,18 +161,6 @@ The following parameters allow to control the behavior of the algorithm:
 
   * ``None`` No pruning is used.
   * ``'irep'``. Subsequent conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter ``instance_sampling`` is not set to None.
-
-* ``min_coverage`` (Default value = ``1``)
-
-  * The minimum number of examples that must be covered by a rule. Must be at least 1.
-
-* ``max_conditions`` (Default value = ``0``)
-
-  * The maximum number of conditions to be included in a rule's body. Must be at least 1 or 0, if the number of conditions should not be restricted.
-
-* ``max_head_refinements`` (Default value = ``1``)
-
-  * The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, if the number of refinements should not be restricted.
 
 * ``head_type`` (Default value = ``'auto'``)
 

@@ -27,6 +27,16 @@ from sklearn.utils import check_array
 
 AUTOMATIC = 'auto'
 
+RULE_INDUCTION_TOP_DOWN = 'top-down'
+
+ARGUMENT_MIN_COVERAGE = 'min_coverage'
+
+ARGUMENT_MAX_CONDITIONS = 'max_conditions'
+
+ARGUMENT_MAX_HEAD_REFINEMENTS = 'max_head_refinements'
+
+ARGUMENT_RECALCULATE_PREDICTIONS = 'recalculate_predictions'
+
 SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
 SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
@@ -56,6 +66,11 @@ ARGUMENT_MAX_BINS = 'max_bins'
 PRUNING_IREP = 'irep'
 
 ARGUMENT_NUM_THREADS = 'num_threads'
+
+RULE_INDUCTION_VALUES: Dict[str, Set[str]] = {
+    RULE_INDUCTION_TOP_DOWN: {ARGUMENT_MIN_COVERAGE, ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
+                              ARGUMENT_RECALCULATE_PREDICTIONS}
+}
 
 LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
     SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}
@@ -114,13 +129,16 @@ def configure_rule_model_assemblage(config: RuleLearnerConfig, default_rule: str
     config.use_sequential_rule_model_assemblage().set_use_default_rule(BooleanOption.parse(default_rule))
 
 
-def configure_rule_induction(config: RuleLearnerConfig, min_coverage: int, max_conditions: int,
-                             max_head_refinements: int, recalculate_predictions: str):
-    c = config.use_top_down_rule_induction()
-    c.set_min_coverage(min_coverage)
-    c.set_max_conditions(max_conditions)
-    c.set_max_head_refinements(max_head_refinements)
-    c.set_recalculate_predictions(BooleanOption.parse(recalculate_predictions))
+def configure_rule_induction(config: RuleLearnerConfig, rule_induction: str):
+    value, options = parse_param_and_options('rule_induction', rule_induction, RULE_INDUCTION_VALUES)
+
+    if value == RULE_INDUCTION_TOP_DOWN:
+        c = config.use_top_down_rule_induction()
+        c.set_min_coverage(options.get_int(ARGUMENT_MIN_COVERAGE, c.get_min_coverage()))
+        c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
+        c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
+        c.set_recalculate_predictions(options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS,
+                                                       c.get_recalculate_predictions()))
 
 
 def configure_feature_binning(config: RuleLearnerConfig, feature_binning: str):

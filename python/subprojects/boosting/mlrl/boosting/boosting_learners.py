@@ -13,7 +13,7 @@ from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLea
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, \
-    ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
+    ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS, RULE_INDUCTION_TOP_DOWN
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
@@ -100,16 +100,18 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, prediction_format: str = SparsePolicy.AUTO.value,
-                 max_rules: int = 1000, default_rule: str = BooleanOption.TRUE.value, time_limit: int = 0,
-                 early_stopping: str = None, head_type: str = AUTOMATIC, loss: str = LOSS_LOGISTIC_LABEL_WISE,
-                 predictor: str = AUTOMATIC, label_sampling: str = None, instance_sampling: str = None,
-                 recalculate_predictions: str = BooleanOption.TRUE.value,
+                 rule_induction: str = RULE_INDUCTION_TOP_DOWN, max_rules: int = 1000,
+                 default_rule: str = BooleanOption.TRUE.value, time_limit: int = 0, early_stopping: str = None,
+                 head_type: str = AUTOMATIC, loss: str = LOSS_LOGISTIC_LABEL_WISE, predictor: str = AUTOMATIC,
+                 label_sampling: str = None, instance_sampling: str = None,
                  feature_sampling: str = SAMPLING_WITHOUT_REPLACEMENT, holdout: str = None, feature_binning: str = None,
                  label_binning: str = AUTOMATIC, pruning: str = None, shrinkage: float = 0.3,
-                 l1_regularization_weight: float = 0.0, l2_regularization_weight: float = 1.0, min_coverage: int = 1,
-                 max_conditions: int = 0, max_head_refinements: int = 1, parallel_rule_refinement: str = AUTOMATIC,
-                 parallel_statistic_update: str = AUTOMATIC, parallel_prediction: str = BooleanOption.TRUE.value):
+                 l1_regularization_weight: float = 0.0, l2_regularization_weight: float = 1.0,
+                 parallel_rule_refinement: str = AUTOMATIC, parallel_statistic_update: str = AUTOMATIC,
+                 parallel_prediction: str = BooleanOption.TRUE.value):
         """
+        :param rule_induction:              A algorithm to be used for the induction of individual rules. Must be
+                                            'top-down'. For additional options refer to the documentation
         :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
                                             be at least 1 or 0, if the number of rules should not be restricted
         :param default_rule:                Whether the first rule should be a default rule that provides a default
@@ -138,9 +140,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             'without-replacement', 'stratified_label_wise', 'stratified_example_wise' or
                                             `None`, if no sampling should be used. For additional options refer to the
                                             documentation
-        :param recalculate_predictions:     Whether the predictions of rules should be recalculated on the entire
-                                            training data, if instance sampling is used, or not. Must be 'true' or
-                                            'false'
         :param feature_sampling:            The strategy that is used to sample from the available features whenever a
                                             rule is refined. Must be 'without-replacement' or `None`, if no sampling
                                             should be used. For additional options refer to the documentation
@@ -163,13 +162,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             shrink the weight of individual rules. Must be in (0, 1]
         :param l1_regularization_weight:    The weight of the L1 regularization. Must be at least 0
         :param l2_regularization_weight:    The weight of the L2 regularization. Must be at least 0
-        :param min_coverage:                The minimum number of training examples that must be covered by a rule. Must
-                                            be at least 1
-        :param max_conditions:              The maximum number of conditions to be included in a rule's body. Must be at
-                                            least 1 or 0, if the number of conditions should not be restricted
-        :param max_head_refinements:        The maximum number of times the head of a rule may be refined after a new
-                                            condition has been added to its body. Must be at least 1 or 0, if the number
-                                            of refinements should not be restricted
         :param parallel_rule_refinement:    Whether potential refinements of rules should be searched for in parallel or
                                             not. Must be 'true', 'false' or 'auto', if the most suitable strategy should
                                             be chosen automatically depending on the loss function. For additional
@@ -183,6 +175,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             documentation
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
+        self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.default_rule = default_rule
         self.time_limit = time_limit
@@ -192,7 +185,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.predictor = predictor
         self.label_sampling = label_sampling
         self.instance_sampling = instance_sampling
-        self.recalculate_predictions = recalculate_predictions
         self.feature_sampling = feature_sampling
         self.holdout = holdout
         self.feature_binning = feature_binning
@@ -201,9 +193,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.shrinkage = shrinkage
         self.l1_regularization_weight = l1_regularization_weight
         self.l2_regularization_weight = l2_regularization_weight
-        self.min_coverage = min_coverage
-        self.max_conditions = max_conditions
-        self.max_head_refinements = max_head_refinements
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
@@ -237,12 +226,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_l1=' + str(self.l1_regularization_weight)
         if float(self.l2_regularization_weight) > 0.0:
             name += '_l2=' + str(self.l2_regularization_weight)
-        if int(self.min_coverage) > 1:
-            name += '_min-coverage=' + str(self.min_coverage)
-        if int(self.max_conditions) > 0:
-            name += '_max-conditions=' + str(self.max_conditions)
-        if int(self.max_head_refinements) > 0:
-            name += '_max-head-refinements=' + str(self.max_head_refinements)
         if int(self.random_state) != 1:
             name += '_random_state=' + str(self.random_state)
         return name
@@ -250,9 +233,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_learner(self) -> RuleLearnerWrapper:
         config = BoostingRuleLearnerConfig()
         configure_rule_model_assemblage(config, default_rule=self.default_rule)
-        configure_rule_induction(config, min_coverage=int(self.min_coverage), max_conditions=int(self.max_conditions),
-                                 max_head_refinements=int(self.max_head_refinements),
-                                 recalculate_predictions=self.recalculate_predictions)
+        configure_rule_induction(config, self.rule_induction)
         self.__configure_feature_binning(config)
         configure_label_sampling(config, self.feature_sampling)
         configure_instance_sampling(config, self.instance_sampling)

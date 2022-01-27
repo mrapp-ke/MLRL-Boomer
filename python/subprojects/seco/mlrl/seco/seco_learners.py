@@ -10,7 +10,7 @@ from typing import Dict, Set
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
+from mlrl.common.rule_learners import RULE_INDUCTION_TOP_DOWN, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
 from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
@@ -75,16 +75,17 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value, prediction_format: str = SparsePolicy.AUTO.value,
-                 max_rules: int = 500, time_limit: int = 0, head_type: str = HEAD_TYPE_SINGLE,
-                 lift_function: str = LIFT_FUNCTION_PEAK, heuristic: str = HEURISTIC_F_MEASURE,
-                 pruning_heuristic: str = HEURISTIC_ACCURACY, label_sampling: str = None,
-                 instance_sampling: str = SAMPLING_STRATIFIED_LABEL_WISE, feature_sampling: str = None,
-                 holdout: str = None, feature_binning: str = None, pruning: str = PRUNING_IREP, min_coverage: int = 1,
-                 max_conditions: int = 0, max_head_refinements: int = 1,
-                 parallel_rule_refinement: str = BooleanOption.TRUE.value,
+                 rule_induction: str = RULE_INDUCTION_TOP_DOWN, max_rules: int = 500, time_limit: int = 0,
+                 head_type: str = HEAD_TYPE_SINGLE, lift_function: str = LIFT_FUNCTION_PEAK,
+                 heuristic: str = HEURISTIC_F_MEASURE, pruning_heuristic: str = HEURISTIC_ACCURACY,
+                 label_sampling: str = None, instance_sampling: str = SAMPLING_STRATIFIED_LABEL_WISE,
+                 feature_sampling: str = None, holdout: str = None, feature_binning: str = None,
+                 pruning: str = PRUNING_IREP, parallel_rule_refinement: str = BooleanOption.TRUE.value,
                  parallel_statistic_update: str = BooleanOption.FALSE.value,
                  parallel_prediction: str = BooleanOption.TRUE.value):
         """
+        :param rule_induction:              A algorithm to be used for the induction of individual rules. Must be
+                                            'top-down'. For additional options refer to the documentation
         :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
                                             be at least 1 or 0, if the number of rules should not be restricted
         :param time_limit:                  The duration in seconds after which the induction of rules should be
@@ -121,13 +122,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                             documentation
         :param pruning:                     The strategy that should be used to prune individual rules. Must be 'irep'
                                             or `None`, if no pruning should be used
-        :param min_coverage:                The minimum number of training examples that must be covered by a rule. Must
-                                            be at least 1
-        :param max_conditions:              The maximum number of conditions to be included in a rule's body. Must be at
-                                            least 1 or 0, if the number of conditions should not be restricted
-        :param max_head_refinements:        The maximum number of times the head of a rule may be refined after a new
-                                            condition has been added to its body. Must be at least 1 or 0, if the number
-                                            of refinements should not be restricted
         :param parallel_rule_refinement:    Whether potential refinements of rules should be searched for in parallel or
                                             not. Must be 'true', 'false' or 'auto', if the most suitable strategy should
                                             be chosen automatically depending on the loss function. For additional
@@ -141,6 +135,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                             documentation
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
+        self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_type = head_type
@@ -153,9 +148,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         self.holdout = holdout
         self.feature_binning = feature_binning
         self.pruning = pruning
-        self.min_coverage = min_coverage
-        self.max_conditions = max_conditions
-        self.max_head_refinements = max_head_refinements
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
@@ -178,12 +170,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         if self.pruning is not None:
             name += '_pruning-heuristic=' + str(self.pruning_heuristic)
             name += '_pruning=' + str(self.pruning)
-        if int(self.min_coverage) > 1:
-            name += '_min-coverage=' + str(self.min_coverage)
-        if int(self.max_conditions) > 0:
-            name += '_max-conditions=' + str(self.max_conditions)
-        if int(self.max_head_refinements) > 0:
-            name += '_max-head-refinements=' + str(self.max_head_refinements)
         if int(self.random_state) != 1:
             name += '_random_state=' + str(self.random_state)
         return name
@@ -191,9 +177,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     def _create_learner(self) -> RuleLearnerWrapper:
         config = SeCoRuleLearnerConfig()
         configure_rule_model_assemblage(config, default_rule=BooleanOption.TRUE.value)
-        configure_rule_induction(config, min_coverage=int(self.min_coverage), max_conditions=int(self.max_conditions),
-                                 max_head_refinements=int(self.max_head_refinements),
-                                 recalculate_predictions=BooleanOption.FALSE.value)
+        configure_rule_induction(config, self.rule_induction)
         configure_feature_binning(config, self.feature_binning)
         configure_label_sampling(config, self.feature_sampling)
         configure_instance_sampling(config, self.instance_sampling)

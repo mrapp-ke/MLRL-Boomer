@@ -2,6 +2,8 @@
 
 ### Version 0.8.0 (to be released)
 
+***This release comes with changes to the command line API. For an updated overview of the available parameters, please refer to the documentation.***
+
 A major update to the BOOMER algorithm that introduces the following changes:
 
 * Pre-built packages for Linux aarch64 systems are now provided.
