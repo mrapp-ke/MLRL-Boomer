@@ -194,6 +194,15 @@ class IRuleLearner {
                 virtual const IMultiThreadingConfig& getParallelStatisticUpdateConfig() const = 0;
 
                 /**
+                 * Returns the configuration of the multi-threading behavior that is used to predict for several query
+                 * examples in parallel.
+                 *
+                 * @return A reference to an object of type `IMultiThreadingConfig` that specifies the configuration of
+                 *         the multi-threading behavior that is used to predict for several query examples in parallel
+                 */
+                virtual const IMultiThreadingConfig& getParallelPredictionConfig() const = 0;
+
+                /**
                  * Returns the configuration of the stopping criterion that ensures that the number of rules does not
                  * exceed a certain maximum.
                  *
@@ -422,6 +431,20 @@ class IRuleLearner {
                  *         configuration of the multi-threading behavior
                  */
                 virtual IManualMultiThreadingConfig& useParallelStatisticUpdate() = 0;
+
+                /**
+                 * Configures the rule learner to not use any multi-threading to predict for several query examples in
+                 * parallel.
+                 */
+                virtual void useNoParallelPrediction() = 0;
+
+                /**
+                 * Configures the rule learner to use multi-threading to predict for several query examples in parallel.
+                 *
+                 * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
+                 *         configuration of the multi-threading behavior
+                 */
+                virtual IManualMultiThreadingConfig& useParallelPrediction() = 0;
 
                 /**
                  * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
@@ -697,6 +720,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IMultiThreadingConfig> parallelStatisticUpdateConfigPtr_;
 
+                std::unique_ptr<IMultiThreadingConfig> parallelPredictionConfigPtr_;
+
                 std::unique_ptr<SizeStoppingCriterionConfig> sizeStoppingCriterionConfigPtr_;
 
                 std::unique_ptr<TimeStoppingCriterionConfig> timeStoppingCriterionConfigPtr_;
@@ -726,6 +751,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 const IMultiThreadingConfig& getParallelRuleRefinementConfig() const override final;
 
                 const IMultiThreadingConfig& getParallelStatisticUpdateConfig() const override final;
+
+                const IMultiThreadingConfig& getParallelPredictionConfig() const override;
 
                 const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const override final;
 
@@ -786,6 +813,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoParallelStatisticUpdate() override final;
 
                 IManualMultiThreadingConfig& useParallelStatisticUpdate() override;
+
+                void useNoParallelPrediction() override;
+
+                IManualMultiThreadingConfig& useParallelPrediction() override;
 
                 void useNoSizeStoppingCriterion() override final;
 

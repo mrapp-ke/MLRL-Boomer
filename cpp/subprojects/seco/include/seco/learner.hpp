@@ -76,16 +76,6 @@ namespace seco {
                     virtual const ILiftFunctionConfig& getLiftFunctionConfig() const = 0;
 
                     /**
-                     * Returns the configuration of the multi-threading behavior that is used to predict for several
-                     * query examples in parallel.
-                     *
-                     * @return A reference to an object of type `IMultiThreadingConfig` that specifies the configuration
-                     *         of the multi-threading behavior that is used to predict for several query examples in
-                     *         parallel
-                     */
-                    virtual const IMultiThreadingConfig& getParallelPredictionConfig() const = 0;
-
-                    /**
                      * Returns the configuration of the predictor that predicts whether individual labels of given query
                      * examples are relevant or irrelevant.
                      *
@@ -219,21 +209,6 @@ namespace seco {
                     virtual IPeakLiftFunctionConfig& usePeakLiftFunction() = 0;
 
                     /**
-                     * Configures the rule learner to not use any multi-threading to predict for several query examples
-                     * in parallel.
-                     */
-                    virtual void useNoParallelPrediction() = 0;
-
-                    /**
-                     * Configures the rule learner to use multi-threading to predict for several query examples in
-                     * parallel.
-                     *
-                     * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
-                     *         configuration of the multi-threading behavior
-                     */
-                    virtual IManualMultiThreadingConfig& useParallelPrediction() = 0;
-
-                    /**
                      * Configures the rule learner to use predictor for predicting whether individual labels of given
                      * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
                      * the order they have been learned. If a rule covers an example, its prediction is applied to each
@@ -271,8 +246,6 @@ namespace seco {
 
                     std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
 
-                    std::unique_ptr<IMultiThreadingConfig> parallelPredictionConfigPtr_;
-
                     std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
 
                     const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const override;
@@ -284,8 +257,6 @@ namespace seco {
                     const IHeuristicConfig& getPruningHeuristicConfig() const override;
 
                     const ILiftFunctionConfig& getLiftFunctionConfig() const override;
-
-                    const IMultiThreadingConfig& getParallelPredictionConfig() const override;
 
                     const IClassificationPredictorConfig& getClassificationPredictorConfig() const override;
 
@@ -334,10 +305,6 @@ namespace seco {
                     void useWraPruningHeuristic() override;
 
                     IPeakLiftFunctionConfig& usePeakLiftFunction() override;
-
-                    void useNoParallelPrediction() override;
-
-                    IManualMultiThreadingConfig& useParallelPrediction() override;
 
                     void useLabelWiseClassificationPredictor() override;
 

@@ -21,8 +21,6 @@ PARAM_PRUNING_HEURISTIC = '--pruning-heuristic'
 
 PARAM_LIFT_FUNCTION = '--lift-function'
 
-PARAM_PARALLEL_PREDICTION = '--parallel-prediction'
-
 
 class SeCoRunnable(RuleLearnerRunnable):
 
@@ -75,11 +73,6 @@ def __add_arguments(parser: ArgumentParser, **kwargs):
                         help='Whether the confusion matrices for different examples should be calculated in parallel '
                              + 'or not. Must be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional '
                              + 'options refer to the documentation')
-    parser.add_argument(PARAM_PARALLEL_PREDICTION, type=optional_string,
-                        default=get_or_default(PARAM_PARALLEL_PREDICTION, BooleanOption.TRUE.value, **kwargs),
-                        help='Whether predictions for different examples should be obtained in parallel or not. Must '
-                             + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to '
-                             + 'the documentation.')
 
 
 def main():

@@ -23,7 +23,6 @@ namespace seco {
         this->useFMeasureHeuristic();
         this->useAccuracyPruningHeuristic();
         this->usePeakLiftFunction();
-        this->useParallelPrediction();
         this->useLabelWiseClassificationPredictor();
     }
 
@@ -45,10 +44,6 @@ namespace seco {
 
     const ILiftFunctionConfig& SeCoRuleLearner::Config::getLiftFunctionConfig() const {
         return *liftFunctionConfigPtr_;
-    }
-
-    const IMultiThreadingConfig& SeCoRuleLearner::Config::getParallelPredictionConfig() const {
-        return *parallelPredictionConfigPtr_;
     }
 
     const IClassificationPredictorConfig& SeCoRuleLearner::Config::getClassificationPredictorConfig() const {
@@ -159,17 +154,6 @@ namespace seco {
         std::unique_ptr<PeakLiftFunctionConfig> ptr = std::make_unique<PeakLiftFunctionConfig>();
         IPeakLiftFunctionConfig& ref = *ptr;
         liftFunctionConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    void SeCoRuleLearner::Config::useNoParallelPrediction() {
-        parallelPredictionConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
-    }
-
-    IManualMultiThreadingConfig& SeCoRuleLearner::Config::useParallelPrediction() {
-        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
-        IManualMultiThreadingConfig& ref = *ptr;
-        parallelPredictionConfigPtr_ = std::move(ptr);
         return ref;
     }
 

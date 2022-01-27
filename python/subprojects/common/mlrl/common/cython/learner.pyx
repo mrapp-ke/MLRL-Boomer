@@ -333,6 +333,25 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
+    def use_no_parallel_prediction(self):
+        """
+        Configures the rule learner to not use any multi-threading to predict for several query examples in parallel.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoParallelPrediction()
+
+    def use_parallel_prediction(self) -> ManualMultiThreadingConfig:
+        """
+        Configures the rule learner to use multi-threading to predict for several query examples in parallel.
+
+        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelPrediction()
+        cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
+        config.config_ptr = config_ptr
+        return config
+
     def use_no_size_stopping_criterion(self):
         """
         Configures the rule learner to not use a stopping criterion that ensures that the number of induced rules does

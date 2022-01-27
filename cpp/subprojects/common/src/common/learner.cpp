@@ -77,6 +77,7 @@ AbstractRuleLearner::Config::Config() {
     this->useNoPostProcessor();
     this->useNoParallelRuleRefinement();
     this->useNoParallelStatisticUpdate();
+    this->useParallelPrediction();
     this->useNoSizeStoppingCriterion();
     this->useNoTimeStoppingCriterion();
     this->useNoMeasureStoppingCriterion();
@@ -124,6 +125,10 @@ const IMultiThreadingConfig& AbstractRuleLearner::Config::getParallelRuleRefinem
 
 const IMultiThreadingConfig& AbstractRuleLearner::Config::getParallelStatisticUpdateConfig() const {
     return *parallelStatisticUpdateConfigPtr_;
+}
+
+const IMultiThreadingConfig& AbstractRuleLearner::Config::getParallelPredictionConfig() const {
+    return *parallelPredictionConfigPtr_;
 }
 
 const SizeStoppingCriterionConfig* AbstractRuleLearner::Config::getSizeStoppingCriterionConfig() const {
@@ -291,6 +296,17 @@ IManualMultiThreadingConfig& AbstractRuleLearner::Config::useParallelStatisticUp
     std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
     IManualMultiThreadingConfig& ref = *ptr;
     parallelStatisticUpdateConfigPtr_ = std::move(ptr);
+    return ref;
+}
+
+void AbstractRuleLearner::Config::useNoParallelPrediction() {
+    parallelPredictionConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
+}
+
+IManualMultiThreadingConfig& AbstractRuleLearner::Config::useParallelPrediction() {
+    std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+    IManualMultiThreadingConfig& ref = *ptr;
+    parallelPredictionConfigPtr_ = std::move(ptr);
     return ref;
 }
 

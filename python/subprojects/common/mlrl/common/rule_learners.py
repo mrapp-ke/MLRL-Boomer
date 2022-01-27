@@ -236,6 +236,16 @@ def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_stat
         c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
 
 
+def configure_parallel_prediction(config: RuleLearnerConfig, parallel_prediction: str):
+    value, options = parse_param_and_options('parallel_prediction', parallel_prediction, PARALLEL_VALUES)
+
+    if value == BooleanOption.TRUE.value:
+        c = config.use_parallel_prediction()
+        c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
+    else:
+        config.use_no_parallel_prediction()
+
+
 def configure_size_stopping_criterion(config: RuleLearnerConfig, max_rules: int):
     if max_rules == 0:
         config.use_no_size_stopping_criterion()

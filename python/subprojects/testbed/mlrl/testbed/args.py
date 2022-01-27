@@ -11,7 +11,7 @@ from enum import Enum
 
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, \
-    INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, PRUNING_VALUES
+    INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 
 PARAM_LOG_LEVEL = '--log-level'
@@ -85,6 +85,8 @@ PARAM_MAX_HEAD_REFINEMENTS = '--max-head-refinements'
 PARAM_PARALLEL_RULE_REFINEMENT = '--parallel-rule-refinement'
 
 PARAM_PARALLEL_STATISTIC_UPDATE = '--parallel-statistic-update'
+
+PARAM_PARALLEL_PREDICTION = '--parallel-prediction'
 
 PARAM_INSTANCE_SAMPLING = '--instance-sampling'
 
@@ -306,3 +308,8 @@ def add_rule_learner_arguments(parser: ArgumentParser, **kwargs):
                         default=get_or_default(PARAM_MAX_HEAD_REFINEMENTS, 1, **kwargs),
                         help='The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, '
                              + 'if the number of refinements should not be restricted.')
+    parser.add_argument(PARAM_PARALLEL_PREDICTION, type=optional_string,
+                        default=get_or_default(PARAM_PARALLEL_PREDICTION, BooleanOption.TRUE.value, **kwargs),
+                        help='Whether predictions for different examples should be obtained in parallel or not. Must '
+                             + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to '
+                             + 'the documentation.')

@@ -73,16 +73,6 @@ namespace boosting {
                     virtual const ILabelBinningConfig& getLabelBinningConfig() const = 0;
 
                     /**
-                     * Returns the configuration of the multi-threading behavior that is used to predict for several
-                     * query examples in parallel.
-                     *
-                     * @return A reference to an object of type `IMultiThreadingConfig` that specifies the configuration
-                     *         of the multi-threading behavior that is used to predict for several query examples in
-                     *         parallel
-                     */
-                    virtual const IMultiThreadingConfig& getParallelPredictionConfig() const = 0;
-
-                    /**
                      * Returns the configuration of the predictor that predicts whether individual labels of given query
                      * examples are relevant or irrelevant.
                      *
@@ -230,21 +220,6 @@ namespace boosting {
                     virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() = 0;
 
                     /**
-                     * Configures the rule learner to not use any multi-threading to predict for several query examples
-                     * in parallel.
-                     */
-                    virtual void useNoParallelPrediction() = 0;
-
-                    /**
-                     * Configures the rule learner to use multi-threading to predict for several query examples in
-                     * parallel.
-                     *
-                     * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
-                     *         configuration of the multi-threading behavior
-                     */
-                    virtual IManualMultiThreadingConfig& useParallelPrediction() = 0;
-
-                    /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels are
                      * relevant or irrelevant by summing up the scores that are provided by an existing rule-based model
                      * and comparing the aggregated score vector to the known label vectors according to a certain
@@ -312,8 +287,6 @@ namespace boosting {
 
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
 
-                    std::unique_ptr<IMultiThreadingConfig> parallelPredictionConfigPtr_;
-
                     std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
 
                     std::unique_ptr<IRegressionPredictorConfig> regressionPredictorConfigPtr_;
@@ -329,8 +302,6 @@ namespace boosting {
                     const ILossConfig& getLossConfig() const override;
 
                     const ILabelBinningConfig& getLabelBinningConfig() const override;
-
-                    const IMultiThreadingConfig& getParallelPredictionConfig() const override;
 
                     const IClassificationPredictorConfig& getClassificationPredictorConfig() const override;
 
@@ -382,10 +353,6 @@ namespace boosting {
                     void useAutomaticLabelBinning() override;
 
                     IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
-
-                    void useNoParallelPrediction() override;
-
-                    IManualMultiThreadingConfig& useParallelPrediction() override;
 
                     void useExampleWiseClassificationPredictor() override;
 
