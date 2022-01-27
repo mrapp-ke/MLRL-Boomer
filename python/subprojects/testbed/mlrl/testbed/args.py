@@ -295,9 +295,9 @@ def add_rule_learner_arguments(parser: ArgumentParser, **kwargs):
                              + '"None".')
     parser.add_argument(PARAM_RULE_INDUCTION, type=str,
                         default=get_or_default(PARAM_RULE_INDUCTION, RULE_INDUCTION_TOP_DOWN, **kwargs),
-                        help='The algorithm to be used for the induction of individual rules. Must be one of '
-                             + format_string_set(RULE_INDUCTION_VALUES) + '. For additional options refer to the '
-                             + 'documentation')
+                        help='The name of the algorithm to be used for the induction of individual rules. Must be one '
+                             + 'of ' + format_string_set(RULE_INDUCTION_VALUES) + '. For additional options refer to '
+                             + 'the documentation')
     parser.add_argument(PARAM_PARALLEL_PREDICTION, type=optional_string,
                         default=get_or_default(PARAM_PARALLEL_PREDICTION, BooleanOption.TRUE.value, **kwargs),
                         help='Whether predictions for different examples should be obtained in parallel or not. Must '
