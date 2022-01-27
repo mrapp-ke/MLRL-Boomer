@@ -1,6 +1,4 @@
 #include "boosting/output/predictor_regression_label_wise.hpp"
-#include "common/util/threads.hpp"
-#include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
@@ -133,23 +131,15 @@ namespace boosting {
 
     };
 
-    LabelWiseRegressionPredictorConfig::LabelWiseRegressionPredictorConfig()
-        : numThreads_(0) {
+    LabelWiseRegressionPredictorConfig::LabelWiseRegressionPredictorConfig(
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
-    uint32 LabelWiseRegressionPredictorConfig::getNumThreads() const {
-        return numThreads_;
-    }
-
-    ILabelWiseRegressionPredictorConfig& LabelWiseRegressionPredictorConfig::setNumThreads(uint32 numThreads) {
-        if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
-        numThreads_ = numThreads;
-        return *this;
-    }
-
-    std::unique_ptr<IRegressionPredictorFactory> LabelWiseRegressionPredictorConfig::createRegressionPredictorFactory() const {
-        uint32 numThreads = getNumAvailableThreads(numThreads_);
+    std::unique_ptr<IRegressionPredictorFactory> LabelWiseRegressionPredictorConfig::createRegressionPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseRegressionPredictorFactory>(numThreads);
     }
 

@@ -250,15 +250,6 @@ def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: int
         config.use_time_stopping_criterion().set_time_limit(time_limit)
 
 
-def get_num_threads_prediction(parallel_prediction: str):
-    value, options = parse_param_and_options('parallel_prediction', parallel_prediction, PARALLEL_VALUES)
-
-    if value == BooleanOption.TRUE.value:
-        return options.get_int(ARGUMENT_NUM_THREADS, 0)
-    else:
-        return 1
-
-
 def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
     if value in allowed_values:
         return value
@@ -448,11 +439,12 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
 
     def _predict_proba(self, x):
         learner = self._create_learner()
+        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        num_labels = self.num_labels_
 
-        if learner.can_predict_probabilities():
-            feature_matrix = self.__create_row_wise_feature_matrix(x)
+        if learner.can_predict_probabilities(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted probability estimates')
-            return learner.predict_probabilities(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+            return learner.predict_probabilities(feature_matrix, self.model_, self.label_space_info_, num_labels)
         else:
             super()._predict_proba(x)
 

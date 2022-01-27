@@ -1,9 +1,9 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.seco.cython.heuristic cimport FMeasureConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfig
-from mlrl.seco.cython.predictor cimport LabelWiseClassificationPredictorConfig
 from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig
 
 from libcpp.memory cimport make_unique
@@ -188,7 +188,26 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_label_wise_classification_predictor(self) -> LabelWiseClassificationPredictorConfig:
+    def use_no_parallel_prediction(self):
+        """
+        Configures the rule learner to not use any multi-threading to predict for several query examples in parallel.
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoParallelPrediction()
+
+    def use_parallel_prediction(self) -> ManualMultiThreadingConfig:
+        """
+        Configures the rule learner to use multi-threading to predict for several query examples in parallel.
+
+        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelPrediction()
+        cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_label_wise_classification_predictor(self):
         """
         Configures the rule learner to use predictor for predicting whether individual labels of given query examples
         are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been
@@ -198,10 +217,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
                  predicting whether individual labels of given query examples are relevant or irrelevant
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ILabelWiseClassificationPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseClassificationPredictor()
-        cdef LabelWiseClassificationPredictorConfig config = LabelWiseClassificationPredictorConfig.__new__(LabelWiseClassificationPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useLabelWiseClassificationPredictor()
 
 
 cdef class SeCoRuleLearner(RuleLearner):

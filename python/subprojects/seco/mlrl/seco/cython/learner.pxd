@@ -1,7 +1,7 @@
 from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
+from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.seco.cython.heuristic cimport IFMeasureConfig, IMEstimateConfig
 from mlrl.seco.cython.lift_function cimport IPeakLiftFunctionConfig
-from mlrl.seco.cython.predictor cimport ILabelWiseClassificationPredictorConfig
 from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfig
 
 from libcpp.memory cimport unique_ptr
@@ -51,7 +51,11 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         IPeakLiftFunctionConfig& usePeakLiftFunction()
 
-        ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor()
+        void useNoParallelPrediction()
+
+        IManualMultiThreadingConfig& useParallelPrediction()
+
+        void useLabelWiseClassificationPredictor()
 
 
     cdef cppclass ISeCoRuleLearner(IRuleLearner):

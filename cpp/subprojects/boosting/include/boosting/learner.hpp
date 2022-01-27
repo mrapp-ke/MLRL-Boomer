@@ -8,10 +8,6 @@
 #include "boosting/losses/loss.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
-#include "boosting/output/predictor_classification_example_wise.hpp"
-#include "boosting/output/predictor_classification_label_wise.hpp"
-#include "boosting/output/predictor_regression_label_wise.hpp"
-#include "boosting/output/predictor_probability_label_wise.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
@@ -75,6 +71,16 @@ namespace boosting {
                      *         of the method for the assignment of labels to bins
                      */
                     virtual const ILabelBinningConfig& getLabelBinningConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the multi-threading behavior that is used to predict for several
+                     * query examples in parallel.
+                     *
+                     * @return A reference to an object of type `IMultiThreadingConfig` that specifies the configuration
+                     *         of the multi-threading behavior that is used to predict for several query examples in
+                     *         parallel
+                     */
+                    virtual const IMultiThreadingConfig& getParallelPredictionConfig() const = 0;
 
                     /**
                      * Returns the configuration of the predictor that predicts whether individual labels of given query
@@ -224,29 +230,36 @@ namespace boosting {
                     virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() = 0;
 
                     /**
+                     * Configures the rule learner to not use any multi-threading to predict for several query examples
+                     * in parallel.
+                     */
+                    virtual void useNoParallelPrediction() = 0;
+
+                    /**
+                     * Configures the rule learner to use multi-threading to predict for several query examples in
+                     * parallel.
+                     *
+                     * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
+                     *         configuration of the multi-threading behavior
+                     */
+                    virtual IManualMultiThreadingConfig& useParallelPrediction() = 0;
+
+                    /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels are
                      * relevant or irrelevant by summing up the scores that are provided by an existing rule-based model
                      * and comparing the aggregated score vector to the known label vectors according to a certain
                      * distance measure. The label vector that is closest to the aggregated score vector is finally
                      * predicted.
-                     *
-                     * @return A reference to an object of type `IExampleWiseClassificationPredictorConfig` that allows
-                     *         further configuration of the predictor for predicting whether individual labels are
-                     *         relevant or irrelevant
                      */
-                    virtual IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() = 0;
+                    virtual void useExampleWiseClassificationPredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels are
                      * relevant or irrelevant by summing up the scores that are provided by the individual rules of an
                      * existing rule-based model and transforming them into binary values according to a certain
                      * threshold that is applied to each label individually.
-                     *
-                     * @return A reference to an object of type `ILabelWiseClassificationPredictorConfig` that allows
-                     *         further configuration of the predictor for predicting whether individual labels are
-                     *         relevant or irrelevant
                      */
-                    virtual ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() = 0;
+                    virtual void useLabelWiseClassificationPredictor() = 0;
 
                     /**
                      * Configures the rule learner to automatically decide for a predictor for predicting whether
@@ -258,22 +271,16 @@ namespace boosting {
                      * Configures the rule learner to use a predictor for predicting regression scores by summing up the
                      * scores that are provided by the individual rules of an existing rule-based model for each label
                      * individually.
-                     *
-                     * @return A reference to an object of type `ILabelWiseRegressionPredictorConfig` that allows
-                     *         further configuration of the predictor for predicting regression scores
                      */
-                    virtual ILabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() = 0;
+                    virtual void useLabelWiseRegressionPredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting probability estimates by summing up
                      * the scores that are provided by individual rules of an existing rule-based models and
                      * transforming the aggregated scores into probabilities according to a certain transformation
                      * function that is applied to each label individually.
-                     *
-                     * @return A reference to an object of type `ILabelWiseProbabilityPredictorConfig` that allows
-                     *         further configuration of the predictor for predicting probability estimates
                      */
-                    virtual ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() = 0;
+                    virtual void useLabelWiseProbabilityPredictor() = 0;
 
             };
 
@@ -305,6 +312,8 @@ namespace boosting {
 
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
 
+                    std::unique_ptr<IMultiThreadingConfig> parallelPredictionConfigPtr_;
+
                     std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
 
                     std::unique_ptr<IRegressionPredictorConfig> regressionPredictorConfigPtr_;
@@ -320,6 +329,8 @@ namespace boosting {
                     const ILossConfig& getLossConfig() const override;
 
                     const ILabelBinningConfig& getLabelBinningConfig() const override;
+
+                    const IMultiThreadingConfig& getParallelPredictionConfig() const override;
 
                     const IClassificationPredictorConfig& getClassificationPredictorConfig() const override;
 
@@ -372,15 +383,19 @@ namespace boosting {
 
                     IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
 
-                    IExampleWiseClassificationPredictorConfig& useExampleWiseClassificationPredictor() override;
+                    void useNoParallelPrediction() override;
 
-                    ILabelWiseClassificationPredictorConfig& useLabelWiseClassificationPredictor() override;
+                    IManualMultiThreadingConfig& useParallelPrediction() override;
+
+                    void useExampleWiseClassificationPredictor() override;
+
+                    void useLabelWiseClassificationPredictor() override;
 
                     void useAutomaticClassificationPredictor() override;
 
-                    ILabelWiseRegressionPredictorConfig& useLabelWiseRegressionPredictor() override;
+                    void useLabelWiseRegressionPredictor() override;
 
-                    ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() override;
+                    void useLabelWiseProbabilityPredictor() override;
 
             };
 
@@ -414,17 +429,20 @@ namespace boosting {
             /**
              * @see `AbstractRuleLearner::createClassificationPredictorFactory`
              */
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const override;
+            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `AbstractRuleLearner::createRegressionPredictorFactory`
              */
-            std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory() const override;
+            std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `AbstractRuleLearner::createProbabilityPredictorFactory`
              */
-            std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory() const override;
+            std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:
 

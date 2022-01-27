@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/input/feature_matrix.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/output/predictor_sparse.hpp"
 #include "common/output/label_vector_set.hpp"
@@ -59,9 +60,14 @@ class IClassificationPredictorConfig {
          * Creates and returns a new object of type `IClassificationPredictorFactory` according to the specified
          * configuration.
          *
-         * @return An unique pointer to an object of type `IClassificationPredictorFactory` that has been created
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param numLabels     The total number of available labels
+         * @return              An unique pointer to an object of type `IClassificationPredictorFactory` that has been
+         *                      created
          */
-        virtual std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory() const = 0;
+        virtual std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new object of type `ILabelSpaceInfo` that is required by the predictor.

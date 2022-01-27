@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/input/feature_matrix.hpp"
 #include "common/output/predictor.hpp"
 #include "common/output/label_vector_set.hpp"
 #include "common/model/rule_list.hpp"
@@ -58,9 +59,13 @@ class IRegressionPredictorConfig {
          * Creates and returns a new object of type `IRegressionPredictorFactory` according to the specified
          * configuration.
          *
-         * @return An unique pointer to an object of type `IRegressionPredictorFactory` that has been created or a null
-         *         pointer, if the prediction of regression scores is not supported
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param numLabels     The total number of available labels
+         * @return              An unique pointer to an object of type `IRegressionPredictorFactory` that has been
+         *                      created or a null pointer, if the prediction of regression scores is not supported
          */
-        virtual std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory() const = 0;
+        virtual std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
 };

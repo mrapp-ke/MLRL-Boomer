@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/input/feature_matrix.hpp"
-#include "common/input/label_matrix.hpp"
 
 
 /**
@@ -22,10 +21,9 @@ class IMultiThreadingConfig {
          *
          * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
          *                      values of the training examples
-         * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels of
-         *                      the training examples
+         * @param numLabels     The total number of available labels
          * @return              The number of threads to be used
          */
-        virtual uint32 getNumThreads(const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const = 0;
+        virtual uint32 getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
 };

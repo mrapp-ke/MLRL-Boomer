@@ -1,8 +1,6 @@
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "common/iterator/index_iterator.hpp"
 #include "common/output/label_space_info_no.hpp"
-#include "common/util/threads.hpp"
-#include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
@@ -238,24 +236,16 @@ namespace boosting {
     };
 
     LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr)
-        : numThreads_(0), lossConfigPtr_(lossConfigPtr) {
+            const std::unique_ptr<ILossConfig>& lossConfigPtr,
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
-    uint32 LabelWiseClassificationPredictorConfig:: getNumThreads() const {
-        return numThreads_;
-    }
-
-    ILabelWiseClassificationPredictorConfig& LabelWiseClassificationPredictorConfig::setNumThreads(uint32 numThreads) {
-        if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
-        numThreads_ = numThreads;
-        return *this;
-    }
-
-    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::createClassificationPredictorFactory() const {
+    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::createClassificationPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         float64 threshold = lossConfigPtr_->getDefaultPrediction();
-        uint32 numThreads = getNumAvailableThreads(numThreads_);
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, numThreads);
     }
 
