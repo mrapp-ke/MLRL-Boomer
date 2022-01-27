@@ -50,7 +50,7 @@ The following parameters allow to control the behavior of the algorithm:
 
 * ``max_rules`` (Default value = ``1000``)
 
-  * The maximum number of rules to be learned. Must be at least 1 or 0, if the number of rules should not be restricted.
+  * The maximum number of rules to be learned (including the default rule). Must be at least 1 or 0, if the number of rules should not be restricted.
 
 * ``default_rule`` (Default value = ``'true'``)
 
@@ -172,13 +172,13 @@ The following parameters allow to control the behavior of the algorithm:
 
 * ``head_type`` (Default value = ``'auto'``)
 
-  * ``'auto'`` The most suitable type of rule heads is chosen automatically based on the loss function.
+  * ``'auto'`` The most suitable type of rule heads is chosen automatically, depending on the loss function.
   * ``'single-label'`` If all rules should predict for a single label.
   * ``'complete'`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
 
 * ``shrinkage`` (Default value = ``0.3``)
 
-  * The shrinkage parameter, a.k.a. the "learning rate", to be used. Must be in (0, 1].
+  * The shrinkage parameter, a.k.a. the "learning rate", that is used to shrink the weight of individual rules. Must be in (0, 1].
 
 * ``loss`` (Default value = ``'logistic-label-wise'``)
 
