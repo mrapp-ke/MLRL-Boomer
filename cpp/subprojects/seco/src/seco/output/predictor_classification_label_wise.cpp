@@ -184,7 +184,8 @@ namespace seco {
                     const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
+                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels,
+                                                                   !model_.containsDefaultRule());
                 const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
@@ -214,7 +215,8 @@ namespace seco {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
+                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels,
+                                                                   !model_.containsDefaultRule());
                 const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
