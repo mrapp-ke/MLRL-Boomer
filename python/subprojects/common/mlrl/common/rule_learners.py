@@ -113,8 +113,7 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
 
 
 def configure_rule_model_assemblage(config: RuleLearnerConfig, default_rule: str):
-    config.use_sequential_rule_model_assemblage() \
-        .set_use_default_rule(BooleanOption.parse(default_rule) == BooleanOption.TRUE)
+    config.use_sequential_rule_model_assemblage().set_use_default_rule(BooleanOption.parse(default_rule))
 
 
 def configure_rule_induction(config: RuleLearnerConfig, min_coverage: int, max_conditions: int,
@@ -123,7 +122,7 @@ def configure_rule_induction(config: RuleLearnerConfig, min_coverage: int, max_c
         .set_min_coverage(min_coverage) \
         .set_max_conditions(max_conditions) \
         .set_max_head_refinements(max_head_refinements) \
-        .set_recalculate_predictions(BooleanOption.parse(recalculate_predictions) == BooleanOption.TRUE.value)
+        .set_recalculate_predictions(BooleanOption.parse(recalculate_predictions))
 
 
 def configure_feature_binning(config: RuleLearnerConfig, feature_binning: str):
