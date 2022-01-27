@@ -111,6 +111,10 @@ cdef extern from "common/learner.hpp" nogil:
 
         IManualMultiThreadingConfig& useParallelStatisticUpdate()
 
+        void useNoParallelPrediction()
+
+        IManualMultiThreadingConfig& useParallelPrediction()
+
         void useNoSizeStoppingCriterion()
 
         ISizeStoppingCriterionConfig& useSizeStoppingCriterion();

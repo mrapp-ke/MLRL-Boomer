@@ -6,7 +6,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from argparse import ArgumentParser
 
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, PARALLEL_VALUES
+from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT
 from mlrl.common.strings import format_enum_values, format_dict_keys, format_string_set
 from mlrl.testbed.args import add_rule_learner_arguments, get_or_default, optional_string, PARAM_INSTANCE_SAMPLING, \
     PARAM_PARTITION_SAMPLING, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE, \
@@ -33,8 +33,6 @@ PARAM_PREDICTOR = '--predictor'
 PARAM_L1_REGULARIZATION_WEIGHT = '--l1-regularization-weight'
 
 PARAM_L2_REGULARIZATION_WEIGHT = '--l2-regularization-weight'
-
-PARAM_PARALLEL_PREDICTION = '--parallel-prediction'
 
 
 class BoomerRunnable(RuleLearnerRunnable):
@@ -119,11 +117,6 @@ def __add_arguments(parser: ArgumentParser, **kwargs):
                              + 'parallel or not. Must be one of ' + format_dict_keys(PARALLEL_VALUES_AUTO) + '. If set '
                              + 'to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically based on '
                              + 'the parameter ' + PARAM_LOSS + '. For additional options refer to the documentation.')
-    parser.add_argument(PARAM_PARALLEL_PREDICTION, type=optional_string,
-                        default=get_or_default(PARAM_PARALLEL_PREDICTION, BooleanOption.TRUE.value, **kwargs),
-                        help='Whether predictions for different examples should be obtained in parallel or not. Must '
-                             + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to '
-                             + 'the documentation.')
 
 
 def main():

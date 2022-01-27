@@ -1,5 +1,4 @@
 from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
-from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
@@ -48,10 +47,6 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useAutomaticLabelBinning()
 
         IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
-
-        void useNoParallelPrediction()
-
-        IManualMultiThreadingConfig& useParallelPrediction()
 
         void useExampleWiseClassificationPredictor()
 

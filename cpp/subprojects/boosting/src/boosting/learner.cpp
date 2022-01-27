@@ -33,7 +33,6 @@ namespace boosting {
         this->useL2Regularization();
         this->useLabelWiseLogisticLoss();
         this->useAutomaticLabelBinning();
-        this->useParallelPrediction();
         this->useAutomaticClassificationPredictor();
         this->useLabelWiseRegressionPredictor();
         this->useLabelWiseProbabilityPredictor();
@@ -57,10 +56,6 @@ namespace boosting {
 
     const ILabelBinningConfig& BoostingRuleLearner::Config::getLabelBinningConfig() const {
         return *labelBinningConfigPtr_;
-    }
-
-    const IMultiThreadingConfig& BoostingRuleLearner::Config::getParallelPredictionConfig() const {
-        return *parallelPredictionConfigPtr_;
     }
 
     const IClassificationPredictorConfig& BoostingRuleLearner::Config::getClassificationPredictorConfig() const {
@@ -175,20 +170,9 @@ namespace boosting {
         return ref;
     }
 
-    void BoostingRuleLearner::Config::useNoParallelPrediction() {
-        parallelPredictionConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
-    }
-
-    IManualMultiThreadingConfig& BoostingRuleLearner::Config::useParallelPrediction() {
-        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
-        IManualMultiThreadingConfig& ref = *ptr;
-        parallelPredictionConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
     void BoostingRuleLearner::Config::useExampleWiseClassificationPredictor() {
-        classificationPredictorConfigPtr_
-            = std::make_unique<ExampleWiseClassificationPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+        classificationPredictorConfigPtr_ =
+            std::make_unique<ExampleWiseClassificationPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useLabelWiseClassificationPredictor() {
@@ -202,13 +186,13 @@ namespace boosting {
     }
 
     void BoostingRuleLearner::Config::useLabelWiseRegressionPredictor() {
-        regressionPredictorConfigPtr_
-            = std::make_unique<LabelWiseRegressionPredictorConfig>(parallelPredictionConfigPtr_);
+        regressionPredictorConfigPtr_ =
+            std::make_unique<LabelWiseRegressionPredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useLabelWiseProbabilityPredictor() {
-        probabilityPredictorConfigPtr_
-            = std::make_unique<LabelWiseProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+        probabilityPredictorConfigPtr_ =
+            std::make_unique<LabelWiseProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     BoostingRuleLearner::BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr,

@@ -13,12 +13,13 @@ from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLea
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
-    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, PARALLEL_VALUES, ARGUMENT_NUM_THREADS
+    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
-    configure_parallel_statistic_update, configure_size_stopping_criterion, configure_time_stopping_criterion
+    configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
+    configure_time_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options
 from sklearn.base import ClassifierMixin
 
@@ -268,6 +269,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         configure_pruning(config, self.pruning, self.instance_sampling)
         self.__configure_parallel_rule_refinement(config)
         self.__configure_parallel_statistic_update(config)
+        configure_parallel_prediction(config, self.parallel_prediction)
         configure_size_stopping_criterion(config, max_rules=self.max_rules)
         configure_time_stopping_criterion(config, time_limit=self.time_limit)
         self.__configure_measure_stopping_criterion(config)
@@ -277,7 +279,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.__configure_l2_regularization(config)
         self.__configure_loss(config)
         self.__configure_label_binning(config)
-        self.__configure_parallel_prediction(config)
         self.__configure_classification_predictor(config)
         return BoostingRuleLearnerWrapper(config)
 
@@ -405,15 +406,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
                 c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
                 c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
-
-    def __configure_parallel_prediction(self, config: BoostingRuleLearnerConfig):
-        value, options = parse_param_and_options('parallel_prediction', self.parallel_prediction, PARALLEL_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            c = config.use_parallel_prediction()
-            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
-        else:
-            config.use_no_parallel_prediction()
 
     def __configure_classification_predictor(self, config: BoostingRuleLearnerConfig):
         predictor = self.predictor

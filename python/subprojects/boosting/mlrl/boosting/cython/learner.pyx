@@ -1,7 +1,6 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport ManualRegularizationConfig
@@ -178,25 +177,6 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IEqualWidthLabelBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualWidthLabelBinning()
         cdef EqualWidthLabelBinningConfig config = EqualWidthLabelBinningConfig.__new__(EqualWidthLabelBinningConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_no_parallel_prediction(self):
-        """
-        Configures the rule learner to not use any multi-threading to predict for several query examples in parallel.
-        """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useNoParallelPrediction()
-
-    def use_parallel_prediction(self) -> ManualMultiThreadingConfig:
-        """
-        Configures the rule learner to use multi-threading to predict for several query examples in parallel.
-
-        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
-        """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelPrediction()
-        cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
         return config
 
