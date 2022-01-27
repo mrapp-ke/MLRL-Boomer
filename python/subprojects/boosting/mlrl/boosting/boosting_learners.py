@@ -12,8 +12,8 @@ from mlrl.boosting.cython.learner import BoostingRuleLearner as BoostingRuleLear
 from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, HEAD_TYPE_SINGLE, ARGUMENT_BIN_RATIO, \
-    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
+from mlrl.common.rule_learners import AUTOMATIC, SAMPLING_WITHOUT_REPLACEMENT, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, \
+    ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
@@ -46,6 +46,8 @@ ARGUMENT_MIN_IMPROVEMENT = 'min_improvement'
 ARGUMENT_FORCE_STOP = 'force_stop'
 
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
+
+HEAD_TYPE_SINGLE = 'single-label'
 
 HEAD_TYPE_COMPLETE = 'complete'
 

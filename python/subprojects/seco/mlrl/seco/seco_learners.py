@@ -9,8 +9,8 @@ from typing import Dict, Set
 
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
+from mlrl.common.rule_learners import PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
 from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
@@ -19,6 +19,8 @@ from mlrl.common.rule_learners import configure_rule_model_assemblage, configure
 from mlrl.common.rule_learners import parse_param, parse_param_and_options
 from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
+
+HEAD_TYPE_SINGLE = 'single-label'
 
 HEAD_TYPE_PARTIAL = 'partial'
 
