@@ -2,6 +2,7 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from mlrl.common.cython._arrays cimport array_uint32, c_matrix_uint8, c_matrix_float64
+from mlrl.common.cython._validation import assert_greater_or_equal
 from mlrl.common.cython.feature_binning cimport EqualWidthFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplacementConfig
@@ -439,6 +440,7 @@ cdef class RuleLearner:
         :return:                        The `TrainingResult` that provides access to the result of fitting the rule
                                         learner to the training data
         """
+        assert_greater_or_equal("random_state", random_state, 1)
         cdef unique_ptr[ITrainingResult] training_result_ptr = self.get_rule_learner_ptr().fit(
             dereference(nominal_feature_mask.get_nominal_feature_mask_ptr()),
             dereference(feature_matrix.get_column_wise_feature_matrix_ptr()),
