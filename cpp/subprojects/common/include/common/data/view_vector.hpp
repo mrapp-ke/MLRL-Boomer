@@ -62,6 +62,9 @@ class VectorConstView : public IOneDimensionalView {
          */
         const T& operator[](uint32 pos) const;
 
+        /**
+         * @see `IOneDimensionalView::getNumElements`
+         */
         uint32 getNumElements() const override final;
 
 };

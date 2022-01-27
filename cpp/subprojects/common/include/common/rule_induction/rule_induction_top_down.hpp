@@ -65,10 +65,10 @@ class ITopDownRuleInductionConfig {
          * Sets the maximum number of times, the head of a rule may be refined after a new condition has been added to
          * its body.
          *
-         * @param maxHeadRefinement The maximum number of times, the head of a rule may be refined. Must be at least 1
-         *                          or 0, if the number of refinements should not be restricted
-         * @return                  A reference to an object of type `ITopDownRuleInductionConfig` that allows further
-         *                          configuration of the algorithm for the induction of individual rules
+         * @param maxHeadRefinements    The maximum number of times, the head of a rule may be refined. Must be at least
+         *                              1 or 0, if the number of refinements should not be restricted
+         * @return                      A reference to an object of type `ITopDownRuleInductionConfig` that allows
+         *                              further configuration of the algorithm for the induction of individual rules
          */
         virtual ITopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) = 0;
 

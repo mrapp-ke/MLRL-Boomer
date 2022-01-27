@@ -62,8 +62,14 @@ class FortranContiguousConstView : virtual public ITwoDimensionalView {
          */
         value_const_iterator column_values_cend(uint32 col) const;
 
+        /**
+         * @see `ITwoDimensionalView::getNumRows`
+         */
         uint32 getNumRows() const override final;
 
+        /**
+         * @see `ITwoDimensionalView::getNumCols`
+         */
         uint32 getNumCols() const override final;
 
 };
