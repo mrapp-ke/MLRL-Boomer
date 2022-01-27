@@ -159,16 +159,16 @@ class IRuleLearner {
                 virtual const IPartitionSamplingConfig& getPartitionSamplingConfig() const = 0;
 
                 /**
-                 * Returns the configuration of the method for pruning classification rules.
+                 * Returns the configuration of the method for pruning individual rules.
                  *
                  * @return A reference to an object of type `IPruningConfig` that specifies the configuration of the
-                 *         method for pruning classification rules
+                 *         method for pruning individual rules
                  */
                 virtual const IPruningConfig& getPruningConfig() const = 0;
 
                 /**
-                 * Returns the configuration of the method that post-processes the predictions of rules once they
-                 * have been learned.
+                 * Returns the configuration of the method for post-processing the predictions of rules once they have
+                 * been learned.
                  *
                  * @return A reference to an object of type `IPostProcessorConfig` that specifies the configuration
                  *         of the method that post-processes the predictions of rules once they have been learned
@@ -698,34 +698,90 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             protected:
 
+                /**
+                 * An unique pointer that stores the configuration of the method for the induction of several rules that
+                 * are added to a rule-based model.
+                 */
                 std::unique_ptr<IRuleModelAssemblageConfig> ruleModelAssemblageConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the algorithm for the induction of individual
+                 * rules.
+                 */
                 std::unique_ptr<IRuleInductionConfig> ruleInductionConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the method for the assignment of numerical feature
+                 * values to bins
+                 */
                 std::unique_ptr<IFeatureBinningConfig> featureBinningConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the method for sampling labels.
+                 */
                 std::unique_ptr<ILabelSamplingConfig> labelSamplingConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the method for sampling instances.
+                 */
                 std::unique_ptr<IInstanceSamplingConfig> instanceSamplingConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the method for sampling features.
+                 */
                 std::unique_ptr<IFeatureSamplingConfig> featureSamplingConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the method for partitioning the available training
+                 * examples into a training set and a holdout set.
+                 */
                 std::unique_ptr<IPartitionSamplingConfig> partitionSamplingConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the method for pruning individual rules.
+                 */
                 std::unique_ptr<IPruningConfig> pruningConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the method for post-processing the predictions of
+                 * rules once they have been learned.
+                 */
                 std::unique_ptr<IPostProcessorConfig> postProcessorConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the multi-threading behavior that is used for the
+                 * parallel refinement of rules.
+                 */
                 std::unique_ptr<IMultiThreadingConfig> parallelRuleRefinementConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the multi-threading behavior that is used for the
+                 * parallel update of statistics.
+                 */
                 std::unique_ptr<IMultiThreadingConfig> parallelStatisticUpdateConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the multi-threading behavior that is used to
+                 * predict for several query examples in parallel.
+                 */
                 std::unique_ptr<IMultiThreadingConfig> parallelPredictionConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the stopping criterion that ensures that the
+                 * number of rules does not exceed a certain maximum.
+                 */
                 std::unique_ptr<SizeStoppingCriterionConfig> sizeStoppingCriterionConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the stopping criterion that ensures that a certain
+                 * time limit is not exceeded.
+                 */
                 std::unique_ptr<TimeStoppingCriterionConfig> timeStoppingCriterionConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the stopping criterion that stops the induction of
+                 * rules as soon as a model's quality does not improve.
+                 */
                 std::unique_ptr<MeasureStoppingCriterionConfig> measureStoppingCriterionConfigPtr_;
 
             private:

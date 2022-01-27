@@ -107,8 +107,14 @@ class CsrConstView : virtual public ITwoDimensionalView {
          */
         uint32 getNumNonZeroElements() const;
 
+        /**
+         * @see `ITwoDimensionalView::getNumRows`
+         */
         uint32 getNumRows() const override final;
 
+        /**
+         * @see `ITwoDimensionalView::getNumCols`
+         */
         uint32 getNumCols() const override final;
 
 };

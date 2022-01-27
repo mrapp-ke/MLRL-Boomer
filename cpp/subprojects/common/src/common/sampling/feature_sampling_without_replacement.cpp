@@ -21,7 +21,7 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
 
         /**
          * @param numFeatures   The total number of available features
-         * @param sampleSize    The number of features to be included in the sample
+         * @param numSamples    The number of features to be included in the sample
          */
         FeatureSamplingWithoutReplacement(uint32 numFeatures, uint32 numSamples)
             : numFeatures_(numFeatures), indexVector_(PartialIndexVector(numSamples)) {

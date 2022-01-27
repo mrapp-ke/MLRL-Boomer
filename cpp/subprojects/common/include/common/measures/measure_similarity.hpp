@@ -22,11 +22,11 @@ class ISimilarityMeasure {
          * Calculates and returns a numerical score that quantifies the similarity of predictions for a single example
          * and the corresponding ground truth labels.
          *
-         * @param labelVector   A reference to an object of type `VectorConstView` that provides access to the indices
-         *                      of the labels that are relevant to the given example
-         * @param scoresBegin   An iterator to the beginning of the predicted scores
-         * @param scoresEnd     An iterator to the end of the predicted scores
-         * @return              The numerical score that has been calculated
+         * @param relevantLabelIndices  A reference to an object of type `VectorConstView` that provides access to the
+         *                              indices of the labels that are relevant to the given example
+         * @param scoresBegin           An iterator to the beginning of the predicted scores
+         * @param scoresEnd             An iterator to the end of the predicted scores
+         * @return                      The numerical score that has been calculated
          */
         virtual float64 measureSimilarity(const VectorConstView<uint32>& relevantLabelIndices,
                                           CContiguousConstView<float64>::value_const_iterator scoresBegin,
