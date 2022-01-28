@@ -131,7 +131,7 @@ def boolean_string(s):
 
 
 def optional_string(s):
-    if s is None or s.lower() == 'none':
+    if s is None or s == 'none':
         return None
     return s
 
@@ -178,12 +178,12 @@ def add_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_ONE_HOT_ENCODING, type=boolean_string, default=False,
                         help='Whether one-hot-encoding should be used to encode nominal attributes or not. Must be one '
                              + 'of ' + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_MODEL_DIR, type=optional_string,
+    parser.add_argument(PARAM_MODEL_DIR, type=str,
                         help='The path of the directory where models should be stored.')
-    parser.add_argument(PARAM_PARAMETER_DIR, type=optional_string,
+    parser.add_argument(PARAM_PARAMETER_DIR, type=str,
                         help='The path of the directory where configuration files, which specify the parameters to be '
                              + 'used by the algorithm, are located.')
-    parser.add_argument(PARAM_OUTPUT_DIR, type=optional_string,
+    parser.add_argument(PARAM_OUTPUT_DIR, type=str,
                         help='The path of the directory where experimental results should be saved.')
     parser.add_argument(PARAM_STORE_PREDICTIONS, type=boolean_string, default=False,
                         help='Whether the predictions for individual examples and labels should be written into output '
