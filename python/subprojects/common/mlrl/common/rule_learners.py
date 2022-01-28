@@ -8,7 +8,7 @@ Provides base classes for implementing single- or multi-label rule learning algo
 import logging as log
 from abc import abstractmethod
 from enum import Enum
-from typing import Dict, Set
+from typing import Dict, Set, Optional
 
 import numpy as np
 from mlrl.common.arrays import enforce_dense
@@ -26,6 +26,8 @@ from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_do
 from sklearn.utils import check_array
 
 AUTOMATIC = 'auto'
+
+NONE = 'none'
 
 RULE_INDUCTION_TOP_DOWN = 'top-down'
 
@@ -81,14 +83,17 @@ RULE_MODEL_ASSEMBLAGE_VALUES: Dict[str, Set[str]] = {
 }
 
 LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}
 }
 
 FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}
 }
 
 INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     SAMPLING_WITH_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
     SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
     SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_SAMPLE_SIZE},
@@ -96,17 +101,19 @@ INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
 }
 
 PARTITION_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     PARTITION_SAMPLING_RANDOM: {ARGUMENT_HOLDOUT_SET_SIZE},
     SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_HOLDOUT_SET_SIZE},
     SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_HOLDOUT_SET_SIZE}
 }
 
 FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     BINNING_EQUAL_FREQUENCY: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS},
     BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS}
 }
 
-PRUNING_VALUES: Set[str] = {PRUNING_IREP}
+PRUNING_VALUES: Set[str] = {NONE, PRUNING_IREP}
 
 PARALLEL_VALUES: Dict[str, Set[str]] = {
     str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
@@ -133,34 +140,36 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
                          + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
 
 
-def configure_rule_model_assemblage(config: RuleLearnerConfig, rule_model_assemblage: str):
-    value, options = parse_param_and_options('rule_model_assemblage', rule_model_assemblage,
-                                             RULE_MODEL_ASSEMBLAGE_VALUES)
+def configure_rule_model_assemblage(config: RuleLearnerConfig, rule_model_assemblage: Optional[str]):
+    if rule_model_assemblage is not None:
+        value, options = parse_param_and_options('rule_model_assemblage', rule_model_assemblage,
+                                                 RULE_MODEL_ASSEMBLAGE_VALUES)
 
-    if value == RULE_MODEL_ASSEMBLAGE_SEQUENTIAL:
-        c = config.use_sequential_rule_model_assemblage()
-        c.set_use_default_rule(options.get_bool(ARGUMENT_USE_DEFAULT_RULE, c.get_use_default_rule()))
-
-
-def configure_rule_induction(config: RuleLearnerConfig, rule_induction: str):
-    value, options = parse_param_and_options('rule_induction', rule_induction, RULE_INDUCTION_VALUES)
-
-    if value == RULE_INDUCTION_TOP_DOWN:
-        c = config.use_top_down_rule_induction()
-        c.set_min_coverage(options.get_int(ARGUMENT_MIN_COVERAGE, c.get_min_coverage()))
-        c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
-        c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
-        c.set_recalculate_predictions(options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS,
-                                                       c.get_recalculate_predictions()))
+        if value == RULE_MODEL_ASSEMBLAGE_SEQUENTIAL:
+            c = config.use_sequential_rule_model_assemblage()
+            c.set_use_default_rule(options.get_bool(ARGUMENT_USE_DEFAULT_RULE, c.get_use_default_rule()))
 
 
-def configure_feature_binning(config: RuleLearnerConfig, feature_binning: str):
-    if feature_binning is None:
-        config.use_no_feature_binning()
-    else:
+def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional[str]):
+    if rule_induction is not None:
+        value, options = parse_param_and_options('rule_induction', rule_induction, RULE_INDUCTION_VALUES)
+
+        if value == RULE_INDUCTION_TOP_DOWN:
+            c = config.use_top_down_rule_induction()
+            c.set_min_coverage(options.get_int(ARGUMENT_MIN_COVERAGE, c.get_min_coverage()))
+            c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
+            c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
+            c.set_recalculate_predictions(options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS,
+                                                           c.get_recalculate_predictions()))
+
+
+def configure_feature_binning(config: RuleLearnerConfig, feature_binning: Optional[str]):
+    if feature_binning is not None:
         value, options = parse_param_and_options('feature_binning', feature_binning, FEATURE_BINNING_VALUES)
 
-        if value == BINNING_EQUAL_FREQUENCY:
+        if value == NONE:
+            config.use_no_feature_binning()
+        elif value == BINNING_EQUAL_FREQUENCY:
             c = config.use_equal_frequency_feature_binning()
             c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
             c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
@@ -172,24 +181,24 @@ def configure_feature_binning(config: RuleLearnerConfig, feature_binning: str):
             c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
 
 
-def configure_label_sampling(config: RuleLearnerConfig, label_sampling: str):
-    if label_sampling is None:
-        config.use_no_label_sampling()
-    else:
+def configure_label_sampling(config: RuleLearnerConfig, label_sampling: Optional[str]):
+    if label_sampling is not None:
         value, options = parse_param_and_options('label_sampling', label_sampling, LABEL_SAMPLING_VALUES)
 
+        if value == NONE:
+            config.use_no_label_sampling()
         if value == SAMPLING_WITHOUT_REPLACEMENT:
             c = config.use_label_sampling_without_replacement()
             c.set_num_samples(options.get_int(ARGUMENT_NUM_SAMPLES, c.get_num_samples()))
 
 
-def configure_instance_sampling(config: RuleLearnerConfig, instance_sampling: str):
-    if instance_sampling is None:
-        config.use_no_instance_sampling()
-    else:
+def configure_instance_sampling(config: RuleLearnerConfig, instance_sampling: Optional[str]):
+    if instance_sampling is not None:
         value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
 
-        if value == SAMPLING_WITH_REPLACEMENT:
+        if value == NONE:
+            config.use_no_instance_sampling()
+        elif value == SAMPLING_WITH_REPLACEMENT:
             c = config.use_instance_sampling_with_replacement()
             c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
@@ -203,24 +212,24 @@ def configure_instance_sampling(config: RuleLearnerConfig, instance_sampling: st
             c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
 
 
-def configure_feature_sampling(config: RuleLearnerConfig, feature_sampling: str):
-    if feature_sampling is None:
-        config.use_no_feature_sampling()
-    else:
+def configure_feature_sampling(config: RuleLearnerConfig, feature_sampling: Optional[str]):
+    if feature_sampling is not None:
         value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
 
-        if value == SAMPLING_WITHOUT_REPLACEMENT:
+        if value == NONE:
+            config.use_no_feature_sampling()
+        elif value == SAMPLING_WITHOUT_REPLACEMENT:
             c = config.use_feature_sampling_without_replacement()
             c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
 
 
-def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: str):
-    if partition_sampling is None:
-        config.use_no_partition_sampling()
-    else:
+def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: Optional[str]):
+    if partition_sampling is not None:
         value, options = parse_param_and_options('holdout', partition_sampling, PARTITION_SAMPLING_VALUES)
 
-        if value == PARTITION_SAMPLING_RANDOM:
+        if value == NONE:
+            config.use_no_partition_sampling()
+        elif value == PARTITION_SAMPLING_RANDOM:
             c = config.use_random_bi_partition_sampling()
             c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
         elif value == SAMPLING_STRATIFIED_LABEL_WISE:
@@ -231,62 +240,64 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
             c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
 
 
-def configure_pruning(config: RuleLearnerConfig, pruning: str, instance_sampling: str):
-    if pruning is None:
-        config.use_no_pruning()
-    elif instance_sampling is None:
-        log.warning(
-            'Parameter "pruning" does not have any effect, because parameter "instance_sampling" is set to "None"!')
-        config.use_no_pruning()
-    else:
+def configure_pruning(config: RuleLearnerConfig, pruning: Optional[str]):
+    if pruning is not None:
         value = parse_param('pruning', pruning, PRUNING_VALUES)
 
-        if value == PRUNING_IREP:
+        if value == NONE:
+            config.use_no_pruning()
+        elif value == PRUNING_IREP:
             config.use_irep_pruning()
 
 
-def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_refinement: str):
-    value, options = parse_param_and_options('parallel_rule_refinement', parallel_rule_refinement, PARALLEL_VALUES)
+def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_refinement: Optional[str]):
+    if parallel_rule_refinement is not None:
+        value, options = parse_param_and_options('parallel_rule_refinement', parallel_rule_refinement, PARALLEL_VALUES)
 
-    if value == BooleanOption.FALSE.value:
-        config.use_no_parallel_rule_refinement()
-    else:
-        c = config.use_parallel_rule_refinement()
-        c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
-
-
-def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_statistic_update: str):
-    value, options = parse_param_and_options('parallel_statistic_update', parallel_statistic_update, PARALLEL_VALUES)
-
-    if value == BooleanOption.FALSE.value:
-        config.use_no_parallel_statistic_update()
-    else:
-        c = config.use_parallel_statistic_update()
-        c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
+        if value == BooleanOption.FALSE.value:
+            config.use_no_parallel_rule_refinement()
+        else:
+            c = config.use_parallel_rule_refinement()
+            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
 
 
-def configure_parallel_prediction(config: RuleLearnerConfig, parallel_prediction: str):
-    value, options = parse_param_and_options('parallel_prediction', parallel_prediction, PARALLEL_VALUES)
+def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_statistic_update: Optional[str]):
+    if parallel_statistic_update is not None:
+        value, options = parse_param_and_options('parallel_statistic_update', parallel_statistic_update,
+                                                 PARALLEL_VALUES)
 
-    if value == BooleanOption.TRUE.value:
-        c = config.use_parallel_prediction()
-        c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
-    else:
-        config.use_no_parallel_prediction()
-
-
-def configure_size_stopping_criterion(config: RuleLearnerConfig, max_rules: int):
-    if max_rules == 0:
-        config.use_no_size_stopping_criterion()
-    else:
-        config.use_size_stopping_criterion().set_max_rules(max_rules)
+        if value == BooleanOption.FALSE.value:
+            config.use_no_parallel_statistic_update()
+        else:
+            c = config.use_parallel_statistic_update()
+            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
 
 
-def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: int):
-    if time_limit == 0:
-        config.use_no_time_stopping_criterion()
-    else:
-        config.use_time_stopping_criterion().set_time_limit(time_limit)
+def configure_parallel_prediction(config: RuleLearnerConfig, parallel_prediction: Optional[str]):
+    if parallel_prediction is not None:
+        value, options = parse_param_and_options('parallel_prediction', parallel_prediction, PARALLEL_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            c = config.use_parallel_prediction()
+            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
+        else:
+            config.use_no_parallel_prediction()
+
+
+def configure_size_stopping_criterion(config: RuleLearnerConfig, max_rules: Optional[int]):
+    if max_rules is not None:
+        if max_rules == 0:
+            config.use_no_size_stopping_criterion()
+        else:
+            config.use_size_stopping_criterion().set_max_rules(max_rules)
+
+
+def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: Optional[int]):
+    if time_limit is not None:
+        if time_limit == 0:
+            config.use_no_time_stopping_criterion()
+        else:
+            config.use_time_stopping_criterion().set_time_limit(time_limit)
 
 
 def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
