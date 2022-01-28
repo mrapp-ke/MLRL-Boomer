@@ -39,7 +39,7 @@ cdef class EqualWidthLabelBinningConfig:
 
         :return: The minimum number of bins that is used
         """
-        self.config_ptr.getMinBins()
+        return self.config_ptr.getMinBins()
 
     def set_min_bins(self, min_bins: int) -> EqualWidthLabelBinningConfig:
         """
