@@ -51,7 +51,7 @@ cdef extern from "common/output/label_vector_set.hpp" nogil:
 
         void addLabelVector(unique_ptr[LabelVector] labelVectorPtr)
 
-        void visit(LabelVectorVisitor)
+        void visit(LabelVectorVisitor) const
 
 
     unique_ptr[ILabelVectorSet] createLabelVectorSet()
