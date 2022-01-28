@@ -14,6 +14,9 @@ cdef extern from "common/output/label_space_info_no.hpp" nogil:
         pass
 
 
+    unique_ptr[INoLabelSpaceInfo] createNoLabelSpaceInfo()
+
+
 cdef extern from "common/output/label_vector_set.hpp" nogil:
 
     cdef cppclass ILabelVectorSet(ILabelSpaceInfo):
