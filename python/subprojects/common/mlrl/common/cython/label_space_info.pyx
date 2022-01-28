@@ -4,7 +4,7 @@
 from libcpp.utility cimport move
 from libcpp.memory cimport make_unique
 
-SERIALIZATION_VERSION = 1
+SERIALIZATION_VERSION = 2
 
 
 cdef class LabelSpaceInfo:
