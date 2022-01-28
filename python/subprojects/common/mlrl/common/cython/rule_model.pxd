@@ -270,12 +270,6 @@ cdef class PartialHead:
 
 cdef class RuleModel:
 
-    # Attributes:
-
-    cdef object visitor
-
-    cdef object state
-
     # Functions:
 
     cdef IRuleModel* get_rule_model_ptr(self)
@@ -286,6 +280,10 @@ cdef class RuleList(RuleModel):
     # Attributes:
 
     cdef unique_ptr[IRuleList] rule_list_ptr
+
+    cdef object visitor
+
+    cdef object state
 
     # Functions:
 
