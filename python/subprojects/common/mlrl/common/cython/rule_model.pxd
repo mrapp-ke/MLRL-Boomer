@@ -6,65 +6,109 @@ from libcpp.memory cimport unique_ptr
 cimport numpy as npc
 
 
+cdef extern from "common/model/body.hpp" nogil:
+
+    cdef cppclass IBody:
+        pass
+
+
 cdef extern from "common/model/body_empty.hpp" nogil:
 
-    cdef cppclass EmptyBodyImpl"EmptyBody":
+    cdef cppclass EmptyBodyImpl"EmptyBody"(IBody):
         pass
 
 
 cdef extern from "common/model/body_conjunctive.hpp" nogil:
 
-    cdef cppclass ConjunctiveBodyImpl"ConjunctiveBody":
+    cdef cppclass ConjunctiveBodyImpl"ConjunctiveBody"(IBody):
+
+        ctypedef float32* threshold_iterator
 
         ctypedef const float32* threshold_const_iterator
 
+        ctypedef uint32* index_iterator
+
         ctypedef const uint32* index_const_iterator
+
+        # Constructors:
+
+        ConjunctiveBodyImpl(uint32 numLeq, uint32 numGr, uint32 numEq, uint32 numNeq)
 
         # Functions:
 
         uint32 getNumLeq()
 
+        threshold_iterator leq_thresholds_begin()
+
         threshold_const_iterator leq_thresholds_cbegin()
+
+        index_iterator leq_indices_begin()
 
         index_const_iterator leq_indices_cbegin()
 
         uint32 getNumGr()
 
+        threshold_iterator gr_thresholds_begin()
+
         threshold_const_iterator gr_thresholds_cbegin()
+
+        index_iterator gr_indices_begin()
 
         index_const_iterator gr_indices_cbegin()
 
         uint32 getNumEq()
 
+        threshold_iterator eq_thresholds_begin()
+
         threshold_const_iterator eq_thresholds_cbegin()
+
+        index_iterator eq_indices_begin()
 
         index_const_iterator eq_indices_cbegin()
 
         uint32 getNumNeq()
 
+        threshold_iterator neq_thresholds_begin()
+
         threshold_const_iterator neq_thresholds_cbegin()
+
+        index_iterator neq_indices_begin()
 
         index_const_iterator neq_indices_cbegin()
 
 
+cdef extern from "common/model/head.hpp" nogil:
+
+    cdef cppclass IHead:
+        pass
+
+
 cdef extern from "common/model/head_complete.hpp" nogil:
 
-    cdef cppclass CompleteHeadImpl"CompleteHead":
+    cdef cppclass CompleteHeadImpl"CompleteHead"(IHead):
+
+        ctypedef float64* score_iterator
 
         ctypedef const float64* score_const_iterator
 
         # Functions:
 
         uint32 getNumElements()
+
+        score_iterator scores_begin()
 
         score_const_iterator scores_cbegin()
 
 
 cdef extern from "common/model/head_partial.hpp" nogil:
 
-    cdef cppclass PartialHeadImpl"PartialHead":
+    cdef cppclass PartialHeadImpl"PartialHead"(IHead):
+
+        ctypedef float64* score_iterator
 
         ctypedef const float64* score_const_iterator
+
+        ctypedef uint32* index_iterator
 
         ctypedef const uint32* index_const_iterator
 
@@ -72,7 +116,11 @@ cdef extern from "common/model/head_partial.hpp" nogil:
 
         uint32 getNumElements()
 
+        score_iterator scores_begin()
+
         score_const_iterator scores_cbegin()
+
+        index_iterator indices_begin()
 
         index_const_iterator indices_cbegin()
 
@@ -105,8 +153,18 @@ cdef extern from "common/model/rule_list.hpp" nogil:
 
         # Functions:
 
+        void addDefaultRule(unique_ptr[IHead] headPtr)
+
+        void addRule(unique_ptr[IBody] bodyPtr, unique_ptr[IHead] headPtr)
+
+        void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                   CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const
+
         void visitUsed(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                       CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor)
+                       CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const
+
+
+    unique_ptr[IRuleList] createRuleList()
 
 
 ctypedef IRuleList* RuleListPtr
@@ -216,6 +274,8 @@ cdef class RuleModel:
 
     cdef object visitor
 
+    cdef object state
+
     # Functions:
 
     cdef IRuleModel* get_rule_model_ptr(self)
@@ -237,6 +297,24 @@ cdef class RuleList(RuleModel):
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
 
+    cdef __serialize_empty_body(self, const EmptyBodyImpl& body)
+
+    cdef __serialize_conjunctive_body(self, const ConjunctiveBodyImpl& body)
+
+    cdef __serialize_complete_head(self, const CompleteHeadImpl& head)
+
+    cdef __serialize_partial_head(self, const PartialHeadImpl& head)
+
+    cdef unique_ptr[IBody] __deserialize_body(self, object body_state)
+
+    cdef unique_ptr[IBody] __deserialize_conjunctive_body(self, object body_state)
+
+    cdef unique_ptr[IHead] __deserialize_head(self, object head_state)
+
+    cdef unique_ptr[IHead] __deserialize_complete_head(self, object head_state)
+
+    cdef unique_ptr[IHead] __deserialize_partial_head(self, object head_state)
+
 
 cdef inline RuleModel create_rule_model(unique_ptr[IRuleModel] rule_model_ptr):
     cdef IRuleModel* ptr = rule_model_ptr.release()
@@ -250,4 +328,3 @@ cdef inline RuleModel create_rule_model(unique_ptr[IRuleModel] rule_model_ptr):
     else:
         del ptr
         raise RuntimeError('Encountered unknown model type')
-
