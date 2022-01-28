@@ -1,3 +1,5 @@
+from mlrl.common.cython._types cimport uint32
+
 from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
 
@@ -17,15 +19,67 @@ cdef extern from "common/output/label_space_info_no.hpp" nogil:
     unique_ptr[INoLabelSpaceInfo] createNoLabelSpaceInfo()
 
 
+cdef extern from "common/input/label_vector.hpp" nogil:
+
+    cdef cppclass LabelVector:
+
+        ctypedef const uint32* const_iterator
+
+        ctypedef uint32* iterator
+
+        # Constructors:
+
+        LabelVector(uint32 numElements)
+
+        # Functions:
+
+        uint32 getNumElements() const
+
+        iterator begin()
+
+        const_iterator cbegin() const
+
+
+ctypedef void (*LabelVectorVisitor)(const LabelVector&)
+
+
 cdef extern from "common/output/label_vector_set.hpp" nogil:
 
     cdef cppclass ILabelVectorSet(ILabelSpaceInfo):
-        pass
+
+        # Functions:
+
+        void addLabelVector(unique_ptr[LabelVector] labelVectorPtr)
+
+        void visit(LabelVectorVisitor)
+
+
+    unique_ptr[ILabelVectorSet] createLabelVectorSet()
 
 
 ctypedef INoLabelSpaceInfo* NoLabelSpaceInfoPtr
 
 ctypedef ILabelVectorSet* LabelVectorSetPtr
+
+
+cdef extern from *:
+    """
+    #include "common/output/label_vector_set.hpp"
+
+
+    typedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&);
+
+    static inline LabelVectorSet::LabelVectorVisitor wrapLabelVectorVisitor(
+            void* self, LabelVectorCythonVisitor visitor) {
+        return [=](const LabelVector& labelVector) {
+            visitor(self, labelVector);
+        };
+    }
+    """
+
+    ctypedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&)
+
+    LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
 
 
 cdef class LabelSpaceInfo:
@@ -47,6 +101,14 @@ cdef class LabelVectorSet(LabelSpaceInfo):
     # Attributes:
 
     cdef unique_ptr[ILabelVectorSet] label_vector_set_ptr
+
+    cdef object state
+
+    # Functions:
+
+    cdef __serialize_label_vector(self, const LabelVector& label_vector)
+
+    cdef unique_ptr[LabelVector] __deserialize_label_vector(self, object label_vector_state)
 
 
 cdef inline LabelSpaceInfo create_label_space_info(unique_ptr[ILabelSpaceInfo] label_space_info_ptr):
