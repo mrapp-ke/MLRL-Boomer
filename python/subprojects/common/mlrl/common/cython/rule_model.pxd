@@ -36,45 +36,45 @@ cdef extern from "common/model/body_conjunctive.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumLeq()
+        uint32 getNumLeq() const
 
         threshold_iterator leq_thresholds_begin()
 
-        threshold_const_iterator leq_thresholds_cbegin()
+        threshold_const_iterator leq_thresholds_cbegin() const
 
         index_iterator leq_indices_begin()
 
-        index_const_iterator leq_indices_cbegin()
+        index_const_iterator leq_indices_cbegin() const
 
-        uint32 getNumGr()
+        uint32 getNumGr() const
 
         threshold_iterator gr_thresholds_begin()
 
-        threshold_const_iterator gr_thresholds_cbegin()
+        threshold_const_iterator gr_thresholds_cbegin() const
 
         index_iterator gr_indices_begin()
 
-        index_const_iterator gr_indices_cbegin()
+        index_const_iterator gr_indices_cbegin() const
 
-        uint32 getNumEq()
+        uint32 getNumEq() const
 
         threshold_iterator eq_thresholds_begin()
 
-        threshold_const_iterator eq_thresholds_cbegin()
+        threshold_const_iterator eq_thresholds_cbegin() const
 
         index_iterator eq_indices_begin()
 
-        index_const_iterator eq_indices_cbegin()
+        index_const_iterator eq_indices_cbegin() const
 
-        uint32 getNumNeq()
+        uint32 getNumNeq() const
 
         threshold_iterator neq_thresholds_begin()
 
-        threshold_const_iterator neq_thresholds_cbegin()
+        threshold_const_iterator neq_thresholds_cbegin() const
 
         index_iterator neq_indices_begin()
 
-        index_const_iterator neq_indices_cbegin()
+        index_const_iterator neq_indices_cbegin() const
 
 
 cdef extern from "common/model/head.hpp" nogil:
@@ -93,11 +93,11 @@ cdef extern from "common/model/head_complete.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumElements()
+        uint32 getNumElements() const
 
         score_iterator scores_begin()
 
-        score_const_iterator scores_cbegin()
+        score_const_iterator scores_cbegin() const
 
 
 cdef extern from "common/model/head_partial.hpp" nogil:
@@ -114,15 +114,15 @@ cdef extern from "common/model/head_partial.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumElements()
+        uint32 getNumElements() const
 
         score_iterator scores_begin()
 
-        score_const_iterator scores_cbegin()
+        score_const_iterator scores_cbegin() const
 
         index_iterator indices_begin()
 
-        index_const_iterator indices_cbegin()
+        index_const_iterator indices_cbegin() const
 
 
 ctypedef void (*EmptyBodyVisitor)(const EmptyBodyImpl&)
@@ -140,9 +140,9 @@ cdef extern from "common/model/rule_model.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumRules()
+        uint32 getNumRules() const
 
-        uint32 getNumUsedRules()
+        uint32 getNumUsedRules() const
 
         void setNumUsedRules(uint32 numUsedRules)
 
