@@ -28,6 +28,8 @@ namespace boosting {
         this->useFeatureSamplingWithoutReplacement();
         this->useSizeStoppingCriterion();
         this->useConstantShrinkagePostProcessor();
+        this->useAutomaticParallelRuleRefinement();
+        this->useAutomaticParallelStatisticUpdate();
         this->useAutomaticHeads();
         this->useNoL1Regularization();
         this->useL2Regularization();
