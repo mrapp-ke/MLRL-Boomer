@@ -10,8 +10,6 @@ import numpy as np
 
 SERIALIZATION_VERSION = 2
 
-MODEL_TYPE_LIST = 0
-
 
 cdef class EmptyBody:
     """
@@ -355,7 +353,7 @@ cdef class RuleList(RuleModel):
             wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__serialize_complete_head),
             wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__serialize_partial_head))
         cdef uint32 num_used_rules = self.rule_list_ptr.get().getNumUsedRules()
-        cdef object state = (SERIALIZATION_VERSION, (MODEL_TYPE_LIST, (self.state, num_used_rules)))
+        cdef object state = (SERIALIZATION_VERSION, (self.state, num_used_rules))
         self.state = None
         return (RuleList, (), state)
 
@@ -367,13 +365,7 @@ cdef class RuleList(RuleModel):
                 'Version of the serialized model is ' + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
 
         cdef object model_state = state[1]
-        cdef int model_type = model_state[0]
-
-        if model_type != MODEL_TYPE_LIST:
-            raise AssertionError('Cannot deserialize model due to unsupported model type')
-
-        cdef object rule_list_state = model_state[1]
-        cdef list rule_list = rule_list_state[0]
+        cdef list rule_list = model_state[0]
         cdef uint32 num_rules = len(rule_list)
         cdef unique_ptr[IRuleList] rule_list_ptr = createRuleList()
         cdef object rule_state
@@ -391,6 +383,6 @@ cdef class RuleList(RuleModel):
             else:
                 rule_list_ptr.get().addRule(move(body_ptr), move(head_ptr))
 
-        cdef uint32 num_used_rules = rule_list_state[1]
+        cdef uint32 num_used_rules = model_state[1]
         rule_list_ptr.get().setNumUsedRules(num_used_rules)
         self.rule_list_ptr = move(rule_list_ptr)
