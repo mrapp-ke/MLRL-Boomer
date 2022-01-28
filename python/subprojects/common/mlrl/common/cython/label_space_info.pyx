@@ -20,6 +20,12 @@ cdef class NoLabelSpaceInfo(LabelSpaceInfo):
     cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
         return self.label_space_info_ptr.get()
 
+    def __reduce__(self):
+        return (NoLabelSpaceInfo, (), ())
+
+    def __setstate__(self, state):
+        self.label_space_info_ptr = createNoLabelSpaceInfo()
+
 
 cdef class LabelVectorSet(LabelSpaceInfo):
     """
