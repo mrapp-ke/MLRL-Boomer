@@ -347,8 +347,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_no_measure_stopping_criterion()
             elif value == EARLY_STOPPING_LOSS:
                 c = config.use_measure_stopping_criterion()
+                aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
                 c.set_aggregation_function(self.__create_aggregation_function(
-                    options.get_string(ARGUMENT_AGGREGATION_FUNCTION, c.get_aggregation_function().value)))
+                    aggregation_function) if aggregation_function is not None else c.get_aggregation_function())
                 c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
                 c.set_update_interval(options.get_int(ARGUMENT_UPDATE_INTERVAL, c.get_update_interval()))
                 c.set_stop_interval(options.get_int(ARGUMENT_STOP_INTERVAL, c.get_stop_interval()))
