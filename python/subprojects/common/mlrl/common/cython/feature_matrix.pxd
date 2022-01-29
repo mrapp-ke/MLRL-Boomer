@@ -87,12 +87,20 @@ cdef class FortranContiguousFeatureMatrix(ColumnWiseFeatureMatrix):
 
     # Attributes:
 
+    cdef const float32[::1, :] array
+
     cdef unique_ptr[IFortranContiguousFeatureMatrix] feature_matrix_ptr
 
 
 cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
 
     # Attributes:
+
+    cdef const float32[::1] data
+
+    cdef uint32[::1] row_indices
+
+    cdef uint32[::1] col_indices
 
     cdef unique_ptr[ICscFeatureMatrix] feature_matrix_ptr
 
@@ -108,11 +116,19 @@ cdef class CContiguousFeatureMatrix(RowWiseFeatureMatrix):
 
     # Attributes:
 
+    cdef const float32[:, ::1] array
+
     cdef unique_ptr[ICContiguousFeatureMatrix] feature_matrix_ptr
 
 
 cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
 
     # Attributes:
+
+    cdef const float32[::1] data
+
+    cdef const uint32[::1] row_indices
+
+    cdef const uint32[::1] col_indices
 
     cdef unique_ptr[ICsrFeatureMatrix] feature_matrix_ptr

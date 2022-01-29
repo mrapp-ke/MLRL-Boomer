@@ -58,6 +58,7 @@ cdef class CContiguousLabelMatrix(RowWiseLabelMatrix):
         :param array: A C-contiguous array of type `uint8`, shape `(num_examples, num_labels)`, that stores the labels
                       of the training examples
         """
+        self.array = array
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_labels = array.shape[1]
         self.label_matrix_ptr = createCContiguousLabelMatrix(num_examples, num_labels, &array[0, 0])
@@ -86,6 +87,8 @@ cdef class CsrLabelMatrix(RowWiseLabelMatrix):
         :param col_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
                                 column-indices, the relevant labels correspond to
         """
+        self.row_indices = row_indices
+        self.col_indices = col_indices
         self.label_matrix_ptr = createCsrLabelMatrix(num_examples, num_labels, &row_indices[0], &col_indices[0])
 
     cdef ILabelMatrix* get_label_matrix_ptr(self):
