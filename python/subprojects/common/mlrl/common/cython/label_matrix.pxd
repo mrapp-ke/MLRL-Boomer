@@ -63,11 +63,17 @@ cdef class CContiguousLabelMatrix(RowWiseLabelMatrix):
 
     # Attributes:
 
+    cdef const uint8[:, ::1] array
+
     cdef unique_ptr[ICContiguousLabelMatrix] label_matrix_ptr
 
 
 cdef class CsrLabelMatrix(RowWiseLabelMatrix):
 
     # Attributes:
+
+    cdef uint32[::1] row_indices
+
+    cdef uint32[::1] col_indices
 
     cdef unique_ptr[ICsrLabelMatrix] label_matrix_ptr

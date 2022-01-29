@@ -56,6 +56,7 @@ cdef class FortranContiguousFeatureMatrix(ColumnWiseFeatureMatrix):
         :param array: A Fortran-contiguous array of type `float32`, shape `(num_examples, num_features)`, that stores
                       the feature values of the training examples
         """
+        self.array = array
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_features = array.shape[1]
         self.feature_matrix_ptr = createFortranContiguousFeatureMatrix(num_examples, num_features, &array[0, 0])
@@ -86,6 +87,9 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
                                 first element in `data` and `row_indices` that corresponds to a certain feature. The
                                 index at the last position is equal to `num_non_zero_values`
         """
+        self.data = data
+        self.row_indices = row_indices
+        self.col_indices = col_indices
         self.feature_matrix_ptr = createCscFeatureMatrix(num_examples, num_features, &data[0], &row_indices[0],
                                                          &col_indices[0])
 
@@ -116,6 +120,7 @@ cdef class CContiguousFeatureMatrix(RowWiseFeatureMatrix):
         :param array: A C-contiguous array of type `float32`, shape `(num_examples, num_features)`, that stores the
                       feature values of the training examples
         """
+        self.array = array
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_features = array.shape[1]
         self.feature_matrix_ptr = createCContiguousFeatureMatrix(num_examples, num_features, &array[0, 0])
@@ -146,6 +151,9 @@ cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
         :param col_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
                                 column-indices, the values in `data` correspond to
         """
+        self.data = data
+        self.row_indices = row_indices
+        self.col_indices = col_indices
         self.feature_matrix_ptr = createCsrFeatureMatrix(num_examples, num_features, &data[0], &row_indices[0],
                                                          &col_indices[0])
 
