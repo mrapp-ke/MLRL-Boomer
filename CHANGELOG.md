@@ -6,6 +6,7 @@
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
+* The programmatic C++ API was redesigned for a more convenient configuration of algorithms. This does also drastically reduce the amount of wrapper code that is necessary to access the API from other programming languages and therefore facilitates the support of additional languages in the future.   
 * Pre-built packages for Linux aarch64 systems are now provided.
 
 ### Version 0.7.1 (Dec. 15, 2021)
