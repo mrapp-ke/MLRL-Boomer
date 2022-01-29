@@ -181,13 +181,14 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             if no holdout set should be used. For additional options refer to the
                                             documentation
         :param feature_binning:             The strategy that should be used to assign examples to bins based on their
-                                            feature values. Must be 'equal-width', 'equal-frequency' or 'none', if no
-                                            feature binning should be used. For additional options refer to the
-                                            documentation
+                                            feature values. Must be 'auto', 'equal-width', 'equal-frequency' or 'none',
+                                            if no feature binning should be used. If set to 'auto', the most suitable
+                                            strategy is chosen automatically, depending on the characteristics of the
+                                            feature matrix. For additional options refer to the documentation
         :param label_binning:               The strategy that should be used to assign labels to bins. Must be 'auto',
                                             'equal-width' or 'none', if no label binning should be used. If set to
                                             'auto', the most suitable strategy is chosen automatically, depending on the
-                                            loss function adn the type of rule heads. For additional options refer to
+                                            loss function and the type of rule heads. For additional options refer to
                                             the documentation
         :param pruning:                     The strategy that should be used to prune individual rules. Must be 'irep'
                                             or 'none', if no pruning should be used
