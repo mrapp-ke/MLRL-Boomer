@@ -242,7 +242,7 @@ class TopDownRuleInductionFactory final : public IRuleInductionFactory {
 
 TopDownRuleInductionConfig::TopDownRuleInductionConfig(
         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(0), recalculatePredictions_(true),
+    : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
       multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
