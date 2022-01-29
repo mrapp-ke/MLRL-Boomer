@@ -16,7 +16,7 @@ cdef class ExampleWiseStratifiedBiPartitionSamplingConfig:
 
         :return: The fraction of examples that are included in the holdout set
         """
-        self.config_ptr.getHoldoutSetSize()
+        return self.config_ptr.getHoldoutSetSize()
 
     def set_holdout_set_size(self, holdout_set_size: float) -> ExampleWiseStratifiedBiPartitionSamplingConfig:
         """
@@ -46,7 +46,7 @@ cdef class LabelWiseStratifiedBiPartitionSamplingConfig:
 
         :return: The fraction of examples that are included in the holdout set
         """
-        self.config_ptr.getHoldoutSetSize()
+        return self.config_ptr.getHoldoutSetSize()
 
     def set_holdout_set_size(self, holdout_set_size: float) -> LabelWiseStratifiedBiPartitionSamplingConfig:
         """
@@ -75,7 +75,7 @@ cdef class RandomBiPartitionSamplingConfig:
 
         :return: The fraction of examples that are included in the holdout set
         """
-        self.config_ptr.getHoldoutSetSize()
+        return self.config_ptr.getHoldoutSetSize()
 
     def set_holdout_set_size(self, holdout_set_size: float) -> RandomBiPartitionSamplingConfig:
         """
