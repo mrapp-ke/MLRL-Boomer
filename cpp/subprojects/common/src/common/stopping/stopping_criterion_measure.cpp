@@ -202,7 +202,7 @@ class MeasureStoppingCriterion final : public IStoppingCriterion {
 
     private:
 
-        Partition partition_;
+        Partition& partition_;
 
         std::unique_ptr<IAggregationFunction> aggregationFunctionPtr_;
 
