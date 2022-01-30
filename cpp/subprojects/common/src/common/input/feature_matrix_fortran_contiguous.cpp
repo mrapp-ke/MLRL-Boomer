@@ -59,9 +59,8 @@ class FortranContiguousFeatureMatrix final : public FortranContiguousConstView<c
 std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
                                                                                       const float32* array) {
     return std::make_unique<FortranContiguousFeatureMatrix>(numRows, numCols, array);
-}
+}label_binning_equal
 
 #ifdef _WIN32
-    #pragma warning( push )
-    #pragma warning( disable : 4250 )
+    #pragma warning( pop )
 #endif
