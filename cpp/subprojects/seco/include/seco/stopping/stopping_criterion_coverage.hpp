@@ -5,6 +5,7 @@
 #pragma once
 
 #include "common/stopping/stopping_criterion.hpp"
+#include "seco/macros.hpp"
 
 
 namespace seco {
@@ -13,7 +14,7 @@ namespace seco {
      * Defines an interface for all classes that allow to configure a stopping criterion that stops the induction of
      * rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
      */
-    class ICoverageStoppingCriterionConfig {
+    class MLRLSECO_API ICoverageStoppingCriterionConfig {
 
         public:
 

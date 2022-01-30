@@ -13,7 +13,7 @@
 /**
  * Defines an interface for all classes that provide access to a set of unique label vectors.
  */
-class ILabelVectorSet : public ILabelSpaceInfo {
+class MLRLCOMMON_API ILabelVectorSet : public ILabelSpaceInfo {
 
     public:
 
@@ -116,4 +116,4 @@ class LabelVectorSet final : public ILabelVectorSet {
  *
  * @return An unique pointer to an object of type `ILabelVectorSet` that has been created
  */
-std::unique_ptr<ILabelVectorSet> createLabelVectorSet();
+MLRLCOMMON_API std::unique_ptr<ILabelVectorSet> createLabelVectorSet();

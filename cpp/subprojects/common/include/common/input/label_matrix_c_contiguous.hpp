@@ -18,7 +18,7 @@
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
  * are stored in a C-contiguous array.
  */
-class ICContiguousLabelMatrix : virtual public IRowWiseLabelMatrix {
+class MLRLCOMMON_API ICContiguousLabelMatrix : virtual public IRowWiseLabelMatrix {
 
     public:
 
@@ -145,8 +145,8 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, v
  * @param array     A pointer to a C-contiguous array of type `uint8` that stores the labels
  * @return          An unique pointer to an object of type `ICContiguousLabelMatrix` that has been created
  */
-std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(uint32 numRows, uint32 numCols,
-                                                                      const uint8* array);
+MLRLCOMMON_API std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(uint32 numRows, uint32 numCols,
+                                                                                     const uint8* array);
 
 #ifdef _WIN32
     #pragma warning ( pop )

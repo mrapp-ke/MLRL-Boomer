@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/macros.hpp"
 #include <memory>
 
 class IClassificationPredictorFactory;
@@ -18,7 +19,7 @@ class RuleList;
  * Defines an interface for all classes that provide information about the label space that may be used as a basis for
  * making predictions.
  */
-class ILabelSpaceInfo {
+class MLRLCOMMON_API ILabelSpaceInfo {
 
     public:
 

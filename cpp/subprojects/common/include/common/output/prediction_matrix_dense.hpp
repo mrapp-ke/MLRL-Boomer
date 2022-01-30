@@ -12,7 +12,7 @@
  * @tparam T The type of the predictions that are stored by the matrix
  */
 template<typename T>
-class DensePredictionMatrix final : public CContiguousView<T> {
+class MLRLCOMMON_API DensePredictionMatrix final : public CContiguousView<T> {
 
     private:
 

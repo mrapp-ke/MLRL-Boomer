@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include "common/macros.hpp"
 #include <memory>
 
 // Forward declarations
@@ -19,7 +20,7 @@ class ILabelSpaceInfo;
 /**
  * Defines an interface for all rule-based models.
  */
-class IRuleModel {
+class MLRLCOMMON_API IRuleModel {
 
     public:
 

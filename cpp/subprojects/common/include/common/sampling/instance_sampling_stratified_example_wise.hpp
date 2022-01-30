@@ -5,13 +5,14 @@
 #pragma once
 
 #include "common/sampling/instance_sampling.hpp"
+#include "common/macros.hpp"
 
 
 /**
  * Defines an interface for all classes that allow to configure a method for selecting a subset of the available
  * training examples using stratification, where distinct label vectors are treated as individual classes.
  */
-class IExampleWiseStratifiedInstanceSamplingConfig {
+class MLRLCOMMON_API IExampleWiseStratifiedInstanceSamplingConfig {
 
     public:
 

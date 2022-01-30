@@ -4,13 +4,14 @@
 #pragma once
 
 #include "common/multi_threading/multi_threading.hpp"
+#include "common/macros.hpp"
 
 
 /**
  * Defines an interface for all classes that allow to configure the multi-threading behavior of a parallelizable
  * algorithm by manually specifying the number of threads to be used.
  */
-class IManualMultiThreadingConfig {
+class MLRLCOMMON_API IManualMultiThreadingConfig {
 
     public:
 

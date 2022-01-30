@@ -5,6 +5,7 @@
 #pragma once
 
 #include "seco/heuristics/heuristic.hpp"
+#include "seco/macros.hpp"
 
 
 namespace seco {
@@ -15,7 +16,7 @@ namespace seco {
      * between both heuristics. If beta = 1, both heuristics are weighed equally. If beta = 0, this heuristic is
      * equivalent to "Precision". As beta approaches infinity, this heuristic becomes equivalent to "Recall".
      */
-    class IFMeasureConfig {
+    class MLRLSECO_API IFMeasureConfig {
 
         public:
 

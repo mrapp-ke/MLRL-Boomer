@@ -11,7 +11,7 @@
  * examples into a training set and a holdout set using stratification, such that for each label the proportion of
  * relevant and irrelevant examples is maintained.
  */
-class ILabelWiseStratifiedBiPartitionSamplingConfig {
+class MLRLCOMMON_API ILabelWiseStratifiedBiPartitionSamplingConfig {
 
     public:
 
