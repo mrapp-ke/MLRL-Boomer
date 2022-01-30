@@ -44,6 +44,11 @@ version = common_project.get_variable('version')
 # Library declaration
 cpp_args = common_project.get_variable('cpp_args')
 link_args = common_project.get_variable('link_args')
+
+if host_machine.system() == 'windows'
+    cpp_args += '-DMLRLSECO_EXPORTS'
+endif
+
 seco_lib = library('mlrl' + meson.project_name(), source_files, include_directories : include_directories,
                    dependencies : dependencies, cpp_args : cpp_args, link_args : link_args, version : version,
                    install : true, install_dir : install_dir)
