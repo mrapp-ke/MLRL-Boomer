@@ -4,12 +4,13 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include "common/macros.hpp"
 
 
 /**
  * Defines an interface for all classes that allow to check whether individual features are nominal or not.
  */
-class INominalFeatureMask {
+class MLRLCOMMON_API INominalFeatureMask {
 
     public:
 

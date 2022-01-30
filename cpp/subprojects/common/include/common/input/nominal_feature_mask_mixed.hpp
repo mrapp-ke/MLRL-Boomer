@@ -11,7 +11,7 @@
  * Defines an interface for all classes that allow to check whether individual features are nominal or not in cases
  * where different types of features, i.e., nominal and numerical/ordinal ones, are available.
  */
-class IMixedNominalFeatureMask : public INominalFeatureMask {
+class MLRLCOMMON_API IMixedNominalFeatureMask : public INominalFeatureMask {
 
     public:
 
@@ -33,4 +33,4 @@ class IMixedNominalFeatureMask : public INominalFeatureMask {
  * @param numFeatures   The total number of available features
  * @return              An unique pointer to an object of type `IMixedNominalFeatureMask` that has been created
  */
-std::unique_ptr<IMixedNominalFeatureMask> createMixedNominalFeatureMask(uint32 numFeatures);
+MLRLCOMMON_API std::unique_ptr<IMixedNominalFeatureMask> createMixedNominalFeatureMask(uint32 numFeatures);

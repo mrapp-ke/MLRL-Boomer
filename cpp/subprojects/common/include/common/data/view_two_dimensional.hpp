@@ -4,12 +4,13 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include "common/macros.hpp"
 
 
 /**
  * Defines an interface for all two-dimensional views.
  */
-class ITwoDimensionalView {
+class MLRLCOMMON_API ITwoDimensionalView {
 
     public:
 

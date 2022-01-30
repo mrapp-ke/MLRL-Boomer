@@ -6,13 +6,14 @@
 
 #include "common/binning/feature_binning.hpp"
 #include "common/multi_threading/multi_threading.hpp"
+#include "common/macros.hpp"
 
 
 /**
  * Defines an interface for all classes that allow to configure a method that assigns numerical feature values to bins,
  * such that each bin contains values from equally sized value ranges.
  */
-class IEqualWidthFeatureBinningConfig {
+class MLRLCOMMON_API IEqualWidthFeatureBinningConfig {
 
     public:
 

@@ -18,7 +18,7 @@
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
  * are stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
-class ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
+class MLRLCOMMON_API ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
 
     public:
 
@@ -142,8 +142,8 @@ class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabel
  *                      column-indices, the relevant labels correspond to
  * @return              An unique pointer to an object of type `ICsrLabelMatrix` that has been created
  */
-std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,
-                                                      uint32* colIndices);
+MLRLCOMMON_API std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,
+                                                                     uint32* colIndices);
 
 #ifdef _WIN32
     #pragma warning ( pop )

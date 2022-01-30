@@ -4,13 +4,14 @@
 #pragma once
 
 #include "common/rule_induction/rule_model_assemblage.hpp"
+#include "common/macros.hpp"
 
 
 /**
  * Defines an interface for all classes that allow to configure an algorithm that sequentially induces several rules,
  * optionally starting with a default rule, that are added to a rule-based model.
  */
-class ISequentialRuleModelAssemblageConfig {
+class MLRLCOMMON_API ISequentialRuleModelAssemblageConfig {
 
     public:
 
