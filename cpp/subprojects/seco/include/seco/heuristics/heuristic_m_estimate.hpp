@@ -5,6 +5,7 @@
 #pragma once
 
 #include "seco/heuristics/heuristic.hpp"
+#include "seco/macros.hpp"
 
 
 namespace seco {
@@ -15,7 +16,7 @@ namespace seco {
      * heuristic is equivalent to "Precision". As m approaches infinity, the isometrics of this heuristic become
      * equivalent to those of "WRA".
      */
-    class IMEstimateConfig {
+    class MLRLSECO_API IMEstimateConfig {
 
         public:
 

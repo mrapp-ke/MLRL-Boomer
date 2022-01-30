@@ -5,6 +5,7 @@
 #pragma once
 
 #include "seco/lift_functions/lift_function.hpp"
+#include "seco/macros.hpp"
 
 
 namespace seco {
@@ -13,7 +14,7 @@ namespace seco {
      * Defines an interface for all classes that allow to configure a lift function that monotonously increases until a
      * certain number of labels, where the maximum lift is reached, and monotonously decreases afterwards.
      */
-    class IPeakLiftFunctionConfig {
+    class MLRLSECO_API IPeakLiftFunctionConfig {
 
         public:
 
