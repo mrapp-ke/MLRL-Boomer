@@ -131,8 +131,15 @@ namespace seco {
     std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::createLiftFunctionFactory(
             const IRowWiseLabelMatrix& labelMatrix) const {
         uint32 numLabels = labelMatrix.getNumRows();
-        uint32 peakLabel = peakLabel_ > 0 ? std::min(numLabels, peakLabel_)
-                                          : std::max<uint32>(std::round(labelMatrix.calculateLabelCardinality()), 1);
+        uint32 peakLabel = peakLabel_;
+
+        if (peakLabel > 0) {
+            peakLabel = std::min(numLabels, peakLabel);
+        } else {
+            uint32 labelCardinality = (uint32) std::round(labelMatrix.calculateLabelCardinality());
+            peakLabel = std::max<uint32>(labelCardinality, 1);
+        }
+
         return std::make_unique<PeakLiftFunctionFactory>(numLabels, peakLabel, maxLift_, curvature_);
     }
 

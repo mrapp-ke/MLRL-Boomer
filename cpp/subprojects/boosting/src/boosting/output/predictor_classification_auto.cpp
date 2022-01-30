@@ -6,7 +6,7 @@
 
 namespace boosting {
 
-    static inline constexpr bool isExampleWisePredictorPreferred(const ILossConfig* lossConfig) {
+    static inline bool isExampleWisePredictorPreferred(const ILossConfig* lossConfig) {
         return dynamic_cast<const IExampleWiseLossConfig*>(lossConfig) != nullptr;
     }
 
