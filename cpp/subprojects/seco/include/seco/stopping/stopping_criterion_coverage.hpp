@@ -10,11 +10,40 @@
 namespace seco {
 
     /**
-     * Allows to create instances of the type `IStoppingCriterion` that stop the induction of rules as soon as the sum
-     * of the weights of the uncovered labels, as provided by an object of type `ICoverageStatistics`, is smaller than
-     * or equal to a certain threshold.
+     * Defines an interface for all classes that allow to configure a stopping criterion that stops the induction of
+     * rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
      */
-    class CoverageStoppingCriterionFactory final : public IStoppingCriterionFactory {
+    class ICoverageStoppingCriterionConfig {
+
+        public:
+
+            virtual ~ICoverageStoppingCriterionConfig() { };
+
+            /**
+             * Returns the threshold that is used by the stopping criterion.
+             *
+             * @return The threshold that is used by the stopping criterion
+             */
+            virtual float64 getThreshold() const = 0;
+
+            /**
+             * Sets the threshold that should be used by the stopping criterion.
+             *
+             * @param threshold The threshold that should be used by the stopping criterion. The threshold must be at
+             *                  least 0
+             * @return          A reference to an object of type `ICoverageStoppingCriterionConfig` that allows further
+             *                  configuration of the stopping criterion
+             */
+            virtual ICoverageStoppingCriterionConfig& setThreshold(float64 threshold) = 0;
+
+    };
+
+    /**
+     * Allows to configure a stopping criterion that stops the induction of rules as soon as the sum of the weights of
+     * the uncovered labels is smaller or equal to a certain threshold.
+     */
+    class CoverageStoppingCriterionConfig final : public IStoppingCriterionConfig,
+                                                  public ICoverageStoppingCriterionConfig {
 
         private:
 
@@ -22,14 +51,13 @@ namespace seco {
 
         public:
 
-            /**
-             * @param threshold The threshold. Must be at least 0
-             */
-            CoverageStoppingCriterionFactory(float64 threshold);
+            CoverageStoppingCriterionConfig();
 
-            std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override;
+            float64 getThreshold() const override;
 
-            std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override;
+            ICoverageStoppingCriterionConfig& setThreshold(float64 threshold) override;
+
+            std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
 
     };
 

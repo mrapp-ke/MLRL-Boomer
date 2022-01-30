@@ -15,4 +15,11 @@ class ILabelMatrix : virtual public ITwoDimensionalView {
 
         virtual ~ILabelMatrix() override { };
 
+        /**
+         * Returns whether the label matrix is sparse or not.
+         *
+         * @return True, if the label matrix is sparse, false otherwise
+         */
+        virtual bool isSparse() const = 0;
+
 };

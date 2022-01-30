@@ -1,6 +1,4 @@
 #include "seco/model/decision_list_builder.hpp"
-#include "common/model/body_empty.hpp"
-#include "common/model/body_conjunctive.hpp"
 
 
 namespace seco {
@@ -20,7 +18,7 @@ namespace seco {
 
     std::unique_ptr<IRuleModel> DecisionListBuilder::build(uint32 numUsedRules) {
         if (defaultHeadPtr_) {
-            modelPtr_->addRule(std::make_unique<EmptyBody>(), std::move(defaultHeadPtr_));
+            modelPtr_->addDefaultRule(std::move(defaultHeadPtr_));
         }
 
         modelPtr_->setNumUsedRules(numUsedRules);

@@ -15,20 +15,26 @@ class ApproximateThresholdsFactory final : public IThresholdsFactory {
 
     private:
 
-        std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr_;
+        std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr_;
+
+        std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr_;
 
         uint32 numThreads_;
 
     public:
 
         /**
-         * @param featureBinningFactoryPtr  An unique pointer to an object of type `IFeatureBinningFactory` that allows
-         *                                  to create implementations of the binning method to be used for assigning
-         *                                  numerical feature values to bins
-         * @param numThreads                The number of CPU threads to be used to update statistics in parallel. Must
-         *                                  be at least 1
+         * @param numericalFeatureBinningFactoryPtr An unique pointer to an object of type `IFeatureBinningFactory` that
+         *                                          allows to create implementations of the binning method to be used
+         *                                          for assigning numerical feature values to bins
+         * @param nominalFeatureBinningFactoryPtr   An unique pointer to an object of type `IFeatureBinningFactory` that
+         *                                          allows to create implementations of the binning method to be used
+         *                                          for assigning nominal feature values to bins
+         * @param numThreads                        The number of CPU threads to be used to update statistics in
+         *                                          parallel. Must be at least 1
          */
-        ApproximateThresholdsFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr,
+        ApproximateThresholdsFactory(std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr,
+                                     std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr,
                                      uint32 numThreads);
 
         std::unique_ptr<IThresholds> create(const IColumnWiseFeatureMatrix& featureMatrix,

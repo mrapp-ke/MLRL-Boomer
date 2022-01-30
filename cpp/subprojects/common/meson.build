@@ -6,7 +6,7 @@ source_files = [
     'src/common/binning/bin_index_vector_dok.cpp',
     'src/common/binning/feature_binning_equal_frequency.cpp',
     'src/common/binning/feature_binning_equal_width.cpp',
-    'src/common/binning/feature_binning_nominal.cpp',
+    'src/common/binning/feature_binning_no.cpp',
     'src/common/binning/threshold_vector.cpp',
     'src/common/data/matrix_dense.cpp',
     'src/common/data/matrix_lil_binary.cpp',
@@ -45,6 +45,8 @@ source_files = [
     'src/common/model/head_complete.cpp',
     'src/common/model/head_partial.cpp',
     'src/common/model/rule_list.cpp',
+    'src/common/multi_threading/multi_threading_manual.cpp',
+    'src/common/multi_threading/multi_threading_no.cpp',
     'src/common/output/label_space_info_no.cpp',
     'src/common/output/label_vector_set.cpp',
     'src/common/output/prediction_matrix_dense.cpp',
@@ -92,7 +94,7 @@ source_files = [
     'src/common/thresholds/coverage_set.cpp',
     'src/common/thresholds/thresholds_approximate.cpp',
     'src/common/thresholds/thresholds_exact.cpp',
-    'src/common/algorithm_builder.cpp'
+    'src/common/learner.cpp'
 ]
 
 # Directory containing public headers

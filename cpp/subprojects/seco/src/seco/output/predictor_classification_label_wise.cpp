@@ -4,7 +4,7 @@
 #include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
-#include "common/util/validation.hpp"
+#include "common/output/label_space_info_no.hpp"
 #include "omp.h"
 
 
@@ -178,12 +178,13 @@ namespace seco {
 
             }
 
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CContiguousFeatureMatrix& featureMatrix,
-                                                                  uint32 numLabels) const override {
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(
+                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels,
+                                                                   !model_.containsDefaultRule());
+                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
 
@@ -207,13 +208,14 @@ namespace seco {
                 return predictionMatrixPtr;
             }
 
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrFeatureMatrix& featureMatrix,
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrConstView<const float32>& featureMatrix,
                                                                   uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels,
+                                                                   !model_.containsDefaultRule());
+                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
 
@@ -247,11 +249,11 @@ namespace seco {
                 return predictionMatrixPtr;
             }
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CContiguousFeatureMatrix& featureMatrix,
-                                                                        uint32 numLabels) const override {
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 BinaryLilMatrix lilMatrix(numExamples);
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                 const Model* modelPtr = &model_;
                 uint32 numNonZeroElements = 0;
@@ -276,12 +278,12 @@ namespace seco {
                 return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
             }
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CsrFeatureMatrix& featureMatrix,
-                                                                        uint32 numLabels) const override {
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                    const CsrConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 BinaryLilMatrix lilMatrix(numExamples);
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                 const Model* modelPtr = &model_;
                 uint32 numNonZeroElements = 0;
@@ -319,14 +321,52 @@ namespace seco {
 
     };
 
-    LabelWiseClassificationPredictorFactory::LabelWiseClassificationPredictorFactory(uint32 numThreads)
-        : numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+    /**
+     * Allows to create instances of the class `IClassificationPredictor` that allow to predict whether individual
+     * labels of given query examples are relevant or irrelevant by processing rules of an existing rule-based model in
+     * the order they have been learned. If a rule covers an example, its prediction (1 if the label is relevant, 0
+     * otherwise) is applied to each label individually, if none of the previous rules has already predicted for a
+     * particular example and label.
+     */
+    class LabelWiseClassificationPredictorFactory final : public IClassificationPredictorFactory {
+
+        private:
+
+            uint32 numThreads_;
+
+        public:
+
+            /**
+             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
+             *                   in parallel. Must be at least 1
+             */
+            LabelWiseClassificationPredictorFactory(uint32 numThreads)
+                : numThreads_(numThreads) {
+
+            }
+
+            std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
+                                                             const LabelVectorSet* labelVectorSet) const override {
+                return std::make_unique<LabelWiseClassificationPredictor<RuleList>>(model, numThreads_);
+            }
+
+    };
+
+    LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig(
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+
     }
 
-    std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
-            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
-        return std::make_unique<LabelWiseClassificationPredictor<RuleList>>(model, numThreads_);
+    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::createClassificationPredictorFactory(
+            const IFeatureMatrix& featureMatrix, const uint32 numLabels) const {
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+        return std::make_unique<LabelWiseClassificationPredictorFactory>(numThreads);
+    }
+
+    std::unique_ptr<ILabelSpaceInfo> LabelWiseClassificationPredictorConfig::createLabelSpaceInfo(
+            const IRowWiseLabelMatrix& labelMatrix) const {
+        return createNoLabelSpaceInfo();
     }
 
 }

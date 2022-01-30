@@ -3,14 +3,15 @@
  */
 #pragma once
 
+#include "common/input/feature_matrix.hpp"
 #include "common/output/predictor.hpp"
 #include "common/output/label_vector_set.hpp"
 #include "common/model/rule_list.hpp"
 
 
 /**
- * Defines an interface for all classes that allow predict label-wise regression scores for given query examples using
- * an existing rule-based model.
+ * Defines an interface for all predictors that predict label-wise regression scores for given query examples using an
+ * existing rule-based model.
  */
 class IRegressionPredictor : public IPredictor<float64> {
 
@@ -40,5 +41,31 @@ class IRegressionPredictorFactory {
          */
         virtual std::unique_ptr<IRegressionPredictor> create(const RuleList& model,
                                                              const LabelVectorSet* labelVectorSet) const = 0;
+
+};
+
+
+/**
+ * Defines an interface for all classes that allow to configure a predictor that predicts label-wise regression scores
+ * for given query examples.
+ */
+class IRegressionPredictorConfig {
+
+    public:
+
+        virtual ~IRegressionPredictorConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IRegressionPredictorFactory` according to the specified
+         * configuration.
+         *
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param numLabels     The total number of available labels
+         * @return              An unique pointer to an object of type `IRegressionPredictorFactory` that has been
+         *                      created or a null pointer, if the prediction of regression scores is not supported
+         */
+        virtual std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
 };

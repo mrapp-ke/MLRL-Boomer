@@ -62,8 +62,14 @@ class CContiguousConstView : virtual public ITwoDimensionalView {
          */
         value_const_iterator row_values_cend(uint32 row) const;
 
+        /**
+         * @see `ITwoDimensionalView::getNumRows`
+         */
         uint32 getNumRows() const override final;
 
+        /**
+         * @see `ITwoDimensionalView::getNumCols`
+         */
         uint32 getNumCols() const override final;
 
 };

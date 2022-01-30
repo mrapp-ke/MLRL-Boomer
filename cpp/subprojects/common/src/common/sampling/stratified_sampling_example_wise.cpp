@@ -87,6 +87,14 @@ void ExampleWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(Bi
         float32 numSamplesDecimal = sampleSize * numExamples;
         uint32 numSamples = (uint32) (tiebreak(numFirst, numSecond, rng) ? std::ceil(numSamplesDecimal)
                                                                          : std::floor(numSamplesDecimal));
+
+        // Ensure that we do not add too many examples to the first or second partition...
+        if (numSamples > numFirst) {
+            numSamples = numFirst;
+        } else if (numExamples - numSamples > numSecond) {
+            numSamples = numExamples - numSecond;
+        }
+
         numFirst -= numSamples;
         numSecond -= (numExamples - numSamples);
 

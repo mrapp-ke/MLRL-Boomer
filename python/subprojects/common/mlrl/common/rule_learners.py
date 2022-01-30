@@ -6,39 +6,17 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for implementing single- or multi-label rule learning algorithms.
 """
 import logging as log
-import os
 from abc import abstractmethod
 from enum import Enum
-from typing import List, Dict, Set, Optional
+from typing import Dict, Set, Optional
 
 import numpy as np
 from mlrl.common.arrays import enforce_dense
-from mlrl.common.cython.algorithm_builder import AlgorithmBuilder
-from mlrl.common.cython.feature_binning import EqualWidthFeatureBinningFactory, EqualFrequencyFeatureBinningFactory
-from mlrl.common.cython.feature_sampling import FeatureSamplingFactory, FeatureSamplingWithoutReplacementFactory
-from mlrl.common.cython.input import EqualNominalFeatureMask, MixedNominalFeatureMask
-from mlrl.common.cython.input import FeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
-    CsrFeatureMatrix, CContiguousFeatureMatrix
-from mlrl.common.cython.input import LabelMatrix, CContiguousLabelMatrix, CsrLabelMatrix
-from mlrl.common.cython.instance_sampling import InstanceSamplingFactory, InstanceSamplingWithReplacementFactory, \
-    InstanceSamplingWithoutReplacementFactory, \
-    LabelWiseStratifiedSamplingFactory, ExampleWiseStratifiedSamplingFactory
-from mlrl.common.cython.label_sampling import LabelSamplingFactory, LabelSamplingWithoutReplacementFactory
-from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import SparsePredictor, ClassificationPredictorFactory, ProbabilityPredictorFactory, \
-    LabelSpaceInfo, NoLabelSpaceInfo
-from mlrl.common.cython.partition_sampling import PartitionSamplingFactory, RandomBiPartitionSamplingFactory, \
-    LabelWiseStratifiedBiPartitionSamplingFactory, ExampleWiseStratifiedBiPartitionSamplingFactory
-from mlrl.common.cython.post_processing import PostProcessorFactory
-from mlrl.common.cython.pruning import PruningFactory, IrepFactory
-from mlrl.common.cython.rule_induction import RuleInductionFactory
-from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblage, RuleModelAssemblageFactory
-from mlrl.common.cython.statistics import StatisticsProviderFactory
-from mlrl.common.cython.stopping import StoppingCriterionFactory, SizeStoppingCriterionFactory, \
-    TimeStoppingCriterionFactory
-from mlrl.common.cython.thresholds import ThresholdsFactory
-from mlrl.common.cython.thresholds_approximate import ApproximateThresholdsFactory
-from mlrl.common.cython.thresholds_exact import ExactThresholdsFactory
+from mlrl.common.cython.feature_matrix import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
+    CContiguousFeatureMatrix
+from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
+from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLearnerWrapper
+from mlrl.common.cython.nominal_feature_mask import EqualNominalFeatureMask, MixedNominalFeatureMask
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.common.options import BooleanOption
@@ -49,7 +27,21 @@ from sklearn.utils import check_array
 
 AUTOMATIC = 'auto'
 
-HEAD_TYPE_SINGLE = 'single-label'
+NONE = 'none'
+
+RULE_INDUCTION_TOP_DOWN = 'top-down'
+
+ARGUMENT_USE_DEFAULT_RULE = 'default_rule'
+
+RULE_MODEL_ASSEMBLAGE_SEQUENTIAL = 'sequential'
+
+ARGUMENT_MIN_COVERAGE = 'min_coverage'
+
+ARGUMENT_MAX_CONDITIONS = 'max_conditions'
+
+ARGUMENT_MAX_HEAD_REFINEMENTS = 'max_head_refinements'
+
+ARGUMENT_RECALCULATE_PREDICTIONS = 'recalculate_predictions'
 
 SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
@@ -81,15 +73,27 @@ PRUNING_IREP = 'irep'
 
 ARGUMENT_NUM_THREADS = 'num_threads'
 
+RULE_INDUCTION_VALUES: Dict[str, Set[str]] = {
+    RULE_INDUCTION_TOP_DOWN: {ARGUMENT_MIN_COVERAGE, ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
+                              ARGUMENT_RECALCULATE_PREDICTIONS}
+}
+
+RULE_MODEL_ASSEMBLAGE_VALUES: Dict[str, Set[str]] = {
+    RULE_MODEL_ASSEMBLAGE_SEQUENTIAL: {ARGUMENT_USE_DEFAULT_RULE}
+}
+
 LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}
 }
 
 FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}
 }
 
 INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     SAMPLING_WITH_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
     SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
     SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_SAMPLE_SIZE},
@@ -97,17 +101,22 @@ INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
 }
 
 PARTITION_SAMPLING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     PARTITION_SAMPLING_RANDOM: {ARGUMENT_HOLDOUT_SET_SIZE},
     SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_HOLDOUT_SET_SIZE},
     SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_HOLDOUT_SET_SIZE}
 }
 
 FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     BINNING_EQUAL_FREQUENCY: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS},
     BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS}
 }
 
-PRUNING_VALUES: Set[str] = {PRUNING_IREP}
+PRUNING_VALUES: Set[str] = {
+    NONE,
+    PRUNING_IREP
+}
 
 PARALLEL_VALUES: Dict[str, Set[str]] = {
     str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
@@ -126,79 +135,6 @@ class SparseFormat(Enum):
     CSR = 'csr'
 
 
-class FeatureCharacteristics:
-    """
-    Allows to obtain certain characteristics of a feature matrix.
-    """
-
-    def __init__(self, feature_matrix: FeatureMatrix):
-        """
-        :param feature_matrix: The feature matrix
-        """
-        self.feature_matrix = feature_matrix
-
-    def get_num_examples(self) -> int:
-        """
-        Returns the number of examples.
-
-        :return: The number of examples
-        """
-        return self.feature_matrix.get_num_rows()
-
-    def get_num_features(self) -> int:
-        """
-        Returns the number of features.
-
-        :return: The number of features
-        """
-        return self.feature_matrix.get_num_cols()
-
-    def is_sparse(self) -> bool:
-        return self.feature_matrix.is_sparse()
-
-
-class LabelCharacteristics:
-    """
-    Allows to obtain certain characteristics of a label matrix.
-    """
-
-    def __init__(self, label_matrix: LabelMatrix):
-        """
-        :param label_matrix: The label matrix
-        """
-        self.label_matrix = label_matrix
-        self.label_cardinality = None
-
-    def get_num_examples(self) -> int:
-        """
-        Returns the number of examples.
-
-        :return: The number of examples
-        """
-        return self.label_matrix.get_num_rows()
-
-    def get_num_labels(self) -> int:
-        """
-        Returns the number of labels.
-
-        :return: The number of labels
-        """
-        return self.label_matrix.get_num_cols()
-
-    def is_sparse(self) -> bool:
-        return self.label_matrix.is_sparse()
-
-    def get_label_cardinality(self) -> float:
-        """
-        Returns the label cardinality.
-        
-        :return: The label cardinality
-        """
-        if self.label_cardinality is None:
-            self.label_cardinality = self.label_matrix.calculate_label_cardinality()
-        return self.label_cardinality
-
-
 def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
     try:
         return SparsePolicy(policy)
@@ -207,118 +143,164 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
                          + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
 
 
-def create_label_sampling_factory(label_sampling: str) -> Optional[LabelSamplingFactory]:
+def configure_rule_model_assemblage(config: RuleLearnerConfig, rule_model_assemblage: Optional[str]):
+    if rule_model_assemblage is not None:
+        value, options = parse_param_and_options('rule_model_assemblage', rule_model_assemblage,
+                                                 RULE_MODEL_ASSEMBLAGE_VALUES)
+
+        if value == RULE_MODEL_ASSEMBLAGE_SEQUENTIAL:
+            c = config.use_sequential_rule_model_assemblage()
+            c.set_use_default_rule(options.get_bool(ARGUMENT_USE_DEFAULT_RULE, c.get_use_default_rule()))
+
+
+def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional[str]):
+    if rule_induction is not None:
+        value, options = parse_param_and_options('rule_induction', rule_induction, RULE_INDUCTION_VALUES)
+
+        if value == RULE_INDUCTION_TOP_DOWN:
+            c = config.use_top_down_rule_induction()
+            c.set_min_coverage(options.get_int(ARGUMENT_MIN_COVERAGE, c.get_min_coverage()))
+            c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
+            c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
+            c.set_recalculate_predictions(options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS,
+                                                           c.get_recalculate_predictions()))
+
+
+def configure_feature_binning(config: RuleLearnerConfig, feature_binning: Optional[str]):
+    if feature_binning is not None:
+        value, options = parse_param_and_options('feature_binning', feature_binning, FEATURE_BINNING_VALUES)
+
+        if value == NONE:
+            config.use_no_feature_binning()
+        elif value == BINNING_EQUAL_FREQUENCY:
+            c = config.use_equal_frequency_feature_binning()
+            c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
+            c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
+            c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
+        elif value == BINNING_EQUAL_WIDTH:
+            c = config.use_equal_width_feature_binning()
+            c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
+            c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
+            c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
+
+
+def configure_label_sampling(config: RuleLearnerConfig, label_sampling: Optional[str]):
     if label_sampling is not None:
         value, options = parse_param_and_options('label_sampling', label_sampling, LABEL_SAMPLING_VALUES)
 
+        if value == NONE:
+            config.use_no_label_sampling()
         if value == SAMPLING_WITHOUT_REPLACEMENT:
-            num_samples = options.get_int(ARGUMENT_NUM_SAMPLES, 1)
-            return LabelSamplingWithoutReplacementFactory(num_samples)
-    return None
+            c = config.use_label_sampling_without_replacement()
+            c.set_num_samples(options.get_int(ARGUMENT_NUM_SAMPLES, c.get_num_samples()))
 
 
-def create_feature_sampling_factory(feature_sampling: str) -> Optional[FeatureSamplingFactory]:
-    if feature_sampling is not None:
-        value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
-
-        if value == SAMPLING_WITHOUT_REPLACEMENT:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0)
-            return FeatureSamplingWithoutReplacementFactory(sample_size)
-    return None
-
-
-def create_instance_sampling_factory(instance_sampling: str) -> Optional[InstanceSamplingFactory]:
+def configure_instance_sampling(config: RuleLearnerConfig, instance_sampling: Optional[str]):
     if instance_sampling is not None:
         value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
 
-        if value == SAMPLING_WITH_REPLACEMENT:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 1.0)
-            return InstanceSamplingWithReplacementFactory(sample_size)
+        if value == NONE:
+            config.use_no_instance_sampling()
+        elif value == SAMPLING_WITH_REPLACEMENT:
+            c = config.use_instance_sampling_with_replacement()
+            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
-            return InstanceSamplingWithoutReplacementFactory(sample_size)
+            c = config.use_instance_sampling_without_replacement()
+            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
         elif value == SAMPLING_STRATIFIED_LABEL_WISE:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
-            return LabelWiseStratifiedSamplingFactory(sample_size)
+            c = config.use_label_wise_stratified_instance_sampling()
+            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            sample_size = options.get_float(ARGUMENT_SAMPLE_SIZE, 0.66)
-            return ExampleWiseStratifiedSamplingFactory(sample_size)
-    return None
+            c = config.use_example_wise_stratified_instance_sampling()
+            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
 
 
-def create_partition_sampling_factory(holdout: str) -> Optional[PartitionSamplingFactory]:
-    if holdout is not None:
-        value, options = parse_param_and_options('holdout', holdout, PARTITION_SAMPLING_VALUES)
+def configure_feature_sampling(config: RuleLearnerConfig, feature_sampling: Optional[str]):
+    if feature_sampling is not None:
+        value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
 
-        if value == PARTITION_SAMPLING_RANDOM:
-            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
-            return RandomBiPartitionSamplingFactory(holdout_set_size)
-        if value == SAMPLING_STRATIFIED_LABEL_WISE:
-            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
-            return LabelWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
-        if value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            holdout_set_size = options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, 0.33)
-            return ExampleWiseStratifiedBiPartitionSamplingFactory(holdout_set_size)
-    return None
+        if value == NONE:
+            config.use_no_feature_sampling()
+        elif value == SAMPLING_WITHOUT_REPLACEMENT:
+            c = config.use_feature_sampling_without_replacement()
+            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
 
 
-def create_pruning_factory(pruning: str, instance_sampling: str) -> Optional[PruningFactory]:
+def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: Optional[str]):
+    if partition_sampling is not None:
+        value, options = parse_param_and_options('holdout', partition_sampling, PARTITION_SAMPLING_VALUES)
+
+        if value == NONE:
+            config.use_no_partition_sampling()
+        elif value == PARTITION_SAMPLING_RANDOM:
+            c = config.use_random_bi_partition_sampling()
+            c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
+        elif value == SAMPLING_STRATIFIED_LABEL_WISE:
+            c = config.use_label_wise_stratified_bi_partition_sampling()
+            c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
+        elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
+            c = config.use_example_wise_stratified_bi_partition_sampling()
+            c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
+
+
+def configure_pruning(config: RuleLearnerConfig, pruning: Optional[str]):
     if pruning is not None:
         value = parse_param('pruning', pruning, PRUNING_VALUES)
 
-        if value == PRUNING_IREP:
-            if instance_sampling is None:
-                log.warning('Parameter "pruning" does not have any effect, because parameter "instance_sampling" is '
-                            + 'set to "None"!')
-                return None
-            return IrepFactory()
-    return None
+        if value == NONE:
+            config.use_no_pruning()
+        elif value == PRUNING_IREP:
+            config.use_irep_pruning()
 
 
-def create_stopping_criterion_factories(max_rules: int, time_limit: int) -> List[StoppingCriterionFactory]:
-    stopping_criterion_factories: List[StoppingCriterionFactory] = []
+def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_refinement: Optional[str]):
+    if parallel_rule_refinement is not None:
+        value, options = parse_param_and_options('parallel_rule_refinement', parallel_rule_refinement, PARALLEL_VALUES)
 
-    if max_rules != 0:
-        stopping_criterion_factories.append(SizeStoppingCriterionFactory(max_rules))
-
-    if time_limit != 0:
-        stopping_criterion_factories.append(TimeStoppingCriterionFactory(time_limit))
-
-    return stopping_criterion_factories
-
-
-def create_num_threads(parallel: str, parameter_name: str) -> int:
-    value, options = parse_param_and_options(parameter_name, parallel, PARALLEL_VALUES)
-
-    if value == BooleanOption.TRUE.value:
-        num_threads = options.get_int(ARGUMENT_NUM_THREADS, 0)
-
-        if num_threads == 0:
-            return os.cpu_count()
-
-        return num_threads
-    elif value == BooleanOption.FALSE.value:
-        return 1
+        if value == BooleanOption.FALSE.value:
+            config.use_no_parallel_rule_refinement()
+        else:
+            c = config.use_parallel_rule_refinement()
+            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
 
 
-def create_thresholds_factory(feature_binning: str, num_threads: int) -> ThresholdsFactory:
-    if feature_binning is None:
-        return ExactThresholdsFactory(num_threads)
-    else:
-        value, options = parse_param_and_options('feature_binning', feature_binning, FEATURE_BINNING_VALUES)
+def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_statistic_update: Optional[str]):
+    if parallel_statistic_update is not None:
+        value, options = parse_param_and_options('parallel_statistic_update', parallel_statistic_update,
+                                                 PARALLEL_VALUES)
 
-        if value == BINNING_EQUAL_FREQUENCY:
-            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33)
-            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2)
-            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0)
-            feature_binning_factory = EqualFrequencyFeatureBinningFactory(bin_ratio, min_bins, max_bins)
-            return ApproximateThresholdsFactory(feature_binning_factory, num_threads)
-        elif value == BINNING_EQUAL_WIDTH:
-            bin_ratio = options.get_float(ARGUMENT_BIN_RATIO, 0.33)
-            min_bins = options.get_int(ARGUMENT_MIN_BINS, 2)
-            max_bins = options.get_int(ARGUMENT_MAX_BINS, 0)
-            feature_binning_factory = EqualWidthFeatureBinningFactory(bin_ratio, min_bins, max_bins)
-            return ApproximateThresholdsFactory(feature_binning_factory, num_threads)
+        if value == BooleanOption.FALSE.value:
+            config.use_no_parallel_statistic_update()
+        else:
+            c = config.use_parallel_statistic_update()
+            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
+
+
+def configure_parallel_prediction(config: RuleLearnerConfig, parallel_prediction: Optional[str]):
+    if parallel_prediction is not None:
+        value, options = parse_param_and_options('parallel_prediction', parallel_prediction, PARALLEL_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            c = config.use_parallel_prediction()
+            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
+        else:
+            config.use_no_parallel_prediction()
+
+
+def configure_size_stopping_criterion(config: RuleLearnerConfig, max_rules: Optional[int]):
+    if max_rules is not None:
+        if max_rules == 0:
+            config.use_no_size_stopping_criterion()
+        else:
+            config.use_size_stopping_criterion().set_max_rules(max_rules)
+
+
+def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: Optional[int]):
+    if time_limit is not None:
+        if time_limit == 0:
+            config.use_no_time_stopping_criterion()
+        else:
+            config.use_time_stopping_criterion().set_time_limit(time_limit)
 
 
 def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
@@ -411,7 +393,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
             return policy == SparsePolicy.FORCE_SPARSE
 
     raise ValueError(
-        'Matrix of type ' + type(m).__name__ + ' cannot be converted to format \'' + str(sparse_format) + '\'')
+        'Matrix of type ' + type(m).__name__ + ' cannot be converted to format "' + str(sparse_format) + '""')
 
 
 class MLRuleLearner(Learner, NominalAttributeLearner):
@@ -480,14 +462,6 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             log.debug('A dense matrix is used to store the labels of the training examples')
             label_matrix = CContiguousLabelMatrix(y)
 
-        # Create predictors...
-        feature_characteristics = FeatureCharacteristics(feature_matrix)
-        label_characteristics = LabelCharacteristics(label_matrix)
-        self.predictor_factory_ = self._create_predictor_factory(feature_characteristics, label_characteristics)
-        self.probability_predictor_factory_ = self._create_probability_predictor_factory(feature_characteristics,
-                                                                                         label_characteristics)
-        self.label_space_info_ = self._create_label_space_info(label_matrix)
-
         # Create a mask that provides access to the information whether individual features are nominal or not...
         num_features = feature_matrix.get_num_cols()
 
@@ -499,80 +473,35 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
             nominal_feature_mask = MixedNominalFeatureMask(num_features, self.nominal_attribute_indices)
 
         # Induce rules...
-        rule_model_assemblage = self.__create_rule_model_assemblage(feature_characteristics, label_characteristics)
-        model_builder = self._create_model_builder(feature_characteristics, label_characteristics)
-        return rule_model_assemblage.induce_rules(nominal_feature_mask, feature_matrix, label_matrix, self.random_state,
-                                                  model_builder)
-
-    def __create_rule_model_assemblage(self, feature_characteristics: FeatureCharacteristics,
-                                       label_characteristics: LabelCharacteristics) -> RuleModelAssemblage:
-        algorithm_builder = AlgorithmBuilder(self._create_statistics_provider_factory(feature_characteristics,
-                                                                                      label_characteristics),
-                                             self._create_thresholds_factory(feature_characteristics,
-                                                                             label_characteristics),
-                                             self._create_rule_induction_factory(feature_characteristics,
-                                                                                 label_characteristics),
-                                             self._create_rule_model_assemblage_factory(feature_characteristics,
-                                                                                        label_characteristics))
-        label_sampling_factory = self._create_label_sampling_factory(feature_characteristics, label_characteristics)
-
-        if label_sampling_factory is not None:
-            algorithm_builder.set_label_sampling_factory(label_sampling_factory)
-
-        instance_sampling_factory = self._create_instance_sampling_factory(feature_characteristics,
-                                                                           label_characteristics)
-
-        if instance_sampling_factory is not None:
-            algorithm_builder.set_instance_sampling_factory(instance_sampling_factory)
-
-        feature_sampling_factory = self._create_feature_sampling_factory(feature_characteristics,
-                                                                         label_characteristics)
-
-        if feature_sampling_factory is not None:
-            algorithm_builder.set_feature_sampling_factory(feature_sampling_factory)
-
-        partition_sampling_factory = self._create_partition_sampling_factory(feature_characteristics,
-                                                                             label_characteristics)
-
-        if partition_sampling_factory is not None:
-            algorithm_builder.set_partition_sampling_factory(partition_sampling_factory)
-
-        pruning_factory = self._create_pruning_factory(feature_characteristics, label_characteristics)
-
-        if pruning_factory is not None:
-            algorithm_builder.set_pruning_factory(pruning_factory)
-
-        post_processor_factory = self._create_post_processor_factory(feature_characteristics, label_characteristics)
-
-        if post_processor_factory is not None:
-            algorithm_builder.set_post_processor_factory(post_processor_factory)
-
-        for stopping_criterion_factory in self._create_stopping_criterion_factories(feature_characteristics,
-                                                                                    label_characteristics):
-            algorithm_builder.add_stopping_criterion(stopping_criterion_factory)
-
-        algorithm_builder.set_use_default_rule(self._use_default_rule(feature_characteristics, label_characteristics))
-        return algorithm_builder.build()
+        learner = self._create_learner()
+        training_result = learner.fit(nominal_feature_mask, feature_matrix, label_matrix, self.random_state)
+        self.num_labels_ = training_result.num_labels
+        self.label_space_info_ = training_result.label_space_info
+        return training_result.rule_model
 
     def _predict(self, x):
-        predictor_factory = self.predictor_factory_
-        label_space_info = self.label_space_info_
-        model = self.model_
-        predictor = predictor_factory.create(model, label_space_info)
-        return self.__predict(predictor, x)
+        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        learner = self._create_learner()
+
+        if self.sparse_predictions_:
+            log.debug('A sparse matrix is used to store the predicted labels')
+            return learner.predict_sparse_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+        else:
+            log.debug('A dense matrix is used to store the predicted labels')
+            return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
 
     def _predict_proba(self, x):
-        predictor_factory = self.probability_predictor_factory_
+        learner = self._create_learner()
+        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        num_labels = self.num_labels_
 
-        if predictor_factory is None:
-            return super()._predict_proba(x)
+        if learner.can_predict_probabilities(feature_matrix, num_labels):
+            log.debug('A dense matrix is used to store the predicted probability estimates')
+            return learner.predict_probabilities(feature_matrix, self.model_, self.label_space_info_, num_labels)
         else:
-            label_space_info = self.label_space_info_
-            model = self.model_
-            predictor = predictor_factory.create(model, label_space_info)
-            return self.__predict(predictor, x)
+            super()._predict_proba(x)
 
-    def __predict(self, predictor, x):
+    def __create_row_wise_feature_matrix(self, x):
         sparse_format = SparseFormat.CSR
         sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
@@ -580,227 +509,22 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         x = self._validate_data(x if enforce_sparse else enforce_dense(x, order='C', dtype=DTYPE_FLOAT32), reset=False,
                                 accept_sparse=(sparse_format.value if enforce_sparse else False), dtype=DTYPE_FLOAT32,
                                 force_all_finite='allow-nan')
-        predict_sparse = isinstance(predictor, SparsePredictor) and self.sparse_predictions_
-        log.debug('A ' + ('sparse' if predict_sparse else 'dense') + ' matrix is used to store the predictions')
 
         if issparse(x):
-            log.debug('A sparse matrix is used to store the feature values of the test examples')
+            log.debug('A sparse matrix is used to store the feature values of the query examples')
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
-            feature_matrix = CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
-
-            if predict_sparse:
-                return predictor.predict_sparse_csr(feature_matrix)
-            else:
-                return predictor.predict_dense_csr(feature_matrix)
+            return CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
         else:
-            log.debug('A dense matrix is used to store the feature values of the test examples')
-            feature_matrix = CContiguousFeatureMatrix(x)
-
-            if predict_sparse:
-                return predictor.predict_sparse(feature_matrix)
-            else:
-                return predictor.predict_dense(feature_matrix)
+            log.debug('A dense matrix is used to store the feature values of the query examples')
+            return CContiguousFeatureMatrix(x)
 
     @abstractmethod
-    def _create_statistics_provider_factory(self,
-                                            feature_characteristics: FeatureCharacteristics,
-                                            label_characteristics: LabelCharacteristics) -> StatisticsProviderFactory:
+    def _create_learner(self) -> RuleLearnerWrapper:
         """
-        Must be implemented by subclasses in order to create the `StatisticsProviderFactory` to be used by the rule
-        learner.
+        Must be implemented by subclasses in order to configure and create an implementation of the rule learner.
 
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `StatisticsProviderFactory` that has been created
+        :return: The implementation of the rule learner that has been created
         """
         pass
-
-    @abstractmethod
-    def _create_thresholds_factory(self, feature_characteristics: FeatureCharacteristics,
-                                   label_characteristics: LabelCharacteristics) -> ThresholdsFactory:
-        """
-        Must be implemented by subclasses in order to create the `ThresholdsFactory` to be used by the rule learner.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `ThresholdFactory` that has been created
-        """
-        pass
-
-    @abstractmethod
-    def _create_rule_induction_factory(self, feature_characteristics: FeatureCharacteristics,
-                                       label_characteristics: LabelCharacteristics) -> RuleInductionFactory:
-        """
-        Must be implemented by subclasses in order to create the `RuleInductionFactory` to be used by the rule learner.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `RuleInductionFactory` that has been created
-        """
-        pass
-
-    @abstractmethod
-    def _create_rule_model_assemblage_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> RuleModelAssemblageFactory:
-        """
-        Must be implemented by subclasses in order to create the `RuleModelAssemblageFactory` to be used by the rule
-        learner.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `RuleModelAssemblage` that has been created
-        """
-        pass
-
-    def _create_label_sampling_factory(self, feature_characteristics: FeatureCharacteristics,
-                                       label_characteristics: LabelCharacteristics) -> Optional[LabelSamplingFactory]:
-        """
-        Must be implemented by subclasses in order to create the `LabelSamplingFactory` to be used by the rule learner.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `LabelSamplingFactory` that has been created or None, if no label sampling
-                                        should be used
-        """
-        return None
-
-    def _create_instance_sampling_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> Optional[InstanceSamplingFactory]:
-        """
-        Must be implemented by subclasses in order to create the `InstanceSamplingFactory` to be used by the rule
-        learner.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `InstanceSamplingFactory` that has been created or None, if no instance
-                                        sampling should be used
-        """
-        return None
-
-    def _create_feature_sampling_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> Optional[FeatureSamplingFactory]:
-        """
-        Must be implemented by subclasses in order to create the `FeatureSamplingFactory` to be used by the rule
-        learner.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `FeatureSamplingFactory` that has been created or None, if no feature
-                                        sampling should be used
-        """
-        return None
-
-    def _create_partition_sampling_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> Optional[PartitionSamplingFactory]:
-        """
-        Must be implemented by subclasses in order to create the `PartitionSamplingFactory` to be used by the rule
-        learner.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `PartitionSamplingFactory` that has been created or None, if no holdout set
-                                        should be created
-        """
-        return None
-
-    def _create_pruning_factory(self, feature_characteristics: FeatureCharacteristics,
-                                label_characteristics: LabelCharacteristics) -> Optional[PruningFactory]:
-        """
-        Must be implemented by subclasses in order to create the `PruningFactory` to be used by the rule learner.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `PruningFactory` that has been created or None, if no pruning should be used
-        """
-        return None
-
-    def _create_post_processor_factory(self, feature_characteristics: FeatureCharacteristics,
-                                       label_characteristics: LabelCharacteristics) -> Optional[PostProcessorFactory]:
-        """
-        Must be implemented by subclasses in order to create the `PostProcessorFactory` to be used by the rule learner.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `PostProcessorFactory` that has been created or None, if no post-processor
-                                        should be used
-        """
-        return None
-
-    def _create_stopping_criterion_factories(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> List[StoppingCriterionFactory]:
-        """
-        Must be implemented by subclasses in order to create a list of objects of the type `StoppingCriterionFactory` to
-        be used by the rule learner.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        A list of objects of the type `StoppingCriterionFactory` that has been created
-        """
-        return []
-
-    def _use_default_rule(self, feature_characteristics: FeatureCharacteristics,
-                          label_characteristics: LabelCharacteristics) -> bool:
-        """
-        Must be implemented by subclasses in order to specify whether the first rule induced by the rule learner should
-        be a default rule or not.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        True, if the first rule should be a default rule, False otherwise
-        """
-        return True
-
-    @abstractmethod
-    def _create_model_builder(self, feature_characteristics: FeatureCharacteristics,
-                              label_characteristics: LabelCharacteristics) -> ModelBuilder:
-        """
-        Must be implemented by subclasses in order to create the builder that should be used for building the model.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The builder that has been created
-        """
-        pass
-
-    @abstractmethod
-    def _create_predictor_factory(self, feature_characteristics: FeatureCharacteristics,
-                                  label_characteristics: LabelCharacteristics) -> ClassificationPredictorFactory:
-        """
-        Must be implemented by subclasses in order to create the `ClassificationPredictorFactory` to be used for making
-        predictions.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `ClassificationPredictorFactory` that has been created
-        """
-        pass
-
-    def _create_probability_predictor_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> Optional[ProbabilityPredictorFactory]:
-        """
-        Must be implemented by subclasses in order to create the `ProbabilityPredictorFactory` to be used for predicting
-        probability estimates.
-
-        :param feature_characteristics: Allows to obtain certain characteristics of the feature matrix
-        :param label_characteristics:   Allows to obtain certain characteristics of the ground truth label matrix
-        :return:                        The `ProbabilityPredictorFactory` that has been created or None, if the
-                                        prediction of probabilities is not supported
-        """
-        return None
-
-    def _create_label_space_info(self, label_matrix: LabelMatrix) -> LabelSpaceInfo:
-        """
-        Must be implemented by subclasses in order to create a `LabelVectorSet` that stores all known label vectors.
-
-        :param label_matrix:    The label matrix that provides access to the labels of the training examples
-        :return:                The `LabelVectorSet` that has been created
-        """
-        return NoLabelSpaceInfo()

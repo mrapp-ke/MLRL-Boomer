@@ -1,6 +1,5 @@
 #include "common/thresholds/thresholds_exact.hpp"
 #include "common/rule_refinement/rule_refinement_exact.hpp"
-#include "common/util/validation.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
 #include <cmath>
@@ -372,7 +371,7 @@ class ExactThresholds final : public AbstractThresholds {
                  */
                 ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
                     : thresholds_(thresholds), weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
-                      coverageMask_(CoverageMask(thresholds.getNumExamples())), numModifications_(0) {
+                      coverageMask_(CoverageMask(thresholds.featureMatrix_.getNumRows())), numModifications_(0) {
 
                 }
 
@@ -555,7 +554,7 @@ class ExactThresholds final : public AbstractThresholds {
 
 ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
     : numThreads_(numThreads) {
-    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
 }
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(

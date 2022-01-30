@@ -11,6 +11,10 @@ CContiguousFeatureMatrix::CContiguousFeatureMatrix(uint32 numRows, uint32 numCol
 
 }
 
+bool CContiguousFeatureMatrix::isSparse() const {
+    return false;
+}
+
 std::unique_ptr<DensePredictionMatrix<uint8>> CContiguousFeatureMatrix::predictLabels(
         const IClassificationPredictor& predictor, uint32 numLabels) const {
     return predictor.predict(*this, numLabels);

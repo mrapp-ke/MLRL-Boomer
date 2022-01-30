@@ -1,25 +1,10 @@
 #include "boosting/output/predictor_probability_label_wise.hpp"
-#include "boosting/math/math.hpp"
-#include "common/util/validation.hpp"
+#include "boosting/output/probability_function.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
 
 namespace boosting {
-
-    /**
-     * Allows to transform the score that is predicted for an individual label into a probability by applying the
-     * logistic sigmoid function.
-     */
-    class LogisticFunction final : public IProbabilityFunction {
-
-        public:
-
-            float64 transform(float64 predictedScore) const override {
-                return logisticFunction(predictedScore);
-            }
-
-    };
 
     static inline void applyTransformationFunction(CContiguousConstView<float64>::value_const_iterator originalIterator,
                                                    CContiguousView<float64>::value_iterator transformedIterator,
@@ -69,12 +54,15 @@ namespace boosting {
 
             }
 
-            std::unique_ptr<DensePredictionMatrix<float64>> predict(const CContiguousFeatureMatrix& featureMatrix,
-                                                                    uint32 numLabels) const override {
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(
+                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
                 const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
@@ -99,13 +87,16 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
-            std::unique_ptr<DensePredictionMatrix<float64>> predict(const CsrFeatureMatrix& featureMatrix,
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(const CsrConstView<const float32>& featureMatrix,
                                                                     uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
                 const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
@@ -140,22 +131,68 @@ namespace boosting {
 
     };
 
-    std::unique_ptr<IProbabilityFunction> LogisticFunctionFactory::create() const {
-        return std::make_unique<LogisticFunction>();
+    /**
+     * Allows to create instances of the type `IProbabilityPredictor` that allow to predict label-wise probabilities
+     * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
+     * that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
+     * into probabilities in [0, 1] according to a certain transformation function that is applied to each label
+     * individually.
+     */
+    class LabelWiseProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
+
+        private:
+
+            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
+
+            uint32 numThreads_;
+
+        public:
+
+            /**
+             * @param probabilityFunctionFactoryPtr An unique pointer to an object of type `IProbabilityFunctionFactory`
+             *                                      that allows to create implementations of the transformation function
+             *                                      to be used to transform predicted scores into probabilities
+             * @param numThreads                    The number of CPU threads to be used to make predictions for
+             *                                      different query examples in parallel. Must be at least 1
+             */
+            LabelWiseProbabilityPredictorFactory(
+                    std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
+                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
+
+            }
+
+            /**
+             * @see `IProbabilityPredictorFactory::create`
+             */
+            std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
+                                                          const LabelVectorSet* labelVectorSet) const override {
+                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
+                return std::make_unique<LabelWiseProbabilityPredictor<RuleList>>(model,
+                                                                                 std::move(probabilityFunctionPtr),
+                                                                                 numThreads_);
+            }
+
+    };
+
+    LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig(
+            const std::unique_ptr<ILossConfig>& lossConfigPtr,
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+
     }
 
-    LabelWiseProbabilityPredictorFactory::LabelWiseProbabilityPredictorFactory(
-            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
-        : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
-        assertNotNull("probabilityFunctionFactoryPtr", probabilityFunctionFactoryPtr_.get());
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
-    }
+    std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::createProbabilityPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
+            lossConfigPtr_->createProbabilityFunctionFactory();
 
-    std::unique_ptr<IProbabilityPredictor> LabelWiseProbabilityPredictorFactory::create(
-            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
-        std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
-        return std::make_unique<LabelWiseProbabilityPredictor<RuleList>>(model, std::move(probabilityFunctionPtr),
-                                                                         numThreads_);
+        if (probabilityFunctionFactoryPtr) {
+            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            return std::make_unique<LabelWiseProbabilityPredictorFactory>(
+                std::move(probabilityFunctionFactoryPtr), numThreads);
+        } else {
+            return nullptr;
+        }
     }
 
 }

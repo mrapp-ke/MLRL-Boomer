@@ -1,7 +1,5 @@
 #include "common/thresholds/thresholds_approximate.hpp"
-#include "common/binning/feature_binning_nominal.hpp"
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
-#include "common/util/validation.hpp"
 #include "thresholds_common.hpp"
 #include <unordered_map>
 
@@ -253,7 +251,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  */
                 ThresholdsSubset(ApproximateThresholds& thresholds, const IWeightVector& weights)
                     : thresholds_(thresholds), weights_(weights),
-                      coverageSet_(CoverageSet(thresholds.getNumExamples())) {
+                      coverageSet_(CoverageSet(thresholds.featureMatrix_.getNumRows())) {
 
                 }
 
@@ -405,17 +403,18 @@ class ApproximateThresholds final : public AbstractThresholds {
 };
 
 ApproximateThresholdsFactory::ApproximateThresholdsFactory(
-        std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr, uint32 numThreads)
-    : featureBinningFactoryPtr_(std::move(featureBinningFactoryPtr)), numThreads_(numThreads) {
-    assertNotNull("featureBinningFactoryPtr", featureBinningFactoryPtr_.get());
-    assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+        std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr,
+        std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr, uint32 numThreads)
+    : numericalFeatureBinningFactoryPtr_(std::move(numericalFeatureBinningFactoryPtr)),
+      nominalFeatureBinningFactoryPtr_(std::move(nominalFeatureBinningFactoryPtr)), numThreads_(numThreads) {
+
 }
 
 std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(
         const IColumnWiseFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
         IStatisticsProvider& statisticsProvider) const {
-    std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr = featureBinningFactoryPtr_->create();
-    std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr = NominalFeatureBinningFactory().create();
+    std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr = numericalFeatureBinningFactoryPtr_->create();
+    std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr = nominalFeatureBinningFactoryPtr_->create();
     return std::make_unique<ApproximateThresholds>(featureMatrix, nominalFeatureMask, statisticsProvider,
                                                    std::move(numericalFeatureBinningPtr),
                                                    std::move(nominalFeatureBinningPtr), numThreads_);

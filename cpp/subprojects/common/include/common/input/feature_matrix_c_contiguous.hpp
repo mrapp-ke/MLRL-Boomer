@@ -8,8 +8,8 @@
 
 
 /**
- * Defines an interface for all feature matrices that provide row-wise access to the feature values of individual
- * examples that are stored in a C-contiguous array.
+ * Defines an interface for all feature matrices that provide row-wise access to the feature values of examples that are
+ * stored in a C-contiguous array.
  */
 class ICContiguousFeatureMatrix : virtual public IRowWiseFeatureMatrix {
 
@@ -21,7 +21,7 @@ class ICContiguousFeatureMatrix : virtual public IRowWiseFeatureMatrix {
 
 /**
  * An implementation of the type `ICContiguousFeatureMatrix` that provides row-wise read-only access to the feature
- * values of individual examples that are stored in a C-contiguous array.
+ * values of examples that are stored in a C-contiguous array.
  */
 class CContiguousFeatureMatrix final : public CContiguousConstView<const float32>,
                                        virtual public ICContiguousFeatureMatrix {
@@ -35,6 +35,8 @@ class CContiguousFeatureMatrix final : public CContiguousConstView<const float32
          *                  matrix provides access to
          */
         CContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array);
+
+        bool isSparse() const override;
 
         std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(const IClassificationPredictor& predictor,
                                                                     uint32 numLabels) const override;

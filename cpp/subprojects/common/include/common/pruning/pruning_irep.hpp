@@ -7,15 +7,13 @@
 
 
 /**
- * Allows to create instances of the type `IPruning` that prune rules by following the ideas of "incremental reduced
- * error pruning" (IREP). Given `n` conditions in the order of their induction, IREP may remove up to `n - 1` trailing
- * conditions, depending on which of the resulting rules comes with the greatest improvement in terms of quality as
- * measured on the prune set.
+ * Allows to configure a strategy for pruning classification rules that prunes rules by following the ideas of
+ * "incremental reduced error pruning" (IREP).
  */
-class IrepFactory final : public IPruningFactory {
+class IrepConfig final : public IPruningConfig {
 
     public:
 
-        std::unique_ptr<IPruning> create() const override;
+        std::unique_ptr<IPruningFactory> createPruningFactory() const override;
 
 };

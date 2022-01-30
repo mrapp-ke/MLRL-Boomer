@@ -5,37 +5,19 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides scikit-learn implementations of separate-and-conquer algorithms.
 """
-from typing import Dict, Set, Optional, List
+from typing import Dict, Set, Optional
 
-from mlrl.common.cython.feature_sampling import FeatureSamplingFactory
-from mlrl.common.cython.instance_sampling import InstanceSamplingFactory
-from mlrl.common.cython.label_sampling import LabelSamplingFactory
-from mlrl.common.cython.model import ModelBuilder
-from mlrl.common.cython.output import ClassificationPredictorFactory
-from mlrl.common.cython.partition_sampling import PartitionSamplingFactory
-from mlrl.common.cython.pruning import PruningFactory
-from mlrl.common.cython.rule_induction import RuleInductionFactory, TopDownRuleInductionFactory
-from mlrl.common.cython.rule_model_assemblage import RuleModelAssemblageFactory, SequentialRuleModelAssemblageFactory
-from mlrl.common.cython.statistics import StatisticsProviderFactory
-from mlrl.common.cython.stopping import StoppingCriterionFactory
-from mlrl.common.cython.thresholds import ThresholdsFactory
-from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import HEAD_TYPE_SINGLE, PRUNING_IREP, SAMPLING_STRATIFIED_LABEL_WISE
-from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy, FeatureCharacteristics, LabelCharacteristics
-from mlrl.common.rule_learners import create_pruning_factory, create_feature_sampling_factory, \
-    create_label_sampling_factory, create_instance_sampling_factory, create_partition_sampling_factory, \
-    create_stopping_criterion_factories, create_num_threads, create_thresholds_factory, parse_param_and_options, \
-    parse_param
-from mlrl.seco.cython.heuristics import HeuristicFactory, AccuracyFactory, PrecisionFactory, RecallFactory, \
-    LaplaceFactory, WraFactory, FMeasureFactory, MEstimateFactory
-from mlrl.seco.cython.lift_functions import LiftFunctionFactory, PeakLiftFunctionFactory
-from mlrl.seco.cython.model import DecisionListBuilder
-from mlrl.seco.cython.output import LabelWiseClassificationPredictorFactory
-from mlrl.seco.cython.rule_evaluation_label_wise import LabelWiseMajorityRuleEvaluationFactory, \
-    LabelWisePartialRuleEvaluationFactory, LabelWiseSingleLabelRuleEvaluationFactory
-from mlrl.seco.cython.statistics_label_wise import DenseLabelWiseStatisticsProviderFactory
-from mlrl.seco.cython.stopping import CoverageStoppingCriterionFactory
+from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
+from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
+from mlrl.common.rule_learners import configure_rule_induction, configure_label_sampling, configure_instance_sampling, \
+    configure_feature_sampling, configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
+    configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
+    configure_time_stopping_criterion
+from mlrl.common.rule_learners import parse_param, parse_param_and_options
+from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
+
+HEAD_TYPE_SINGLE = 'single-label'
 
 HEAD_TYPE_PARTIAL = 'partial'
 
@@ -65,7 +47,10 @@ ARGUMENT_BETA = 'beta'
 
 ARGUMENT_M = 'm'
 
-HEAD_TYPE_VALUES: Set[str] = {HEAD_TYPE_SINGLE, HEAD_TYPE_PARTIAL}
+HEAD_TYPE_VALUES: Set[str] = {
+    HEAD_TYPE_SINGLE,
+    HEAD_TYPE_PARTIAL
+}
 
 HEURISTIC_VALUES: Dict[str, Set[str]] = {
     HEURISTIC_ACCURACY: {},
@@ -88,81 +73,74 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     classification rules.
     """
 
-    def __init__(self, random_state: int = 1, feature_format: str = SparsePolicy.AUTO.value,
-                 label_format: str = SparsePolicy.AUTO.value, prediction_format: str = SparsePolicy.AUTO.value,
-                 max_rules: int = 500, time_limit: int = 0, head_type: str = HEAD_TYPE_SINGLE,
-                 lift_function: str = LIFT_FUNCTION_PEAK, heuristic: str = HEURISTIC_F_MEASURE,
-                 pruning_heuristic: str = HEURISTIC_ACCURACY, label_sampling: str = None,
-                 instance_sampling: str = SAMPLING_STRATIFIED_LABEL_WISE, feature_sampling: str = None,
-                 holdout: str = None, feature_binning: str = None, pruning: str = PRUNING_IREP, min_coverage: int = 1,
-                 max_conditions: int = 0, max_head_refinements: int = 1,
-                 parallel_rule_refinement: str = BooleanOption.TRUE.value,
-                 parallel_statistic_update: str = BooleanOption.FALSE.value,
-                 parallel_prediction: str = BooleanOption.TRUE.value):
+    def __init__(self, random_state: int = 1,
+                 feature_format: str = SparsePolicy.AUTO.value,
+                 label_format: str = SparsePolicy.AUTO.value,
+                 prediction_format: str = SparsePolicy.AUTO.value,
+                 rule_induction: Optional[str] = None,
+                 max_rules: Optional[int] = None,
+                 time_limit: Optional[int] = None,
+                 head_type: Optional[str] = None,
+                 lift_function: Optional[str] = None,
+                 heuristic: Optional[str] = None,
+                 pruning_heuristic: Optional[str] = None,
+                 label_sampling: Optional[str] = None,
+                 instance_sampling: Optional[str] = None,
+                 feature_sampling: Optional[str] = None,
+                 holdout: Optional[str] = None,
+                 pruning: Optional[str] = None,
+                 parallel_rule_refinement: Optional[str] = None,
+                 parallel_statistic_update: Optional[str] = None,
+                 parallel_prediction: Optional[str] = None):
         """
-        :param max_rules:                           The maximum number of rules to be induced (including the default
-                                                    rule)
-        :param time_limit:                          The duration in seconds after which the induction of rules should be
-                                                    canceled
-        :param head_type:                           The type of the rule heads that should be used. Must be
-                                                    `single-label` or `partial`
-        :param lift_function:                       The lift function to use. Must be `peak`. Additional options may be
-                                                    provided using the bracket notation
-                                                    `peak{peak_label=10,max_lift=2.0,curvature=1.0}`
-        :param heuristic:                           The heuristic to be minimized. Must be `accuracy`, `precision`,
-                                                    `recall`, `weighted-relative-accuracy`, `f-measure`, `m-estimate` or
-                                                    `laplace`. Additional options may be provided using the bracket
-                                                    notation `f-measure{beta=1.0}`
-        :param pruning_heuristic:                   The heuristic to be used for pruning. Must be `accuracy`,
-                                                    `precision`, `recall`, `weighted-relative-accuracy`, `f-measure`,
-                                                    `m-estimate` or `laplace`. Additional options may be provided using
-                                                    the bracket notation `f-measure{beta=1.0}`
-        :param label_sampling:                      The strategy that is used for sampling the labels each time a new
-                                                    classification rule is learned. Must be 'without-replacement' or
-                                                    None, if no sampling should be used. Additional options may be
-                                                    provided using the bracket notation
-                                                    `without-replacement{num_samples=5}`
-        :param instance_sampling:                   The strategy that is used for sampling the training examples each
-                                                    time a new classification rule is learned. Must be
-                                                    `with-replacement`, `without-replacement`, `stratified_label_wise`,
-                                                    `stratified_example_wise` or None, if no sampling should be used.
-                                                    Additional options may be provided using the bracket notation
-                                                    `with-replacement{sample_size=0.5}`
-        :param feature_sampling:                    The strategy that is used for sampling the features each time a
-                                                    classification rule is refined. Must be `without-replacement` or
-                                                    None, if no sampling should be used. Additional options may be
-                                                    provided using the bracket notation
-                                                    `without-replacement{sample_size=0.5}`
-        :param holdout:                             The name of the strategy to be used for creating a holdout set. Must
-                                                    be `random` or None, if no holdout set should be used. Additional
-                                                    options may be provided using the bracket notation
-                                                    `random{holdout_set_size=0.5}`
-        :param feature_binning:                     The strategy that is used for assigning examples to bins based on
-                                                    their feature values. Must be `equal-width`, `equal-frequency` or
-                                                    None, if no feature binning should be used. Additional options may
-                                                    be provided using the bracket notation `equal-width{bin_ratio=0.5}`
-        :param pruning:                             The strategy that is used for pruning rules. Must be `irep` or None,
-                                                    if no pruning should be used
-        :param min_coverage:                        The minimum number of training examples that must be covered by a
-                                                    rule. Must be at least 1
-        :param max_conditions:                      The maximum number of conditions to be included in a rule's body.
-                                                    Must be at least 1 or 0, if the number of conditions should not be
-                                                    restricted
-        :param max_head_refinements:                The maximum number of times the head of a rule may be refined after
-                                                    a new condition has been added to its body. Must be at least 1 or
-                                                    0, if the number of refinements should not be restricted
-        :param parallel_rule_refinement:            Whether potential refinements of rules should be searched for in
-                                                    parallel or not. Must be `true` or `false`. Additional options may
-                                                    be provided using the bracket notation `true{num_threads=8}`
-        :param parallel_statistic_update:           Whether the confusion matrices for different examples should be
-                                                    calculated in parallel or not. Must be `true` or `false`. Additional
-                                                    options may be provided using the bracket notation
-                                                    `true{num_threads=8}`
-        :param parallel_prediction:                 Whether predictions for different examples should be obtained in
-                                                    parallel or not. Must be `true` or `false`. Additional options may
-                                                    be provided using the bracket notation `true{num_threads=8}`
+        :param rule_induction:              A algorithm to be used for the induction of individual rules. Must be
+                                            'top-down'. For additional options refer to the documentation
+        :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
+                                            be at least 1 or 0, if the number of rules should not be restricted
+        :param time_limit:                  The duration in seconds after which the induction of rules should be
+                                            canceled. Must be at least 1 or 0, if no time limit should be set
+        :param head_type:                   The type of the rule heads that should be used. Must be 'single-label' or
+                                            'partial'
+        :param lift_function:               The lift function that should be used for the induction of partial rule
+                                            heads. Must be 'peak'. For additional options refer to the documentation.
+        :param heuristic:                   The heuristic to be optimized. Must be 'accuracy', 'precision', 'recall',
+                                            'weighted-relative-accuracy', 'f-measure', 'm-estimate' or 'laplace'. For
+                                            additional options refer to the documentation
+        :param pruning_heuristic:           The heuristic to be optimized when pruning rules. Must be 'accuracy',
+                                            'precision', 'recall', 'weighted-relative-accuracy', 'f-measure',
+                                            'm-estimate' or 'laplace'. For additional options refer to the documentation
+        :param label_sampling:              The strategy that should be used to sample from the available labels
+                                            whenever a new rule is learned. Must be 'without-replacement' or 'none', if
+                                            no sampling should be used. For additional options refer to the
+                                            documentation
+        :param instance_sampling:           The strategy that should be used to sample from the available the training
+                                            examples whenever a new rule is learned. Must be 'with-replacement',
+                                            'without-replacement', 'stratified_label_wise', 'stratified_example_wise' or
+                                            'none', if no sampling should be used. For additional options refer to the
+                                            documentation
+        :param feature_sampling:            The strategy that is used to sample from the available features whenever a
+                                            rule is refined. Must be 'without-replacement' or 'none', if no sampling
+                                            should be used. For additional options refer to the documentation
+        :param holdout:                     The name of the strategy that should be used to creating a holdout set. Must
+                                            be 'random', 'stratified-label-wise', 'stratified-example-wise' or 'none',
+                                            if no holdout set should be used. For additional options refer to the
+                                            documentation
+        :param pruning:                     The strategy that should be used to prune individual rules. Must be 'irep'
+                                            or 'none', if no pruning should be used
+        :param parallel_rule_refinement:    Whether potential refinements of rules should be searched for in parallel or
+                                            not. Must be 'true', 'false' or 'auto', if the most suitable strategy should
+                                            be chosen automatically depending on the loss function. For additional
+                                            options refer to the documentation
+        :param parallel_statistic_update:   Whether the confusion matrices for different examples should be updated in
+                                            parallel or not. Must be 'true', 'false' or 'auto', if the most suitable
+                                            strategy should be chosen automatically, depending on the loss function. For
+                                            additional options refer to the documentation
+        :param parallel_prediction:         Whether predictions for different examples should be obtained in parallel or
+                                            not. Must be 'true' or 'false'. For additional options refer to the
+                                            documentation
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
+        self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.head_type = head_type
@@ -173,20 +151,35 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
         self.holdout = holdout
-        self.feature_binning = feature_binning
         self.pruning = pruning
-        self.min_coverage = min_coverage
-        self.max_conditions = max_conditions
-        self.max_head_refinements = max_head_refinements
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
 
     def get_name(self) -> str:
-        name = 'max-rules=' + str(self.max_rules)
-        name += '_head-type=' + str(self.head_type)
-        name += '_lift-function=' + str(self.lift_function)
-        name += '_heuristic=' + str(self.heuristic)
+        name = 'seco'
+        if self.random_state != 1:
+            name += '_random-state=' + str(self.random_state)
+        if self.feature_format != SparsePolicy.AUTO.value:
+            name += '_feature-format=' + str(self.feature_format)
+        if self.label_format != SparsePolicy.AUTO.value:
+            name += '_label-format=' + str(self.label_format)
+        if self.prediction_format != SparsePolicy.AUTO.value:
+            name += '_prediction-format=' + str(self.prediction_format)
+        if self.rule_induction is not None:
+            name += '_rule-induction=' + str(self.rule_induction)
+        if self.max_rules is not None:
+            name += '_max-rules=' + str(self.max_rules)
+        if self.time_limit is not None:
+            name += '_time-limit=' + str(self.time_limit)
+        if self.head_type is not None:
+            name += '_head-type=' + str(self.head_type)
+        if self.lift_function is not None:
+            name += '_lift-function=' + str(self.lift_function)
+        if self.heuristic is not None:
+            name += '_heuristic=' + str(self.heuristic)
+        if self.pruning_heuristic is not None:
+            name += '_pruning-heuristic=' + str(self.pruning_heuristic)
         if self.label_sampling is not None:
             name += '_label-sampling=' + str(self.label_sampling)
         if self.instance_sampling is not None:
@@ -195,126 +188,100 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_feature-sampling=' + str(self.feature_sampling)
         if self.holdout is not None:
             name += '_holdout=' + str(self.holdout)
-        if self.feature_binning is not None:
-            name += '_feature-binning=' + str(self.feature_binning)
         if self.pruning is not None:
-            name += '_pruning-heuristic=' + str(self.pruning_heuristic)
             name += '_pruning=' + str(self.pruning)
-        if int(self.min_coverage) > 1:
-            name += '_min-coverage=' + str(self.min_coverage)
-        if int(self.max_conditions) > 0:
-            name += '_max-conditions=' + str(self.max_conditions)
-        if int(self.max_head_refinements) > 0:
-            name += '_max-head-refinements=' + str(self.max_head_refinements)
-        if int(self.random_state) != 1:
-            name += '_random_state=' + str(self.random_state)
+        if self.parallel_rule_refinement is not None:
+            name += '_parallel-rule-refinement=' + str(self.parallel_rule_refinement)
+        if self.parallel_statistic_update is not None:
+            name += '_parallel-statistic-update=' + str(self.parallel_statistic_update)
+        if self.parallel_prediction is not None:
+            name += '_parallel-prediction=' + str(self.parallel_prediction)
         return name
 
-    def _create_statistics_provider_factory(self, feature_characteristics: FeatureCharacteristics,
-                                            label_characteristics: LabelCharacteristics) -> StatisticsProviderFactory:
-        heuristic_factory = self.__create_heuristic_factory(self.heuristic, 'heuristic')
-        pruning_heuristic_factory = self.__create_heuristic_factory(self.pruning_heuristic, 'pruning_heuristic')
-        head_type = parse_param('head_type', self.head_type, HEAD_TYPE_VALUES)
-        default_rule_evaluation_factory = LabelWiseMajorityRuleEvaluationFactory()
-        regular_rule_evaluation_factory = self.__create_rule_evaluation_factory(head_type, heuristic_factory,
-                                                                                label_characteristics)
-        pruning_rule_evaluation_factory = self.__create_rule_evaluation_factory(head_type, pruning_heuristic_factory,
-                                                                                label_characteristics)
-        return DenseLabelWiseStatisticsProviderFactory(default_rule_evaluation_factory, regular_rule_evaluation_factory,
-                                                       pruning_rule_evaluation_factory)
+    def _create_learner(self) -> RuleLearnerWrapper:
+        config = SeCoRuleLearnerConfig()
+        configure_rule_induction(config, self.rule_induction)
+        configure_label_sampling(config, self.label_sampling)
+        configure_instance_sampling(config, self.instance_sampling)
+        configure_feature_sampling(config, self.feature_sampling)
+        configure_partition_sampling(config, self.holdout)
+        configure_pruning(config, self.pruning)
+        configure_parallel_rule_refinement(config, self.parallel_rule_refinement)
+        configure_parallel_statistic_update(config, self.parallel_statistic_update)
+        configure_parallel_prediction(config, self.parallel_prediction)
+        configure_size_stopping_criterion(config, max_rules=self.max_rules)
+        configure_time_stopping_criterion(config, time_limit=self.time_limit)
+        self.__configure_head_type(config)
+        self.__configure_heuristic(config)
+        self.__configure_pruning_heuristic(config)
+        self.__configure_lift_function(config)
+        return SeCoRuleLearnerWrapper(config)
 
-    def _create_thresholds_factory(self, feature_characteristics: FeatureCharacteristics,
-                                   label_characteristics: LabelCharacteristics) -> ThresholdsFactory:
-        num_threads = create_num_threads(self.parallel_statistic_update, 'parallel_statistic_update')
-        return create_thresholds_factory(self.feature_binning, num_threads)
+    def __configure_head_type(self, config: SeCoRuleLearnerConfig):
+        head_type = self.head_type
 
-    def _create_rule_induction_factory(self, feature_characteristics: FeatureCharacteristics,
-                                       label_characteristics: LabelCharacteristics) -> RuleInductionFactory:
-        num_threads = create_num_threads(self.parallel_rule_refinement, 'parallel_rule_refinement')
-        return TopDownRuleInductionFactory(int(self.min_coverage), int(self.max_conditions),
-                                           int(self.max_head_refinements), False, num_threads)
+        if head_type is not None:
+            value = parse_param('head_type', head_type, HEAD_TYPE_VALUES)
 
-    def _create_rule_model_assemblage_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> RuleModelAssemblageFactory:
-        return SequentialRuleModelAssemblageFactory()
+            if value == HEAD_TYPE_SINGLE:
+                config.use_single_label_heads()
+            elif value == HEAD_TYPE_PARTIAL:
+                config.use_partial_heads()
 
-    def _create_label_sampling_factory(self, feature_characteristics: FeatureCharacteristics,
-                                       label_characteristics: LabelCharacteristics) -> Optional[LabelSamplingFactory]:
-        return create_label_sampling_factory(self.label_sampling)
+    def __configure_heuristic(self, config: SeCoRuleLearnerConfig):
+        heuristic = self.heuristic
 
-    def _create_instance_sampling_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> Optional[InstanceSamplingFactory]:
-        return create_instance_sampling_factory(self.instance_sampling)
+        if heuristic is not None:
+            value, options = parse_param_and_options('heuristic', heuristic, HEURISTIC_VALUES)
 
-    def _create_feature_sampling_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> Optional[FeatureSamplingFactory]:
-        return create_feature_sampling_factory(self.feature_sampling)
+            if value == HEURISTIC_ACCURACY:
+                config.use_accuracy_heuristic()
+            elif value == HEURISTIC_PRECISION:
+                config.use_precision_heuristic()
+            elif value == HEURISTIC_RECALL:
+                config.use_recall_heuristic()
+            elif value == HEURISTIC_LAPLACE:
+                config.use_laplace_heuristic()
+            elif value == HEURISTIC_WRA:
+                config.use_wra_heuristic()
+            elif value == HEURISTIC_F_MEASURE:
+                c = config.use_f_measure_heuristic()
+                c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
+            elif value == HEURISTIC_M_ESTIMATE:
+                c = config.use_m_estimate_heuristic()
+                c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
 
-    def _create_partition_sampling_factory(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> Optional[PartitionSamplingFactory]:
-        return create_partition_sampling_factory(self.holdout)
+    def __configure_pruning_heuristic(self, config: SeCoRuleLearnerConfig):
+        pruning_heuristic = self.pruning_heuristic
 
-    def _create_pruning_factory(self, feature_characteristics: FeatureCharacteristics,
-                                label_characteristics: LabelCharacteristics) -> Optional[PruningFactory]:
-        return create_pruning_factory(self.pruning, self.instance_sampling)
+        if pruning_heuristic is not None:
+            value, options = parse_param_and_options('pruning_heuristic', pruning_heuristic, HEURISTIC_VALUES)
 
-    def _create_stopping_criterion_factories(
-            self, feature_characteristics: FeatureCharacteristics,
-            label_characteristics: LabelCharacteristics) -> List[StoppingCriterionFactory]:
-        stopping_criterion_factories = create_stopping_criterion_factories(int(self.max_rules), int(self.time_limit))
-        stopping_criterion_factories.append(CoverageStoppingCriterionFactory(0))
-        return stopping_criterion_factories
+            if value == HEURISTIC_ACCURACY:
+                config.use_accuracy_pruning_heuristic()
+            elif value == HEURISTIC_PRECISION:
+                config.use_precision_pruning_heuristic()
+            elif value == HEURISTIC_RECALL:
+                config.use_recall_pruning_heuristic()
+            elif value == HEURISTIC_LAPLACE:
+                config.use_laplace_pruning_heuristic()
+            elif value == HEURISTIC_WRA:
+                config.use_wra_pruning_heuristic()
+            elif value == HEURISTIC_F_MEASURE:
+                c = config.use_f_measure_pruning_heuristic()
+                c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
+            elif value == HEURISTIC_M_ESTIMATE:
+                c = config.use_m_estimate_pruning_heuristic()
+                c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
 
-    @staticmethod
-    def __create_heuristic_factory(heuristic: str, parameter_name: str) -> HeuristicFactory:
-        value, options = parse_param_and_options(parameter_name, heuristic, HEURISTIC_VALUES)
+    def __configure_lift_function(self, config: SeCoRuleLearnerConfig):
+        lift_function = self.lift_function
 
-        if value == HEURISTIC_ACCURACY:
-            return AccuracyFactory()
-        elif value == HEURISTIC_PRECISION:
-            return PrecisionFactory()
-        elif value == HEURISTIC_RECALL:
-            return RecallFactory()
-        elif value == HEURISTIC_LAPLACE:
-            return LaplaceFactory()
-        elif value == HEURISTIC_WRA:
-            return WraFactory()
-        elif value == HEURISTIC_F_MEASURE:
-            beta = options.get_float(ARGUMENT_BETA, 0.25)
-            return FMeasureFactory(beta)
-        elif value == HEURISTIC_M_ESTIMATE:
-            m = options.get_float(ARGUMENT_M, 22.466)
-            return MEstimateFactory(m)
+        if lift_function is not None:
+            value, options = parse_param_and_options('lift_function', lift_function, LIFT_FUNCTION_VALUES)
 
-    def __create_lift_function_factory(self, label_characteristics: LabelCharacteristics) -> LiftFunctionFactory:
-        value, options = parse_param_and_options('lift_function', self.lift_function, LIFT_FUNCTION_VALUES)
-
-        if value == LIFT_FUNCTION_PEAK:
-            peak_label = options.get_int(ARGUMENT_PEAK_LABEL,
-                                         max(round(label_characteristics.get_label_cardinality()), 1))
-            max_lift = options.get_float(ARGUMENT_MAX_LIFT, 1.08)
-            curvature = options.get_float(ARGUMENT_CURVATURE, 1.0)
-            return PeakLiftFunctionFactory(num_labels=label_characteristics.get_num_labels(), peak_label=peak_label,
-                                           max_lift=max_lift, curvature=curvature)
-
-    def __create_rule_evaluation_factory(self, head_type: str, heuristic_factory: HeuristicFactory,
-                                         label_characteristics: LabelCharacteristics):
-        if head_type == HEAD_TYPE_SINGLE:
-            return LabelWiseSingleLabelRuleEvaluationFactory(heuristic_factory)
-        else:
-            return LabelWisePartialRuleEvaluationFactory(heuristic_factory,
-                                                         self.__create_lift_function_factory(label_characteristics))
-
-    def _create_model_builder(self, feature_characteristics: FeatureCharacteristics,
-                              label_characteristics: LabelCharacteristics) -> ModelBuilder:
-        return DecisionListBuilder()
-
-    def _create_predictor(self, feature_characteristics: FeatureCharacteristics,
-                          label_characteristics: LabelCharacteristics) -> ClassificationPredictorFactory:
-        num_threads = create_num_threads(self.parallel_prediction, 'parallel_prediction')
-        return LabelWiseClassificationPredictorFactory(num_labels=label_characteristics.get_num_labels(),
-                                                       num_threads=num_threads)
+            if value == LIFT_FUNCTION_PEAK:
+                c = config.use_peak_lift_function()
+                c.set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, c.get_peak_label()))
+                c.set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, c.get_max_lift()))
+                c.set_curvature(options.get_float(ARGUMENT_CURVATURE, c.get_curvature()))

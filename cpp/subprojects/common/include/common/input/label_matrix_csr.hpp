@@ -103,6 +103,8 @@ class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabel
          */
         view_type createView(uint32 row) const;
 
+        bool isSparse() const override;
+
         float64 calculateLabelCardinality() const override;
 
         std::unique_ptr<LabelVector> createLabelVector(uint32 row) const override;

@@ -4,15 +4,9 @@ project('boosting', 'cython', 'cpp')
 cython_dir = 'cython'
 cython_module_names = [
     'label_binning',
-    'losses_example_wise',
-    'losses_label_wise',
-    'model',
-    'output',
-    'post_processing',
-    'rule_evaluation_example_wise',
-    'rule_evaluation_label_wise',
-    'statistics_example_wise',
-    'statistics_label_wise'
+    'learner',
+    'post_processor',
+    'regularization'
 ]
 
 # Dependencies

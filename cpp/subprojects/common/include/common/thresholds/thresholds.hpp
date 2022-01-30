@@ -30,27 +30,6 @@ class IThresholds {
         virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) = 0;
 
         /**
-         * Returns the number of available examples.
-         *
-         * @return The number of examples
-         */
-        virtual uint32 getNumExamples() const = 0;
-
-        /**
-         * Returns the number of available features.
-         *
-         * @return The number of features
-         */
-        virtual uint32 getNumFeatures() const = 0;
-
-        /**
-         * Returns the number of available labels.
-         *
-         * @return The number of labels
-         */
-        virtual uint32 getNumLabels() const = 0;
-
-        /**
          * Returns a reference to an object of type `IStatisticsProvider` that provides access to the statistics that
          * correspond to individual training examples in the instance space.
          *

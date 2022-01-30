@@ -26,8 +26,14 @@ namespace boosting {
              */
             typedef float64 (*EvaluateFunction)(bool trueLabel, float64 predictedScore);
 
+            /**
+             * The "update function" that is used for updating gradients and Hessians.
+             */
             UpdateFunction updateFunction_;
 
+            /**
+             * The "evaluation function" that is used for evaluating predictions.
+             */
             EvaluateFunction evaluateFunction_;
 
             /**
@@ -43,7 +49,7 @@ namespace boosting {
                                            const CContiguousConstView<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
+                                           DenseLabelWiseStatisticView& statisticView) const override {
                 DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
                 CContiguousConstView<float64>::value_const_iterator scoreIterator =
                     scoreMatrix.row_values_cbegin(exampleIndex);
@@ -63,7 +69,7 @@ namespace boosting {
                                            const CContiguousConstView<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
+                                           DenseLabelWiseStatisticView& statisticView) const override {
                 DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
                 CContiguousConstView<float64>::value_const_iterator scoreIterator =
                     scoreMatrix.row_values_cbegin(exampleIndex);
@@ -84,7 +90,7 @@ namespace boosting {
                                            const CContiguousConstView<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
+                                           DenseLabelWiseStatisticView& statisticView) const override {
                 DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
                 CContiguousConstView<float64>::value_const_iterator scoreIterator =
                     scoreMatrix.row_values_cbegin(exampleIndex);
@@ -104,7 +110,7 @@ namespace boosting {
                                             const CContiguousConstView<float64> scoreMatrix,
                                             PartialIndexVector::const_iterator labelIndicesBegin,
                                             PartialIndexVector::const_iterator labelIndicesEnd,
-                                            DenseLabelWiseStatisticView& statisticView) const override final {
+                                            DenseLabelWiseStatisticView& statisticView) const override {
                 DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
                 CContiguousConstView<float64>::value_const_iterator scoreIterator =
                     scoreMatrix.row_values_cbegin(exampleIndex);
@@ -127,7 +133,7 @@ namespace boosting {
              * @see `IEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                             const CContiguousConstView<float64>& scoreMatrix) const override final {
+                             const CContiguousConstView<float64>& scoreMatrix) const override {
                 CContiguousConstView<float64>::value_const_iterator scoreIterator =
                     scoreMatrix.row_values_cbegin(exampleIndex);
                 CContiguousConstView<const uint8>::value_const_iterator labelIterator =
@@ -149,7 +155,7 @@ namespace boosting {
              * @see `IEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                             const CContiguousConstView<float64>& scoreMatrix) const override final {
+                             const CContiguousConstView<float64>& scoreMatrix) const override {
                 CContiguousConstView<float64>::value_const_iterator scoreIterator =
                     scoreMatrix.row_values_cbegin(exampleIndex);
                 BinaryCsrConstView::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
@@ -172,7 +178,7 @@ namespace boosting {
              */
             float64 measureSimilarity(const VectorConstView<uint32>& relevantLabelIndices,
                                       CContiguousView<float64>::value_const_iterator scoresBegin,
-                                      CContiguousView<float64>::value_const_iterator scoresEnd) const override final {
+                                      CContiguousView<float64>::value_const_iterator scoresEnd) const override {
                 uint32 numLabels = scoresEnd - scoresBegin;
                 auto labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(),
                                                                   relevantLabelIndices.cend());

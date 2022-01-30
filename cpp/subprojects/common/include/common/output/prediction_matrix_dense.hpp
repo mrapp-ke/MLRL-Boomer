@@ -26,6 +26,13 @@ class DensePredictionMatrix final : public CContiguousView<T> {
          */
         DensePredictionMatrix(uint32 numRows, uint32 numCols);
 
+        /**
+         * @param numRows   The number of rows in the matrix
+         * @param numCols   The number of columns in the matrix
+         * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
+         */
+        DensePredictionMatrix(uint32 numRows, uint32 numCols, bool init);
+
         ~DensePredictionMatrix();
 
         /**

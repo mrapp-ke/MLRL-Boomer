@@ -4,31 +4,35 @@
 #pragma once
 
 #include "common/output/predictor_regression.hpp"
+#include "common/multi_threading/multi_threading.hpp"
 
 
 namespace boosting {
 
     /**
-     * Allows to create instances of the type `IRegressionPredictor` that allow to predict label-wise regression scores
-     * for given query examples by summing up the scores that are provided by the individual rules of an existing
-     * rule-based model for each label individually.
+     * Allows to configure predictors that predict label-wise regression scores for given query examples by summing up
+     * the scores that are provided by the individual rules of an existing rule-based model for each label individually.
      */
-    class LabelWiseRegressionPredictorFactory final : public IRegressionPredictorFactory {
+    class LabelWiseRegressionPredictorConfig final : public IRegressionPredictorConfig {
 
         private:
 
-            uint32 numThreads_;
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
 
         public:
 
             /**
-             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
-             *                   in parallel. Must be at least 1
+             * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
+             *                                multi-threading behavior that should be used to predict for several query
+             *                                examples in parallel
              */
-            LabelWiseRegressionPredictorFactory(uint32 numThreads);
+            LabelWiseRegressionPredictorConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
-            std::unique_ptr<IRegressionPredictor> create(const RuleList& model,
-                                                         const LabelVectorSet* labelVectorSet) const override;
+            /**
+             * @see `IRegressionPredictorConfig::createRegressionPredictorFactory`
+             */
+            std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
     };
 

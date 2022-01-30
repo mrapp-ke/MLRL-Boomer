@@ -19,8 +19,22 @@ namespace seco {
 
     };
 
-    std::unique_ptr<IHeuristic> LaplaceFactory::create() const {
-        return std::make_unique<Laplace>();
+    /**
+     * Allows to create instances of the type `IHeuristic` that implement a Laplace-corrected variant of the "Precision"
+     * metric.
+     */
+    class LaplaceFactory final : public IHeuristicFactory {
+
+        public:
+
+            std::unique_ptr<IHeuristic> create() const override {
+                return std::make_unique<Laplace>();
+            }
+
+    };
+
+    std::unique_ptr<IHeuristicFactory> LaplaceConfig::createHeuristicFactory() const {
+        return std::make_unique<LaplaceFactory>();
     }
 
 }

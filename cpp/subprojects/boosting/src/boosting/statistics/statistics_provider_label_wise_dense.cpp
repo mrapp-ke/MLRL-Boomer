@@ -4,7 +4,6 @@
 #endif
 
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
-#include "common/util/validation.hpp"
 #include "statistics_label_wise_dense.hpp"
 #include "statistics_provider_label_wise.hpp"
 #include "omp.h"
@@ -55,12 +54,7 @@ namespace boosting {
           defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {
-        assertNotNull("lossFactoryPtr", lossFactoryPtr_.get());
-        assertNotNull("evaluationMeasureFactoryPtr", evaluationMeasureFactoryPtr_.get());
-        assertNotNull("defaultRuleEvaluationFactoryPtr", defaultRuleEvaluationFactoryPtr_.get());
-        assertNotNull("regularRuleEvaluationFactoryPtr", regularRuleEvaluationFactoryPtr_.get());
-        assertNotNull("pruningRuleEvaluationFactoryPtr", pruningRuleEvaluationFactoryPtr_.get());
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(

@@ -1,42 +1,53 @@
 from mlrl.common.cython._types cimport uint32, float32
 
-from libcpp.memory cimport unique_ptr
 
+cdef extern from "common/binning/feature_binning_equal_width.hpp" nogil:
 
-cdef extern from "common/binning/feature_binning.hpp" nogil:
+    cdef cppclass IEqualWidthFeatureBinningConfig:
 
-    cdef cppclass IFeatureBinningFactory:
-        pass
+        # Functions:
+
+        IEqualWidthFeatureBinningConfig& setBinRatio(float32 binRatio) except +
+
+        float32 getBinRatio() const
+
+        IEqualWidthFeatureBinningConfig& setMinBins(uint32 minBins) except +
+
+        uint32 getMinBins() const
+
+        IEqualWidthFeatureBinningConfig& setMaxBins(uint32 maxBins) except +
+
+        uint32 getMaxBins() const
 
 
 cdef extern from "common/binning/feature_binning_equal_frequency.hpp" nogil:
 
-    cdef cppclass EqualFrequencyFeatureBinningFactoryImpl"EqualFrequencyFeatureBinningFactory"(IFeatureBinningFactory):
+    cdef cppclass IEqualFrequencyFeatureBinningConfig:
 
-        # Constructors:
+        # Functions:
 
-        EqualFrequencyFeatureBinningFactoryImpl(float32 binRatio, uint32 minBins, uint32 maxBins) except +
+        IEqualFrequencyFeatureBinningConfig& setBinRatio(float32 binRatio) except +
+
+        float32 getBinRatio() const
+
+        IEqualFrequencyFeatureBinningConfig& setMinBins(uint32 minBins) except +
+
+        uint32 getMinBins() const
+
+        IEqualFrequencyFeatureBinningConfig& setMaxBins(uint32 maxBins) except +
+
+        uint32 getMaxBins() const
 
 
-cdef extern from "common/binning/feature_binning_equal_width.hpp" nogil:
-
-    cdef cppclass EqualWidthFeatureBinningFactoryImpl"EqualWidthFeatureBinningFactory"(IFeatureBinningFactory):
-
-        # Constructors:
-
-        EqualWidthFeatureBinningFactoryImpl(float32 binRatio, uint32 minBins, uint32 maxBins) except +
-
-
-cdef class FeatureBinningFactory:
+cdef class EqualWidthFeatureBinningConfig:
 
     # Attributes:
 
-    cdef unique_ptr[IFeatureBinningFactory] feature_binning_factory_ptr
+    cdef IEqualWidthFeatureBinningConfig* config_ptr
 
 
-cdef class EqualFrequencyFeatureBinningFactory(FeatureBinningFactory):
-    pass
+cdef class EqualFrequencyFeatureBinningConfig:
 
+    # Attributes:
 
-cdef class EqualWidthFeatureBinningFactory(FeatureBinningFactory):
-    pass
+    cdef IEqualFrequencyFeatureBinningConfig* config_ptr
