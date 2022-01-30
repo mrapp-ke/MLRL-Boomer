@@ -101,7 +101,7 @@ class ExampleWiseStratifiedInstanceSamplingFactory final : public IInstanceSampl
 };
 
 ExampleWiseStratifiedInstanceSamplingConfig::ExampleWiseStratifiedInstanceSamplingConfig()
-    : sampleSize_(0.66) {
+    : sampleSize_(0.66f) {
 
 }
 

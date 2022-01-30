@@ -140,7 +140,7 @@ class InstanceSamplingWithReplacementFactory final : public IInstanceSamplingFac
 };
 
 InstanceSamplingWithReplacementConfig::InstanceSamplingWithReplacementConfig()
-    : sampleSize_(0.66) {
+    : sampleSize_(0.66f) {
 
 }
 
