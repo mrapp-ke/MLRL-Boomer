@@ -1,6 +1,4 @@
 #include "boosting/model/rule_list_builder.hpp"
-#include "common/model/body_empty.hpp"
-#include "common/model/body_conjunctive.hpp"
 
 
 namespace boosting {
@@ -11,7 +9,7 @@ namespace boosting {
     }
 
     void RuleListBuilder::setDefaultRule(const AbstractPrediction& prediction) {
-        modelPtr_->addRule(std::make_unique<EmptyBody>(), prediction.createHead());
+        modelPtr_->addDefaultRule(prediction.createHead());
     }
 
     void RuleListBuilder::addRule(const ConditionList& conditions, const AbstractPrediction& prediction) {

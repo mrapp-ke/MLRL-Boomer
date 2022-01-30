@@ -7,12 +7,12 @@
 
 
 /**
- * Allows to create instances of the type `IPruning` that do not actually perform any pruning.
+ * Allows to configure a method for pruning classification rules that does not actually perform any pruning.
  */
-class NoPruningFactory final : public IPruningFactory {
+class NoPruningConfig final : public IPruningConfig {
 
     public:
 
-        std::unique_ptr<IPruning> create() const override;
+        std::unique_ptr<IPruningFactory> createPruningFactory() const override;
 
 };

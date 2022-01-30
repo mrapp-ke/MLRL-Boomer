@@ -357,9 +357,15 @@ class ConjunctiveBody final : public IBody {
          */
         index_const_iterator neq_indices_cend() const;
 
+        /**
+         * @see `IBody::covers`
+         */
         bool covers(CContiguousConstView<const float32>::value_const_iterator begin,
                     CContiguousConstView<const float32>::value_const_iterator end) const override;
 
+        /**
+         * @see `IBody::covers`
+         */
         bool covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
                     CsrConstView<const float32>::index_const_iterator indicesEnd,
                     CsrConstView<const float32>::value_const_iterator valuesBegin,

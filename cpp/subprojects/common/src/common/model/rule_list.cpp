@@ -1,4 +1,5 @@
 #include "common/model/rule_list.hpp"
+#include "common/model/body_empty.hpp"
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
@@ -56,7 +57,7 @@ bool RuleList::RuleConstIterator::operator==(const RuleConstIterator& rhs) const
 }
 
 RuleList::RuleList()
-    : it_(list_.begin()), numRules_(0), numUsedRules_(0) {
+    : it_(list_.begin()), numRules_(0), numUsedRules_(0), containsDefaultRule_(false) {
 
 }
 
@@ -88,6 +89,11 @@ void RuleList::setNumUsedRules(uint32 numUsedRules) {
     numUsedRules_ = numUsedRules;
 }
 
+void RuleList::addDefaultRule(std::unique_ptr<IHead> headPtr) {
+    containsDefaultRule_ = true;
+    this->addRule(std::make_unique<EmptyBody>(), std::move(headPtr));
+}
+
 void RuleList::addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) {
     if (numRules_ > 0) {
         it_ = list_.emplace_after(it_, std::move(bodyPtr), std::move(headPtr));
@@ -97,6 +103,10 @@ void RuleList::addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> he
     }
 
     numRules_++;
+}
+
+bool RuleList::containsDefaultRule() const {
+    return containsDefaultRule_;
 }
 
 void RuleList::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,

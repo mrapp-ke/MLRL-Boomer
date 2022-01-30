@@ -3,11 +3,10 @@
  */
 #pragma once
 
+#include "boosting/losses/loss.hpp"
+#include "boosting/data/statistic_view_label_wise_dense.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "common/measures/measure_evaluation.hpp"
-#include "common/measures/measure_similarity.hpp"
-#include "boosting/data/statistic_view_label_wise_dense.hpp"
 
 
 namespace boosting {
@@ -15,7 +14,7 @@ namespace boosting {
     /**
      * Defines an interface for all (decomposable) loss functions that are applied label-wise.
      */
-    class ILabelWiseLoss : public IEvaluationMeasure, public ISimilarityMeasure {
+    class ILabelWiseLoss : public ILoss {
 
         public:
 
@@ -117,13 +116,39 @@ namespace boosting {
              */
             virtual std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const = 0;
 
+            /**
+             * @see `IEvaluationMeasureFactory::createEvaluationMeasure`
+             */
             std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const override final {
                 return this->createLabelWiseLoss();
             }
 
+            /**
+             * @see `ISimilarityMeasureFactory::createSimilarityMeasure`
+             */
             std::unique_ptr<ISimilarityMeasure> createSimilarityMeasure() const override final {
                 return this->createLabelWiseLoss();
             }
+
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a (decomposable) loss function that is applied
+     * label-wise.
+     */
+    class ILabelWiseLossConfig : public ILossConfig {
+
+        public:
+
+            virtual ~ILabelWiseLossConfig() override { };
+
+            /**
+             * Creates and returns a new object of type `ILabelWiseLossFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `ILabelWiseLossFactory` that has been created
+             */
+            virtual std::unique_ptr<ILabelWiseLossFactory> createLabelWiseLossFactory() const = 0;
 
     };
 

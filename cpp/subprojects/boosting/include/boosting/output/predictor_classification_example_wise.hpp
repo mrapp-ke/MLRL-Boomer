@@ -5,39 +5,50 @@
 
 #include "common/output/predictor_classification.hpp"
 #include "common/measures/measure_similarity.hpp"
+#include "common/multi_threading/multi_threading.hpp"
+#include "boosting/losses/loss.hpp"
 
 
 namespace boosting {
 
     /**
-     * Allows to create instances of the type `IClassificationPredictor` that allow to predict known label vectors for
-     * given query examples by summing up the scores that are provided by an existing rule-based model and comparing the
-     * aggregated score vector to the known label vectors according to a certain distance measure. The label vector that
-     * is closest to the aggregated score vector is finally predicted.
+     * Allows to configure a predictor that predicts known label vectors for given query examples by summing up the
+     * scores that are provided by an existing rule-based model and comparing the aggregated score vector to the known
+     * label vectors according to a certain distance measure. The label vector that is closest to the aggregated score
+     * vector is finally predicted.
      */
-    class ExampleWiseClassificationPredictorFactory final : public IClassificationPredictorFactory {
+    class ExampleWiseClassificationPredictorConfig final : public IClassificationPredictorConfig {
 
         private:
 
-            std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr_;
+            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
 
-            uint32 numThreads_;
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
 
         public:
 
             /**
-             * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasureFactory`
-             *                                      that allows to create implementations of the similarity measure
-             *                                      that should be used to quantify the similarity between predictions
-             *                                      and known label vectors
-             * @param numThreads                    The number of CPU threads to be used to make predictions for
-             *                                      different query examples in parallel. Must be at least 1
+             * @param lossConfigPtr             A reference to an unique pointer that stores the configuration of the
+             *                                  loss function
+             * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
+             *                                  multi-threading behavior that should be used to predict for several
+             *                                  query examples in parallel
              */
-            ExampleWiseClassificationPredictorFactory(
-                std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr, uint32 numThreads);
+            ExampleWiseClassificationPredictorConfig(
+                const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
-            std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
-                                                             const LabelVectorSet* labelVectorSet) const override;
+            /**
+             * @see `IClassificationPredictorConfig::createClassificationPredictorFactory`
+             */
+            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+
+            /**
+             * @see `IClassificationPredictorConfig::createLabelSpaceInfo`
+             */
+            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
+                const IRowWiseLabelMatrix& labelMatrix) const override;
 
     };
 

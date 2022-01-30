@@ -1,6 +1,5 @@
 #include "boosting/output/predictor_classification_example_wise.hpp"
 #include "common/data/arrays.hpp"
-#include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
@@ -97,15 +96,15 @@ namespace boosting {
         public:
 
             /**
-             * @param model                         A reference to an object of template type `Model` that should be
-             *                                      used to obtain predictions
-             * @param labelVectorSet                A pointer to an object of type `LabelVectorSet` that stores all
-             *                                      known label vectors or a null pointer, if no such set is available
-             * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasure` that
-             *                                      implements the similarity measure that should be used to quantify
-             *                                      the similarity between predictions and known label vectors
-             * @param numThreads                    The number of CPU threads to be used to make predictions for
-             *                                      different query examples in parallel. Must be at least 1
+             * @param model                 A reference to an object of template type `Model` that should be used to
+             *                              obtain predictions
+             * @param labelVectorSet        A pointer to an object of type `LabelVectorSet` that stores all known label
+             *                              vectors or a null pointer, if no such set is available
+             * @param similarityMeasurePtr  An unique pointer to an object of type `ISimilarityMeasure` that implements
+             *                              the similarity measure that should be used to quantify the similarity
+             *                              between predictions and known label vectors
+             * @param numThreads            The number of CPU threads to be used to make predictions for different query
+             *                              examples in parallel. Must be at least 1
              */
             ExampleWiseClassificationPredictor(const Model& model, const LabelVectorSet* labelVectorSet,
                                                std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr,
@@ -115,12 +114,15 @@ namespace boosting {
 
             }
 
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CContiguousFeatureMatrix& featureMatrix,
-                                                                  uint32 numLabels) const override {
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(
+                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
                 const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
@@ -145,13 +147,16 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrFeatureMatrix& featureMatrix,
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrConstView<const float32>& featureMatrix,
                                                                   uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
                 const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
@@ -177,11 +182,14 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CContiguousFeatureMatrix& featureMatrix,
-                                                                        uint32 numLabels) const override {
+            /**
+             * @see `ISparsePredictor::predictSparse`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 BinaryLilMatrix lilMatrix(numExamples);
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                 const Model* modelPtr = &model_;
                 const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
@@ -207,12 +215,15 @@ namespace boosting {
                 return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
             }
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CsrFeatureMatrix& featureMatrix,
-                                                                        uint32 numLabels) const override {
+            /**
+             * @see `ISparsePredictor::predictSparse`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                    const CsrConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 BinaryLilMatrix lilMatrix(numExamples);
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                 const Model* modelPtr = &model_;
                 const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
@@ -241,20 +252,76 @@ namespace boosting {
 
     };
 
-    ExampleWiseClassificationPredictorFactory::ExampleWiseClassificationPredictorFactory(
-            std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr, uint32 numThreads)
-        : similarityMeasureFactoryPtr_(std::move(similarityMeasureFactoryPtr)), numThreads_(numThreads) {
-        assertNotNull("similarityMeasureFactoryPtr", similarityMeasureFactoryPtr_.get());
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+    /**
+     * Allows to create instances of the type `IClassificationPredictor` that allow to predict known label vectors for
+     * given query examples by summing up the scores that are provided by an existing rule-based model and comparing the
+     * aggregated score vector to the known label vectors according to a certain distance measure. The label vector that
+     * is closest to the aggregated score vector is finally predicted.
+     */
+    class ExampleWiseClassificationPredictorFactory final : public IClassificationPredictorFactory {
+
+        private:
+
+            std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr_;
+
+            uint32 numThreads_;
+
+        public:
+
+            /**
+             * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasureFactory`
+             *                                      that allows to create implementations of the similarity measure
+             *                                      that should be used to quantify the similarity between predictions
+             *                                      and known label vectors
+             * @param numThreads                    The number of CPU threads to be used to make predictions for
+             *                                      different query examples in parallel. Must be at least 1
+             */
+            ExampleWiseClassificationPredictorFactory(
+                    std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr, uint32 numThreads)
+                : similarityMeasureFactoryPtr_(std::move(similarityMeasureFactoryPtr)), numThreads_(numThreads) {
+
+            }
+
+            /**
+             * @see `IClassificationPredictorFactory::create`
+             */
+            std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
+                                                             const LabelVectorSet* labelVectorSet) const override {
+                std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
+                    similarityMeasureFactoryPtr_->createSimilarityMeasure();
+                return std::make_unique<ExampleWiseClassificationPredictor<RuleList>>(model, labelVectorSet,
+                                                                                      std::move(similarityMeasurePtr),
+                                                                                      numThreads_);
+            }
+
+    };
+
+    ExampleWiseClassificationPredictorConfig::ExampleWiseClassificationPredictorConfig(
+            const std::unique_ptr<ILossConfig>& lossConfigPtr,
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+
     }
 
-    std::unique_ptr<IClassificationPredictor> ExampleWiseClassificationPredictorFactory::create(
-            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
-        std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
-            similarityMeasureFactoryPtr_->createSimilarityMeasure();
-        return std::make_unique<ExampleWiseClassificationPredictor<RuleList>>(model, labelVectorSet,
-                                                                              std::move(similarityMeasurePtr),
-                                                                              numThreads_);
+    std::unique_ptr<IClassificationPredictorFactory> ExampleWiseClassificationPredictorConfig::createClassificationPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr =
+            lossConfigPtr_->createSimilarityMeasureFactory();
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+        return std::make_unique<ExampleWiseClassificationPredictorFactory>(
+            std::move(similarityMeasureFactoryPtr), numThreads);
+    }
+
+    std::unique_ptr<ILabelSpaceInfo> ExampleWiseClassificationPredictorConfig::createLabelSpaceInfo(
+            const IRowWiseLabelMatrix& labelMatrix) const {
+        std::unique_ptr<LabelVectorSet> labelVectorSetPtr = std::make_unique<LabelVectorSet>();
+        uint32 numRows = labelMatrix.getNumRows();
+
+        for (uint32 i = 0; i < numRows; i++) {
+            labelVectorSetPtr->addLabelVector(labelMatrix.createLabelVector(i));
+        }
+
+        return labelVectorSetPtr;
     }
 
 }

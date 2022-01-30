@@ -100,4 +100,22 @@ namespace seco {
 
     };
 
+    /**
+     * Defines an interface for all classes that allow to configure a heuristic.
+     */
+    class IHeuristicConfig {
+
+        public:
+
+            virtual ~IHeuristicConfig() { };
+
+            /**
+             * Creates and returns a new object of type `IHeuristicFactory` according to the specified configuration.
+             *
+             * @return An unique pointer to an object of type `IHeuristicFactory` that has been created
+             */
+            virtual std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const = 0;
+
+    };
+
 }

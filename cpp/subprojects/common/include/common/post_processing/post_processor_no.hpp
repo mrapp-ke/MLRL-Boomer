@@ -7,13 +7,13 @@
 
 
 /**
- * Allows to create instances of the type `IPostProcessor` that do not perform any post-processing, but retain the
- * original predictions of rules.
+ * Allows to configure a post-processor that does not perform any post-processing, but retains the original predictions
+ * of rules.
  */
-class NoPostProcessorFactory final : public IPostProcessorFactory {
+class NoPostProcessorConfig final : public IPostProcessorConfig {
 
     public:
 
-        std::unique_ptr<IPostProcessor> create() const override;
+        std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const override;
 
 };

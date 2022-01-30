@@ -4,33 +4,38 @@
 #pragma once
 
 #include "common/output/predictor_classification.hpp"
+#include "common/multi_threading/multi_threading.hpp"
 
 
 namespace seco {
 
     /**
-     * Allows to create instances of the class `IClassificationPredictor` that allow to predict whether individual
-     * labels of given query examples are relevant or irrelevant by processing rules of an existing rule-based model in
-     * the order they have been learned. If a rule covers an example, its prediction (1 if the label is relevant, 0
-     * otherwise) is applied to each label individually, if none of the previous rules has already predicted for a
-     * particular example and label.
+     * Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
+     * irrelevant by processing rules of an existing rule-based model in the order they have been learned. If a rule
+     * covers an example, its prediction (1 if the label is relevant, 0 otherwise) is applied to each label
+     * individually, if none of the previous rules has already predicted for a particular example and label.
      */
-    class LabelWiseClassificationPredictorFactory final : public IClassificationPredictorFactory {
+    class LabelWiseClassificationPredictorConfig final : public IClassificationPredictorConfig {
 
         private:
 
-            uint32 numThreads_;
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
 
         public:
 
             /**
-             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
-             *                   in parallel. Must be at least 1
+             * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
+             *                                multi-threading behavior that should be used to predict for several query
+             *                                examples in parallel
              */
-            LabelWiseClassificationPredictorFactory(uint32 numThreads);
+            LabelWiseClassificationPredictorConfig(
+                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
-            std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
-                                                             const LabelVectorSet* labelVectorSet) const override;
+            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+
+            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
+                const IRowWiseLabelMatrix& labelMatrix) const override;
 
     };
 

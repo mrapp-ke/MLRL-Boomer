@@ -4,89 +4,43 @@
 #pragma once
 
 #include "common/output/predictor_probability.hpp"
+#include "common/multi_threading/multi_threading.hpp"
+#include "boosting/losses/loss.hpp"
 
 
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that allow to transform the scores that are predicted for individual labels
-     * into probabilities.
+     * Allows to configure a predictor that predicts label-wise probabilities for given query examples, which estimate
+     * the chance of individual labels to be relevant, by summing up the scores that are provided by individual rules of
+     * an existing rule-based models and transforming the aggregated scores into probabilities in [0, 1] according to a
+     * certain transformation function that is applied to each label individually.
      */
-    class IProbabilityFunction {
-
-        public:
-
-            virtual ~IProbabilityFunction() { };
-
-            /**
-             * Transforms the score that is predicted for an individual label into a probability.
-             *
-             * @param predictedScore    The predicted score
-             * @return                  The probability
-             */
-            virtual float64 transform(float64 predictedScore) const = 0;
-
-    };
-
-    /**
-     * Defines an interface for all factories that allow to create instances of the type `IProbabilityFunction`.
-     */
-    class IProbabilityFunctionFactory {
-
-        public:
-
-            virtual ~IProbabilityFunctionFactory() { };
-
-            /**
-             * Creates and returns a new object of the type `IProbabilityFunction`.
-             *
-             * @return An unique pointer to an object of type `IProbabilityFunction` that has been created
-             */
-            virtual std::unique_ptr<IProbabilityFunction> create() const = 0;
-
-    };
-
-    /**
-     * Allows to create instances of the type `IProbabilityFunction` that transform the score that is predicted for an
-     * individual label into a probability by applying the logistic sigmoid function.
-     */
-    class LogisticFunctionFactory final : public IProbabilityFunctionFactory {
-
-        public:
-
-            std::unique_ptr<IProbabilityFunction> create() const override;
-
-    };
-
-    /**
-     * Allows to create instances of the type `IProbabilityPredictor` that allow to predict label-wise probabilities
-     * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
-     * that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
-     * into probabilities in [0, 1] according to a certain transformation function that is applied to each label
-     * individually.
-     */
-    class LabelWiseProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
+    class LabelWiseProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
 
         private:
 
-            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
+            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
 
-            uint32 numThreads_;
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
 
         public:
 
             /**
-             * @param probabilityFunctionFactoryPtr An unique pointer to an object of type `IProbabilityFunctionFactory`
-             *                                      that allows to create implementations of the transformation function
-             *                                      to be used to transform predicted scores into probabilities
-             * @param numThreads                    The number of CPU threads to be used to make predictions for
-             *                                      different query examples in parallel. Must be at least 1
+             * @param lossConfigPtr             A reference to an unique pointer that stores the configuration of the
+             *                                  loss function
+             * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
+             *                                  multi-threading behavior that should be used to predict for several
+             *                                  query examples in parallel
              */
-            LabelWiseProbabilityPredictorFactory(
-                    std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads);
+            LabelWiseProbabilityPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                                                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
-            std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
-                                                          const LabelVectorSet* labelVectorSet) const override;
+            /**
+             * @see `IProbabilityPredictorConfig::createProbabilityPredictorFactory`
+             */
+            std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
+                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
     };
 

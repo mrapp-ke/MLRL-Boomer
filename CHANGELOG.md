@@ -2,8 +2,12 @@
 
 ### Version 0.8.0 (to be released)
 
+***This release comes with changes to the command line API. For an updated overview of the available parameters, please refer to the documentation.***
+
 A major update to the BOOMER algorithm that introduces the following changes:
 
+* The programmatic C++ API was redesigned for a more convenient configuration of algorithms. This does also drastically reduce the amount of wrapper code that is necessary to access the API from other programming languages and therefore facilitates the support of additional languages in the future.
+* An issue that may cause segmentation faults when using stratified sampling methods for the creation of holdout sets has been fixed.
 * Pre-built packages for Linux aarch64 systems are now provided.
 
 ### Version 0.7.1 (Dec. 15, 2021)

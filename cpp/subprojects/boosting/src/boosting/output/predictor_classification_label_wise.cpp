@@ -1,6 +1,6 @@
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "common/iterator/index_iterator.hpp"
-#include "common/util/validation.hpp"
+#include "common/output/label_space_info_no.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
@@ -80,12 +80,15 @@ namespace boosting {
 
             }
 
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CContiguousFeatureMatrix& featureMatrix,
-                                                                  uint32 numLabels) const override {
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(
+                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
@@ -104,13 +107,16 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrFeatureMatrix& featureMatrix,
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrConstView<const float32>& featureMatrix,
                                                                   uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
@@ -130,11 +136,14 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CContiguousFeatureMatrix& featureMatrix,
-                                                                        uint32 numLabels) const override {
+            /**
+             * @see `ISparsePredictor::predictSparse`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 BinaryLilMatrix lilMatrix(numExamples);
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                 const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
@@ -155,12 +164,15 @@ namespace boosting {
                 return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
             }
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(const CsrFeatureMatrix& featureMatrix,
-                                                                        uint32 numLabels) const override {
+            /**
+             * @see `ISparsePredictor::predictSparse`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
+                    const CsrConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 BinaryLilMatrix lilMatrix(numExamples);
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                 const Model* modelPtr = &model_;
                 const float64 threshold = threshold_;
@@ -185,15 +197,61 @@ namespace boosting {
 
     };
 
-    LabelWiseClassificationPredictorFactory::LabelWiseClassificationPredictorFactory(float64 threshold,
-                                                                                     uint32 numThreads)
-        : threshold_(threshold), numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+    /**
+     * Allows to create instances of the type `IClassificationPredictor` that allow to predict whether individual labels
+     * of given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
+     * rules of an existing rule-based model and transforming them into binary values according to a certain threshold
+     * that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
+     * otherwise).
+     */
+    class LabelWiseClassificationPredictorFactory final : public IClassificationPredictorFactory {
+
+        private:
+
+            float64 threshold_;
+
+            uint32 numThreads_;
+
+        public:
+
+            /**
+             * @param threshold     The threshold that should be used to transform predicted scores into binary
+             *                      predictions
+             * @param numThreads    The number of CPU threads to be used to make predictions for different query
+             *                      examples in parallel. Must be at least 1
+             */
+            LabelWiseClassificationPredictorFactory(float64 threshold, uint32 numThreads)
+                : threshold_(threshold), numThreads_(numThreads) {
+
+            }
+
+            /**
+             * @see `IClassificationPredictorFactory::create`
+             */
+            std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
+                                                             const LabelVectorSet* labelVectorSet) const override {
+                return std::make_unique<LabelWiseClassificationPredictor<RuleList>>(model, threshold_, numThreads_);
+            }
+
+    };
+
+    LabelWiseClassificationPredictorConfig::LabelWiseClassificationPredictorConfig(
+            const std::unique_ptr<ILossConfig>& lossConfigPtr,
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+
     }
 
-    std::unique_ptr<IClassificationPredictor> LabelWiseClassificationPredictorFactory::create(
-            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
-        return std::make_unique<LabelWiseClassificationPredictor<RuleList>>(model, threshold_, numThreads_);
+    std::unique_ptr<IClassificationPredictorFactory> LabelWiseClassificationPredictorConfig::createClassificationPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        float64 threshold = lossConfigPtr_->getDefaultPrediction();
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+        return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, numThreads);
+    }
+
+    std::unique_ptr<ILabelSpaceInfo> LabelWiseClassificationPredictorConfig::createLabelSpaceInfo(
+            const IRowWiseLabelMatrix& labelMatrix) const {
+        return createNoLabelSpaceInfo();
     }
 
 }

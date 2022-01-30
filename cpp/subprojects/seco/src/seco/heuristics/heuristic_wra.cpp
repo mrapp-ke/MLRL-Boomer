@@ -19,8 +19,22 @@ namespace seco {
 
     };
 
-    std::unique_ptr<IHeuristic> WraFactory::create() const {
-        return std::make_unique<Wra>();
+    /**
+     * Allows to create instances of the type `IHeuristic` that calculate as `1 - wra`, where `wra` corresponds to the
+     * "Weighted Relative Accuracy" metric.
+     */
+    class WraFactory final : public IHeuristicFactory {
+
+        public:
+
+            std::unique_ptr<IHeuristic> create() const override {
+                return std::make_unique<Wra>();
+            }
+
+    };
+
+    std::unique_ptr<IHeuristicFactory> WraConfig::createHeuristicFactory() const {
+        return std::make_unique<WraFactory>();
     }
 
 }

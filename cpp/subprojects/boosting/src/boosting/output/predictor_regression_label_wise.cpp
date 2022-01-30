@@ -1,5 +1,4 @@
 #include "boosting/output/predictor_regression_label_wise.hpp"
-#include "common/util/validation.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
@@ -35,12 +34,15 @@ namespace boosting {
 
             }
 
-            std::unique_ptr<DensePredictionMatrix<float64>> predict(const CContiguousFeatureMatrix& featureMatrix,
-                                                                    uint32 numLabels) const override {
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(
+                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
-                const CContiguousFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
 
@@ -58,13 +60,16 @@ namespace boosting {
                 return predictionMatrixPtr;
             }
 
-            std::unique_ptr<DensePredictionMatrix<float64>> predict(const CsrFeatureMatrix& featureMatrix,
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(const CsrConstView<const float32>& featureMatrix,
                                                                     uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
-                const CsrFeatureMatrix* featureMatrixPtr = &featureMatrix;
+                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
 
@@ -94,14 +99,48 @@ namespace boosting {
 
     };
 
-    LabelWiseRegressionPredictorFactory::LabelWiseRegressionPredictorFactory(uint32 numThreads)
-        : numThreads_(numThreads) {
-        assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
+    /**
+     * Allows to create instances of the type `IRegressionPredictor` that allow to predict label-wise regression scores
+     * for given query examples by summing up the scores that are provided by the individual rules of an existing
+     * rule-based model for each label individually.
+     */
+    class LabelWiseRegressionPredictorFactory final : public IRegressionPredictorFactory {
+
+        private:
+
+            uint32 numThreads_;
+
+        public:
+
+            /**
+             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
+             *                   in parallel. Must be at least 1
+             */
+            LabelWiseRegressionPredictorFactory(uint32 numThreads)
+                : numThreads_(numThreads) {
+
+            }
+
+            /**
+             * @see `IRegressionPredictorFactory::create`
+             */
+            std::unique_ptr<IRegressionPredictor> create(const RuleList& model,
+                                                         const LabelVectorSet* labelVectorSet) const override {
+                return std::make_unique<LabelWiseRegressionPredictor<RuleList>>(model, numThreads_);
+            }
+
+    };
+
+    LabelWiseRegressionPredictorConfig::LabelWiseRegressionPredictorConfig(
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+
     }
 
-    std::unique_ptr<IRegressionPredictor> LabelWiseRegressionPredictorFactory::create(
-            const RuleList& model, const LabelVectorSet* labelVectorSet) const {
-        return std::make_unique<LabelWiseRegressionPredictor<RuleList>>(model, numThreads_);
+    std::unique_ptr<IRegressionPredictorFactory> LabelWiseRegressionPredictorConfig::createRegressionPredictorFactory(
+            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+        return std::make_unique<LabelWiseRegressionPredictorFactory>(numThreads);
     }
 
 }

@@ -4,7 +4,7 @@
 
 /**
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
- * individual examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
+ * examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
  */
 class CscFeatureMatrix final : public CscConstView<const float32>, virtual public ICscFeatureMatrix {
 
@@ -24,6 +24,10 @@ class CscFeatureMatrix final : public CscConstView<const float32>, virtual publi
         CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32* colIndices)
             : CscConstView<const float32>(numRows, numCols, data, rowIndices, colIndices) {
 
+        }
+
+        bool isSparse() const override {
+            return true;
         }
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {

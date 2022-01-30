@@ -7,8 +7,8 @@
 
 
 /**
- * Defines an interface for all feature matrices that provide column-wise access to the feature values of individual
- * examples that are stored in a sparse matrix in the compressed sparse column (CSC) format.
+ * Defines an interface for all feature matrices that provide column-wise access to the feature values of examples that
+ * are stored in a sparse matrix in the compressed sparse column (CSC) format.
  */
 class ICscFeatureMatrix : virtual public IColumnWiseFeatureMatrix {
 

@@ -10,14 +10,14 @@
 namespace seco {
 
     /**
-     * Allows to create instances of the type `IHeuristic` that calculate as `1 - wra`, where `wra` corresponds to the
-     * "Weighted Relative Accuracy" metric.
+     * Allows to configure a heuristic that calculates as `1 - wra`, where `wra` corresponds to the "Weighted Relative
+     * Accuracy" metric.
      */
-    class WraFactory final : public IHeuristicFactory {
+    class WraConfig final : public IHeuristicConfig {
 
         public:
 
-            std::unique_ptr<IHeuristic> create() const override;
+            std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
 
     };
 

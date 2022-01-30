@@ -9,10 +9,37 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the type `IPostProcessor` that post-process the predictions of rules by shrinking
-     * their weights by a constant shrinkage parameter.
+     * Defines an interface for all classes that allow to configure a post-processor that shrinks the weights of rules
+     * by a constant "shrinkage" parameter.
      */
-    class ConstantShrinkageFactory final : public IPostProcessorFactory {
+    class IConstantShrinkageConfig {
+
+        public:
+
+            virtual ~IConstantShrinkageConfig() { };
+
+            /**
+             * Returns the value of the "shrinkage" parameter.
+             *
+             * @return The value of the "shrinkage" parameter
+             */
+            virtual float64 getShrinkage() const = 0;
+
+            /**
+             * Sets the value of the "shrinkage" parameter.
+             *
+             * @param shrinkage The value of the "shrinkage" parameter. Must be in (0, 1)
+             * @return          A reference to an object of type `IConstantShrinkageConfig` that allows further
+             *                  configuration of the post-processor
+             */
+            virtual IConstantShrinkageConfig& setShrinkage(float64 shrinkage) = 0;
+
+    };
+
+    /**
+     * Allows to configure a post-processor that shrinks the weights of rules by a constant "shrinkage" parameter.
+     */
+    class ConstantShrinkageConfig final : public IPostProcessorConfig, public IConstantShrinkageConfig {
 
         private:
 
@@ -20,12 +47,16 @@ namespace boosting {
 
         public:
 
-            /**
-             * @param shrinkage The shrinkage parameter. Must be in (0, 1)
-             */
-            ConstantShrinkageFactory(float64 shrinkage);
+            ConstantShrinkageConfig();
 
-            std::unique_ptr<IPostProcessor> create() const override;
+            float64 getShrinkage() const override;
+
+            IConstantShrinkageConfig& setShrinkage(float64 shrinkage) override;
+
+            /**
+             * @see `IPostProcessorConfig::createPostProcessorFactory`
+             */
+            std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const override;
 
     };
 

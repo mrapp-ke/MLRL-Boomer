@@ -17,6 +17,10 @@ CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndice
 
 }
 
+bool CsrLabelMatrix::isSparse() const {
+    return true;
+}
+
 float64 CsrLabelMatrix::calculateLabelCardinality() const {
     uint32 numRows = this->getNumRows();
     float64 labelCardinality = 0;

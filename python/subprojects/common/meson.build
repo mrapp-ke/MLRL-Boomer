@@ -3,25 +3,21 @@ project('common', 'cython', 'cpp')
 # Source files
 cython_dir = 'cython'
 cython_module_names = [
-    'algorithm_builder',
     'feature_binning',
+    'feature_matrix',
     'feature_sampling',
-    'input',
     'instance_sampling',
     'label_sampling',
-    'measures',
-    'model',
-    'output',
+    'label_matrix',
+    'label_space_info',
+    'learner',
+    'multi_threading',
+    'nominal_feature_mask',
     'partition_sampling',
-    'post_processing',
-    'pruning',
     'rule_induction',
+    'rule_model',
     'rule_model_assemblage',
-    'statistics',
-    'stopping',
-    'thresholds',
-    'thresholds_approximate',
-    'thresholds_exact'
+    'stopping_criterion'
 ]
 
 # Dependencies

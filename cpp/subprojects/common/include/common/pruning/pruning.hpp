@@ -61,3 +61,21 @@ class IPruningFactory {
         virtual std::unique_ptr<IPruning> create() const = 0;
 
 };
+
+/**
+ * Defines an interface for all classes that allow to configure a strategy for pruning classification rules.
+ */
+class IPruningConfig {
+
+    public:
+
+        virtual ~IPruningConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IPruningFactory` according to the specified configuration.
+         *
+         * @return An unique pointer to an object of type `IPruningFactory` that has been created
+         */
+        virtual std::unique_ptr<IPruningFactory> createPruningFactory() const = 0;
+
+};

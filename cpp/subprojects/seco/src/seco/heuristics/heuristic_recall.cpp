@@ -19,8 +19,23 @@ namespace seco {
 
     };
 
-    std::unique_ptr<IHeuristic> RecallFactory::create() const {
-        return std::make_unique<Recall>();
+    /**
+     * Allows to create instances of the type `IHeuristic` that measure the fraction of uncovered labels among all
+     * labels for which a rule's prediction is (or would be) correct, i.e., for which the ground truth is equal to the
+     * rule's prediction.
+     */
+    class RecallFactory final : public IHeuristicFactory {
+
+        public:
+
+            std::unique_ptr<IHeuristic> create() const override {
+                return std::make_unique<Recall>();
+            }
+
+    };
+
+    std::unique_ptr<IHeuristicFactory> RecallConfig::createHeuristicFactory() const {
+        return std::make_unique<RecallFactory>();
     }
 
 }

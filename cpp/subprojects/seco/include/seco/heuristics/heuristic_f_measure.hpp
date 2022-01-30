@@ -10,12 +10,42 @@
 namespace seco {
 
     /**
-     * Allows to create instances of the type `IHeuristic` that calculate as the (weighted) harmonic mean between the
-     * heuristics "Precision" and "Recall", where the parameter "beta" allows to trade off between both heuristics. If
-     * beta = 1, both heuristics are weighed equally. If beta = 0, this heuristic is equivalent to "Precision". As beta
-     * approaches infinity, this heuristic becomes equivalent to "Recall".
+     * Defines an interface for all classes that allow to configure a heuristic that calculates as the (weighted)
+     * harmonic mean between the heuristics "Precision" and "Recall", where the parameter "beta" allows to trade off
+     * between both heuristics. If beta = 1, both heuristics are weighed equally. If beta = 0, this heuristic is
+     * equivalent to "Precision". As beta approaches infinity, this heuristic becomes equivalent to "Recall".
      */
-    class FMeasureFactory final : public IHeuristicFactory {
+    class IFMeasureConfig {
+
+        public:
+
+            virtual ~IFMeasureConfig() { };
+
+            /**
+             * Returns the value of the "beta" parameter.
+             *
+             * @return The value of the "beta" parameter
+             */
+            virtual float64 getBeta() const = 0;
+
+            /**
+             * Sets the value of the "beta" parameter
+             *
+             * @param beta  The value of the "beta" parameter. Must be at least 0
+             * @return      A reference to an object of type `IFMeasureConfig` that allows further configuration of the
+             *              heuristic
+             */
+            virtual IFMeasureConfig& setBeta(float64 beta) = 0;
+
+    };
+
+    /**
+     * Allows to configure a heuristic that calculates as the (weighted) harmonic mean between the heuristics
+     * "Precision" and "Recall", where the parameter "beta" allows to trade off between both heuristics. If beta = 1,
+     * both heuristics are weighed equally. If beta = 0, this heuristic is equivalent to "Precision". As beta approaches
+     * infinity, this heuristic becomes equivalent to "Recall".
+     */
+    class FMeasureConfig final : public IHeuristicConfig, public IFMeasureConfig {
 
         private:
 
@@ -23,12 +53,13 @@ namespace seco {
 
         public:
 
-            /**
-             * @param beta The value of the "beta" parameter. Must be at least 0
-             */
-            FMeasureFactory(float64 beta);
+            FMeasureConfig();
 
-            std::unique_ptr<IHeuristic> create() const override;
+            float64 getBeta() const override;
+
+            IFMeasureConfig& setBeta(float64 beta) override;
+
+            std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
 
     };
 

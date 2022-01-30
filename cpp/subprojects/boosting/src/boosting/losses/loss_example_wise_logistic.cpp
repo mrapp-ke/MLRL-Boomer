@@ -331,8 +331,49 @@ namespace boosting {
 
     };
 
-    std::unique_ptr<IExampleWiseLoss> ExampleWiseLogisticLossFactory::createExampleWiseLoss() const {
-        return std::make_unique<ExampleWiseLogisticLoss>();
+    /**
+     * Allows to create instances of the type `IExampleWiseLoss` that implement a multi-label variant of the logistic
+     * loss that is applied example-wise.
+     */
+    class ExampleWiseLogisticLossFactory final : public IExampleWiseLossFactory {
+
+        public:
+
+            std::unique_ptr<IExampleWiseLoss> createExampleWiseLoss() const override {
+                return std::make_unique<ExampleWiseLogisticLoss>();
+            }
+
+    };
+
+    ExampleWiseLogisticLossConfig::ExampleWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)
+        : headConfigPtr_(headConfigPtr) {
+
+    }
+
+    std::unique_ptr<IStatisticsProviderFactory> ExampleWiseLogisticLossConfig::createStatisticsProviderFactory(
+            const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix, const Blas& blas,
+            const Lapack& lapack) const {
+        return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
+    }
+
+    std::unique_ptr<IEvaluationMeasureFactory> ExampleWiseLogisticLossConfig::createEvaluationMeasureFactory() const {
+        return std::make_unique<ExampleWiseLogisticLossFactory>();
+    }
+
+    std::unique_ptr<IProbabilityFunctionFactory> ExampleWiseLogisticLossConfig::createProbabilityFunctionFactory() const {
+        return nullptr;
+    }
+
+    float64 ExampleWiseLogisticLossConfig::getDefaultPrediction() const {
+        return 0;
+    }
+
+    std::unique_ptr<ISimilarityMeasureFactory> ExampleWiseLogisticLossConfig::createSimilarityMeasureFactory() const {
+        return std::make_unique<ExampleWiseLogisticLossFactory>();
+    }
+
+    std::unique_ptr<IExampleWiseLossFactory> ExampleWiseLogisticLossConfig::createExampleWiseLossFactory() const {
+        return std::make_unique<ExampleWiseLogisticLossFactory>();
     }
 
 }

@@ -21,8 +21,23 @@ namespace seco {
 
     };
 
-    std::unique_ptr<IHeuristic> AccuracyFactory::create() const {
-        return std::make_unique<Accuracy>();
+    /**
+     * Allows to create instances of the type `IHeuristic` that measure the fraction of incorrectly predicted labels
+     * among all labels, i.e., in contrast to the "Precision" metric, examples that are not covered by a rule are taken
+     * into account as well.
+     */
+    class AccuracyFactory final : public IHeuristicFactory {
+
+        public:
+
+            std::unique_ptr<IHeuristic> create() const override {
+                return std::make_unique<Accuracy>();
+            }
+
+    };
+
+    std::unique_ptr<IHeuristicFactory> AccuracyConfig::createHeuristicFactory() const {
+        return std::make_unique<AccuracyFactory>();
     }
 
 }

@@ -11,14 +11,16 @@ source_files = [
     'src/seco/heuristics/heuristic_precision.cpp',
     'src/seco/heuristics/heuristic_recall.cpp',
     'src/seco/heuristics/heuristic_wra.cpp',
+    'src/seco/lift_functions/lift_function_peak.cpp',
     'src/seco/model/decision_list_builder.cpp',
     'src/seco/output/predictor_classification_label_wise.cpp',
-    'src/seco/rule_evaluation/lift_function_peak.cpp',
-    'src/seco/rule_evaluation/rule_evaluation_label_wise_majority.cpp',
+    'src/seco/rule_evaluation/head_type_partial.cpp',
+    'src/seco/rule_evaluation/head_type_single.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_partial.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_single.cpp',
     'src/seco/statistics/statistics_provider_label_wise_dense.cpp',
-    'src/seco/stopping/stopping_criterion_coverage.cpp'
+    'src/seco/stopping/stopping_criterion_coverage.cpp',
+    'src/seco/learner.cpp'
 ]
 
 # Dependencies
