@@ -5,7 +5,7 @@
 
 namespace boosting {
 
-    static inline constexpr bool isCompleteHeadTypePreferred(const ILossConfig* lossConfig) {
+    static inline bool isCompleteHeadTypePreferred(const ILossConfig* lossConfig) {
         return dynamic_cast<const IExampleWiseLossConfig*>(lossConfig) != nullptr;
     }
 
