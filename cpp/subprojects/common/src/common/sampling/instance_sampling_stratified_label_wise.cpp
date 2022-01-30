@@ -103,7 +103,7 @@ class LabelWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplin
 };
 
 LabelWiseStratifiedInstanceSamplingConfig::LabelWiseStratifiedInstanceSamplingConfig()
-    : sampleSize_(0.66) {
+    : sampleSize_(0.66f) {
 
 }
 
