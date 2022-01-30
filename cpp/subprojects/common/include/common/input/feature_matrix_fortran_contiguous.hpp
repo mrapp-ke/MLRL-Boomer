@@ -26,5 +26,5 @@ class MLRLCOMMON_API IFortranContiguousFeatureMatrix : virtual public IColumnWis
  * @param array     A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
  * @return          An unique pointer to an object of type `IFortranContiguousFeatureMatrix` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
-                                                                                                     const float32* array);
+MLRLCOMMON_API std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureMatrix(
+    uint32 numRows, uint32 numCols, const float32* array);

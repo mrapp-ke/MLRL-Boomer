@@ -32,5 +32,6 @@ class MLRLCOMMON_API ICscFeatureMatrix : virtual public IColumnWiseFeatureMatrix
  *                      The index at the last position is equal to `num_non_zero_values`
  * @return              An unique pointer to an object of type `ICscFeatureMatrix` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                                         uint32* rowIndices, uint32* colIndices);
+MLRLCOMMON_API std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32 numCols,
+                                                                         const float32* data, uint32* rowIndices,
+                                                                         uint32* colIndices);
