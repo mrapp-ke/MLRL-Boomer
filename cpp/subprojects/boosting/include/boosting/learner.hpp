@@ -3,6 +3,11 @@
  */
 #pragma once
 
+#ifdef _WIN32
+    #pragma warning( push )
+    #pragma warning( disable : 4250 )
+#endif
+
 #include "common/learner.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/losses/loss.hpp"
@@ -448,3 +453,7 @@ namespace boosting {
         Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
 
 }
+
+#ifdef _WIN32
+    #pragma warning ( pop )
+#endif

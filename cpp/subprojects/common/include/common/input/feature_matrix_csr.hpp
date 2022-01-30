@@ -3,6 +3,11 @@
  */
 #pragma once
 
+#ifdef _WIN32
+    #pragma warning( push )
+    #pragma warning( disable : 4250 )
+#endif
+
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/data/view_csr.hpp"
 
@@ -72,3 +77,7 @@ class CsrFeatureMatrix final : public CsrConstView<const float32>, virtual publi
  */
 std::unique_ptr<ICsrFeatureMatrix> createCsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
                                                           uint32* rowIndices, uint32* colIndices);
+
+#ifdef _WIN32
+    #pragma warning ( pop )
+#endif

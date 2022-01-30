@@ -3,6 +3,11 @@
  */
 #pragma once
 
+#ifdef _WIN32
+    #pragma warning( push )
+    #pragma warning( disable : 4250 )
+#endif
+
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_vector.hpp"
@@ -142,3 +147,7 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, v
  */
 std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(uint32 numRows, uint32 numCols,
                                                                       const uint8* array);
+
+#ifdef _WIN32
+    #pragma warning ( pop )
+#endif
