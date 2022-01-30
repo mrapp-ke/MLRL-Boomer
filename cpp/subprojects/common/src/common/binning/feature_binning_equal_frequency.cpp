@@ -187,7 +187,7 @@ class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory 
 
 EqualFrequencyFeatureBinningConfig::EqualFrequencyFeatureBinningConfig(
         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : binRatio_(0.33), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+    : binRatio_(0.33f), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
 

@@ -84,7 +84,7 @@ class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionS
 };
 
 ExampleWiseStratifiedBiPartitionSamplingConfig::ExampleWiseStratifiedBiPartitionSamplingConfig()
-    : holdoutSetSize_(0.33) {
+    : holdoutSetSize_(0.33f) {
 
 }
 

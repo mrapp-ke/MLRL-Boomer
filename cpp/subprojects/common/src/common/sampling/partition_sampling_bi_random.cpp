@@ -86,7 +86,7 @@ class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory 
 
 
 RandomBiPartitionSamplingConfig::RandomBiPartitionSamplingConfig()
-    : holdoutSetSize_(0.33) {
+    : holdoutSetSize_(0.33f) {
 
 }
 
