@@ -3,6 +3,11 @@
  */
 #pragma once
 
+#ifdef _WIN32
+    #pragma warning( push )
+    #pragma warning( disable : 4250 )
+#endif
+
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/data/view_c_contiguous.hpp"
 
@@ -63,3 +68,7 @@ class CContiguousFeatureMatrix final : public CContiguousConstView<const float32
  */
 std::unique_ptr<ICContiguousFeatureMatrix> createCContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
                                                                           const float32* array);
+
+#ifdef _WIN32
+    #pragma warning ( pop )
+#endif

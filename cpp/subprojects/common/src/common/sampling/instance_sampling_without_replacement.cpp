@@ -105,7 +105,7 @@ class InstanceSamplingWithoutReplacementFactory final : public IInstanceSampling
 };
 
 InstanceSamplingWithoutReplacementConfig::InstanceSamplingWithoutReplacementConfig()
-    : sampleSize_(0.66) {
+    : sampleSize_(0.66f) {
 
 }
 
