@@ -10,7 +10,7 @@
  * Defines an interface for all feature matrices that provide column-wise access to the feature values of examples that
  * are stored in a Fortran-contiguous array.
  */
-class IFortranContiguousFeatureMatrix : virtual public IColumnWiseFeatureMatrix {
+class MLRLCOMMON_API IFortranContiguousFeatureMatrix : virtual public IColumnWiseFeatureMatrix {
 
     public:
 
@@ -26,5 +26,5 @@ class IFortranContiguousFeatureMatrix : virtual public IColumnWiseFeatureMatrix 
  * @param array     A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
  * @return          An unique pointer to an object of type `IFortranContiguousFeatureMatrix` that has been created
  */
-std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
-                                                                                      const float32* array);
+MLRLCOMMON_API std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureMatrix(
+    uint32 numRows, uint32 numCols, const float32* array);

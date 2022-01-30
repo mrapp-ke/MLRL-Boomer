@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/stopping/stopping_criterion.hpp"
+#include "common/macros.hpp"
 
 
 /**
@@ -20,7 +21,7 @@
  * first buffer to the older scores from the second buffer, is greater than a certain `minImprovement`, the rule
  * induction is continued, otherwise it is stopped.
  */
-class IMeasureStoppingCriterionConfig {
+class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
 
     public:
 

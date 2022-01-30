@@ -9,7 +9,7 @@
 /**
  * Defines an interface for all feature matrices.
  */
-class IFeatureMatrix : virtual public ITwoDimensionalView {
+class MLRLCOMMON_API IFeatureMatrix : virtual public ITwoDimensionalView {
 
     public:
 

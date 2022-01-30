@@ -114,7 +114,7 @@ cpp_args = ['-fopenmp']
 link_args = ['-fopenmp']
 
 if host_machine.system() == 'windows'
-    cpp_args = ['/openmp']
+    cpp_args = ['/openmp', '-DMLRLCOMMON_EXPORTS']
     link_args = []
 elif host_machine.system() == 'darwin'
     cpp_args = ['-Xclang', '-fopenmp']

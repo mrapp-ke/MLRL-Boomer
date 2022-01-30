@@ -12,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class CContiguousConstView : virtual public ITwoDimensionalView {
+class MLRLCOMMON_API CContiguousConstView : virtual public ITwoDimensionalView {
 
     protected:
 
@@ -80,7 +80,7 @@ class CContiguousConstView : virtual public ITwoDimensionalView {
  * @tparam T The type of the values
  */
 template<typename T>
-class CContiguousView : public CContiguousConstView<T> {
+class MLRLCOMMON_API CContiguousView : public CContiguousConstView<T> {
 
     public:
 

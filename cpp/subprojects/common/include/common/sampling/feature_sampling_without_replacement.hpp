@@ -4,12 +4,13 @@
 #pragma once
 
 #include "common/sampling/feature_sampling.hpp"
+#include "common/macros.hpp"
 
 
 /**
  * Defines an interface for all classes that allow to configure a method for sampling features without replacement.
  */
-class IFeatureSamplingWithoutReplacementConfig {
+class MLRLCOMMON_API IFeatureSamplingWithoutReplacementConfig {
 
     public:
 

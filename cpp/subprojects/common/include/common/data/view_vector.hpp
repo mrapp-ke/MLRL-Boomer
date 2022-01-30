@@ -12,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class VectorConstView : public IOneDimensionalView {
+class MLRLCOMMON_API VectorConstView : public IOneDimensionalView {
 
     protected:
 
@@ -75,7 +75,7 @@ class VectorConstView : public IOneDimensionalView {
  * @tparam T The type of the values
  */
 template<typename T>
-class VectorView : public VectorConstView<T> {
+class MLRLCOMMON_API VectorView : public VectorConstView<T> {
 
     public:
 

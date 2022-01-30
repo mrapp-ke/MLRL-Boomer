@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/post_processing/post_processor.hpp"
+#include "boosting/macros.hpp"
 
 
 namespace boosting {
@@ -12,7 +13,7 @@ namespace boosting {
      * Defines an interface for all classes that allow to configure a post-processor that shrinks the weights of rules
      * by a constant "shrinkage" parameter.
      */
-    class IConstantShrinkageConfig {
+    class MLRLBOOSTING_API IConstantShrinkageConfig {
 
         public:
 

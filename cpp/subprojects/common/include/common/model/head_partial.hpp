@@ -10,7 +10,7 @@
 /**
  * A head that contains a numerical score for a subset of the available labels.
  */
-class PartialHead final : public IHead {
+class MLRLCOMMON_API PartialHead final : public IHead {
 
     private:
 

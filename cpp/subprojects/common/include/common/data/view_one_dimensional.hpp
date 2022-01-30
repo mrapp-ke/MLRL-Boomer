@@ -4,12 +4,13 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include "common/macros.hpp"
 
 
 /**
  * Defines an interface for all one-dimensional views.
  */
-class IOneDimensionalView {
+class MLRLCOMMON_API IOneDimensionalView {
 
     public:
 

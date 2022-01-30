@@ -16,7 +16,7 @@
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of examples that are
  * stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
-class ICsrFeatureMatrix : virtual public IRowWiseFeatureMatrix {
+class MLRLCOMMON_API ICsrFeatureMatrix : virtual public IRowWiseFeatureMatrix {
 
     public:
 
@@ -75,8 +75,9 @@ class CsrFeatureMatrix final : public CsrConstView<const float32>, virtual publi
  *                      column-indices, the values in `data` correspond to
  * @return              An unique pointer to an object of type `ICsrFeatureMatrix` that has been created
  */
-std::unique_ptr<ICsrFeatureMatrix> createCsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                          uint32* rowIndices, uint32* colIndices);
+MLRLCOMMON_API std::unique_ptr<ICsrFeatureMatrix> createCsrFeatureMatrix(uint32 numRows, uint32 numCols,
+                                                                         const float32* data, uint32* rowIndices,
+                                                                         uint32* colIndices);
 
 #ifdef _WIN32
     #pragma warning ( pop )

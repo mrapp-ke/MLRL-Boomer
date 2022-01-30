@@ -9,7 +9,7 @@
 /**
  * Defines an interface for all classes that do not provide any information about the label space.
  */
-class INoLabelSpaceInfo : public ILabelSpaceInfo {
+class MLRLCOMMON_API INoLabelSpaceInfo : public ILabelSpaceInfo {
 
     public:
 
@@ -22,4 +22,4 @@ class INoLabelSpaceInfo : public ILabelSpaceInfo {
  *
  * @return An unique pointer to an object of type `INoLabelSpaceInfo` that has been created
  */
-std::unique_ptr<INoLabelSpaceInfo> createNoLabelSpaceInfo();
+MLRLCOMMON_API std::unique_ptr<INoLabelSpaceInfo> createNoLabelSpaceInfo();
