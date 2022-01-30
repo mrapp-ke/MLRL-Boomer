@@ -21,7 +21,7 @@ namespace seco {
     /**
      * Defines an interface for all rule learners that make use of the separate-and-conquer (SeCo) paradigm.
      */
-    class ISeCoRuleLearner : virtual public IRuleLearner {
+    class MLRLSECO_API ISeCoRuleLearner : virtual public IRuleLearner {
 
         public:
 
@@ -352,7 +352,7 @@ namespace seco {
      *
      * @return An unique pointer to an object of type `ISeCoRuleLearner::IConfig` that has been created
      */
-    std::unique_ptr<ISeCoRuleLearner::IConfig> createSeCoRuleLearnerConfig();
+    MLRLSECO_API std::unique_ptr<ISeCoRuleLearner::IConfig> createSeCoRuleLearnerConfig();
 
     /**
      * Creates and returns a new object of type `ISeCoRuleLearner`.
@@ -361,7 +361,7 @@ namespace seco {
      *                  configuration that should be used by the rule learner.
      * @return          An unique pointer to an object of type `ISeCoRuleLearner` that has been created
      */
-    std::unique_ptr<ISeCoRuleLearner> createSeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr);
+    MLRLSECO_API std::unique_ptr<ISeCoRuleLearner> createSeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr);
 
 }
 
