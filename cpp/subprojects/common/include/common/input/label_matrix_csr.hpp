@@ -3,6 +3,11 @@
  */
 #pragma once
 
+#ifdef _WIN32
+    #pragma warning( push )
+    #pragma warning( disable : 4250 )
+#endif
+
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/data/view_csr_binary.hpp"
 #include "common/data/view_vector.hpp"
@@ -139,3 +144,7 @@ class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabel
  */
 std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,
                                                       uint32* colIndices);
+
+#ifdef _WIN32
+    #pragma warning ( pop )
+#endif
