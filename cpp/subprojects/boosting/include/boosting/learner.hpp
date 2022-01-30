@@ -23,7 +23,7 @@ namespace boosting {
     /**
      * Defines an interface for all rule learners that make use of gradient boosting.
      */
-    class IBoostingRuleLearner : virtual public IRuleLearner {
+    class MLRLBOOSTING_API IBoostingRuleLearner : virtual public IRuleLearner {
 
         public:
 
@@ -436,7 +436,7 @@ namespace boosting {
      *
      * @return An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that has been created
      */
-    std::unique_ptr<IBoostingRuleLearner::IConfig> createBoostingRuleLearnerConfig();
+    MLRLBOOSTING_API std::unique_ptr<IBoostingRuleLearner::IConfig> createBoostingRuleLearnerConfig();
 
     /**
      * Creates and returns a new object of type `IBoostingRuleLearner`.
@@ -448,7 +448,7 @@ namespace boosting {
      * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
      * @return              An unique pointer to an object of type `IBoostingRuleLearner` that has been created
      */
-    std::unique_ptr<IBoostingRuleLearner> createBoostingRuleLearner(
+    MLRLBOOSTING_API std::unique_ptr<IBoostingRuleLearner> createBoostingRuleLearner(
         std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr, Blas::DdotFunction ddotFunction,
         Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
 
