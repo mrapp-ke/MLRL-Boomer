@@ -10,7 +10,7 @@
  * Defines an interface for all feature matrices that provide column-wise access to the feature values of examples that
  * are stored in a sparse matrix in the compressed sparse column (CSC) format.
  */
-class ICscFeatureMatrix : virtual public IColumnWiseFeatureMatrix {
+class MLRLCOMMON_API ICscFeatureMatrix : virtual public IColumnWiseFeatureMatrix {
 
     public:
 
@@ -32,5 +32,5 @@ class ICscFeatureMatrix : virtual public IColumnWiseFeatureMatrix {
  *                      The index at the last position is equal to `num_non_zero_values`
  * @return              An unique pointer to an object of type `ICscFeatureMatrix` that has been created
  */
-std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                          uint32* rowIndices, uint32* colIndices);
+MLRLCOMMON_API std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
+                                                                         uint32* rowIndices, uint32* colIndices);

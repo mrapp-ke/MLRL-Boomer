@@ -11,7 +11,7 @@
  * examples into a training set and a holdout set using stratification, where distinct label vectors are treated as
  * individual classes.
  */
-class IExampleWiseStratifiedBiPartitionSamplingConfig {
+class MLRLCOMMON_API IExampleWiseStratifiedBiPartitionSamplingConfig {
 
     public:
 

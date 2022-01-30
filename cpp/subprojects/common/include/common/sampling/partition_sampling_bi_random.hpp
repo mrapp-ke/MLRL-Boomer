@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/sampling/partition_sampling.hpp"
+#include "common/macros.hpp"
 
 
 /**
@@ -11,7 +12,7 @@
  * examples into a training set and a holdout set that randomly splits the training examples into two mutually exclusive
  * sets.
  */
-class IRandomBiPartitionSamplingConfig {
+class MLRLCOMMON_API IRandomBiPartitionSamplingConfig {
 
     public:
 

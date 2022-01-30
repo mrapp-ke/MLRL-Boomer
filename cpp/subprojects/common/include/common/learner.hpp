@@ -37,7 +37,7 @@
  * It incorporates the model that has been trained, as well as additional information that is necessary for obtaining
  * predictions for unseen data.
  */
-class ITrainingResult {
+class MLRLCOMMON_API ITrainingResult {
 
     public:
 
@@ -85,7 +85,7 @@ class ITrainingResult {
 /**
  * Defines an interface for all rule learners.
  */
-class IRuleLearner {
+class MLRLCOMMON_API IRuleLearner {
 
     public:
 

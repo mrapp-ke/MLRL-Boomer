@@ -17,7 +17,7 @@
  * specify the first element in `colIndices` that correspond to a certain row. The index at the last position is equal
  * to the number of non-zero values in the matrix.
  */
-class BinarySparsePredictionMatrix final : public BinaryCsrConstView {
+class MLRLCOMMON_API BinarySparsePredictionMatrix final : public BinaryCsrConstView {
 
     private:
 

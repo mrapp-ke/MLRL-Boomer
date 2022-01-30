@@ -5,13 +5,14 @@
 
 #include "common/rule_induction/rule_induction.hpp"
 #include "common/multi_threading/multi_threading.hpp"
+#include "common/macros.hpp"
 
 
 /**
  * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules that
  * uses a top-down greedy search.
  */
-class ITopDownRuleInductionConfig {
+class MLRLCOMMON_API ITopDownRuleInductionConfig {
 
     public:
 

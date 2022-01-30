@@ -5,6 +5,7 @@
 #pragma once
 
 #include "common/sampling/instance_sampling.hpp"
+#include "common/macros.hpp"
 
 
 /**
@@ -12,7 +13,7 @@
  * training examples using stratification, such that for each label the proportion of relevant and irrelevant examples
  * is maintained.
  */
-class ILabelWiseStratifiedInstanceSamplingConfig {
+class MLRLCOMMON_API ILabelWiseStratifiedInstanceSamplingConfig {
 
     public:
 

@@ -13,7 +13,7 @@
 /**
  * Defines an interface for all rule-based models that store several rules in an ordered list.
  */
-class IRuleList : public IRuleModel {
+class MLRLCOMMON_API IRuleList : public IRuleModel {
 
     public:
 
@@ -304,4 +304,4 @@ class RuleList final : public IRuleList {
  *
  * @return An unique pointer to an object of type `IRuleList` that has been created
  */
-std::unique_ptr<IRuleList> createRuleList();
+MLRLCOMMON_API std::unique_ptr<IRuleList> createRuleList();

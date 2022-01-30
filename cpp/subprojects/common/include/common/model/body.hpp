@@ -5,6 +5,7 @@
 
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_csr.hpp"
+#include "common/macros.hpp"
 #include <functional>
 
 // Forward declarations
@@ -15,7 +16,7 @@ class ConjunctiveBody;
 /**
  * Defines an interface for all classes that represent the body of a rule.
  */
-class IBody {
+class MLRLCOMMON_API IBody {
 
     public:
 

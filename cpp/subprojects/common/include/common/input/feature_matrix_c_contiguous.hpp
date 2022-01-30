@@ -16,7 +16,7 @@
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of examples that are
  * stored in a C-contiguous array.
  */
-class ICContiguousFeatureMatrix : virtual public IRowWiseFeatureMatrix {
+class MLRLCOMMON_API ICContiguousFeatureMatrix : virtual public IRowWiseFeatureMatrix {
 
     public:
 
@@ -66,8 +66,8 @@ class CContiguousFeatureMatrix final : public CContiguousConstView<const float32
  *                  provides access to
  * @return          An unique pointer to an object of type `ICContiguousFeatureMatrix` that has been created
  */
-std::unique_ptr<ICContiguousFeatureMatrix> createCContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
-                                                                          const float32* array);
+MLRLCOMMON_API std::unique_ptr<ICContiguousFeatureMatrix> createCContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
+                                                                                         const float32* array);
 
 #ifdef _WIN32
     #pragma warning ( pop )
