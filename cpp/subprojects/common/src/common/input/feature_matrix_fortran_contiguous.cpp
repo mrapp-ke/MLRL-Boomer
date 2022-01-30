@@ -62,5 +62,5 @@ std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureM
 }label_binning_equal
 
 #ifdef _WIN32
-    #pragma warning( pop )
+    #pragma warning ( pop )
 #endif
